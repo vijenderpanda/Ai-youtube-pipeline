@@ -1,0 +1,21 @@
+{
+  "typing_start": 2.364,
+  "typing_end": 4.958,
+  "submit": 5.738,
+  "answer_start": 5.738,
+  "answer_end": 19.856,
+  "scrolls": [
+    19.892,
+    21.11,
+    22.319
+  ],
+  "duration": 23.633,
+  "first_token": 7.756,
+  "first_personalized": 8.805,
+  "matched_term": "YouTube",
+  "personalized_delay_s": 1.049,
+  "observed": {
+    "answer_selector": "[data-message-author-role=\"assistant\"]",
+    "answer_head": "Since it's already mid-afternoon, focus on work that creates the most value today rather than trying to clear everything.\n\nHere's a simple order:\n\nYour highest-impact task (60\u201390 min)\nWork on the one thing that moves an important project forward. Turn off notifications until it's done.\n\nYour daily YouTube content (45 min)\nSince consistency matters, script, record, or edit today's beginner-friendly"
+  }
+}

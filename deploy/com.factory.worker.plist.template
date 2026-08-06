@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Template. install.sh substitutes __PYTHON__, __REPO__, __PATH__ and writes
+     the result to ~/Library/LaunchAgents/com.factory.worker.plist -->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.factory.worker</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>__PYTHON__</string>
+        <string>__REPO__/scripts/factory_worker.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>__REPO__</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>ThrottleInterval</key>
+    <integer>15</integer>
+
+    <key>StandardOutPath</key>
+    <string>__REPO__/logs/factory_worker.log</string>
+    <key>StandardErrorPath</key>
+    <string>__REPO__/logs/factory_worker.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>__PATH__</string>
+        <key>FACTORY_REPO</key>
+        <string>__REPO__</string>
+    </dict>
+</dict>
+</plist>

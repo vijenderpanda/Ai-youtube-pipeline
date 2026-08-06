@@ -1,0 +1,670 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep03/v2_hook.mp4",
+   "dur": 4.555
+  },
+  {
+   "src": "assets/ep03/term_commands.mp4",
+   "dur": 3.385,
+   "from": 1.5
+  },
+  {
+   "src": "assets/ep03/term_commands.mp4",
+   "dur": 4.135,
+   "from": 5.0
+  },
+  {
+   "src": "assets/ep03/term_commands.mp4",
+   "dur": 1.36,
+   "from": 9.5
+  },
+  {
+   "src": "assets/ep03/term_commands.mp4",
+   "dur": 1.975,
+   "from": 21.5
+  },
+  {
+   "src": "assets/ep03/term_commands.mp4",
+   "dur": 2.405,
+   "from": 33.5
+  },
+  {
+   "src": "assets/ep03/v2_payoff.mp4",
+   "dur": 14.455
+  }
+ ],
+ "captions": [
+  {
+   "w": "YOU",
+   "start": 0.0,
+   "end": 0.16,
+   "hot": false
+  },
+  {
+   "w": "TYPE",
+   "start": 0.26,
+   "end": 0.51,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 0.55,
+   "end": 0.61,
+   "hot": false
+  },
+  {
+   "w": "SAME",
+   "start": 0.65,
+   "end": 0.87,
+   "hot": true
+  },
+  {
+   "w": "PROMPT",
+   "start": 0.89,
+   "end": 1.15,
+   "hot": true
+  },
+  {
+   "w": "INTO",
+   "start": 1.17,
+   "end": 1.3,
+   "hot": false
+  },
+  {
+   "w": "AI",
+   "start": 1.38,
+   "end": 1.78,
+   "hot": false
+  },
+  {
+   "w": "EVERY",
+   "start": 1.83,
+   "end": 2.12,
+   "hot": true
+  },
+  {
+   "w": "SINGLE",
+   "start": 2.17,
+   "end": 2.48,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 2.52,
+   "end": 2.91,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 3.42,
+   "end": 3.42,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 3.42,
+   "end": 3.42,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 3.42,
+   "end": 3.42,
+   "hot": false
+  },
+  {
+   "w": "STOP",
+   "start": 3.42,
+   "end": 3.96,
+   "hot": true
+  },
+  {
+   "w": "SAVE",
+   "start": 4.17,
+   "end": 4.42,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 4.46,
+   "end": 4.52,
+   "hot": false
+  },
+  {
+   "w": "ONCE",
+   "start": 4.59,
+   "end": 5.02,
+   "hot": true
+  },
+  {
+   "w": "HERE'S",
+   "start": 5.26,
+   "end": 5.49,
+   "hot": false
+  },
+  {
+   "w": "HOW",
+   "start": 5.53,
+   "end": 5.86,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 6.36,
+   "end": 6.36,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 6.36,
+   "end": 6.36,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 6.36,
+   "end": 6.36,
+   "hot": false
+  },
+  {
+   "w": "WATCH",
+   "start": 6.36,
+   "end": 6.93,
+   "hot": true
+  },
+  {
+   "w": "I",
+   "start": 7.37,
+   "end": 7.43,
+   "hot": false
+  },
+  {
+   "w": "MAKE",
+   "start": 7.52,
+   "end": 7.69,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 7.73,
+   "end": 7.92,
+   "hot": true
+  },
+  {
+   "w": "FILE",
+   "start": 7.96,
+   "end": 8.24,
+   "hot": true
+  },
+  {
+   "w": "INSIDE",
+   "start": 8.3,
+   "end": 8.74,
+   "hot": false
+  },
+  {
+   "w": "DOT",
+   "start": 8.86,
+   "end": 9.15,
+   "hot": false
+  },
+  {
+   "w": "CLAUDE",
+   "start": 9.22,
+   "end": 9.79,
+   "hot": false
+  },
+  {
+   "w": "SLASH",
+   "start": 9.96,
+   "end": 10.3,
+   "hot": true
+  },
+  {
+   "w": "COMMANDS",
+   "start": 10.36,
+   "end": 11.02,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 11.64,
+   "end": 11.64,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 11.64,
+   "end": 11.64,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 11.64,
+   "end": 11.64,
+   "hot": false
+  },
+  {
+   "w": "MY",
+   "start": 11.64,
+   "end": 11.78,
+   "hot": false
+  },
+  {
+   "w": "WHOLE",
+   "start": 11.83,
+   "end": 12.05,
+   "hot": false
+  },
+  {
+   "w": "PROMPT",
+   "start": 12.1,
+   "end": 12.41,
+   "hot": true
+  },
+  {
+   "w": "GOES",
+   "start": 12.48,
+   "end": 12.68,
+   "hot": false
+  },
+  {
+   "w": "IN",
+   "start": 12.72,
+   "end": 12.78,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 12.82,
+   "end": 13.06,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 13.3,
+   "end": 13.38,
+   "hot": false
+  },
+  {
+   "w": "NAME",
+   "start": 13.49,
+   "end": 13.72,
+   "hot": true
+  },
+  {
+   "w": "THE",
+   "start": 13.76,
+   "end": 13.83,
+   "hot": false
+  },
+  {
+   "w": "FILE",
+   "start": 13.87,
+   "end": 14.14,
+   "hot": true
+  },
+  {
+   "w": "RULES",
+   "start": 14.18,
+   "end": 14.66,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 15.17,
+   "end": 15.17,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 15.17,
+   "end": 15.17,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 15.17,
+   "end": 15.17,
+   "hot": false
+  },
+  {
+   "w": "THAT",
+   "start": 15.17,
+   "end": 15.38,
+   "hot": false
+  },
+  {
+   "w": "NAME",
+   "start": 15.44,
+   "end": 15.64,
+   "hot": true
+  },
+  {
+   "w": "BECOMES",
+   "start": 15.67,
+   "end": 16.03,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 16.1,
+   "end": 16.17,
+   "hot": false
+  },
+  {
+   "w": "COMMAND",
+   "start": 16.23,
+   "end": 16.78,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 17.27,
+   "end": 17.27,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 17.27,
+   "end": 17.27,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 17.27,
+   "end": 17.27,
+   "hot": false
+  },
+  {
+   "w": "NOW",
+   "start": 17.27,
+   "end": 17.51,
+   "hot": false
+  },
+  {
+   "w": "FRESH",
+   "start": 17.55,
+   "end": 17.8,
+   "hot": true
+  },
+  {
+   "w": "SESSION",
+   "start": 17.83,
+   "end": 18.26,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 18.44,
+   "end": 18.49,
+   "hot": false
+  },
+  {
+   "w": "JUST",
+   "start": 18.59,
+   "end": 18.74,
+   "hot": false
+  },
+  {
+   "w": "TYPE",
+   "start": 18.77,
+   "end": 19.02,
+   "hot": false
+  },
+  {
+   "w": "SLASH",
+   "start": 19.04,
+   "end": 19.34,
+   "hot": true
+  },
+  {
+   "w": "RULES",
+   "start": 19.4,
+   "end": 19.9,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 20.39,
+   "end": 20.39,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 20.39,
+   "end": 20.39,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 20.39,
+   "end": 20.39,
+   "hot": false
+  },
+  {
+   "w": "AND",
+   "start": 20.39,
+   "end": 20.8,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 20.93,
+   "end": 21.06,
+   "hot": false
+  },
+  {
+   "w": "WHOLE",
+   "start": 21.12,
+   "end": 21.44,
+   "hot": false
+  },
+  {
+   "w": "SAVED",
+   "start": 21.5,
+   "end": 21.88,
+   "hot": false
+  },
+  {
+   "w": "PROMPT",
+   "start": 22.16,
+   "end": 22.58,
+   "hot": true
+  },
+  {
+   "w": "RUNS",
+   "start": 22.7,
+   "end": 23.23,
+   "hot": true
+  },
+  {
+   "w": "FULL",
+   "start": 23.38,
+   "end": 23.65,
+   "hot": false
+  },
+  {
+   "w": "CHECKLIST",
+   "start": 23.71,
+   "end": 24.16,
+   "hot": true
+  },
+  {
+   "w": "INSTANTLY",
+   "start": 24.2,
+   "end": 24.83,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 25.41,
+   "end": 25.41,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 25.41,
+   "end": 25.41,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 25.41,
+   "end": 25.41,
+   "hot": false
+  },
+  {
+   "w": "TYPE",
+   "start": 25.41,
+   "end": 25.69,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 25.72,
+   "end": 25.8,
+   "hot": false
+  },
+  {
+   "w": "ONCE",
+   "start": 25.91,
+   "end": 26.38,
+   "hot": true
+  },
+  {
+   "w": "USE",
+   "start": 26.62,
+   "end": 26.84,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 26.88,
+   "end": 26.93,
+   "hot": false
+  },
+  {
+   "w": "FOREVER",
+   "start": 26.97,
+   "end": 27.59,
+   "hot": true
+  },
+  {
+   "w": "WITH",
+   "start": 27.7,
+   "end": 27.88,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 27.93,
+   "end": 28.1,
+   "hot": true
+  },
+  {
+   "w": "KEYSTROKE",
+   "start": 28.14,
+   "end": 28.76,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 29.26,
+   "end": 29.26,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 29.26,
+   "end": 29.26,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 29.26,
+   "end": 29.26,
+   "hot": false
+  },
+  {
+   "w": "FOLLOW",
+   "start": 29.26,
+   "end": 29.8,
+   "hot": true
+  },
+  {
+   "w": "I",
+   "start": 29.95,
+   "end": 30.02,
+   "hot": false
+  },
+  {
+   "w": "UNPACK",
+   "start": 30.14,
+   "end": 30.48,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 30.57,
+   "end": 30.74,
+   "hot": true
+  },
+  {
+   "w": "AI",
+   "start": 30.79,
+   "end": 31.01,
+   "hot": false
+  },
+  {
+   "w": "SKILL",
+   "start": 31.05,
+   "end": 31.27,
+   "hot": false
+  },
+  {
+   "w": "EVERY",
+   "start": 31.32,
+   "end": 31.5,
+   "hot": true
+  },
+  {
+   "w": "SINGLE",
+   "start": 31.53,
+   "end": 31.78,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 31.82,
+   "end": 32.27,
+   "hot": true
+  }
+ ],
+ "steps": [
+  {
+   "label": "STEP 1/3 \u2014 MAKE THE FILE",
+   "start": 4.55,
+   "end": 12.07
+  },
+  {
+   "label": "STEP 2/3 \u2014 NAME = COMMAND",
+   "start": 12.07,
+   "end": 15.41
+  },
+  {
+   "label": "STEP 3/3 \u2014 TYPE /RULES",
+   "start": 15.41,
+   "end": 17.81
+  }
+ ],
+ "vo": "assets/ep03/vo_v2.wav",
+ "cover": {
+  "title1": "SAVE PROMPTS AS",
+  "title2": "SLASH COMMANDS",
+  "emojis": "\u2328\ufe0f\u26a1\ud83d\udd01",
+  "until": 3.0
+ },
+ "watermark": true
+}

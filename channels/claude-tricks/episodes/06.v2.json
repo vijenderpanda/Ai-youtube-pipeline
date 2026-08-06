@@ -1,0 +1,784 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep06/v2_hook.mp4",
+   "dur": 4.31
+  },
+  {
+   "src": "assets/ep06/term_model.mp4",
+   "dur": 4.245,
+   "from": 4.6
+  },
+  {
+   "src": "assets/ep06/term_model.mp4",
+   "dur": 3.095,
+   "from": 8.6
+  },
+  {
+   "src": "assets/ep06/term_model.mp4",
+   "dur": 2.81,
+   "from": 10.6
+  },
+  {
+   "src": "assets/ep06/term_model.mp4",
+   "dur": 3.65,
+   "from": 11.4
+  },
+  {
+   "src": "assets/ep06/term_model.mp4",
+   "dur": 2.24,
+   "from": 12.3
+  },
+  {
+   "src": "assets/ep06/v2_payoff.mp4",
+   "dur": 17.5
+  }
+ ],
+ "captions": [
+  {
+   "w": "YOU'RE",
+   "start": 0.0,
+   "end": 0.23,
+   "hot": false
+  },
+  {
+   "w": "PROBABLY",
+   "start": 0.26,
+   "end": 0.59,
+   "hot": false
+  },
+  {
+   "w": "USING",
+   "start": 0.65,
+   "end": 0.86,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 0.89,
+   "end": 0.96,
+   "hot": false
+  },
+  {
+   "w": "WRONG",
+   "start": 0.99,
+   "end": 1.23,
+   "hot": true
+  },
+  {
+   "w": "CLAUDE",
+   "start": 1.3,
+   "end": 1.64,
+   "hot": false
+  },
+  {
+   "w": "MODEL",
+   "start": 1.7,
+   "end": 1.99,
+   "hot": true
+  },
+  {
+   "w": "RIGHT",
+   "start": 2.06,
+   "end": 2.24,
+   "hot": false
+  },
+  {
+   "w": "NOW",
+   "start": 2.3,
+   "end": 2.65,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 3.13,
+   "end": 3.13,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 3.13,
+   "end": 3.13,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 3.13,
+   "end": 3.13,
+   "hot": false
+  },
+  {
+   "w": "LET",
+   "start": 3.13,
+   "end": 3.27,
+   "hot": false
+  },
+  {
+   "w": "ME",
+   "start": 3.32,
+   "end": 3.39,
+   "hot": false
+  },
+  {
+   "w": "SHOW",
+   "start": 3.42,
+   "end": 3.55,
+   "hot": false
+  },
+  {
+   "w": "YOU",
+   "start": 3.6,
+   "end": 3.67,
+   "hot": false
+  },
+  {
+   "w": "HOW",
+   "start": 3.71,
+   "end": 3.79,
+   "hot": false
+  },
+  {
+   "w": "TO",
+   "start": 3.82,
+   "end": 3.87,
+   "hot": false
+  },
+  {
+   "w": "FIX",
+   "start": 3.92,
+   "end": 4.09,
+   "hot": false
+  },
+  {
+   "w": "THAT",
+   "start": 4.14,
+   "end": 4.28,
+   "hot": false
+  },
+  {
+   "w": "IN",
+   "start": 4.34,
+   "end": 4.4,
+   "hot": false
+  },
+  {
+   "w": "TEN",
+   "start": 4.45,
+   "end": 4.61,
+   "hot": true
+  },
+  {
+   "w": "SECONDS",
+   "start": 4.67,
+   "end": 5.25,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 5.88,
+   "end": 5.88,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 5.88,
+   "end": 5.88,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 5.88,
+   "end": 5.88,
+   "hot": false
+  },
+  {
+   "w": "CLAUDE",
+   "start": 5.88,
+   "end": 6.22,
+   "hot": false
+  },
+  {
+   "w": "HAS",
+   "start": 6.25,
+   "end": 6.36,
+   "hot": false
+  },
+  {
+   "w": "DIFFERENT",
+   "start": 6.43,
+   "end": 6.73,
+   "hot": false
+  },
+  {
+   "w": "BRAINS",
+   "start": 6.76,
+   "end": 7.29,
+   "hot": true
+  },
+  {
+   "w": "FAST",
+   "start": 7.46,
+   "end": 7.78,
+   "hot": true
+  },
+  {
+   "w": "ONES",
+   "start": 7.86,
+   "end": 8.32,
+   "hot": false
+  },
+  {
+   "w": "AND",
+   "start": 8.36,
+   "end": 8.52,
+   "hot": false
+  },
+  {
+   "w": "DEEP",
+   "start": 8.59,
+   "end": 8.8,
+   "hot": true
+  },
+  {
+   "w": "ONES",
+   "start": 8.88,
+   "end": 9.33,
+   "hot": false
+  },
+  {
+   "w": "MOST",
+   "start": 9.54,
+   "end": 9.76,
+   "hot": false
+  },
+  {
+   "w": "PEOPLE",
+   "start": 9.8,
+   "end": 10.07,
+   "hot": false
+  },
+  {
+   "w": "NEVER",
+   "start": 10.12,
+   "end": 10.33,
+   "hot": false
+  },
+  {
+   "w": "SWITCH",
+   "start": 10.39,
+   "end": 10.88,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 11.34,
+   "end": 11.34,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 11.34,
+   "end": 11.34,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 11.34,
+   "end": 11.34,
+   "hot": false
+  },
+  {
+   "w": "WATCH",
+   "start": 11.34,
+   "end": 11.62,
+   "hot": true
+  },
+  {
+   "w": "MY",
+   "start": 11.68,
+   "end": 11.76,
+   "hot": false
+  },
+  {
+   "w": "SCREEN",
+   "start": 11.82,
+   "end": 12.29,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 12.41,
+   "end": 12.53,
+   "hot": false
+  },
+  {
+   "w": "TYPE",
+   "start": 12.64,
+   "end": 12.92,
+   "hot": false
+  },
+  {
+   "w": "SLASH",
+   "start": 12.96,
+   "end": 13.34,
+   "hot": true
+  },
+  {
+   "w": "MODEL",
+   "start": 13.41,
+   "end": 13.89,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 13.91,
+   "end": 14.08,
+   "hot": false
+  },
+  {
+   "w": "PRESS",
+   "start": 14.18,
+   "end": 14.43,
+   "hot": false
+  },
+  {
+   "w": "ENTER",
+   "start": 14.49,
+   "end": 14.9,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 15.41,
+   "end": 15.41,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 15.41,
+   "end": 15.41,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 15.41,
+   "end": 15.41,
+   "hot": false
+  },
+  {
+   "w": "THIS",
+   "start": 15.41,
+   "end": 15.6,
+   "hot": false
+  },
+  {
+   "w": "MENU",
+   "start": 15.66,
+   "end": 15.93,
+   "hot": true
+  },
+  {
+   "w": "SHOWS",
+   "start": 15.99,
+   "end": 16.25,
+   "hot": false
+  },
+  {
+   "w": "EVERY",
+   "start": 16.38,
+   "end": 16.65,
+   "hot": true
+  },
+  {
+   "w": "MODEL",
+   "start": 16.7,
+   "end": 16.93,
+   "hot": true
+  },
+  {
+   "w": "YOU",
+   "start": 16.97,
+   "end": 17.04,
+   "hot": false
+  },
+  {
+   "w": "CAN",
+   "start": 17.09,
+   "end": 17.21,
+   "hot": false
+  },
+  {
+   "w": "USE",
+   "start": 17.29,
+   "end": 17.66,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 18.11,
+   "end": 18.11,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 18.11,
+   "end": 18.11,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 18.11,
+   "end": 18.11,
+   "hot": false
+  },
+  {
+   "w": "ARROW",
+   "start": 18.11,
+   "end": 18.39,
+   "hot": false
+  },
+  {
+   "w": "DOWN",
+   "start": 18.45,
+   "end": 18.63,
+   "hot": false
+  },
+  {
+   "w": "TO",
+   "start": 18.67,
+   "end": 18.74,
+   "hot": false
+  },
+  {
+   "w": "CHOOSE",
+   "start": 18.81,
+   "end": 19.29,
+   "hot": true
+  },
+  {
+   "w": "FAST",
+   "start": 19.49,
+   "end": 19.82,
+   "hot": true
+  },
+  {
+   "w": "MODEL",
+   "start": 19.89,
+   "end": 20.16,
+   "hot": true
+  },
+  {
+   "w": "FOR",
+   "start": 20.21,
+   "end": 20.32,
+   "hot": false
+  },
+  {
+   "w": "QUICK",
+   "start": 20.38,
+   "end": 20.57,
+   "hot": false
+  },
+  {
+   "w": "TASKS",
+   "start": 20.62,
+   "end": 21.2,
+   "hot": false
+  },
+  {
+   "w": "DEEP",
+   "start": 21.37,
+   "end": 21.62,
+   "hot": true
+  },
+  {
+   "w": "MODEL",
+   "start": 21.69,
+   "end": 22.04,
+   "hot": true
+  },
+  {
+   "w": "FOR",
+   "start": 22.25,
+   "end": 22.44,
+   "hot": false
+  },
+  {
+   "w": "HARD",
+   "start": 22.56,
+   "end": 22.8,
+   "hot": false
+  },
+  {
+   "w": "THINKING",
+   "start": 22.85,
+   "end": 23.32,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 23.84,
+   "end": 23.84,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 23.84,
+   "end": 23.84,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 23.84,
+   "end": 23.84,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 23.84,
+   "end": 24.16,
+   "hot": false
+  },
+  {
+   "w": "ENTER",
+   "start": 24.21,
+   "end": 24.93,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 25.31,
+   "end": 25.79,
+   "hot": false
+  },
+  {
+   "w": "CLAUDE",
+   "start": 26.0,
+   "end": 26.53,
+   "hot": false
+  },
+  {
+   "w": "SWITCHES",
+   "start": 26.59,
+   "end": 27.02,
+   "hot": true
+  },
+  {
+   "w": "BRAINS",
+   "start": 27.13,
+   "end": 27.73,
+   "hot": true
+  },
+  {
+   "w": "THAT'S",
+   "start": 27.8,
+   "end": 28.05,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 28.1,
+   "end": 28.36,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 28.86,
+   "end": 28.86,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 28.86,
+   "end": 28.86,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 28.86,
+   "end": 28.86,
+   "hot": false
+  },
+  {
+   "w": "QUICK",
+   "start": 28.86,
+   "end": 29.11,
+   "hot": false
+  },
+  {
+   "w": "STUFF",
+   "start": 29.15,
+   "end": 29.61,
+   "hot": false
+  },
+  {
+   "w": "FAST",
+   "start": 29.78,
+   "end": 30.09,
+   "hot": true
+  },
+  {
+   "w": "MODEL",
+   "start": 30.16,
+   "end": 30.66,
+   "hot": true
+  },
+  {
+   "w": "HARD",
+   "start": 30.78,
+   "end": 31.05,
+   "hot": false
+  },
+  {
+   "w": "STUFF",
+   "start": 31.09,
+   "end": 31.53,
+   "hot": false
+  },
+  {
+   "w": "DEEP",
+   "start": 31.66,
+   "end": 31.88,
+   "hot": true
+  },
+  {
+   "w": "MODEL",
+   "start": 31.95,
+   "end": 32.37,
+   "hot": true
+  },
+  {
+   "w": "THAT",
+   "start": 32.54,
+   "end": 32.75,
+   "hot": false
+  },
+  {
+   "w": "HABIT",
+   "start": 32.81,
+   "end": 33.09,
+   "hot": false
+  },
+  {
+   "w": "ALONE",
+   "start": 33.15,
+   "end": 33.45,
+   "hot": false
+  },
+  {
+   "w": "DOUBLES",
+   "start": 33.49,
+   "end": 33.77,
+   "hot": true
+  },
+  {
+   "w": "YOUR",
+   "start": 33.81,
+   "end": 33.9,
+   "hot": false
+  },
+  {
+   "w": "RESULTS",
+   "start": 33.94,
+   "end": 34.49,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 34.99,
+   "end": 34.99,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 34.99,
+   "end": 34.99,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 34.99,
+   "end": 34.99,
+   "hot": false
+  },
+  {
+   "w": "FOLLOW",
+   "start": 34.99,
+   "end": 35.46,
+   "hot": true
+  },
+  {
+   "w": "I",
+   "start": 35.52,
+   "end": 35.57,
+   "hot": false
+  },
+  {
+   "w": "UNPACK",
+   "start": 35.69,
+   "end": 36.03,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 36.11,
+   "end": 36.26,
+   "hot": false
+  },
+  {
+   "w": "AI",
+   "start": 36.3,
+   "end": 36.5,
+   "hot": false
+  },
+  {
+   "w": "SKILL",
+   "start": 36.54,
+   "end": 36.78,
+   "hot": false
+  },
+  {
+   "w": "EVERY",
+   "start": 36.84,
+   "end": 37.01,
+   "hot": true
+  },
+  {
+   "w": "SINGLE",
+   "start": 37.05,
+   "end": 37.29,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 37.33,
+   "end": 37.85,
+   "hot": true
+  }
+ ],
+ "steps": [
+  {
+   "label": "STEP 1/3 \u2014 TYPE /MODEL",
+   "start": 8.55,
+   "end": 14.46
+  },
+  {
+   "label": "STEP 2/3 \u2014 PICK A BRAIN",
+   "start": 14.46,
+   "end": 18.11
+  },
+  {
+   "label": "STEP 3/3 \u2014 PRESS ENTER",
+   "start": 18.11,
+   "end": 20.35
+  }
+ ],
+ "vo": "assets/ep06/vo_v2.wav",
+ "cover": {
+  "title1": "PICK THE RIGHT",
+  "title2": "CLAUDE MODEL",
+  "emojis": "\ud83e\udde0\u26a1\u2705",
+  "until": 3.0
+ },
+ "watermark": true
+}

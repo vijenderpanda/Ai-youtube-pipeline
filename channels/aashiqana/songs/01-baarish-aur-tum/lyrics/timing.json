@@ -1,0 +1,28 @@
+{
+  "_note": "Track C (30adb924, 3:24, v3 chorus-first). Onsets from whisper to ~80s; later lines structural estimates. Late instrumental left clean.",
+  "lines": [
+    {"t": 1.6,  "text": "Tu hi hai, tu hi hai, meri har duaa"},
+    {"t": 6.5,  "text": "Baarish ban ke tu, mujh mein barasta ja"},
+    {"t": 11.5, "text": "Tere bina main adhoora, tere bina main kho gaya"},
+    {"t": 16.5, "text": "Tu hi hai, tu hi hai, meri wafaa"},
+    {"t": 23.4, "text": "Dheere se aake tu, palkon pe chha gaya"},
+    {"t": 28.0, "text": "Saanson mein ghul gaya, khwaabon mein aa gaya"},
+    {"t": 32.5, "text": "Har boond baarish ki, leti tera naam"},
+    {"t": 37.0, "text": "Tujhko hi dhoondein ye, subah aur shaam"},
+    {"t": 41.7, "text": "Tu hi hai, tu hi hai, meri har duaa"},
+    {"t": 46.5, "text": "Baarish ban ke tu, mujh mein barasta ja"},
+    {"t": 51.5, "text": "Tere bina main adhoora, tere bina main kho gaya"},
+    {"t": 56.0, "text": "Tu hi hai, tu hi hai, meri wafaa"},
+    {"t": 62.0, "text": "Bheegi si raat mein, teri hi roshni"},
+    {"t": 66.5, "text": "Tere bina lage, adhoori zindagi"},
+    {"t": 71.0, "text": "Le chal wahaan mujhe, jahaan ho sirf tu"},
+    {"t": 75.5, "text": "Thaame ye haath na, chhoote kabhi tu"},
+    {"t": 82.0, "text": "Tu meri manzil, tu hi junoon"},
+    {"t": 87.0, "text": "Aa laut aa, aa laut aa"},
+    {"t": 94.0, "text": "Tu hi hai, tu hi hai, meri har duaa"},
+    {"t": 99.0, "text": "Baarish ban ke tu, mujh mein barasta ja"},
+    {"t": 104.0, "text": "Tere bina main adhoora, tere bina main kho gaya"},
+    {"t": 109.0, "text": "Tu hi hai, tu hi hai, meri wafaa"},
+    {"t": 118.0, "text": "Tu hi hai... tu hi hai..."}
+  ]
+}

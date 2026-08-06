@@ -1,0 +1,42 @@
+[
+ {
+  "img": "channels/language-abc/assets/scenes/ep02_txt/txt_0_title.jpg",
+  "dur": 13,
+  "motion": "zoom_in"
+ },
+ {
+  "img": "channels/language-abc/assets/scenes/ep02_txt/txt_1_uno.jpg",
+  "dur": 13,
+  "motion": "zoom_out"
+ },
+ {
+  "img": "channels/language-abc/assets/scenes/ep02_txt/txt_2_dos.jpg",
+  "dur": 13,
+  "motion": "pan_left"
+ },
+ {
+  "img": "channels/language-abc/assets/scenes/ep02_txt/txt_3_tres.jpg",
+  "dur": 13,
+  "motion": "pan_right"
+ },
+ {
+  "img": "channels/language-abc/assets/scenes/ep02_txt/txt_4_cuatro.jpg",
+  "dur": 13,
+  "motion": "pan_left"
+ },
+ {
+  "img": "channels/language-abc/assets/scenes/ep02_txt/txt_5_cinco.jpg",
+  "dur": 13,
+  "motion": "zoom_in"
+ },
+ {
+  "img": "channels/language-abc/assets/scenes/ep02_txt/txt_6_recap.jpg",
+  "dur": 13,
+  "motion": "zoom_out"
+ },
+ {
+  "img": "channels/language-abc/assets/scenes/ep02_txt/txt_7_adios.jpg",
+  "dur": 12,
+  "motion": "zoom_in"
+ }
+]

@@ -1,0 +1,563 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep08/v2_host.mp4",
+   "dur": 1.65,
+   "mode": "host"
+  },
+  {
+   "src": "assets/ep08/announce.mp4",
+   "dur": 8.13,
+   "from": 0.0,
+   "mode": "full"
+  },
+  {
+   "src": "assets/ep08/broll/pexels_6868327.mp4",
+   "dur": 8.49,
+   "from": 2.0,
+   "mode": "split"
+  },
+  {
+   "src": "assets/ep08/broll/pexels_18069700.mp4",
+   "dur": 5.87,
+   "from": 2.0,
+   "mode": "split"
+  },
+  {
+   "src": "assets/ep08/broll/pexels_6436524.mp4",
+   "dur": 4.13,
+   "from": 2.0,
+   "mode": "split"
+  },
+  {
+   "src": "assets/ep08/v2_host.mp4",
+   "dur": 5.54,
+   "mode": "host"
+  }
+ ],
+ "captions": [
+  {
+   "w": "HERE'S",
+   "start": 0.0,
+   "end": 0.27,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 0.3,
+   "end": 0.44,
+   "hot": false
+  },
+  {
+   "w": "FOR",
+   "start": 0.46,
+   "end": 0.57,
+   "hot": false
+  },
+  {
+   "w": "PARENTS",
+   "start": 0.61,
+   "end": 1.18,
+   "hot": true
+  },
+  {
+   "w": "STARTING",
+   "start": 1.65,
+   "end": 2.0,
+   "hot": false
+  },
+  {
+   "w": "AUGUST",
+   "start": 2.07,
+   "end": 2.39,
+   "hot": true
+  },
+  {
+   "w": "TENTH",
+   "start": 2.42,
+   "end": 2.83,
+   "hot": true
+  },
+  {
+   "w": "GOOGLE",
+   "start": 3.01,
+   "end": 3.4,
+   "hot": false
+  },
+  {
+   "w": "IS",
+   "start": 3.46,
+   "end": 3.56,
+   "hot": false
+  },
+  {
+   "w": "EXPANDING",
+   "start": 3.63,
+   "end": 4.35,
+   "hot": false
+  },
+  {
+   "w": "ITS",
+   "start": 4.4,
+   "end": 4.53,
+   "hot": false
+  },
+  {
+   "w": "GEMINI",
+   "start": 4.6,
+   "end": 5.03,
+   "hot": true
+  },
+  {
+   "w": "AI",
+   "start": 5.14,
+   "end": 5.74,
+   "hot": false
+  },
+  {
+   "w": "INSIDE",
+   "start": 5.94,
+   "end": 6.61,
+   "hot": false
+  },
+  {
+   "w": "GOOGLE",
+   "start": 6.76,
+   "end": 7.11,
+   "hot": false
+  },
+  {
+   "w": "CLASSROOM",
+   "start": 7.15,
+   "end": 7.67,
+   "hot": true
+  },
+  {
+   "w": "TO",
+   "start": 7.77,
+   "end": 7.91,
+   "hot": false
+  },
+  {
+   "w": "STUDENTS",
+   "start": 7.98,
+   "end": 8.41,
+   "hot": false
+  },
+  {
+   "w": "OF",
+   "start": 8.44,
+   "end": 8.51,
+   "hot": false
+  },
+  {
+   "w": "ALL",
+   "start": 8.58,
+   "end": 8.74,
+   "hot": true
+  },
+  {
+   "w": "AGES",
+   "start": 8.8,
+   "end": 9.29,
+   "hot": true
+  },
+  {
+   "w": "IF",
+   "start": 9.78,
+   "end": 9.91,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 9.96,
+   "end": 9.98,
+   "hot": false
+  },
+  {
+   "w": "SCHOOL",
+   "start": 10.04,
+   "end": 10.36,
+   "hot": true
+  },
+  {
+   "w": "ALREADY",
+   "start": 10.43,
+   "end": 10.81,
+   "hot": false
+  },
+  {
+   "w": "HAS",
+   "start": 10.86,
+   "end": 10.99,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 11.05,
+   "end": 11.12,
+   "hot": false
+  },
+  {
+   "w": "SWITCHED",
+   "start": 11.17,
+   "end": 11.51,
+   "hot": false
+  },
+  {
+   "w": "ON",
+   "start": 11.56,
+   "end": 11.95,
+   "hot": false
+  },
+  {
+   "w": "STUDENTS",
+   "start": 12.19,
+   "end": 12.61,
+   "hot": false
+  },
+  {
+   "w": "CAN",
+   "start": 12.64,
+   "end": 12.76,
+   "hot": false
+  },
+  {
+   "w": "TURN",
+   "start": 12.82,
+   "end": 13.07,
+   "hot": false
+  },
+  {
+   "w": "THEIR",
+   "start": 13.12,
+   "end": 13.27,
+   "hot": false
+  },
+  {
+   "w": "OWN",
+   "start": 13.34,
+   "end": 13.5,
+   "hot": false
+  },
+  {
+   "w": "CLASS",
+   "start": 13.55,
+   "end": 13.82,
+   "hot": false
+  },
+  {
+   "w": "MATERIALS",
+   "start": 13.86,
+   "end": 14.31,
+   "hot": false
+  },
+  {
+   "w": "INTO",
+   "start": 14.36,
+   "end": 14.51,
+   "hot": false
+  },
+  {
+   "w": "FLASHCARDS",
+   "start": 14.58,
+   "end": 15.44,
+   "hot": true
+  },
+  {
+   "w": "PRACTICE",
+   "start": 15.59,
+   "end": 16.01,
+   "hot": false
+  },
+  {
+   "w": "QUIZZES",
+   "start": 16.05,
+   "end": 16.6,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 16.78,
+   "end": 16.94,
+   "hot": false
+  },
+  {
+   "w": "STUDY",
+   "start": 17.0,
+   "end": 17.28,
+   "hot": false
+  },
+  {
+   "w": "GUIDES",
+   "start": 17.33,
+   "end": 17.77,
+   "hot": true
+  },
+  {
+   "w": "FOR",
+   "start": 18.27,
+   "end": 18.43,
+   "hot": false
+  },
+  {
+   "w": "FAMILIES",
+   "start": 18.48,
+   "end": 19.09,
+   "hot": false
+  },
+  {
+   "w": "THAT",
+   "start": 19.2,
+   "end": 19.4,
+   "hot": false
+  },
+  {
+   "w": "MEANS",
+   "start": 19.46,
+   "end": 19.71,
+   "hot": false
+  },
+  {
+   "w": "AN",
+   "start": 19.8,
+   "end": 19.92,
+   "hot": false
+  },
+  {
+   "w": "AI",
+   "start": 20.04,
+   "end": 20.38,
+   "hot": false
+  },
+  {
+   "w": "STUDY",
+   "start": 20.4,
+   "end": 20.7,
+   "hot": false
+  },
+  {
+   "w": "HELPER",
+   "start": 20.77,
+   "end": 21.16,
+   "hot": true
+  },
+  {
+   "w": "COULD",
+   "start": 21.37,
+   "end": 21.57,
+   "hot": false
+  },
+  {
+   "w": "SIT",
+   "start": 21.62,
+   "end": 21.82,
+   "hot": false
+  },
+  {
+   "w": "RIGHT",
+   "start": 21.91,
+   "end": 22.2,
+   "hot": false
+  },
+  {
+   "w": "INSIDE",
+   "start": 22.29,
+   "end": 22.72,
+   "hot": false
+  },
+  {
+   "w": "SCHOOL",
+   "start": 22.74,
+   "end": 23.02,
+   "hot": true
+  },
+  {
+   "w": "SOFTWARE",
+   "start": 23.08,
+   "end": 23.65,
+   "hot": true
+  },
+  {
+   "w": "THE",
+   "start": 24.14,
+   "end": 24.27,
+   "hot": false
+  },
+  {
+   "w": "GOOD",
+   "start": 24.34,
+   "end": 24.52,
+   "hot": true
+  },
+  {
+   "w": "NEWS",
+   "start": 24.58,
+   "end": 25.0,
+   "hot": true
+  },
+  {
+   "w": "SCHOOL",
+   "start": 25.17,
+   "end": 25.48,
+   "hot": true
+  },
+  {
+   "w": "ADMINS",
+   "start": 25.55,
+   "end": 25.95,
+   "hot": false
+  },
+  {
+   "w": "CAN",
+   "start": 26.0,
+   "end": 26.11,
+   "hot": false
+  },
+  {
+   "w": "TURN",
+   "start": 26.17,
+   "end": 26.37,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 26.41,
+   "end": 26.49,
+   "hot": false
+  },
+  {
+   "w": "OFF",
+   "start": 26.55,
+   "end": 26.7,
+   "hot": true
+  },
+  {
+   "w": "FOR",
+   "start": 26.74,
+   "end": 26.83,
+   "hot": false
+  },
+  {
+   "w": "UNDER-EIGHTEENS",
+   "start": 26.89,
+   "end": 27.78,
+   "hot": true
+  },
+  {
+   "w": "SO",
+   "start": 28.27,
+   "end": 28.47,
+   "hot": false
+  },
+  {
+   "w": "IT'S",
+   "start": 28.6,
+   "end": 28.85,
+   "hot": false
+  },
+  {
+   "w": "WORTH",
+   "start": 28.93,
+   "end": 29.22,
+   "hot": false
+  },
+  {
+   "w": "ASKING",
+   "start": 29.29,
+   "end": 29.63,
+   "hot": true
+  },
+  {
+   "w": "YOUR",
+   "start": 29.68,
+   "end": 29.79,
+   "hot": false
+  },
+  {
+   "w": "CHILD'S",
+   "start": 29.84,
+   "end": 30.12,
+   "hot": false
+  },
+  {
+   "w": "SCHOOL",
+   "start": 30.14,
+   "end": 30.39,
+   "hot": true
+  },
+  {
+   "w": "WHETHER",
+   "start": 30.44,
+   "end": 30.67,
+   "hot": false
+  },
+  {
+   "w": "IT'S",
+   "start": 30.73,
+   "end": 30.86,
+   "hot": false
+  },
+  {
+   "w": "ON",
+   "start": 30.92,
+   "end": 31.22,
+   "hot": false
+  },
+  {
+   "w": "THAT'S",
+   "start": 31.75,
+   "end": 32.03,
+   "hot": false
+  },
+  {
+   "w": "YOUR",
+   "start": 32.07,
+   "end": 32.18,
+   "hot": false
+  },
+  {
+   "w": "AI",
+   "start": 32.26,
+   "end": 32.82,
+   "hot": false
+  },
+  {
+   "w": "UNPACKED",
+   "start": 33.0,
+   "end": 33.81,
+   "hot": true
+  }
+ ],
+ "steps": [
+  {
+   "label": "ASK YOUR SCHOOL IF IT'S ON",
+   "start": 28.27,
+   "end": 33.81,
+   "pos": "tr"
+  }
+ ],
+ "vo": "assets/ep08/vo_v2.wav",
+ "cover": {
+  "title1": "AI JUST ENTERED",
+  "title2": "YOUR KID'S CLASS",
+  "sub": "what every parent should know",
+  "emojis": "\ud83c\udf93\ud83e\udd16",
+  "until": 2.2
+ },
+ "watermark": true,
+ "layout": "newsSplit",
+ "host": "assets/ep08/v2_host.mp4",
+ "emphasis": [
+  {
+   "text": "an AI study helper inside school software",
+   "start": 18.27,
+   "end": 24.14
+  },
+  {
+   "text": "admins can switch it off for under-18s",
+   "start": 24.14,
+   "end": 28.27
+  }
+ ]
+}

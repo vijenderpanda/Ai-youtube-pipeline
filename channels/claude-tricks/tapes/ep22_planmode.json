@@ -1,0 +1,22 @@
+{"cols":52,"rows":31,"fps":12,"cwd":"~/demo-project","cmd":"claude","font_px":30,
+ "max_duration":170,
+ "steps":[
+  {"wait_for":"shift+tab to cycle","timeout":45},
+  {"wait":1.5},
+  {"mark":"boot_done"},
+  {"key_until":"shift-tab","text":"plan mode on","max":6,"gap":1.4},
+  {"wait":2},
+  {"mark":"plan_mode_on"},
+  {"type":"add input validation to the signup function in app.py. keep it simple.","cps":15},
+  {"wait":1},
+  {"mark":"task_typed"},
+  {"key":"enter"},
+  {"wait_for":"Would you like to proceed","timeout":150},
+  {"mark":"plan_shown"},
+  {"wait":6},
+  {"mark":"proceed_hold"},
+  {"wait":3},
+  {"key":"esc"},
+  {"wait":1.5}
+ ],
+ "tail":1.0}

@@ -1,0 +1,2 @@
+gen_id: 1f191662-9249-60f0-867b-8118297aab49  (nano-banana-2, ...-1.jpg)
+model: leonardo/nano-banana-2  size: 848x1264  promptEnhance: off

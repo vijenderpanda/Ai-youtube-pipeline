@@ -1,0 +1,53 @@
+{
+  "_note": "Aaja Ve OUT-NOW glimpse Short. Cold open on the SECOND chorus block (song 79.20s), not chorus 1 -- the live Short TMVJHHv7v4c already owns the 4.08s chorus-1 open, and a derivative must open on a different bar (playbook §15). Cut point 79.20 is the percussive downbeat found by a 20ms RMS scan on the no_vocals stem; the vocal attacks 0.38s later. Line times are the fresh re-align, NOT the shipped timing_karaoke.json.",
+  "audio": {
+    "mix": "channels/aashiqana/songs/02-aaja-ve/track/aaja_ve_final.mp3",
+    "stem": "channels/aashiqana/songs/02-aaja-ve/track/demucs/htdemucs/aaja_ve_final/no_vocals.wav",
+    "start": 79.20,
+    "duck_at": 14.35,
+    "duck_xf": 0.5,
+    "lowpass": 820,
+    "tail_fade": 0.55
+  },
+  "shots": [
+    {
+      "_beat": "0 — frame zero: title card, thumbnail-grade, dissolves out over 0.7s",
+      "src": "channels/aashiqana/songs/02-aaja-ve/short_outnow/cards/card_title.jpg",
+      "kind": "card", "dur": 1.20
+    },
+    {
+      "_beat": "1 — 0.5-8.8s cold open: S01 hilltop, he walks out calling. Karaoke sweeps here.",
+      "src": "channels/aashiqana/songs/02-aaja-ve/renders/clips/s01_motion.mp4",
+      "kind": "video", "dur": 8.30, "xf": 0.70,
+      "cx": 0.52, "cy": 0.54, "drift": [120, 40]
+    },
+    {
+      "_beat": "2a — glimpse flash: S07 red-dress ridge (HARD cut in)",
+      "src": "channels/aashiqana/songs/02-aaja-ve/scenes/stills_final/S07.jpg",
+      "kind": "still", "dur": 2.00, "xf": 0,
+      "cx": 0.45, "cy": 0.48, "zoom": [1.00, 1.06]
+    },
+    {
+      "_beat": "2b — glimpse flash: S10 rose walk (pull-out, so the montage isn't 3x the same move)",
+      "src": "channels/aashiqana/songs/02-aaja-ve/scenes/stills_final/S10.jpg",
+      "kind": "still", "dur": 2.00, "xf": 0,
+      "cx": 0.56, "cy": 0.52, "zoom": [1.06, 1.00]
+    },
+    {
+      "_beat": "2c — glimpse flash: S11 couple + rose, lands on the female echo",
+      "src": "channels/aashiqana/songs/02-aaja-ve/scenes/stills_final/S11.jpg",
+      "kind": "still", "dur": 2.00, "xf": 0,
+      "cx": 0.60, "cy": 0.46, "zoom": [1.00, 1.06]
+    },
+    {
+      "_beat": "3 — 14.25-18.0s: audio ducks to the low-passed instrumental, brand card",
+      "src": "channels/aashiqana/songs/02-aaja-ve/short_outnow/cards/card_subscribe.jpg",
+      "kind": "card", "dur": 4.20, "xf": 0.45
+    },
+    {
+      "_beat": "4 — 18.0-20.0s: back to the title card == frame zero, so it loops",
+      "src": "channels/aashiqana/songs/02-aaja-ve/short_outnow/cards/card_title.jpg",
+      "kind": "card", "dur": 2.00, "xf": 0.45
+    }
+  ]
+}

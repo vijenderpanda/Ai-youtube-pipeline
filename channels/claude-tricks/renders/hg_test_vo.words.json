@@ -1,0 +1,97 @@
+[
+ {
+  "w": "HEY",
+  "start": 0.0,
+  "end": 0.33
+ },
+ {
+  "w": "I'M",
+  "start": 0.4,
+  "end": 0.58
+ },
+ {
+  "w": "YOUR",
+  "start": 0.64,
+  "end": 0.74
+ },
+ {
+  "w": "HOST",
+  "start": 0.79,
+  "end": 1.02
+ },
+ {
+  "w": "ON",
+  "start": 1.07,
+  "end": 1.15
+ },
+ {
+  "w": "AI",
+  "start": 1.22,
+  "end": 1.43
+ },
+ {
+  "w": "UNPACKED",
+  "start": 1.45,
+  "end": 1.96
+ },
+ {
+  "w": "EVERY",
+  "start": 2.11,
+  "end": 2.39
+ },
+ {
+  "w": "DAY",
+  "start": 2.43,
+  "end": 2.67
+ },
+ {
+  "w": "ONE",
+  "start": 2.73,
+  "end": 2.96
+ },
+ {
+  "w": "AI",
+  "start": 3.0,
+  "end": 3.25
+ },
+ {
+  "w": "TRICK",
+  "start": 3.3,
+  "end": 3.5
+ },
+ {
+  "w": "THAT",
+  "start": 3.54,
+  "end": 3.66
+ },
+ {
+  "w": "ACTUALLY",
+  "start": 3.7,
+  "end": 4.0
+ },
+ {
+  "w": "WORKS",
+  "start": 4.05,
+  "end": 4.39
+ },
+ {
+  "w": "LET'S",
+  "start": 4.46,
+  "end": 4.68
+ },
+ {
+  "w": "GET",
+  "start": 4.71,
+  "end": 4.83
+ },
+ {
+  "w": "INTO",
+  "start": 4.88,
+  "end": 5.02
+ },
+ {
+  "w": "IT",
+  "start": 5.08,
+  "end": 5.53
+ }
+]

@@ -1,0 +1,43 @@
+{
+  "id": "couple_04",
+  "codename": "Cafe",
+  "status": "locked",
+  "engine": "leonardo/nano-banana-2",
+  "created": "2026-08-06",
+  "size": "848x1264 (2:3) — upscale keepers to 4K per-song",
+  "user_locked_anchor": "auto-picked cand_1 (cream-sweater heroine, green-sweater hero) — user may swap",
+  "refs": {
+    "anchor": "faces/couple_anchor.jpg",
+    "hero_face": "faces/hero_face.jpg",
+    "heroine_face": "faces/heroine_face.jpg",
+    "how_to_use": "Nano Banana 2 Image Ref: attach faces/couple_anchor.jpg for two-person shots; hero_face / heroine_face for solos. Prompt 'Using the woman/man/couple from the reference image, keep exact same face and identity...'"
+  },
+  "look": {
+    "heroine": "extremely attractive Indian woman, mid-20s, fair complexion, big expressive dark eyes, soft rosy cheeks, cute natural makeup, long dark wavy hair, cozy soft cream sweater",
+    "hero": "handsome Indian man, mid-20s, warm friendly smile, light stubble, styled dark hair, fair skin, dark-green casual sweater",
+    "world": "cozy warm cafe at night; soft golden fairy lights and warm bokeh; rain streaking down the window; warm tungsten glow; coffee cups; 50mm f/1.4 shallow DOF; warm cozy filmic grade; lifelike skin with visible pores; film grain; warm romantic Bollywood aesthetic"
+  },
+  "tags": {
+    "vibe": ["cafe", "cozy", "indoor", "cute"],
+    "mood": ["playful", "warm", "comfort", "new-crush", "wholesome"],
+    "palette": ["warm-amber", "golden", "tungsten", "soft"],
+    "time_of_day": "evening / night",
+    "season": "monsoon / winter",
+    "location": ["cafe", "fairy-light window seat", "coffee table", "rainy window"],
+    "tempo_fit": ["mid", "gentle", "bouncy-cute"],
+    "energy": "warm-cute",
+    "wardrobe": ["cozy sweater", "casual knit", "soft", "warm"],
+    "best_for": ["crush", "first date", "comfort love", "you're-home", "wholesome cute love", "winter/monsoon cozy"]
+  },
+  "shots": [
+    {"code": "G-front",   "files": ["shots/01_G_heroine_front_a.jpg", "shots/02_G_heroine_front_b.jpg"], "type": "heroine", "hook": true,  "motion_ready": true, "note": "cute eye-contact close-up — prime Shorts hook; heroine_face ref"},
+    {"code": "G-shy",     "files": ["shots/03_G_heroine_shy_a.jpg", "shots/04_G_heroine_shy_b.jpg"], "type": "heroine", "hook": true,  "motion_ready": true, "note": "shy smile looking down at coffee"},
+    {"code": "G-window",  "files": ["shots/05_G_heroine_window_a.jpg", "shots/06_G_heroine_window_b.jpg"], "type": "heroine", "hook": true,  "motion_ready": true, "note": "gazing out the rainy window with a warm mug"},
+    {"code": "C-laugh",   "files": ["shots/07_C_couple_laugh_a.jpg", "shots/08_C_couple_laugh_b.jpg"], "type": "couple", "hook": false, "motion_ready": true, "note": "couple laughing over coffee — playful candid"},
+    {"code": "C-close",   "files": ["shots/09_C_couple_foreheads_a.jpg", "shots/10_C_couple_foreheads_b.jpg"], "type": "couple", "hook": true, "motion_ready": true, "note": "foreheads close over coffee — tender peak"},
+    {"code": "H-closeup", "files": ["shots/11_H_hero_closeup_a.jpg", "shots/12_H_hero_closeup_b.jpg"], "type": "hero", "hook": false, "motion_ready": true, "note": "warm hero close-up with coffee; hero_face ref"}
+  ],
+  "motion_clips": [],
+  "motion_note": "per-song: generate 2-3 motion clips at production time (Leonardo Hailuo 2.3, start-frame from a shot, 9:16, subtle motion). See couple_01 for the proven recipe.",
+  "compliance": "original AI couple; no celebrity likeness; fair & unmistakably Indian; synthetic-media disclosure ON at upload"
+}

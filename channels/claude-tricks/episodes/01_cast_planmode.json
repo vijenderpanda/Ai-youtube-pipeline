@@ -1,0 +1,15 @@
+{
+  "title": "claude-code — ~/project",
+  "steps": [
+    {"type": "badge", "text": "[plan mode: ON]  (shift+tab)", "color": "green"},
+    {"type": "pause", "dur": 0.5},
+    {"type": "type", "text": "> refactor the auth module", "color": "white", "cps": 24},
+    {"type": "pause", "dur": 0.4},
+    {"type": "out", "lps": 6, "lines": [
+      ["", "white"],
+      ["thinking through the change", "dim"],
+      ["before touching your code...", "dim"]
+    ]},
+    {"type": "pause", "dur": 1.0}
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "typing_start": 2.437,
+  "typing_end": 24.526,
+  "submit": 25.262,
+  "answer_start": 25.262,
+  "answer_end": 40.458,
+  "scrolls": [],
+  "duration": 83.433,
+  "first_token": 27.339,
+  "observed": {
+    "answer_selector": "li[data-message-role=\"assistant\"] [data-assistant-markdown]",
+    "answer_head": "The answer depends entirely on what your lease actually says. Typical early-termination clauses often require some combination of:\n\nA notice period (for example, 1\u20133 months).\nAn early termination fee (often a fixed amount or a certain number of months' rent).\nRent until a replacement tenant is found, or until the notice period ends.\nDeductions from your security deposit for any unpaid amounts or d",
+    "answer_chars": 1255,
+    "logged_in": null,
+    "pii_blurred": null,
+    "forbidden_term": null,
+    "fail_matched": [
+      "depends",
+      "often",
+      "usually"
+    ],
+    "tell_term": "depends",
+    "fix_answer_selector": "li[data-message-role=\"assistant\"] [data-assistant-markdown]",
+    "fix_answer_head": "Based on Clause 9.3:\n\nYou gave notice on 1 March.\nYou move out on 20 March.\nThat is 19 days' notice, which is fewer than the required 60 days.\n\nUnder Clause 9.3.3, this means:\n\nThe Reinstatement Levy is 2 months' rent (instead of 1.5 months' rent).\nRent remains payable to the end of the 60-day notice period.\n\nAssuming the notice period starts on 1 March, the 60-day notice period ends around 30 Apr",
+    "fix_answer_chars": 999,
+    "fix_forbidden_term": null,
+    "fix_seed_matched": [
+      "Reinstatement Levy",
+      "Schedule C"
+    ],
+    "fix_seed_first": "Reinstatement Levy"
+  },
+  "first_tell": 27.339,
+  "fix_typing_start": 44.49,
+  "fix_paste_end": 45.56,
+  "fix_typing_end": 57.746,
+  "fix_submit": 58.46,
+  "fix_answer_end": 76.696,
+  "fix_first_token": 60.474,
+  "fix_scrolls": [
+    76.716,
+    77.495,
+    78.273,
+    79.056,
+    79.792
+  ],
+  "fix_proof_end": 83.551,
+  "fix_proof_start": 80.551,
+  "fix_seeded": 60.679,
+  "fix_seeded_delay_s": 0.205,
+  "punches": [
+    {
+      "t0": 2.337,
+      "t1": 24.826,
+      "center": [
+        0.51,
+        0.55
+      ],
+      "zoom": 1.114,
+      "label": "compose"
+    },
+    {
+      "t0": 27.139,
+      "t1": 40.258,
+      "center": [
+        0.5,
+        0.538
+      ],
+      "zoom": 1.042,
+      "label": "robotic"
+    },
+    {
+      "t0": 44.39,
+      "t1": 58.046,
+      "center": [
+        0.509,
+        0.83
+      ],
+      "zoom": 1.042,
+      "label": "fixline"
+    }
+  ]
+}

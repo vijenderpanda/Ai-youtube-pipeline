@@ -1,0 +1,118 @@
+{
+  "_asset": "hook_bar_decision v1 — Aaja Ve short_payoff cold-open in-point",
+  "_song": "channels/aashiqana/songs/02-aaja-ve/track/aaja_ve_final.mp3",
+  "_song_duration_s": 213.92,
+  "_generated": "2026-08-06",
+
+  "chosen_start_s": 67.61,
+  "guard_pre_roll_s": 0.15,
+  "vocal_onset_s": 68.16,
+  "cut_duration_s": 29.61,
+  "cut_end_s": 97.22,
+
+  "chosen_bar": "chorus 2 (68.20s line) — cold-open lands on the band downbeat at 67.76s, singer's breath at 67.78s, voiced 'Aa-' at 68.16s",
+
+  "band_downbeat_s": 67.76,
+  "breath_onset_s": 67.78,
+  "method": "volumedetect_fallback",
+  "method_note": "scripts/hook_finder.py still absent (overdue from Aug 4) — did NOT build or wait for it. Ran the Aug-5 Baarish method verbatim: 2.0s windows / 0.5s hop / ffmpeg volumedetect, over the mix AND track/demucs/htdemucs/aaja_ve_final/vocals.wav, scoring each timing_karaoke.json line by its loudest interior window. Ear-check escalated to a 20ms RMS + voiced-ratio envelope on the vocal stem (finer than the 0.1s fine_hop_s the spec allows).",
+
+  "rms_step_db": 8.54,
+  "rms_step_detail": {
+    "measured_on": "demucs vocal stem, 20ms RMS frames",
+    "inter_phrase_floor_s": [67.42, 67.74],
+    "floor_db": -29.74,
+    "post_step_db": -21.2,
+    "step_s": 67.78,
+    "note": "-29.7 dB -> -21.2 dB across two 20ms frames, continuing to -19.7 dB by 67.84 — matches the spec's expected -29/-19 onset signature exactly.",
+    "voiced_syllable_step_db": 2.92,
+    "voiced_syllable_step_note": "68.12 (-17.75, breath) -> 68.16 (-14.83, voiced). Small in dB because the singer's inhale already lifted the stem off the floor; the voiced_ratio flip (-12.5 dB HF-dominated -> +3.6 dB LF/harmonic) is what marks the actual 'Aa-'."
+  },
+
+  "ear_check": "pass",
+  "ear_check_notes": "6s probes exported to short_payoff/probes/ for mix and vocal stem at 151.88, 152.36, 67.61 and 68.20. CHOSEN (67.61): frame zero sits in a genuine inter-phrase drop — mix -19.9 dB, stem -32 dB — with the previous line ('Tu kab aayegi, main raste hi dekhun', ends 67.48) fully decayed to the stem floor by 67.42. No reverb tail crosses frame zero. The full band then SLAMS in at 67.76 (+10.87 dB mix step, 20ms), the singer's breath rides it, and the first syllable 'Aa-' attacks intact and unclipped at 68.16. This is an attack, not a fade-in. REJECTED (151.88): the stem is CONTINUOUSLY VOICED from before 151.30 through 152.24 at -17 to -21 dB with voiced_ratio +12 to +16 dB — that is the sustained held vowel of 'Tu aa jaaye to poori ho ye shaam' (ends 151.66) plus its reverb tail, i.e. the prior is fiction as an onset. The real chorus-3 attack is 0.48s later at 152.36. Even at that true onset the only gap is the 80ms window 152.28-152.34, so NO guard pre-roll in the mandated 0.10-0.20s range fits without dragging the previous line's tail across frame zero.",
+
+  "candidates": [
+    {
+      "start": 68.2,
+      "verdict": "CHOSEN",
+      "mean_db": -13.1,
+      "max_db": -2.6,
+      "vocal_mean_db": -15.1,
+      "vocal_max_db": -3.9,
+      "true_vocal_onset_s": 68.16,
+      "prior_error_s": -0.04,
+      "why": "Loudest of the three qualifying chorus instances in the mix (-13.10 dB mean vs -14.20 at 151.88 and -14.80 at 4.08), and the only one with a clean frame zero. Preceded by a real ~330ms inter-phrase drop, then a +10.87 dB full-band downbeat at 67.76 — the exact 'open on a drum hit, hook word lands immediately after' structure PRODUCTION-PLAYBOOK line 323 prescribes. The karaoke prior is accurate to within one 20ms frame. Resolves through 'Tere bina ye shaam adhoori' at 73.40s, 5.79s into the cut."
+    },
+    {
+      "start": 151.88,
+      "verdict": "REJECTED — failed ear check",
+      "mean_db": -14.2,
+      "max_db": -3.0,
+      "vocal_mean_db": -16.1,
+      "vocal_max_db": -3.7,
+      "true_vocal_onset_s": 152.36,
+      "prior_error_s": 0.48,
+      "why": "The spec's default, and it loses on every axis that matters. (1) The prior is not an onset — the vocal stem is unbroken sustained voiced energy across it, the tail of the bridge's last line. (2) The true attack is 0.48s later at 152.36, and the only silence near it is an 80ms notch, so a 0.10-0.20s guard cannot avoid dragging the previous phrase's reverb across frame zero. (3) The mix has no downbeat here at all — it is a continuous bridge crescendo (-20 dB at 151.64 rising smoothly to -8.7 dB at 152.02), so there is no transient to cut on. (4) It is also 1.1 dB quieter than 68.20 in the mix. Its 'lands straight off the bridge climax' appeal is real musically, but that climax is precisely what makes frame zero un-cuttable."
+    }
+  ],
+
+  "excluded": [
+    {
+      "start": 4.08,
+      "reason": "live Short opens here — §4b rule 1",
+      "detail": "The live Aaja Ve Short (youtu.be/TMVJHHv7v4c) was built at --start 3.6 and opens on this exact bar. QUALITY-LEDGER §4b rule 1 forbids a derivative cut from opening on the same bar as the Short already live for that release. Not taken; no exception required, because 68.20 passed the ear check."
+    },
+    {
+      "start": 38.94,
+      "reason": "not followed by the resolve line — followed by a verse ('Sunehri si shaam hai, par tu yahan nahi')",
+      "detail": "Independently disqualified by measurement: the vocal stem reads -23.30 dB mean here against -15.10 at 68.20, i.e. this 'chorus' is a near-instrumental band restatement with almost no vocal in it. It would not have survived the scan even if the lyric order had allowed it."
+    }
+  ],
+
+  "resolve_line": {
+    "text": "Tere bina ye shaam adhoori",
+    "abs_s": 73.4,
+    "abs_e": 77.42,
+    "rel_s": 5.79,
+    "rel_e": 9.81
+  },
+
+  "exception": false,
+
+  "cut_contents": [
+    { "abs_s": 68.2, "abs_e": 73.06, "text": "Aaja ve, aaja ve, aaja ve, aaja" },
+    { "abs_s": 73.4, "abs_e": 77.42, "text": "Tere bina ye shaam adhoori" },
+    { "abs_s": 79.1, "abs_e": 84.66, "text": "Aaja ve, aaja ve, aaja ve, aaja" },
+    { "abs_s": 84.82, "abs_e": 88.74, "text": "Mit jaaye bas ye thodi doori" },
+    { "abs_s": 88.74, "abs_e": 97.22, "text": "(instrumental + wordless vocal ad-libs — measured, not dead air)" }
+  ],
+
+  "out_point_note": "97.22s is the quietest 20ms frame (-23.4 dB) inside the allowed 29.5-30.0s duration band, sitting in a micro-gap immediately before a new phrase slams at 97.40 (-6.1 dB). Ending there buttons the cut instead of chopping it. The 88.74-97.22 stretch has no karaoke line but is NOT dead air: the vocal stem averages -16.75 dB there (versus -15.1 in the chorus), i.e. wordless ad-libs over a full band at mix -12.8 dB.",
+
+  "downstream": {
+    "input_integrated_lufs": -12.3,
+    "input_true_peak_dbtp": -1.5,
+    "input_lra_lu": 1.6,
+    "normalize_to": "-14 LUFS / -1.5 dBTP, two-pass loudnorm on the lossless wav before muxing (PRODUCTION-PLAYBOOK line 329)",
+    "gain_needed_lu": -1.7,
+    "ffmpeg_in_point": "-ss 67.61 -t 29.61"
+  },
+
+  "provenance": {
+    "timing_prior": "channels/aashiqana/songs/02-aaja-ve/lyrics/timing_karaoke.json",
+    "vocal_stem": "channels/aashiqana/songs/02-aaja-ve/track/demucs/htdemucs/aaja_ve_final/vocals.wav",
+    "scripts": [
+      "short_payoff/hook_scan.py",
+      "short_payoff/onset_probe.py",
+      "short_payoff/onset_detail.py"
+    ],
+    "scan_outputs": [
+      "short_payoff/grid_mix.json",
+      "short_payoff/grid_vocals.json",
+      "short_payoff/lines_mix.json",
+      "short_payoff/lines_vocals.json"
+    ],
+    "probes": "short_payoff/probes/"
+  }
+}

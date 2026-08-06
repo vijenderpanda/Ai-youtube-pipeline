@@ -1,0 +1,8 @@
+A 6fadf656-d3df-4fc0-99c6-fe1f88569bc3 (gen1 var1)
+B 3161c024-3afc-427a-83e5-3de8b8a6225c (gen1 var2)
+C 7eedb493-468b-40c1-842a-488a7b639b0c (gen2 var1)
+D c60d79de-bfc7-44f8-8e09-f4db12149731 (gen2 var2)
+# style: locked base + yearning longing mood, hypnotic repeating hook chant, warm golden hour ambience
+# exclude: long instrumental intro, humming, extended orchestral opening, slow buildup
+# model v5.5, title "Aaja Ve", account vijender_in
+FINAL: B 3161c024-3afc-427a-83e5-3de8b8a6225c (user-approved 2026-08-03)

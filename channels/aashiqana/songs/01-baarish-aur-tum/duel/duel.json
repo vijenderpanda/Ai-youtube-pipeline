@@ -1,0 +1,58 @@
+{
+  "_note": "Lyric duel Short, Baarish Aur Tum. Derivative cut (QUALITY-LEDGER S4b) over the pre-built 28.00s bed duel/work/duel_audio.wav = song.mp3 155.28-183.28 (final chorus). Beat boundaries are pinned to the cut's forced-aligned line times (lyrics/timing_hookcut.json, same 155.28 origin): line 1 sings 0.30-7.04, line 2 sings 8.00-17.80. The line-1 -> line-2 boundary is a HARD CUT at 7.90, on the measured vocal attack (7.92 by 20ms RMS envelope, not the aligner's 8.00). Stills are couple_twoshot_1 (rain street) + scene_rooftop_1 (dusk embrace) — neither appears in the Aug-5 hook cut or the live Short, so frame overlap with both is 0%.",
+  "audio": "channels/aashiqana/songs/01-baarish-aur-tum/duel/work/duel_audio.wav",
+  "segments": [
+    {
+      "kind": "card",
+      "_beat": "0 | 0.00-2.35 | frame-zero VERSUS card; line 1's vocal cold-opens under it",
+      "src": "channels/aashiqana/songs/01-baarish-aur-tum/duel/cards/versus.png",
+      "dur": 2.35
+    },
+    {
+      "kind": "still",
+      "_beat": "1 | 2.00-7.90 | LINE 1 over the rain street, karaoke sweep, chip 1 top-left",
+      "src": "channels/aashiqana/songs/01-baarish-aur-tum/characters/couple_twoshot_1.jpg",
+      "dur": 5.9,
+      "xfade_in": 0.35,
+      "cx": [0.50, 0.63],
+      "cy": 0.5,
+      "zoom": [1.0, 1.045],
+      "chip": {
+        "src": "channels/aashiqana/songs/01-baarish-aur-tum/duel/cards/chip1.png",
+        "x": 72,
+        "y": 190
+      }
+    },
+    {
+      "kind": "still",
+      "_beat": "2 | 7.90-18.30 | HARD CUT on line 2's MEASURED onset 7.92 (20ms RMS envelope steps -11.3 -> -7.3 dB there; the aligner's 8.00 was 80ms late); dusk embrace, chip 2 top-right (runs to 18.30 so line 2's sweep finishes before the recap dissolve starts at 17.95)",
+      "src": "channels/aashiqana/songs/01-baarish-aur-tum/scenes/scene_rooftop_1.jpg",
+      "dur": 10.4,
+      "xfade_in": 0,
+      "cx": [0.45, 0.42],
+      "cy": 0.5,
+      "zoom": [1.0, 1.06],
+      "chip": {
+        "src": "channels/aashiqana/songs/01-baarish-aur-tum/duel/cards/chip2.png",
+        "x": 840,
+        "y": 190
+      }
+    },
+    {
+      "kind": "card",
+      "_beat": "3 | 17.95-24.05 | recap: both lines stacked + the comment CTA",
+      "src": "channels/aashiqana/songs/01-baarish-aur-tum/duel/cards/recap.png",
+      "dur": 6.1,
+      "xfade_in": 0.35,
+      "zoom": [1.0, 1.03]
+    },
+    {
+      "kind": "card",
+      "_beat": "4 | 23.70-28.00 | announce: Aaja Ve is ALREADY live (not a Friday teaser)",
+      "src": "channels/aashiqana/songs/01-baarish-aur-tum/duel/cards/announce.png",
+      "dur": 4.3,
+      "xfade_in": 0.35,
+      "zoom": [1.0, 1.025]
+    }
+  ]
+}

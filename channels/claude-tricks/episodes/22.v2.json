@@ -1,0 +1,694 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep22/v2_hook.mp4",
+   "dur": 9.31
+  },
+  {
+   "src": "assets/ep22/term_planmode.mp4",
+   "dur": 4.59,
+   "from": 5.5
+  },
+  {
+   "src": "assets/ep22/term_planmode.mp4",
+   "dur": 4.54,
+   "from": 10.5
+  },
+  {
+   "src": "assets/ep22/term_planmode.mp4",
+   "dur": 4.35,
+   "from": 35.5
+  },
+  {
+   "src": "assets/ep22/term_planmode.mp4",
+   "dur": 4.2,
+   "from": 37.5
+  },
+  {
+   "src": "assets/ep22/term_planmode.mp4",
+   "dur": 3.53,
+   "from": 39.5
+  },
+  {
+   "src": "assets/ep22/v2_payoff.mp4",
+   "dur": 7.14
+  }
+ ],
+ "captions": [
+  {
+   "w": "CLAUDE",
+   "start": 0.0,
+   "end": 0.36,
+   "hot": false
+  },
+  {
+   "w": "CODE",
+   "start": 0.4,
+   "end": 0.6,
+   "hot": false
+  },
+  {
+   "w": "CAN",
+   "start": 0.63,
+   "end": 0.74,
+   "hot": false
+  },
+  {
+   "w": "EDIT",
+   "start": 0.8,
+   "end": 0.99,
+   "hot": true
+  },
+  {
+   "w": "YOUR",
+   "start": 1.03,
+   "end": 1.13,
+   "hot": false
+  },
+  {
+   "w": "FILES",
+   "start": 1.18,
+   "end": 1.46,
+   "hot": false
+  },
+  {
+   "w": "BEFORE",
+   "start": 1.52,
+   "end": 1.79,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 1.82,
+   "end": 1.88,
+   "hot": false
+  },
+  {
+   "w": "EVEN",
+   "start": 1.92,
+   "end": 2.09,
+   "hot": false
+  },
+  {
+   "w": "THINKS",
+   "start": 2.14,
+   "end": 2.59,
+   "hot": true
+  },
+  {
+   "w": "THAT'S",
+   "start": 2.74,
+   "end": 2.97,
+   "hot": false
+  },
+  {
+   "w": "HOW",
+   "start": 3.01,
+   "end": 3.1,
+   "hot": false
+  },
+  {
+   "w": "GOOD",
+   "start": 3.16,
+   "end": 3.31,
+   "hot": false
+  },
+  {
+   "w": "CODE",
+   "start": 3.35,
+   "end": 3.58,
+   "hot": false
+  },
+  {
+   "w": "GETS",
+   "start": 3.61,
+   "end": 3.79,
+   "hot": false
+  },
+  {
+   "w": "WRECKED",
+   "start": 3.82,
+   "end": 4.23,
+   "hot": true
+  },
+  {
+   "w": "ONE",
+   "start": 4.71,
+   "end": 4.9,
+   "hot": true
+  },
+  {
+   "w": "SHORTCUT",
+   "start": 4.93,
+   "end": 5.33,
+   "hot": true
+  },
+  {
+   "w": "FORCES",
+   "start": 5.39,
+   "end": 5.7,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 5.75,
+   "end": 5.82,
+   "hot": false
+  },
+  {
+   "w": "TO",
+   "start": 5.85,
+   "end": 5.91,
+   "hot": false
+  },
+  {
+   "w": "PLAN",
+   "start": 5.98,
+   "end": 6.21,
+   "hot": true
+  },
+  {
+   "w": "FIRST",
+   "start": 6.29,
+   "end": 6.61,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 6.63,
+   "end": 6.72,
+   "hot": false
+  },
+  {
+   "w": "WAIT",
+   "start": 6.78,
+   "end": 7.0,
+   "hot": false
+  },
+  {
+   "w": "FOR",
+   "start": 7.06,
+   "end": 7.21,
+   "hot": false
+  },
+  {
+   "w": "YOUR",
+   "start": 7.28,
+   "end": 7.38,
+   "hot": false
+  },
+  {
+   "w": "YES",
+   "start": 7.43,
+   "end": 7.91,
+   "hot": true
+  },
+  {
+   "w": "WATCH",
+   "start": 8.23,
+   "end": 8.78,
+   "hot": true
+  },
+  {
+   "w": "PRESS",
+   "start": 9.31,
+   "end": 9.72,
+   "hot": false
+  },
+  {
+   "w": "SHIFT",
+   "start": 9.83,
+   "end": 10.24,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 10.36,
+   "end": 10.56,
+   "hot": false
+  },
+  {
+   "w": "TAB",
+   "start": 10.65,
+   "end": 11.11,
+   "hot": true
+  },
+  {
+   "w": "UNTIL",
+   "start": 11.23,
+   "end": 11.47,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 11.51,
+   "end": 11.57,
+   "hot": false
+  },
+  {
+   "w": "BAR",
+   "start": 11.61,
+   "end": 11.78,
+   "hot": false
+  },
+  {
+   "w": "SAYS",
+   "start": 11.85,
+   "end": 12.27,
+   "hot": false
+  },
+  {
+   "w": "PLAN",
+   "start": 12.45,
+   "end": 12.74,
+   "hot": true
+  },
+  {
+   "w": "MODE",
+   "start": 12.79,
+   "end": 13.04,
+   "hot": true
+  },
+  {
+   "w": "ON",
+   "start": 13.06,
+   "end": 13.36,
+   "hot": false
+  },
+  {
+   "w": "NOW",
+   "start": 13.9,
+   "end": 14.1,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 14.21,
+   "end": 14.33,
+   "hot": false
+  },
+  {
+   "w": "GIVE",
+   "start": 14.5,
+   "end": 14.65,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 14.69,
+   "end": 14.77,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 14.84,
+   "end": 14.87,
+   "hot": false
+  },
+  {
+   "w": "REAL",
+   "start": 14.97,
+   "end": 15.2,
+   "hot": false
+  },
+  {
+   "w": "TASK",
+   "start": 15.26,
+   "end": 15.78,
+   "hot": true
+  },
+  {
+   "w": "ADD",
+   "start": 15.99,
+   "end": 16.22,
+   "hot": false
+  },
+  {
+   "w": "INPUT",
+   "start": 16.29,
+   "end": 16.58,
+   "hot": false
+  },
+  {
+   "w": "VALIDATION",
+   "start": 16.63,
+   "end": 17.17,
+   "hot": true
+  },
+  {
+   "w": "TO",
+   "start": 17.25,
+   "end": 17.36,
+   "hot": false
+  },
+  {
+   "w": "MY",
+   "start": 17.43,
+   "end": 17.51,
+   "hot": false
+  },
+  {
+   "w": "CODE",
+   "start": 17.58,
+   "end": 17.97,
+   "hot": false
+  },
+  {
+   "w": "INSTEAD",
+   "start": 18.44,
+   "end": 18.82,
+   "hot": false
+  },
+  {
+   "w": "OF",
+   "start": 18.87,
+   "end": 18.93,
+   "hot": false
+  },
+  {
+   "w": "EDITING",
+   "start": 18.98,
+   "end": 19.48,
+   "hot": false
+  },
+  {
+   "w": "CLAUDE",
+   "start": 19.66,
+   "end": 20.03,
+   "hot": false
+  },
+  {
+   "w": "STOPS",
+   "start": 20.06,
+   "end": 20.52,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 20.54,
+   "end": 20.69,
+   "hot": false
+  },
+  {
+   "w": "WRITES",
+   "start": 20.74,
+   "end": 21.04,
+   "hot": true
+  },
+  {
+   "w": "OUT",
+   "start": 21.08,
+   "end": 21.29,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 21.36,
+   "end": 21.41,
+   "hot": false
+  },
+  {
+   "w": "FULL",
+   "start": 21.5,
+   "end": 21.75,
+   "hot": true
+  },
+  {
+   "w": "PLAN",
+   "start": 21.82,
+   "end": 22.29,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 22.79,
+   "end": 22.94,
+   "hot": false
+  },
+  {
+   "w": "LAYS",
+   "start": 23.01,
+   "end": 23.24,
+   "hot": false
+  },
+  {
+   "w": "OUT",
+   "start": 23.29,
+   "end": 23.45,
+   "hot": false
+  },
+  {
+   "w": "EXACTLY",
+   "start": 23.52,
+   "end": 24.0,
+   "hot": true
+  },
+  {
+   "w": "WHAT",
+   "start": 24.05,
+   "end": 24.16,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 24.2,
+   "end": 24.25,
+   "hot": false
+  },
+  {
+   "w": "WILL",
+   "start": 24.28,
+   "end": 24.41,
+   "hot": false
+  },
+  {
+   "w": "CHANGE",
+   "start": 24.46,
+   "end": 24.94,
+   "hot": true
+  },
+  {
+   "w": "BEFORE",
+   "start": 25.05,
+   "end": 25.34,
+   "hot": false
+  },
+  {
+   "w": "TOUCHING",
+   "start": 25.38,
+   "end": 25.69,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 25.74,
+   "end": 25.76,
+   "hot": false
+  },
+  {
+   "w": "SINGLE",
+   "start": 25.81,
+   "end": 26.09,
+   "hot": true
+  },
+  {
+   "w": "FILE",
+   "start": 26.13,
+   "end": 26.51,
+   "hot": true
+  },
+  {
+   "w": "THEN",
+   "start": 26.99,
+   "end": 27.18,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 27.23,
+   "end": 27.3,
+   "hot": false
+  },
+  {
+   "w": "WAITS",
+   "start": 27.35,
+   "end": 27.82,
+   "hot": true
+  },
+  {
+   "w": "NOTHING",
+   "start": 28.03,
+   "end": 28.32,
+   "hot": true
+  },
+  {
+   "w": "HAPPENS",
+   "start": 28.38,
+   "end": 28.75,
+   "hot": false
+  },
+  {
+   "w": "UNTIL",
+   "start": 28.8,
+   "end": 29.03,
+   "hot": false
+  },
+  {
+   "w": "YOU",
+   "start": 29.06,
+   "end": 29.13,
+   "hot": false
+  },
+  {
+   "w": "CHOOSE",
+   "start": 29.18,
+   "end": 29.5,
+   "hot": true
+  },
+  {
+   "w": "YES",
+   "start": 29.56,
+   "end": 30.05,
+   "hot": true
+  },
+  {
+   "w": "SO",
+   "start": 30.52,
+   "end": 30.72,
+   "hot": false
+  },
+  {
+   "w": "YOU",
+   "start": 30.79,
+   "end": 30.88,
+   "hot": false
+  },
+  {
+   "w": "REVIEW",
+   "start": 30.95,
+   "end": 31.22,
+   "hot": true
+  },
+  {
+   "w": "FIRST",
+   "start": 31.29,
+   "end": 31.75,
+   "hot": true
+  },
+  {
+   "w": "APPROVE",
+   "start": 31.79,
+   "end": 32.14,
+   "hot": true
+  },
+  {
+   "w": "SECOND",
+   "start": 32.17,
+   "end": 32.61,
+   "hot": true
+  },
+  {
+   "w": "YOUR",
+   "start": 32.71,
+   "end": 32.87,
+   "hot": false
+  },
+  {
+   "w": "CODE",
+   "start": 32.91,
+   "end": 33.15,
+   "hot": false
+  },
+  {
+   "w": "STAYS",
+   "start": 33.17,
+   "end": 33.43,
+   "hot": false
+  },
+  {
+   "w": "SAFE",
+   "start": 33.46,
+   "end": 33.87,
+   "hot": true
+  },
+  {
+   "w": "FOLLOW",
+   "start": 34.34,
+   "end": 34.87,
+   "hot": true
+  },
+  {
+   "w": "I",
+   "start": 34.98,
+   "end": 35.04,
+   "hot": false
+  },
+  {
+   "w": "UNPACK",
+   "start": 35.13,
+   "end": 35.49,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 35.59,
+   "end": 35.77,
+   "hot": true
+  },
+  {
+   "w": "AI",
+   "start": 35.83,
+   "end": 36.06,
+   "hot": false
+  },
+  {
+   "w": "SKILL",
+   "start": 36.12,
+   "end": 36.41,
+   "hot": false
+  },
+  {
+   "w": "EVERY",
+   "start": 36.53,
+   "end": 36.79,
+   "hot": true
+  },
+  {
+   "w": "SINGLE",
+   "start": 36.84,
+   "end": 37.13,
+   "hot": true
+  },
+  {
+   "w": "DAY",
+   "start": 37.16,
+   "end": 37.66,
+   "hot": true
+  }
+ ],
+ "steps": [
+  {
+   "label": "STEP 1/3 \u2014 SHIFT+TAB \u2192 PLAN",
+   "start": 9.31,
+   "end": 13.9
+  },
+  {
+   "label": "STEP 2/3 \u2014 GIVE IT A TASK",
+   "start": 13.9,
+   "end": 18.44
+  },
+  {
+   "label": "STEP 3/3 \u2014 REVIEW, THEN APPROVE",
+   "start": 18.44,
+   "end": 30.52
+  }
+ ],
+ "vo": "assets/ep22/vo_v2.wav",
+ "cover": {
+  "title1": "MAKE CLAUDE",
+  "title2": "THINK FIRST",
+  "emojis": "\ud83d\uded1\ud83e\udde0\u270b",
+  "until": 3.0
+ },
+ "watermark": true
+}

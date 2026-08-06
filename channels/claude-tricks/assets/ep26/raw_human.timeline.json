@@ -1,0 +1,75 @@
+{
+  "typing_start": 2.83,
+  "typing_end": 17.042,
+  "submit": 17.866,
+  "answer_start": 17.866,
+  "answer_end": 34.135,
+  "scrolls": [],
+  "duration": 61.733,
+  "first_token": 19.926,
+  "observed": {
+    "answer_selector": "li[data-message-role=\"assistant\"] [data-assistant-markdown]",
+    "answer_head": "Here's a professional draft you can send.\n\nProject Timeline Update\n\nDear [Client Name],\n\nI hope you're doing well.\n\nI wanted to let you know that, due to unforeseen circumstances, our project timeline has shifted slightly. As a result, we now expect the project to be completed approximately one week later than originally planned.\n\nWe understand the importance of meeting agreed deadlines and sincer",
+    "answer_chars": 1048,
+    "logged_in": null,
+    "pii_blurred": null,
+    "forbidden_term": null,
+    "fail_matched": [
+      "10}re doing well|reach out|do not hesitate|any inconvenience|Best regards|Sincerely|remain committed"
+    ],
+    "tell_term": "10}re doing well|reach out|do not hesitate|any inconvenience|Best regards|Sincerely|remain committed",
+    "fix_answer_selector": "li[data-message-role=\"assistant\"] [data-assistant-markdown]",
+    "fix_answer_head": "Sure\u2014here's a much more casual, text-style version:\n\nWriting\n\nHey! Just wanted to give you a quick heads-up that the project's going to take about an extra week to wrap up. Sorry about the delay! We're making good progress and just want to make sure everything's done right. Thanks for being patient\u2014I\u2019ll keep you posted as we get closer to the finish line.",
+    "fix_answer_chars": 357,
+    "fix_forbidden_term": null
+  },
+  "first_tell": 20.136,
+  "fix_typing_start": 38.291,
+  "fix_typing_end": 44.843,
+  "fix_submit": 45.653,
+  "fix_answer_end": 62.106,
+  "fix_first_token": 47.791,
+  "punches": [
+    {
+      "t0": 2.73,
+      "t1": 17.342,
+      "center": [
+        0.51,
+        0.511
+      ],
+      "zoom": 1.11,
+      "label": "compose"
+    },
+    {
+      "t0": 19.726,
+      "t1": 33.935,
+      "center": [
+        0.5,
+        0.509
+      ],
+      "zoom": 1.045,
+      "label": "robotic"
+    },
+    {
+      "t0": 38.191,
+      "t1": 45.143,
+      "center": [
+        0.497,
+        0.968
+      ],
+      "zoom": 1.06,
+      "label": "fixline"
+    },
+    {
+      "t0": 47.591,
+      "t1": 61.733,
+      "center": [
+        0.5,
+        0.524
+      ],
+      "zoom": 1.05,
+      "label": "human"
+    }
+  ],
+  "punch_source": "probe_frames.py ink (measured on the shipped clip), not DOM boxes"
+}

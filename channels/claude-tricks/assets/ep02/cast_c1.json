@@ -1,0 +1,1 @@
+{"title": "claude-code \u2014 ~/project", "steps": [{"type": "type", "text": "> use our api conventions", "color": "white", "cps": 20}, {"type": "out", "lps": 6, "lines": [["", "white"], ["which conventions? I don't", "dim"], ["have that context.", "dim"], ["", "white"], ["...every. single. session.", "magenta"]]}, {"type": "pause", "dur": 1.2}]}

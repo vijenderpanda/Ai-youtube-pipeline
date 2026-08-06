@@ -1,0 +1,58 @@
+{
+  "generated_at": "2026-08-06T12:53:46+00:00",
+  "ranking": {
+    "metric": "ffmpeg volumedetect over the first 2s",
+    "order": "softest attack first (--invert, calm channels)",
+    "doctrine": "PRODUCTION-PLAYBOOK \u00a71.2 -- ranking is a listening order, not a verdict. A human picks the winner by ear."
+  },
+  "mode": "rank-only",
+  "source_dir": "channels/pip-moonlit-garden/songs/candidates/07",
+  "style": "gentle children's lullaby, 60 BPM, music box and glockenspiel, soft warm piano, airy pad, tender female lead vocal, soft ooh backing harmonies, seamless looping, flat dynamics, no drums, warm reverb, cozy, bedtime",
+  "lyrics_file": "/Users/vijenderpanda/Ai-youtube-pipeline/channels/pip-moonlit-garden/songs/07_lyrics.txt",
+  "candidates": [
+    {
+      "file": "channels/pip-moonlit-garden/songs/candidates/07/cand02_0826c4bc.mp3",
+      "song_id": "cand02_0826c4bc",
+      "bytes": 2881152,
+      "first_2s": {
+        "mean_db": -25.3,
+        "max_db": -10.7
+      },
+      "duration_s": 127.88,
+      "rank": 1
+    },
+    {
+      "file": "channels/pip-moonlit-garden/songs/candidates/07/cand04_74301853.mp3",
+      "song_id": "cand04_74301853",
+      "bytes": 3906456,
+      "first_2s": {
+        "mean_db": -24.0,
+        "max_db": -10.8
+      },
+      "duration_s": 172.8,
+      "rank": 2
+    },
+    {
+      "file": "channels/pip-moonlit-garden/songs/candidates/07/cand01_cf2f0c50.mp3",
+      "song_id": "cand01_cf2f0c50",
+      "bytes": 2880408,
+      "first_2s": {
+        "mean_db": -23.0,
+        "max_db": -6.2
+      },
+      "duration_s": 126.44,
+      "rank": 3
+    },
+    {
+      "file": "channels/pip-moonlit-garden/songs/candidates/07/cand03_82fa8761.mp3",
+      "song_id": "cand03_82fa8761",
+      "bytes": 2806920,
+      "first_2s": {
+        "mean_db": -21.5,
+        "max_db": -5.7
+      },
+      "duration_s": 127.56,
+      "rank": 4
+    }
+  ]
+}

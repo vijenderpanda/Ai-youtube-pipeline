@@ -1,0 +1,488 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep11/card_20cmds.mp4",
+   "dur": 3.61,
+   "from": 0.3,
+   "mode": "split"
+  },
+  {
+   "src": "assets/ep11/term_premortem.mp4",
+   "dur": 3.3,
+   "from": 9.8,
+   "mode": "full"
+  },
+  {
+   "src": "assets/ep11/term_premortem.mp4",
+   "dur": 3.47,
+   "from": 13.3,
+   "mode": "full"
+  },
+  {
+   "src": "assets/ep11/term_premortem.mp4",
+   "dur": 5.62,
+   "from": 19.5,
+   "mode": "full"
+  },
+  {
+   "src": "assets/ep11/term_premortem.mp4",
+   "dur": 6.38,
+   "from": 40.5,
+   "mode": "full"
+  },
+  {
+   "src": "assets/ep11/term_premortem.mp4",
+   "dur": 3.42,
+   "from": 68.2,
+   "mode": "full"
+  },
+  {
+   "src": "assets/ep11/v2_host.mp4",
+   "dur": 6.34,
+   "mode": "host"
+  }
+ ],
+ "captions": [
+  {
+   "w": "THAT",
+   "start": 0.0,
+   "end": 0.21,
+   "hot": false
+  },
+  {
+   "w": "VIRAL",
+   "start": 0.28,
+   "end": 0.59,
+   "hot": false
+  },
+  {
+   "w": "LIST",
+   "start": 0.65,
+   "end": 0.82,
+   "hot": false
+  },
+  {
+   "w": "OF",
+   "start": 0.87,
+   "end": 0.93,
+   "hot": false
+  },
+  {
+   "w": "TWENTY",
+   "start": 0.97,
+   "end": 1.23,
+   "hot": true
+  },
+  {
+   "w": "SECRET",
+   "start": 1.26,
+   "end": 1.53,
+   "hot": true
+  },
+  {
+   "w": "CLAUDE",
+   "start": 1.57,
+   "end": 1.82,
+   "hot": false
+  },
+  {
+   "w": "COMMANDS",
+   "start": 1.85,
+   "end": 2.43,
+   "hot": true
+  },
+  {
+   "w": "FAKE",
+   "start": 2.63,
+   "end": 3.1,
+   "hot": true
+  },
+  {
+   "w": "WATCH",
+   "start": 3.61,
+   "end": 4.12,
+   "hot": true
+  },
+  {
+   "w": "SLASH",
+   "start": 4.3,
+   "end": 4.6,
+   "hot": true
+  },
+  {
+   "w": "PREMORTEM",
+   "start": 4.66,
+   "end": 5.35,
+   "hot": true
+  },
+  {
+   "w": "IN",
+   "start": 5.47,
+   "end": 5.58,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 5.63,
+   "end": 5.65,
+   "hot": false
+  },
+  {
+   "w": "STOCK",
+   "start": 5.69,
+   "end": 5.96,
+   "hot": true
+  },
+  {
+   "w": "CLAUDE",
+   "start": 5.99,
+   "end": 6.43,
+   "hot": false
+  },
+  {
+   "w": "ENTER",
+   "start": 6.91,
+   "end": 7.45,
+   "hot": true
+  },
+  {
+   "w": "UNKNOWN",
+   "start": 7.7,
+   "end": 8.09,
+   "hot": true
+  },
+  {
+   "w": "COMMAND",
+   "start": 8.15,
+   "end": 8.64,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 8.75,
+   "end": 8.88,
+   "hot": false
+  },
+  {
+   "w": "DOESN'T",
+   "start": 8.92,
+   "end": 9.17,
+   "hot": false
+  },
+  {
+   "w": "EXIST",
+   "start": 9.22,
+   "end": 9.75,
+   "hot": true
+  },
+  {
+   "w": "THE",
+   "start": 10.38,
+   "end": 10.48,
+   "hot": false
+  },
+  {
+   "w": "REAL",
+   "start": 10.53,
+   "end": 10.69,
+   "hot": true
+  },
+  {
+   "w": "SECRET",
+   "start": 10.75,
+   "end": 11.21,
+   "hot": true
+  },
+  {
+   "w": "ONE",
+   "start": 11.34,
+   "end": 11.56,
+   "hot": true
+  },
+  {
+   "w": "FILE",
+   "start": 11.61,
+   "end": 12.12,
+   "hot": true
+  },
+  {
+   "w": "IN",
+   "start": 12.27,
+   "end": 12.41,
+   "hot": false
+  },
+  {
+   "w": "DOT",
+   "start": 12.47,
+   "end": 12.71,
+   "hot": false
+  },
+  {
+   "w": "CLAUDE",
+   "start": 12.78,
+   "end": 13.18,
+   "hot": false
+  },
+  {
+   "w": "SLASH",
+   "start": 13.2,
+   "end": 13.51,
+   "hot": true
+  },
+  {
+   "w": "COMMANDS",
+   "start": 13.57,
+   "end": 14.24,
+   "hot": true
+  },
+  {
+   "w": "PASTE",
+   "start": 14.49,
+   "end": 14.81,
+   "hot": true
+  },
+  {
+   "w": "YOUR",
+   "start": 14.84,
+   "end": 14.93,
+   "hot": false
+  },
+  {
+   "w": "PROMPT",
+   "start": 14.96,
+   "end": 15.46,
+   "hot": true
+  },
+  {
+   "w": "FRESH",
+   "start": 16.0,
+   "end": 16.28,
+   "hot": true
+  },
+  {
+   "w": "SESSION",
+   "start": 16.31,
+   "end": 16.84,
+   "hot": false
+  },
+  {
+   "w": "SLASH",
+   "start": 17.28,
+   "end": 17.64,
+   "hot": true
+  },
+  {
+   "w": "PREMORTEM",
+   "start": 17.68,
+   "end": 18.41,
+   "hot": true
+  },
+  {
+   "w": "ENTER",
+   "start": 18.57,
+   "end": 19.14,
+   "hot": true
+  },
+  {
+   "w": "BOOM",
+   "start": 22.38,
+   "end": 22.8,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 22.98,
+   "end": 23.14,
+   "hot": false
+  },
+  {
+   "w": "TEARS",
+   "start": 23.18,
+   "end": 23.49,
+   "hot": true
+  },
+  {
+   "w": "MY",
+   "start": 23.55,
+   "end": 23.61,
+   "hot": false
+  },
+  {
+   "w": "LAUNCH",
+   "start": 23.68,
+   "end": 23.89,
+   "hot": true
+  },
+  {
+   "w": "APART",
+   "start": 23.93,
+   "end": 24.39,
+   "hot": false
+  },
+  {
+   "w": "POINT",
+   "start": 24.46,
+   "end": 24.72,
+   "hot": true
+  },
+  {
+   "w": "BY",
+   "start": 24.76,
+   "end": 24.86,
+   "hot": false
+  },
+  {
+   "w": "POINT",
+   "start": 24.93,
+   "end": 25.3,
+   "hot": true
+  },
+  {
+   "w": "ALL",
+   "start": 25.8,
+   "end": 26.0,
+   "hot": false
+  },
+  {
+   "w": "TWENTY",
+   "start": 26.04,
+   "end": 26.4,
+   "hot": true
+  },
+  {
+   "w": "ARE",
+   "start": 26.47,
+   "end": 26.6,
+   "hot": false
+  },
+  {
+   "w": "JUST",
+   "start": 26.64,
+   "end": 26.84,
+   "hot": false
+  },
+  {
+   "w": "SAVED",
+   "start": 26.91,
+   "end": 27.23,
+   "hot": true
+  },
+  {
+   "w": "PROMPTS",
+   "start": 27.31,
+   "end": 27.83,
+   "hot": true
+  },
+  {
+   "w": "BUILD",
+   "start": 27.95,
+   "end": 28.15,
+   "hot": true
+  },
+  {
+   "w": "YOUR",
+   "start": 28.2,
+   "end": 28.3,
+   "hot": false
+  },
+  {
+   "w": "OWN",
+   "start": 28.38,
+   "end": 28.63,
+   "hot": true
+  },
+  {
+   "w": "FOLLOW",
+   "start": 29.16,
+   "end": 29.63,
+   "hot": true
+  },
+  {
+   "w": "I",
+   "start": 29.69,
+   "end": 29.75,
+   "hot": false
+  },
+  {
+   "w": "UNPACK",
+   "start": 29.86,
+   "end": 30.21,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 30.29,
+   "end": 30.45,
+   "hot": true
+  },
+  {
+   "w": "AI",
+   "start": 30.51,
+   "end": 30.72,
+   "hot": false
+  },
+  {
+   "w": "SKILL",
+   "start": 30.75,
+   "end": 31.02,
+   "hot": false
+  },
+  {
+   "w": "EVERY",
+   "start": 31.09,
+   "end": 31.3,
+   "hot": true
+  },
+  {
+   "w": "SINGLE",
+   "start": 31.34,
+   "end": 31.6,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 31.64,
+   "end": 32.14,
+   "hot": true
+  }
+ ],
+ "steps": [
+  {
+   "label": "STEP 1/3 \u2014 TRY IT: NOT REAL",
+   "start": 3.61,
+   "end": 10.38
+  },
+  {
+   "label": "STEP 2/3 \u2014 ONE FILE = ONE COMMAND",
+   "start": 10.38,
+   "end": 16.0
+  },
+  {
+   "label": "STEP 3/3 \u2014 IT JUST RUNS",
+   "start": 16.0,
+   "end": 25.8
+  }
+ ],
+ "vo": "assets/ep11/vo_v2.wav",
+ "cover": {
+  "title1": "20 SECRET",
+  "title2": "COMMANDS?",
+  "emojis": "\ud83e\udd2b\ud83d\uded1\u26a1",
+  "until": 2.2
+ },
+ "watermark": true,
+ "layout": "newsSplit",
+ "host": "assets/ep11/v2_host.mp4",
+ "emphasis": [
+  {
+   "text": "not secret \u2014 they don't exist",
+   "start": 6.91,
+   "end": 10.38
+  },
+  {
+   "text": "any prompt can become a command",
+   "start": 25.8,
+   "end": 29.16
+  }
+ ]
+}

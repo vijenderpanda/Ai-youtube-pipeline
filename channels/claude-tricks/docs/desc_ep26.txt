@@ -1,0 +1,15 @@
+AI writing has a tell — and it isn't the em dash. It's the register: "I hope you're doing well," "due to unforeseen circumstances," "please don't hesitate to reach out." Nobody talks like that, so the moment you paste it, everyone knows. The fix is one line you add after the first draft: "Rewrite it like I'd text a friend." Same request, same chat — a form letter becomes a message a human would actually send. AI writes formal by default because you never named a voice; name one you actually use and it copies that instead.
+
+Watch it happen in one unbroken take: the ask, the robotic draft, the one added line, the rewrite.
+
+🎯 One AI skill every single day — follow so you don't miss one
+📚 "Claude Zero to Pro" — the beginner series
+📬 Free AI tools cheat sheet: link in profile
+
+🎙️ The AI voice tool we use: https://try.elevenlabs.io/4wscoc0bm5zl
+(Affiliate link — we earn a commission if you subscribe, at no extra cost to you.)
+
+The presenter is an AI-animated version of me — built with the tools we teach. The demo is a real, unedited browser session recorded start to finish; the weak draft and the rewrite are the same conversation, nothing staged between them. Made with AI, checked by a human.
+⚠️ Not affiliated with OpenAI or Anthropic.
+
+#AIWriting #ChatGPTTips #PromptTips #ClaudeAI #Shorts

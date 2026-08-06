@@ -1,0 +1,513 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep24/v2_hook.mp4",
+   "dur": 8.22
+  },
+  {
+   "src": "assets/ep24/demo_cold.mp4",
+   "dur": 3.04,
+   "from": 10.6
+  },
+  {
+   "src": "assets/ep24/demo_memory.mp4",
+   "dur": 3.39,
+   "from": 3.2
+  },
+  {
+   "src": "assets/ep24/demo_memory.mp4",
+   "dur": 1.67,
+   "from": 9.917
+  },
+  {
+   "src": "assets/ep24/demo_reask.mp4",
+   "dur": 3.2,
+   "from": 6.8
+  },
+  {
+   "src": "assets/ep24/demo_reask.mp4",
+   "dur": 1.31,
+   "from": 10.0
+  },
+  {
+   "src": "assets/ep24/v2_payoff.mp4",
+   "dur": 9.54
+  }
+ ],
+ "captions": [
+  {
+   "w": "STOP",
+   "start": 0.0,
+   "end": 0.31,
+   "hot": true
+  },
+  {
+   "w": "RE-INTRODUCING",
+   "start": 0.37,
+   "end": 0.92,
+   "hot": true
+  },
+  {
+   "w": "YOURSELF",
+   "start": 0.95,
+   "end": 1.25,
+   "hot": false
+  },
+  {
+   "w": "TO",
+   "start": 1.28,
+   "end": 1.32,
+   "hot": false
+  },
+  {
+   "w": "YOUR",
+   "start": 1.37,
+   "end": 1.46,
+   "hot": false
+  },
+  {
+   "w": "AI",
+   "start": 1.5,
+   "end": 1.79,
+   "hot": true
+  },
+  {
+   "w": "EVERY",
+   "start": 1.9,
+   "end": 2.15,
+   "hot": false
+  },
+  {
+   "w": "SINGLE",
+   "start": 2.19,
+   "end": 2.45,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 2.48,
+   "end": 2.8,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 3.33,
+   "end": 3.5,
+   "hot": false
+  },
+  {
+   "w": "ANSWERS",
+   "start": 3.55,
+   "end": 3.9,
+   "hot": false
+  },
+  {
+   "w": "LIKE",
+   "start": 3.94,
+   "end": 4.09,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 4.11,
+   "end": 4.13,
+   "hot": false
+  },
+  {
+   "w": "STRANGER",
+   "start": 4.18,
+   "end": 4.77,
+   "hot": true
+  },
+  {
+   "w": "BECAUSE",
+   "start": 4.98,
+   "end": 5.29,
+   "hot": false
+  },
+  {
+   "w": "YOU",
+   "start": 5.32,
+   "end": 5.4,
+   "hot": false
+  },
+  {
+   "w": "NEVER",
+   "start": 5.47,
+   "end": 5.65,
+   "hot": true
+  },
+  {
+   "w": "TOLD",
+   "start": 5.7,
+   "end": 5.9,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 5.94,
+   "end": 6.04,
+   "hot": false
+  },
+  {
+   "w": "WHO",
+   "start": 6.11,
+   "end": 6.28,
+   "hot": false
+  },
+  {
+   "w": "YOU",
+   "start": 6.35,
+   "end": 6.42,
+   "hot": false
+  },
+  {
+   "w": "ARE",
+   "start": 6.51,
+   "end": 6.83,
+   "hot": false
+  },
+  {
+   "w": "WATCH",
+   "start": 7.15,
+   "end": 7.71,
+   "hot": true
+  },
+  {
+   "w": "COLD",
+   "start": 8.22,
+   "end": 8.49,
+   "hot": true
+  },
+  {
+   "w": "QUESTION",
+   "start": 8.53,
+   "end": 8.84,
+   "hot": false
+  },
+  {
+   "w": "ABOUT",
+   "start": 8.87,
+   "end": 9.07,
+   "hot": false
+  },
+  {
+   "w": "MY",
+   "start": 9.12,
+   "end": 9.22,
+   "hot": false
+  },
+  {
+   "w": "WORK",
+   "start": 9.28,
+   "end": 9.67,
+   "hot": true
+  },
+  {
+   "w": "LOOK",
+   "start": 9.73,
+   "end": 9.94,
+   "hot": false
+  },
+  {
+   "w": "HOW",
+   "start": 9.97,
+   "end": 10.07,
+   "hot": false
+  },
+  {
+   "w": "GENERIC",
+   "start": 10.12,
+   "end": 10.75,
+   "hot": true
+  },
+  {
+   "w": "SETTINGS",
+   "start": 11.26,
+   "end": 11.99,
+   "hot": false
+  },
+  {
+   "w": "PERSONALIZATION",
+   "start": 12.24,
+   "end": 13.29,
+   "hot": true
+  },
+  {
+   "w": "MEMORY",
+   "start": 13.47,
+   "end": 14.1,
+   "hot": true
+  },
+  {
+   "w": "ONE",
+   "start": 14.65,
+   "end": 14.86,
+   "hot": false
+  },
+  {
+   "w": "LINE",
+   "start": 14.91,
+   "end": 15.13,
+   "hot": true
+  },
+  {
+   "w": "ABOUT",
+   "start": 15.15,
+   "end": 15.44,
+   "hot": false
+  },
+  {
+   "w": "ME",
+   "start": 15.51,
+   "end": 15.76,
+   "hot": true
+  },
+  {
+   "w": "SAME",
+   "start": 16.32,
+   "end": 16.59,
+   "hot": true
+  },
+  {
+   "w": "QUESTION",
+   "start": 16.64,
+   "end": 17.16,
+   "hot": false
+  },
+  {
+   "w": "WATCH",
+   "start": 17.37,
+   "end": 17.67,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 17.72,
+   "end": 17.79,
+   "hot": false
+  },
+  {
+   "w": "USE",
+   "start": 17.87,
+   "end": 18.05,
+   "hot": false
+  },
+  {
+   "w": "MY",
+   "start": 18.09,
+   "end": 18.17,
+   "hot": false
+  },
+  {
+   "w": "CONTEXT",
+   "start": 18.24,
+   "end": 18.87,
+   "hot": true
+  },
+  {
+   "w": "WRITTEN",
+   "start": 19.52,
+   "end": 19.85,
+   "hot": true
+  },
+  {
+   "w": "FOR",
+   "start": 19.91,
+   "end": 20.05,
+   "hot": false
+  },
+  {
+   "w": "ME",
+   "start": 20.11,
+   "end": 20.35,
+   "hot": true
+  },
+  {
+   "w": "CONTEXT",
+   "start": 20.83,
+   "end": 21.33,
+   "hot": true
+  },
+  {
+   "w": "TURNS",
+   "start": 21.35,
+   "end": 21.63,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 21.68,
+   "end": 21.7,
+   "hot": false
+  },
+  {
+   "w": "SEARCH",
+   "start": 21.76,
+   "end": 22.01,
+   "hot": false
+  },
+  {
+   "w": "ENGINE",
+   "start": 22.07,
+   "end": 22.37,
+   "hot": false
+  },
+  {
+   "w": "INTO",
+   "start": 22.42,
+   "end": 22.61,
+   "hot": false
+  },
+  {
+   "w": "AN",
+   "start": 22.68,
+   "end": 22.74,
+   "hot": false
+  },
+  {
+   "w": "ASSISTANT",
+   "start": 22.78,
+   "end": 23.42,
+   "hot": true
+  },
+  {
+   "w": "SEED",
+   "start": 23.63,
+   "end": 23.89,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 23.96,
+   "end": 24.03,
+   "hot": false
+  },
+  {
+   "w": "ONCE",
+   "start": 24.13,
+   "end": 24.42,
+   "hot": true
+  },
+  {
+   "w": "WITH",
+   "start": 24.45,
+   "end": 24.61,
+   "hot": false
+  },
+  {
+   "w": "ROLE",
+   "start": 24.68,
+   "end": 25.22,
+   "hot": true
+  },
+  {
+   "w": "GOALS",
+   "start": 25.37,
+   "end": 25.66,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 25.7,
+   "end": 25.79,
+   "hot": false
+  },
+  {
+   "w": "LIMITS",
+   "start": 25.83,
+   "end": 26.34,
+   "hot": true
+  },
+  {
+   "w": "FOLLOW",
+   "start": 26.9,
+   "end": 27.43,
+   "hot": true
+  },
+  {
+   "w": "I",
+   "start": 27.59,
+   "end": 27.66,
+   "hot": false
+  },
+  {
+   "w": "UNPACK",
+   "start": 27.77,
+   "end": 28.18,
+   "hot": true
+  },
+  {
+   "w": "ONE",
+   "start": 28.27,
+   "end": 28.49,
+   "hot": false
+  },
+  {
+   "w": "AI",
+   "start": 28.53,
+   "end": 28.78,
+   "hot": true
+  },
+  {
+   "w": "SKILL",
+   "start": 28.83,
+   "end": 29.12,
+   "hot": true
+  },
+  {
+   "w": "EVERY",
+   "start": 29.23,
+   "end": 29.51,
+   "hot": false
+  },
+  {
+   "w": "SINGLE",
+   "start": 29.56,
+   "end": 29.86,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 29.91,
+   "end": 30.37,
+   "hot": true
+  }
+ ],
+ "steps": [
+  {
+   "label": "STEP 1/3 \u2014 OPEN MEMORY SETTINGS",
+   "start": 11.26,
+   "end": 14.65,
+   "pos": "tr"
+  },
+  {
+   "label": "STEP 2/3 \u2014 ONE LINE ABOUT YOU",
+   "start": 14.65,
+   "end": 16.32,
+   "pos": "tl"
+  },
+  {
+   "label": "STEP 3/3 \u2014 ASK AGAIN",
+   "start": 16.32,
+   "end": 20.83,
+   "pos": "tl"
+  }
+ ],
+ "vo": "assets/ep24/vo_v2.wav",
+ "cover": {
+  "title1": "YOUR AI",
+  "title2": "FORGETS YOU",
+  "sub": "tell it who you are \u2014 once",
+  "emojis": "\ud83e\udde0\ud83d\udcac",
+  "until": 3.0
+ },
+ "watermark": true,
+ "emphasis": [
+  {
+   "text": "seed it once, every chat starts smarter",
+   "start": 20.83,
+   "end": 26.9
+  }
+ ]
+}

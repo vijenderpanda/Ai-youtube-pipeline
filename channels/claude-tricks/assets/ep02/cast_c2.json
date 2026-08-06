@@ -1,0 +1,1 @@
+{"title": "~/project/CLAUDE.md", "steps": [{"type": "type", "text": "# CLAUDE.md", "color": "magenta", "cps": 22}, {"type": "out", "lps": 5, "lines": [["stack: Next.js + Supabase", "blue"], ["style: functional, no classes", "blue"], ["tests: vitest, colocated", "blue"], ["never touch: /legacy", "red"]]}, {"type": "pause", "dur": 1.2}]}

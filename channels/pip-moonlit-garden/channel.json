@@ -1,0 +1,11 @@
+{
+  "key": "lulla",
+  "name": "Pip's Moonlit Garden (Lulla)",
+  "made_for_kids": true,
+  "cadence_days": 3,
+  "cadence_label": "every 3 days 16:00 IST",
+  "guard_days": 11,
+  "slot_time_ist": "16:00",
+  "calendar": "CONTENT-CALENDAR.csv",
+  "produce_hint": "open a Claude session -> 'produce the next Lulla calendar row on Pipeline A'"
+}

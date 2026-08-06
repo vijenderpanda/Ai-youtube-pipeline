@@ -1,0 +1,245 @@
+[
+ {
+  "i": 0,
+  "s": 4.08,
+  "e": 9.24,
+  "text": "Aaja ve, aaja ve, aaja ve, aaja",
+  "best_t": 6.5,
+  "mean": -15.0,
+  "max": -3.9
+ },
+ {
+  "i": 1,
+  "s": 10.42,
+  "e": 14.32,
+  "text": "Tere bina ye shaam adhoori",
+  "best_t": 10.5,
+  "mean": -15.5,
+  "max": -5.1
+ },
+ {
+  "i": 2,
+  "s": 16.1,
+  "e": 21.16,
+  "text": "Aaja ve, aaja ve, aaja ve, aaja",
+  "best_t": 17.5,
+  "mean": -14.3,
+  "max": -2.5
+ },
+ {
+  "i": 3,
+  "s": 21.88,
+  "e": 26.3,
+  "text": "Mit jaaye bas ye thodi doori",
+  "best_t": 22.5,
+  "mean": -17.1,
+  "max": -4.1
+ },
+ {
+  "i": 4,
+  "s": 38.94,
+  "e": 43.29,
+  "text": "Aaja ve, aaja ve, aaja ve, aaja",
+  "best_t": 39.0,
+  "mean": -23.3,
+  "max": -7.1
+ },
+ {
+  "i": 5,
+  "s": 43.34,
+  "e": 49.06,
+  "text": "Sunehri si shaam hai, par tu yahan nahi",
+  "best_t": 44.0,
+  "mean": -15.0,
+  "max": -2.1
+ },
+ {
+  "i": 6,
+  "s": 49.56,
+  "e": 55.03,
+  "text": "Ye vaadi, ye hawa, sab hai, bas tu hi nahi",
+  "best_t": 49.5,
+  "mean": -14.7,
+  "max": -2.9
+ },
+ {
+  "i": 7,
+  "s": 55.08,
+  "e": 61.32,
+  "text": "Wine ke do glass rakh ke, raah teri dekhun",
+  "best_t": 55.0,
+  "mean": -15.5,
+  "max": -3.5
+ },
+ {
+  "i": 8,
+  "s": 61.38,
+  "e": 67.48,
+  "text": "Tu kab aayegi, main raste hi dekhun",
+  "best_t": 62.0,
+  "mean": -18.0,
+  "max": -6.1
+ },
+ {
+  "i": 9,
+  "s": 68.2,
+  "e": 73.06,
+  "text": "Aaja ve, aaja ve, aaja ve, aaja",
+  "best_t": 69.5,
+  "mean": -15.1,
+  "max": -3.9
+ },
+ {
+  "i": 10,
+  "s": 73.4,
+  "e": 77.42,
+  "text": "Tere bina ye shaam adhoori",
+  "best_t": 73.5,
+  "mean": -16.6,
+  "max": -5.5
+ },
+ {
+  "i": 11,
+  "s": 79.1,
+  "e": 84.66,
+  "text": "Aaja ve, aaja ve, aaja ve, aaja",
+  "best_t": 81.0,
+  "mean": -15.3,
+  "max": -3.7
+ },
+ {
+  "i": 12,
+  "s": 84.82,
+  "e": 88.74,
+  "text": "Mit jaaye bas ye thodi doori",
+  "best_t": 85.5,
+  "mean": -16.8,
+  "max": -4.8
+ },
+ {
+  "i": 13,
+  "s": 100.92,
+  "e": 109.92,
+  "text": "Aaja ve, aaja ve, aaja ve, aaja",
+  "best_t": 101.0,
+  "mean": -17.0,
+  "max": -3.8
+ },
+ {
+  "i": 14,
+  "s": 115.38,
+  "e": 121.12,
+  "text": "Wo shaam yaad hai, tu laal dress mein thi",
+  "best_t": 115.5,
+  "mean": -17.0,
+  "max": -4.2
+ },
+ {
+  "i": 15,
+  "s": 121.16,
+  "e": 126.56,
+  "text": "Aasmaan se zyada, tu hi roshan thi",
+  "best_t": 121.0,
+  "mean": -17.9,
+  "max": -4.2
+ },
+ {
+  "i": 16,
+  "s": 127.7,
+  "e": 132.77,
+  "text": "Gulaab tere haathon mein, main tera ho gaya",
+  "best_t": 130.0,
+  "mean": -16.6,
+  "max": -4.3
+ },
+ {
+  "i": 17,
+  "s": 132.82,
+  "e": 138.44,
+  "text": "Ab door hoon to lagta, adhoora reh gaya",
+  "best_t": 136.0,
+  "mean": -17.8,
+  "max": -6.7
+ },
+ {
+  "i": 18,
+  "s": 138.96,
+  "e": 144.12,
+  "text": "Saansein le rahi hain bas tera naam",
+  "best_t": 139.5,
+  "mean": -16.5,
+  "max": -5.8
+ },
+ {
+  "i": 19,
+  "s": 144.82,
+  "e": 151.66,
+  "text": "Tu aa jaaye to poori ho ye shaam",
+  "best_t": 145.0,
+  "mean": -15.8,
+  "max": -4.4
+ },
+ {
+  "i": 20,
+  "s": 151.88,
+  "e": 157.54,
+  "text": "Aaja ve, aaja ve, aaja ve, aaja",
+  "best_t": 153.5,
+  "mean": -16.1,
+  "max": -3.7
+ },
+ {
+  "i": 21,
+  "s": 157.56,
+  "e": 161.78,
+  "text": "Tere bina ye shaam adhoori",
+  "best_t": 158.0,
+  "mean": -18.3,
+  "max": -7.5
+ },
+ {
+  "i": 22,
+  "s": 163.8,
+  "e": 168.82,
+  "text": "Aaja ve, aaja ve, aaja ve, aaja",
+  "best_t": 165.0,
+  "mean": -15.6,
+  "max": -3.6
+ },
+ {
+  "i": 23,
+  "s": 169.0,
+  "e": 173.18,
+  "text": "Mit jaaye bas ye thodi doori",
+  "best_t": 169.5,
+  "mean": -18.8,
+  "max": -6.4
+ },
+ {
+  "i": 24,
+  "s": 184.68,
+  "e": 193.68,
+  "text": "Aaja ve, aaja ve, aaja ve, aaja",
+  "best_t": 189.0,
+  "mean": -15.8,
+  "max": -4.5
+ },
+ {
+  "i": 25,
+  "s": 204.82,
+  "e": 207.96,
+  "text": "Aaja ve, aaja ve, aaja ve, aaja",
+  "best_t": 206.0,
+  "mean": -26.4,
+  "max": -6.9
+ },
+ {
+  "i": 26,
+  "s": 208.98,
+  "e": 210.92,
+  "text": "Aaja ve... aaja...",
+  "best_t": 209.0,
+  "mean": -22.1,
+  "max": -8.8
+ }
+]

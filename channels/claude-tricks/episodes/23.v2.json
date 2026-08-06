@@ -1,0 +1,713 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep23/v2_host.mp4",
+   "dur": 5.55,
+   "mode": "host"
+  },
+  {
+   "src": "assets/ep23/broll/pexels_28709421.mp4",
+   "dur": 3.51,
+   "from": 2.0,
+   "mode": "full"
+  },
+  {
+   "kind": "statBars",
+   "dur": 5.86,
+   "mode": "full",
+   "stat": {
+    "title": "AI PRICE INDEX",
+    "subtitle": "$ PER 1M TOKENS \u00b7 ILLUSTRATIVE",
+    "footer": "SAME QUESTIONS. LESS MONEY.",
+    "bars": [
+     {
+      "label": "TOP-TIER MODEL",
+      "value": 30,
+      "display": "$30",
+      "hot": true
+     },
+     {
+      "label": "MID TIER",
+      "value": 14,
+      "display": "$14"
+     },
+     {
+      "label": "FAST / CHEAP TIER",
+      "value": 1.4,
+      "display": "$1.40",
+      "delta": "-80%"
+     }
+    ],
+    "start": 0.2,
+    "height": 1400
+   }
+  },
+  {
+   "src": "assets/ep23/broll/pexels_6755168.mp4",
+   "dur": 7.28,
+   "from": 2.0,
+   "mode": "split"
+  },
+  {
+   "src": "assets/ep23/broll/pexels_5483083.mp4",
+   "dur": 4.73,
+   "from": 0.5,
+   "mode": "split"
+  },
+  {
+   "src": "assets/ep23/broll/pexels_7706626.mp4",
+   "dur": 4.5,
+   "from": 1.0,
+   "mode": "split"
+  },
+  {
+   "src": "assets/ep23/v2_host.mp4",
+   "dur": 7.86,
+   "mode": "host"
+  }
+ ],
+ "captions": [
+  {
+   "w": "THE",
+   "start": 0.0,
+   "end": 0.14,
+   "hot": false
+  },
+  {
+   "w": "BEST",
+   "start": 0.2,
+   "end": 0.38,
+   "hot": true
+  },
+  {
+   "w": "AI",
+   "start": 0.44,
+   "end": 0.69,
+   "hot": true
+  },
+  {
+   "w": "IN",
+   "start": 0.71,
+   "end": 0.76,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 0.79,
+   "end": 0.86,
+   "hot": false
+  },
+  {
+   "w": "WORLD",
+   "start": 0.91,
+   "end": 1.23,
+   "hot": true
+  },
+  {
+   "w": "JUST",
+   "start": 1.44,
+   "end": 1.6,
+   "hot": false
+  },
+  {
+   "w": "GOT",
+   "start": 1.64,
+   "end": 1.78,
+   "hot": false
+  },
+  {
+   "w": "CHEAPER",
+   "start": 1.81,
+   "end": 2.29,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 2.4,
+   "end": 2.55,
+   "hot": false
+  },
+  {
+   "w": "YOU'RE",
+   "start": 2.6,
+   "end": 2.76,
+   "hot": false
+  },
+  {
+   "w": "PROBABLY",
+   "start": 2.83,
+   "end": 3.29,
+   "hot": false
+  },
+  {
+   "w": "OVERPAYING",
+   "start": 3.37,
+   "end": 3.8,
+   "hot": true
+  },
+  {
+   "w": "ATTENTION",
+   "start": 3.83,
+   "end": 4.26,
+   "hot": false
+  },
+  {
+   "w": "TO",
+   "start": 4.32,
+   "end": 4.39,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 4.43,
+   "end": 4.5,
+   "hot": false
+  },
+  {
+   "w": "WRONG",
+   "start": 4.53,
+   "end": 4.72,
+   "hot": true
+  },
+  {
+   "w": "ONE",
+   "start": 4.81,
+   "end": 5.06,
+   "hot": true
+  },
+  {
+   "w": "HERE'S",
+   "start": 5.55,
+   "end": 5.84,
+   "hot": false
+  },
+  {
+   "w": "WHO",
+   "start": 5.86,
+   "end": 5.97,
+   "hot": false
+  },
+  {
+   "w": "LEADS",
+   "start": 6.04,
+   "end": 6.24,
+   "hot": true
+  },
+  {
+   "w": "RIGHT",
+   "start": 6.29,
+   "end": 6.5,
+   "hot": false
+  },
+  {
+   "w": "NOW",
+   "start": 6.55,
+   "end": 6.9,
+   "hot": false
+  },
+  {
+   "w": "AND",
+   "start": 7.02,
+   "end": 7.16,
+   "hot": false
+  },
+  {
+   "w": "WHAT",
+   "start": 7.23,
+   "end": 7.4,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 7.45,
+   "end": 7.52,
+   "hot": false
+  },
+  {
+   "w": "ACTUALLY",
+   "start": 7.57,
+   "end": 7.88,
+   "hot": false
+  },
+  {
+   "w": "COSTS",
+   "start": 7.93,
+   "end": 8.19,
+   "hot": true
+  },
+  {
+   "w": "YOU",
+   "start": 8.22,
+   "end": 8.49,
+   "hot": false
+  },
+  {
+   "w": "OPENAI",
+   "start": 9.06,
+   "end": 9.58,
+   "hot": true
+  },
+  {
+   "w": "JUST",
+   "start": 9.65,
+   "end": 9.8,
+   "hot": false
+  },
+  {
+   "w": "SLASHED",
+   "start": 9.82,
+   "end": 10.24,
+   "hot": true
+  },
+  {
+   "w": "ITS",
+   "start": 10.29,
+   "end": 10.4,
+   "hot": false
+  },
+  {
+   "w": "CHEAP",
+   "start": 10.47,
+   "end": 10.73,
+   "hot": true
+  },
+  {
+   "w": "TIER",
+   "start": 10.8,
+   "end": 11.01,
+   "hot": true
+  },
+  {
+   "w": "EIGHTY",
+   "start": 11.12,
+   "end": 11.38,
+   "hot": true
+  },
+  {
+   "w": "PERCENT",
+   "start": 11.44,
+   "end": 11.94,
+   "hot": true
+  },
+  {
+   "w": "TWENTY",
+   "start": 12.14,
+   "end": 12.43,
+   "hot": true
+  },
+  {
+   "w": "CENTS",
+   "start": 12.48,
+   "end": 12.74,
+   "hot": true
+  },
+  {
+   "w": "IN",
+   "start": 12.82,
+   "end": 13.11,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 13.23,
+   "end": 13.32,
+   "hot": false
+  },
+  {
+   "w": "DOLLAR",
+   "start": 13.4,
+   "end": 13.69,
+   "hot": true
+  },
+  {
+   "w": "TWENTY",
+   "start": 13.73,
+   "end": 14.02,
+   "hot": true
+  },
+  {
+   "w": "OUT",
+   "start": 14.08,
+   "end": 14.38,
+   "hot": false
+  },
+  {
+   "w": "ANTHROPIC",
+   "start": 14.92,
+   "end": 15.49,
+   "hot": true
+  },
+  {
+   "w": "DIDN'T",
+   "start": 15.56,
+   "end": 15.8,
+   "hot": false
+  },
+  {
+   "w": "CUT",
+   "start": 15.85,
+   "end": 15.99,
+   "hot": false
+  },
+  {
+   "w": "ITS",
+   "start": 16.05,
+   "end": 16.15,
+   "hot": false
+  },
+  {
+   "w": "PRICE",
+   "start": 16.2,
+   "end": 16.7,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 16.87,
+   "end": 17.0,
+   "hot": false
+  },
+  {
+   "w": "JUST",
+   "start": 17.04,
+   "end": 17.19,
+   "hot": false
+  },
+  {
+   "w": "MADE",
+   "start": 17.25,
+   "end": 17.45,
+   "hot": false
+  },
+  {
+   "w": "OPUS",
+   "start": 17.53,
+   "end": 17.83,
+   "hot": true
+  },
+  {
+   "w": "5",
+   "start": 17.95,
+   "end": 18.16,
+   "hot": false
+  },
+  {
+   "w": "SHARPER",
+   "start": 18.27,
+   "end": 18.85,
+   "hot": true
+  },
+  {
+   "w": "NEAR-FRONTIER",
+   "start": 18.97,
+   "end": 19.98,
+   "hot": false
+  },
+  {
+   "w": "FOR",
+   "start": 20.19,
+   "end": 20.33,
+   "hot": false
+  },
+  {
+   "w": "LESS",
+   "start": 20.39,
+   "end": 20.58,
+   "hot": true
+  },
+  {
+   "w": "THAN",
+   "start": 20.62,
+   "end": 20.76,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 20.79,
+   "end": 20.86,
+   "hot": false
+  },
+  {
+   "w": "OTHER",
+   "start": 20.91,
+   "end": 21.09,
+   "hot": false
+  },
+  {
+   "w": "FLAGSHIP",
+   "start": 21.14,
+   "end": 21.72,
+   "hot": true
+  },
+  {
+   "w": "SO",
+   "start": 22.2,
+   "end": 22.36,
+   "hot": false
+  },
+  {
+   "w": "HERE'S",
+   "start": 22.43,
+   "end": 22.66,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 22.7,
+   "end": 22.77,
+   "hot": false
+  },
+  {
+   "w": "RULE",
+   "start": 22.81,
+   "end": 23.31,
+   "hot": true
+  },
+  {
+   "w": "HARD",
+   "start": 23.64,
+   "end": 23.96,
+   "hot": true
+  },
+  {
+   "w": "REASONING",
+   "start": 24.03,
+   "end": 24.59,
+   "hot": true
+  },
+  {
+   "w": "USE",
+   "start": 24.8,
+   "end": 25.05,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 25.09,
+   "end": 25.16,
+   "hot": false
+  },
+  {
+   "w": "LEADER'S",
+   "start": 25.22,
+   "end": 25.6,
+   "hot": true
+  },
+  {
+   "w": "THINKING",
+   "start": 25.66,
+   "end": 26.01,
+   "hot": true
+  },
+  {
+   "w": "MODE",
+   "start": 26.06,
+   "end": 26.46,
+   "hot": true
+  },
+  {
+   "w": "EVERYDAY",
+   "start": 26.93,
+   "end": 27.38,
+   "hot": true
+  },
+  {
+   "w": "QUESTIONS",
+   "start": 27.42,
+   "end": 28.12,
+   "hot": true
+  },
+  {
+   "w": "ANY",
+   "start": 28.44,
+   "end": 28.69,
+   "hot": false
+  },
+  {
+   "w": "FREE",
+   "start": 28.77,
+   "end": 29.02,
+   "hot": true
+  },
+  {
+   "w": "TIER",
+   "start": 29.08,
+   "end": 29.41,
+   "hot": true
+  },
+  {
+   "w": "NOW",
+   "start": 29.58,
+   "end": 29.76,
+   "hot": false
+  },
+  {
+   "w": "ANSWERS",
+   "start": 29.85,
+   "end": 30.28,
+   "hot": true
+  },
+  {
+   "w": "JUST",
+   "start": 30.35,
+   "end": 30.53,
+   "hot": false
+  },
+  {
+   "w": "FINE",
+   "start": 30.58,
+   "end": 30.98,
+   "hot": true
+  },
+  {
+   "w": "THE",
+   "start": 31.43,
+   "end": 31.55,
+   "hot": false
+  },
+  {
+   "w": "PICKER",
+   "start": 31.67,
+   "end": 32.09,
+   "hot": true
+  },
+  {
+   "w": "MATTERS",
+   "start": 32.26,
+   "end": 32.73,
+   "hot": true
+  },
+  {
+   "w": "MORE",
+   "start": 32.8,
+   "end": 32.97,
+   "hot": false
+  },
+  {
+   "w": "THAN",
+   "start": 32.99,
+   "end": 33.11,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 33.13,
+   "end": 33.2,
+   "hot": false
+  },
+  {
+   "w": "BRAND",
+   "start": 33.25,
+   "end": 33.68,
+   "hot": true
+  },
+  {
+   "w": "ONE",
+   "start": 33.8,
+   "end": 34.03,
+   "hot": true
+  },
+  {
+   "w": "SWITCH",
+   "start": 34.05,
+   "end": 34.48,
+   "hot": true
+  },
+  {
+   "w": "BETTER",
+   "start": 34.66,
+   "end": 34.95,
+   "hot": true
+  },
+  {
+   "w": "ANSWERS",
+   "start": 35.02,
+   "end": 35.63,
+   "hot": true
+  },
+  {
+   "w": "FOLLOW",
+   "start": 36.2,
+   "end": 36.67,
+   "hot": true
+  },
+  {
+   "w": "I",
+   "start": 36.73,
+   "end": 36.79,
+   "hot": false
+  },
+  {
+   "w": "UNPACK",
+   "start": 36.91,
+   "end": 37.26,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 37.35,
+   "end": 37.52,
+   "hot": true
+  },
+  {
+   "w": "AI",
+   "start": 37.59,
+   "end": 37.8,
+   "hot": true
+  },
+  {
+   "w": "STORY",
+   "start": 37.83,
+   "end": 38.14,
+   "hot": true
+  },
+  {
+   "w": "EVERY",
+   "start": 38.22,
+   "end": 38.45,
+   "hot": false
+  },
+  {
+   "w": "SINGLE",
+   "start": 38.49,
+   "end": 38.74,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 38.78,
+   "end": 39.29,
+   "hot": true
+  }
+ ],
+ "steps": [
+  {
+   "label": "STEP 1/2 \u2014 HARD STUFF: LEADER'S THINKING MODE",
+   "start": 22.2,
+   "end": 26.93
+  },
+  {
+   "label": "STEP 2/2 \u2014 EASY STUFF: ANY FREE TIER",
+   "start": 26.93,
+   "end": 31.43
+  }
+ ],
+ "vo": "assets/ep23/vo_v2.wav",
+ "cover": {
+  "title1": "AI JUST GOT",
+  "title2": "CHEAPER",
+  "sub": "pick right, pay less",
+  "emojis": "\ud83d\udcb8\ud83e\udd16",
+  "until": 2.2
+ },
+ "watermark": true,
+ "layout": "newsSplit",
+ "host": "assets/ep23/v2_host.mp4",
+ "emphasis": [
+  {
+   "text": "the picker matters more than the brand",
+   "start": 31.43,
+   "end": 36.2
+  }
+ ]
+}

@@ -1,0 +1,467 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep12/v2_hook.mp4",
+   "dur": 5.85
+  },
+  {
+   "src": "assets/ep09b/app_hotkey.mp4",
+   "dur": 3.23,
+   "from": 0.8
+  },
+  {
+   "src": "assets/ep09b/app_drag.mp4",
+   "dur": 2.37,
+   "from": 0.4
+  },
+  {
+   "src": "assets/ep09b/app_drag.mp4",
+   "dur": 3.04,
+   "from": 2.6
+  },
+  {
+   "src": "assets/ep09b/app_reply.mp4",
+   "dur": 2.68,
+   "from": 0.6
+  },
+  {
+   "src": "assets/ep12/v2_payoff.mp4",
+   "dur": 7.12
+  }
+ ],
+ "captions": [
+  {
+   "w": "YOU'RE",
+   "start": 0.0,
+   "end": 0.24,
+   "hot": false
+  },
+  {
+   "w": "USING",
+   "start": 0.28,
+   "end": 0.51,
+   "hot": false
+  },
+  {
+   "w": "CLAUDE",
+   "start": 0.56,
+   "end": 0.82,
+   "hot": false
+  },
+  {
+   "w": "IN",
+   "start": 0.85,
+   "end": 0.89,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 0.93,
+   "end": 0.95,
+   "hot": false
+  },
+  {
+   "w": "BROWSER",
+   "start": 0.99,
+   "end": 1.28,
+   "hot": true
+  },
+  {
+   "w": "TAB",
+   "start": 1.31,
+   "end": 1.71,
+   "hot": true
+  },
+  {
+   "w": "THAT'S",
+   "start": 1.79,
+   "end": 2.0,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 2.03,
+   "end": 2.1,
+   "hot": false
+  },
+  {
+   "w": "WEAK",
+   "start": 2.16,
+   "end": 2.32,
+   "hot": true
+  },
+  {
+   "w": "VERSION",
+   "start": 2.39,
+   "end": 2.9,
+   "hot": false
+  },
+  {
+   "w": "THERE'S",
+   "start": 3.45,
+   "end": 3.67,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 3.69,
+   "end": 3.71,
+   "hot": false
+  },
+  {
+   "w": "DESKTOP",
+   "start": 3.77,
+   "end": 4.2,
+   "hot": true
+  },
+  {
+   "w": "APP",
+   "start": 4.32,
+   "end": 4.64,
+   "hot": true
+  },
+  {
+   "w": "WATCH",
+   "start": 4.71,
+   "end": 5.28,
+   "hot": true
+  },
+  {
+   "w": "OPTION",
+   "start": 5.85,
+   "end": 6.2,
+   "hot": true
+  },
+  {
+   "w": "SPACE",
+   "start": 6.26,
+   "end": 6.75,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 6.78,
+   "end": 6.93,
+   "hot": false
+  },
+  {
+   "w": "CLAUDE",
+   "start": 6.99,
+   "end": 7.28,
+   "hot": false
+  },
+  {
+   "w": "POPS",
+   "start": 7.31,
+   "end": 7.57,
+   "hot": true
+  },
+  {
+   "w": "UP",
+   "start": 7.62,
+   "end": 7.75,
+   "hot": false
+  },
+  {
+   "w": "OVER",
+   "start": 7.84,
+   "end": 8.06,
+   "hot": false
+  },
+  {
+   "w": "ANYTHING",
+   "start": 8.09,
+   "end": 8.57,
+   "hot": true
+  },
+  {
+   "w": "DRAG",
+   "start": 9.08,
+   "end": 9.38,
+   "hot": true
+  },
+  {
+   "w": "A",
+   "start": 9.42,
+   "end": 9.44,
+   "hot": false
+  },
+  {
+   "w": "WHOLE",
+   "start": 9.48,
+   "end": 9.67,
+   "hot": false
+  },
+  {
+   "w": "FOLDER",
+   "start": 9.72,
+   "end": 10.1,
+   "hot": true
+  },
+  {
+   "w": "STRAIGHT",
+   "start": 10.22,
+   "end": 10.56,
+   "hot": true
+  },
+  {
+   "w": "IN",
+   "start": 10.62,
+   "end": 10.9,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 11.45,
+   "end": 11.59,
+   "hot": false
+  },
+  {
+   "w": "READS",
+   "start": 11.64,
+   "end": 11.83,
+   "hot": false
+  },
+  {
+   "w": "YOUR",
+   "start": 11.87,
+   "end": 11.98,
+   "hot": false
+  },
+  {
+   "w": "REAL",
+   "start": 12.03,
+   "end": 12.22,
+   "hot": true
+  },
+  {
+   "w": "FILES",
+   "start": 12.29,
+   "end": 12.89,
+   "hot": true
+  },
+  {
+   "w": "NO",
+   "start": 13.06,
+   "end": 13.22,
+   "hot": false
+  },
+  {
+   "w": "COPY",
+   "start": 13.3,
+   "end": 13.53,
+   "hot": true
+  },
+  {
+   "w": "PASTE",
+   "start": 13.57,
+   "end": 14.03,
+   "hot": true
+  },
+  {
+   "w": "ASK",
+   "start": 14.49,
+   "end": 15.0,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 15.08,
+   "end": 15.26,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 15.3,
+   "end": 15.37,
+   "hot": false
+  },
+  {
+   "w": "ANSWERS",
+   "start": 15.44,
+   "end": 15.8,
+   "hot": true
+  },
+  {
+   "w": "FROM",
+   "start": 15.84,
+   "end": 15.95,
+   "hot": false
+  },
+  {
+   "w": "YOUR",
+   "start": 15.99,
+   "end": 16.08,
+   "hot": false
+  },
+  {
+   "w": "FILES",
+   "start": 16.14,
+   "end": 16.64,
+   "hot": true
+  },
+  {
+   "w": "FREE",
+   "start": 17.17,
+   "end": 17.6,
+   "hot": true
+  },
+  {
+   "w": "AT",
+   "start": 17.72,
+   "end": 17.88,
+   "hot": false
+  },
+  {
+   "w": "CLAUDE",
+   "start": 17.94,
+   "end": 18.27,
+   "hot": false
+  },
+  {
+   "w": "DOT",
+   "start": 18.33,
+   "end": 18.59,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 18.7,
+   "end": 18.82,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 18.94,
+   "end": 19.05,
+   "hot": false
+  },
+  {
+   "w": "SLASH",
+   "start": 19.14,
+   "end": 19.48,
+   "hot": false
+  },
+  {
+   "w": "DOWNLOAD",
+   "start": 19.54,
+   "end": 20.09,
+   "hot": true
+  },
+  {
+   "w": "SO",
+   "start": 20.56,
+   "end": 20.72,
+   "hot": false
+  },
+  {
+   "w": "WHY",
+   "start": 20.77,
+   "end": 20.96,
+   "hot": true
+  },
+  {
+   "w": "ARE",
+   "start": 21.0,
+   "end": 21.11,
+   "hot": false
+  },
+  {
+   "w": "YOU",
+   "start": 21.14,
+   "end": 21.21,
+   "hot": false
+  },
+  {
+   "w": "STILL",
+   "start": 21.27,
+   "end": 21.5,
+   "hot": true
+  },
+  {
+   "w": "IN",
+   "start": 21.56,
+   "end": 21.62,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 21.66,
+   "end": 21.7,
+   "hot": false
+  },
+  {
+   "w": "TAB",
+   "start": 21.75,
+   "end": 22.12,
+   "hot": true
+  },
+  {
+   "w": "FOLLOW",
+   "start": 22.23,
+   "end": 22.56,
+   "hot": true
+  },
+  {
+   "w": "FOR",
+   "start": 22.62,
+   "end": 22.73,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 22.81,
+   "end": 23.01,
+   "hot": false
+  },
+  {
+   "w": "AI",
+   "start": 23.08,
+   "end": 23.35,
+   "hot": false
+  },
+  {
+   "w": "SKILL",
+   "start": 23.38,
+   "end": 23.65,
+   "hot": true
+  },
+  {
+   "w": "A",
+   "start": 23.7,
+   "end": 23.72,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 23.77,
+   "end": 24.29,
+   "hot": true
+  }
+ ],
+ "steps": [
+  {
+   "label": "STEP 1/3 \u2014 OPT+SPACE = SUMMON",
+   "start": 5.85,
+   "end": 9.08
+  },
+  {
+   "label": "STEP 2/3 \u2014 DRAG FILES IN",
+   "start": 9.08,
+   "end": 14.49
+  },
+  {
+   "label": "STEP 3/3 \u2014 ASK YOUR FILES",
+   "start": 14.49,
+   "end": 17.17
+  }
+ ],
+ "vo": "assets/ep12/vo_v2.wav",
+ "cover": {
+  "title1": "CLAUDE ON",
+  "title2": "YOUR DESKTOP",
+  "emojis": "\ud83d\udda5\ufe0f\u26a1",
+  "until": 3.0
+ },
+ "watermark": true
+}

@@ -1,0 +1,13 @@
+Claude quietly burns through tokens — and tokens cost you money and speed. Type /context to see exactly what's filling its memory, then /compact to squeeze the whole conversation into a tight summary. Same memory, far fewer tokens, faster and cheaper answers. Do it whenever a chat gets long.
+
+🎯 A new AI trick every day — follow so you don't miss one
+📚 "Claude Zero to Pro" — the beginner series
+📬 Free AI tools cheat sheet: link in profile
+
+🎙️ The AI voice tool we use: https://try.elevenlabs.io/4wscoc0bm5zl
+(Affiliate link — we earn a commission if you subscribe, at no extra cost to you.)
+
+The presenter is an AI-animated version of me — built with the tools we teach. Made with AI, checked by a human.
+⚠️ Not affiliated with Anthropic — just showing what works.
+
+#ClaudeCode #AITokens #AICost #ClaudeAI #Shorts

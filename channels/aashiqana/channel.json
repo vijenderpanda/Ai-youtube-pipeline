@@ -1,0 +1,11 @@
+{
+  "key": "aashiqana",
+  "name": "Aashiqana",
+  "made_for_kids": false,
+  "cadence_days": 7,
+  "cadence_label": "~1 premium/wk (release week Aug 6-9 is a burst)",
+  "guard_days": 11,
+  "slot_time_ist": "16:00",
+  "calendar": "CONTENT-CALENDAR.csv",
+  "produce_hint": "open a Claude session -> 'produce the next Aashiqana calendar row (song brief -> Suno -> Leonardo -> karaoke v3)'"
+}

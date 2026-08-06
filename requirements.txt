@@ -1,0 +1,8 @@
+# YouTube Data API upload path (scripts/youtube_upload.py)
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+
+# Image pipeline (thumbnails / channel art)
+Pillow
+requests

@@ -1,0 +1,1 @@
+{"title": ".claude/commands/review.md", "steps": [{"type": "badge", "text": "$ mkdir -p .claude/commands", "color": "green"}, {"type": "type", "text": "# review.md", "color": "magenta", "cps": 22}, {"type": "out", "lps": 5, "lines": [["Review this diff for bugs,", "blue"], ["style, perf and missing", "blue"], ["tests. Rank by severity.", "blue"]]}, {"type": "pause", "dur": 1.2}]}

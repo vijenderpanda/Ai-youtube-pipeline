@@ -1,0 +1,11 @@
+[
+  {"img": "channels/language-abc/assets/scenes/s00_treehouse_v2_0.jpg", "dur": 12, "motion": "zoom_in"},
+  {"img": "channels/language-abc/assets/scenes/s01_english_hello_0.jpg", "dur": 9, "motion": "zoom_out"},
+  {"img": "channels/language-abc/assets/scenes/s02_spanish_plaza_0.jpg", "dur": 12, "motion": "pan_left"},
+  {"img": "channels/language-abc/assets/scenes/s03_french_cafe_0.jpg", "dur": 12, "motion": "pan_right"},
+  {"img": "channels/language-abc/assets/scenes/s04_german_hillside_0.jpg", "dur": 12, "motion": "pan_left"},
+  {"img": "channels/language-abc/assets/scenes/s05_namaste_v2_1.jpg", "dur": 12, "motion": "zoom_in"},
+  {"img": "channels/language-abc/assets/scenes/s06_recap_goodbye_1.jpg", "dur": 12, "motion": "zoom_out"},
+  {"img": "channels/language-abc/assets/scenes/s00_treehouse_v2_0.jpg", "dur": 10, "motion": "pan_right"},
+  {"img": "channels/language-abc/assets/scenes/s06_recap_goodbye_1.jpg", "dur": 11, "motion": "zoom_in"}
+]

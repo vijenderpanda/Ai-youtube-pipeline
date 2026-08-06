@@ -1,0 +1,18 @@
+{
+  "title": "claude-code — ~/project",
+  "steps": [
+    {"type": "type", "text": "> refactor the auth module", "color": "white", "cps": 22},
+    {"type": "pause", "dur": 0.4},
+    {"type": "out", "lps": 7, "lines": [
+      ["", "white"],
+      ["editing 14 files...", "dim"],
+      ["  ~/auth/login.ts", "red"],
+      ["  ~/auth/session.ts", "red"],
+      ["  ~/api/routes.ts", "red"],
+      ["  + 11 more", "red"],
+      ["", "white"],
+      ["wait — what did it just change?!", "magenta"]
+    ]},
+    {"type": "pause", "dur": 1.2}
+  ]
+}

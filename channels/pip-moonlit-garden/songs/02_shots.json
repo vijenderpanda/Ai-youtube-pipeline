@@ -1,0 +1,21 @@
+[
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib13_wide_0.jpg",     "dur": 10, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s02_count1_0.jpg",      "dur": 10, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib02_moon_0.jpg",      "dur": 10, "motion": "zoom_out"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s02_count3_0.jpg",      "dur": 10, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib03_flowers_0.jpg",   "dur": 10, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s02_count5_0.jpg",      "dur": 10, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib06_star_0.jpg",      "dur": 10, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib08_stargaze_0.jpg",  "dur": 10, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib09_pondsit_0.jpg",   "dur": 10, "motion": "zoom_out"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s02_pond_0.jpg",        "dur": 10, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib07_peekaboo_0.jpg",  "dur": 10, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s01_hill_0.jpg",        "dur": 10, "motion": "zoom_out"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib01_wave_0.jpg",      "dur": 10, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s03_oak_1.jpg",         "dur": 10, "motion": "pan_right"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib12_hugheart_0.jpg",  "dur": 10, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib05_rubeye_0.jpg",    "dur": 10, "motion": "zoom_out"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib14_leafblanket_0.jpg","dur": 10, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s04_sleep_0.jpg",       "dur": 10, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s04_sleep_1.jpg",       "dur": 10, "motion": "zoom_in"}
+]

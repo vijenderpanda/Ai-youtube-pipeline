@@ -1,0 +1,25 @@
+{
+  "_note": "Hook cut (155.28-184.88s = final chorus). Shot arc is written to the lyric, not reshuffled: together -> alone in the rain -> incomplete -> lost -> found -> faith. cx/cy are the crop-window centre as a fraction of the source frame; drift is the linear pan in px across the shot.",
+  "card_dur": 1.2,
+  "card": "channels/aashiqana/songs/01-baarish-aur-tum/short_hook/work/endcard.png",
+  "shots": [
+    {"src": "channels/aashiqana/songs/01-baarish-aur-tum/renders/clips/c01_rain_intimate.mp4",
+     "kind": "video", "dur": 4.90, "cx": 0.60, "cy": 0.50, "drift": [-40, 70],
+     "_lyric": "Baarish ban ke tu — the couple under one umbrella, rain street"},
+    {"src": "channels/aashiqana/songs/01-baarish-aur-tum/renders/clips/c03_meera_rain_a.mp4",
+     "kind": "video", "dur": 4.90, "cx": 0.47, "cy": 0.44, "drift": [30, -60],
+     "_lyric": "mujh mein barasta ja — she is in the rain, alone"},
+    {"src": "channels/aashiqana/songs/01-baarish-aur-tum/renders/clips/c05_cafe_couple.mp4",
+     "kind": "video", "dur": 4.90, "cx": 0.47, "cy": 0.48, "drift": [-30, 60],
+     "_lyric": "Tere bina main adhoora — alone at the cafe window"},
+    {"src": "channels/aashiqana/songs/01-baarish-aur-tum/renders/clips/c10_hills_walk.mp4",
+     "kind": "video", "dur": 5.80, "cx": 0.52, "cy": 0.54, "drift": [0, -80],
+     "_lyric": "tere bina main kho gaya — walking away into the mist"},
+    {"src": "channels/aashiqana/songs/01-baarish-aur-tum/renders/clips/c07_rooftop_embrace.mp4",
+     "kind": "video", "dur": 5.80, "cx": 0.42, "cy": 0.46, "drift": [40, 50],
+     "_lyric": "Tu hi hai, tu hi hai — the embrace, dusk rooftop"},
+    {"src": "channels/aashiqana/songs/01-baarish-aur-tum/scenes/scene_rooftop_0.jpg",
+     "kind": "still", "cx": 0.45, "cy": 0.44, "zoom": [1.0, 1.075],
+     "_lyric": "meri wafaa — foreheads together, hold to the card"}
+  ]
+}

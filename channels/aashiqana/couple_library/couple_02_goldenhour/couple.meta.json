@@ -1,0 +1,43 @@
+{
+  "id": "couple_02",
+  "codename": "Golden Hour",
+  "status": "locked",
+  "engine": "leonardo/nano-banana-2",
+  "created": "2026-08-06",
+  "size": "848x1264 (2:3) — upscale keepers to 4K per-song",
+  "user_locked_anchor": "auto-picked cand_0 (heroine pastel dress, hero blue linen) — user may swap",
+  "refs": {
+    "anchor": "faces/couple_anchor.jpg",
+    "hero_face": "faces/hero_face.jpg",
+    "heroine_face": "faces/heroine_face.jpg",
+    "how_to_use": "Nano Banana 2 Image Ref: attach faces/couple_anchor.jpg for two-person shots; hero_face / heroine_face for solos. Prompt 'Using the woman/man/couple from the reference image, keep exact same face and identity...'"
+  },
+  "look": {
+    "heroine": "extremely attractive Indian woman, mid-20s, flawless fair complexion, big expressive dark eyes, sharp cheekbones, soft nude-rose lips, long flowing dark hair, natural glam makeup, flowing pastel summer dress",
+    "hero": "handsome Indian man, mid-20s, strong jawline, light stubble, thick styled dark hair, fair skin, fit athletic frame, light-blue rolled-sleeve linen shirt",
+    "world": "golden-hour sunset over rolling meadows/hilltop; warm sun flare and rim light; dreamy amber sky and soft haze; glowing golden bokeh; 85mm f/1.4 shallow DOF; warm filmic grade; lifelike skin with visible pores; film grain; romantic Bollywood aesthetic"
+  },
+  "tags": {
+    "vibe": ["golden-hour", "sunset", "meadow", "yearning"],
+    "mood": ["hopeful", "tender", "warm", "romantic-longing"],
+    "palette": ["amber", "gold", "warm", "soft-pastel"],
+    "time_of_day": "sunset / golden hour",
+    "season": "summer",
+    "location": ["meadow", "hilltop", "open fields", "sunset ridge"],
+    "tempo_fit": ["mid", "slow", "uplifting"],
+    "energy": "warm-hopeful",
+    "wardrobe": ["pastel dress", "linen shirt", "light", "airy"],
+    "best_for": ["new love", "aaja ve / come-to-me", "waiting/hope", "soft happy love", "wedding-teaser warmth"]
+  },
+  "shots": [
+    {"code": "G-front",   "files": ["shots/01_G_heroine_front_a.jpg", "shots/02_G_heroine_front_b.jpg"], "type": "heroine", "hook": true,  "motion_ready": true, "note": "radiant eye-contact beauty close-up — prime Shorts hook; heroine_face ref"},
+    {"code": "G-3q",      "files": ["shots/03_G_heroine_3q_a.jpg", "shots/04_G_heroine_3q_b.jpg"], "type": "heroine", "hook": true,  "motion_ready": true, "note": "3/4 wistful gazing into the sunset"},
+    {"code": "G-walk",    "files": ["shots/05_G_heroine_walk_a.jpg", "shots/06_G_heroine_walk_b.jpg"], "type": "heroine", "hook": true,  "motion_ready": true, "note": "walking through the golden field, dress flowing"},
+    {"code": "C-walk",    "files": ["shots/07_C_couple_walk_a.jpg", "shots/08_C_couple_walk_b.jpg"], "type": "couple",  "hook": false, "motion_ready": true, "note": "couple walking hand-in-hand, sun flare"},
+    {"code": "C-embrace", "files": ["shots/09_C_couple_embrace_a.jpg", "shots/10_C_couple_embrace_b.jpg"], "type": "couple", "hook": true, "motion_ready": true, "note": "forehead-to-forehead embrace at sunset — emotional peak"},
+    {"code": "H-closeup", "files": ["shots/11_H_hero_closeup_a.jpg", "shots/12_H_hero_closeup_b.jpg"], "type": "hero", "hook": false, "motion_ready": true, "note": "hero warm close-up; hero_face ref"}
+  ],
+  "motion_clips": [],
+  "motion_note": "per-song: generate 2-3 motion clips at production time (Leonardo Hailuo 2.3, start-frame from a shot, 9:16, subtle motion). See couple_01 for the proven recipe.",
+  "compliance": "original AI couple; no celebrity likeness; fair & unmistakably Indian; synthetic-media disclosure ON at upload"
+}

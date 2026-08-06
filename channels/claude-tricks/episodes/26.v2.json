@@ -1,0 +1,567 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep26/v2_hook.mp4",
+   "dur": 5.94
+  },
+  {
+   "src": "assets/ep26/demo_human.mp4",
+   "dur": 2.34,
+   "from": 13.0
+  },
+  {
+   "src": "assets/ep26/demo_human.mp4",
+   "dur": 2.77,
+   "from": 22.0
+  },
+  {
+   "src": "assets/ep26/demo_human.mp4",
+   "dur": 2.73,
+   "from": 30.0
+  },
+  {
+   "src": "assets/ep26/demo_human.mp4",
+   "dur": 3.7,
+   "from": 40.0
+  },
+  {
+   "src": "assets/ep26/demo_human.mp4",
+   "dur": 2.73,
+   "from": 50.0
+  },
+  {
+   "src": "assets/ep26/v2_payoff.mp4",
+   "dur": 9.74
+  }
+ ],
+ "captions": [
+  {
+   "w": "EVERYONE",
+   "start": 0.0,
+   "end": 0.41,
+   "hot": true
+  },
+  {
+   "w": "CAN",
+   "start": 0.43,
+   "end": 0.55,
+   "hot": false
+  },
+  {
+   "w": "TELL",
+   "start": 0.59,
+   "end": 0.73,
+   "hot": true
+  },
+  {
+   "w": "WHEN",
+   "start": 0.77,
+   "end": 0.87,
+   "hot": false
+  },
+  {
+   "w": "YOUR",
+   "start": 0.91,
+   "end": 1.01,
+   "hot": false
+  },
+  {
+   "w": "WRITING",
+   "start": 1.04,
+   "end": 1.35,
+   "hot": true
+  },
+  {
+   "w": "CAME",
+   "start": 1.43,
+   "end": 1.78,
+   "hot": false
+  },
+  {
+   "w": "FROM",
+   "start": 1.9,
+   "end": 2.14,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 2.26,
+   "end": 2.44,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 2.52,
+   "end": 2.94,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 3.53,
+   "end": 3.74,
+   "hot": true
+  },
+  {
+   "w": "LINE",
+   "start": 3.79,
+   "end": 4.0,
+   "hot": true
+  },
+  {
+   "w": "FIXES",
+   "start": 4.05,
+   "end": 4.41,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 4.47,
+   "end": 4.67,
+   "hot": false
+  },
+  {
+   "w": "WATCH",
+   "start": 4.84,
+   "end": 5.45,
+   "hot": true
+  },
+  {
+   "w": "ASK",
+   "start": 5.94,
+   "end": 6.24,
+   "hot": false
+  },
+  {
+   "w": "FOR",
+   "start": 6.28,
+   "end": 6.4,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 6.44,
+   "end": 6.47,
+   "hot": false
+  },
+  {
+   "w": "SIMPLE",
+   "start": 6.53,
+   "end": 6.84,
+   "hot": true
+  },
+  {
+   "w": "CLIENT",
+   "start": 6.87,
+   "end": 7.22,
+   "hot": true
+  },
+  {
+   "w": "EMAIL",
+   "start": 7.28,
+   "end": 7.77,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 8.28,
+   "end": 8.42,
+   "hot": false
+  },
+  {
+   "w": "THIS",
+   "start": 8.47,
+   "end": 8.62,
+   "hot": false
+  },
+  {
+   "w": "COMES",
+   "start": 8.67,
+   "end": 8.88,
+   "hot": false
+  },
+  {
+   "w": "BACK",
+   "start": 8.94,
+   "end": 9.32,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 9.53,
+   "end": 9.59,
+   "hot": false
+  },
+  {
+   "w": "HOPE",
+   "start": 9.65,
+   "end": 9.79,
+   "hot": true
+  },
+  {
+   "w": "YOU'RE",
+   "start": 9.81,
+   "end": 9.95,
+   "hot": false
+  },
+  {
+   "w": "DOING",
+   "start": 9.97,
+   "end": 10.16,
+   "hot": false
+  },
+  {
+   "w": "WELL",
+   "start": 10.22,
+   "end": 10.55,
+   "hot": true
+  },
+  {
+   "w": "NOBODY",
+   "start": 11.05,
+   "end": 11.38,
+   "hot": true
+  },
+  {
+   "w": "TALKS",
+   "start": 11.42,
+   "end": 11.63,
+   "hot": true
+  },
+  {
+   "w": "LIKE",
+   "start": 11.67,
+   "end": 11.82,
+   "hot": false
+  },
+  {
+   "w": "THAT",
+   "start": 11.85,
+   "end": 12.2,
+   "hot": false
+  },
+  {
+   "w": "IT'S",
+   "start": 12.38,
+   "end": 12.56,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 12.59,
+   "end": 12.61,
+   "hot": false
+  },
+  {
+   "w": "FORM",
+   "start": 12.65,
+   "end": 12.84,
+   "hot": true
+  },
+  {
+   "w": "LETTER",
+   "start": 12.9,
+   "end": 13.28,
+   "hot": true
+  },
+  {
+   "w": "SO",
+   "start": 13.78,
+   "end": 13.91,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 13.98,
+   "end": 14.0,
+   "hot": false
+  },
+  {
+   "w": "ADD",
+   "start": 14.12,
+   "end": 14.3,
+   "hot": true
+  },
+  {
+   "w": "ONE",
+   "start": 14.36,
+   "end": 14.55,
+   "hot": true
+  },
+  {
+   "w": "LINE",
+   "start": 14.59,
+   "end": 14.98,
+   "hot": true
+  },
+  {
+   "w": "REWRITE",
+   "start": 15.19,
+   "end": 15.63,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 15.65,
+   "end": 15.71,
+   "hot": false
+  },
+  {
+   "w": "LIKE",
+   "start": 15.77,
+   "end": 15.93,
+   "hot": false
+  },
+  {
+   "w": "I'D",
+   "start": 15.96,
+   "end": 16.08,
+   "hot": false
+  },
+  {
+   "w": "TEXT",
+   "start": 16.11,
+   "end": 16.4,
+   "hot": true
+  },
+  {
+   "w": "A",
+   "start": 16.44,
+   "end": 16.46,
+   "hot": false
+  },
+  {
+   "w": "FRIEND",
+   "start": 16.51,
+   "end": 16.88,
+   "hot": true
+  },
+  {
+   "w": "SAME",
+   "start": 17.48,
+   "end": 17.79,
+   "hot": true
+  },
+  {
+   "w": "EMAIL",
+   "start": 17.81,
+   "end": 18.23,
+   "hot": true
+  },
+  {
+   "w": "NOW",
+   "start": 18.38,
+   "end": 18.56,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 18.66,
+   "end": 18.71,
+   "hot": false
+  },
+  {
+   "w": "PERSON",
+   "start": 18.87,
+   "end": 19.21,
+   "hot": true
+  },
+  {
+   "w": "WROTE",
+   "start": 19.26,
+   "end": 19.5,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 19.54,
+   "end": 19.71,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 20.21,
+   "end": 20.39,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 20.9,
+   "end": 21.11,
+   "hot": false
+  },
+  {
+   "w": "WRITES",
+   "start": 21.22,
+   "end": 21.58,
+   "hot": false
+  },
+  {
+   "w": "FORMAL",
+   "start": 21.64,
+   "end": 21.94,
+   "hot": true
+  },
+  {
+   "w": "BY",
+   "start": 22.0,
+   "end": 22.08,
+   "hot": false
+  },
+  {
+   "w": "DEFAULT",
+   "start": 22.15,
+   "end": 22.62,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 22.68,
+   "end": 22.82,
+   "hot": false
+  },
+  {
+   "w": "COPIES",
+   "start": 22.89,
+   "end": 23.27,
+   "hot": true
+  },
+  {
+   "w": "WHATEVER",
+   "start": 23.32,
+   "end": 23.67,
+   "hot": false
+  },
+  {
+   "w": "VOICE",
+   "start": 23.72,
+   "end": 24.03,
+   "hot": true
+  },
+  {
+   "w": "YOU",
+   "start": 24.08,
+   "end": 24.17,
+   "hot": false
+  },
+  {
+   "w": "NAME",
+   "start": 24.23,
+   "end": 24.46,
+   "hot": true
+  },
+  {
+   "w": "SO",
+   "start": 24.48,
+   "end": 24.6,
+   "hot": false
+  },
+  {
+   "w": "NAME",
+   "start": 24.68,
+   "end": 24.96,
+   "hot": true
+  },
+  {
+   "w": "ONE",
+   "start": 25.03,
+   "end": 25.31,
+   "hot": true
+  },
+  {
+   "w": "YOU",
+   "start": 25.39,
+   "end": 25.51,
+   "hot": false
+  },
+  {
+   "w": "ACTUALLY",
+   "start": 25.6,
+   "end": 25.94,
+   "hot": false
+  },
+  {
+   "w": "USE",
+   "start": 25.99,
+   "end": 26.37,
+   "hot": true
+  },
+  {
+   "w": "FOLLOW",
+   "start": 26.81,
+   "end": 27.33,
+   "hot": true
+  },
+  {
+   "w": "I",
+   "start": 27.48,
+   "end": 27.54,
+   "hot": false
+  },
+  {
+   "w": "UNPACK",
+   "start": 27.66,
+   "end": 28.03,
+   "hot": true
+  },
+  {
+   "w": "ONE",
+   "start": 28.11,
+   "end": 28.3,
+   "hot": true
+  },
+  {
+   "w": "AI",
+   "start": 28.35,
+   "end": 28.57,
+   "hot": true
+  },
+  {
+   "w": "SKILL",
+   "start": 28.62,
+   "end": 28.86,
+   "hot": true
+  },
+  {
+   "w": "EVERY",
+   "start": 28.93,
+   "end": 29.13,
+   "hot": false
+  },
+  {
+   "w": "SINGLE",
+   "start": 29.16,
+   "end": 29.43,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 29.47,
+   "end": 29.95,
+   "hot": true
+  }
+ ],
+ "steps": [
+  {
+   "label": "THE FIX",
+   "start": 13.78,
+   "end": 17.48,
+   "pos": "tl"
+  }
+ ],
+ "vo": "assets/ep26/vo_v2.wav",
+ "cover": {
+  "title1": "EVERYONE KNOWS",
+  "title2": "YOU USED AI",
+  "sub": "one line fixes it",
+  "emojis": "\ud83e\udd16",
+  "until": 3.0
+ },
+ "watermark": true,
+ "emphasis": [
+  {
+   "text": "name the voice you want copied",
+   "start": 20.21,
+   "end": 26.81
+  }
+ ]
+}

@@ -1,0 +1,28 @@
+A US appeals court threw out the order that had blocked Perplexity's AI shopping assistant from Amazon — Amazon lost this round, but the lawsuit itself is still running.
+Precisely: on August 4, 2026 a three-judge Ninth Circuit panel held that Amazon was unlikely to succeed on the "access" element of its CFAA and CDAFA claims, vacated the district court's preliminary injunction as an abuse of discretion, and remanded for further proceedings — expressly without deciding the merits.
+
+SOURCES & DATES
+• Amazon.com Services, LLC v. Perplexity AI, Inc., No. 26-1444 (9th Cir., filed Aug 4, 2026) — the opinion itself, FOR PUBLICATION. Vacatur + remand; the "access" holding; "the CFAA contemplates access by a person… it is a tool, not a person for statutory purposes"; the same reasoning defeating the California CDAFA claim; the court's express statement that it does NOT establish a new legal regime for agentic AI; footnote 5 preserving Amazon's ability to restrict agents via its own Terms of Service; the warning that Amazon's theory could have exposed users themselves to criminal liability; and the mechanics — Perplexity's servers never directly access Amazon's servers. Panel: Judges Milan D. Smith Jr. and Eric C. Tung, with District Judge John Charles Hinderaker. Complaint filed Nov 2025; injunction granted Mar 2026.
+  https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf (Aug 4, 2026)
+• Amazon's response — "We respectfully disagree with today's decision on the preliminary injunction. We remain confident in our case and are evaluating our next steps."
+  https://www.engadget.com/2230471/perplexity-has-successfully-overturned-amazon-injunction-on-its-ai-shopping-bot/ (Aug 4, 2026)
+• Perplexity's response, and the framing of this as the first federal appellate ruling on whether AI agents acting for users can access online platforms.
+  https://www.pymnts.com/amazon/2026/appeals-court-overturns-ban-on-perplexity-ai-shopping-agents-on-amazon/ (Aug 5, 2026)
+• Comet availability and tiers.
+  https://www.perplexity.ai/comet (checked Aug 6, 2026) · https://www.eesel.ai/blog/perplexity-comet-pricing (checked Aug 6, 2026) · https://ecommerceguide.com/agents/comet-2/ (checked Aug 6, 2026)
+
+APPEAL STATUS: No reported appeal signal as of 2026-08-06: Amazon has publicly disagreed and says it is evaluating next steps, but no en banc or Supreme Court filing is reported. Amazon's lack of a filing is not acceptance — it stated on the record that it disagrees.
+
+WHAT THE AGENT ACTUALLY DOES TODAY — AND WHAT IT DOESN'T
+Perplexity's Comet browser and its Assistant are available to consumers, free, on Windows 10/11, macOS 13+, iOS and Android; paid Pro/Max tiers raise browser-agent query limits, and Max adds background assistants (checked Aug 6, 2026). It browses, compares and fills a cart. On consumer tiers the payment step is gated behind human confirmation — the agent does the legwork and hands back at checkout. Three honest limits: (1) how autonomous the Assistant really is was disputed by the parties and the court did not resolve it; (2) the Assistant works at your direction — it cannot operate wholly independently; (3) a vacated injunction is not a restored feature. The court removed a legal bar; it did not order Amazon to admit anyone, and footnote 5 leaves Amazon free to block agents through its Terms of Service. We have not confirmed the Assistant operating on Amazon.com for a consumer today, and we are not claiming it does. This is reporting, not legal advice.
+
+⚠️ Not affiliated with Amazon or Perplexity. Neither company sponsored, reviewed or approved this video, and neither is a source for anything here beyond its own public statement quoted above. No Amazon or Perplexity logo, screenshot or interface appears in this video: the shopping-assistant chat and the delegation card are our own neutral in-house mock-ups, labelled illustrative. Made with AI, checked by a human — the presenter is an AI-animated version of me, built with the tools we teach.
+
+🎙️ The AI voice tool we use: https://try.elevenlabs.io/4wscoc0bm5zl
+(Affiliate link — we earn a commission if you subscribe, at no extra cost to you. ElevenLabs is deliberately named here and NOT in the non-affiliation line above, because we do have a commercial relationship with it and that claim would be false. B-roll via Pexels, licensed, no attribution required. Music is our own generated instrumental.)
+
+🎯 One AI story unpacked every single day — follow so you don't miss one
+📚 "Claude Zero to Pro" — the beginner series
+📬 Free AI tools cheat sheet + every link we mention: the About tab on this channel
+
+#AIAgents #AIShopping #AgenticAI #AINews #Shorts

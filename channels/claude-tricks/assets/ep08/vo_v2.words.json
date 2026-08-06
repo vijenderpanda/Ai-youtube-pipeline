@@ -1,0 +1,502 @@
+[
+ {
+  "w": "HERE'S",
+  "start": 0.0,
+  "end": 0.27
+ },
+ {
+  "w": "ONE",
+  "start": 0.3,
+  "end": 0.44
+ },
+ {
+  "w": "FOR",
+  "start": 0.46,
+  "end": 0.57
+ },
+ {
+  "w": "PARENTS",
+  "start": 0.61,
+  "end": 1.18
+ },
+ {
+  "w": "<BREAK",
+  "start": 1.65,
+  "end": 1.65
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 1.65,
+  "end": 1.65
+ },
+ {
+  "w": "/>",
+  "start": 1.65,
+  "end": 1.65
+ },
+ {
+  "w": "STARTING",
+  "start": 1.65,
+  "end": 2.0
+ },
+ {
+  "w": "AUGUST",
+  "start": 2.07,
+  "end": 2.39
+ },
+ {
+  "w": "TENTH",
+  "start": 2.42,
+  "end": 2.83
+ },
+ {
+  "w": "GOOGLE",
+  "start": 3.01,
+  "end": 3.4
+ },
+ {
+  "w": "IS",
+  "start": 3.46,
+  "end": 3.56
+ },
+ {
+  "w": "EXPANDING",
+  "start": 3.63,
+  "end": 4.35
+ },
+ {
+  "w": "ITS",
+  "start": 4.4,
+  "end": 4.53
+ },
+ {
+  "w": "GEMINI",
+  "start": 4.6,
+  "end": 5.03
+ },
+ {
+  "w": "A.I",
+  "start": 5.14,
+  "end": 5.74
+ },
+ {
+  "w": "INSIDE",
+  "start": 5.94,
+  "end": 6.61
+ },
+ {
+  "w": "GOOGLE",
+  "start": 6.76,
+  "end": 7.11
+ },
+ {
+  "w": "CLASSROOM",
+  "start": 7.15,
+  "end": 7.67
+ },
+ {
+  "w": "TO",
+  "start": 7.77,
+  "end": 7.91
+ },
+ {
+  "w": "STUDENTS",
+  "start": 7.98,
+  "end": 8.41
+ },
+ {
+  "w": "OF",
+  "start": 8.44,
+  "end": 8.51
+ },
+ {
+  "w": "ALL",
+  "start": 8.58,
+  "end": 8.74
+ },
+ {
+  "w": "AGES",
+  "start": 8.8,
+  "end": 9.29
+ },
+ {
+  "w": "<BREAK",
+  "start": 9.78,
+  "end": 9.78
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 9.78,
+  "end": 9.78
+ },
+ {
+  "w": "/>",
+  "start": 9.78,
+  "end": 9.78
+ },
+ {
+  "w": "IF",
+  "start": 9.78,
+  "end": 9.91
+ },
+ {
+  "w": "A",
+  "start": 9.96,
+  "end": 9.98
+ },
+ {
+  "w": "SCHOOL",
+  "start": 10.04,
+  "end": 10.36
+ },
+ {
+  "w": "ALREADY",
+  "start": 10.43,
+  "end": 10.81
+ },
+ {
+  "w": "HAS",
+  "start": 10.86,
+  "end": 10.99
+ },
+ {
+  "w": "IT",
+  "start": 11.05,
+  "end": 11.12
+ },
+ {
+  "w": "SWITCHED",
+  "start": 11.17,
+  "end": 11.51
+ },
+ {
+  "w": "ON",
+  "start": 11.56,
+  "end": 11.95
+ },
+ {
+  "w": "STUDENTS",
+  "start": 12.19,
+  "end": 12.61
+ },
+ {
+  "w": "CAN",
+  "start": 12.64,
+  "end": 12.76
+ },
+ {
+  "w": "TURN",
+  "start": 12.82,
+  "end": 13.07
+ },
+ {
+  "w": "THEIR",
+  "start": 13.12,
+  "end": 13.27
+ },
+ {
+  "w": "OWN",
+  "start": 13.34,
+  "end": 13.5
+ },
+ {
+  "w": "CLASS",
+  "start": 13.55,
+  "end": 13.82
+ },
+ {
+  "w": "MATERIALS",
+  "start": 13.86,
+  "end": 14.31
+ },
+ {
+  "w": "INTO",
+  "start": 14.36,
+  "end": 14.51
+ },
+ {
+  "w": "FLASHCARDS",
+  "start": 14.58,
+  "end": 15.44
+ },
+ {
+  "w": "PRACTICE",
+  "start": 15.59,
+  "end": 16.01
+ },
+ {
+  "w": "QUIZZES",
+  "start": 16.05,
+  "end": 16.6
+ },
+ {
+  "w": "AND",
+  "start": 16.78,
+  "end": 16.94
+ },
+ {
+  "w": "STUDY",
+  "start": 17.0,
+  "end": 17.28
+ },
+ {
+  "w": "GUIDES",
+  "start": 17.33,
+  "end": 17.77
+ },
+ {
+  "w": "<BREAK",
+  "start": 18.27,
+  "end": 18.27
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 18.27,
+  "end": 18.27
+ },
+ {
+  "w": "/>",
+  "start": 18.27,
+  "end": 18.27
+ },
+ {
+  "w": "FOR",
+  "start": 18.27,
+  "end": 18.43
+ },
+ {
+  "w": "FAMILIES",
+  "start": 18.48,
+  "end": 19.09
+ },
+ {
+  "w": "THAT",
+  "start": 19.2,
+  "end": 19.4
+ },
+ {
+  "w": "MEANS",
+  "start": 19.46,
+  "end": 19.71
+ },
+ {
+  "w": "AN",
+  "start": 19.8,
+  "end": 19.92
+ },
+ {
+  "w": "A.I",
+  "start": 20.04,
+  "end": 20.38
+ },
+ {
+  "w": "STUDY",
+  "start": 20.4,
+  "end": 20.7
+ },
+ {
+  "w": "HELPER",
+  "start": 20.77,
+  "end": 21.16
+ },
+ {
+  "w": "COULD",
+  "start": 21.37,
+  "end": 21.57
+ },
+ {
+  "w": "SIT",
+  "start": 21.62,
+  "end": 21.82
+ },
+ {
+  "w": "RIGHT",
+  "start": 21.91,
+  "end": 22.2
+ },
+ {
+  "w": "INSIDE",
+  "start": 22.29,
+  "end": 22.72
+ },
+ {
+  "w": "SCHOOL",
+  "start": 22.74,
+  "end": 23.02
+ },
+ {
+  "w": "SOFTWARE",
+  "start": 23.08,
+  "end": 23.65
+ },
+ {
+  "w": "<BREAK",
+  "start": 24.14,
+  "end": 24.14
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 24.14,
+  "end": 24.14
+ },
+ {
+  "w": "/>",
+  "start": 24.14,
+  "end": 24.14
+ },
+ {
+  "w": "THE",
+  "start": 24.14,
+  "end": 24.27
+ },
+ {
+  "w": "GOOD",
+  "start": 24.34,
+  "end": 24.52
+ },
+ {
+  "w": "NEWS:",
+  "start": 24.58,
+  "end": 25.0
+ },
+ {
+  "w": "SCHOOL",
+  "start": 25.17,
+  "end": 25.48
+ },
+ {
+  "w": "ADMINS",
+  "start": 25.55,
+  "end": 25.95
+ },
+ {
+  "w": "CAN",
+  "start": 26.0,
+  "end": 26.11
+ },
+ {
+  "w": "TURN",
+  "start": 26.17,
+  "end": 26.37
+ },
+ {
+  "w": "IT",
+  "start": 26.41,
+  "end": 26.49
+ },
+ {
+  "w": "OFF",
+  "start": 26.55,
+  "end": 26.7
+ },
+ {
+  "w": "FOR",
+  "start": 26.74,
+  "end": 26.83
+ },
+ {
+  "w": "UNDER-EIGHTEENS",
+  "start": 26.89,
+  "end": 27.78
+ },
+ {
+  "w": "<BREAK",
+  "start": 28.27,
+  "end": 28.27
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 28.27,
+  "end": 28.27
+ },
+ {
+  "w": "/>",
+  "start": 28.27,
+  "end": 28.27
+ },
+ {
+  "w": "SO",
+  "start": 28.27,
+  "end": 28.47
+ },
+ {
+  "w": "IT'S",
+  "start": 28.6,
+  "end": 28.85
+ },
+ {
+  "w": "WORTH",
+  "start": 28.93,
+  "end": 29.22
+ },
+ {
+  "w": "ASKING",
+  "start": 29.29,
+  "end": 29.63
+ },
+ {
+  "w": "YOUR",
+  "start": 29.68,
+  "end": 29.79
+ },
+ {
+  "w": "CHILD'S",
+  "start": 29.84,
+  "end": 30.12
+ },
+ {
+  "w": "SCHOOL",
+  "start": 30.14,
+  "end": 30.39
+ },
+ {
+  "w": "WHETHER",
+  "start": 30.44,
+  "end": 30.67
+ },
+ {
+  "w": "IT'S",
+  "start": 30.73,
+  "end": 30.86
+ },
+ {
+  "w": "ON",
+  "start": 30.92,
+  "end": 31.22
+ },
+ {
+  "w": "<BREAK",
+  "start": 31.75,
+  "end": 31.75
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 31.75,
+  "end": 31.75
+ },
+ {
+  "w": "/>",
+  "start": 31.75,
+  "end": 31.75
+ },
+ {
+  "w": "THAT'S",
+  "start": 31.75,
+  "end": 32.03
+ },
+ {
+  "w": "YOUR",
+  "start": 32.07,
+  "end": 32.18
+ },
+ {
+  "w": "A.I",
+  "start": 32.26,
+  "end": 32.82
+ },
+ {
+  "w": "UNPACKED",
+  "start": 33.0,
+  "end": 33.81
+ }
+]

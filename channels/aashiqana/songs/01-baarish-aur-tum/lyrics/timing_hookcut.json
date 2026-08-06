@@ -1,0 +1,35 @@
+{
+ "_note": "Baarish Aur Tum Shorts hook cut (mix 155.28-184.88s). stable-ts align on the demucs vocal stem of the cut, Devanagari text -> romanized display, onset-snap 0.12s, sweep-cap 9.0s. Final line hand-capped to 27.90 so its sweep completes before the 1.2s end card fades in at 28.40 (locked rule: nothing sweeps over the card).",
+ "lines": [
+  {
+   "s": 0.3,
+   "e": 3.21,
+   "text": "Baarish ban ke tu,"
+  },
+  {
+   "s": 3.26,
+   "e": 7.04,
+   "text": "mujh mein barasta ja"
+  },
+  {
+   "s": 8.0,
+   "e": 12.16,
+   "text": "Tere bina main adhoora,"
+  },
+  {
+   "s": 12.98,
+   "e": 17.8,
+   "text": "tere bina main kho gaya"
+  },
+  {
+   "s": 18.58,
+   "e": 24.52,
+   "text": "Tu hi hai, tu hi hai,"
+  },
+  {
+   "s": 26.44,
+   "e": 27.9,
+   "text": "meri wafaa"
+  }
+ ]
+}

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.factory.worker</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/vijenderpanda/miniconda3/bin/python3</string>
+        <string>/Users/vijenderpanda/Ai-youtube-pipeline/scripts/factory_worker.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/vijenderpanda/Ai-youtube-pipeline</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>ThrottleInterval</key>
+    <integer>15</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/vijenderpanda/Ai-youtube-pipeline/logs/factory_worker.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/vijenderpanda/Ai-youtube-pipeline/logs/factory_worker.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/vijenderpanda/.nvm/versions/node/v20.20.2/bin:/Users/vijenderpanda/miniconda3/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+</dict>
+</plist>

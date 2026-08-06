@@ -1,0 +1,65 @@
+{
+  "toggle_click": 6.204,
+  "seed_typing_start": 10.217,
+  "seed_typing_end": 20.476,
+  "save_click": 21.178,
+  "proof_settled": 22.34,
+  "duration": 24.6,
+  "toggle_center": [
+    0.922,
+    0.699
+  ],
+  "field_center": [
+    0.5,
+    0.504
+  ],
+  "proof_center": [
+    0.88,
+    0.556
+  ],
+  "punches": [
+    {
+      "t0": 6.004,
+      "t1": 7.654,
+      "center": [
+        0.922,
+        0.699
+      ],
+      "zoom": 1.3,
+      "label": "toggle"
+    },
+    {
+      "t0": 10.117,
+      "t1": 20.875999999999998,
+      "center": [
+        0.5,
+        0.504
+      ],
+      "zoom": 1.3,
+      "label": "seed"
+    },
+    {
+      "t0": 22.14,
+      "t1": 23.54,
+      "center": [
+        0.88,
+        0.556
+      ],
+      "zoom": 1.3,
+      "label": "proof"
+    }
+  ],
+  "observed": {
+    "emails_blurred": 1,
+    "pii_rows_blurred": 0,
+    "name_blurred": 3,
+    "personalization_label": "Personalization",
+    "personalization_via": "profile-menu",
+    "switch_label": "Enable memory",
+    "switch_was_on": false,
+    "switch_now_on": true,
+    "field_label": "Additional behavior, style, and tone preferences",
+    "save_label": "Save",
+    "proof_via": "in-place"
+  }
+}

@@ -1,0 +1,209 @@
+[
+ {
+  "i": 18,
+  "s": 144.24,
+  "e": 150.74,
+  "text": "Tu hi hai, tu hi hai, meri har duaa",
+  "best_t": 145.5,
+  "mean": -12.7,
+  "max": -3.4
+ },
+ {
+  "i": 20,
+  "s": 161.45,
+  "e": 167.95,
+  "text": "Tere bina main adhoora, tere bina main kho gaya",
+  "best_t": 161.5,
+  "mean": -12.7,
+  "max": -2.3
+ },
+ {
+  "i": 12,
+  "s": 114.02,
+  "e": 118.14,
+  "text": "Bheegi si raat mein, teri hi roshni",
+  "best_t": 116.0,
+  "mean": -13.3,
+  "max": -2.4
+ },
+ {
+  "i": 19,
+  "s": 157.06,
+  "e": 161.25,
+  "text": "Baarish ban ke tu, mujh mein barasta ja",
+  "best_t": 159.5,
+  "mean": -13.4,
+  "max": -2.2
+ },
+ {
+  "i": 22,
+  "s": 188.88,
+  "e": 195.38,
+  "text": "Tu hi hai, tu hi hai",
+  "best_t": 189.0,
+  "mean": -13.4,
+  "max": -3.2
+ },
+ {
+  "i": 10,
+  "s": 81.08,
+  "e": 87.58,
+  "text": "Tere bina main adhoora, tere bina main kho gaya",
+  "best_t": 81.0,
+  "mean": -13.5,
+  "max": -1.9
+ },
+ {
+  "i": 8,
+  "s": 66.15,
+  "e": 72.65,
+  "text": "Tu hi hai, tu hi hai, meri har duaa",
+  "best_t": 66.0,
+  "mean": -13.9,
+  "max": -2.5
+ },
+ {
+  "i": 9,
+  "s": 74.5,
+  "e": 80.88,
+  "text": "Baarish ban ke tu, mujh mein barasta ja",
+  "best_t": 79.0,
+  "mean": -13.9,
+  "max": -3.0
+ },
+ {
+  "i": 14,
+  "s": 123.6,
+  "e": 128.86,
+  "text": "Le chal wahaan mujhe, jahaan ho sirf tu",
+  "best_t": 126.0,
+  "mean": -14.2,
+  "max": -2.9
+ },
+ {
+  "i": 13,
+  "s": 118.34,
+  "e": 123.4,
+  "text": "Tere bina lage, adhoori zindagi",
+  "best_t": 118.5,
+  "mean": -14.3,
+  "max": -3.0
+ },
+ {
+  "i": 7,
+  "s": 55.45,
+  "e": 61.95,
+  "text": "Tujhko hi dhoondein ye, subah aur shaam",
+  "best_t": 57.5,
+  "mean": -14.4,
+  "max": -3.0
+ },
+ {
+  "i": 15,
+  "s": 130.95,
+  "e": 134.18,
+  "text": "Thaame ye haath na, chhoote kabhi tu",
+  "best_t": 131.5,
+  "mean": -14.4,
+  "max": -3.5
+ },
+ {
+  "i": 17,
+  "s": 139.09,
+  "e": 144.04,
+  "text": "Aa laut aa, aa laut aa",
+  "best_t": 142.5,
+  "mean": -14.7,
+  "max": -3.8
+ },
+ {
+  "i": 2,
+  "s": 18.75,
+  "e": 25.25,
+  "text": "Tere bina main adhoora, tere bina main kho gaya",
+  "best_t": 20.5,
+  "mean": -14.8,
+  "max": -2.8
+ },
+ {
+  "i": 4,
+  "s": 41.24,
+  "e": 45.26,
+  "text": "Dheere se aake tu, palkon pe chha gaya",
+  "best_t": 41.5,
+  "mean": -14.8,
+  "max": -2.7
+ },
+ {
+  "i": 5,
+  "s": 45.46,
+  "e": 51.42,
+  "text": "Saanson mein ghul gaya, khwaabon mein aa gaya",
+  "best_t": 49.5,
+  "mean": -14.8,
+  "max": -3.8
+ },
+ {
+  "i": 21,
+  "s": 173.14,
+  "e": 179.64,
+  "text": "Tu hi hai, tu hi hai, meri wafaa",
+  "best_t": 173.0,
+  "mean": -15.0,
+  "max": -2.9
+ },
+ {
+  "i": 6,
+  "s": 51.62,
+  "e": 55.25,
+  "text": "Har boond baarish ki, leti tera naam",
+  "best_t": 52.0,
+  "mean": -15.2,
+  "max": -2.8
+ },
+ {
+  "i": 16,
+  "s": 134.38,
+  "e": 138.89,
+  "text": "Tu meri manzil, tu hi junoon",
+  "best_t": 136.0,
+  "mean": -16.4,
+  "max": -3.9
+ },
+ {
+  "i": 0,
+  "s": 1.68,
+  "e": 7.2,
+  "text": "Tu hi hai, tu hi hai, meri har duaa",
+  "best_t": 5.0,
+  "mean": -17.4,
+  "max": -4.4
+ },
+ {
+  "i": 11,
+  "s": 92.26,
+  "e": 98.76,
+  "text": "Tu hi hai, tu hi hai, meri wafaa",
+  "best_t": 97.0,
+  "mean": -19.0,
+  "max": -4.1
+ },
+ {
+  "i": 1,
+  "s": 9.84,
+  "e": 16.34,
+  "text": "Baarish ban ke tu, mujh mein barasta ja",
+  "best_t": 10.0,
+  "mean": -19.3,
+  "max": -5.2
+ },
+ {
+  "i": 3,
+  "s": 28.72,
+  "e": 35.22,
+  "text": "Tu hi hai, tu hi hai, meri wafaa",
+  "best_t": 32.5,
+  "mean": -19.4,
+  "max": -9.0
+ }
+]

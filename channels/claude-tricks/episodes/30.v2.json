@@ -1,0 +1,525 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep30/v2_hook.mp4",
+   "dur": 5.41
+  },
+  {
+   "src": "assets/ep30/demo_doc.mp4",
+   "dur": 1.85,
+   "from": 16.0
+  },
+  {
+   "src": "assets/ep30/demo_doc.mp4",
+   "dur": 4.33,
+   "from": 29.5
+  },
+  {
+   "src": "assets/ep30/demo_doc.mp4",
+   "dur": 3.39,
+   "from": 45.2
+  },
+  {
+   "src": "assets/ep30/demo_doc.mp4",
+   "dur": 4.4,
+   "from": 78.6
+  },
+  {
+   "src": "assets/ep30/v2_payoff.mp4",
+   "dur": 10.3
+  }
+ ],
+ "captions": [
+  {
+   "w": "YOU'RE",
+   "start": 0.0,
+   "end": 0.23,
+   "hot": false
+  },
+  {
+   "w": "DESCRIBING",
+   "start": 0.26,
+   "end": 0.72,
+   "hot": true
+  },
+  {
+   "w": "YOUR",
+   "start": 0.76,
+   "end": 0.85,
+   "hot": true
+  },
+  {
+   "w": "DOCUMENT",
+   "start": 0.88,
+   "end": 1.36,
+   "hot": true
+  },
+  {
+   "w": "TO",
+   "start": 1.42,
+   "end": 1.54,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 1.66,
+   "end": 1.78,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 1.89,
+   "end": 1.93,
+   "hot": false
+  },
+  {
+   "w": "FROM",
+   "start": 2.01,
+   "end": 2.16,
+   "hot": false
+  },
+  {
+   "w": "MEMORY",
+   "start": 2.21,
+   "end": 2.71,
+   "hot": true
+  },
+  {
+   "w": "JUST",
+   "start": 3.25,
+   "end": 3.44,
+   "hot": false
+  },
+  {
+   "w": "GIVE",
+   "start": 3.47,
+   "end": 3.6,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 3.62,
+   "end": 3.68,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 3.7,
+   "end": 3.77,
+   "hot": false
+  },
+  {
+   "w": "PAGE",
+   "start": 3.81,
+   "end": 4.24,
+   "hot": true
+  },
+  {
+   "w": "WATCH",
+   "start": 4.41,
+   "end": 4.95,
+   "hot": true
+  },
+  {
+   "w": "HERE'S",
+   "start": 5.41,
+   "end": 5.65,
+   "hot": false
+  },
+  {
+   "w": "HOW",
+   "start": 5.69,
+   "end": 5.77,
+   "hot": false
+  },
+  {
+   "w": "MOST",
+   "start": 5.82,
+   "end": 5.99,
+   "hot": true
+  },
+  {
+   "w": "PEOPLE",
+   "start": 6.03,
+   "end": 6.25,
+   "hot": true
+  },
+  {
+   "w": "ASK",
+   "start": 6.29,
+   "end": 6.5,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 6.55,
+   "end": 6.82,
+   "hot": false
+  },
+  {
+   "w": "AND",
+   "start": 7.26,
+   "end": 7.7,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 8.02,
+   "end": 8.21,
+   "hot": false
+  },
+  {
+   "w": "HEDGES",
+   "start": 8.29,
+   "end": 8.89,
+   "hot": true
+  },
+  {
+   "w": "DEPENDS",
+   "start": 9.01,
+   "end": 9.68,
+   "hot": true
+  },
+  {
+   "w": "TYPICALLY",
+   "start": 9.73,
+   "end": 10.36,
+   "hot": true
+  },
+  {
+   "w": "USUALLY",
+   "start": 10.47,
+   "end": 11.09,
+   "hot": true
+  },
+  {
+   "w": "SO",
+   "start": 11.59,
+   "end": 11.76,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 11.88,
+   "end": 11.92,
+   "hot": false
+  },
+  {
+   "w": "PASTE",
+   "start": 12.07,
+   "end": 12.46,
+   "hot": true
+  },
+  {
+   "w": "THE",
+   "start": 12.49,
+   "end": 12.59,
+   "hot": false
+  },
+  {
+   "w": "ACTUAL",
+   "start": 12.64,
+   "end": 12.95,
+   "hot": true
+  },
+  {
+   "w": "CLAUSE",
+   "start": 13.02,
+   "end": 13.35,
+   "hot": true
+  },
+  {
+   "w": "INTO",
+   "start": 13.39,
+   "end": 13.55,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 13.62,
+   "end": 13.69,
+   "hot": false
+  },
+  {
+   "w": "SAME",
+   "start": 13.73,
+   "end": 13.97,
+   "hot": true
+  },
+  {
+   "w": "CHAT",
+   "start": 14.0,
+   "end": 14.48,
+   "hot": true
+  },
+  {
+   "w": "NOW",
+   "start": 14.98,
+   "end": 15.13,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 15.19,
+   "end": 15.26,
+   "hot": false
+  },
+  {
+   "w": "QUOTES",
+   "start": 15.32,
+   "end": 15.57,
+   "hot": true
+  },
+  {
+   "w": "MY",
+   "start": 15.63,
+   "end": 15.7,
+   "hot": false
+  },
+  {
+   "w": "CLAUSE",
+   "start": 15.76,
+   "end": 16.05,
+   "hot": true
+  },
+  {
+   "w": "BACK",
+   "start": 16.09,
+   "end": 16.49,
+   "hot": false
+  },
+  {
+   "w": "NINETEEN",
+   "start": 16.57,
+   "end": 16.99,
+   "hot": true
+  },
+  {
+   "w": "DAYS'",
+   "start": 17.03,
+   "end": 17.26,
+   "hot": false
+  },
+  {
+   "w": "NOTICE",
+   "start": 17.3,
+   "end": 17.8,
+   "hot": true
+  },
+  {
+   "w": "TWO",
+   "start": 17.95,
+   "end": 18.12,
+   "hot": true
+  },
+  {
+   "w": "MONTHS'",
+   "start": 18.18,
+   "end": 18.43,
+   "hot": false
+  },
+  {
+   "w": "RENT",
+   "start": 18.46,
+   "end": 18.89,
+   "hot": true
+  },
+  {
+   "w": "A",
+   "start": 19.38,
+   "end": 19.49,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 19.61,
+   "end": 19.64,
+   "hot": false
+  },
+  {
+   "w": "ANSWERS",
+   "start": 19.76,
+   "end": 20.12,
+   "hot": false
+  },
+  {
+   "w": "FROM",
+   "start": 20.16,
+   "end": 20.3,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 20.33,
+   "end": 20.4,
+   "hot": false
+  },
+  {
+   "w": "AVERAGE",
+   "start": 20.47,
+   "end": 20.89,
+   "hot": true
+  },
+  {
+   "w": "OF",
+   "start": 20.93,
+   "end": 21.0,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 21.05,
+   "end": 21.12,
+   "hot": false
+  },
+  {
+   "w": "INTERNET",
+   "start": 21.18,
+   "end": 21.66,
+   "hot": true
+  },
+  {
+   "w": "UNTIL",
+   "start": 21.99,
+   "end": 22.27,
+   "hot": false
+  },
+  {
+   "w": "YOU",
+   "start": 22.32,
+   "end": 22.4,
+   "hot": false
+  },
+  {
+   "w": "HAND",
+   "start": 22.51,
+   "end": 22.74,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 22.8,
+   "end": 22.87,
+   "hot": false
+  },
+  {
+   "w": "YOUR",
+   "start": 22.93,
+   "end": 23.05,
+   "hot": true
+  },
+  {
+   "w": "PAGE",
+   "start": 23.09,
+   "end": 23.53,
+   "hot": true
+  },
+  {
+   "w": "CONTEXT",
+   "start": 23.78,
+   "end": 24.28,
+   "hot": true
+  },
+  {
+   "w": "BEATS",
+   "start": 24.34,
+   "end": 24.6,
+   "hot": true
+  },
+  {
+   "w": "CLEVER",
+   "start": 24.66,
+   "end": 25.0,
+   "hot": true
+  },
+  {
+   "w": "PROMPTING",
+   "start": 25.08,
+   "end": 25.64,
+   "hot": true
+  },
+  {
+   "w": "FOLLOW",
+   "start": 26.17,
+   "end": 26.66,
+   "hot": true
+  },
+  {
+   "w": "I",
+   "start": 27.04,
+   "end": 27.09,
+   "hot": false
+  },
+  {
+   "w": "UNPACK",
+   "start": 27.2,
+   "end": 27.56,
+   "hot": true
+  },
+  {
+   "w": "ONE",
+   "start": 27.64,
+   "end": 27.84,
+   "hot": false
+  },
+  {
+   "w": "AI",
+   "start": 27.9,
+   "end": 28.16,
+   "hot": false
+  },
+  {
+   "w": "SKILL",
+   "start": 28.21,
+   "end": 28.5,
+   "hot": true
+  },
+  {
+   "w": "EVERY",
+   "start": 28.58,
+   "end": 28.79,
+   "hot": false
+  },
+  {
+   "w": "SINGLE",
+   "start": 28.84,
+   "end": 29.12,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 29.15,
+   "end": 29.68,
+   "hot": true
+  }
+ ],
+ "steps": [
+  {
+   "label": "STEP 1/3 - ASK FROM MEMORY",
+   "start": 5.41,
+   "end": 11.59,
+   "pos": "tr"
+  },
+  {
+   "label": "STEP 2/3 - PASTE THE PAGE",
+   "start": 11.59,
+   "end": 14.98,
+   "pos": "tr"
+  },
+  {
+   "label": "STEP 3/3 - GROUNDED ANSWER",
+   "start": 14.98,
+   "end": 19.38,
+   "pos": "br"
+  }
+ ],
+ "vo": "assets/ep30/vo_v2.wav",
+ "cover": {
+  "title1": "STOP DESCRIBING",
+  "title2": "GIVE IT THE FILE",
+  "sub": "context beats clever prompts",
+  "emojis": "\ud83d\udcc4",
+  "until": 3.0
+ },
+ "watermark": true
+}

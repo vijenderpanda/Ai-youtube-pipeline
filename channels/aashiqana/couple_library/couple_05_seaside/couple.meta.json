@@ -1,0 +1,43 @@
+{
+  "id": "couple_05",
+  "codename": "Seaside",
+  "status": "locked",
+  "engine": "leonardo/nano-banana-2",
+  "created": "2026-08-06",
+  "size": "848x1264 (2:3) — upscale keepers to 4K per-song",
+  "user_locked_anchor": "auto-picked cand_1 (light-blue sundress heroine, grey-linen hero) — user may swap",
+  "refs": {
+    "anchor": "faces/couple_anchor.jpg",
+    "hero_face": "faces/hero_face.jpg",
+    "heroine_face": "faces/heroine_face.jpg",
+    "how_to_use": "Nano Banana 2 Image Ref: attach faces/couple_anchor.jpg for two-person shots; hero_face / heroine_face for solos. Prompt 'Using the woman/man/couple from the reference image, keep exact same face and identity...'"
+  },
+  "look": {
+    "heroine": "extremely attractive Indian woman, mid-20s, fair sun-kissed complexion, big expressive dark eyes, natural makeup, long dark hair blowing in the sea breeze, breezy light-blue floral summer dress",
+    "hero": "handsome Indian man, mid-20s, strong jawline, light stubble, tousled dark hair, fair skin, fit athletic frame, light grey open linen shirt",
+    "world": "beach at golden-hour dusk; warm glowing sunset sky; gentle waves; sea breeze; soft ocean bokeh; 85mm f/1.4 shallow DOF; warm airy filmic grade; lifelike skin with visible pores; film grain; dreamy romantic Bollywood aesthetic"
+  },
+  "tags": {
+    "vibe": ["seaside", "beach", "sunset", "carefree"],
+    "mood": ["joyful", "free", "dreamy", "playful-love"],
+    "palette": ["warm-gold", "peach", "sea-blue", "airy"],
+    "time_of_day": "golden-hour dusk",
+    "season": "summer",
+    "location": ["beach", "shoreline", "surf", "sunset sea"],
+    "tempo_fit": ["mid", "up-tempo", "breezy"],
+    "energy": "joyful-free",
+    "wardrobe": ["summer dress", "linen shirt", "breezy", "light"],
+    "best_for": ["travel love", "freedom", "escape-together", "wedding-teaser joy", "happy carefree love", "feel-good summer"]
+  },
+  "shots": [
+    {"code": "G-front",   "files": ["shots/01_G_heroine_front_a.jpg", "shots/02_G_heroine_front_b.jpg"], "type": "heroine", "hook": true,  "motion_ready": true, "note": "radiant laughing eye-contact close-up — prime Shorts hook; heroine_face ref"},
+    {"code": "G-walk",    "files": ["shots/03_G_heroine_walk_a.jpg", "shots/04_G_heroine_walk_b.jpg"], "type": "heroine", "hook": true,  "motion_ready": true, "note": "walking the shoreline, dress in the breeze"},
+    {"code": "G-twirl",   "files": ["shots/05_G_heroine_twirl_a.jpg", "shots/06_G_heroine_twirl_b.jpg"], "type": "heroine", "hook": true,  "motion_ready": true, "note": "twirling joyfully in the surf — full-body movement"},
+    {"code": "C-walk",    "files": ["shots/07_C_couple_walk_a.jpg", "shots/08_C_couple_walk_b.jpg"], "type": "couple", "hook": false, "motion_ready": true, "note": "couple walking barefoot hand-in-hand, sunset"},
+    {"code": "C-embrace", "files": ["shots/09_C_couple_embrace_a.jpg", "shots/10_C_couple_embrace_b.jpg"], "type": "couple", "hook": true, "motion_ready": true, "note": "embrace / almost-kiss at the shoreline — emotional peak"},
+    {"code": "H-closeup", "files": ["shots/11_H_hero_closeup_a.jpg", "shots/12_H_hero_closeup_b.jpg"], "type": "hero", "hook": false, "motion_ready": true, "note": "warm hero close-up, sea breeze; hero_face ref"}
+  ],
+  "motion_clips": [],
+  "motion_note": "per-song: generate 2-3 motion clips at production time (Leonardo Hailuo 2.3, start-frame from a shot, 9:16, subtle motion). See couple_01 for the proven recipe.",
+  "compliance": "original AI couple; no celebrity likeness; fair & unmistakably Indian; synthetic-media disclosure ON at upload"
+}

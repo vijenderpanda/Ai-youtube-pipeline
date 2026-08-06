@@ -1,0 +1,29 @@
+{
+  "_note": "Track C. Line windows [s,e] anchored to whisper-on-demucs-vocal-stem word groups (words_vocals.json). Gold karaoke fill sweeps s->e.",
+  "lines": [
+    {"s": 1.68,  "e": 8.2,   "text": "Tu hi hai, tu hi hai, meri har duaa"},
+    {"s": 9.84,  "e": 16.9,  "text": "Baarish ban ke tu, mujh mein barasta ja"},
+    {"s": 18.75, "e": 23.3,  "text": "Tere bina main adhoora, tere bina main kho gaya"},
+    {"s": 24.28, "e": 30.0,  "text": "Tu hi hai, tu hi hai, meri wafaa"},
+    {"s": 41.24, "e": 44.0,  "text": "Dheere se aake tu, palkon pe chha gaya"},
+    {"s": 44.3,  "e": 47.0,  "text": "Saanson mein ghul gaya, khwaabon mein aa gaya"},
+    {"s": 47.3,  "e": 50.0,  "text": "Har boond baarish ki, leti tera naam"},
+    {"s": 50.3,  "e": 53.3,  "text": "Tujhko hi dhoondein ye, subah aur shaam"},
+    {"s": 55.45, "e": 61.5,  "text": "Tu hi hai, tu hi hai, meri har duaa"},
+    {"s": 62.85, "e": 65.8,  "text": "Baarish ban ke tu, mujh mein barasta ja"},
+    {"s": 66.15, "e": 70.2,  "text": "Tere bina main adhoora, tere bina main kho gaya"},
+    {"s": 70.82, "e": 73.8,  "text": "Tu hi hai, tu hi hai, meri wafaa"},
+    {"s": 74.5,  "e": 77.1,  "text": "Bheegi si raat mein, teri hi roshni"},
+    {"s": 77.4,  "e": 80.0,  "text": "Tere bina lage, adhoori zindagi"},
+    {"s": 80.25, "e": 82.6,  "text": "Le chal wahaan mujhe, jahaan ho sirf tu"},
+    {"s": 82.85, "e": 86.5,  "text": "Thaame ye haath na, chhoote kabhi tu"},
+    {"s": 87.73, "e": 92.0,  "text": "Tu meri manzil, tu hi junoon"},
+    {"s": 99.44, "e": 103.5, "text": "Aa laut aa, aa laut aa"},
+    {"s": 130.95,"e": 137.5, "text": "Tu hi hai, tu hi hai, meri har duaa"},
+    {"s": 139.09,"e": 143.5, "text": "Baarish ban ke tu, mujh mein barasta ja"},
+    {"s": 144.24,"e": 149.5, "text": "Tere bina main adhoora, tere bina main kho gaya"},
+    {"s": 157.06,"e": 160.5, "text": "Tu hi hai, tu hi hai, meri wafaa"},
+    {"s": 161.45,"e": 168.0, "text": "Tu hi hai... tu hi hai..."},
+    {"s": 170.47,"e": 176.0, "text": "Tu hi hai... tu hi hai..."}
+  ]
+}

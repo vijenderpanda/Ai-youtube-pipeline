@@ -1,0 +1,291 @@
+{
+  "asset": "publish_metadata",
+  "version": 1,
+  "episode": "ep_amazon_perplexity",
+  "channel": "claude-tricks",
+  "written_at": "2026-08-06T15:30:00Z",
+  "depends_on": [
+    "research.json v1 (2026-08-06T13:59:14Z)",
+    "script.md v1",
+    "vo_master v1 (29.37s speech / 29.72s file)"
+  ],
+  "title": "Amazon Just Lost This Round Over AI In Your Cart 🛒 (Court: You're The Shopper)",
+  "title_chars": 78,
+  "title_max_chars": 100,
+  "title_emoji_count": 1,
+  "title_scope_note": "PRELIMINARY injunction vacated + remand -> 'lost this round', never 'lost the case' (research.json banned_phrasings[0]). Same scope wording as VO line 1 and the cover.",
+  "description": "A US appeals court threw out the order that had blocked Perplexity's AI shopping assistant from Amazon — Amazon lost this round, but the lawsuit itself is still running.\nPrecisely: on August 4, 2026 a three-judge Ninth Circuit panel held that Amazon was unlikely to succeed on the \"access\" element of its CFAA and CDAFA claims, vacated the district court's preliminary injunction as an abuse of discretion, and remanded for further proceedings — expressly without deciding the merits.\n\nSOURCES & DATES\n• Amazon.com Services, LLC v. Perplexity AI, Inc., No. 26-1444 (9th Cir., filed Aug 4, 2026) — the opinion itself, FOR PUBLICATION. Vacatur + remand; the \"access\" holding; \"the CFAA contemplates access by a person… it is a tool, not a person for statutory purposes\"; the same reasoning defeating the California CDAFA claim; the court's express statement that it does NOT establish a new legal regime for agentic AI; footnote 5 preserving Amazon's ability to restrict agents via its own Terms of Service; the warning that Amazon's theory could have exposed users themselves to criminal liability; and the mechanics — Perplexity's servers never directly access Amazon's servers. Panel: Judges Milan D. Smith Jr. and Eric C. Tung, with District Judge John Charles Hinderaker. Complaint filed Nov 2025; injunction granted Mar 2026.\n  https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf (Aug 4, 2026)\n• Amazon's response — \"We respectfully disagree with today's decision on the preliminary injunction. We remain confident in our case and are evaluating our next steps.\"\n  https://www.engadget.com/2230471/perplexity-has-successfully-overturned-amazon-injunction-on-its-ai-shopping-bot/ (Aug 4, 2026)\n• Perplexity's response, and the framing of this as the first federal appellate ruling on whether AI agents acting for users can access online platforms.\n  https://www.pymnts.com/amazon/2026/appeals-court-overturns-ban-on-perplexity-ai-shopping-agents-on-amazon/ (Aug 5, 2026)\n• Comet availability and tiers.\n  https://www.perplexity.ai/comet (checked Aug 6, 2026) · https://www.eesel.ai/blog/perplexity-comet-pricing (checked Aug 6, 2026) · https://ecommerceguide.com/agents/comet-2/ (checked Aug 6, 2026)\n\nAPPEAL STATUS: No reported appeal signal as of 2026-08-06: Amazon has publicly disagreed and says it is evaluating next steps, but no en banc or Supreme Court filing is reported. Amazon's lack of a filing is not acceptance — it stated on the record that it disagrees.\n\nWHAT THE AGENT ACTUALLY DOES TODAY — AND WHAT IT DOESN'T\nPerplexity's Comet browser and its Assistant are available to consumers, free, on Windows 10/11, macOS 13+, iOS and Android; paid Pro/Max tiers raise browser-agent query limits, and Max adds background assistants (checked Aug 6, 2026). It browses, compares and fills a cart. On consumer tiers the payment step is gated behind human confirmation — the agent does the legwork and hands back at checkout. Three honest limits: (1) how autonomous the Assistant really is was disputed by the parties and the court did not resolve it; (2) the Assistant works at your direction — it cannot operate wholly independently; (3) a vacated injunction is not a restored feature. The court removed a legal bar; it did not order Amazon to admit anyone, and footnote 5 leaves Amazon free to block agents through its Terms of Service. We have not confirmed the Assistant operating on Amazon.com for a consumer today, and we are not claiming it does. This is reporting, not legal advice.\n\n⚠️ Not affiliated with Amazon or Perplexity. Neither company sponsored, reviewed or approved this video, and neither is a source for anything here beyond its own public statement quoted above. No Amazon or Perplexity logo, screenshot or interface appears in this video: the shopping-assistant chat and the delegation card are our own neutral in-house mock-ups, labelled illustrative. Made with AI, checked by a human — the presenter is an AI-animated version of me, built with the tools we teach.\n\n🎙️ The AI voice tool we use: https://try.elevenlabs.io/4wscoc0bm5zl\n(Affiliate link — we earn a commission if you subscribe, at no extra cost to you. ElevenLabs is deliberately named here and NOT in the non-affiliation line above, because we do have a commercial relationship with it and that claim would be false. B-roll via Pexels, licensed, no attribution required. Music is our own generated instrumental.)\n\n🎯 One AI story unpacked every single day — follow so you don't miss one\n📚 \"Claude Zero to Pro\" — the beginner series\n📬 Free AI tools cheat sheet + every link we mention: the About tab on this channel\n\n#AIAgents #AIShopping #AgenticAI #AINews #Shorts",
+  "description_file": "channels/claude-tricks/docs/desc_ep_amazon_perplexity.txt",
+  "description_section_order": [
+    "two-line summary (beginner sentence + precise sentence)",
+    "SOURCES & DATES (every dated claim, URL + publication date)",
+    "APPEAL STATUS (verbatim status_line + do_not_infer)",
+    "WHAT THE AGENT ACTUALLY DOES TODAY (Q4 + limits + not-legal-advice)",
+    "MULTI-ENTITY DISCLAIMER + made-with-AI-checked-by-a-human",
+    "affiliate / tool disclosure",
+    "CTA -> About tab"
+  ],
+  "tags": [
+    "ai news",
+    "ai agents",
+    "ai shopping",
+    "agentic ai",
+    "amazon",
+    "perplexity",
+    "ai law",
+    "ai for beginners",
+    "ai tips",
+    "claude ai tips"
+  ],
+  "tags_count": 10,
+  "tags_band": [
+    8,
+    11
+  ],
+  "tags_dropped": [
+    {
+      "tag": "ninth circuit",
+      "why": "lawyer search term; audience is general beginners. 'ai law' covers the territory in words they type."
+    }
+  ],
+  "flags": {
+    "containsSyntheticMedia": true,
+    "containsSyntheticMedia_why": "photoreal AI human host + cloned voice; UPLOAD_DEFAULTS['claude-tricks'].synthetic = true",
+    "selfDeclaredMadeForKids": false,
+    "audience": "general",
+    "categoryId": "28",
+    "categoryName": "Science & Technology",
+    "categoryId_divergence": "Brief-specified 28. All 11 live public+scheduled videos on this channel are 27 (Education), confirmed live on xZirrXHzM4Q; 27 is also yt_upload.py's default. 28 ships per spec; '--category 27' is a one-flag revert if the reviewer prefers catalogue consistency.",
+    "privacyStatus": "private (scheduling forces private until publishAt)",
+    "license": "youtube",
+    "playlist": null
+  },
+  "publish_at": "2026-08-07T17:00:00Z",
+  "publish_at_local_ist": "2026-08-07 22:30 IST",
+  "slot": {
+    "brief_premise": "Aug-7 daily slot vacated by superseded item dcf956d5",
+    "premise_status": "EXPIRED - the slot is no longer vacant",
+    "daily_slot_utc": "10:30",
+    "daily_slot_source": "channels/claude-tricks/channel.json slot_time_ist=16:00 -> 10:30 UTC",
+    "occupied_by": {
+      "video_id": "xZirrXHzM4Q",
+      "title": "Google Just Put AI In Your Kid's Classroom 🎓 (Parents, Check This)",
+      "publishAt": "2026-08-07T10:30:00Z",
+      "verified": "live videos.list this session; CONTENT-CALENDAR.csv row 08 agrees"
+    },
+    "collision_rule": "nothing else on this channel within +/-6h (PRODUCTION-PLAYBOOK line 140)",
+    "blocked_window_utc": [
+      "2026-08-07T04:30:00Z",
+      "2026-08-07T16:30:00Z"
+    ],
+    "chosen_gap_from_occupant": "6h30m (30 min margin past the +/-6h boundary)",
+    "why_not_move_the_other": "xZirrXHzM4Q is already armed; unscheduling is never implicit (PLAYBOOK line 135) and is not this package's call",
+    "why_not_defer_a_day": "Aug-8 puts the Aug-4 peg at 4 days, at the --max-age-days 4 ceiling, on a story whose value is freshness. Aug-7 keeps it at 3.",
+    "peg_age_days_at_slot": 3,
+    "accepted_cost": "two AI Unpacked videos publish on 2026-08-07",
+    "fallback": {
+      "publish_at": "2026-08-08T10:30:00Z",
+      "why": "strict one-video-per-day cadence; calendar row 10 (Aug-8) is unproduced and unscheduled",
+      "caveat": "re-check at arm time - build 24 is produced-but-unpublished and has been eyeing Aug-8/Aug-12"
+    }
+  },
+  "preflight": {
+    "run_at": "2026-08-06T15:24:00Z",
+    "command": "python3 scripts/verify_uploads.py --channel claude-tricks --json /tmp/vu.json",
+    "total_discrepancies": 0,
+    "public_or_scheduled_count": 11,
+    "total_fetched": 14,
+    "checks": {
+      "collision_pm6h_factory_posts": "CLEAR",
+      "collision_pm6h_live_uploads": "CLEAR (only Aug-7 item is xZirrXHzM4Q @ 10:30Z, delta 6h30m)",
+      "near_duplicate_title_live_uploads": "CLEAR (near_duplicate_pairs: []; no live title contains Amazon / Perplexity / cart / shopper)",
+      "near_duplicate_title_factory_posts": "CLEAR",
+      "double_booked_slots": "CLEAR (double_booked_slots: [])"
+    },
+    "expiry_warning": "SNAPSHOT, NOT A LICENCE. Re-run immediately before arming - builds 24, 27, 29 and 30 are produced-but-unscheduled and any of them landing on Aug 7 changes the answer."
+  },
+  "multi_entity_disclaimer": {
+    "line": "Not affiliated with Amazon or Perplexity.",
+    "derivation": "union of two independent passes",
+    "pass_1_research_entities_named": {
+      "included": [
+        "Amazon",
+        "Perplexity"
+      ],
+      "excluded": [
+        {
+          "entity": "Apple",
+          "why": "required:false, conditional on the Safari analogy beat - beat CUT, not in the VO"
+        },
+        {
+          "entity": "Google",
+          "why": "required:false, conditional on the Maps agentic-commerce segue - beat CUT"
+        },
+        {
+          "entity": "Meta",
+          "why": "required:false, conditional on the Muse Code segue - beat CUT"
+        }
+      ]
+    },
+    "pass_2_named_on_screen": {
+      "cover_frame_zero": [
+        "Amazon"
+      ],
+      "thumbnail": [
+        "Amazon",
+        "Perplexity"
+      ],
+      "host_hook_clip": [],
+      "host_payoff_clip": [],
+      "chat_mock_agent_cart": [],
+      "glyph_delegation_clip": [],
+      "broll": [],
+      "step_chips": [],
+      "emphasis_overlays": [],
+      "outro_bookend": []
+    },
+    "union": [
+      "Amazon",
+      "Perplexity"
+    ],
+    "matches_research_requirement": true,
+    "research_requirement": [
+      "Amazon",
+      "Perplexity"
+    ],
+    "deliberate_exclusions_from_the_non_affiliation_line": [
+      {
+        "entity": "ElevenLabs",
+        "why": "we ARE affiliated (affiliate link). A non-affiliation claim about it would be FALSE - worse than the omission the rule guards against. Covered in the affiliate disclosure instead. #25 precedent.",
+        "covered_in": "affiliate disclosure"
+      },
+      {
+        "entity": "Pexels",
+        "why": "a licence, not a sponsorship. Named as a source, not as a non-affiliate.",
+        "covered_in": "affiliate disclosure"
+      }
+    ],
+    "made_with_ai_line_present": true,
+    "not_legal_advice_present": true
+  },
+  "cross_link_policy": {
+    "kids_channels_linked": false,
+    "rule": "kids channels and the AI Unpacked cluster NEVER cross-link - absolute",
+    "only_cta_destination": "this channel's About tab (Shorts description links barely click; About holds 14 slots)"
+  },
+  "upload": {
+    "script": "scripts/yt_upload.py",
+    "command": "python3 scripts/yt_upload.py --channel claude-tricks --video channels/claude-tricks/renders/ep_amazon_perplexity_v2_outro.mp4 --title \"Amazon Just Lost This Round Over AI In Your Cart 🛒 (Court: You're The Shopper)\" --desc-file channels/claude-tricks/docs/desc_ep_amazon_perplexity.txt --tags \"ai news,ai agents,ai shopping,agentic ai,amazon,perplexity,ai law,ai for beginners,ai tips,claude ai tips\" --category 28 --audience general --synthetic --publish-at 2026-08-07T17:00:00Z --thumbnail renders_out/staged/de372dd8-264e-4e52-9296-e6ae664e23e4/thumbnail/v1/thumb.jpg",
+    "post_upload_steps_are_non_fatal_warnings": true,
+    "authority": "the video id printed in the upload output is the truth, NOT the exit code",
+    "repair_path": "re-run with --video-id <id> to set the thumbnail alone; NEVER re-upload (that is how the duplicate gets made)",
+    "pre_arm_gate": "assert the armed render is the NEWEST approved cut for this episode (PLAYBOOK line 249 / the Ep25 loss) - a published Short's file can never be swapped"
+  },
+  "verification": {
+    "mandatory": true,
+    "is_the_acceptance_gate": "the job is NOT done when the upload returns; it is done when this exits zero",
+    "steps": [
+      {
+        "order": 1,
+        "command": "python3 scripts/verify_uploads.py --channel claude-tricks",
+        "pass": "exit 0 / TOTAL DISCREPANCIES: 0",
+        "fail": "exit non-zero = the job is NOT done"
+      },
+      {
+        "order": 2,
+        "command": "python3 scripts/verify_uploads.py --channel claude-tricks --assert-disclosure --yes",
+        "effect": "writes containsSyntheticMedia=true and RECORDS the video in channels/claude-tricks/disclosure_ledger.json",
+        "note": "that ledger file does not exist yet (verified this session) - this episode creates it; eyeball the first write"
+      }
+    ],
+    "synthetic_media_is_write_only": {
+      "fact": "videos.list NEVER returns status.containsSyntheticMedia. The API accepts it on videos.insert / videos.update and does not echo it back.",
+      "evidence": "live videos.list for xZirrXHzM4Q (uploaded by this repo with --synthetic) returned status = {uploadStatus, privacyStatus, publishAt, license, embeddable, publicStatsViewable, madeForKids, selfDeclaredMadeForKids} - containsSyntheticMedia absent entirely",
+      "rule": "an absent field means 'NOT RETURNED', never 'not disclosed'",
+      "consequence": "auditing disclosure by reading the API is a GUARANTEED FALSE POSITIVE on every single video (11/11 on this channel) - exactly the bug an earlier build of verify_uploads.py shipped",
+      "therefore": "disclosure is ADVISORY, never a discrepancy; --strict-disclosure re-introduces the false positive on purpose. The only way to make it verifiable is to re-assert it and write it to the local ledger.",
+      "assert_safety": "--assert-disclosure round-trips the FULL status resource and re-reads afterwards, aborting if privacyStatus/publishAt moved by a hair - because videos.update REPLACES the whole part you send and one missing key is an accidental unschedule",
+      "ledger_discipline": "entries are only ever written for videos we actually asserted - never inferred, never backfilled",
+      "contrast": "madeForKids IS readable, so the kids/notForKids check is real. Do not conflate the two."
+    },
+    "read_after_write_staleness": {
+      "authority": "the videos.insert / videos.update RESPONSE is the authority",
+      "reread_role": "the re-read is a CONFIRMATION, not the source of truth, and can legitimately lag the write",
+      "retry": "on a stale or empty confirming read, retry briefly (a few seconds, 2-3 attempts) before concluding anything",
+      "never": "never respond to a stale read by re-uploading",
+      "id_rule": "the video id in the upload output is the truth, not the exit code - if you have an id, the video exists; verify and repair from that id"
+    },
+    "post_publish_hygiene": "set CONTENT-CALENDAR.csv planned_date to 'SCHEDULED 2026-08-07 17:00 UTC - youtu.be/<id>'. A calendar row is closed by a VIDEO LINK, not by a word (PLAYBOOK line 157)."
+  },
+  "quality_ledger": {
+    "target": "channels/claude-tricks/QUALITY-LEDGER.md section 4 (append after row 08)",
+    "axes_beaten": [
+      "B",
+      "D",
+      "H"
+    ],
+    "axes_held": [
+      "A",
+      "C",
+      "E",
+      "F",
+      "G",
+      "I",
+      "J"
+    ],
+    "measured": {
+      "C_vo_speech_s": 29.37,
+      "C_vo_file_s": 29.72,
+      "C_band": [
+        26,
+        30
+      ],
+      "C_note": "corrects build 08's 33.8s regression; 0.28s under the ceiling - re-render rather than append",
+      "A_lipsync_hook": {
+        "lag_ms": 23.0,
+        "corr": 0.9971
+      },
+      "A_lipsync_payoff": {
+        "lag_ms": 23.0,
+        "corr": 0.9969,
+        "note": "measured independently, hook offset NOT reused"
+      },
+      "E_chip_holds_s": [
+        3.34,
+        2.36,
+        3.59
+      ],
+      "E_min_hold_s": 1.5,
+      "E_windows_s": [
+        [
+          4.95,
+          8.29
+        ],
+        [
+          13.39,
+          15.75
+        ],
+        [
+          15.75,
+          19.34
+        ]
+      ],
+      "F_music_gain_db": 3.6,
+      "F_predicted_body_lufs": -18.2,
+      "F_reference": "ep26 BlQ-gDzw1aE (newest SHIPPED row) -18.2 body / -18.4 published",
+      "F_delta_lu": 0.2,
+      "F_bar_lu": 0.3,
+      "G_cover_until_s": 3.0,
+      "I_outro_s": 3.8,
+      "B_peg_age_days_at_slot": 3,
+      "B_max_age_days": 4,
+      "B_claims_dated": 19
+    },
+    "trades_written_down": [
+      "The Aug-7 daily slot was NOT vacant - build 08 holds 10:30:00Z. Slotted 17:00:00Z (+6h30m) rather than unscheduling an armed video. Cost: two AI Unpacked videos publish on Aug 7.",
+      "categoryId 28 per spec, against 11/11 live videos at 27 - a deliberate divergence, reversible with one flag.",
+      "Chip corner scores for chips 1+2 are proxied off host_hook.mp4 + host_payoff.mp4 (agreeing to 0.0003) because v2_host.mp4 is not rendered yet - re-probe after the body master exists."
+    ],
+    "row_markdown_in": "publish.md section 8"
+  }
+}

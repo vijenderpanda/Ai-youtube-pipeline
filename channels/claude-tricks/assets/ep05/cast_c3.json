@@ -1,0 +1,1 @@
+{"title": "claude-code \u2014 ~/project", "steps": [{"type": "badge", "text": "[agent finished]", "color": "green"}, {"type": "out", "lps": 5, "lines": [["committed: fix auth race \u2713", "green"], ["pushed to origin \u2713", "green"], ["draft PR #142 opened \u2713", "magenta"]]}, {"type": "pause", "dur": 1.2}]}

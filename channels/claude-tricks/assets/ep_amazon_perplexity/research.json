@@ -1,0 +1,251 @@
+{
+  "asset": "research_peg_verification",
+  "version": 1,
+  "episode": "ep_amazon_perplexity",
+  "channel": "claude-tricks",
+  "verified_at": "2026-08-06T13:59:14Z",
+  "verified_at_local": "2026-08-06T19:29:14+05:30",
+  "tools_used": [
+    "scripts/news_radar.py",
+    "scripts/news_radar.py --peg-check (flag confirmed present via --help)",
+    "WebSearch x7",
+    "WebFetch x2",
+    "direct read of ca9 slip opinion PDF (26-1444)"
+  ],
+  "gate": {
+    "q1_pinned_to_precise_sourced_sentence": true,
+    "fail_loudly": false,
+    "episode_may_proceed": true
+  },
+
+  "radar": {
+    "news_radar_default": {
+      "ran": true,
+      "hits": 0,
+      "raw": "radar: 0 new hits",
+      "errors": ["feed fail https://www.anthropic.com/news/rss.xml: HTTP Error 404: Not Found"]
+    },
+    "peg_check": {
+      "flag_exists": true,
+      "ran": true,
+      "peg": "Appeals court overturns Amazon injunction against Perplexity AI shopping agent",
+      "air_date": "2026-08-06",
+      "first_seen": "2026-08-05",
+      "age_days_reported": 1,
+      "age_days_actual": 2,
+      "age_note": "radar first_seen is the llm-stats aggregation date (Aug 5); the opinion was filed Aug 4, 2026",
+      "max_age_days": 4,
+      "verdict": "FRESH",
+      "fresher_same_story": [],
+      "fresher_related": [
+        "2026-08-06 - Rogue AI agents created fake online identities in another hacking attempt",
+        "2026-08-06 - Meta launches Muse Code, an AI agent for large code bases",
+        "2026-08-06 - Hark previews its browser use agent for completing tasks",
+        "2026-08-06 - Google Maps adds agentic features, including food ordering and hotel bookings"
+      ]
+    }
+  },
+
+  "case": {
+    "name": "Amazon.com Services, LLC v. Perplexity AI, Inc.",
+    "docket": "No. 26-1444",
+    "court": "United States Court of Appeals for the Ninth Circuit",
+    "publication_status": "FOR PUBLICATION",
+    "filed": "2026-08-04",
+    "argued_submitted": "2026-06-11, Seattle, WA",
+    "district_court": "N.D. Cal., D.C. No. 3:25-cv-09514-MMC",
+    "district_judge": "Maxine M. Chesney",
+    "panel": [
+      "Milan D. Smith, Jr. (Circuit Judge, author)",
+      "Eric C. Tung (Circuit Judge)",
+      "John Charles Hinderaker (District Judge, D. Ariz., by designation)"
+    ],
+    "opinion_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf",
+    "claims_at_issue": ["CFAA 18 U.S.C. 1030(a)(2)", "California CDAFA, Cal. Penal Code 502"]
+  },
+
+  "q1_scope": {
+    "final_vs_preliminary": "PRELIMINARY",
+    "case_continues": true,
+    "disposition": "VACATE preliminary injunction; REMAND for further proceedings",
+    "standard_of_review": "abuse of discretion over grant of a preliminary injunction",
+    "merits_decided": false,
+    "ruling_scope_beginner": "A US appeals court just threw out the order that had blocked Perplexity's AI shopping assistant from Amazon - so Amazon lost this round, but the lawsuit itself is still running.",
+    "ruling_scope_precise": "On August 4, 2026, a Ninth Circuit panel held that Amazon was unlikely to succeed on the 'access' element of its CFAA and CDAFA claims, vacated the district court's preliminary injunction as an abuse of discretion, and remanded for further proceedings - expressly without deciding the merits.",
+    "disposition_quote": "Because Amazon is unlikely to succeed on the merits of the 'access' prong of the CFAA and CDAFA analysis and the equitable factors do not otherwise strongly favor an injunction, we VACATE the preliminary injunction granted by the district court and REMAND for further proceedings consistent with this opinion.",
+    "disposition_quote_cite": "slip op. p.21 (CONCLUSION)",
+    "source_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf",
+    "source_date": "2026-08-04"
+  },
+
+  "q2_reasoning": {
+    "is_actual_holding": true,
+    "is_commentator_paraphrase": false,
+    "holding_quote": "Our focus is thus to ask whether Perplexity uses a tool (the Assistant) to 'access' Amazon's computers. On the facts before us, we answer no. It is the user who 'accesses' Amazon's computers, with the help of the Assistant to carry out specific acts on Amazon.com. To be sure, Perplexity may receive screenshots of the user's browser and may communicate instructions to the Assistant. But those activities, by themselves, do not mean that Perplexity has 'accessed' (gained entry) to Amazon's servers.",
+    "holding_quote_cite": "slip op. p.15",
+    "supporting_quotes": [
+      {
+        "text": "The CFAA contemplates access by a person. However advanced the Assistant currently is, it is a tool, not a person for statutory purposes.",
+        "cite": "slip op. p.15"
+      },
+      {
+        "text": "we arrive at the same conclusion: the user (not Perplexity) accesses Amazon using the Assistant as an AI tool, and thus Amazon is unlikely to succeed on the merits of its CDAFA claim.",
+        "cite": "slip op. p.18"
+      },
+      {
+        "text": "Perplexity's servers never directly access Amazon's servers.",
+        "cite": "slip op. p.14, quoting EFF/Mozilla et al. amicus brief"
+      }
+    ],
+    "limiting_language": [
+      {
+        "label": "no_new_agentic_ai_regime",
+        "text": "Because agentic AI is an emerging technology, we reiterate what this opinion is not. We do not establish a new legal regime governing agentic AI. We do not address whether in other contexts, including tort claims, Perplexity can avoid liability for the Assistant's actions. Our holding here is limited to 'access' as contemplated by the CFAA and as applied to the Assistant's interactions with Amazon.com on the record before us, not the broader legal landscape surrounding agentic AI.",
+        "cite": "slip op. p.17"
+      },
+      {
+        "label": "tos_still_available_to_amazon",
+        "text": "This outcome does not impair Amazon's ability to regulate access to Amazon.com via private terms of service for its users. On the facts before us, Amazon is simply unlikely to succeed in its attempt to regulate access by invoking the CFAA and the CDAFA.",
+        "cite": "slip op. p.21 n.5"
+      },
+      {
+        "label": "user_liability_warning",
+        "text": "Amazon's approach, if accepted, could expose users themselves to criminal liability (under a conspiracy or aiding-and-abetting theory) for facilitating Perplexity's purported unauthorized access to Amazon's servers.",
+        "cite": "slip op. p.16"
+      },
+      {
+        "label": "record_bound",
+        "text": "We do not address whether, on a different record or new facts, Perplexity may exercise control over the Assistant in such a way as to gain entry to Amazon's servers.",
+        "cite": "slip op. p.15"
+      }
+    ],
+    "interpretive_canons": ["rule of lenity (CFAA is primarily a criminal statute; ambiguity construed against liability) - slip op. p.13 n.3, p.16"]
+  },
+
+  "q3_appeal": {
+    "appeal_filed": false,
+    "en_banc_petition_reported": false,
+    "cert_petition_reported": false,
+    "tos_change_reported": false,
+    "status_line": "No reported appeal signal as of 2026-08-06: Amazon has publicly disagreed and says it is evaluating next steps, but no en banc or Supreme Court filing is reported.",
+    "do_not_infer": "Amazon's lack of a filing is NOT acceptance - it stated on the record that it disagrees.",
+    "amazon_statement": {
+      "text": "We respectfully disagree with today's decision on the preliminary injunction. We remain confident in our case and are evaluating our next steps.",
+      "attribution": "Amazon spokesperson",
+      "source_url": "https://www.engadget.com/2230471/perplexity-has-successfully-overturned-amazon-injunction-on-its-ai-shopping-bot/",
+      "source_date": "2026-08-04"
+    },
+    "perplexity_statement": {
+      "text": "Perplexity will continue to fight for the right of internet users to choose whatever AI they want.",
+      "attribution": "Perplexity spokesperson",
+      "source_url": "https://www.pymnts.com/amazon/2026/appeals-court-overturns-ban-on-perplexity-ai-shopping-agents-on-amazon/",
+      "source_date": "2026-08-05"
+    }
+  },
+
+  "q4_consumer_tier_capability": {
+    "product": "Comet (Perplexity's AI browser) + its agentic 'Assistant'",
+    "available_to_consumers": true,
+    "free_tier": true,
+    "platforms": ["Windows 10/11 64-bit", "macOS 13+", "iOS", "Android"],
+    "regions": "available worldwide per Perplexity; no region restriction found",
+    "free_tier_includes_agent": true,
+    "free_tier_notes": "agentic search, page summarisation, voice mode, Deep Research and shopping assistance are reported as free-tier",
+    "paid_tier_delta": "Pro/Max raise browser-agent query limits and use stronger models; Max ($200/mo) adds Background Assistants that run unattended",
+    "can_browse_compare": true,
+    "can_add_to_cart": true,
+    "completes_checkout_autonomously": false,
+    "checkout_behaviour": "Hands back to the human at the payment step; agent does the legwork, user confirms and completes the purchase.",
+    "checkout_confidence": "MEDIUM",
+    "checkout_evidence": [
+      "Perplexity's own briefing analogy: 'the Safari software automatically fills in the user's address and payment information at checkout on the user's behalf' (slip op. p.11) - i.e. autofill-assisted, not autonomous",
+      "Amazon's contrary characterisation: the Assistant 'proceeds autonomously' and 'behaves like an efficient human shopper' (slip op. p.11)",
+      "Secondary reviews describe an 'act with confirmation' policy gating purchases"
+    ],
+    "disputed": true,
+    "disputed_note": "The degree of autonomy is actively disputed by the parties and was NOT resolved by the court. The script must not settle it.",
+    "works_on_amazon_today": "UNVERIFIED",
+    "mandatory_script_limit": "A vacated injunction is not a restored feature. The court removed a legal bar; it did not order Amazon to admit Comet, and footnote 5 preserves Amazon's ability to block agents via Terms of Service. No source confirms Comet's Assistant operates on Amazon.com for a consumer today. The script may say the ban was lifted; it may NOT say 'it works on Amazon now'.",
+    "sources": [
+      "https://www.perplexity.ai/comet",
+      "https://comet-help.perplexity.ai/en/articles/11734730-operating-system-requirements",
+      "https://www.eesel.ai/blog/perplexity-comet-pricing",
+      "https://ecommerceguide.com/agents/comet-2/"
+    ]
+  },
+
+  "q5_movement": {
+    "cold_open_changed": false,
+    "fresher_same_story": false,
+    "bigger_same_day_story": false,
+    "checked_at": "2026-08-06T13:59:14Z",
+    "rationale": "peg-check returned fresher_same_story: []; the four same-day (2026-08-06) AI items are all smaller than the first federal appellate ruling on AI-agent access.",
+    "replacement_hook_line": null,
+    "recommended_cold_open": "A US appeals court just told Amazon it can't use a hacking law to keep an AI shopping agent off its site - because legally, it isn't the AI visiting Amazon. It's you.",
+    "segue_candidate": {
+      "item": "Google Maps adds agentic features, including food ordering and hotel bookings",
+      "date": "2026-08-06",
+      "use": "beat 4 concreteness segue, NOT the hook"
+    }
+  },
+
+  "claims": [
+    {"id": "C1", "text": "On August 4, 2026, the US Court of Appeals for the Ninth Circuit vacated the preliminary injunction that had barred Perplexity's Comet AI assistant from Amazon.com.", "source_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf", "source_date": "2026-08-04", "confidence": "high"},
+    {"id": "C2", "text": "The case is not over - the panel remanded it for further proceedings in the Northern District of California.", "source_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf", "source_date": "2026-08-04", "confidence": "high"},
+    {"id": "C3", "text": "The panel held only that Amazon was unlikely to succeed on the 'access' element; it did not decide the merits.", "source_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf", "source_date": "2026-08-04", "confidence": "high"},
+    {"id": "C4", "text": "The court's reasoning: 'It is the user who accesses Amazon's computers, with the help of the Assistant to carry out specific acts on Amazon.com.'", "source_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf", "source_date": "2026-08-04", "confidence": "high"},
+    {"id": "C5", "text": "The court reasoned the CFAA contemplates access by a person, and 'however advanced the Assistant currently is, it is a tool, not a person for statutory purposes.'", "source_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf", "source_date": "2026-08-04", "confidence": "high"},
+    {"id": "C6", "text": "The same reasoning defeated Amazon's California state-law CDAFA claim.", "source_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf", "source_date": "2026-08-04", "confidence": "high"},
+    {"id": "C7", "text": "The court expressly said it was not establishing a new legal regime governing agentic AI.", "source_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf", "source_date": "2026-08-04", "confidence": "high"},
+    {"id": "C8", "text": "The ruling does not stop Amazon from restricting AI agents through its own Terms of Service.", "source_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf", "source_date": "2026-08-04", "confidence": "high"},
+    {"id": "C9", "text": "The court warned that Amazon's theory could have exposed users to criminal liability under conspiracy or aiding-and-abetting theories.", "source_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf", "source_date": "2026-08-04", "confidence": "high"},
+    {"id": "C10", "text": "Amazon said: 'We respectfully disagree with today's decision on the preliminary injunction. We remain confident in our case and are evaluating our next steps.'", "source_url": "https://www.engadget.com/2230471/perplexity-has-successfully-overturned-amazon-injunction-on-its-ai-shopping-bot/", "source_date": "2026-08-04", "confidence": "high"},
+    {"id": "C11", "text": "As of August 6, 2026 there is no reported en banc petition or Supreme Court filing by Amazon.", "source_url": "https://www.pymnts.com/amazon/2026/appeals-court-overturns-ban-on-perplexity-ai-shopping-agents-on-amazon/", "source_date": "2026-08-06", "confidence": "medium", "note": "argument from absence across 7 searches; phrase as 'no reported appeal signal as of Aug 6'"},
+    {"id": "C12", "text": "Amazon filed its complaint in November 2025; the district court granted the injunction in March 2026.", "source_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf", "source_date": "2026-08-04", "confidence": "high"},
+    {"id": "C13", "text": "Mechanically, the Assistant screenshots the page on the user's own machine and sends those to Perplexity's servers - 'Perplexity's servers never directly access Amazon's servers.'", "source_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf", "source_date": "2026-08-04", "confidence": "high"},
+    {"id": "C14", "text": "The Assistant cannot operate wholly independently; it relies on direction from the user.", "source_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf", "source_date": "2026-08-04", "confidence": "high"},
+    {"id": "C15", "text": "Comet is available free, worldwide, on Windows, macOS, iOS and Android.", "source_url": "https://www.perplexity.ai/comet", "source_date": "2026-08-06", "confidence": "medium-high"},
+    {"id": "C16", "text": "Paid tiers (Pro/Max) raise browser-agent query limits and add Max-only Background Assistants.", "source_url": "https://www.eesel.ai/blog/perplexity-comet-pricing", "source_date": "2026-08-06", "confidence": "medium"},
+    {"id": "C17", "text": "For purchases, consumer AI browsers gate the payment step behind human confirmation - the agent does the legwork and hands back at checkout.", "source_url": "https://ecommerceguide.com/agents/comet-2/", "source_date": "2026-08-06", "confidence": "medium", "note": "HEDGE ON AIR - degree of autonomy is disputed by the parties and undecided by the court"},
+    {"id": "C18", "text": "Panel: Judges Milan D. Smith Jr., Eric C. Tung, and District Judge John Charles Hinderaker; opinion by Judge M. Smith.", "source_url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/08/04/26-1444.pdf", "source_date": "2026-08-04", "confidence": "high"},
+    {"id": "C19", "text": "This is the first federal appeals court ruling to address whether AI agents acting for users can legally access online platforms.", "source_url": "https://www.pymnts.com/amazon/2026/appeals-court-overturns-ban-on-perplexity-ai-shopping-agents-on-amazon/", "source_date": "2026-08-05", "confidence": "medium"}
+  ],
+
+  "rejected_claims": [
+    {"text": "Amazon sued Perplexity in March 2026", "reason": "Contradicted by the opinion (slip op. p.8): complaint filed November 2025; March 2026 is when the injunction issued.", "seen_in": ["thenextweb.com", "pymnts.com", "wire copy"]},
+    {"text": "Amazon's trademark claims survive", "reason": "The opinion describes only CFAA and CDAFA claims; no trademark claim is mentioned. Unverified.", "seen_in": ["tftc.io"]},
+    {"text": "Amazon will appeal / plans to appeal", "reason": "Amazon said it is 'evaluating' next steps. No filing reported."},
+    {"text": "Comet's shopping assistant is working on Amazon again today", "reason": "No source confirms restored operation; footnote 5 preserves Amazon's ToS-based blocking."}
+  ],
+
+  "banned_phrasings": [
+    {"banned": "Amazon lost the case", "use_instead": "Amazon lost this round"},
+    {"banned": "The court ruled AI agents are legal", "use_instead": "The court ruled the hacking statute doesn't reach this"},
+    {"banned": "It's legal everywhere now", "use_instead": "This is the Ninth Circuit; other circuits are not bound"},
+    {"banned": "Agents can now buy anything for you", "use_instead": "The agent works at your direction, and you confirm the purchase"},
+    {"banned": "Amazon can't stop it anymore", "use_instead": "Amazon can still block agents via its Terms of Service"},
+    {"banned": "The court said AI agents have rights / are like users", "use_instead": "The court said the Assistant is a tool, not a person, for statutory purposes"},
+    {"banned": "This settles the law on AI agents", "use_instead": "The court expressly said it was not establishing a new legal regime"},
+    {"banned": "Perplexity won the lawsuit", "use_instead": "Perplexity won the appeal of an injunction"},
+    {"banned": "You can now let AI shop Amazon for you", "use_instead": "The legal block was lifted - whether it works on Amazon today is unconfirmed"},
+    {"banned": "Amazon accepted the ruling / didn't respond", "use_instead": "Amazon said it respectfully disagrees and is evaluating next steps"},
+    {"banned": "The judge said...", "use_instead": "A three-judge panel held..."},
+    {"banned": "This means you're safe to automate any site", "use_instead": "The court warned the user may be the one carrying the liability"}
+  ],
+
+  "entities_named": [
+    {"name": "Amazon", "legal_name": "Amazon.com Services, LLC", "required": true},
+    {"name": "Perplexity", "legal_name": "Perplexity AI, Inc.", "required": true},
+    {"name": "Apple", "required": false, "condition": "only if the Safari analogy beat survives"},
+    {"name": "Google", "required": false, "condition": "only if the Google Maps agentic-commerce segue survives"},
+    {"name": "Meta", "required": false, "condition": "only if the Muse Code segue survives"}
+  ],
+
+  "compliance": {
+    "multi_entity_disclaimer_must_list": ["Amazon", "Perplexity"],
+    "multi_entity_rule": "PRODUCTION-PLAYBOOK: the 'Not affiliated with X' disclaimer must list every named entity in the final VO, not just the channel's boilerplate one",
+    "not_legal_advice_required": true,
+    "onscreen_citation_required": "Ninth Circuit - Aug 4, 2026 - No. 26-1444",
+    "required_chip": {"text": "Preliminary injunction vacated - case continues", "placement": "dead space only, never over the quoted holding"}
+  }
+}

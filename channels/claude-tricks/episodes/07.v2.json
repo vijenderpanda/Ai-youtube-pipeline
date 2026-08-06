@@ -1,0 +1,731 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep07/v2_hook.mp4",
+   "dur": 5.7
+  },
+  {
+   "src": "assets/ep07/term_tokens.mp4",
+   "dur": 3.455,
+   "from": 31.0
+  },
+  {
+   "src": "assets/ep07/term_tokens.mp4",
+   "dur": 3.67,
+   "from": 33.0
+  },
+  {
+   "src": "assets/ep07/term_tokens.mp4",
+   "dur": 2.255,
+   "from": 35.5
+  },
+  {
+   "src": "assets/ep07/term_tokens.mp4",
+   "dur": 2.77,
+   "from": 37.5
+  },
+  {
+   "src": "assets/ep07/term_tokens.mp4",
+   "dur": 2.81,
+   "from": 39.5
+  },
+  {
+   "src": "assets/ep07/v2_payoff.mp4",
+   "dur": 14.4
+  }
+ ],
+ "captions": [
+  {
+   "w": "CLAUDE",
+   "start": 0.0,
+   "end": 0.41,
+   "hot": false
+  },
+  {
+   "w": "QUIETLY",
+   "start": 0.44,
+   "end": 0.85,
+   "hot": false
+  },
+  {
+   "w": "EATS",
+   "start": 0.92,
+   "end": 1.1,
+   "hot": false
+  },
+  {
+   "w": "YOUR",
+   "start": 1.15,
+   "end": 1.25,
+   "hot": false
+  },
+  {
+   "w": "TOKENS",
+   "start": 1.29,
+   "end": 1.74,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 1.76,
+   "end": 1.88,
+   "hot": false
+  },
+  {
+   "w": "TOKENS",
+   "start": 1.96,
+   "end": 2.37,
+   "hot": true
+  },
+  {
+   "w": "COST",
+   "start": 2.44,
+   "end": 2.69,
+   "hot": false
+  },
+  {
+   "w": "MONEY",
+   "start": 2.79,
+   "end": 3.05,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 3.12,
+   "end": 3.22,
+   "hot": false
+  },
+  {
+   "w": "SPEED",
+   "start": 3.26,
+   "end": 3.75,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 4.26,
+   "end": 4.26,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 4.26,
+   "end": 4.26,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 4.26,
+   "end": 4.26,
+   "hot": false
+  },
+  {
+   "w": "HERE'S",
+   "start": 4.26,
+   "end": 4.53,
+   "hot": false
+  },
+  {
+   "w": "HOW",
+   "start": 4.56,
+   "end": 4.64,
+   "hot": false
+  },
+  {
+   "w": "TO",
+   "start": 4.68,
+   "end": 4.74,
+   "hot": false
+  },
+  {
+   "w": "SEE",
+   "start": 4.81,
+   "end": 4.97,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 5.02,
+   "end": 5.17,
+   "hot": false
+  },
+  {
+   "w": "AND",
+   "start": 5.19,
+   "end": 5.33,
+   "hot": false
+  },
+  {
+   "w": "CUT",
+   "start": 5.4,
+   "end": 5.56,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 5.61,
+   "end": 5.68,
+   "hot": false
+  },
+  {
+   "w": "IN",
+   "start": 5.72,
+   "end": 5.79,
+   "hot": false
+  },
+  {
+   "w": "HALF",
+   "start": 5.86,
+   "end": 6.27,
+   "hot": true
+  },
+  {
+   "w": "WATCH",
+   "start": 6.48,
+   "end": 7.08,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 7.69,
+   "end": 7.69,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 7.69,
+   "end": 7.69,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 7.69,
+   "end": 7.69,
+   "hot": false
+  },
+  {
+   "w": "TYPE",
+   "start": 7.69,
+   "end": 8.03,
+   "hot": false
+  },
+  {
+   "w": "SLASH",
+   "start": 8.06,
+   "end": 8.35,
+   "hot": true
+  },
+  {
+   "w": "CONTEXT",
+   "start": 8.41,
+   "end": 9.07,
+   "hot": true
+  },
+  {
+   "w": "THIS",
+   "start": 9.24,
+   "end": 9.42,
+   "hot": false
+  },
+  {
+   "w": "SHOWS",
+   "start": 9.46,
+   "end": 9.72,
+   "hot": false
+  },
+  {
+   "w": "WHAT'S",
+   "start": 9.8,
+   "end": 10.07,
+   "hot": false
+  },
+  {
+   "w": "FILLING",
+   "start": 10.12,
+   "end": 10.45,
+   "hot": false
+  },
+  {
+   "w": "CLAUDE'S",
+   "start": 10.51,
+   "end": 10.87,
+   "hot": false
+  },
+  {
+   "w": "MEMORY",
+   "start": 10.91,
+   "end": 11.52,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 12.12,
+   "end": 12.12,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 12.12,
+   "end": 12.12,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 12.12,
+   "end": 12.12,
+   "hot": false
+  },
+  {
+   "w": "EVERY",
+   "start": 12.12,
+   "end": 12.39,
+   "hot": false
+  },
+  {
+   "w": "MESSAGE",
+   "start": 12.45,
+   "end": 12.81,
+   "hot": false
+  },
+  {
+   "w": "AND",
+   "start": 12.84,
+   "end": 12.93,
+   "hot": false
+  },
+  {
+   "w": "FILE",
+   "start": 12.99,
+   "end": 13.27,
+   "hot": false
+  },
+  {
+   "w": "PILES",
+   "start": 13.33,
+   "end": 13.62,
+   "hot": true
+  },
+  {
+   "w": "UP",
+   "start": 13.69,
+   "end": 14.06,
+   "hot": false
+  },
+  {
+   "w": "AND",
+   "start": 14.18,
+   "end": 14.33,
+   "hot": false
+  },
+  {
+   "w": "SLOWLY",
+   "start": 14.4,
+   "end": 14.79,
+   "hot": false
+  },
+  {
+   "w": "MAKES",
+   "start": 14.86,
+   "end": 15.06,
+   "hot": false
+  },
+  {
+   "w": "CLAUDE",
+   "start": 15.1,
+   "end": 15.43,
+   "hot": false
+  },
+  {
+   "w": "SLUGGISH",
+   "start": 15.46,
+   "end": 16.15,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 16.72,
+   "end": 16.72,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 16.72,
+   "end": 16.72,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 16.72,
+   "end": 16.72,
+   "hot": false
+  },
+  {
+   "w": "NOW",
+   "start": 16.72,
+   "end": 16.88,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 16.94,
+   "end": 17.01,
+   "hot": false
+  },
+  {
+   "w": "FIX",
+   "start": 17.08,
+   "end": 17.57,
+   "hot": true
+  },
+  {
+   "w": "JUST",
+   "start": 17.64,
+   "end": 17.83,
+   "hot": false
+  },
+  {
+   "w": "TYPE",
+   "start": 17.87,
+   "end": 18.11,
+   "hot": false
+  },
+  {
+   "w": "SLASH",
+   "start": 18.14,
+   "end": 18.48,
+   "hot": true
+  },
+  {
+   "w": "COMPACT",
+   "start": 18.55,
+   "end": 19.21,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 19.67,
+   "end": 19.67,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 19.67,
+   "end": 19.67,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 19.67,
+   "end": 19.67,
+   "hot": false
+  },
+  {
+   "w": "CLAUDE",
+   "start": 19.67,
+   "end": 20.03,
+   "hot": false
+  },
+  {
+   "w": "SQUEEZES",
+   "start": 20.05,
+   "end": 20.53,
+   "hot": true
+  },
+  {
+   "w": "THE",
+   "start": 20.56,
+   "end": 20.64,
+   "hot": false
+  },
+  {
+   "w": "WHOLE",
+   "start": 20.68,
+   "end": 20.87,
+   "hot": false
+  },
+  {
+   "w": "CONVERSATION",
+   "start": 20.91,
+   "end": 21.48,
+   "hot": false
+  },
+  {
+   "w": "INTO",
+   "start": 21.52,
+   "end": 21.66,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 21.72,
+   "end": 21.75,
+   "hot": false
+  },
+  {
+   "w": "TIGHT",
+   "start": 21.8,
+   "end": 22.08,
+   "hot": false
+  },
+  {
+   "w": "SUMMARY",
+   "start": 22.13,
+   "end": 22.64,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 23.18,
+   "end": 23.18,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 23.18,
+   "end": 23.18,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 23.18,
+   "end": 23.18,
+   "hot": false
+  },
+  {
+   "w": "SAME",
+   "start": 23.18,
+   "end": 23.51,
+   "hot": false
+  },
+  {
+   "w": "MEMORY",
+   "start": 23.56,
+   "end": 24.07,
+   "hot": true
+  },
+  {
+   "w": "WAY",
+   "start": 24.18,
+   "end": 24.4,
+   "hot": false
+  },
+  {
+   "w": "FEWER",
+   "start": 24.46,
+   "end": 24.68,
+   "hot": true
+  },
+  {
+   "w": "TOKENS",
+   "start": 24.74,
+   "end": 25.4,
+   "hot": true
+  },
+  {
+   "w": "FASTER",
+   "start": 25.65,
+   "end": 26.08,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 26.13,
+   "end": 26.23,
+   "hot": false
+  },
+  {
+   "w": "CHEAPER",
+   "start": 26.27,
+   "end": 26.56,
+   "hot": true
+  },
+  {
+   "w": "ANSWERS",
+   "start": 26.62,
+   "end": 27.25,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 27.71,
+   "end": 27.71,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 27.71,
+   "end": 27.71,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 27.71,
+   "end": 27.71,
+   "hot": false
+  },
+  {
+   "w": "DO",
+   "start": 27.71,
+   "end": 27.9,
+   "hot": false
+  },
+  {
+   "w": "THIS",
+   "start": 27.97,
+   "end": 28.11,
+   "hot": false
+  },
+  {
+   "w": "WHENEVER",
+   "start": 28.15,
+   "end": 28.49,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 28.55,
+   "end": 28.58,
+   "hot": false
+  },
+  {
+   "w": "CHAT",
+   "start": 28.63,
+   "end": 28.84,
+   "hot": false
+  },
+  {
+   "w": "GETS",
+   "start": 28.9,
+   "end": 29.08,
+   "hot": false
+  },
+  {
+   "w": "LONG",
+   "start": 29.14,
+   "end": 29.56,
+   "hot": true
+  },
+  {
+   "w": "YOUR",
+   "start": 29.73,
+   "end": 29.91,
+   "hot": false
+  },
+  {
+   "w": "WALLET",
+   "start": 29.96,
+   "end": 30.27,
+   "hot": true
+  },
+  {
+   "w": "WILL",
+   "start": 30.3,
+   "end": 30.44,
+   "hot": false
+  },
+  {
+   "w": "THANK",
+   "start": 30.49,
+   "end": 30.68,
+   "hot": false
+  },
+  {
+   "w": "YOU",
+   "start": 30.74,
+   "end": 31.0,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 31.56,
+   "end": 31.56,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 31.56,
+   "end": 31.56,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 31.56,
+   "end": 31.56,
+   "hot": false
+  },
+  {
+   "w": "FOLLOW",
+   "start": 31.56,
+   "end": 32.22,
+   "hot": true
+  },
+  {
+   "w": "I",
+   "start": 32.6,
+   "end": 32.66,
+   "hot": false
+  },
+  {
+   "w": "UNPACK",
+   "start": 32.77,
+   "end": 33.11,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 33.18,
+   "end": 33.37,
+   "hot": false
+  },
+  {
+   "w": "AI",
+   "start": 33.4,
+   "end": 33.63,
+   "hot": false
+  },
+  {
+   "w": "SKILL",
+   "start": 33.69,
+   "end": 33.94,
+   "hot": false
+  },
+  {
+   "w": "EVERY",
+   "start": 34.02,
+   "end": 34.2,
+   "hot": false
+  },
+  {
+   "w": "SINGLE",
+   "start": 34.24,
+   "end": 34.49,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 34.53,
+   "end": 35.06,
+   "hot": false
+  }
+ ],
+ "steps": [
+  {
+   "label": "STEP 1/2 \u2014 SEE IT: /context",
+   "start": 5.7,
+   "end": 12.83
+  },
+  {
+   "label": "STEP 2/2 \u2014 CUT IT: /compact",
+   "start": 12.83,
+   "end": 20.66
+  }
+ ],
+ "vo": "assets/ep07/vo_v2.wav",
+ "cover": {
+  "title1": "STOP WASTING",
+  "title2": "YOUR TOKENS",
+  "emojis": "\ud83e\ude99\u26a1\ud83d\udcb8",
+  "until": 3.0
+ },
+ "watermark": true
+}

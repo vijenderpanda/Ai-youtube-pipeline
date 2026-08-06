@@ -1,0 +1,48 @@
+{
+  "id": "couple_01",
+  "codename": "Monsoon",
+  "status": "locked",
+  "engine": "leonardo/nano-banana-2",
+  "created": "2026-08-06",
+  "size": "848x1264 (2:3)  — upscale keepers to 4K per-song",
+  "user_locked_anchor": "faces/casting/B_warm_bokeh_RECOMMENDED.jpg (candidate B)",
+  "refs": {
+    "anchor": "faces/couple_anchor.jpg",
+    "hero_face": "faces/hero_face.jpg",
+    "heroine_face": "faces/heroine_face.jpg",
+    "how_to_use": "In Leonardo (Nano Banana 2), attach faces/couple_anchor.jpg as an Image Reference for two-person shots; use hero_face / heroine_face for solo shots. Prompt: 'Using the woman/man/couple from the reference image, keep exact same face and identity...'"
+  },
+  "look": {
+    "heroine": "extremely attractive Indian woman, mid-20s, flawless fair North-Indian complexion, big expressive dark eyes, sharp cheekbones, soft full nude-rose lips, long dark wet-tousled hair, natural glam makeup, dark floral kurta with a thin pendant necklace",
+    "hero": "ruggedly handsome Indian man, mid-20s, strong sharp jawline, light stubble, thick wet dark hair pushed back, fair skin, fit athletic frame, dark navy shirt",
+    "world": "warm monsoon rain at night on a glowing city street; warm amber street-lamp rim light against deep teal-blue night; dreamy bokeh of city lights and falling rain; 85mm f/1.4 shallow DOF; moody filmic grade; lifelike skin with visible pores; subtle 35mm film grain; romantic Bollywood cinema aesthetic"
+  },
+  "tags": {
+    "vibe": ["monsoon", "rainy-night", "longing"],
+    "mood": ["heartbreak", "yearning", "intense", "romantic-tension"],
+    "palette": ["teal-blue", "amber", "low-key", "moody"],
+    "time_of_day": "night",
+    "season": "monsoon",
+    "location": ["rain street", "wet city night", "under street lamp"],
+    "tempo_fit": ["slow", "mid"],
+    "energy": "melancholic-intense",
+    "wardrobe": ["dark", "wet-look", "floral kurta", "navy shirt"],
+    "best_for": ["rain first-love", "separation", "obsessive love", "sad ballad", "come-back", "Saiyaara-energy longing"]
+  },
+  "shots": [
+    {"code": "G-3q",      "files": ["shots/01_G_heroine_3q_a.jpg", "shots/02_G_heroine_3q_b.jpg"], "type": "heroine", "hook": true,  "motion_ready": true,  "note": "3/4 wistful, hair/rain — prime Shorts hook"},
+    {"code": "G-front",   "files": ["shots/03_G_heroine_front_a.jpg", "shots/04_G_heroine_front_b.jpg"], "type": "heroine", "hook": true, "motion_ready": true, "note": "near-frontal beauty — eye-contact hook; heroine_face ref"},
+    {"code": "G-walk",    "files": ["shots/05_G_heroine_walk_a.jpg", "shots/06_G_heroine_walk_b.jpg"], "type": "heroine", "hook": true,  "motion_ready": true,  "note": "half-body, arms wrapped, walking in rain — verse b-roll"},
+    {"code": "C-walk",    "files": ["shots/07_C_couple_walk_a.jpg", "shots/08_C_couple_walk_b.jpg"], "type": "couple",  "hook": false, "motion_ready": true,  "note": "couple walking hand-in-hand, wide — chorus payoff"},
+    {"code": "C-embrace", "files": ["shots/09_C_couple_embrace_a.jpg", "shots/10_C_couple_embrace_b.jpg"], "type": "couple", "hook": true, "motion_ready": true, "note": "almost-kiss embrace — emotional peak"},
+    {"code": "H-closeup", "files": ["shots/11_H_hero_closeup_a.jpg", "shots/12_H_hero_closeup_b.jpg"], "type": "hero", "hook": false, "motion_ready": true, "note": "hero brooding close-up — cutaways; hero_face ref"},
+    {"code": "C-anchor",  "files": ["faces/couple_anchor.jpg"], "type": "couple", "hook": true, "motion_ready": true, "note": "the locked anchor two-shot"}
+  ],
+  "motion_clips": [
+    {"file": "motion/01_couple_walk.mp4",    "from_shot": "C-walk",    "model": "leonardo/hailuo-2.3", "size": "768x1376 (9:16)", "duration_s": 5.9, "motion": "couple walk toward camera, rain, slow push-in", "cost_tokens": 98},
+    {"file": "motion/02_couple_embrace.mp4", "from_shot": "C-embrace", "model": "leonardo/hailuo-2.3", "size": "768x1376 (9:16)", "duration_s": 5.9, "motion": "tender lean-in, rain, hair drift, subtle push-in", "cost_tokens": 98},
+    {"file": "motion/03_heroine_rain.mp4",   "from_shot": "G (arms-wrapped)", "model": "leonardo/hailuo-2.3", "size": "768x1376 (9:16)", "duration_s": 5.9, "motion": "heroine still in rain, hair drift, slow blink, push-in — Shorts hook", "cost_tokens": 98}
+  ],
+  "motion_recipe": "Leonardo Video → Hailuo 2.3 → Start frame = a library still (Select Media > Your Generations) → 9:16, 6s → prompt 'Cinematic subtle motion: <what moves>, keep face(s) exactly the same, no morphing, no warping'. 98 tokens/clip. Faces hold cleanly.",
+  "compliance": "original AI couple; no celebrity likeness; fair & unmistakably Indian; synthetic-media disclosure ON at upload"
+}

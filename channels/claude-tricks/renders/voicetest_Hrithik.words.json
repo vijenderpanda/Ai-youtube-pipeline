@@ -1,0 +1,207 @@
+[
+ {
+  "w": "STOP",
+  "start": 0.0,
+  "end": 0.35
+ },
+ {
+  "w": "LETTING",
+  "start": 0.42,
+  "end": 0.63
+ },
+ {
+  "w": "CLAUDE",
+  "start": 0.66,
+  "end": 0.97
+ },
+ {
+  "w": "CODE",
+  "start": 1.01,
+  "end": 1.31
+ },
+ {
+  "w": "WRECK",
+  "start": 1.35,
+  "end": 1.6
+ },
+ {
+  "w": "YOUR",
+  "start": 1.66,
+  "end": 1.75
+ },
+ {
+  "w": "FILES",
+  "start": 1.8,
+  "end": 2.37
+ },
+ {
+  "w": "ONE",
+  "start": 2.52,
+  "end": 2.73
+ },
+ {
+  "w": "SHORTCUT",
+  "start": 2.75,
+  "end": 3.15
+ },
+ {
+  "w": "FIXES",
+  "start": 3.2,
+  "end": 3.51
+ },
+ {
+  "w": "IT",
+  "start": 3.55,
+  "end": 3.82
+ },
+ {
+  "w": "PRESS",
+  "start": 3.97,
+  "end": 4.33
+ },
+ {
+  "w": "SHIFT",
+  "start": 4.48,
+  "end": 4.76
+ },
+ {
+  "w": "TAB",
+  "start": 4.78,
+  "end": 5.22
+ },
+ {
+  "w": "THAT'S",
+  "start": 5.34,
+  "end": 5.6
+ },
+ {
+  "w": "PLAN",
+  "start": 5.65,
+  "end": 5.92
+ },
+ {
+  "w": "MODE",
+  "start": 5.99,
+  "end": 6.4
+ },
+ {
+  "w": "NOW",
+  "start": 6.61,
+  "end": 6.75
+ },
+ {
+  "w": "CLAUDE",
+  "start": 6.82,
+  "end": 7.14
+ },
+ {
+  "w": "THINKS",
+  "start": 7.16,
+  "end": 7.43
+ },
+ {
+  "w": "FIRST",
+  "start": 7.49,
+  "end": 8.05
+ },
+ {
+  "w": "FULL",
+  "start": 8.26,
+  "end": 8.54
+ },
+ {
+  "w": "PLAN",
+  "start": 8.6,
+  "end": 9.07
+ },
+ {
+  "w": "WAITS",
+  "start": 9.18,
+  "end": 9.45
+ },
+ {
+  "w": "FOR",
+  "start": 9.48,
+  "end": 9.58
+ },
+ {
+  "w": "YOUR",
+  "start": 9.62,
+  "end": 9.74
+ },
+ {
+  "w": "YES",
+  "start": 9.8,
+  "end": 10.22
+ },
+ {
+  "w": "YOU",
+  "start": 10.39,
+  "end": 10.52
+ },
+ {
+  "w": "STAY",
+  "start": 10.59,
+  "end": 10.8
+ },
+ {
+  "w": "IN",
+  "start": 10.83,
+  "end": 10.88
+ },
+ {
+  "w": "CONTROL",
+  "start": 10.95,
+  "end": 11.51
+ },
+ {
+  "w": "ZERO",
+  "start": 11.71,
+  "end": 12.01
+ },
+ {
+  "w": "SURPRISE",
+  "start": 12.05,
+  "end": 12.46
+ },
+ {
+  "w": "REWRITES",
+  "start": 12.55,
+  "end": 13.22
+ },
+ {
+  "w": "FOLLOW",
+  "start": 13.43,
+  "end": 14.0
+ },
+ {
+  "w": "NEW",
+  "start": 14.28,
+  "end": 14.55
+ },
+ {
+  "w": "A",
+  "start": 14.66,
+  "end": 14.78
+ },
+ {
+  "w": "I",
+  "start": 14.9,
+  "end": 15.01
+ },
+ {
+  "w": "TRICK",
+  "start": 15.13,
+  "end": 15.37
+ },
+ {
+  "w": "EVERY",
+  "start": 15.49,
+  "end": 15.76
+ },
+ {
+  "w": "DAY",
+  "start": 15.81,
+  "end": 16.3
+ }
+]

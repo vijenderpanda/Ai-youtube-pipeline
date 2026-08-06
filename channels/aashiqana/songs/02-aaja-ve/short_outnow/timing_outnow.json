@@ -1,0 +1,16 @@
+{
+ "_note": "Aaja Ve OUT-NOW glimpse Short — cut-relative karaoke windows, derived from the FRESH align_karaoke.py re-align of the demucs vocal stem (short_outnow/timing_realign_full.json) minus the 79.20s cut start. Never inherited from the shipped lyrics/timing_karaoke.json (playbook §15: re-align before every derivative cut). vis_s on line 1 holds it off screen under the frame-zero title card without moving the sweep, so it appears already part-filled — honest, because it IS.",
+ "lines": [
+  {
+   "s": 0.38,
+   "e": 4.92,
+   "text": "Aaja ve, aaja ve, aaja ve, aaja",
+   "vis_s": 1.25
+  },
+  {
+   "s": 5.73,
+   "e": 9.3,
+   "text": "Mit jaaye bas ye thodi doori"
+  }
+ ]
+}

@@ -1,0 +1,743 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep27/v2_hook.mp4",
+   "dur": 7.31
+  },
+  {
+   "src": "assets/ep27/hold_sources.mp4",
+   "dur": 4.11,
+   "from": 0.0
+  },
+  {
+   "src": "assets/ep27/hold_sources2.mp4",
+   "dur": 3.14,
+   "from": 0.0
+  },
+  {
+   "src": "assets/ep27/hold_answer.mp4",
+   "dur": 2.76,
+   "from": 0.0
+  },
+  {
+   "src": "assets/ep27/hold_compute.mp4",
+   "dur": 4.73,
+   "from": 0.0
+  },
+  {
+   "kind": "statBars",
+   "dur": 5.52,
+   "stat": {
+    "title": "IT RAN THE NUMBERS",
+    "subtitle": "ILLUSTRATIVE \u2014 quarterly growth from an uploaded sheet",
+    "footer": "you asked a question, it wrote the code",
+    "bars": [
+     {
+      "label": "Q1",
+      "value": 4,
+      "display": "4%"
+     },
+     {
+      "label": "Q2",
+      "value": 7,
+      "display": "7%"
+     },
+     {
+      "label": "Q3",
+      "value": 18,
+      "display": "18%",
+      "hot": true,
+      "delta": "+11"
+     },
+     {
+      "label": "Q4",
+      "value": 11,
+      "display": "11%"
+     }
+    ]
+   }
+  },
+  {
+   "src": "assets/ep27/hold_rollout.mp4",
+   "dur": 3.37,
+   "from": 0.0
+  },
+  {
+   "src": "assets/ep27/v2_payoff.mp4",
+   "dur": 8.12
+  }
+ ],
+ "captions": [
+  {
+   "w": "GOOGLE'S",
+   "start": 0.0,
+   "end": 0.38,
+   "hot": true
+  },
+  {
+   "w": "BEST",
+   "start": 0.43,
+   "end": 0.6,
+   "hot": true
+  },
+  {
+   "w": "FREE",
+   "start": 0.65,
+   "end": 0.81,
+   "hot": true
+  },
+  {
+   "w": "A",
+   "start": 0.88,
+   "end": 0.95,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 1.04,
+   "end": 1.07,
+   "hot": false
+  },
+  {
+   "w": "TOOL",
+   "start": 1.13,
+   "end": 1.32,
+   "hot": true
+  },
+  {
+   "w": "DOESN'T",
+   "start": 1.39,
+   "end": 1.65,
+   "hot": false
+  },
+  {
+   "w": "JUST",
+   "start": 1.7,
+   "end": 1.86,
+   "hot": false
+  },
+  {
+   "w": "READ",
+   "start": 1.94,
+   "end": 2.21,
+   "hot": true
+  },
+  {
+   "w": "YOUR",
+   "start": 2.42,
+   "end": 2.54,
+   "hot": false
+  },
+  {
+   "w": "FILES",
+   "start": 2.6,
+   "end": 2.83,
+   "hot": true
+  },
+  {
+   "w": "ANYMORE",
+   "start": 2.87,
+   "end": 3.39,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 3.88,
+   "end": 3.99,
+   "hot": false
+  },
+  {
+   "w": "RUNS",
+   "start": 4.05,
+   "end": 4.26,
+   "hot": true
+  },
+  {
+   "w": "THE",
+   "start": 4.31,
+   "end": 4.38,
+   "hot": false
+  },
+  {
+   "w": "ANALYSIS",
+   "start": 4.42,
+   "end": 4.87,
+   "hot": true
+  },
+  {
+   "w": "FOR",
+   "start": 4.91,
+   "end": 5.04,
+   "hot": false
+  },
+  {
+   "w": "YOU",
+   "start": 5.11,
+   "end": 5.35,
+   "hot": false
+  },
+  {
+   "w": "MOST",
+   "start": 5.6,
+   "end": 5.83,
+   "hot": false
+  },
+  {
+   "w": "PEOPLE",
+   "start": 5.86,
+   "end": 6.08,
+   "hot": false
+  },
+  {
+   "w": "HAVE",
+   "start": 6.12,
+   "end": 6.24,
+   "hot": false
+  },
+  {
+   "w": "NO",
+   "start": 6.28,
+   "end": 6.37,
+   "hot": false
+  },
+  {
+   "w": "IDEA",
+   "start": 6.44,
+   "end": 6.83,
+   "hot": true
+  },
+  {
+   "w": "YOU",
+   "start": 7.31,
+   "end": 7.44,
+   "hot": false
+  },
+  {
+   "w": "MIGHT",
+   "start": 7.5,
+   "end": 7.67,
+   "hot": false
+  },
+  {
+   "w": "KNOW",
+   "start": 7.72,
+   "end": 7.86,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 7.93,
+   "end": 8.02,
+   "hot": false
+  },
+  {
+   "w": "AS",
+   "start": 8.1,
+   "end": 8.3,
+   "hot": false
+  },
+  {
+   "w": "NOTEBOOKLM",
+   "start": 8.42,
+   "end": 9.42,
+   "hot": true
+  },
+  {
+   "w": "IT'S",
+   "start": 9.57,
+   "end": 9.76,
+   "hot": false
+  },
+  {
+   "w": "GEMINI",
+   "start": 9.83,
+   "end": 10.18,
+   "hot": true
+  },
+  {
+   "w": "NOTEBOOK",
+   "start": 10.25,
+   "end": 10.6,
+   "hot": true
+  },
+  {
+   "w": "NOW",
+   "start": 10.67,
+   "end": 10.96,
+   "hot": true
+  },
+  {
+   "w": "DROP",
+   "start": 11.42,
+   "end": 11.66,
+   "hot": true
+  },
+  {
+   "w": "YOUR",
+   "start": 11.7,
+   "end": 11.8,
+   "hot": false
+  },
+  {
+   "w": "DOCUMENTS",
+   "start": 11.84,
+   "end": 12.25,
+   "hot": true
+  },
+  {
+   "w": "IN",
+   "start": 12.31,
+   "end": 12.55,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 12.7,
+   "end": 12.85,
+   "hot": false
+  },
+  {
+   "w": "ANSWERS",
+   "start": 12.91,
+   "end": 13.26,
+   "hot": false
+  },
+  {
+   "w": "ONLY",
+   "start": 13.32,
+   "end": 13.53,
+   "hot": true
+  },
+  {
+   "w": "FROM",
+   "start": 13.56,
+   "end": 13.7,
+   "hot": false
+  },
+  {
+   "w": "THEM",
+   "start": 13.76,
+   "end": 14.04,
+   "hot": false
+  },
+  {
+   "w": "WITH",
+   "start": 14.56,
+   "end": 14.73,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 14.77,
+   "end": 14.79,
+   "hot": false
+  },
+  {
+   "w": "CITATION",
+   "start": 14.84,
+   "end": 15.38,
+   "hot": true
+  },
+  {
+   "w": "ON",
+   "start": 15.46,
+   "end": 15.58,
+   "hot": false
+  },
+  {
+   "w": "EVERY",
+   "start": 15.64,
+   "end": 15.84,
+   "hot": true
+  },
+  {
+   "w": "LINE",
+   "start": 15.88,
+   "end": 16.06,
+   "hot": false
+  },
+  {
+   "w": "YOU",
+   "start": 16.09,
+   "end": 16.16,
+   "hot": false
+  },
+  {
+   "w": "CAN",
+   "start": 16.2,
+   "end": 16.29,
+   "hot": false
+  },
+  {
+   "w": "JUMP",
+   "start": 16.35,
+   "end": 16.52,
+   "hot": true
+  },
+  {
+   "w": "TO",
+   "start": 16.57,
+   "end": 16.88,
+   "hot": false
+  },
+  {
+   "w": "WHAT'S",
+   "start": 17.32,
+   "end": 17.6,
+   "hot": false
+  },
+  {
+   "w": "NEW",
+   "start": 17.66,
+   "end": 17.98,
+   "hot": true
+  },
+  {
+   "w": "A",
+   "start": 18.14,
+   "end": 18.19,
+   "hot": false
+  },
+  {
+   "w": "SECURE",
+   "start": 18.29,
+   "end": 18.73,
+   "hot": true
+  },
+  {
+   "w": "CLOUD",
+   "start": 18.8,
+   "end": 19.11,
+   "hot": true
+  },
+  {
+   "w": "COMPUTER",
+   "start": 19.17,
+   "end": 19.82,
+   "hot": true
+  },
+  {
+   "w": "IN",
+   "start": 20.33,
+   "end": 20.52,
+   "hot": false
+  },
+  {
+   "w": "EVERY",
+   "start": 20.63,
+   "end": 20.93,
+   "hot": true
+  },
+  {
+   "w": "NOTEBOOK",
+   "start": 20.99,
+   "end": 21.56,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 22.05,
+   "end": 22.2,
+   "hot": false
+  },
+  {
+   "w": "WRITES",
+   "start": 22.25,
+   "end": 22.59,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 22.64,
+   "end": 22.73,
+   "hot": false
+  },
+  {
+   "w": "RUNS",
+   "start": 22.78,
+   "end": 23.03,
+   "hot": true
+  },
+  {
+   "w": "REAL",
+   "start": 23.18,
+   "end": 23.43,
+   "hot": true
+  },
+  {
+   "w": "CODE",
+   "start": 23.52,
+   "end": 23.87,
+   "hot": true
+  },
+  {
+   "w": "ON",
+   "start": 24.02,
+   "end": 24.18,
+   "hot": false
+  },
+  {
+   "w": "YOUR",
+   "start": 24.24,
+   "end": 24.35,
+   "hot": false
+  },
+  {
+   "w": "FILES",
+   "start": 24.42,
+   "end": 24.93,
+   "hot": true
+  },
+  {
+   "w": "TOTALS",
+   "start": 25.1,
+   "end": 25.77,
+   "hot": true
+  },
+  {
+   "w": "TRENDS",
+   "start": 25.8,
+   "end": 26.41,
+   "hot": true
+  },
+  {
+   "w": "A",
+   "start": 26.45,
+   "end": 26.53,
+   "hot": false
+  },
+  {
+   "w": "CHART",
+   "start": 26.6,
+   "end": 27.07,
+   "hot": true
+  },
+  {
+   "w": "ROLLING",
+   "start": 27.57,
+   "end": 27.91,
+   "hot": true
+  },
+  {
+   "w": "OUT",
+   "start": 27.97,
+   "end": 28.14,
+   "hot": false
+  },
+  {
+   "w": "NOW",
+   "start": 28.22,
+   "end": 28.43,
+   "hot": true
+  },
+  {
+   "w": "PAID",
+   "start": 28.9,
+   "end": 29.23,
+   "hot": false
+  },
+  {
+   "w": "TIERS",
+   "start": 29.32,
+   "end": 29.76,
+   "hot": false
+  },
+  {
+   "w": "FIRST",
+   "start": 29.91,
+   "end": 30.49,
+   "hot": false
+  },
+  {
+   "w": "GIVE",
+   "start": 30.94,
+   "end": 31.25,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 31.41,
+   "end": 31.52,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 31.64,
+   "end": 31.66,
+   "hot": false
+  },
+  {
+   "w": "YOUR",
+   "start": 31.78,
+   "end": 31.9,
+   "hot": false
+  },
+  {
+   "w": "DOCUMENT",
+   "start": 31.96,
+   "end": 32.45,
+   "hot": false
+  },
+  {
+   "w": "AND",
+   "start": 32.5,
+   "end": 32.6,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 32.66,
+   "end": 32.73,
+   "hot": false
+  },
+  {
+   "w": "STOPS",
+   "start": 32.77,
+   "end": 33.09,
+   "hot": true
+  },
+  {
+   "w": "GUESSING",
+   "start": 33.15,
+   "end": 33.61,
+   "hot": true
+  },
+  {
+   "w": "NOW",
+   "start": 33.78,
+   "end": 33.92,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 33.97,
+   "end": 34.04,
+   "hot": false
+  },
+  {
+   "w": "CAN",
+   "start": 34.09,
+   "end": 34.2,
+   "hot": false
+  },
+  {
+   "w": "DO",
+   "start": 34.25,
+   "end": 34.34,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 34.39,
+   "end": 34.46,
+   "hot": false
+  },
+  {
+   "w": "MATH",
+   "start": 34.51,
+   "end": 34.74,
+   "hot": true
+  },
+  {
+   "w": "ON",
+   "start": 34.76,
+   "end": 34.82,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 34.87,
+   "end": 34.93,
+   "hot": false
+  },
+  {
+   "w": "TOO",
+   "start": 34.97,
+   "end": 35.26,
+   "hot": false
+  },
+  {
+   "w": "FOLLOW",
+   "start": 35.76,
+   "end": 36.23,
+   "hot": true
+  },
+  {
+   "w": "I",
+   "start": 36.33,
+   "end": 36.39,
+   "hot": false
+  },
+  {
+   "w": "UNPACK",
+   "start": 36.48,
+   "end": 36.88,
+   "hot": true
+  },
+  {
+   "w": "ONE",
+   "start": 37.0,
+   "end": 37.22,
+   "hot": false
+  },
+  {
+   "w": "AI",
+   "start": 37.29,
+   "end": 37.57,
+   "hot": false
+  },
+  {
+   "w": "SKILL",
+   "start": 37.6,
+   "end": 37.88,
+   "hot": true
+  },
+  {
+   "w": "EVERY",
+   "start": 37.95,
+   "end": 38.17,
+   "hot": true
+  },
+  {
+   "w": "SINGLE",
+   "start": 38.22,
+   "end": 38.49,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 38.52,
+   "end": 39.06,
+   "hot": true
+  }
+ ],
+ "steps": [
+  {
+   "label": "STEP 1/3 \u2014 ADD YOUR FILES",
+   "start": 7.31,
+   "end": 14.56,
+   "pos": "tr"
+  },
+  {
+   "label": "STEP 2/3 \u2014 IT CITES EVERY LINE",
+   "start": 14.56,
+   "end": 17.32,
+   "pos": "tr"
+  },
+  {
+   "label": "STEP 3/3 \u2014 NOW IT RUNS CODE",
+   "start": 17.32,
+   "end": 22.05,
+   "pos": "tr"
+  }
+ ],
+ "vo": "assets/ep27/vo_v2.wav",
+ "cover": {
+  "title1": "IT DOESN'T JUST",
+  "title2": "READ YOUR FILES",
+  "sub": "now it runs the numbers",
+  "emojis": "\ud83d\udcca",
+  "until": 3.0
+ },
+ "watermark": true
+}

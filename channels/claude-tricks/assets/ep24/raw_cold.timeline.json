@@ -1,0 +1,50 @@
+{
+  "typing_start": 2.916,
+  "typing_end": 7.544,
+  "submit": 8.381,
+  "answer_start": 8.381,
+  "answer_end": 24.653,
+  "scrolls": [
+    24.695,
+    25.973,
+    27.239
+  ],
+  "duration": 28.567,
+  "first_token": 10.495,
+  "observed": {
+    "answer_selector": "[data-message-author-role=\"assistant\"]",
+    "answer_head": "A simple way to decide what to work on first\u2014especially at 3:30 PM\u2014is to pick the task that unlocks the rest of your day rather than the one that feels easiest.\n\nTry this order:\n\nAnything with a deadline today or tomorrow. If someone is waiting on you, do that first.\n\nYour highest-impact task. Spend 60\u201390 minutes making meaningful progress before switching contexts.\n\nQuick administrative tasks. Em",
+    "answer_chars": 954,
+    "logged_in": true,
+    "pii_blurred": 1,
+    "forbidden_term": null
+  },
+  "input_center": [
+    0.493,
+    0.93
+  ],
+  "type_zoom": 1.061,
+  "answer_center": [
+    0.5,
+    0.5
+  ],
+  "push_zoom": 1.03,
+  "measured": {
+    "composer_ink_x": [
+      64,
+      1031
+    ],
+    "answer_ink_x": [
+      33,
+      1045
+    ],
+    "type_zoom_clip_point": 1.117,
+    "push_zoom_clip_point": 1.067,
+    "note": "zoom caps set from ink extents on real frames, not defaults (playbook 10c)",
+    "punch_window_ink_x": [
+      33,
+      1031
+    ],
+    "punch_window_note": "union of composer ink (64..1031) and the streaming pip at answer-column left (33) which appears at submit while the punch is still held"
+  }
+}

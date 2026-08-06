@@ -1,0 +1,180 @@
+{
+ "_note": "OUT-NOW glimpse Short re-align (derivative doctrine)lyrics_split — stable-ts load_faster_whisper('small').align() on the demucs vocal stem, Devanagari align text -> romanized display (1:1 by word count); onset-snap to nearest silero-VAD onset (threshold union (0.5, 0.35), speech_pad 0) within 2.5s (guarded: a snap can never cross the previous line's end; a line with no VAD onset at all is re-aligned in isolation over the remaining audio); sweep-cap e = min(aligned_e, next_s-0.2, s+6.5); MIN_LINE 0.5s. Lines in (parens) are aligned as a tail sink and NOT displayed. Times are relative to the cut start.",
+ "lines": [
+  {
+   "s": 3.65,
+   "e": 8.5,
+   "text": "Aaja ve, aaja ve, aaja ve, aaja"
+  },
+  {
+   "s": 10.59,
+   "e": 14.06,
+   "text": "Tere bina ye shaam adhoori"
+  },
+  {
+   "s": 16.51,
+   "e": 21.14,
+   "text": "Aaja ve, aaja ve, aaja ve, aaja"
+  },
+  {
+   "s": 21.95,
+   "e": 25.66,
+   "text": "Mit jaaye bas ye thodi doori"
+  },
+  {
+   "s": 34.92,
+   "e": 40.98,
+   "text": "Aaja ve, aaja ve, aaja ve, aaja"
+  },
+  {
+   "s": 43.36,
+   "e": 46.54,
+   "text": "Sunehri si shaam hai,"
+  },
+  {
+   "s": 46.82,
+   "e": 49.08,
+   "text": "par tu yahan nahi"
+  },
+  {
+   "s": 49.73,
+   "e": 51.72,
+   "text": "Ye vaadi, ye hawa,"
+  },
+  {
+   "s": 52.77,
+   "e": 54.86,
+   "text": "sab hai, bas tu hi nahi"
+  },
+  {
+   "s": 55.17,
+   "e": 58.18,
+   "text": "Wine ke do glass rakh ke,"
+  },
+  {
+   "s": 58.78,
+   "e": 59.96,
+   "text": "raah teri dekhun"
+  },
+  {
+   "s": 61.54,
+   "e": 63.36,
+   "text": "Tu kab aayegi,"
+  },
+  {
+   "s": 63.56,
+   "e": 66.22,
+   "text": "main raste hi dekhun"
+  },
+  {
+   "s": 68.16,
+   "e": 72.66,
+   "text": "Aaja ve, aaja ve, aaja ve, aaja"
+  },
+  {
+   "s": 73.5,
+   "e": 77.06,
+   "text": "Tere bina ye shaam adhoori"
+  },
+  {
+   "s": 79.58,
+   "e": 84.12,
+   "text": "Aaja ve, aaja ve, aaja ve, aaja"
+  },
+  {
+   "s": 84.93,
+   "e": 88.5,
+   "text": "Mit jaaye bas ye thodi doori"
+  },
+  {
+   "s": 102.4,
+   "e": 106.84,
+   "text": "Aaja ve, aaja ve, aaja ve, aaja"
+  },
+  {
+   "s": 115.62,
+   "e": 117.78,
+   "text": "Wo shaam yaad hai,"
+  },
+  {
+   "s": 118.18,
+   "e": 120.6,
+   "text": "tu laal dress mein thi"
+  },
+  {
+   "s": 121.28,
+   "e": 123.99,
+   "text": "Aasmaan se zyada,"
+  },
+  {
+   "s": 124.19,
+   "e": 126.28,
+   "text": "tu hi roshan thi"
+  },
+  {
+   "s": 127.46,
+   "e": 130.12,
+   "text": "Gulaab tere haathon mein,"
+  },
+  {
+   "s": 130.32,
+   "e": 132.44,
+   "text": "main tera ho gaya"
+  },
+  {
+   "s": 133.15,
+   "e": 135.93,
+   "text": "Ab door hoon to lagta,"
+  },
+  {
+   "s": 136.13,
+   "e": 138.12,
+   "text": "adhoora reh gaya"
+  },
+  {
+   "s": 139.17,
+   "e": 144.08,
+   "text": "Saansein le rahi hain bas tera naam"
+  },
+  {
+   "s": 145.15,
+   "e": 151.65,
+   "text": "Tu aa jaaye to poori ho ye shaam"
+  },
+  {
+   "s": 152.32,
+   "e": 156.88,
+   "text": "Aaja ve, aaja ve, aaja ve, aaja"
+  },
+  {
+   "s": 157.73,
+   "e": 161.26,
+   "text": "Tere bina ye shaam adhoori"
+  },
+  {
+   "s": 163.74,
+   "e": 168.28,
+   "text": "Aaja ve, aaja ve, aaja ve, aaja"
+  },
+  {
+   "s": 169.41,
+   "e": 172.62,
+   "text": "Mit jaaye bas ye thodi doori"
+  },
+  {
+   "s": 182.3,
+   "e": 188.8,
+   "text": "Aaja ve, aaja ve, aaja ve, aaja"
+  },
+  {
+   "s": 201.16,
+   "e": 205.46,
+   "text": "Aaja ve, aaja ve, aaja ve, aaja"
+  },
+  {
+   "s": 208.98,
+   "e": 210.86,
+   "text": "Aaja ve... aaja..."
+  }
+ ]
+}

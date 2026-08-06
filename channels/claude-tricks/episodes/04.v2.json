@@ -1,0 +1,754 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep04/v2_hook.mp4",
+   "dur": 4.955
+  },
+  {
+   "src": "assets/ep04/term_skills.mp4",
+   "dur": 2.95,
+   "from": 1.5
+  },
+  {
+   "src": "assets/ep04/term_skills.mp4",
+   "dur": 3.74,
+   "from": 6.5
+  },
+  {
+   "src": "assets/ep04/term_skills.mp4",
+   "dur": 1.95,
+   "from": 14.5
+  },
+  {
+   "src": "assets/ep04/term_skills.mp4",
+   "dur": 2.405,
+   "from": 24.5
+  },
+  {
+   "src": "assets/ep04/term_skills.mp4",
+   "dur": 4.25,
+   "from": 38.0
+  },
+  {
+   "src": "assets/ep04/v2_payoff.mp4",
+   "dur": 13.19
+  }
+ ],
+ "captions": [
+  {
+   "w": "CLAUDE",
+   "start": 0.0,
+   "end": 0.38,
+   "hot": false
+  },
+  {
+   "w": "JUST",
+   "start": 0.42,
+   "end": 0.57,
+   "hot": false
+  },
+  {
+   "w": "GOT",
+   "start": 0.61,
+   "end": 0.77,
+   "hot": false
+  },
+  {
+   "w": "SKILLS",
+   "start": 0.81,
+   "end": 1.39,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 1.51,
+   "end": 1.66,
+   "hot": false
+  },
+  {
+   "w": "ALMOST",
+   "start": 1.73,
+   "end": 2.06,
+   "hot": false
+  },
+  {
+   "w": "NOBODY",
+   "start": 2.14,
+   "end": 2.46,
+   "hot": true
+  },
+  {
+   "w": "IS",
+   "start": 2.51,
+   "end": 2.59,
+   "hot": false
+  },
+  {
+   "w": "USING",
+   "start": 2.65,
+   "end": 2.88,
+   "hot": false
+  },
+  {
+   "w": "THEM",
+   "start": 2.91,
+   "end": 3.22,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 3.75,
+   "end": 3.75,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 3.75,
+   "end": 3.75,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 3.75,
+   "end": 3.75,
+   "hot": false
+  },
+  {
+   "w": "TEACH",
+   "start": 3.75,
+   "end": 3.98,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 4.02,
+   "end": 4.08,
+   "hot": false
+  },
+  {
+   "w": "ONCE",
+   "start": 4.14,
+   "end": 4.52,
+   "hot": true
+  },
+  {
+   "w": "IT'S",
+   "start": 4.67,
+   "end": 4.85,
+   "hot": false
+  },
+  {
+   "w": "AN",
+   "start": 4.88,
+   "end": 4.93,
+   "hot": false
+  },
+  {
+   "w": "EXPERT",
+   "start": 4.98,
+   "end": 5.34,
+   "hot": true
+  },
+  {
+   "w": "FOREVER",
+   "start": 5.39,
+   "end": 5.91,
+   "hot": true
+  },
+  {
+   "w": "WATCH",
+   "start": 6.06,
+   "end": 6.61,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 7.06,
+   "end": 7.06,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 7.06,
+   "end": 7.06,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 7.06,
+   "end": 7.06,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 7.06,
+   "end": 7.11,
+   "hot": false
+  },
+  {
+   "w": "MAKE",
+   "start": 7.2,
+   "end": 7.36,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 7.41,
+   "end": 7.61,
+   "hot": true
+  },
+  {
+   "w": "SKILL",
+   "start": 7.64,
+   "end": 7.87,
+   "hot": false
+  },
+  {
+   "w": "FOLDER",
+   "start": 7.94,
+   "end": 8.41,
+   "hot": true
+  },
+  {
+   "w": "WITH",
+   "start": 8.46,
+   "end": 8.65,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 8.72,
+   "end": 8.9,
+   "hot": true
+  },
+  {
+   "w": "SKILL",
+   "start": 8.93,
+   "end": 9.15,
+   "hot": false
+  },
+  {
+   "w": "FILE",
+   "start": 9.21,
+   "end": 9.39,
+   "hot": true
+  },
+  {
+   "w": "INSIDE",
+   "start": 9.42,
+   "end": 9.89,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 10.43,
+   "end": 10.43,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 10.43,
+   "end": 10.43,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 10.43,
+   "end": 10.43,
+   "hot": false
+  },
+  {
+   "w": "IN",
+   "start": 10.43,
+   "end": 10.59,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 10.63,
+   "end": 10.84,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 10.89,
+   "end": 10.96,
+   "hot": false
+  },
+  {
+   "w": "NAME",
+   "start": 11.05,
+   "end": 11.46,
+   "hot": true
+  },
+  {
+   "w": "A",
+   "start": 11.55,
+   "end": 11.61,
+   "hot": false
+  },
+  {
+   "w": "DESCRIPTION",
+   "start": 11.68,
+   "end": 12.31,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 12.42,
+   "end": 12.56,
+   "hot": false
+  },
+  {
+   "w": "EXACTLY",
+   "start": 12.63,
+   "end": 13.14,
+   "hot": false
+  },
+  {
+   "w": "HOW",
+   "start": 13.19,
+   "end": 13.28,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 13.33,
+   "end": 13.35,
+   "hot": false
+  },
+  {
+   "w": "WANT",
+   "start": 13.41,
+   "end": 13.58,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 13.61,
+   "end": 13.68,
+   "hot": false
+  },
+  {
+   "w": "JOB",
+   "start": 13.72,
+   "end": 13.92,
+   "hot": false
+  },
+  {
+   "w": "DONE",
+   "start": 13.98,
+   "end": 14.3,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 14.81,
+   "end": 14.81,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 14.81,
+   "end": 14.81,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 14.81,
+   "end": 14.81,
+   "hot": false
+  },
+  {
+   "w": "SAVE",
+   "start": 14.81,
+   "end": 15.38,
+   "hot": true
+  },
+  {
+   "w": "NOW",
+   "start": 15.71,
+   "end": 15.88,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 15.94,
+   "end": 15.96,
+   "hot": false
+  },
+  {
+   "w": "COMPLETELY",
+   "start": 16.04,
+   "end": 16.57,
+   "hot": false
+  },
+  {
+   "w": "FRESH",
+   "start": 16.6,
+   "end": 16.8,
+   "hot": true
+  },
+  {
+   "w": "SESSION",
+   "start": 16.85,
+   "end": 17.31,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 17.81,
+   "end": 17.81,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 17.81,
+   "end": 17.81,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 17.81,
+   "end": 17.81,
+   "hot": false
+  },
+  {
+   "w": "I",
+   "start": 17.81,
+   "end": 17.87,
+   "hot": false
+  },
+  {
+   "w": "JUST",
+   "start": 17.98,
+   "end": 18.15,
+   "hot": false
+  },
+  {
+   "w": "ASK",
+   "start": 18.2,
+   "end": 18.38,
+   "hot": true
+  },
+  {
+   "w": "NORMALLY",
+   "start": 18.44,
+   "end": 18.95,
+   "hot": true
+  },
+  {
+   "w": "NO",
+   "start": 19.07,
+   "end": 19.21,
+   "hot": false
+  },
+  {
+   "w": "COMMANDS",
+   "start": 19.28,
+   "end": 19.89,
+   "hot": false
+  },
+  {
+   "w": "WATCH",
+   "start": 20.0,
+   "end": 20.24,
+   "hot": true
+  },
+  {
+   "w": "WHAT",
+   "start": 20.26,
+   "end": 20.36,
+   "hot": false
+  },
+  {
+   "w": "HAPPENS",
+   "start": 20.41,
+   "end": 20.97,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 21.5,
+   "end": 21.5,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 21.5,
+   "end": 21.5,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 21.5,
+   "end": 21.5,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 21.5,
+   "end": 21.66,
+   "hot": false
+  },
+  {
+   "w": "FINDS",
+   "start": 21.73,
+   "end": 22.0,
+   "hot": true
+  },
+  {
+   "w": "MY",
+   "start": 22.06,
+   "end": 22.14,
+   "hot": false
+  },
+  {
+   "w": "SKILL",
+   "start": 22.19,
+   "end": 22.43,
+   "hot": false
+  },
+  {
+   "w": "ON",
+   "start": 22.48,
+   "end": 22.53,
+   "hot": false
+  },
+  {
+   "w": "ITS",
+   "start": 22.58,
+   "end": 22.7,
+   "hot": false
+  },
+  {
+   "w": "OWN",
+   "start": 22.77,
+   "end": 23.02,
+   "hot": false
+  },
+  {
+   "w": "AND",
+   "start": 23.06,
+   "end": 23.18,
+   "hot": false
+  },
+  {
+   "w": "DELIVERS",
+   "start": 23.24,
+   "end": 23.66,
+   "hot": false
+  },
+  {
+   "w": "IN",
+   "start": 23.71,
+   "end": 23.75,
+   "hot": false
+  },
+  {
+   "w": "MY",
+   "start": 23.8,
+   "end": 23.88,
+   "hot": false
+  },
+  {
+   "w": "EXACT",
+   "start": 23.94,
+   "end": 24.25,
+   "hot": false
+  },
+  {
+   "w": "FORMAT",
+   "start": 24.3,
+   "end": 24.75,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 25.26,
+   "end": 25.26,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 25.26,
+   "end": 25.26,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 25.26,
+   "end": 25.26,
+   "hot": false
+  },
+  {
+   "w": "THAT'S",
+   "start": 25.26,
+   "end": 25.52,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 25.55,
+   "end": 25.62,
+   "hot": false
+  },
+  {
+   "w": "MAGIC",
+   "start": 25.67,
+   "end": 26.18,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 26.42,
+   "end": 26.57,
+   "hot": false
+  },
+  {
+   "w": "MATCHES",
+   "start": 26.63,
+   "end": 26.95,
+   "hot": true
+  },
+  {
+   "w": "THE",
+   "start": 26.98,
+   "end": 27.05,
+   "hot": false
+  },
+  {
+   "w": "TASK",
+   "start": 27.12,
+   "end": 27.63,
+   "hot": false
+  },
+  {
+   "w": "LOADS",
+   "start": 27.75,
+   "end": 28.0,
+   "hot": true
+  },
+  {
+   "w": "YOUR",
+   "start": 28.04,
+   "end": 28.13,
+   "hot": false
+  },
+  {
+   "w": "RULES",
+   "start": 28.16,
+   "end": 28.51,
+   "hot": false
+  },
+  {
+   "w": "EVERY",
+   "start": 28.58,
+   "end": 28.82,
+   "hot": true
+  },
+  {
+   "w": "TIME",
+   "start": 28.86,
+   "end": 29.22,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 29.88,
+   "end": 29.88,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 29.88,
+   "end": 29.88,
+   "hot": false
+  },
+  {
+   "w": "/",
+   "start": 29.88,
+   "end": 29.88,
+   "hot": false
+  },
+  {
+   "w": "FOLLOW",
+   "start": 29.88,
+   "end": 30.43,
+   "hot": true
+  },
+  {
+   "w": "I",
+   "start": 30.75,
+   "end": 30.81,
+   "hot": false
+  },
+  {
+   "w": "UNPACK",
+   "start": 30.93,
+   "end": 31.29,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 31.37,
+   "end": 31.57,
+   "hot": true
+  },
+  {
+   "w": "AI",
+   "start": 31.6,
+   "end": 31.83,
+   "hot": false
+  },
+  {
+   "w": "SKILL",
+   "start": 31.88,
+   "end": 32.17,
+   "hot": false
+  },
+  {
+   "w": "EVERY",
+   "start": 32.29,
+   "end": 32.55,
+   "hot": true
+  },
+  {
+   "w": "SINGLE",
+   "start": 32.6,
+   "end": 32.87,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 32.9,
+   "end": 33.44,
+   "hot": true
+  }
+ ],
+ "steps": [
+  {
+   "label": "STEP 1/3 \u2014 MAKE A SKILL FILE",
+   "start": 4.96,
+   "end": 11.64
+  },
+  {
+   "label": "STEP 2/3 \u2014 JUST ASK NORMALLY",
+   "start": 11.64,
+   "end": 16.0
+  },
+  {
+   "label": "STEP 3/3 \u2014 IT AUTO-TRIGGERS",
+   "start": 16.0,
+   "end": 23.04
+  }
+ ],
+ "vo": "assets/ep04/vo_v2.wav",
+ "cover": {
+  "title1": "CLAUDE JUST GOT",
+  "title2": "SKILLS",
+  "emojis": "\ud83e\udde9\ud83e\udde0\ud83e\udd2f",
+  "until": 3.0
+ },
+ "watermark": true
+}

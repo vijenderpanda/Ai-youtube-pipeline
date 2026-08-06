@@ -1,0 +1,69 @@
+{
+  "typing_start": 2.44,
+  "typing_end": 5.053,
+  "submit": 5.765,
+  "answer_start": 5.765,
+  "answer_end": 11.986,
+  "scrolls": [],
+  "duration": 64.633,
+  "first_token": 7.785,
+  "observed": {
+    "answer_selector": "li[data-message-role=\"assistant\"] [data-assistant-markdown]",
+    "answer_head": "I can help with that. A couple of details will make the bio fit its purpose.\n\nWhere will you use it?\nLinkedIn\nInstagram\nProfessional website\nDating app\nContinue",
+    "answer_chars": 160,
+    "logged_in": null,
+    "pii_blurred": null,
+    "forbidden_term": null,
+    "fix_answer_selector": "li[data-message-role=\"assistant\"] [data-assistant-markdown]",
+    "fix_answer_head": "Here's a LinkedIn bio that matches your constraints:\n\nWriting\n\nMeet a freelance graphic designer with 5 years of experience creating clear, eye-catching visuals that help businesses stand out and connect with their audience. Known for thoughtful design, reliable collaboration, and turning ideas into polished work that fits each client's goals. Looking for a designer who makes the creative process ",
+    "fix_answer_chars": 596,
+    "fix_forbidden_term": null
+  },
+  "fix_typing_start": 15.954,
+  "fix_typing_end": 56.858,
+  "fix_submit": 57.538,
+  "fix_answer_end": 64.646,
+  "fix_first_token": 59.617,
+  "punches": [
+    {
+      "t0": 2.34,
+      "t1": 5.353,
+      "center": [
+        0.463,
+        0.527
+      ],
+      "zoom": 1.2,
+      "label": "compose"
+    },
+    {
+      "t0": 7.585,
+      "t1": 11.786,
+      "center": [
+        0.5,
+        0.431
+      ],
+      "zoom": 1.042,
+      "label": "robotic"
+    },
+    {
+      "t0": 15.854,
+      "t1": 57.158,
+      "center": [
+        0.463,
+        0.964
+      ],
+      "zoom": 1.2,
+      "label": "fixline"
+    },
+    {
+      "t0": 59.417,
+      "t1": 64.546,
+      "center": [
+        0.5,
+        0.6
+      ],
+      "zoom": 1.042,
+      "label": "human"
+    }
+  ]
+}

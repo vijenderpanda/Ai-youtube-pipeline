@@ -1,0 +1,101 @@
+{
+ "beat": "what an AI shopping agent does (browses, compares, fills the cart)",
+ "queries_tried": [
+  "online shopping laptop",
+  "ecommerce browsing screen"
+ ],
+ "winning_query": "ecommerce browsing screen",
+ "hero": {
+  "file": "agent_shopping.mp4",
+  "source": "pexels",
+  "id": 8937985,
+  "page": "https://www.pexels.com/video/a-person-shopping-online-holding-a-credit-card-8937985/",
+  "recommended_in_point_s": 2.6
+ },
+ "clips": [
+  {
+   "source": "pexels",
+   "id": 5586006,
+   "dur": 6,
+   "w": 1080,
+   "h": 1920,
+   "url": "https://videos.pexels.com/video-files/5586006/5586006-hd_1080_1920_30fps.mp4",
+   "page": "https://www.pexels.com/video/person-browsing-on-laptop-5586006/",
+   "file": "pexels_5586006.mp4",
+   "query": "online shopping laptop",
+   "licence": "Pexels Licence \u2014 free for commercial use, no attribution required",
+   "qc_verdict": "REJECT",
+   "qc_note": "Amazon homepage with legible \"amazon\" wordmark + \"Amazon Top Sellers\" text on screen"
+  },
+  {
+   "source": "pexels",
+   "id": 7191517,
+   "dur": 14,
+   "w": 2160,
+   "h": 3840,
+   "url": "https://videos.pexels.com/video-files/7191517/7191517-uhd_2160_3840_25fps.mp4",
+   "page": "https://www.pexels.com/video/a-woman-using-a-laptop-7191517/",
+   "file": "pexels_7191517.mp4",
+   "query": "online shopping laptop",
+   "licence": "Pexels Licence \u2014 free for commercial use, no attribution required",
+   "qc_verdict": "REJECT",
+   "qc_note": "legible on-screen text (\"Which notebook is right for you?\") on an Apple product page"
+  },
+  {
+   "source": "pexels",
+   "id": 8937986,
+   "dur": 28,
+   "w": 1080,
+   "h": 1920,
+   "url": "https://videos.pexels.com/video-files/8937986/8937986-hd_1080_1920_30fps.mp4",
+   "page": "https://www.pexels.com/video/a-person-browsing-on-a-laptop-8937986/",
+   "file": "pexels_8937986.mp4",
+   "query": "online shopping laptop",
+   "licence": "Pexels Licence \u2014 free for commercial use, no attribution required",
+   "qc_verdict": "PASS-alternate",
+   "qc_note": "clean: screen fully defocused, no legible text/logo, no face"
+  },
+  {
+   "source": "pexels",
+   "id": 8937985,
+   "dur": 13,
+   "w": 1080,
+   "h": 1920,
+   "url": "https://videos.pexels.com/video-files/8937985/8937985-hd_1080_1920_30fps.mp4",
+   "page": "https://www.pexels.com/video/a-person-shopping-online-holding-a-credit-card-8937985/",
+   "file": "pexels_8937985.mp4",
+   "query": "ecommerce browsing screen",
+   "licence": "Pexels Licence \u2014 free for commercial use, no attribution required",
+   "qc_verdict": "HERO",
+   "qc_note": "clean: defocused fashion product page, no legible text; prop card carries only an abstract glyph, no real wordmark"
+  },
+  {
+   "source": "pexels",
+   "id": 5585989,
+   "dur": 2,
+   "w": 1080,
+   "h": 1920,
+   "url": "https://videos.pexels.com/video-files/5585989/5585989-hd_1080_1920_30fps.mp4",
+   "page": "https://www.pexels.com/video/person-browsing-on-laptop-5585989/",
+   "file": "pexels_5585989.mp4",
+   "query": "ecommerce browsing screen",
+   "licence": "Pexels Licence \u2014 free for commercial use, no attribution required",
+   "qc_verdict": "REJECT",
+   "qc_note": "2s \u2014 too short for a b-roll bed"
+  },
+  {
+   "source": "pexels",
+   "id": 7191512,
+   "dur": 9,
+   "w": 2160,
+   "h": 3840,
+   "url": "https://videos.pexels.com/video-files/7191512/uhd_25fps.mp4",
+   "page": "https://www.pexels.com/video/woman-shopping-online-7191512/",
+   "file": "pexels_7191512.mp4",
+   "query": "ecommerce browsing screen",
+   "licence": "Pexels Licence \u2014 free for commercial use, no attribution required",
+   "qc_verdict": "REJECT",
+   "qc_note": "same shoot as 7191517 \u2014 Apple product page with legible on-screen text"
+  }
+ ]
+}

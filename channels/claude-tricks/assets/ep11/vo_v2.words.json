@@ -1,0 +1,442 @@
+[
+ {
+  "w": "THAT",
+  "start": 0.0,
+  "end": 0.21
+ },
+ {
+  "w": "VIRAL",
+  "start": 0.28,
+  "end": 0.59
+ },
+ {
+  "w": "LIST",
+  "start": 0.65,
+  "end": 0.82
+ },
+ {
+  "w": "OF",
+  "start": 0.87,
+  "end": 0.93
+ },
+ {
+  "w": "TWENTY",
+  "start": 0.97,
+  "end": 1.23
+ },
+ {
+  "w": "SECRET",
+  "start": 1.26,
+  "end": 1.53
+ },
+ {
+  "w": "CLAUDE",
+  "start": 1.57,
+  "end": 1.82
+ },
+ {
+  "w": "COMMANDS",
+  "start": 1.85,
+  "end": 2.43
+ },
+ {
+  "w": "FAKE",
+  "start": 2.63,
+  "end": 3.1
+ },
+ {
+  "w": "<BREAK",
+  "start": 3.61,
+  "end": 3.61
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 3.61,
+  "end": 3.61
+ },
+ {
+  "w": "/>",
+  "start": 3.61,
+  "end": 3.61
+ },
+ {
+  "w": "WATCH",
+  "start": 3.61,
+  "end": 4.12
+ },
+ {
+  "w": "SLASH",
+  "start": 4.3,
+  "end": 4.6
+ },
+ {
+  "w": "PREMORTEM",
+  "start": 4.66,
+  "end": 5.35
+ },
+ {
+  "w": "IN",
+  "start": 5.47,
+  "end": 5.58
+ },
+ {
+  "w": "A",
+  "start": 5.63,
+  "end": 5.65
+ },
+ {
+  "w": "STOCK",
+  "start": 5.69,
+  "end": 5.96
+ },
+ {
+  "w": "CLAUDE",
+  "start": 5.99,
+  "end": 6.43
+ },
+ {
+  "w": "<BREAK",
+  "start": 6.91,
+  "end": 6.91
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 6.91,
+  "end": 6.91
+ },
+ {
+  "w": "/>",
+  "start": 6.91,
+  "end": 6.91
+ },
+ {
+  "w": "ENTER",
+  "start": 6.91,
+  "end": 7.45
+ },
+ {
+  "w": "UNKNOWN",
+  "start": 7.7,
+  "end": 8.09
+ },
+ {
+  "w": "COMMAND",
+  "start": 8.15,
+  "end": 8.64
+ },
+ {
+  "w": "IT",
+  "start": 8.75,
+  "end": 8.88
+ },
+ {
+  "w": "DOESN'T",
+  "start": 8.92,
+  "end": 9.17
+ },
+ {
+  "w": "EXIST",
+  "start": 9.22,
+  "end": 9.75
+ },
+ {
+  "w": "<BREAK",
+  "start": 10.38,
+  "end": 10.38
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 10.38,
+  "end": 10.38
+ },
+ {
+  "w": "/>",
+  "start": 10.38,
+  "end": 10.38
+ },
+ {
+  "w": "THE",
+  "start": 10.38,
+  "end": 10.48
+ },
+ {
+  "w": "REAL",
+  "start": 10.53,
+  "end": 10.69
+ },
+ {
+  "w": "SECRET:",
+  "start": 10.75,
+  "end": 11.21
+ },
+ {
+  "w": "ONE",
+  "start": 11.34,
+  "end": 11.56
+ },
+ {
+  "w": "FILE",
+  "start": 11.61,
+  "end": 12.12
+ },
+ {
+  "w": "IN",
+  "start": 12.27,
+  "end": 12.41
+ },
+ {
+  "w": "DOT",
+  "start": 12.47,
+  "end": 12.71
+ },
+ {
+  "w": "CLAUDE",
+  "start": 12.78,
+  "end": 13.18
+ },
+ {
+  "w": "SLASH",
+  "start": 13.2,
+  "end": 13.51
+ },
+ {
+  "w": "COMMANDS",
+  "start": 13.57,
+  "end": 14.24
+ },
+ {
+  "w": "PASTE",
+  "start": 14.49,
+  "end": 14.81
+ },
+ {
+  "w": "YOUR",
+  "start": 14.84,
+  "end": 14.93
+ },
+ {
+  "w": "PROMPT",
+  "start": 14.96,
+  "end": 15.46
+ },
+ {
+  "w": "<BREAK",
+  "start": 16.0,
+  "end": 16.0
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 16.0,
+  "end": 16.0
+ },
+ {
+  "w": "/>",
+  "start": 16.0,
+  "end": 16.0
+ },
+ {
+  "w": "FRESH",
+  "start": 16.0,
+  "end": 16.28
+ },
+ {
+  "w": "SESSION",
+  "start": 16.31,
+  "end": 16.84
+ },
+ {
+  "w": "SLASH",
+  "start": 17.28,
+  "end": 17.64
+ },
+ {
+  "w": "PREMORTEM",
+  "start": 17.68,
+  "end": 18.41
+ },
+ {
+  "w": "ENTER",
+  "start": 18.57,
+  "end": 19.14
+ },
+ {
+  "w": "<BREAK",
+  "start": 22.38,
+  "end": 22.38
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 22.38,
+  "end": 22.38
+ },
+ {
+  "w": "/>",
+  "start": 22.38,
+  "end": 22.38
+ },
+ {
+  "w": "BOOM",
+  "start": 22.38,
+  "end": 22.8
+ },
+ {
+  "w": "IT",
+  "start": 22.98,
+  "end": 23.14
+ },
+ {
+  "w": "TEARS",
+  "start": 23.18,
+  "end": 23.49
+ },
+ {
+  "w": "MY",
+  "start": 23.55,
+  "end": 23.61
+ },
+ {
+  "w": "LAUNCH",
+  "start": 23.68,
+  "end": 23.89
+ },
+ {
+  "w": "APART",
+  "start": 23.93,
+  "end": 24.39
+ },
+ {
+  "w": "POINT",
+  "start": 24.46,
+  "end": 24.72
+ },
+ {
+  "w": "BY",
+  "start": 24.76,
+  "end": 24.86
+ },
+ {
+  "w": "POINT",
+  "start": 24.93,
+  "end": 25.3
+ },
+ {
+  "w": "<BREAK",
+  "start": 25.8,
+  "end": 25.8
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 25.8,
+  "end": 25.8
+ },
+ {
+  "w": "/>",
+  "start": 25.8,
+  "end": 25.8
+ },
+ {
+  "w": "ALL",
+  "start": 25.8,
+  "end": 26.0
+ },
+ {
+  "w": "TWENTY",
+  "start": 26.04,
+  "end": 26.4
+ },
+ {
+  "w": "ARE",
+  "start": 26.47,
+  "end": 26.6
+ },
+ {
+  "w": "JUST",
+  "start": 26.64,
+  "end": 26.84
+ },
+ {
+  "w": "SAVED",
+  "start": 26.91,
+  "end": 27.23
+ },
+ {
+  "w": "PROMPTS",
+  "start": 27.31,
+  "end": 27.83
+ },
+ {
+  "w": "BUILD",
+  "start": 27.95,
+  "end": 28.15
+ },
+ {
+  "w": "YOUR",
+  "start": 28.2,
+  "end": 28.3
+ },
+ {
+  "w": "OWN",
+  "start": 28.38,
+  "end": 28.63
+ },
+ {
+  "w": "<BREAK",
+  "start": 29.16,
+  "end": 29.16
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 29.16,
+  "end": 29.16
+ },
+ {
+  "w": "/>",
+  "start": 29.16,
+  "end": 29.16
+ },
+ {
+  "w": "FOLLOW",
+  "start": 29.16,
+  "end": 29.63
+ },
+ {
+  "w": "I",
+  "start": 29.69,
+  "end": 29.75
+ },
+ {
+  "w": "UNPACK",
+  "start": 29.86,
+  "end": 30.21
+ },
+ {
+  "w": "ONE",
+  "start": 30.29,
+  "end": 30.45
+ },
+ {
+  "w": "AI",
+  "start": 30.51,
+  "end": 30.72
+ },
+ {
+  "w": "SKILL",
+  "start": 30.75,
+  "end": 31.02
+ },
+ {
+  "w": "EVERY",
+  "start": 31.09,
+  "end": 31.3
+ },
+ {
+  "w": "SINGLE",
+  "start": 31.34,
+  "end": 31.6
+ },
+ {
+  "w": "DAY",
+  "start": 31.64,
+  "end": 32.14
+ }
+]

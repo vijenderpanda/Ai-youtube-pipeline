@@ -1,0 +1,1 @@
+{"title": "claude-code \u2014 ~/project", "steps": [{"type": "type", "text": "> /review", "color": "magenta", "cps": 14}, {"type": "out", "lps": 5, "lines": [["", "white"], ["Running your full review", "white"], ["workflow...", "white"], ["  3 issues found, ranked \u2713", "green"]]}, {"type": "pause", "dur": 1.2}]}

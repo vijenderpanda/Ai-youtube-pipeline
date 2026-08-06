@@ -1,0 +1,6 @@
+file '/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/renders/poc/l0.wav'
+file '/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/renders/poc/l1.wav'
+file '/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/renders/poc/l2.wav'
+file '/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/renders/poc/l3.wav'
+file '/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/renders/poc/l4.wav'
+file '/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/renders/poc/l5.wav'

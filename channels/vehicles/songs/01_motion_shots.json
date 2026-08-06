@@ -1,0 +1,11 @@
+[
+  {"clip": "channels/vehicles/renders/mo_rev_rev.mp4", "dur": 9},
+  {"clip": "channels/vehicles/renders/mo_rev_hill.mp4", "dur": 9},
+  {"clip": "channels/vehicles/renders/mo_rev_mud.mp4", "dur": 9},
+  {"clip": "channels/vehicles/renders/mo_rev_rev.mp4", "dur": 8},
+  {"clip": "channels/vehicles/renders/mo_rev_ramp.mp4", "dur": 9},
+  {"clip": "channels/vehicles/renders/mo_rev_jump.mp4", "dur": 9},
+  {"clip": "channels/vehicles/renders/mo_rev_mud.mp4", "dur": 9},
+  {"clip": "channels/vehicles/renders/mo_rev_rev.mp4", "dur": 9},
+  {"clip": "channels/vehicles/renders/mo_rev_jump.mp4", "dur": 9}
+]

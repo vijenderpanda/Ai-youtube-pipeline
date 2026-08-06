@@ -1,0 +1,84 @@
+{
+  "order": [
+    "song05.mp4",
+    "song01_full_v2.mp4",
+    "song03.mp4",
+    "song04.mp4",
+    "song06_lyrics.mp4",
+    "song02.mp4"
+  ],
+  "rows": [
+    {
+      "file": "renders/song05.mp4",
+      "name": "song05.mp4",
+      "duration_s": 158.89,
+      "tempo_bpm": 129.2,
+      "onset_rate": 2.98,
+      "centroid_hz": 1424.99,
+      "lufs_i": -12.5,
+      "lra": 8.5,
+      "peak_db": -0.8,
+      "animation": 0.649
+    },
+    {
+      "file": "renders/song01_full_v2.mp4",
+      "name": "song01_full_v2.mp4",
+      "duration_s": 155.56,
+      "tempo_bpm": 139.67,
+      "onset_rate": 3.34,
+      "centroid_hz": 1366.12,
+      "lufs_i": -14.0,
+      "lra": 7.1,
+      "peak_db": -0.5,
+      "animation": 0.63
+    },
+    {
+      "file": "renders/song03.mp4",
+      "name": "song03.mp4",
+      "duration_s": 154.97,
+      "tempo_bpm": 126.05,
+      "onset_rate": 2.75,
+      "centroid_hz": 1645.26,
+      "lufs_i": -13.2,
+      "lra": 7.0,
+      "peak_db": -0.4,
+      "animation": 0.556
+    },
+    {
+      "file": "renders/song04.mp4",
+      "name": "song04.mp4",
+      "duration_s": 200.0,
+      "tempo_bpm": 123.05,
+      "onset_rate": 2.56,
+      "centroid_hz": 1095.62,
+      "lufs_i": -13.0,
+      "lra": 10.0,
+      "peak_db": -0.5,
+      "animation": 0.502
+    },
+    {
+      "file": "renders/song06_lyrics.mp4",
+      "name": "song06_lyrics.mp4",
+      "duration_s": 148.01,
+      "tempo_bpm": 67.12,
+      "onset_rate": 2.75,
+      "centroid_hz": 1649.89,
+      "lufs_i": -13.5,
+      "lra": 7.5,
+      "peak_db": -1.2,
+      "animation": 0.397
+    },
+    {
+      "file": "renders/song02.mp4",
+      "name": "song02.mp4",
+      "duration_s": 160.94,
+      "tempo_bpm": 68.0,
+      "onset_rate": 2.32,
+      "centroid_hz": 1417.97,
+      "lufs_i": -14.3,
+      "lra": 9.7,
+      "peak_db": -0.4,
+      "animation": 0.373
+    }
+  ]
+}

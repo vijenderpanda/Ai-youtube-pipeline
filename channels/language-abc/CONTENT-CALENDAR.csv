@@ -1,0 +1,4 @@
+ep,planned_date,slot_time_ist,working_title,format,hook_promise,production_note,assets
+01,SHIPPED (live — see docs/stats/DAILY-STATS.md),16:00,Say Hello in 5 Languages!,song,"Spanish, French, German & Hindi",Live.,channels/language-abc/renders/ep01_final.mp4
+02,SHIPPED (live — see docs/stats/DAILY-STATS.md),16:00,Count to 5 in Spanish!,song,Uno Dos Tres counting song,"Live. NOTE: two extra copies of this title sit unlisted + private on the channel — verify_uploads.py flags them as duplicates until they are marked '🗑️ DELETE — ' and retired with yt_cleanup.py.",channels/language-abc/renders/ep02_final.mp4
+03,2026-08-12,16:00,Learn with Poly Ep3 — TBD,song,TBD at kickoff,"HARD DATE. Nothing built yet: no song, no shots json, no render. Full Pipeline A run. MFK = yes, so no comments and no end screens.",TBD

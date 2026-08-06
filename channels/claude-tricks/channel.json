@@ -1,0 +1,11 @@
+{
+  "key": "claude-tricks",
+  "name": "AI Unpacked",
+  "made_for_kids": false,
+  "cadence_days": 1,
+  "cadence_label": "daily (news-forward)",
+  "guard_days": 7,
+  "slot_time_ist": "16:00",
+  "calendar": "CONTENT-CALENDAR.csv",
+  "produce_hint": "open a Claude session -> 'produce the next calendar row on the v2 pipeline'"
+}

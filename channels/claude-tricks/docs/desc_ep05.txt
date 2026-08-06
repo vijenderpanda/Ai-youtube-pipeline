@@ -1,0 +1,13 @@
+Claude Code subagents now run in the background by default — and when they finish, they commit, push, and open a draft pull request on their own. Fire off a task, keep working, review the PR with your coffee. This shipped in July.
+
+🎯 A new AI trick every day — follow so you don't miss one
+📬 Free AI tools cheat sheet: link in profile
+
+🎙️ The AI voice tool we use: https://try.elevenlabs.io/4wscoc0bm5zl
+(Affiliate link — we earn a commission if you subscribe, at no extra cost to you.)
+
+Hosted by our AI presenter — this channel is made with the AI tools we teach, checked by humans.
+
+⚠️ Not affiliated with Anthropic — just showing what works.
+
+#ClaudeCode #AIAgents #Subagents #ClaudeAI #Shorts

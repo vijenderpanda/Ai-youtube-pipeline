@@ -1,0 +1,1 @@
+{"title": "claude-code \u2014 ~/project", "steps": [{"type": "type", "text": "> format this report our way", "color": "white", "cps": 22}, {"type": "out", "lps": 6, "lines": [["", "white"], ["which format? walk me", "dim"], ["through it again?", "dim"], ["", "white"], ["(you've explained this 12 times)", "magenta"]]}, {"type": "pause", "dur": 1.2}]}

@@ -1,0 +1,96 @@
+import React from "react";
+import { AbsoluteFill, Composition, getInputProps, staticFile, useVideoConfig } from "remotion";
+import { Short, ShortProps, totalDuration, Cover, Watermark } from "./Short";
+import { StatBars, StatBarsProps } from "./components/StatBars";
+
+const FPS = 30;
+
+const fallback: ShortProps = {
+  segments: [],
+  captions: [],
+  vo: "",
+};
+
+/* ---- StatBarsDemo: reference usage + QC harness for the locked chart spec.
+   Deliberately stresses the edge cases: 6 bars (max density), a full-height bar
+   (value label must flip inside-top), near-zero bars (labels ride the baseline),
+   a delta pill, long-ish labels. Render 4s and eyeball: nothing may clip. */
+const statBarsDemoProps: StatBarsProps = {
+  title: "AI PRICE INDEX",
+  subtitle: "$ PER 1M TOKENS · ILLUSTRATIVE",
+  footer: "SAME QUESTIONS. LESS MONEY.",
+  bars: [
+    { label: "TOP TIER", value: 30, display: "$30", hot: true },
+    { label: "FLAGSHIP", value: 25, display: "$25" },
+    { label: "MID TIER", value: 14, display: "$14" },
+    { label: "SMALL", value: 6, display: "$6" },
+    { label: "FAST TIER", value: 1.4, display: "$1.40", delta: "-80%" },
+    { label: "FREE", value: 0.4, display: "$0" },
+  ],
+  start: 0.3,
+};
+
+/* ---- CoverDemo: QC harness for the two-line hook stack. Renders Cover exactly
+   as frame zero of a real episode does — same Anton face, same watermark on top
+   — so a still of this comp IS the Shorts thumbnail preview (playbook §5).
+   Pass a real episode's cover block via --props to QC that episode's frame zero;
+   with no props it falls back to the LAZY payload shape (whole hook as one long
+   title1, no title2) so the auto-split + autoshrink path stays covered. */
+type CoverDemoProps = { c: NonNullable<ShortProps["cover"]> };
+
+const coverDemoLazyProps: CoverDemoProps = {
+  c: {
+    title1: "THE BEST AI JUST GOT CHEAPER",
+    sub: "pick right, pay less",
+    emojis: "\u{1F4B8}\u{1F916}",
+    until: 9999,
+  },
+};
+
+const CoverDemoComp: React.FC<CoverDemoProps> = ({ c }) => {
+  const { fps } = useVideoConfig();
+  return (
+    <AbsoluteFill>
+      <style>{`@font-face { font-family: 'Anton'; src: url('${staticFile("fonts/Anton.ttf")}'); }`}</style>
+      <Cover c={c} fps={fps} />
+      <Watermark />
+    </AbsoluteFill>
+  );
+};
+
+export const RemotionRoot: React.FC = () => {
+  const input = getInputProps() as unknown as ShortProps;
+  const props = input && input.segments ? input : fallback;
+  const frames = Math.max(1, Math.round(totalDuration(props) * FPS));
+  return (
+    <>
+      <Composition
+        id="Short"
+        component={Short}
+        durationInFrames={frames}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={props}
+      />
+      <Composition
+        id="StatBarsDemo"
+        component={StatBars}
+        durationInFrames={4 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={statBarsDemoProps}
+      />
+      <Composition
+        id="CoverDemo"
+        component={CoverDemoComp}
+        durationInFrames={2 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={coverDemoLazyProps}
+      />
+    </>
+  );
+};

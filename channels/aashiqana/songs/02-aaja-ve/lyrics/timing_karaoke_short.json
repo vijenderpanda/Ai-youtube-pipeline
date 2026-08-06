@@ -1,0 +1,25 @@
+{
+ "_note": "Short cut: track from 3.6s, chorus-1 lines shifted",
+ "lines": [
+  {
+   "s": 0.48,
+   "e": 5.64,
+   "text": "Aaja ve, aaja ve, aaja ve, aaja"
+  },
+  {
+   "s": 6.82,
+   "e": 10.72,
+   "text": "Tere bina ye shaam adhoori"
+  },
+  {
+   "s": 12.5,
+   "e": 17.56,
+   "text": "Aaja ve, aaja ve, aaja ve, aaja"
+  },
+  {
+   "s": 18.28,
+   "e": 22.7,
+   "text": "Mit jaaye bas ye thodi doori"
+  }
+ ]
+}

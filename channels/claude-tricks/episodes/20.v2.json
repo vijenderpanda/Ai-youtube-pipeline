@@ -1,0 +1,634 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep20/v2_hook.mp4",
+   "dur": 8.74
+  },
+  {
+   "src": "assets/ep20/term_effort.mp4",
+   "dur": 3.78,
+   "from": 3.5
+  },
+  {
+   "src": "assets/ep20/term_effort.mp4",
+   "dur": 3.54,
+   "from": 8.5
+  },
+  {
+   "src": "assets/ep20/term_effort.mp4",
+   "dur": 4.25,
+   "from": 15.0
+  },
+  {
+   "src": "assets/ep20/term_effort.mp4",
+   "dur": 4.09,
+   "from": 20.0
+  },
+  {
+   "src": "assets/ep20/term_effort.mp4",
+   "dur": 4.16,
+   "from": 22.5
+  },
+  {
+   "src": "assets/ep20/v2_payoff.mp4",
+   "dur": 7.29
+  }
+ ],
+ "captions": [
+  {
+   "w": "CLAUDE",
+   "start": 0.0,
+   "end": 0.3,
+   "hot": false
+  },
+  {
+   "w": "HAS",
+   "start": 0.33,
+   "end": 0.42,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 0.46,
+   "end": 0.49,
+   "hot": false
+  },
+  {
+   "w": "HIDDEN",
+   "start": 0.53,
+   "end": 0.76,
+   "hot": true
+  },
+  {
+   "w": "DIAL",
+   "start": 0.81,
+   "end": 1.06,
+   "hot": true
+  },
+  {
+   "w": "THAT",
+   "start": 1.11,
+   "end": 1.23,
+   "hot": false
+  },
+  {
+   "w": "MAKES",
+   "start": 1.3,
+   "end": 1.51,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 1.54,
+   "end": 1.62,
+   "hot": false
+  },
+  {
+   "w": "THINK",
+   "start": 1.66,
+   "end": 1.87,
+   "hot": false
+  },
+  {
+   "w": "HARDER",
+   "start": 1.96,
+   "end": 2.52,
+   "hot": true
+  },
+  {
+   "w": "ALMOST",
+   "start": 2.73,
+   "end": 3.13,
+   "hot": false
+  },
+  {
+   "w": "NOBODY",
+   "start": 3.26,
+   "end": 3.56,
+   "hot": true
+  },
+  {
+   "w": "TOUCHES",
+   "start": 3.61,
+   "end": 3.89,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 3.94,
+   "end": 4.26,
+   "hot": false
+  },
+  {
+   "w": "IT'S",
+   "start": 5.04,
+   "end": 5.24,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 5.27,
+   "end": 5.34,
+   "hot": false
+  },
+  {
+   "w": "EFFORT",
+   "start": 5.41,
+   "end": 5.7,
+   "hot": true
+  },
+  {
+   "w": "SETTING",
+   "start": 5.74,
+   "end": 6.22,
+   "hot": false
+  },
+  {
+   "w": "HERE'S",
+   "start": 6.47,
+   "end": 6.69,
+   "hot": false
+  },
+  {
+   "w": "WHERE",
+   "start": 6.71,
+   "end": 6.84,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 6.87,
+   "end": 6.92,
+   "hot": false
+  },
+  {
+   "w": "LIVES",
+   "start": 6.99,
+   "end": 7.44,
+   "hot": false
+  },
+  {
+   "w": "WATCH",
+   "start": 7.69,
+   "end": 8.3,
+   "hot": true
+  },
+  {
+   "w": "TYPE",
+   "start": 8.74,
+   "end": 9.08,
+   "hot": false
+  },
+  {
+   "w": "SLASH",
+   "start": 9.12,
+   "end": 9.51,
+   "hot": true
+  },
+  {
+   "w": "MODEL",
+   "start": 9.59,
+   "end": 10.14,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 10.25,
+   "end": 10.41,
+   "hot": false
+  },
+  {
+   "w": "LOOK",
+   "start": 10.53,
+   "end": 10.72,
+   "hot": false
+  },
+  {
+   "w": "AT",
+   "start": 10.76,
+   "end": 10.83,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 10.88,
+   "end": 10.96,
+   "hot": false
+  },
+  {
+   "w": "VERY",
+   "start": 11.03,
+   "end": 11.25,
+   "hot": false
+  },
+  {
+   "w": "BOTTOM",
+   "start": 11.31,
+   "end": 11.61,
+   "hot": true
+  },
+  {
+   "w": "LINE",
+   "start": 11.68,
+   "end": 12.02,
+   "hot": false
+  },
+  {
+   "w": "THAT'S",
+   "start": 12.52,
+   "end": 12.78,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 12.83,
+   "end": 12.9,
+   "hot": false
+  },
+  {
+   "w": "EFFORT",
+   "start": 12.97,
+   "end": 13.27,
+   "hot": true
+  },
+  {
+   "w": "DIAL",
+   "start": 13.32,
+   "end": 13.83,
+   "hot": true
+  },
+  {
+   "w": "RIGHT",
+   "start": 14.11,
+   "end": 14.33,
+   "hot": true
+  },
+  {
+   "w": "NOW",
+   "start": 14.38,
+   "end": 14.61,
+   "hot": false
+  },
+  {
+   "w": "IT'S",
+   "start": 14.64,
+   "end": 14.8,
+   "hot": false
+  },
+  {
+   "w": "SET",
+   "start": 14.84,
+   "end": 15.05,
+   "hot": false
+  },
+  {
+   "w": "TO",
+   "start": 15.08,
+   "end": 15.15,
+   "hot": false
+  },
+  {
+   "w": "HIGH",
+   "start": 15.22,
+   "end": 15.59,
+   "hot": true
+  },
+  {
+   "w": "TAP",
+   "start": 16.06,
+   "end": 16.32,
+   "hot": false
+  },
+  {
+   "w": "LEFT",
+   "start": 16.41,
+   "end": 16.81,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 16.85,
+   "end": 17.01,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 17.05,
+   "end": 17.11,
+   "hot": false
+  },
+  {
+   "w": "DROPS",
+   "start": 17.14,
+   "end": 17.38,
+   "hot": false
+  },
+  {
+   "w": "TO",
+   "start": 17.4,
+   "end": 17.47,
+   "hot": false
+  },
+  {
+   "w": "LOW",
+   "start": 17.53,
+   "end": 17.8,
+   "hot": true
+  },
+  {
+   "w": "FASTER",
+   "start": 17.91,
+   "end": 18.53,
+   "hot": true
+  },
+  {
+   "w": "LIGHTER",
+   "start": 18.74,
+   "end": 19.02,
+   "hot": false
+  },
+  {
+   "w": "ANSWERS",
+   "start": 19.06,
+   "end": 19.71,
+   "hot": false
+  },
+  {
+   "w": "TAP",
+   "start": 20.31,
+   "end": 20.6,
+   "hot": false
+  },
+  {
+   "w": "RIGHT",
+   "start": 20.68,
+   "end": 21.07,
+   "hot": true
+  },
+  {
+   "w": "BACK",
+   "start": 21.13,
+   "end": 21.35,
+   "hot": false
+  },
+  {
+   "w": "TO",
+   "start": 21.4,
+   "end": 21.45,
+   "hot": false
+  },
+  {
+   "w": "HIGH",
+   "start": 21.51,
+   "end": 21.9,
+   "hot": true
+  },
+  {
+   "w": "DEEPER",
+   "start": 22.14,
+   "end": 22.45,
+   "hot": true
+  },
+  {
+   "w": "THINKING",
+   "start": 22.5,
+   "end": 22.84,
+   "hot": false
+  },
+  {
+   "w": "FOR",
+   "start": 22.91,
+   "end": 23.01,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 23.05,
+   "end": 23.12,
+   "hot": false
+  },
+  {
+   "w": "HARD",
+   "start": 23.16,
+   "end": 23.35,
+   "hot": false
+  },
+  {
+   "w": "STUFF",
+   "start": 23.39,
+   "end": 23.84,
+   "hot": false
+  },
+  {
+   "w": "SAME",
+   "start": 24.4,
+   "end": 24.73,
+   "hot": true
+  },
+  {
+   "w": "MODEL",
+   "start": 24.76,
+   "end": 25.26,
+   "hot": true
+  },
+  {
+   "w": "SAME",
+   "start": 25.41,
+   "end": 25.68,
+   "hot": true
+  },
+  {
+   "w": "PRICE",
+   "start": 25.72,
+   "end": 26.21,
+   "hot": true
+  },
+  {
+   "w": "YOU",
+   "start": 26.37,
+   "end": 26.48,
+   "hot": false
+  },
+  {
+   "w": "JUST",
+   "start": 26.55,
+   "end": 26.69,
+   "hot": false
+  },
+  {
+   "w": "PICKED",
+   "start": 26.74,
+   "end": 26.95,
+   "hot": true
+  },
+  {
+   "w": "HOW",
+   "start": 26.98,
+   "end": 27.07,
+   "hot": false
+  },
+  {
+   "w": "HARD",
+   "start": 27.13,
+   "end": 27.28,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 27.33,
+   "end": 27.4,
+   "hot": false
+  },
+  {
+   "w": "THINKS",
+   "start": 27.43,
+   "end": 27.93,
+   "hot": true
+  },
+  {
+   "w": "EASY",
+   "start": 28.56,
+   "end": 28.84,
+   "hot": true
+  },
+  {
+   "w": "TASK",
+   "start": 28.9,
+   "end": 29.37,
+   "hot": false
+  },
+  {
+   "w": "LOW",
+   "start": 29.55,
+   "end": 29.75,
+   "hot": true
+  },
+  {
+   "w": "EFFORT",
+   "start": 29.8,
+   "end": 30.31,
+   "hot": true
+  },
+  {
+   "w": "STUCK",
+   "start": 30.49,
+   "end": 30.75,
+   "hot": false
+  },
+  {
+   "w": "ON",
+   "start": 30.81,
+   "end": 30.88,
+   "hot": false
+  },
+  {
+   "w": "SOMETHING",
+   "start": 30.93,
+   "end": 31.22,
+   "hot": false
+  },
+  {
+   "w": "HARD",
+   "start": 31.28,
+   "end": 31.64,
+   "hot": false
+  },
+  {
+   "w": "CRANK",
+   "start": 31.72,
+   "end": 31.97,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 32.02,
+   "end": 32.08,
+   "hot": false
+  },
+  {
+   "w": "UP",
+   "start": 32.14,
+   "end": 32.35,
+   "hot": false
+  },
+  {
+   "w": "FOLLOW",
+   "start": 32.8,
+   "end": 33.23,
+   "hot": true
+  },
+  {
+   "w": "I",
+   "start": 33.4,
+   "end": 33.46,
+   "hot": false
+  },
+  {
+   "w": "UNPACK",
+   "start": 33.58,
+   "end": 33.94,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 34.02,
+   "end": 34.22,
+   "hot": false
+  },
+  {
+   "w": "AI",
+   "start": 34.25,
+   "end": 34.47,
+   "hot": false
+  },
+  {
+   "w": "SKILL",
+   "start": 34.52,
+   "end": 34.76,
+   "hot": false
+  },
+  {
+   "w": "EVERY",
+   "start": 34.83,
+   "end": 35.02,
+   "hot": true
+  },
+  {
+   "w": "SINGLE",
+   "start": 35.05,
+   "end": 35.31,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 35.34,
+   "end": 35.85,
+   "hot": true
+  }
+ ],
+ "steps": [
+  {
+   "label": "STEP 1/3 \u2014 OPEN /MODEL",
+   "start": 8.74,
+   "end": 12.52
+  },
+  {
+   "label": "STEP 2/3 \u2014 \u2190 FOR LOW (FAST)",
+   "start": 12.52,
+   "end": 20.31
+  },
+  {
+   "label": "STEP 3/3 \u2014 \u2192 FOR HIGH (DEEP)",
+   "start": 20.31,
+   "end": 28.56
+  }
+ ],
+ "vo": "assets/ep20/vo_v2.wav",
+ "cover": {
+  "title1": "TURN UP",
+  "title2": "THE EFFORT",
+  "emojis": "\ud83e\udde0\ud83c\udf9a\ufe0f\u26a1",
+  "until": 3.0
+ },
+ "watermark": true
+}

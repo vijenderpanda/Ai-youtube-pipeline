@@ -1,0 +1,7 @@
+[
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s01_hill_1.jpg", "dur": 6, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s03_oak_1.jpg",  "dur": 5, "motion": "pan_right"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s02_pond_0.jpg", "dur": 5, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s01_hill_0.jpg", "dur": 5, "motion": "zoom_out"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s04_sleep_0.jpg","dur": 7, "motion": "zoom_in"}
+]

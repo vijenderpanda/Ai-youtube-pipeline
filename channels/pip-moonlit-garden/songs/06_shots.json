@@ -1,0 +1,16 @@
+[
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib13_wide_0.jpg",      "dur": 12, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s06_dusk_0.jpg",         "dur": 12, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s06_foldflowers_0.jpg",  "dur": 12, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib06_star_0.jpg",       "dur": 12, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s06_tuck_0.jpg",         "dur": 12, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib02_moon_0.jpg",       "dur": 12, "motion": "zoom_out"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s06_wash_0.jpg",         "dur": 12, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib09_pondsit_0.jpg",    "dur": 12, "motion": "zoom_out"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s06_mosspillow_0.jpg",   "dur": 12, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib14_leafblanket_0.jpg","dur": 12, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s06_stars_0.jpg",        "dur": 12, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/lib08_stargaze_0.jpg",   "dur": 12, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s06_yawn_0.jpg",         "dur": 12, "motion": "zoom_in"},
+  {"img": "channels/pip-moonlit-garden/assets/scenes/s06_ember_0.jpg",        "dur": 12, "motion": "zoom_in"}
+]

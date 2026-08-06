@@ -1,0 +1,69 @@
+{
+  "typing_start": 2.837,
+  "typing_end": 16.157,
+  "submit": 16.996,
+  "answer_start": 16.996,
+  "answer_end": 24.077,
+  "scrolls": [],
+  "duration": 45.967,
+  "first_token": 19.081,
+  "observed": {
+    "answer_selector": "[data-message-author-role=\"assistant\"]",
+    "answer_head": "Here's a balanced birthday party plan that's festive without being overly complicated.\n\nTheme: Sunset Picnic & Fairy Lights\n\nA relaxed outdoor-inspired celebration with warm colors (gold, terracotta, blush, and cream), picnic blankets, fairy lights, candles (or LED candles), and fresh flowers. Ask guests to wear earthy or pastel tones for a cohesive look.\n\n3-Item Menu\n\nMain: Gourmet mini sliders (",
+    "answer_chars": 1187,
+    "logged_in": null,
+    "pii_blurred": null,
+    "forbidden_term": null,
+    "fix_answer_selector": "div.markdown",
+    "fix_answer_head": "Theme: \"Thirty, Thriving & Toasting\"\n\nCelebrate turning 30 with a chic cocktail-lounge vibe featuring black, champagne gold, and ivory d\u00e9cor. Use candlelight, elegant florals, personalized photo displays from each decade of life, and a signature cocktail or mocktail. The dress code can be cocktail attire, creating a sophisticated yet relaxed atmosphere that's perfect for good food, great conversat",
+    "fix_answer_chars": 594,
+    "fix_forbidden_term": null
+  },
+  "fix_typing_start": 28.113,
+  "fix_typing_end": 38.106,
+  "fix_submit": 38.913,
+  "fix_answer_end": 45.186,
+  "fix_first_token": 41.007,
+  "punches": [
+    {
+      "t0": 2.737,
+      "t1": 16.457,
+      "center": [
+        0.501,
+        0.514
+      ],
+      "zoom": 1.091,
+      "label": "compose"
+    },
+    {
+      "t0": 18.881,
+      "t1": 23.877,
+      "center": [
+        0.5,
+        0.79
+      ],
+      "zoom": 1.02,
+      "label": "robotic"
+    },
+    {
+      "t0": 28.013,
+      "t1": 38.406,
+      "center": [
+        0.501,
+        0.919
+      ],
+      "zoom": 1.091,
+      "label": "fixline"
+    },
+    {
+      "t0": 40.807,
+      "t1": 45.086,
+      "center": [
+        0.5,
+        0.449
+      ],
+      "zoom": 1.042,
+      "label": "human"
+    }
+  ]
+}

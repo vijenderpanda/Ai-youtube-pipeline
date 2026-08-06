@@ -1,0 +1,24 @@
+{
+  "_note": "Our correct lyrics, timed to song06.mp3 (variation A, 148s) via faster_whisper segment anchors. Soft cream captions, lower third.",
+  "lines": [
+    {"text": "The sun slips low, the sky turns deep", "start": 1.5,  "end": 12.5, "pos": "lower", "size": 60, "fade": 0.9},
+    {"text": "Time to fold the little flowers",       "start": 19.0, "end": 24.3, "pos": "lower", "size": 60, "fade": 0.7},
+    {"text": "Time to dim the day",                   "start": 25.0, "end": 31.0, "pos": "lower", "size": 60, "fade": 0.7},
+    {"text": "One by one the stars come out, to light us on our way", "start": 33.0, "end": 45.0, "pos": "lower", "size": 56, "fade": 0.8},
+    {"text": "Time for bed, little light, little light", "start": 46.0, "end": 50.7, "pos": "lower", "size": 60, "fade": 0.6},
+    {"text": "Snuggle down and hold me tight",        "start": 51.0, "end": 53.8, "pos": "lower", "size": 60, "fade": 0.5},
+    {"text": "The garden's warm, the moon is high",   "start": 54.2, "end": 57.8, "pos": "lower", "size": 60, "fade": 0.5},
+    {"text": "Sleepy little lullaby",                 "start": 58.2, "end": 63.0, "pos": "lower", "size": 60, "fade": 0.7},
+    {"text": "Time to wash in the moon-pond cool",    "start": 63.5, "end": 74.5, "pos": "lower", "size": 60, "fade": 0.9},
+    {"text": "Time to smooth your bed",               "start": 75.0, "end": 82.5, "pos": "lower", "size": 60, "fade": 0.8},
+    {"text": "Plump the moss and pull the leaf up around your head", "start": 83.0, "end": 92.0, "pos": "lower", "size": 56, "fade": 0.8},
+    {"text": "Time for bed, little light, little light", "start": 93.0, "end": 99.7, "pos": "lower", "size": 60, "fade": 0.6},
+    {"text": "Snuggle down and hold me tight",        "start": 100.0, "end": 103.8, "pos": "lower", "size": 60, "fade": 0.5},
+    {"text": "The garden's warm, the moon is high",   "start": 104.2, "end": 107.8, "pos": "lower", "size": 60, "fade": 0.5},
+    {"text": "Sleepy little lullaby",                 "start": 108.2, "end": 114.5, "pos": "lower", "size": 60, "fade": 0.8},
+    {"text": "Yawn so wide, and close your eyes",     "start": 115.0, "end": 121.5, "pos": "lower", "size": 60, "fade": 0.8},
+    {"text": "The whole wide garden softly sighs",    "start": 122.0, "end": 129.5, "pos": "lower", "size": 60, "fade": 0.9},
+    {"text": "Time for bed, little light… goodnight", "start": 131.0, "end": 142.0, "pos": "lower", "size": 60, "fade": 1.0},
+    {"text": "Goodnight",                             "start": 145.0, "end": 147.5, "pos": "lower", "size": 66, "fade": 0.9}
+  ]
+}

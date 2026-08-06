@@ -1,0 +1,559 @@
+{
+ "asset": "beat_map",
+ "version": 1,
+ "episode": "ep_amazon_perplexity",
+ "channel": "claude-tricks",
+ "layout": "newsSplit",
+ "builder": "channels/claude-tricks/build_ep_v2.py",
+ "episode_key": "_amazon_perplexity",
+ "timing_state": "MEASURED_PROBE_PENDING_MASTER",
+ "timing_source": {
+  "note": "vo_master had not run when this asset was generated. Timings are MEASURED on the locked voice chain (Hrithik ZZ5OIPIzxVJswEhc0UXt, style 0.4, 0.4s breaks), not modelled. Reference take = beat_map_probes/vo_probe3.words.json. Re-derive from the shipped vo_v2.words.json before --dry (beat_map.md section 9).",
+  "renders_measured": 12,
+  "reference_take": "beat_map_probes/vo_probe3.words.json"
+ },
+ "vo_total_s": 29.44,
+ "line_starts": [
+  0.0,
+  4.95,
+  8.29,
+  11.59,
+  13.39,
+  15.75,
+  19.34,
+  22.63,
+  26.37
+ ],
+ "seg_durs": [
+  4.95,
+  3.34,
+  3.3,
+  1.8,
+  2.36,
+  3.59,
+  3.29,
+  3.74,
+  3.07
+ ],
+ "beats": [
+  {
+   "i": 0,
+   "line_no": 1,
+   "line": "Amazon just lost this round. It had an A I agent banned from its site.",
+   "beat": "rec:ep_amazon_perplexity/chat_mock_hold.mp4@0.0|split",
+   "kind": "rec",
+   "src": "ep_amazon_perplexity/chat_mock_hold.mp4",
+   "in_point": 0.0,
+   "mode": "split",
+   "start": 0.0,
+   "end": 4.95,
+   "dur": 4.95,
+   "merges_with_next": true,
+   "why": "Names 'an A I agent'; the mock shows an AI assistant working a cart. Mock top + host bottom = both on frame 1."
+  },
+  {
+   "i": 1,
+   "line_no": 2,
+   "line": "That agent browses, compares, and fills your cart.",
+   "beat": "rec:ep_amazon_perplexity/chat_mock_hold.mp4@0.0|split",
+   "kind": "rec",
+   "src": "ep_amazon_perplexity/chat_mock_hold.mp4",
+   "in_point": 0.0,
+   "mode": "split",
+   "start": 4.95,
+   "end": 8.29,
+   "dur": 3.34,
+   "merges_with_next": false,
+   "why": "Merged hold. The mock's exchanges ARE browse -> compare -> cart, as the line names them."
+  },
+  {
+   "i": 2,
+   "line_no": 3,
+   "line": "The Ninth Circuit threw out the ban on Perplexity.",
+   "beat": "rec:ep_amazon_perplexity/broll/courtroom_ruling.mp4@1.5|full",
+   "kind": "rec",
+   "src": "ep_amazon_perplexity/broll/courtroom_ruling.mp4",
+   "in_point": 1.5,
+   "mode": "full",
+   "start": 8.29,
+   "end": 11.59,
+   "dur": 3.3,
+   "merges_with_next": false,
+   "why": "The line names a court; the beat shows the court, full-frame for the authority image."
+  },
+  {
+   "i": 3,
+   "line_no": 4,
+   "line": "The case is not over.",
+   "beat": "host",
+   "kind": "host",
+   "src": null,
+   "in_point": null,
+   "mode": "host",
+   "start": 11.59,
+   "end": 13.39,
+   "dur": 1.8,
+   "merges_with_next": false,
+   "why": "Scope caveat delivered to camera; also gives the mandated compliance chip a clean frame."
+  },
+  {
+   "i": 4,
+   "line_no": 5,
+   "line": "The court said you are the one shopping.",
+   "beat": "rec:ep_amazon_perplexity/broll/agent_shopping.mp4@2.0|split",
+   "kind": "rec",
+   "src": "ep_amazon_perplexity/broll/agent_shopping.mp4",
+   "in_point": 2.0,
+   "mode": "split",
+   "start": 13.39,
+   "end": 15.75,
+   "dur": 2.36,
+   "merges_with_next": false,
+   "why": "SECONDARY HOOK. The holding is that the USER accesses (C4/C5) - the person on screen is the 'you'."
+  },
+  {
+   "i": 5,
+   "line_no": 6,
+   "line": "Let agents do the legwork. You keep the pay click.",
+   "beat": "rec:ep_amazon_perplexity/glyph_delegation.mp4@0.0|full",
+   "kind": "rec",
+   "src": "ep_amazon_perplexity/glyph_delegation.mp4",
+   "in_point": 0.0,
+   "mode": "full",
+   "start": 15.75,
+   "end": 19.34,
+   "dur": 3.59,
+   "merges_with_next": false,
+   "why": "The card IS the line: YOU -> AGENT -> CART with the magenta PAY node. |full is mandatory (native 1080x1920)."
+  },
+  {
+   "i": 6,
+   "line_no": 7,
+   "line": "Amazon can still block agents in its terms.",
+   "beat": "host",
+   "kind": "host",
+   "src": null,
+   "in_point": null,
+   "mode": "host",
+   "start": 19.34,
+   "end": 22.63,
+   "dur": 3.29,
+   "merges_with_next": false,
+   "why": "The episode's key honesty line; no sourced image can show 'terms', so the host says it to camera."
+  },
+  {
+   "i": 7,
+   "line_no": 8,
+   "line": "Agents do the work, humans approve. This video too.",
+   "beat": "rec:ep_amazon_perplexity/broll/checkout_human.mp4@1.0|split",
+   "kind": "rec",
+   "src": "ep_amazon_perplexity/broll/checkout_human.mp4",
+   "in_point": 1.0,
+   "mode": "split",
+   "start": 22.63,
+   "end": 26.37,
+   "dur": 3.74,
+   "merges_with_next": false,
+   "why": "Line names 'humans approve'; the clip's required content is a human hand completing the payment."
+  },
+  {
+   "i": 8,
+   "line_no": 9,
+   "line": "I unpack one A I story every single day.",
+   "beat": "host",
+   "kind": "host",
+   "src": null,
+   "in_point": null,
+   "mode": "host",
+   "start": 26.37,
+   "end": 29.44,
+   "dur": 3.07,
+   "merges_with_next": false,
+   "why": "CTA to camera, full-frame, hands off cleanly to the outro sting."
+  }
+ ],
+ "beats_paste": [
+  "rec:ep_amazon_perplexity/chat_mock_hold.mp4@0.0|split",
+  "rec:ep_amazon_perplexity/chat_mock_hold.mp4@0.0|split",
+  "rec:ep_amazon_perplexity/broll/courtroom_ruling.mp4@1.5|full",
+  "host",
+  "rec:ep_amazon_perplexity/broll/agent_shopping.mp4@2.0|split",
+  "rec:ep_amazon_perplexity/glyph_delegation.mp4@0.0|full",
+  "host",
+  "rec:ep_amazon_perplexity/broll/checkout_human.mp4@1.0|split",
+  "host"
+ ],
+ "segments_expected": 8,
+ "merge_note": "beats[0] and beats[1] are byte-identical and MERGE into one 8.290s segment (build_ep_v2.py:1305). 9 lines -> 8 segments. Chips/emphasis are unaffected (computed from line_starts).",
+ "cover_until": 3.0,
+ "cover": {
+  "until": 3.0,
+  "derived_from_hook_end": 1.46,
+  "derived_value": 2.06,
+  "why_pinned": "Derived 2.06s is below Playbook \u00a713's 2.5-4.0s title-beat floor; script.md pins 3.0 and the pin wins (build_ep_v2.py:1360-1363).",
+  "draws_above_captions": true,
+  "hot_words_fully_hidden": [
+   "AMAZON",
+   "JUST",
+   "LOST",
+   "ROUND"
+  ],
+  "hot_words_under_fade": [
+   "BANNED"
+  ],
+  "fade_opens_s": 2.3,
+  "trade_accepted": true,
+  "trade_rationale": "The cover states the same claim in larger type (AMAZON LOST / THE CART FIGHT); AMAZON and LOST are on screen in Anton 225px instead of 78px caption. Hook stays fully audible underneath."
+ },
+ "secondary_hook_s": 13.39,
+ "secondary_hook": {
+  "line_no": 5,
+  "text": "The court said you are the one shopping.",
+  "window_s": [
+   14.0,
+   16.0
+  ],
+  "measured_s": 13.39,
+  "status": "MISS_EARLY",
+  "measured_draws": [
+   13.39,
+   12.88,
+   13.39
+  ],
+  "mean": 13.22,
+  "miss_by_s": 0.61,
+  "systematic": true,
+  "diagnosis": "Line 1 alone jitters up to 1.45s across renders of identical text, so no fixed wording lands both gates deterministically. <break> is NOT a deterministic lever either (measured: a 1.3s break bought +0.89s and still failed 1/3).",
+  "recut_recommended": "RECUT-B",
+  "recuts_measured": {
+   "RECUT_A": {
+    "edits": [
+     "L2 += 'shopping'",
+     "L3 += \"'s assistant\""
+    ],
+    "total_mean": 30.93,
+    "band_pass": "0/3",
+    "l5_mean": 14.78,
+    "window_pass": "3/3",
+    "verdict": "REJECT - band gate fails 3/3, no re-roll can save it"
+   },
+   "RECUT_B": {
+    "edits": [
+     "L4 += 'It goes back to a lower court.' (C3/C2 remand, cut only for budget)",
+     "L8 -= 'This video too.' (-0.94s; disclosure is carried by containsSyntheticMedia + description; #28 shipped with no spoken disclosure)"
+    ],
+    "total_mean": 29.56,
+    "band_pass": "2/3",
+    "l5_mean": 14.94,
+    "window_pass": "2/3",
+    "verdict": "RECOMMENDED - both gate means centred"
+   },
+   "RECUT_C": {
+    "edits": [
+     "1.3s break before L5",
+     "L8 -= 'This video too.'"
+    ],
+    "total_mean": 29.49,
+    "band_pass": "2/3",
+    "l5_mean": 14.35,
+    "window_pass": "2/3",
+    "verdict": "REJECT - disproved the deterministic-silence hypothesis; L5 mean sits near the floor"
+   }
+  },
+  "take_gate": {
+   "rule": "accept the VO render only if 26.0 <= total <= 30.0 AND 14.0 <= line_starts[4] <= 16.0; else re-roll",
+   "measured_accept_rate_recut_b": "2/3 per render",
+   "p_pass_within_3_rolls": 0.96,
+   "cost_per_roll_usd": 0.02
+  },
+  "locked_mitigation": {
+   "note": "If the script stays locked, do not redefine the gate. The spoken payoff word 'YOU' lands at 14.42 / 13.84 / 14.18s - at or inside the window even when the beat boundary is not. Pin emphasis E1 to the word onset (Ep25 cta_endcard precedent).",
+   "you_onset_draws": [
+    14.42,
+    13.84,
+    14.18
+   ]
+  }
+ },
+ "hook_spoken_within_s": {
+  "gate": 1.5,
+  "measured_claim_head_end": [
+   1.54,
+   1.43,
+   1.46
+  ],
+  "mean": 1.48,
+  "status": "PASS_MARGINAL",
+  "note": "'Amazon just lost this round' completes at mean 1.48s (2 of 3 draws under 1.5). script.md judgment call 1 offered to drop 'just' if measured >1.5s - the measurement says KEEP it, and dropping it would pull the already-early secondary hook 0.23s earlier still."
+ },
+ "clip_durations": {
+  "ep_amazon_perplexity/chat_mock_hold.mp4": {
+   "measured": null,
+   "required_min_s": 8.79,
+   "build_to_s": 9.0,
+   "in_point": 0.0,
+   "beats": [
+    0,
+    1
+   ],
+   "beat_dur": 8.29,
+   "state": "SPEC - this map is the source of its duration"
+  },
+  "ep_amazon_perplexity/glyph_delegation.mp4": {
+   "measured": null,
+   "required_min_s": 4.09,
+   "build_to_s": 4.3,
+   "in_point": 0.0,
+   "beats": [
+    5
+   ],
+   "beat_dur": 3.59,
+   "state": "SPEC - this map is the source of its duration"
+  },
+  "ep_amazon_perplexity/v2_host.mp4": {
+   "measured": null,
+   "required_min_s": 29.44,
+   "build_to_s": 29.44,
+   "in_point": null,
+   "beats": [
+    3,
+    6,
+    8
+   ],
+   "beat_dur": 29.44,
+   "state": "SPEC - ONE render driven by the whole VO (see host block)"
+  },
+  "ep_amazon_perplexity/broll/courtroom_ruling.mp4": {
+   "measured": null,
+   "required_min_s": 5.3,
+   "in_point": 1.5,
+   "beats": [
+    2
+   ],
+   "beat_dur": 3.3,
+   "state": "MEASURE - not yet fetched"
+  },
+  "ep_amazon_perplexity/broll/agent_shopping.mp4": {
+   "measured": null,
+   "required_min_s": 4.86,
+   "in_point": 2.0,
+   "beats": [
+    4
+   ],
+   "beat_dur": 2.36,
+   "state": "MEASURE - not yet fetched"
+  },
+  "ep_amazon_perplexity/broll/checkout_human.mp4": {
+   "measured": null,
+   "required_min_s": 5.24,
+   "in_point": 1.0,
+   "beats": [
+    7
+   ],
+   "beat_dur": 3.74,
+   "state": "MEASURE - not yet fetched"
+  },
+  "outro/outro_sub_comment.mp4": {
+   "measured": 3.8,
+   "state": "MEASURED ffprobe",
+   "resolution": [
+    1080,
+    1920
+   ],
+   "fps": 30,
+   "has_audio": true
+  },
+  "ep28/v2_host.mp4": {
+   "measured": 30.444,
+   "state": "MEASURED ffprobe - reference for the host-lag figure only"
+  }
+ },
+ "clip_headroom_rule": "in_point + beat_dur + 0.5 <= clip_duration. Assert before --dry (beat_map.md section 5).",
+ "host": {
+  "path": "ep_amazon_perplexity/v2_host.mp4",
+  "count": 1,
+  "structural_note": "newsSplit takes ONE full-length host clip, not two. build_ep_v2.py:1284-1288 calls host_clip('v2_host', 0, total) and Short.tsx:408-439 plays it as a single element with NO startFrom. The planned host_hook_clip/host_payoff_clip cannot satisfy this - the host pane is live during every split beat.",
+  "measured_lag_s": null,
+  "lag_state": "MEASURE - per render",
+  "reference_lags": [
+   {
+    "episode": "ep28",
+    "clip": "ep28/v2_host.mp4",
+    "lag_ms": 23.0,
+    "corr": 0.9994
+   },
+   {
+    "episode": "ep29",
+    "clip": "ep29/v2_host.mp4",
+    "lag_ms": 23.0,
+    "corr": 0.9993
+   }
+  ],
+  "reference_interpretation": "+23ms identical across two independent renders with corr>0.999 = AAC encoder priming (1024 samples @ 44.1kHz), not a HeyGen creative lead, and below the ~45ms audio-ahead perceptual threshold. The 123/234ms leads in lipsync_align.py's docstring were on SHORT SLICED renders (rec: beats), a different path.",
+  "procedure": [
+   "render RAW to v2_host_raw.mp4 (never straight to v2_host.mp4)",
+   "python3 scripts/lipsync_align.py measure <raw> <vo_v2.wav> --at 0.0",
+   "|lag| <= 0.045 and corr >= 0.95 -> copy raw to v2_host.mp4, record the number",
+   "|lag| > 0.045 -> lipsync_align.py cut --lag <measured> --dur <vo_total> --out v2_host.mp4",
+   "corr < 0.85 -> not a pure time-shift; re-render, do NOT in-point it"
+  ],
+  "why_shifted_copy_not_in_point": "build_ep_v2.py:1368 sets spec['host'] from full_host directly and Short.tsx gives the host layer no startFrom. There is NO in-point on the host layer - the only place a correction can live is the file itself. This is how the '@0.00 on a raw HeyGen clip' ban is satisfied here: the file IS the in-point, so v2_host.mp4 must be the shifted or verified-clean copy, never the untouched render."
+ },
+ "outro": {
+  "enabled": true,
+  "src": "outro/outro_sub_comment.mp4",
+  "duration_s": 3.8,
+  "resolution": [
+   1080,
+   1920
+  ],
+  "fps": 30,
+  "has_audio": true,
+  "reuse_never_rerender": true,
+  "outro_dur_trim": null,
+  "endcard": null,
+  "endcard_planned": false,
+  "survives_outro": "nothing - no end card, no comment keyword. The sting plays its full 3.800s and its own SUBSCRIBE/COMMENT chips close the episode.",
+  "music_fade_start_s": 2.6,
+  "final_runtime_s": 33.24
+ },
+ "stat_beats": {
+  "count": 0,
+  "why_none": "research.json carries no sourced number worth charting - the story is a holding, not a metric. Its numerals are dates and citations (filed Nov 2025, injunction Mar 2026, ruling 4 Aug 2026, slip op. pp.15/21), which belong in the cover sub and the description.",
+  "rule_if_one_appears": "add it here as stat:<name>|full with subtitle carrying source + date. A pre-baked chart image cover-fit into a 9:16 pane is BANNED (Playbook \u00a74)."
+ },
+ "chip_windows": [
+  {
+   "id": "W1a",
+   "label": "PRELIMINARY INJUNCTION VACATED \u2014 CASE CONTINUES",
+   "line_a": 2,
+   "line_b": 2,
+   "seg_line": 2,
+   "t0": 8.29,
+   "t1": 11.59,
+   "src": "ep_amazon_perplexity/broll/courtroom_ruling.mp4",
+   "src_in_point": 1.5,
+   "src_follows_timeline": false,
+   "mandatory": true,
+   "note": "Mandated by research.json compliance.required_chip. Dead space only, never over the quoted holding.",
+   "src_t0": 1.5,
+   "src_t1": 4.8,
+   "hold_s": 3.3
+  },
+  {
+   "id": "W1b",
+   "label": "PRELIMINARY INJUNCTION VACATED \u2014 CASE CONTINUES",
+   "line_a": 3,
+   "line_b": 3,
+   "seg_line": 3,
+   "t0": 11.59,
+   "t1": 13.39,
+   "src": "ep_amazon_perplexity/v2_host.mp4",
+   "src_in_point": null,
+   "src_follows_timeline": true,
+   "mandatory": true,
+   "note": "Same chip continuing across a segment boundary - probe BOTH targets; a corner clean over b-roll may sit on the host's face.",
+   "src_t0": 11.59,
+   "src_t1": 13.39,
+   "hold_s": 1.8
+  },
+  {
+   "id": "W2",
+   "label": "AMAZON'S TERMS STILL APPLY",
+   "line_a": 6,
+   "line_b": 6,
+   "seg_line": 6,
+   "t0": 19.34,
+   "t1": 22.63,
+   "src": "ep_amazon_perplexity/v2_host.mp4",
+   "src_in_point": null,
+   "src_follows_timeline": true,
+   "mandatory": false,
+   "note": "Reinforces the counterweight line. 3.29s >= 1.5s minimum hold.",
+   "src_t0": 19.34,
+   "src_t1": 22.63,
+   "hold_s": 3.29
+  },
+  {
+   "id": "W3",
+   "label": "AN AGENT, BANNED",
+   "line_a": 0,
+   "line_b": 1,
+   "seg_line": 0,
+   "t0": 3.0,
+   "t1": 8.29,
+   "src": "ep_amazon_perplexity/chat_mock_hold.mp4",
+   "src_in_point": 0.0,
+   "src_follows_timeline": false,
+   "mandatory": false,
+   "note": "OPTIONAL, likely dropped (mock carries its own header). Window starts at cover_until=3.0, NOT 0.0 - scoring 0-3s scores frames behind the poster.",
+   "src_t0": 3.0,
+   "src_t1": 8.29,
+   "hold_s": 5.29
+  }
+ ],
+ "emphasis_windows": [
+  {
+   "id": "E1",
+   "label": "the court said YOU are the one shopping",
+   "line_a": 4,
+   "line_b": 4,
+   "seg_line": 4,
+   "t0": 13.39,
+   "t1": 15.75,
+   "src": "ep_amazon_perplexity/broll/agent_shopping.mp4",
+   "src_in_point": 2.0,
+   "src_follows_timeline": false,
+   "mandatory": false,
+   "note": "KEEP. Renders at top:38% (inside the split top pane). Consider pinning start to the measured onset of the word 'YOU' rather than the line start.",
+   "src_t0": 2.0,
+   "src_t1": 4.36,
+   "hold_s": 2.36,
+   "recommendation": "keep"
+  },
+  {
+   "id": "E2",
+   "label": "agents do the legwork \u2014 you keep the pay click",
+   "line_a": 5,
+   "line_b": 5,
+   "seg_line": 5,
+   "t0": 15.75,
+   "t1": 19.34,
+   "src": "ep_amazon_perplexity/glyph_delegation.mp4",
+   "src_in_point": 0.0,
+   "src_follows_timeline": false,
+   "mandatory": false,
+   "note": "DROP. The glyph card already states this in type; a second text system over it is crowding.",
+   "src_t0": 0.0,
+   "src_t1": 3.59,
+   "hold_s": 3.59,
+   "recommendation": "drop"
+  }
+ ],
+ "probe_rule": "Ep26: probe the EXACT window the spec cuts, never a padded one - a chip scored on padding is scored on frames the episode never shows. For host beats src_t0 == t0 (host layer is timeline-aligned). For rec: beats src_t0 = in_point + (t0 - beat_start).",
+ "pane_geometry": {
+  "split_top_pane_pct": 55,
+  "split_host_pane_pct": 45,
+  "caption_bottom_split": "47%",
+  "caption_bottom_full_or_host": "21%",
+  "emphasis_top": "38%",
+  "chip_top": 172,
+  "chip_bottom": 566,
+  "chip_inset": 40,
+  "split_crop_warning": "A 1080x1920 card played |split is cover-fit into a 1080x1056 pane: the top 432px and bottom 432px are CROPPED. chat_mock_agent_cart must keep every essential element inside y in [432,1488] (planned footer_y 1245 is inside). glyph_delegation avoids this by running |full."
+ },
+ "assembler_constraints": [
+  "Register as EPISODES_V2['_amazon_perplexity'] so build() resolves A = assets/ep_amazon_perplexity.",
+  "vo_master must land as vo_v2.wav + vo_v2.words.json (build() reads those names), NOT vo.mp3.",
+  "Any numeric/price/comparison visual is a native stat: StatBars beat with sourced numbers. Pre-baked chart images in a 9:16 pane are BANNED. This episode plans none.",
+  "No @0.00 on a raw HeyGen file - see host.why_shifted_copy_not_in_point.",
+  "No Amazon/Perplexity screenshots, logos, lookalike colours or product UI in any beat.",
+  "cfg['steps'] is read without a default (build_ep_v2.py:1342) - step_chips must deliver at least []."
+ ],
+ "open_items": [
+  "SECONDARY HOOK gate fails on the locked script - apply RECUT-B + the take gate, or accept the miss with the word-onset mitigation. Cannot be resolved inside the beat map.",
+  "host_hook_clip / host_payoff_clip are the wrong shape for newsSplit - supersede with one full-length v2_host.mp4.",
+  "vo_master filename mismatch (vo.mp3 vs vo_v2.wav).",
+  "Three b-roll durations unmeasured - asserted, not assumed."
+ ]
+}

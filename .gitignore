@@ -1,0 +1,59 @@
+# ─────────────────────────────────────────────────────────────
+# Secrets — NEVER commit
+# ─────────────────────────────────────────────────────────────
+.env
+*.env
+!*.env.example
+*.key
+secrets/
+client_secret*.json
+token.json
+token_*.json
+*.sha256
+
+# ─────────────────────────────────────────────────────────────
+# Generated media — large; regenerate from prompts / pull from Supabase storage
+# ─────────────────────────────────────────────────────────────
+*.mp4
+*.mov
+*.mkv
+*.webm
+*.mp3
+*.wav
+*.m4a
+*.aac
+*.aiff
+*.flac
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.gif
+*.avif
+*.heic
+*.psd
+*_urls.txt
+
+# Render/scratch output trees
+renders_out/
+renders_test/
+
+# ─────────────────────────────────────────────────────────────
+# Runtime / caches / vendored deps
+# ─────────────────────────────────────────────────────────────
+node_modules/
+__pycache__/
+*.pyc
+.browser-profiles/
+logs/
+*.log
+dist/
+build/
+.venv/
+venv/
+supabase/.temp/
+
+# ─────────────────────────────────────────────────────────────
+# System
+# ─────────────────────────────────────────────────────────────
+.DS_Store

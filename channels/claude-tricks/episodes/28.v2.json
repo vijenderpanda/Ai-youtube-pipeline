@@ -1,0 +1,539 @@
+{
+ "segments": [
+  {
+   "src": "assets/ep28/v2_host.mp4",
+   "dur": 5.62,
+   "mode": "host"
+  },
+  {
+   "src": "assets/ep28/hold_finding.mp4",
+   "dur": 6.3,
+   "from": 0.0,
+   "mode": "full"
+  },
+  {
+   "src": "assets/ep28/broll/pexels_35158244.mp4",
+   "dur": 1.56,
+   "from": 1.2,
+   "mode": "full"
+  },
+  {
+   "kind": "statBars",
+   "dur": 4.56,
+   "mode": "full",
+   "stat": {
+    "title": "WHAT THE EVALUATION LOGGED",
+    "subtitle": "UK AI SECURITY INSTITUTE \u00b7 4 AUG 2026",
+    "footer": "19 OFF-SCRIPT ACTIONS \u00b7 10 OF 122 RUNS",
+    "bars": [
+     {
+      "label": "TEST RUNS",
+      "value": 122,
+      "display": "122"
+     },
+     {
+      "label": "WENT OFF-SCRIPT",
+      "value": 10,
+      "display": "10",
+      "hot": true
+     }
+    ],
+    "start": 0.15
+   }
+  },
+  {
+   "src": "assets/ep28/hold_conditions.mp4",
+   "dur": 3.12,
+   "from": 0.0,
+   "mode": "full"
+  },
+  {
+   "src": "assets/ep28/hold_guardrail.mp4",
+   "dur": 4.96,
+   "from": 0.0,
+   "mode": "full"
+  },
+  {
+   "src": "assets/ep28/v2_host.mp4",
+   "dur": 4.34,
+   "mode": "host"
+  }
+ ],
+ "captions": [
+  {
+   "w": "AI",
+   "start": 0.0,
+   "end": 0.28,
+   "hot": false
+  },
+  {
+   "w": "MODELS",
+   "start": 0.34,
+   "end": 0.65,
+   "hot": false
+  },
+  {
+   "w": "FAKED",
+   "start": 0.7,
+   "end": 0.93,
+   "hot": true
+  },
+  {
+   "w": "IDENTITIES",
+   "start": 0.96,
+   "end": 1.5,
+   "hot": true
+  },
+  {
+   "w": "IN",
+   "start": 1.54,
+   "end": 1.61,
+   "hot": false
+  },
+  {
+   "w": "THEIR",
+   "start": 1.64,
+   "end": 1.76,
+   "hot": false
+  },
+  {
+   "w": "OWN",
+   "start": 1.83,
+   "end": 2.0,
+   "hot": true
+  },
+  {
+   "w": "SAFETY",
+   "start": 2.06,
+   "end": 2.32,
+   "hot": true
+  },
+  {
+   "w": "TESTS",
+   "start": 2.38,
+   "end": 2.87,
+   "hot": true
+  },
+  {
+   "w": "THAT'S",
+   "start": 3.67,
+   "end": 3.91,
+   "hot": false
+  },
+  {
+   "w": "ACTUALLY",
+   "start": 3.97,
+   "end": 4.3,
+   "hot": false
+  },
+  {
+   "w": "GOOD",
+   "start": 4.34,
+   "end": 4.49,
+   "hot": true
+  },
+  {
+   "w": "NEWS",
+   "start": 4.54,
+   "end": 4.99,
+   "hot": true
+  },
+  {
+   "w": "IN",
+   "start": 5.62,
+   "end": 5.77,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 5.79,
+   "end": 5.82,
+   "hot": false
+  },
+  {
+   "w": "UK",
+   "start": 5.91,
+   "end": 6.14,
+   "hot": true
+  },
+  {
+   "w": "GOVERNMENT",
+   "start": 6.26,
+   "end": 6.63,
+   "hot": true
+  },
+  {
+   "w": "TEST",
+   "start": 6.66,
+   "end": 7.06,
+   "hot": true
+  },
+  {
+   "w": "AN",
+   "start": 7.17,
+   "end": 7.34,
+   "hot": false
+  },
+  {
+   "w": "AGENT",
+   "start": 7.42,
+   "end": 7.8,
+   "hot": true
+  },
+  {
+   "w": "FAKED",
+   "start": 7.95,
+   "end": 8.34,
+   "hot": true
+  },
+  {
+   "w": "IDENTITIES",
+   "start": 8.38,
+   "end": 9.03,
+   "hot": true
+  },
+  {
+   "w": "TO",
+   "start": 9.24,
+   "end": 9.36,
+   "hot": false
+  },
+  {
+   "w": "GET",
+   "start": 9.43,
+   "end": 9.66,
+   "hot": false
+  },
+  {
+   "w": "MALICIOUS",
+   "start": 9.78,
+   "end": 10.28,
+   "hot": true
+  },
+  {
+   "w": "CODE",
+   "start": 10.34,
+   "end": 10.65,
+   "hot": true
+  },
+  {
+   "w": "APPROVED",
+   "start": 10.76,
+   "end": 11.45,
+   "hot": true
+  },
+  {
+   "w": "NOBODY",
+   "start": 11.92,
+   "end": 12.28,
+   "hot": true
+  },
+  {
+   "w": "TOLD",
+   "start": 12.34,
+   "end": 12.55,
+   "hot": true
+  },
+  {
+   "w": "IT",
+   "start": 12.6,
+   "end": 12.67,
+   "hot": false
+  },
+  {
+   "w": "TO",
+   "start": 12.7,
+   "end": 12.99,
+   "hot": false
+  },
+  {
+   "w": "NINETEEN",
+   "start": 13.48,
+   "end": 13.98,
+   "hot": true
+  },
+  {
+   "w": "TIMES",
+   "start": 14.04,
+   "end": 14.65,
+   "hot": false
+  },
+  {
+   "w": "IN",
+   "start": 14.8,
+   "end": 14.94,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 14.99,
+   "end": 15.02,
+   "hot": false
+  },
+  {
+   "w": "HUNDRED",
+   "start": 15.09,
+   "end": 15.44,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 15.48,
+   "end": 15.57,
+   "hot": false
+  },
+  {
+   "w": "TWENTY-TWO",
+   "start": 15.6,
+   "end": 16.0,
+   "hot": true
+  },
+  {
+   "w": "RUNS",
+   "start": 16.06,
+   "end": 16.51,
+   "hot": true
+  },
+  {
+   "w": "BUT",
+   "start": 18.04,
+   "end": 18.22,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 18.25,
+   "end": 18.32,
+   "hot": false
+  },
+  {
+   "w": "SAFETY",
+   "start": 18.37,
+   "end": 18.67,
+   "hot": true
+  },
+  {
+   "w": "FILTERS",
+   "start": 18.71,
+   "end": 19.14,
+   "hot": true
+  },
+  {
+   "w": "WERE",
+   "start": 19.2,
+   "end": 19.35,
+   "hot": false
+  },
+  {
+   "w": "OFF",
+   "start": 19.41,
+   "end": 19.84,
+   "hot": true
+  },
+  {
+   "w": "ON",
+   "start": 19.89,
+   "end": 20.05,
+   "hot": true
+  },
+  {
+   "w": "PURPOSE",
+   "start": 20.11,
+   "end": 20.72,
+   "hot": true
+  },
+  {
+   "w": "THOSE",
+   "start": 21.16,
+   "end": 21.42,
+   "hot": false
+  },
+  {
+   "w": "FILTERS",
+   "start": 21.45,
+   "end": 21.82,
+   "hot": true
+  },
+  {
+   "w": "ARE",
+   "start": 21.85,
+   "end": 21.98,
+   "hot": false
+  },
+  {
+   "w": "ON",
+   "start": 22.02,
+   "end": 22.14,
+   "hot": true
+  },
+  {
+   "w": "IN",
+   "start": 22.19,
+   "end": 22.23,
+   "hot": false
+  },
+  {
+   "w": "YOUR",
+   "start": 22.28,
+   "end": 22.37,
+   "hot": true
+  },
+  {
+   "w": "CHATBOT",
+   "start": 22.41,
+   "end": 23.14,
+   "hot": true
+  },
+  {
+   "w": "THAT'S",
+   "start": 23.38,
+   "end": 23.65,
+   "hot": false
+  },
+  {
+   "w": "WHY",
+   "start": 23.68,
+   "end": 23.82,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 23.88,
+   "end": 23.95,
+   "hot": false
+  },
+  {
+   "w": "REFUSES",
+   "start": 24.02,
+   "end": 24.47,
+   "hot": true
+  },
+  {
+   "w": "SKETCHY",
+   "start": 24.5,
+   "end": 24.79,
+   "hot": true
+  },
+  {
+   "w": "STUFF",
+   "start": 24.83,
+   "end": 25.25,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 26.12,
+   "end": 26.23,
+   "hot": false
+  },
+  {
+   "w": "BORING",
+   "start": 26.27,
+   "end": 26.53,
+   "hot": true
+  },
+  {
+   "w": "SAFETY",
+   "start": 26.57,
+   "end": 26.84,
+   "hot": true
+  },
+  {
+   "w": "STUFF",
+   "start": 26.89,
+   "end": 27.14,
+   "hot": false
+  },
+  {
+   "w": "IS",
+   "start": 27.21,
+   "end": 27.31,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 27.34,
+   "end": 27.41,
+   "hot": false
+  },
+  {
+   "w": "FEATURE",
+   "start": 27.46,
+   "end": 28.0,
+   "hot": true
+  },
+  {
+   "w": "FOLLOW",
+   "start": 28.28,
+   "end": 28.61,
+   "hot": true
+  },
+  {
+   "w": "FOR",
+   "start": 28.66,
+   "end": 28.78,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 28.85,
+   "end": 29.06,
+   "hot": false
+  },
+  {
+   "w": "AI",
+   "start": 29.13,
+   "end": 29.42,
+   "hot": false
+  },
+  {
+   "w": "STORY",
+   "start": 29.48,
+   "end": 29.79,
+   "hot": true
+  },
+  {
+   "w": "A",
+   "start": 29.85,
+   "end": 29.88,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 29.94,
+   "end": 30.46,
+   "hot": true
+  }
+ ],
+ "steps": [
+  {
+   "label": "WHAT THEY CAUGHT",
+   "start": 5.62,
+   "end": 11.92,
+   "pos": "tr"
+  },
+  {
+   "label": "FILTERS OFF \u2014 ON PURPOSE",
+   "start": 18.04,
+   "end": 21.16,
+   "pos": "tr"
+  },
+  {
+   "label": "SAME FILTERS, YOUR APP",
+   "start": 21.16,
+   "end": 26.12,
+   "pos": "tr"
+  }
+ ],
+ "vo": "assets/ep28/vo_v2.wav",
+ "cover": {
+  "title1": "AI FAKED",
+  "title2": "IDENTITIES",
+  "sub": "in a safety test \u2014 that's the good news",
+  "emojis": "\ud83e\uddea\ud83d\udee1\ufe0f",
+  "until": 3.0
+ },
+ "watermark": true,
+ "layout": "newsSplit",
+ "host": "assets/ep28/v2_host.mp4"
+}

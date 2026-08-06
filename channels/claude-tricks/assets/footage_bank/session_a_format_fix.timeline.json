@@ -1,0 +1,72 @@
+{
+  "typing_start": 2.976,
+  "typing_end": 12.797,
+  "submit": 13.593,
+  "answer_start": 13.593,
+  "answer_end": 20.989,
+  "scrolls": [],
+  "duration": 44.233,
+  "first_token": 15.716,
+  "first_personalized": 15.716,
+  "matched_term": "day",
+  "personalized_delay_s": 0.0,
+  "observed": {
+    "answer_selector": "li[data-message-role=\"assistant\"] [data-assistant-markdown]",
+    "answer_head": "If your weekdays are busy, the most sustainable plan is one you can finish in 20\u201325 minutes. Aim for consistency rather than intensity. Here's a beginner-friendly schedule that builds strength, improves fitness, and leaves room for recovery.\n\nDay\tWorkout\tTime\nMonday\tFull-body strength\t20\u201325 min\nTuesday\tBrisk walk + mobility\t20 min\nWednesday\tFull-body strength\t20\u201325 min\nThursday\tLight cardio or str",
+    "answer_chars": 2093,
+    "logged_in": null,
+    "pii_blurred": null,
+    "forbidden_term": null,
+    "fix_answer_selector": "li[data-message-role=\"assistant\"] [data-assistant-markdown]",
+    "fix_answer_head": "Day\tExercise\tMinutes\nMonday\tFull-body strength (squats, incline push-ups, glute bridges, bird dogs, plank)\t20\u201325\nTuesday\tBrisk walk + mobility/stretching\t20\nWednesday\tFull-body strength (same as Monday)\t20\u201325\nThursday\tLight cardio (easy walk) or stretching/yoga\t15\u201320\nFriday\tFull-body strength (same as Monday)\t20\u201325",
+    "fix_answer_chars": 316,
+    "fix_forbidden_term": null
+  },
+  "fix_typing_start": 25.137,
+  "fix_typing_end": 36.671,
+  "fix_submit": 37.466,
+  "fix_answer_end": 44.594,
+  "fix_first_token": 39.493,
+  "punches": [
+    {
+      "t0": 2.876,
+      "t1": 13.097,
+      "center": [
+        0.463,
+        0.527
+      ],
+      "zoom": 1.2,
+      "label": "compose"
+    },
+    {
+      "t0": 15.516,
+      "t1": 20.789,
+      "center": [
+        0.5,
+        1.215
+      ],
+      "zoom": 1.02,
+      "label": "robotic"
+    },
+    {
+      "t0": 25.037,
+      "t1": 36.971,
+      "center": [
+        0.463,
+        0.964
+      ],
+      "zoom": 1.2,
+      "label": "fixline"
+    },
+    {
+      "t0": 39.293,
+      "t1": 44.233,
+      "center": [
+        0.5,
+        0.599
+      ],
+      "zoom": 1.042,
+      "label": "human"
+    }
+  ]
+}

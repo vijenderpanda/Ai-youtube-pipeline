@@ -1,0 +1,16 @@
+{
+  "_note": "Lyric duel Short. Times are in CUT time and inherit lyrics/timing_hookcut.json, which is stable-ts forced alignment on the demucs vocal stem of this exact 155.28s-origin cut (onset-snapped, sweep-capped) — the duel bed is the same origin, so the line windows transfer sample-for-sample. Line 2's start is re-verified against the bed's own 20ms RMS envelope and corrected 8.00 -> 7.92, where the level steps -11.3 -> -7.3 dB in one frame; the picture hard-cuts at 7.90 so the frame changes on the attack, not after it. Each duel line is ONE unbroken caption (the hook cut split them into phrases; a duel asks the viewer to weigh a whole bar). vis_s holds line 1 off screen until the VERSUS card has fully dissolved at 2.35 WITHOUT re-anchoring its sweep — the gold records what has already been sung under the card. Line 2's sweep + 0.12s tail lands at 17.92, before the recap dissolve begins at 17.95: nothing sweeps over a card.",
+  "lines": [
+    {
+      "s": 0.3,
+      "e": 7.04,
+      "vis_s": 2.4,
+      "text": "Baarish ban ke tu, mujh mein barasta ja"
+    },
+    {
+      "s": 7.92,
+      "e": 17.8,
+      "text": "Tere bina main adhoora, tere bina main kho gaya"
+    }
+  ]
+}

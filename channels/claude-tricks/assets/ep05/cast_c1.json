@@ -1,0 +1,1 @@
+{"title": "claude-code \u2014 ~/project", "steps": [{"type": "type", "text": "> fix the flaky auth tests", "color": "white", "cps": 22}, {"type": "out", "lps": 6, "lines": [["", "white"], ["working... (23 minutes)", "dim"], ["", "white"], ["(you, watching every line)", "magenta"]]}, {"type": "pause", "dur": 1.2}]}

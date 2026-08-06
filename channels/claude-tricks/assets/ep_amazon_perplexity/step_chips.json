@@ -1,0 +1,182 @@
+{
+  "asset": "step_chips",
+  "version": 1,
+  "episode": "ep_amazon_perplexity",
+  "channel": "claude-tricks",
+  "generated_at": "2026-08-06",
+  "rule": "Ep11 — a chip may never cover the content the beat is teaching. Score ranks corners; the ink description decides.",
+  "chip_geometry": {
+    "inset_px": 40,
+    "top_px": 172,
+    "bottom_px": 566,
+    "height_px": 76,
+    "width_rule": "len(label) * 17.5 + 60",
+    "source": "StepChip in remotion-studio/src/Short.tsx:100-146; probe rects mirrored in scripts/probe_frames.py"
+  },
+
+  "probe_method": {
+    "prescribed_command": "python3 scripts/probe_frames.py corner <CLIP> --window T0 T1 --label \"<chip text>\" --fps 10",
+    "windows": "line-quantised from build_ep_v2.py:1357-1364 (start=line_starts[a], end=line_starts[b]+seg_durs[b]) — these ARE the exact cut windows, no padding",
+    "clips": "the SHIPPED files in renders_out/staged/de372dd8-.../<asset>/v1/, not the channel copies or proxies",
+    "pane_correction": {
+      "why": "Short.tsx plays a |split beat's clip cover-fit into a 1080x1056 top pane: source y432..1488 lands at frame y0..1056 (1:1), and frame y1056..1920 is the HOST layer. Running the prescribed command straight at a |split source therefore scores pixels the episode never shows — the same class of error as probing a padded window.",
+      "correction": "for |split beats the deciding numbers come from a rebuilt composite (real top-pane crop + host pane); the raw-source numbers are kept alongside so the divergence is auditable",
+      "full_beats": "|full beats are 1:1 — raw source == composite, no correction needed"
+    },
+    "frame_shown_in_poster": "the WORST frame of the cut window (max ink under the chosen rect), not a flattering one"
+  },
+
+  "steps": [
+    {
+      "id": "S1",
+      "label": "STEP 1/3 — AGENTS BROWSE + COMPARE",
+      "beat_index": 1,
+      "line_index": [1, 1],
+      "line": "That agent browses, compares, and fills your cart.",
+      "t0": 4.95,
+      "t1": 8.29,
+      "hold_s": 3.34,
+      "pos": "bl",
+      "beat_mode": "split",
+      "clip": "chat_mock_hold_clip/v1/chat_mock_hold.mp4",
+      "src_window": [4.95, 8.29],
+      "corner_scores": {"tl": 0.0648, "tr": 0.0739, "bl": 0.3128, "br": 0.4303},
+      "corner_scores_note": "composite (what the frame actually shows). Worst of two independent host stand-ins; tl/tr agree to 0.0005 across both, bl to 0.0003.",
+      "corner_scores_raw_source": {"tl": 0.0, "tr": 0.0, "bl": 0.0002, "br": 0.0002},
+      "corner_scores_raw_note": "the shipped card IS authored chip-clear at 1080x1920 — all four ~0.00. The split crop is what moves the clear bands out of the chip rects. See finding F1.",
+      "ink_description": {
+        "chosen_bl": "CHROME — host-pane set dressing: flat grey wall plus the top-left corner of the bookshelf. The host's head begins ~390px below the chip's lower edge, so nothing of the presenter is covered.",
+        "rejected_tl": "CONTENT — cuts the top half off the assistant's reply line 'Compared 6 sellers on ONLINE STORE.', which is the exact 'compares' evidence this chip is labelling. Lower score (0.0648 vs 0.3128), forbidden ink.",
+        "rejected_tr": "CONTENT — same reply line, right half, plus the bubble's top edge.",
+        "rejected_br": "CHROME but busiest (0.4303): shelf, speakers and plant. bl is the cleaner of the two chrome corners."
+      },
+      "decision": "bl — score ranks tl first, ink description overrules it (Ep11).",
+      "poster_path": "poster_chip1_agents_browse.jpg",
+      "claim_backing": ["C13", "C14", "C17"],
+      "claim_note": "descriptive of a shopping agent's mechanics (C17 'the agent does the legwork'), matches VO line 2 verbatim in substance; asserts no legal outcome."
+    },
+    {
+      "id": "S2",
+      "label": "STEP 2/3 — COURT: THE USER ACCESSES",
+      "beat_index": 4,
+      "line_index": [4, 4],
+      "line": "The court said you are the one shopping.",
+      "t0": 13.39,
+      "t1": 15.75,
+      "hold_s": 2.36,
+      "pos": "bl",
+      "beat_mode": "split",
+      "clip": "broll_agent_shopping/v1/agent_shopping.mp4",
+      "src_window": [2.0, 4.36],
+      "corner_scores": {"tl": 0.2241, "tr": 0.2349, "bl": 0.3074, "br": 0.4692},
+      "corner_scores_note": "composite. Worst of two independent host stand-ins.",
+      "corner_scores_raw_source": {"tl": 0.3309, "tr": 0.3592, "bl": 0.0427, "br": 0.0531},
+      "corner_scores_raw_note": "raw-source bl/br look clean only because those rows are cropped away entirely by the split pane — a phantom score. Do not use.",
+      "ink_description": {
+        "chosen_bl": "CHROME — host-pane set dressing: grey wall and the bookshelf edge. Head well below the chip.",
+        "rejected_tl": "CONTENT — sits on the laptop screen showing the store grid, i.e. the on-screen shopping this beat is teaching. Also a bright, low-contrast ground for a light chip.",
+        "rejected_tr": "CONTENT — screen top-right plus hinge, spilling into blurred background.",
+        "rejected_br": "CHROME but busiest (0.4692): shelf, speakers, plant."
+      },
+      "decision": "bl — no corner scores 0.00 on this photographic beat, so the ranking is by ink type: chrome (host set dressing) over content (the store on screen).",
+      "poster_path": "poster_chip2_user_accesses.jpg",
+      "claim_backing": ["C4", "C5"],
+      "claim_note": "compression of C4 verbatim ('It is the user who accesses Amazon's computers…'). Deliberately NOT the brief's sample wording 'YOU ARE THE ONE SHOPPING' — that would duplicate emphasis window E1 word for word on the same beat (see finding F2)."
+    },
+    {
+      "id": "S3",
+      "label": "STEP 3/3 — YOU CONFIRM THE PURCHASE",
+      "beat_index": 5,
+      "line_index": [5, 5],
+      "line": "Let agents do the legwork. You keep the pay click.",
+      "t0": 15.75,
+      "t1": 19.34,
+      "hold_s": 3.59,
+      "pos": "bl",
+      "beat_mode": "full",
+      "clip": "glyph_delegation_clip/v1/glyph_delegation.mp4",
+      "src_window": [0.0, 3.59],
+      "corner_scores": {"tl": 0.0, "tr": 0.0, "bl": 0.0, "br": 0.0},
+      "corner_scores_note": "|full beat — the frame IS the shipped clip 1:1, so this is both the raw and the composite number. Nothing is a stand-in.",
+      "corner_scores_raw_source": {"tl": 0.0, "tr": 0.0, "bl": 0.0, "br": 0.0},
+      "ink_description": {
+        "chosen_bl": "EMPTY — bare card ground below the PAY button. 0.0000 across the whole 3.59s window; the card was authored chip-clear and it plays |full, so the authored zones survive intact.",
+        "rejected_tl": "also 0.0000. bl preferred so the 3-step scaffold holds one screen position across all three chips, and because it reads as a caption to the PAY moment directly above it."
+      },
+      "decision": "bl — 0.00 on all four; tie broken on scaffold consistency and reading order.",
+      "poster_path": "poster_chip3_you_confirm.jpg",
+      "claim_backing": ["C14", "C17"],
+      "claim_note": "verbatim from research.json banned_phrasings.use_instead ('…and you confirm the purchase'). Chosen over the brief's sample 'YOU KEEP THE PAY CLICK': C17 is medium-confidence and flagged HEDGE ON AIR, and the card already says 'THIS ONE STAYS YOURS'."
+    }
+  ],
+
+  "mandatory_compliance_chip": {
+    "id": "C0",
+    "not_a_step_chip": "research.json compliance.required_chip. Probed here because it is emitted through the same cfg['steps'] list and must not be lost or collide with the step chips.",
+    "label": "PRELIMINARY INJUNCTION VACATED — CASE CONTINUES",
+    "beat_index": [2, 3],
+    "line_index": [2, 3],
+    "t0": 8.29,
+    "t1": 13.39,
+    "hold_s": 5.1,
+    "pos": "tl",
+    "pos_state": "DECIDED for the W1a half (8.29–11.59, courtroom_ruling |full); PENDING for the W1b half (11.59–13.39, v2_host.mp4 |host)",
+    "corner_scores_W1a": {"tl": 0.0759, "tr": 0.1997, "bl": 0.3795, "br": 0.4322},
+    "corner_scores_W1b": null,
+    "ink_description": {
+      "chosen_tl": "CHROME — blurred window mullions behind the statue; background, never the subject.",
+      "rejected_bl": "CONTENT — cuts straight across the statue of Justice's skirt, the subject of the shot."
+    },
+    "poster_path": "poster_compliance_chip_W1a.jpg",
+    "no_collision_with_step_chips": "ends at 13.39, S2 starts at 13.39 — back to back, never concurrent."
+  },
+
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "defect — fix in the source card or accept the host-pane placement",
+      "title": "chat_mock_agent_cart is authored chip-clear at 1080x1920, but its beat plays |split, which slides the clear bands out of the chip rects",
+      "evidence": "raw probe of the shipped chat_mock_hold.mp4 over the exact cut window: tl 0.0000 / tr 0.0000 / bl 0.0002 / br 0.0002 — the convention was honoured. The same window on the composite: tl 0.0648 / tr 0.0739. The 432px top crop maps the frame's tl/tr rect onto source y602..678, which is the assistant reply bubble.",
+      "why_it_matters": "This is exactly the 'a non-zero score on a graphic authored chip-clear means something moved' check. What moved is the pane, not the art.",
+      "fix_options": [
+        "re-author the card with its chip-clear bands at source y602..678 and y1716..1792 (the frame-mapped positions under a |split crop), or",
+        "keep the chip in the host pane as specified here (pos bl), or",
+        "drop the chip on this beat — beat_map chip_windows W3 already notes the mock 'carries its own header' (though that header is itself cropped off by the same |split crop)"
+      ],
+      "control": "glyph_delegation.mp4 plays |full and scores 0.0000 on all four corners, confirming the convention holds wherever the beat is not split."
+    },
+    {
+      "id": "F2",
+      "severity": "wording collision — resolved here, confirm the resolution",
+      "title": "The brief's sample label for chip 2 duplicates emphasis window E1 verbatim on the same beat",
+      "evidence": "beat_map.emphasis_windows E1 (recommendation 'keep') is 'the court said YOU are the one shopping' on beat 4, rendered at top:38% (frame y~730). The sample chip text was 'STEP 2/3 — YOU ARE THE ONE SHOPPING'.",
+      "resolution": "chip 2 reworded to 'STEP 2/3 — COURT: THE USER ACCESSES' (C4). No spatial overlap either: the chip is at y1284..1360, E1 at y~730.",
+      "note": "If the assembler drops E1, the chip still stands on its own."
+    },
+    {
+      "id": "F3",
+      "severity": "blocked — must re-probe before lock",
+      "title": "Chips S1 and S2 sit in the host pane, and v2_host.mp4 does not exist yet",
+      "evidence": "beat_map.open_items: 'host_hook_clip / host_payoff_clip are the wrong shape for newsSplit — supersede with one full-length v2_host.mp4'. The host-pane numbers here come from host_hook.mp4 and host_payoff.mp4, two real renders from the same shoot, which agree to within 0.0003 on bl.",
+      "required_action": "after v2_host.mp4 renders, re-run the composite probe for S1 (4.95–8.29) and S2 (13.39–15.75) and for the compliance chip's W1b half (11.59–13.39). If the framing changed and the chip band lands on the head, S1/S2 must move to tl and finding F1's re-author option becomes mandatory.",
+      "prediction": "low risk — Short.tsx anchors the host pane objectPosition 'center top' precisely to keep head+shoulders in frame, which puts the chip band ~390px above the head in both stand-ins."
+    },
+    {
+      "id": "F4",
+      "severity": "note",
+      "title": "No hold-time defects",
+      "evidence": "S1 3.34s, S2 2.36s, S3 3.59s — all above the 1.5s minimum. No chip needs a beat-map change for hold."
+    }
+  ],
+
+  "assembler_paste": {
+    "target": "channels/claude-tricks/build_ep_v2.py — EPISODES_V2['_amazon_perplexity']['steps']",
+    "note": "cfg['steps'] is read without a default (build_ep_v2.py:1342), so this key must exist. Tuple form is (label, line_a, line_b, pos).",
+    "steps": [
+      ["PRELIMINARY INJUNCTION VACATED — CASE CONTINUES", 2, 3, "tl"],
+      ["STEP 1/3 — AGENTS BROWSE + COMPARE", 1, 1, "bl"],
+      ["STEP 2/3 — COURT: THE USER ACCESSES", 4, 4, "bl"],
+      ["STEP 3/3 — YOU CONFIRM THE PURCHASE", 5, 5, "bl"]
+    ]
+  }
+}

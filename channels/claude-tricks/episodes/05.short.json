@@ -1,0 +1,588 @@
+{
+ "w": 1080,
+ "h": 1920,
+ "fps": 30,
+ "accent": "E0218A",
+ "caption_size": 115,
+ "vo": "/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/ep05/vo.wav",
+ "music": "/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/music/bed_active.mp3",
+ "music_gain": 0.3,
+ "segments": [
+  {
+   "vid": "/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/ep05/host_hook.mp4",
+   "dur": 3.77
+  },
+  {
+   "vid": "/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/ep05/term_c1.mp4",
+   "dur": 3.36,
+   "punch": true
+  },
+  {
+   "vid": "/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/ep05/term_c2.mp4",
+   "dur": 5.35,
+   "punch": true
+  },
+  {
+   "vid": "/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/ep05/term_c3.mp4",
+   "dur": 5.55,
+   "punch": true
+  },
+  {
+   "vid": "/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/ep05/host_payoff.mp4",
+   "dur": 8.39
+  }
+ ],
+ "watermark": "/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/watermark.png",
+ "banners": [
+  {
+   "img": "/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/ep05/topic.png",
+   "start": 0.0,
+   "end": 3.2,
+   "fade_out": 0.7,
+   "scale": 0.94
+  }
+ ],
+ "logo_pop": "/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/logo_pop.png",
+ "captions": [
+  {
+   "w": "CLAUDE",
+   "start": 0.0,
+   "end": 0.36,
+   "hot": false
+  },
+  {
+   "w": "NOW",
+   "start": 0.4,
+   "end": 0.53,
+   "hot": false
+  },
+  {
+   "w": "SHIPS",
+   "start": 0.61,
+   "end": 0.86,
+   "hot": true
+  },
+  {
+   "w": "CODE",
+   "start": 0.91,
+   "end": 1.16,
+   "hot": false
+  },
+  {
+   "w": "WHILE",
+   "start": 1.18,
+   "end": 1.35,
+   "hot": false
+  },
+  {
+   "w": "YOU",
+   "start": 1.37,
+   "end": 1.44,
+   "hot": false
+  },
+  {
+   "w": "SLEEP",
+   "start": 1.49,
+   "end": 1.88,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 2.36,
+   "end": 2.36,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 2.36,
+   "end": 2.36,
+   "hot": false
+  },
+  {
+   "w": "NOT",
+   "start": 2.36,
+   "end": 2.6,
+   "hot": false
+  },
+  {
+   "w": "HYPE",
+   "start": 2.67,
+   "end": 3.08,
+   "hot": false
+  },
+  {
+   "w": "THIS",
+   "start": 3.32,
+   "end": 3.48,
+   "hot": false
+  },
+  {
+   "w": "SHIPPED",
+   "start": 3.51,
+   "end": 3.75,
+   "hot": false
+  },
+  {
+   "w": "IN",
+   "start": 3.79,
+   "end": 3.83,
+   "hot": false
+  },
+  {
+   "w": "JULY",
+   "start": 3.89,
+   "end": 4.4,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 4.95,
+   "end": 4.95,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 4.95,
+   "end": 4.95,
+   "hot": false
+  },
+  {
+   "w": "RIGHT",
+   "start": 4.95,
+   "end": 5.17,
+   "hot": false
+  },
+  {
+   "w": "NOW",
+   "start": 5.22,
+   "end": 5.56,
+   "hot": false
+  },
+  {
+   "w": "YOU",
+   "start": 5.77,
+   "end": 5.86,
+   "hot": false
+  },
+  {
+   "w": "GIVE",
+   "start": 5.94,
+   "end": 6.11,
+   "hot": false
+  },
+  {
+   "w": "AI",
+   "start": 6.17,
+   "end": 6.46,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 6.49,
+   "end": 6.51,
+   "hot": false
+  },
+  {
+   "w": "TASK",
+   "start": 6.57,
+   "end": 6.95,
+   "hot": false
+  },
+  {
+   "w": "AND",
+   "start": 6.99,
+   "end": 7.11,
+   "hot": false
+  },
+  {
+   "w": "YOU",
+   "start": 7.15,
+   "end": 7.23,
+   "hot": false
+  },
+  {
+   "w": "BABYSIT",
+   "start": 7.31,
+   "end": 7.71,
+   "hot": true
+  },
+  {
+   "w": "THE",
+   "start": 7.75,
+   "end": 7.83,
+   "hot": false
+  },
+  {
+   "w": "TERMINAL",
+   "start": 7.86,
+   "end": 8.37,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 8.9,
+   "end": 8.9,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 8.9,
+   "end": 8.9,
+   "hot": false
+  },
+  {
+   "w": "NOT",
+   "start": 8.9,
+   "end": 9.08,
+   "hot": false
+  },
+  {
+   "w": "ANYMORE",
+   "start": 9.14,
+   "end": 9.6,
+   "hot": false
+  },
+  {
+   "w": "SUBAGENTS",
+   "start": 9.81,
+   "end": 10.36,
+   "hot": true
+  },
+  {
+   "w": "RUN",
+   "start": 10.4,
+   "end": 10.56,
+   "hot": false
+  },
+  {
+   "w": "IN",
+   "start": 10.61,
+   "end": 10.66,
+   "hot": false
+  },
+  {
+   "w": "THE",
+   "start": 10.69,
+   "end": 10.76,
+   "hot": false
+  },
+  {
+   "w": "BACKGROUND",
+   "start": 10.81,
+   "end": 11.25,
+   "hot": true
+  },
+  {
+   "w": "BY",
+   "start": 11.29,
+   "end": 11.38,
+   "hot": false
+  },
+  {
+   "w": "DEFAULT",
+   "start": 11.46,
+   "end": 11.98,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 12.48,
+   "end": 12.48,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 12.48,
+   "end": 12.48,
+   "hot": false
+  },
+  {
+   "w": "FIRE",
+   "start": 12.48,
+   "end": 12.83,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 12.9,
+   "end": 13.07,
+   "hot": false
+  },
+  {
+   "w": "OFF",
+   "start": 13.12,
+   "end": 13.56,
+   "hot": false
+  },
+  {
+   "w": "AND",
+   "start": 13.71,
+   "end": 13.87,
+   "hot": false
+  },
+  {
+   "w": "JUST",
+   "start": 13.93,
+   "end": 14.1,
+   "hot": false
+  },
+  {
+   "w": "KEEP",
+   "start": 14.15,
+   "end": 14.33,
+   "hot": false
+  },
+  {
+   "w": "WORKING",
+   "start": 14.4,
+   "end": 14.9,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 15.36,
+   "end": 15.36,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 15.36,
+   "end": 15.36,
+   "hot": false
+  },
+  {
+   "w": "WHEN",
+   "start": 15.36,
+   "end": 15.55,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 15.58,
+   "end": 15.64,
+   "hot": false
+  },
+  {
+   "w": "FINISHES",
+   "start": 15.69,
+   "end": 16.18,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 16.24,
+   "end": 16.38,
+   "hot": false
+  },
+  {
+   "w": "COMMITS",
+   "start": 16.44,
+   "end": 16.87,
+   "hot": true
+  },
+  {
+   "w": "AND",
+   "start": 16.9,
+   "end": 17.03,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 17.08,
+   "end": 17.15,
+   "hot": false
+  },
+  {
+   "w": "PUSHES",
+   "start": 17.19,
+   "end": 17.77,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 18.29,
+   "end": 18.29,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 18.29,
+   "end": 18.29,
+   "hot": false
+  },
+  {
+   "w": "THEN",
+   "start": 18.29,
+   "end": 18.47,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 18.52,
+   "end": 18.61,
+   "hot": false
+  },
+  {
+   "w": "OPENS",
+   "start": 18.68,
+   "end": 18.98,
+   "hot": false
+  },
+  {
+   "w": "A",
+   "start": 19.03,
+   "end": 19.05,
+   "hot": false
+  },
+  {
+   "w": "DRAFT",
+   "start": 19.1,
+   "end": 19.37,
+   "hot": true
+  },
+  {
+   "w": "PULL",
+   "start": 19.4,
+   "end": 19.55,
+   "hot": true
+  },
+  {
+   "w": "REQUEST",
+   "start": 19.61,
+   "end": 20.16,
+   "hot": true
+  },
+  {
+   "w": "ON",
+   "start": 20.2,
+   "end": 20.36,
+   "hot": false
+  },
+  {
+   "w": "ITS",
+   "start": 20.4,
+   "end": 20.53,
+   "hot": false
+  },
+  {
+   "w": "OWN",
+   "start": 20.6,
+   "end": 20.91,
+   "hot": false
+  },
+  {
+   "w": "BREAK",
+   "start": 21.41,
+   "end": 21.41,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 21.41,
+   "end": 21.41,
+   "hot": false
+  },
+  {
+   "w": "YOU",
+   "start": 21.41,
+   "end": 21.52,
+   "hot": false
+  },
+  {
+   "w": "REVIEW",
+   "start": 21.59,
+   "end": 21.9,
+   "hot": false
+  },
+  {
+   "w": "IT",
+   "start": 21.95,
+   "end": 22.04,
+   "hot": false
+  },
+  {
+   "w": "WITH",
+   "start": 22.09,
+   "end": 22.22,
+   "hot": false
+  },
+  {
+   "w": "YOUR",
+   "start": 22.26,
+   "end": 22.35,
+   "hot": false
+  },
+  {
+   "w": "COFFEE",
+   "start": 22.4,
+   "end": 22.82,
+   "hot": true
+  },
+  {
+   "w": "BREAK",
+   "start": 23.3,
+   "end": 23.3,
+   "hot": false
+  },
+  {
+   "w": "TIME04S",
+   "start": 23.3,
+   "end": 23.3,
+   "hot": false
+  },
+  {
+   "w": "FOLLOW",
+   "start": 23.3,
+   "end": 23.65,
+   "hot": true
+  },
+  {
+   "w": "FOR",
+   "start": 23.72,
+   "end": 23.84,
+   "hot": false
+  },
+  {
+   "w": "ONE",
+   "start": 23.91,
+   "end": 24.08,
+   "hot": false
+  },
+  {
+   "w": "PRACTICAL",
+   "start": 24.13,
+   "end": 24.53,
+   "hot": false
+  },
+  {
+   "w": "AI",
+   "start": 24.6,
+   "end": 24.86,
+   "hot": false
+  },
+  {
+   "w": "TRICK",
+   "start": 24.89,
+   "end": 25.22,
+   "hot": false
+  },
+  {
+   "w": "EVERY",
+   "start": 25.29,
+   "end": 25.55,
+   "hot": true
+  },
+  {
+   "w": "SINGLE",
+   "start": 25.6,
+   "end": 25.88,
+   "hot": false
+  },
+  {
+   "w": "DAY",
+   "start": 25.91,
+   "end": 26.42,
+   "hot": true
+  }
+ ]
+}

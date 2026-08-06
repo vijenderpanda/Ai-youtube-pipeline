@@ -1,0 +1,33 @@
+{
+  "asset": "broll_courtroom_ruling",
+  "hero": {
+    "source": "Pexels",
+    "id": 6101152,
+    "url": "https://www.pexels.com/video/close-up-shot-of-a-figurine-6101152/",
+    "file_url": "https://videos.pexels.com/video-files/6101152/",
+    "licence": "Pexels License — free for commercial use, no attribution required",
+    "duration_s": 29.07,
+    "resolution": "2160x4096",
+    "fps": 30,
+    "camera": "locked-off tripod (no camera move in source)",
+    "recommended_in_point_s": 6.0,
+    "used_range_s": [6.0, 14.0],
+    "local_source": "channels/claude-tricks/assets/ep_amazon_perplexity/broll/pexels_6101152.mp4",
+    "delivered": "channels/claude-tricks/assets/ep_amazon_perplexity/broll/courtroom_ruling.mp4",
+    "treatment": "centre crop 2160x3840 -> 1080x1920, slow push 1.00->1.06 over 8s, mild lift (contrast 1.06 / sat 0.94)"
+  },
+  "rejected": [
+    {"id": 18699645, "query": "courthouse columns", "reason": "readable Arabic/Persian signage across the facade"},
+    {"id": 28501390, "query": "courthouse columns", "reason": "church interior, reads as religious not legal"},
+    {"id": 5965068,  "query": "courthouse columns", "reason": "students on steps, foreground people not on-beat"},
+    {"id": 34536748, "query": "gavel judge", "reason": "judge hammering gavel — dramatic, oversells an injunction reversal"},
+    {"id": 34535564, "query": "gavel judge", "reason": "wigged judge presiding — dramatic courtroom scene"},
+    {"id": 6101365,  "query": "gavel judge", "reason": "readable 'NOT GUILTY' stamp — wrong verdict semantics"},
+    {"id": 6101349,  "query": "gavel judge", "reason": "static gavel close-up, no motion, less on-tone than hero"},
+    {"id": 8731590,  "query": "law books library", "reason": "readable 'THE LAW' book spine"},
+    {"id": 6101335,  "query": "law books library", "reason": "person writing dominates frame"},
+    {"id": 6101353,  "query": "law books library", "reason": "person-led close-up, not architectural"},
+    {"id": 8061750,  "query": "justice statue", "reason": "genuine slow push but readable 'Certificate of Completion' with a personal name"},
+    {"id": 6101361,  "query": "justice statue", "reason": "person-led, statue only in edge of frame"}
+  ]
+}
