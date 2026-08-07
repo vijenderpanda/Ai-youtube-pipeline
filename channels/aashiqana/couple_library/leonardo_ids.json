@@ -1,0 +1,20 @@
+{
+  "_doc": "Canonical Leonardo identity anchors per couple. ALWAYS reuse these exact start-frame IDs (and seeds once captured) so every motion clip / short is the SAME face. Never pick lookalike thumbnails from Your Uploads — drive the start frame by ID via the generate URL: https://app.leonardo.ai/generate?model=hailuo-2_3&aspectRatio=9:16&size=RESOLUTION_768&duration=6&startFrame=[{\"id\":\"<ID>\",\"type\":\"GENERATED\",\"width\":848,\"height\":1264}]",
+  "couples": {
+    "midnight": {
+      "codename": "Midnight (neon Saiyaara-energy)",
+      "status": "approved 2026-08-07 (VJ: 'Almost looks good, build all hook motions for this couple only')",
+      "start_frame_id": "7a43cb0a-43ab-4ee5-b737-0394c0939a0f",
+      "start_frame_type": "GENERATED",
+      "dims": "848x1264",
+      "note": "This is the approved on-screen couple. NOT the same face as couple_03_midnight/shots disk stills, and NOT the uploaded landscape neon couple ac1176a7-... (that one was REJECTED as inconsistent). SEED NOTE: Hailuo image-to-video exposes NO reusable RNG seed (gens run seedEnabled=false); identity is locked by start_frame_id, not a seed. So 'keep their id' = reuse start_frame_id (+ gen_id per clip). API key in secrets is a DIFFERENT account (web!=API) so it cannot read these web gens.",
+      "rejected_lookalikes": ["ac1176a7-d4f8-4e67-9093-65bad08e7b62 (UPLOADED 1344x768 — different couple)"],
+      "leonardo_user_id": "3aa5736c-01ef-4d16-9b97-2c5af85e08d9",
+      "hook_motions": [
+        {"beat": "Almost", "prompt_gist": "lean in, foreheads touch, eyes close, shared breath", "status": "approved", "gen_id": "1f192117-d6cd-65e0-9053-5f46636b91d4", "file": "couple_03_midnight/motion/midnight_01_almost.mp4", "seed": null},
+        {"beat": "The Look", "prompt_gist": "slow push-in, her eyes open + lift to camera, faint smile, hair drift", "status": "rendered", "gen_id": "1f19215f-40a4-6bc0-aeee-b81d88eaba8c", "file": "couple_03_midnight/motion/midnight_02_look.mp4", "seed": null},
+        {"beat": "The Touch", "prompt_gist": "his thumb along her cheek, she leans into his hand, half-closed eyes, sway", "status": "rendered", "gen_id": "1f192160-3fa7-6f00-9e33-b312e6df428e", "file": "couple_03_midnight/motion/midnight_03_touch.mp4", "seed": null}
+      ]
+    }
+  }
+}

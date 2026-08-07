@@ -99,11 +99,51 @@ systemctl --user restart factory-worker
 sudo loginctl enable-linger "$USER"   # keep running while logged out
 ```
 
+## GPU acceleration (NVIDIA NVENC)
+
+If the machine has an NVIDIA GPU (e.g. an RTX 3060), the worker offloads **video
+encoding** to the GPU's NVENC hardware encoder — the assembly scripts switch from
+software `libx264` to `h264_nvenc` automatically. On a long render (e.g. an
+hour-long compilation, or a batch of shorts) this is the difference between many
+minutes of CPU encode and a fraction of that.
+
+**Honest scope:** the GPU accelerates the *encode/render* stage only. It cannot
+speed up `claude -p` reasoning or the Leonardo / Suno / ElevenLabs / HeyGen cloud
+calls — those are network-bound and dominate many jobs. The win is real for
+assembly- and Remotion-heavy work, not for planning/generation jobs.
+
+**Verify it's active:**
+```bash
+python3 scripts/gpu_check.py     # driver + ffmpeg + live test-encode + benchmark
+```
+Exit 0 = NVENC works and will be used automatically.
+
+**Requirements on the worker machine:**
+- NVIDIA driver installed (`nvidia-smi` works). On **WSL2** you need a recent
+  Windows driver + the WSL CUDA stack; NVENC is reachable through `/dev/dxg`.
+- An **ffmpeg build that includes `h264_nvenc`** (most modern static/gyan.dev
+  builds do; some distro packages do not). `gpu_check.py` tells you if it's missing.
+
+**Controls** (in `secrets/factory.env`):
+| Var | Default | Effect |
+|---|---|---|
+| `FACTORY_FFMPEG_HWACCEL` | `auto` | `auto` probe-then-use, `force` skip probe, `cpu` disable |
+| `FACTORY_FFMPEG` | (PATH) | override the ffmpeg binary (custom NVENC build) |
+| `FACTORY_REMOTION_GL` | unset | `angle` = GPU-accelerated Remotion compositing |
+| `FACTORY_REMOTION_CONCURRENCY` | unset | parallel frame renderers (set to CPU threads, e.g. `8`) |
+| `FACTORY_REMOTION_HWACCEL` | unset | `if-possible` for Remotion's own hardware encode |
+
+`auto` means **no config is required** — drop the worker on the GPU box and it
+uses NVENC if it works, CPU if it doesn't. The Remotion knobs are opt-in; the
+recommended values for an i7 + RTX 3060 are pre-filled in the env template.
+
 ## Tuning & safety
 
 - **`FACTORY_MAX_PARALLEL`** caps concurrent `claude -p` jobs. Heavy jobs
-  (Remotion renders, assembly) always run serially regardless. On an 18 GB Mac,
-  keep it at **2** (and never 3 with Chrome open) to avoid OOM.
+  (Remotion renders, assembly) always run serially regardless. On a **16 GB**
+  box (i7 + RTX 3060) keep it at **2** — and never 3 with Chrome open — to avoid
+  OOM. NVENC offloads encode to the GPU but frame rendering + `claude -p` still
+  live in system RAM.
 - **Pause without restarting:** in Supabase set
   `factory_settings.worker_paused = '1'` to stop new claims instantly; `'0'` resumes.
 - Changing `FACTORY_MAX_PARALLEL` takes effect on the next worker restart.

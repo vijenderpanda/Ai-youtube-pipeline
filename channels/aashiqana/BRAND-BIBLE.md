@@ -23,12 +23,37 @@
 (rain street · cafe/indoor warm · rooftop at dusk · misty hills), subtle motion only
 (rain, hair, breath, slow push-ins, glances) → elegant Hindi lyric lower-thirds →
 branded intro/outro sting.
-**Short (30–45s):** the mukhda hook, best 1–2 scenes, one big lyric moment →
-"Full song on Aashiqana." (Cover = first frame; Shorts show no custom thumbnail — playbook §5.)
+**Short — couple-first, 21–28s — the retention-winning cut (LOCKED 2026-08-07).**
+The song hook already stops the scroll; a Short dies from *slow visuals*, not a weak hook —
+Aaja Ve measured **108% watch at 3s** but fell off a **cliff at 3.6s** because the open was one
+held solo beauty shot and the couple (the romantic payoff) didn't arrive until ~6s. So the standard cut:
+- **0–2s:** heroine hook shot (`G1`, slow Ken Burns push) + the **biggest lyric line on screen** + the vocal hook.
+- **~2s:** cut to the **COUPLE** (`C3` almost-kiss / `C1` embrace) — the payoff lands *before* the old cliff.
+- **then:** alternate heroine ↔ couple, **a new shot every ~1.5–2s, never static past 2s**, each with a subtle push.
+- **last beat:** resolve back to the opening frame for a **seamless loop** (replays = watch time).
+- **Lyric cards:** **bilingual — Devanagari + romanized stacked**, high-contrast, in the caption-safe band, one line per beat (widens reach + reads sound-off).
+- Caption "**Use this sound 🎵**"; cover = first frame (no custom thumbnail — playbook §5).
+Build with **`scripts/make_couplefirst_short.py`** (the standard Aashiqana-short assembler). The song
+itself must be **hook-first** (best line first, cold-open, no intro — see Sound DNA / QUALITY-LEDGER).
+**Long-form** stays the fuller couple story, but its shots are framed so any of them re-cut into this Short pattern.
+
+## 3b. Release strategy — Shorts-first, curiosity-led (LOCKED 2026-08-07)
+The channel is cold; don't spend on long-form until a song proves it earns attention.
+- **Phase 1 (weeks 0–2): Shorts only.** Produce the **full** song on Suno (needed as source), but **do NOT publish the full track / long-form anywhere yet.** Ship **20–28s couple-first Short cuts** of the hook/chorus, **2–3 per week**. One song can yield **several** Shorts (different beats / lyric moments / motion) = cheap volume.
+- **Build curiosity:** caption teases *"full song dropping soon 🎵"* + pin a comment. The withheld full track is the demand.
+- **Measure** with `scripts/yt_retention.py`: which couple / hook / mood actually **sustains** (retention is a sustain problem, not a hook problem — playbook §13).
+- **Phase 2 (analytics-gated, after 1–2 weeks):** only songs whose Shorts prove out get the **full long-form music video**. Losers stay Shorts-only. No long-form spend on unproven tracks.
+- **Identity discipline:** every Short uses ONE couple, driven by the **exact start-frame ID** in `couple_library/leonardo_ids.json` — never lookalike thumbnails (see COUPLE-LIBRARY / memory). Intimate motion clips (Look/Almost/Touch) carry the couple payoff beats; the heroine open stays a Ken Burns still.
 
 ## 4. Visual system — the AI couple
-- **Fresh couple per song** by default; a couple that performs well gets **reused** in a follow-up ("their story continues").
-- **Consistency:** character-reference (Leonardo **Kino XL / charref**, NOT Lucid — playbook §2) or Fable/Higgsfield charref; lock a face per lead, reuse across all scenes of that song.
+- **Cast from the couple LIBRARY, by mood-tag (LOCKED 2026-08-07) — do NOT re-generate a couple per song.**
+  `couple_library/` holds 5 face-locked couples, each tagged to a vibe (Monsoon / Golden Hour / Midnight /
+  Café / Seaside). Read the song's mood and pick the matching couple: **`python scripts/pick_couple.py --mood
+  "<one-word mood + keywords>"`** scans each `couple.meta.json` (`best_for`/`vibe`/`mood` tags) and returns the
+  folder + face refs + shots. Reuse the SAME couple across a song's long-form AND its Shorts. Only generate
+  2–3 song-specific extra shots on-model from that couple's refs at production (COUPLE-LIBRARY §2 two-tier policy).
+  The **Midnight** couple (neon / Saiyaara / situationship) is the channel's differentiated bet — see Sound DNA.
+- **Consistency:** engine is **Leonardo Nano Banana 2 Image-Ref** (photoreal + identity-consistent; replaced Kino XL charref — COUPLE-LIBRARY §1). Attach the couple's `refs/` (anchor + hero_face + heroine_face) as Image Ref on every extra shot.
 - **Look target:** cinematic, candid, natural skin (avoid the AI-face uncanny valley — playbook §6). Wardrobe: modern-elegant Indian/indo-western. Real-feeling locations.
 - **Motion:** SUBTLE. Image-to-video with gentle ambient motion; no exaggerated lip-sync/dance (yet). Slow dolly/push-ins for premium feel.
 

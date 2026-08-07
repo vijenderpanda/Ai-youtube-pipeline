@@ -12,6 +12,7 @@ Usage:
       --out channels/language-abc/renders/ep01_motion_full.mp4
 """
 import argparse, json, os, subprocess, tempfile
+from ffmpeg_util import venc  # GPU (NVENC) encode when available, else libx264
 FPS = 30; W, H = 1920, 1080
 
 def run(cmd):
@@ -23,10 +24,10 @@ def make_scene(clip, dur, out):
     run(["ffmpeg", "-y", "-i", clip, "-filter_complex",
          f"[0:v]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
          f"setsar=1,fps={FPS},split[a][b];[b]reverse[r];[a][r]concat=n=2:v=1[v]",
-         "-map", "[v]", "-an", "-c:v", "libx264", "-crf", "20", "-preset", "veryfast",
+         "-map", "[v]", "-an", *venc("20", "veryfast"),
          "-pix_fmt", "yuv420p", boom])
     run(["ffmpeg", "-y", "-stream_loop", "-1", "-i", boom, "-t", f"{dur}", "-r", str(FPS),
-         "-c:v", "libx264", "-crf", "20", "-preset", "veryfast", "-pix_fmt", "yuv420p", out])
+         *venc("20", "veryfast"), "-pix_fmt", "yuv420p", out])
     os.remove(boom)
 
 def assemble(clips, durs, out, T=1.0):
@@ -43,7 +44,7 @@ def assemble(clips, durs, out, T=1.0):
         fparts.append(f"[{prev}][{i}:v]xfade=transition=fade:duration={T}:offset={offset:.3f}[{outlbl}]")
         prev = outlbl; acc += durs[i] - T
     cmd += ["-filter_complex", ";".join(fparts), "-map", "[vout]",
-            "-c:v", "libx264", "-crf", "19", "-preset", "medium", "-pix_fmt", "yuv420p", out]
+            *venc("19", "medium"), "-pix_fmt", "yuv420p", out]
     run(cmd)
 
 def add_audio(video, audio, out):

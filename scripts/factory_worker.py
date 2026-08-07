@@ -743,6 +743,28 @@ def build_command(job, prompt):
     ]
 
 
+def apply_global_override(supa, job):
+    """v13 (2026-08-07): global model/effort override. When factory_settings
+    override_enabled='1', EVERY job runs with override_model / override_effort
+    instead of the model/effort it was queued with. Turned off (default, or the
+    key absent) -> each job keeps its own. Best-effort: a settings-read failure
+    never blocks a job — it just runs with its queued model/effort."""
+    try:
+        rows = supa.select(
+            "factory_settings",
+            "key=in.(override_enabled,override_model,override_effort)&select=key,value",
+        )
+        s = {r["key"]: r.get("value") for r in (rows or [])}
+        if str(s.get("override_enabled") or "0") == "1":
+            if s.get("override_model"):
+                job["model"] = s["override_model"]
+            if s.get("override_effort"):
+                job["effort"] = s["override_effort"]
+    except Exception as e:  # noqa: BLE001 -- override is convenience, never a gate
+        log(f"  global override read failed (job keeps its own model/effort): {e}")
+    return job
+
+
 # ---------------------------------------------------------------- job execution
 
 
@@ -2247,6 +2269,67 @@ def publish_post(supa, post):
         log(f"  post {pid} uploaded (video {video_id}) but status update failed: {e}")
     log(f"post {pid} scheduled -> https://youtu.be/{video_id} at {pub_at}")
 
+    # v13: auto-post a pin comment after upload (best-effort, non-blocking).
+    # The YouTube Data API cannot actually pin — yt_engage.py posts the comment
+    # and prints the Studio deep-link for the one human click. Kids channels are
+    # skipped automatically by yt_engage.py's MFK guard.
+    _try_auto_pin(supa, post, video_id)
+
+
+def _try_auto_pin(supa, post, video_id):
+    """Best-effort: post the first comment on a freshly uploaded video.
+    Uses the post's pin_comment field if set, otherwise a channel-specific
+    default question. Failures are logged but never block the publish flow."""
+    channel_key = post.get("channel_key") or ""
+    defaults = UPLOAD_DEFAULTS.get(channel_key, {})
+    token_file = defaults.get("token_file")
+    if not token_file:
+        return
+    # kids channels have comments disabled (COPPA) — skip early
+    if defaults.get("audience") == "kids":
+        return
+
+    # prefer a per-post pin_comment (set in the brief / manifest); fall back to
+    # a channel-default question that invites engagement
+    PIN_DEFAULTS = {
+        "claude-tricks": "Which part of this should I break down in detail next? 👇",
+        "aashiqana":     "Which couple vibe should we do next? 💕 Comment below!",
+    }
+    pin_text = (post.get("pin_comment") or "").strip() or PIN_DEFAULTS.get(channel_key, "")
+    if not pin_text:
+        return
+
+    token_path = Path(REPO) / "secrets" / token_file
+    if not token_path.exists():
+        log(f"  auto-pin: token file {token_path} not found, skipping")
+        return
+
+    cmd = [sys.executable, str(Path(REPO) / "scripts" / "yt_engage.py"),
+           "--channel", channel_key, "--video", video_id,
+           "--pin", pin_text]
+    try:
+        proc = subprocess.run(cmd, cwd=str(REPO), capture_output=True, text=True, timeout=30)
+        if proc.returncode == 0:
+            log(f"  auto-pin OK on {video_id}: {pin_text[:60]!r}")
+            # surface the Studio pin link in the factory event for one-click human pinning
+            studio_link = ""
+            for line in proc.stdout.splitlines():
+                if "studio.youtube.com" in line:
+                    studio_link = line.strip()
+                    break
+            supa.insert("factory_events", [{
+                "kind": "pin_comment_posted",
+                "message": f"{channel_key}: auto-comment posted on {video_id} — "
+                           f"PIN IT: {studio_link}" if studio_link else
+                           f"{channel_key}: auto-comment posted on {video_id}",
+                "meta": {"post_id": post["id"], "video_id": video_id,
+                         "pin_text": pin_text, "studio_link": studio_link},
+            }])
+        else:
+            log(f"  auto-pin failed (exit {proc.returncode}): {proc.stderr[:200]}")
+    except Exception as e:  # noqa: BLE001 -- must never kill the daemon
+        log(f"  auto-pin exception: {e}")
+
 
 def process_posts(supa):
     """Poll-cycle publisher. Uploads ARMED posts only -- drafts are NEVER touched --
@@ -2727,6 +2810,7 @@ def run_job(supa, job):
             return
 
     prompt = build_prompt(job, guidelines, ctx_path=ctx_path, asset=asset)
+    apply_global_override(supa, job)  # v13: global model/effort override (if enabled)
     cmd = build_command(job, prompt)
 
     child_env = os.environ.copy()
@@ -3094,6 +3178,13 @@ def main():
         return
 
     env = load_env()  # exits with a clear message if SUPABASE_SERVICE_KEY is missing
+    # Propagate non-secret tuning knobs into the process env so the GPU/encode
+    # settings reach child render subprocesses (ffmpeg helper, Remotion). Secrets
+    # (service key etc.) are deliberately NOT exported to job children.
+    for _k in ("FACTORY_FFMPEG_HWACCEL", "FACTORY_FFMPEG", "FACTORY_REMOTION_GL",
+               "FACTORY_REMOTION_CONCURRENCY", "FACTORY_REMOTION_HWACCEL"):
+        if env.get(_k):
+            os.environ.setdefault(_k, env[_k])
     supa = Supa(env["SUPABASE_URL"], env["SUPABASE_SERVICE_KEY"])
     RENDERS_OUT.mkdir(exist_ok=True)
     LOGS_DIR.mkdir(exist_ok=True)

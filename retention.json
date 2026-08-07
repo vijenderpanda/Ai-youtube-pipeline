@@ -1,0 +1,16 @@
+{
+  "channel": "vehicles",
+  "generated_at": "2026-08-07T03:27:43.324468+00:00",
+  "analytics_lag_hours": 48,
+  "window_days": 30,
+  "videos": [
+    {
+      "video_id": "bqTjcsS1shM",
+      "title": "Monster Truck Song \ud83d\ude97\ud83d\udca8 Rev's Big Jump! | Trucks for Kids \u00b7 Rumble Trucks",
+      "duration_s": 74,
+      "published": "2026-07-31",
+      "status": "insufficient_data",
+      "note": "YouTube withheld retention (sample below privacy threshold) or data not finalized yet (~48h lag)."
+    }
+  ]
+}

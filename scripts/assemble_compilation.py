@@ -54,6 +54,7 @@ Conventions carried over from add_bookends.py / §3 of the playbook:
     (a bare -loop 1 -t defaults to 25fps and undercounts frames — §10c)
 """
 import argparse, json, os, shutil, subprocess, sys, tempfile
+from ffmpeg_util import venc  # GPU (NVENC) encode when available, else libx264
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
@@ -187,7 +188,7 @@ def ken_burns_still(img, dur, out, fps, pace, direction="in"):
           f"d=1:s=1920x1080:fps={fps},setsar=1,format={PIX_FMT}")
     run([FFMPEG, "-y", "-loop", "1", "-framerate", str(fps), "-t", f"{dur:.3f}", "-i", img,
          "-vf", vf, "-r", str(fps), "-frames:v", str(n),
-         "-c:v", "libx264", "-crf", "18", "-preset", "slow", "-pix_fmt", PIX_FMT, out])
+         *venc("18", "slow"), "-pix_fmt", PIX_FMT, out])
     verify_media(out, f"interlude still clip ({os.path.basename(img)})")
 
 
@@ -209,7 +210,7 @@ def concat_stills(clips, out, internal_xfade):
         fc.append(f"{prev}[{i}:v]xfade=transition=fade:duration={internal_xfade}:offset={max(off,0):.3f}{lbl}")
         prev = lbl
     run([FFMPEG, "-y"] + inputs + ["-filter_complex", ";".join(fc), "-map", "[vout]",
-         "-c:v", "libx264", "-crf", "18", "-preset", "medium", "-pix_fmt", PIX_FMT, out])
+         *venc("18", "medium"), "-pix_fmt", PIX_FMT, out])
 
 
 def build_interlude(entry, idx, tmpdir, fps=30):
@@ -396,7 +397,7 @@ def build_compilation(segments, xfades, dim_arc, out_path, crf="19", preset="med
     cmd = [FFMPEG, "-y"] + inputs + [
         "-filter_complex", ";".join(filt),
         "-map", "[vout]", "-map", "[aout_lim]",
-        "-c:v", "libx264", "-crf", str(crf), "-preset", preset,
+        *venc(str(crf), preset),
         "-pix_fmt", PIX_FMT, "-r", fps,
         "-c:a", "aac", "-b:a", A_BITRATE, "-ar", str(A_RATE), "-ac", str(A_CH),
         "-movflags", "+faststart", out_path]

@@ -15,6 +15,7 @@ import argparse, json, os, subprocess, sys
 CH = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(CH))
 sys.path.insert(0, os.path.join(REPO, "scripts"))
+from ffmpeg_util import venc  # GPU (NVENC) encode when available, else libx264
 
 ELEVEN_VOICE = "ZZ5OIPIzxVJswEhc0UXt"   # Hrithik (locked)
 STYLE = 0.4
@@ -1372,13 +1373,17 @@ def build(ep, dry=False, tag="v2"):
         # which opened Short.tsx's [until-0.7, until] fade BEFORE frame 0 and left
         # the frame-zero thumbnail ~14% transparent. Short.tsx now also clamps that
         # fade start to >=0 (belt + suspenders); this floor keeps the derived
-        # default a full 0.70s dissolve rather than a rushed one. Playbook §5 /
-        # §13 (operator feedback, 5 Aug 2026) makes the intro a BEAT, not a flash:
-        # an episode may pin its own hold (2.5-4.0s) and that pin wins over this.
+        # default a full 0.70s dissolve rather than a rushed one.
+        #
+        # v13 (7 Aug 2026): RETENTION FIX — cap dropped 3.0 → 1.8.
+        # YT Studio data shows 19.8% stay-rate; the cover was blocking the first
+        # proof visual for up to 3s. 1.8s keeps the thumbnail-safe poster beat
+        # but lets B-roll peek through much earlier. Per-episode explicit pins
+        # still win (some hooks need the poster hold). newsSplit stays 2.2.
         "cover": {**cfg["cover"],
                   "until": cfg["cover"].get(
                       "until",
-                      round(min(max(hook_end + 0.6, 0.7), 3.0), 2) if not news_split else 2.2)},
+                      round(min(max(hook_end + 0.6, 0.7), 1.8), 2) if not news_split else 2.2)},
         "watermark": True,
     }
     if news_split:
@@ -1399,7 +1404,18 @@ def build(ep, dry=False, tag="v2"):
 
     # 4) remotion render (video + VO only; music mixed in mastering pass)
     raw = os.path.join(R, f"ep{ep}_{tag}_raw.mp4")
-    run(["npx", "remotion", "render", "Short", raw, f"--props={sp}"],
+    # GPU/CPU tuning via env (unset -> Remotion defaults, unchanged behaviour):
+    #   FACTORY_REMOTION_GL=angle          -> GPU-accelerated WebGL/canvas compositing
+    #   FACTORY_REMOTION_CONCURRENCY=8     -> parallel frame renderers (match CPU threads)
+    #   FACTORY_REMOTION_HWACCEL=if-possible -> hardware video encode where supported
+    rflags = []
+    if os.environ.get("FACTORY_REMOTION_GL"):
+        rflags.append(f"--gl={os.environ['FACTORY_REMOTION_GL']}")
+    if os.environ.get("FACTORY_REMOTION_CONCURRENCY"):
+        rflags.append(f"--concurrency={os.environ['FACTORY_REMOTION_CONCURRENCY']}")
+    if os.environ.get("FACTORY_REMOTION_HWACCEL"):
+        rflags.append(f"--hardware-acceleration={os.environ['FACTORY_REMOTION_HWACCEL']}")
+    run(["npx", "remotion", "render", "Short", raw, f"--props={sp}", *rflags],
         cwd=os.path.join(REPO, "remotion-studio"))
 
     # 5) master: sidechain-ducked music + limiter
@@ -1451,7 +1467,7 @@ def build(ep, dry=False, tag="v2"):
         run(["ffmpeg", "-y", "-i", out, "-i", card, "-filter_complex",
              f"[0][1]overlay=0:0:enable='between(t,{ec['in_s']},{ec['out_s']})'",
              "-map", "0:a", "-c:a", "copy",
-             "-c:v", "libx264", "-crf", "18", "-preset", "veryfast",
+             *venc("18", "veryfast"),
              "-pix_fmt", "yuv420p", outc])
         print(f">> ENDCARD {ec['in_s']}-{ec['out_s']}s", outc)
         out = outc
@@ -1476,7 +1492,7 @@ def build(ep, dry=False, tag="v2"):
         run(["ffmpeg", "-y", "-i", out] + tin + ["-i", outro,
              "-stream_loop", "-1", "-i", music,
              "-filter_complex", fc2, "-map", "[v]", "-map", "[a]",
-             "-c:v", "libx264", "-crf", "18", "-preset", "veryfast",
+             *venc("18", "veryfast"),
              "-c:a", "aac", "-b:a", "192k", "-shortest", out2])
         print(f">> OUTRO APPENDED{f' (trimmed to {odur}s)' if odur else ''}", out2)
         out = out2
@@ -1488,7 +1504,7 @@ def build(ep, dry=False, tag="v2"):
         run(["ffmpeg", "-y", "-i", out, "-i", card, "-filter_complex",
              f"[0][1]overlay=0:0:enable='gte(t,{ec['in_s']})'",
              "-map", "0:a", "-c:a", "copy",
-             "-c:v", "libx264", "-crf", "18", "-preset", "veryfast",
+             *venc("18", "veryfast"),
              "-pix_fmt", "yuv420p", outc])
         print(f">> ENDCARD {ec['in_s']}s -> last frame (over the sting)", outc)
         out = outc

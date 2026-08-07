@@ -3,6 +3,7 @@
 Efficient: each card is a FINITE input that exists only during its window (delayed via setpts),
 so ffmpeg doesn't process 6 full-length streams. preset veryfast."""
 import subprocess, os
+from ffmpeg_util import venc  # GPU (NVENC) encode when available, else libx264
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 def font(size, cands):
@@ -62,7 +63,7 @@ for i,(png,st,en,x,w) in enumerate(cards,start=1):
     parts.append(f"[{prev}][c{i}]overlay={x}:40:eof_action=pass:repeatlast=0[{o}]")
     prev=o
 cmd+=["-filter_complex",";".join(parts),"-map","[vout]","-map","0:a",
-      "-c:v","libx264","-crf","20","-preset","veryfast","-pix_fmt","yuv420p","-c:a","copy",OUT]
+      *venc("20", "veryfast"),"-pix_fmt","yuv420p","-c:a","copy",OUT]
 print("overlaying cards (veryfast)...")
 subprocess.run(cmd,check=True)
 print("DONE",OUT)

@@ -36,6 +36,7 @@ Usage:
       --out     channels/vehicles/renders/ep01_bookended.mp4
 """
 import argparse, json, os, subprocess, sys
+from ffmpeg_util import venc  # GPU (NVENC) encode when available, else libx264
 
 # Repo root = parent of this scripts/ dir; channel paths resolve against it so the
 # tool works regardless of the caller's CWD.
@@ -226,7 +227,7 @@ def main():
     cmd = ["ffmpeg", "-y"] + inputs + [
         "-filter_complex", ";".join(filt),
         "-map", "[vout]", "-map", "[aout]",
-        "-c:v", "libx264", "-crf", str(args.crf), "-preset", args.preset,
+        *venc(str(args.crf), args.preset),
         "-pix_fmt", PIX_FMT, "-r", fps,
         "-c:a", "aac", "-b:a", A_BITRATE, "-ar", str(A_RATE), "-ac", str(A_CH),
         "-movflags", "+faststart", args.out]

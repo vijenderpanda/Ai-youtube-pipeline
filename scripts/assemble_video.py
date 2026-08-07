@@ -14,6 +14,7 @@ shots json: [{"img": "assets/scenes/s01_hill_1.jpg", "dur": 6, "motion": "zoom_i
 motion ∈ zoom_in | zoom_out | pan_left | pan_right
 """
 import argparse, json, os, subprocess, tempfile
+from ffmpeg_util import venc  # GPU (NVENC) encode when available, else libx264
 
 FPS = 30
 W, H = 1920, 1080
@@ -48,7 +49,7 @@ def ken_burns(img, dur, motion, out):
     # multiply zoompan frames per input frame -> runaway clip length.
     run(["ffmpeg", "-y", "-loop", "1", "-i", img, "-vf", vf,
          "-t", str(dur), "-r", str(FPS),
-         "-c:v", "libx264", "-crf", "20", "-preset", "veryfast",
+         *venc("20", "veryfast"),
          "-pix_fmt", "yuv420p", out])
 
 def assemble(clips, durs, out, T=1.0):
@@ -65,7 +66,7 @@ def assemble(clips, durs, out, T=1.0):
         fc.append(f"{prev}[{i}:v]xfade=transition=fade:duration={T}:offset={off:.3f}{out_lbl}")
         prev = out_lbl
     run(["ffmpeg", "-y"] + inputs + ["-filter_complex", ";".join(fc),
-         "-map", "[vout]", "-c:v", "libx264", "-crf", "19", "-preset", "medium",
+         "-map", "[vout]", *venc("19", "medium"),
          "-pix_fmt", "yuv420p", out])
 
 def add_audio(video, audio, out):
@@ -86,7 +87,7 @@ def apply_breathe(vin, vout, amp=0.045, period=5.0):
     s = f"1+{amp * 1.4}*sin(2*PI*t/{period})"
     vf = f"eq=brightness='{b}':saturation='{s}':eval=frame"
     run(["ffmpeg", "-y", "-i", vin, "-vf", vf, "-an",
-         "-c:v", "libx264", "-crf", "19", "-preset", "medium", "-pix_fmt", "yuv420p", vout])
+         *venc("19", "medium"), "-pix_fmt", "yuv420p", vout])
 
 def main():
     ap = argparse.ArgumentParser()

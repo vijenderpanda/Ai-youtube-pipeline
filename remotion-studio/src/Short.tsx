@@ -172,10 +172,21 @@ export const Cover: React.FC<{ c: NonNullable<ShortProps["cover"]>; fps: number 
   // the dissolve into [0, until] instead of opening it BEFORE frame 0 (which left
   // the thumbnail ~14% transparent when a no-host episode derived until=0.60).
   // Playbook §5 (frame-zero QC) / §13 (Ep25).
-  const opacity = interpolate(frame, [Math.max(0, untilF - 0.7 * fps), untilF], [1, 0], {
+  const fadeOut = interpolate(frame, [Math.max(0, untilF - 0.7 * fps), untilF], [1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+  // v13 PROOF-FLASH: brief opacity dip at ~0.5s lets the first segment peek through
+  // the cover, signalling "real content is coming" and reducing swipe-aways.
+  // The dip is subtle (to 0.7) and lasts 0.25s so frame-0 thumbnail stays clean.
+  // Only fires when cover holds long enough (>= 1.2s) to have room for the peek.
+  const peekDip = c.until >= 1.2
+    ? interpolate(frame, [0.4 * fps, 0.5 * fps, 0.65 * fps, 0.75 * fps], [1, 0.7, 0.7, 1], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+      })
+    : 1;
+  const opacity = fadeOut * peekDip;
   const intro = spring({ frame, fps, config: { damping: 14, mass: 0.6 } });
   const slide = interpolate(intro, [0, 1], [70, 0]);
   const slant = "perspective(900px) rotateY(-4deg) rotateZ(-3deg) skewY(-1deg)";

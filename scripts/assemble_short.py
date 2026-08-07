@@ -29,6 +29,7 @@ Usage:
 """
 import argparse, json, os, subprocess, tempfile
 from PIL import Image, ImageDraw, ImageFont
+from ffmpeg_util import venc  # GPU (NVENC) encode when available, else libx264
 
 def run(cmd):
     print("+", " ".join(str(c) for c in cmd))
@@ -61,7 +62,7 @@ def ken_burns(img, dur, motion, W, H, FPS, out):
     vf = f"{base},{zp},format=yuv420p"
     run(["ffmpeg", "-y", "-loop", "1", "-i", img, "-vf", vf,
          "-t", str(dur), "-r", str(FPS),
-         "-c:v", "libx264", "-crf", "18", "-preset", "veryfast", "-pix_fmt", "yuv420p", out])
+         *venc("18", "veryfast"), "-pix_fmt", "yuv420p", out])
 
 def video_seg(vid, dur, W, H, FPS, out, punch=False):
     """Fit a video segment to WxH and exactly dur seconds (freeze last frame if short).
@@ -73,7 +74,7 @@ def video_seg(vid, dur, W, H, FPS, out, punch=False):
         vf += f",zoompan=z='max(1.08-0.01*on,1.0)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s={W}x{H}:fps={FPS}"
     vf += ",format=yuv420p"
     run(["ffmpeg", "-y", "-i", vid, "-vf", vf, "-t", str(dur), "-an",
-         "-c:v", "libx264", "-crf", "18", "-preset", "veryfast", "-pix_fmt", "yuv420p", out])
+         *venc("18", "veryfast"), "-pix_fmt", "yuv420p", out])
 
 def build_base(segments, W, H, FPS, tmp, out):
     clips = []
@@ -91,7 +92,7 @@ def build_base(segments, W, H, FPS, tmp, out):
         for c in clips:
             f.write(f"file '{os.path.abspath(c)}'\n")
     run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", listf,
-         "-c:v", "libx264", "-crf", "18", "-preset", "veryfast", "-pix_fmt", "yuv420p", out])
+         *venc("18", "veryfast"), "-pix_fmt", "yuv420p", out])
 
 # ---------- avatar overlay ----------
 def _circle_masks(size, ring_px, accent, tmp):
@@ -123,7 +124,7 @@ def overlay_video_avatar(base, av, accent, tmp, out):
     run(["ffmpeg", "-y", "-i", base, "-stream_loop", "-1", "-i", av["video"],
          "-loop", "1", "-i", mask, "-loop", "1", "-i", ring,
          "-filter_complex", fc, "-map", "[v]", "-t", str(probe_dur(base)),
-         "-c:v", "libx264", "-crf", "18", "-preset", "veryfast", "-pix_fmt", "yuv420p", out])
+         *venc("18", "veryfast"), "-pix_fmt", "yuv420p", out])
 
 def overlay_avatar(base, av, W, H, out):
     corner = av.get("corner", "br"); m = av.get("margin", 54); size = av.get("size", 430)
@@ -136,14 +137,14 @@ def overlay_avatar(base, av, W, H, out):
         fc = (f"[1:v]chromakey={key}:0.12:0.06,scale={size}:-1[av];"
               f"[0:v][av]overlay=x={xexpr}:y={yexpr}:enable='{enable}'[v]")
         run(["ffmpeg", "-y", "-i", base, "-i", av["img"], "-filter_complex", fc,
-             "-map", "[v]", "-c:v", "libx264", "-crf", "18", "-preset", "veryfast",
+             "-map", "[v]", *venc("18", "veryfast"),
              "-pix_fmt", "yuv420p", out])
     else:
         fc = (f"[1:v]scale={size}:-1[av];"
               f"[0:v][av]overlay=x={xexpr}:y={yexpr}:enable='{enable}'[v]")
         run(["ffmpeg", "-y", "-i", base, "-loop", "1", "-i", av["img"],
              "-filter_complex", fc, "-map", "[v]", "-t", str(probe_dur(base)),
-             "-c:v", "libx264", "-crf", "18", "-preset", "veryfast", "-pix_fmt", "yuv420p", out])
+             *venc("18", "veryfast"), "-pix_fmt", "yuv420p", out])
 
 # ---------- captions (Pillow PNG overlays; no libass needed) ----------
 _CAP_FONTS = ["/System/Library/Fonts/Supplemental/Impact.ttf",
@@ -199,7 +200,7 @@ def overlay_captions(video, items, H, out):
         fc.append(f"{prev}[{i+1}:v]overlay=x=(W-w)/2:y={y}:enable='between(t,{s},{e})'{lbl}")
         prev = lbl
     run(["ffmpeg", "-y"] + inputs + ["-filter_complex", ";".join(fc), "-map", "[v]",
-         "-t", str(probe_dur(video)), "-c:v", "libx264", "-crf", "18", "-preset", "veryfast",
+         "-t", str(probe_dur(video)), *venc("18", "veryfast"),
          "-pix_fmt", "yuv420p", out])
 
 # ---------- audio ----------
@@ -261,7 +262,7 @@ def main():
         b_out = os.path.join(tmp, f"banner{bi}.mp4")
         run(["ffmpeg", "-y", "-i", stage, "-loop", "1", "-i", b["img"], "-filter_complex",
              chain, "-map", "[v]", "-t", str(probe_dur(stage)),
-             "-c:v", "libx264", "-crf", "18", "-preset", "veryfast", "-pix_fmt", "yuv420p", b_out])
+             *venc("18", "veryfast"), "-pix_fmt", "yuv420p", b_out])
         stage = b_out
 
     # branding: persistent corner watermark + logo pop over the last ~1.2s
@@ -281,7 +282,7 @@ def main():
             prev = f"[b{idx}]"; idx += 1
         brand_out = os.path.join(tmp, "branded.mp4")
         run(["ffmpeg", "-y"] + inputs + ["-filter_complex", ";".join(fc), "-map", prev,
-             "-t", str(total), "-c:v", "libx264", "-crf", "18", "-preset", "veryfast",
+             "-t", str(total), *venc("18", "veryfast"),
              "-pix_fmt", "yuv420p", brand_out])
         stage = brand_out
 

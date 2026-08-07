@@ -9,6 +9,7 @@ Usage:
           [--fps 30] [--xfade 0.7] [--preview]
 """
 import argparse, os, subprocess, sys, json
+from ffmpeg_util import venc  # GPU (NVENC) encode when available, else libx264
 
 BASE = "channels/aashiqana/songs/01-baarish-aur-tum"
 CLIPS = f"{BASE}/renders/clips"
@@ -29,7 +30,7 @@ def norm_motion(src, dst, dur, W, H, FPS):
     vf = (f"scale={W}:{H}:force_original_aspect_ratio=increase,"
           f"crop={W}:{H},fps={FPS},setsar=1,format=yuv420p")
     run(["ffmpeg","-y","-i",src,"-t",f"{dur:.3f}","-vf",vf,"-an",
-         "-c:v","libx264","-preset","veryfast","-crf","20",dst])
+         *venc("20", "veryfast"),dst])
 
 def ken_burns(src, dst, dur, direction, W, H, FPS):
     frames = int(dur*FPS)
@@ -43,7 +44,7 @@ def ken_burns(src, dst, dur, direction, W, H, FPS):
           f"zoompan=z='{z}':d={frames}:x='{x}':y='{y}':s={W}x{H}:fps={FPS},"
           f"setsar=1,format=yuv420p")
     run(["ffmpeg","-y","-loop","1","-i",src,"-t",f"{dur:.3f}","-vf",vf,"-an",
-         "-c:v","libx264","-preset","veryfast","-crf","20",dst])
+         *venc("20", "veryfast"),dst])
 
 def main():
     ap = argparse.ArgumentParser()
@@ -128,8 +129,7 @@ def main():
     cmd+=["-map",f"{aidx}:a",
           "-af",f"afade=t=out:st={fade_st:.2f}:d=4",
           "-t",f"{target:.3f}",
-          "-c:v","libx264","-preset","veryfast" if a.preview else "medium",
-          "-crf","23" if a.preview else "20","-pix_fmt","yuv420p",
+          *venc("23" if a.preview else "20", "veryfast" if a.preview else "medium"),"-pix_fmt","yuv420p",
           "-c:a","aac","-b:a","192k","-movflags","+faststart",a.out]
     print("rendering final...")
     run(cmd)

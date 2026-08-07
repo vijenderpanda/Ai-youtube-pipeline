@@ -51,6 +51,15 @@ else
   ok "dependencies installed (--user)"
 fi
 
+# ── 2b. GPU / NVENC preflight (informational) ────────────────────────────────
+say "Checking GPU video-encode acceleration (NVENC)…"
+if "$PYTHON" scripts/gpu_check.py >/tmp/factory_gpu.log 2>&1; then
+  ok "NVENC works — the worker will offload video encoding to the GPU."
+else
+  warn "No usable NVENC — the worker will encode on CPU (still fully functional)."
+  warn "Details: python3 scripts/gpu_check.py   (log: /tmp/factory_gpu.log)"
+fi
+
 # ── 3. Config files ──────────────────────────────────────────────────────────
 say "Setting up config…"
 mkdir -p secrets logs renders_out
