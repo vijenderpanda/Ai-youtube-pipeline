@@ -107,3 +107,11 @@
   https://techcrunch.com/2026/08/06/openai-brings-unlimited-chatgpt-text-chats-to-free-users/
 - [ ] OpenAI is giving ChatGPT free users unlimited text chats
   https://www.theverge.com/ai-artificial-intelligence/976239/openai-chatgpt-free-go-text-chats
+
+## Radar 2026-08-07 02:59
+- [ ] Jony Ive&#8217;s first OpenAI gadget is reportedly a hockey puck-sized smart speaker
+  https://www.theverge.com/ai-artificial-intelligence/976431/openai-chatgpt-battery-smart-speaker-rumor
+
+## Radar 2026-08-07 05:59
+- [ ] OpenAI&#8217;s new AI smart speaker will reportedly sell for between $300 and $400
+  https://techcrunch.com/2026/08/06/openais-new-ai-smart-speaker-will-reportedly-sell-for-between-300-and-400/

@@ -4,12 +4,12 @@ import Modal from './Modal'
 import UltracodeToggle from './UltracodeToggle'
 import SuggestButton from './SuggestButton'
 import Toast, { useToast } from './Toast'
-import { JOB_TYPES as TYPES, MODEL_OPTIONS, EFFORTS } from '../jobMeta'
+import { NEW_JOB_TYPES as TYPES, MODEL_OPTIONS, EFFORTS } from '../jobMeta'
 
 export default function NewJobModal({ channels = [], initial = {}, onClose, onCreated }) {
   const [form, setForm] = useState({
     channel_key: initial.channel_key || (channels[0] ? channels[0].key : ''),
-    type: initial.type || 'produce_short',
+    type: initial.type && initial.type !== 'produce_short' ? initial.type : 'record_demo',
     title: initial.title || '',
     prompt: initial.prompt || '',
     model: initial.model || 'opus',

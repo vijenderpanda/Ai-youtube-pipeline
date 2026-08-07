@@ -9,6 +9,7 @@ headers = []
 publish = "/Users/vijenderpanda/Ai-youtube-pipeline/webapp/dist"
 publishOrigin = "config"
 commandOrigin = "config"
+base = "/Users/vijenderpanda/Ai-youtube-pipeline/webapp"
 command = "npm run build"
 
 [build.environment]

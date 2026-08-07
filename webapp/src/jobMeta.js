@@ -7,6 +7,10 @@ export const JOB_TYPES = [
   { value: 'new_channel_scaffold', label: 'New Channel Scaffold' },
 ]
 
+// Types offerable for a NEW create_job. produce_short is EXCLUDED (2026-08-07):
+// production is staged-only — content is produced via Plan Content → Produce in stages.
+export const NEW_JOB_TYPES = JOB_TYPES.filter((t) => t.value !== 'produce_short')
+
 export const TYPE_LABELS = {
   produce_short: 'Produce Short',
   record_demo: 'Record Demo',

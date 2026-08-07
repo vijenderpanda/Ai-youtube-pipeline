@@ -339,25 +339,16 @@ export default function CalendarDrawer({
                     Restore
                   </button>
                 )}
-                {(status === 'planned' || status === 'suggested') && (
-                  <button
-                    className="btn btn-ghost"
-                    onClick={stage}
-                    disabled={!!busy}
-                    title="Plan the asset list, then generate and review each fragment in the Studio before assembly"
-                  >
-                    {busy === 'stage' ? 'Staging…' : 'Produce in stages'}
-                  </button>
-                )}
                 <button className="btn btn-ghost" onClick={save} disabled={!!busy}>
                   {busy === 'save' ? 'Saving…' : 'Save changes'}
                 </button>
                 <button
                   className="btn btn-primary"
-                  onClick={run}
-                  disabled={!!busy || !form.title.trim()}
+                  onClick={stage}
+                  disabled={!!busy || !form.title.trim() || locked}
+                  title="Plan the asset list, then review each fragment in the Studio before assembly"
                 >
-                  {busy === 'run' ? 'Queuing…' : '▶ Run this job'}
+                  {busy === 'stage' ? 'Staging…' : '▶ Produce in stages'}
                 </button>
               </div>
             </>

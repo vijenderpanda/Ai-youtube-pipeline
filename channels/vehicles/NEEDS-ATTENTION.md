@@ -1,4 +1,4 @@
-# Needs attention — Rumble Trucks (`vehicles`) — 2026-08-06 18:17
+# Needs attention — Rumble Trucks (`vehicles`) — 2026-08-07 06:37
 
 Empty guarded publish slots: **2026-08-11**
 

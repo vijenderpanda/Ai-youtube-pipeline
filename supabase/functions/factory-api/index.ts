@@ -12,7 +12,8 @@ const CORS = {
 };
 
 const JOB_TYPES = [
-  "produce_short",
+  // produce_short removed 2026-08-07 — production is staged-only ("produce in stages").
+  // The only produce path is plan_assets, via the queue/stage/supersede calendar actions.
   "record_demo",
   "custom",
   "new_channel_scaffold",
@@ -26,6 +27,10 @@ const JOB_TYPES = [
 ];
 // v8: staged job types carry meta.calendar_id for their episode
 const STAGED_JOB_TYPES = ["plan_assets", "generate_asset", "assemble_episode", "preview_episode"];
+// Calendar items keep 'produce_short' as a legacy content-type LABEL (staging ignores it —
+// content is always produced via plan_assets). So calendar validation still allows it, even
+// though create_job (2026-08-07) no longer does.
+const CALENDAR_TYPES = ["produce_short", ...JOB_TYPES];
 const EFFORTS = ["low", "medium", "high", "xhigh", "max"];
 // Statuses settable via update_calendar_item (queued/produced are set by queue route / worker)
 const CALENDAR_PATCH_STATUSES = ["planned", "suggested", "skipped"];
@@ -618,8 +623,8 @@ async function handlePost(body: any): Promise<Response> {
       if (!channel_key || !planned_date || !title) {
         return json({ error: "channel_key, planned_date and title required" }, 400);
       }
-      if (type !== undefined && !JOB_TYPES.includes(type)) {
-        return json({ error: "type must be one of: " + JOB_TYPES.join(" | ") }, 400);
+      if (type !== undefined && !CALENDAR_TYPES.includes(type)) {
+        return json({ error: "type must be one of: " + CALENDAR_TYPES.join(" | ") }, 400);
       }
       if (effort !== undefined && !EFFORTS.includes(effort)) {
         return json({ error: "effort must be one of: " + EFFORTS.join(" | ") }, 400);
@@ -663,8 +668,8 @@ async function handlePost(body: any): Promise<Response> {
           400,
         );
       }
-      if ("type" in clean && !JOB_TYPES.includes(clean.type as string)) {
-        return json({ error: "type must be one of: " + JOB_TYPES.join(" | ") }, 400);
+      if ("type" in clean && !CALENDAR_TYPES.includes(clean.type as string)) {
+        return json({ error: "type must be one of: " + CALENDAR_TYPES.join(" | ") }, 400);
       }
       if ("effort" in clean && !EFFORTS.includes(clean.effort as string)) {
         return json({ error: "effort must be one of: " + EFFORTS.join(" | ") }, 400);
@@ -687,26 +692,35 @@ async function handlePost(body: any): Promise<Response> {
       if (item.status === "queued" || item.status === "produced") {
         return json({ error: `calendar item already ${item.status}` }, 409);
       }
+      // staged-only (2026-08-07): producing an item always plans it in stages (Studio),
+      // never a direct produce_short. Idempotent — refuse if it already has staged assets.
+      const { count: qAssetCount, error: qAcErr } = await db.from("factory_assets")
+        .select("id", { count: "exact", head: true }).eq("calendar_id", id);
+      if (qAcErr) return json({ error: qAcErr.message }, 500);
+      if ((qAssetCount ?? 0) > 0) {
+        return json({ error: "calendar item already has staged assets — open its Studio board instead" }, 409);
+      }
       const { data: job, error: jobErr } = await db.from("factory_jobs")
         .insert({
           channel_key: item.channel_key,
-          type: item.type,
-          title: item.title,
+          type: "plan_assets",
+          title: "Plan assets — " + item.title,
           prompt: item.brief,
           model: item.model,
           effort: item.effort,
           ultracode: item.ultracode,
           status: "queued",
+          meta: { calendar_id: item.id },
         })
         .select().single();
       if (jobErr) return json({ error: jobErr.message }, 500);
       const { data: updated, error: updErr } = await db.from("factory_calendar")
-        .update({ status: "queued", job_id: job.id })
+        .update({ status: "queued", production_mode: "staged", job_id: job.id })
         .eq("id", id).select().single();
       if (updErr) return json({ error: updErr.message }, 500);
       await logEvent(
-        "calendar_item_queued",
-        `Calendar item '${item.title}' queued as job for ${item.channel_key}`,
+        "assets_staged",
+        `Staged production queued for '${item.title}' (${item.channel_key})`,
         { item_id: id, job_id: job.id, channel_key: item.channel_key },
       );
       return json({ item: updated, job });
@@ -758,19 +772,20 @@ async function handlePost(body: any): Promise<Response> {
               " — the suggestion can only be queued standalone via queue_calendar_item",
           }, 409);
         }
+        // staged-only (2026-08-07): a superseded challenger is planned in stages too.
         const jobRes = await tx.queryObject<{ row: Row }>({
           text: `insert into public.factory_jobs
-                   (channel_key, type, title, prompt, model, effort, ultracode, status)
-                 values ($1, $2, $3, $4, $5, $6, $7, 'queued')
+                   (channel_key, type, title, prompt, model, effort, ultracode, status, meta)
+                 values ($1, 'plan_assets', $2, $3, $4, $5, $6, 'queued', $7::jsonb)
                  returning to_jsonb(factory_jobs) as row`,
           args: [
             sug.channel_key,
-            sug.type,
-            sug.title,
+            "Plan assets — " + sug.title,
             sug.brief,
             sug.model,
             sug.effort,
             sug.ultracode,
+            JSON.stringify({ calendar_id: sug.id }),
           ],
         });
         const job = jobRes.rows[0].row;
@@ -780,7 +795,7 @@ async function handlePost(body: any): Promise<Response> {
           args: [orig.id],
         });
         const sugUpd = await tx.queryObject<{ row: Row }>({
-          text: `update public.factory_calendar set status = 'queued', job_id = $2
+          text: `update public.factory_calendar set status = 'queued', production_mode = 'staged', job_id = $2
                  where id = $1 returning to_jsonb(factory_calendar) as row`,
           args: [sug.id, job.id],
         });

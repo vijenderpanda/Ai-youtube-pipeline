@@ -60,11 +60,10 @@ only needed by the specific jobs that call those services.
 ### Supabase schema
 
 - **Reusing the existing project:** nothing to do — just point `factory.env` at it.
-- **Fresh project:** apply the migrations in `supabase/migrations/` (000-ordered)
-  via the [Supabase CLI](https://supabase.com/docs/guides/local-development):
+- **Fresh project:** with the [Supabase CLI](https://supabase.com/docs/guides/local-development)
+  installed and `supabase login` done, run the helper:
   ```bash
-  supabase link --project-ref <ref>
-  supabase db push        # applies supabase/migrations/*.sql
+  deploy/setup-supabase.sh <project-ref>   # links + applies supabase/migrations/*.sql
   ```
   The worker seeds channels/generators/settings rows itself on first start.
 

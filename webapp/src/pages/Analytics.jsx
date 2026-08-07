@@ -7,6 +7,7 @@ import SyncDelta from '../components/SyncDelta'
 import Recommendations from '../components/Recommendations'
 import NewJobModal from '../components/NewJobModal'
 import Toast, { useToast } from '../components/Toast'
+import { toISODate } from '../format'
 import {
   PerfSections,
   VideoTableFull,
@@ -180,7 +181,30 @@ export default function Analytics() {
 
       <FallbackBanner statsRows={statsRows} />
 
-      <Recommendations videos={videos} accents={accents} onAction={(v, rec) => setModal(jobInitial(v, rec))} />
+      <Recommendations
+        videos={videos}
+        accents={accents}
+        onAction={async (v, rec) => {
+          // staged-only (2026-08-07): a recommendation plans a calendar item and stages it
+          // (Produce in stages), instead of the old direct produce_short job.
+          const init = jobInitial(v, rec)
+          try {
+            const res = await api.post({
+              action: 'create_calendar_item',
+              channel_key: init.channel_key,
+              planned_date: toISODate(new Date()),
+              title: init.title,
+              brief: init.prompt,
+              model: init.model,
+              effort: init.effort,
+            })
+            await api.post({ action: 'stage_calendar_item', id: res.item.id })
+            show('Staged — the factory is planning the asset list in Studio', 'ok')
+          } catch (e) {
+            show(e.message, 'error')
+          }
+        }}
+      />
 
       {movers.length > 0 && (
         <section>

@@ -1,16 +1,16 @@
-# Needs attention — Pip's Moonlit Garden (Lulla) (`lulla`) — 2026-08-06 18:17
+# Needs attention — Pip's Moonlit Garden (Lulla) (`lulla`) — 2026-08-07 06:37
 
 Empty guarded publish slots: **2026-08-10, 2026-08-13, 2026-08-16**
 
 Calendar: `channels/pip-moonlit-garden/CONTENT-CALENDAR.csv` · cadence: every 3 days 16:00 IST · slot time: 16:00 IST
 
-## 2026-08-10 — Lulla Bedtime Compilation — calm songs to sleep
+## 2026-08-10 — 1 HOUR of Calm — Lulla Bedtime Songs
 - **ep**: C1
 - **slot_time_ist**: 16:00
 - **format**: compilation
 - **hook_promise**: An hour of calm — the six songs, no hard cuts
-- **production_note**: HARD DATE. Binds the six live episodes with assemble_compilation.py (>=2s xfade + acrossfade + loudness-match) then add_bookends.py. Needs a comp spec at channels/pip-moonlit-garden/comp/*.json and interlude beds. Long-form compilations are where real ad RPM lives (playbook §11/§13). MFK = yes.
-- **assets**: channels/pip-moonlit-garden/renders/*.mp4 (six episodes)
+- **production_note**: BLOCKED ON INPUTS (as of 6 Aug). Spec + tooling DONE and validated end-to-end: comp/60min_calm.json = 15 segments / 3601.04s / 1:00:01; assemble_compilation.py extended with xfade_ramp + dim_tempo_scope and full-scale tested. Cannot render until (a) Leonardo API tokens are topped up for the 21 interlude stills and (b) a Suno Pro Chrome session exists for the 9 instrumental reprises. Both are account actions — see comp/README.md. Slides rather than ships degraded. MFK = yes.
+- **assets**: channels/pip-moonlit-garden/comp/60min_calm.json
 
 ## 2026-08-13 — Round and Round
 - **ep**: 07

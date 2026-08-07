@@ -79,6 +79,20 @@ else
   warn "missing dependency or an unfilled secrets/factory.env. Fix, then re-run."
 fi
 
+# ── 4b. Live connectivity check (only if the service key is really filled in) ─
+if grep -q '^SUPABASE_SERVICE_KEY=your-service-role-key' secrets/factory.env 2>/dev/null \
+   || ! grep -q '^SUPABASE_SERVICE_KEY=.\+' secrets/factory.env 2>/dev/null; then
+  warn "Skipping live queue check — fill SUPABASE_SERVICE_KEY in secrets/factory.env,"
+  warn "then verify with:  FACTORY_REPO=\"$REPO\" \"$PYTHON\" scripts/factory_worker.py --once"
+else
+  say "Checking Supabase connectivity (--once: one claim attempt, then exits)…"
+  if FACTORY_REPO="$REPO" "$PYTHON" scripts/factory_worker.py --once >/tmp/factory_once.log 2>&1; then
+    ok "connected to Supabase and polled the queue successfully"
+  else
+    warn "queue check failed (see /tmp/factory_once.log) — check SUPABASE_URL / service key"
+  fi
+fi
+
 RUN_CMD="FACTORY_REPO=\"$REPO\" \"$PYTHON\" scripts/factory_worker.py"
 
 # ── 5. Background service ────────────────────────────────────────────────────
