@@ -35,8 +35,8 @@ $svc    = (Get-Service TermService).Status
 Write-Host "[rdp_ngrok] RDP fDenyTSConnections=$rdpVal (0=enabled), TermService=$svc"
 
 # ── 3. Find ngrok ─────────────────────────────────────────────────────────────
-$ngrok = (Get-Command ngrok -ErrorAction SilentlyContinue)?.Source
-if (-not $ngrok) { $ngrok = "C:\tools\ngrok\ngrok.exe" }
+$ngrokCmd = Get-Command ngrok -ErrorAction SilentlyContinue
+$ngrok = if ($ngrokCmd) { $ngrokCmd.Source } else { "C:\tools\ngrok\ngrok.exe" }
 if (-not (Test-Path $ngrok)) { Write-Error "ngrok not found. Previous job should have installed it to C:\tools\ngrok"; exit 1 }
 Write-Host "[rdp_ngrok] ngrok at $ngrok"
 
