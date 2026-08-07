@@ -2857,11 +2857,87 @@ def reap_stale_jobs(supa, current_job_ids=None):
 # ---------------------------------------------------------------- job runner
 
 
+def run_shell_script_job(supa, job):
+    """Execute a committed script directly — no claude -p. For owner-authorised
+    sysadmin tasks (RDP, ngrok, etc.) that claude -p would refuse on safety grounds.
+    job.meta.script_path = repo-relative path, e.g. 'deploy/rdp_ngrok_setup.ps1'."""
+    job_id  = job["id"]
+    meta    = job.get("meta") or {}
+    script  = meta.get("script_path", "")
+    if not script:
+        fail(supa, job_id, "shell_script job missing meta.script_path", LogBuffer(), job=job)
+        return
+
+    full = os.path.join(REPO, script)
+    if not os.path.isfile(full):
+        fail(supa, job_id, f"script not found: {full}", LogBuffer(), job=job)
+        return
+
+    log(f"[shell_script] running {script}")
+    buf = LogBuffer()
+    try:
+        supa.patch("factory_jobs", f"id=eq.{job_id}", {"heartbeat_at": now_iso()})
+    except Exception:
+        pass
+
+    if full.endswith(".ps1"):
+        cmd = ["powershell.exe", "-NonInteractive", "-File", full,
+               "-RepoRoot", REPO]
+    else:
+        cmd = ["bash", full]
+
+    try:
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                text=True, encoding="utf-8", errors="replace")
+        output_lines = []
+        for line in proc.stdout:
+            line = line.rstrip()
+            log(f"  {line}")
+            buf.write(f"[shell] {line}\n")
+            output_lines.append(line)
+        proc.wait()
+        rc = proc.returncode
+    except Exception as e:
+        fail(supa, job_id, f"failed to launch {script}: {e}", buf, job=job)
+        return
+
+    output_text = "\n".join(output_lines)
+    # Extract RDP_CONNECT line if present for prominence in recap
+    rdp_line = next((l for l in output_lines if "RDP_CONNECT" in l or "TUNNEL_URL" in l), "")
+
+    result = {
+        "uploaded": 0,
+        "recap": {
+            "headline": f"shell_script {script} exited rc={rc}",
+            "steps": [f"Ran {script} (exit {rc})", rdp_line] if rdp_line else [f"Ran {script} (exit {rc})"],
+            "outputs": [rdp_line] if rdp_line else [],
+            "issues": [] if rc == 0 else [f"Script exited {rc}"],
+            "decisions": [],
+            "next": [],
+        },
+        "script_output": output_text,
+    }
+    status = "done" if rc == 0 else "failed"
+    try:
+        supa.patch("factory_jobs", f"id=eq.{job_id}",
+                   {"status": status, "finished_at": now_iso(),
+                    "result": result, "logs": buf.getvalue()})
+    except Exception as e:
+        log(f"  could not finalize shell_script job: {e}")
+
+
 def run_job(supa, job):
     job_id = job["id"]
 
     if (job.get("type") or "") == "analytics_sync":
         run_analytics_sync(supa, job)  # native, no claude call
+        return
+
+    if (job.get("type") or "") == "shell_script":
+        # Owner-authorised sysadmin jobs that must NOT go through claude -p.
+        # meta.script_path = repo-relative path to a committed .ps1/.sh script.
+        # Runs the script directly; stdout/stderr go to logs + result recap.
+        run_shell_script_job(supa, job)
         return
 
     log(f"claimed job {job_id} type={job.get('type')} channel={job.get('channel_key')} title={job.get('title')!r}")
