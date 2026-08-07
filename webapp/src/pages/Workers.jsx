@@ -1,7 +1,66 @@
 import { useState } from 'react'
 import { api } from '../api'
 import { usePoll } from '../hooks'
-import { typeLabel } from '../jobMeta'
+import { typeLabel, MODEL_OPTIONS, EFFORTS } from '../jobMeta'
+
+function OverridePanel({ override, globalPaused, onChanged }) {
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+  const enabled = !!(override && override.enabled)
+  const model = (override && override.model) || 'opus'
+  const effort = (override && override.effort) || 'high'
+
+  const post = async (body) => {
+    setBusy(true); setErr('')
+    try { await api.post(body); onChanged() }
+    catch (e) { setErr(e.message || 'update failed') }
+    finally { setBusy(false) }
+  }
+
+  return (
+    <div className="card panel" style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        <strong style={{ fontSize: 14 }}>Global model / effort override</strong>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+          <input
+            type="checkbox"
+            checked={enabled}
+            disabled={busy}
+            onChange={(e) => post({ action: 'set_override', enabled: e.target.checked, model, effort })}
+          />
+          <span>{enabled ? 'ON' : 'off'}</span>
+        </label>
+        <select value={model} disabled={busy || !enabled}
+          onChange={(e) => post({ action: 'set_override', enabled: true, model: e.target.value, effort })}>
+          {MODEL_OPTIONS.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
+        </select>
+        <select value={effort} disabled={busy || !enabled}
+          onChange={(e) => post({ action: 'set_override', enabled: true, model, effort: e.target.value })}>
+          {EFFORTS.map((x) => <option key={x} value={x}>{x}</option>)}
+        </select>
+
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 'auto', cursor: 'pointer' }}
+          title="Stops EVERY worker from claiming jobs">
+          <input
+            type="checkbox"
+            checked={!!globalPaused}
+            disabled={busy}
+            onChange={(e) => post({ action: 'global_pause', paused: e.target.checked })}
+          />
+          <span style={{ color: globalPaused ? '#f59e0b' : 'inherit' }}>
+            {globalPaused ? 'ALL workers paused' : 'Pause all workers'}
+          </span>
+        </label>
+      </div>
+      <p className="dim" style={{ fontSize: 12, margin: 0 }}>
+        {enabled
+          ? <>Override <strong>ON</strong> — every job on every worker runs at <strong>{model} / {effort}</strong>, ignoring the model &amp; effort it was queued with.</>
+          : <>Off — each job uses its own queued model &amp; effort. Turn on to force one model/effort across the whole network (e.g. cheap <em>haiku / low</em> for a test run, or <em>fable / max</em> for a quality pass).</>}
+      </p>
+      {err && <div className="error-bar">{err}</div>}
+    </div>
+  )
+}
 
 function osGlyph(os) {
   const o = (os || '').toLowerCase()
@@ -148,6 +207,8 @@ export default function Workers() {
   const q = usePoll(() => api.get('?r=workers'), 8000)
   const workers = (q.data && q.data.workers) || []
   const jobTypes = (q.data && q.data.job_types) || []
+  const override = q.data && q.data.override
+  const globalPaused = q.data && q.data.global_paused
 
   return (
     <div className="page">
@@ -161,6 +222,10 @@ export default function Workers() {
       </header>
 
       {q.error && <div className="error-bar">{q.error.message}</div>}
+
+      {q.data != null && (
+        <OverridePanel override={override} globalPaused={globalPaused} onChanged={q.refresh} />
+      )}
 
       {q.loading && q.data == null ? (
         <p className="dim">Loading…</p>

@@ -516,9 +516,12 @@ async function handleGet(url: URL): Promise<Response> {
     // routable types for the routing UI.
     case "workers": {
       const WORKER_ONLINE_S = 90;
-      const [workers, running] = await Promise.all([
+      const [workers, running, settings] = await Promise.all([
         db.from("factory_workers").select("*").order("registered_at", { ascending: true }),
         db.from("factory_jobs").select("assigned_worker").eq("status", "running"),
+        // v13: global model/effort override (applies to ALL workers/jobs)
+        db.from("factory_settings").select("key, value")
+          .in("key", ["override_enabled", "override_model", "override_effort", "worker_paused"]),
       ]);
       if (workers.error) return json({ error: workers.error.message }, 500);
       const load: Record<string, number> = {};
@@ -533,7 +536,19 @@ async function handleGet(url: URL): Promise<Response> {
         running: load[w.worker_id] ?? 0,
         online: w.last_seen ? (now - new Date(w.last_seen).getTime()) < WORKER_ONLINE_S * 1000 : false,
       }));
-      return json({ workers: rows, job_types: JOB_TYPES });
+      const s: Record<string, string> = {};
+      for (const row of (settings.data ?? [])) s[row.key] = row.value;
+      const override = {
+        enabled: (s.override_enabled ?? "0") === "1",
+        model: s.override_model ?? null,
+        effort: s.override_effort ?? null,
+      };
+      return json({
+        workers: rows,
+        job_types: JOB_TYPES,
+        override,
+        global_paused: (s.worker_paused ?? "0") === "1",
+      });
     }
 
     default:
@@ -687,6 +702,38 @@ async function handlePost(body: any): Promise<Response> {
       await logEvent("job_assigned", `Job ${id} pinned to ${target_worker || "any worker"}`,
         { job_id: id, target_worker: target_worker || null });
       return json({ job: data });
+    }
+
+    // v13: global model/effort override. When enabled, EVERY job (on every
+    // worker) runs with this model/effort instead of the one it was queued with.
+    // Body: { enabled: bool, model?: string, effort?: string }.
+    case "set_override": {
+      if (body.effort !== undefined && body.effort !== null && !EFFORTS.includes(body.effort)) {
+        return json({ error: "effort must be one of: " + EFFORTS.join(" | ") }, 400);
+      }
+      const rows = [{ key: "override_enabled", value: body.enabled ? "1" : "0" }];
+      if (body.model !== undefined) rows.push({ key: "override_model", value: body.model || "" });
+      if (body.effort !== undefined) rows.push({ key: "override_effort", value: body.effort || "" });
+      const { error } = await db.from("factory_settings")
+        .upsert(rows, { onConflict: "key" });
+      if (error) return json({ error: error.message }, 500);
+      await logEvent("override_set",
+        body.enabled
+          ? `Global override ON -> model=${body.model ?? "(unchanged)"} effort=${body.effort ?? "(unchanged)"}`
+          : "Global override OFF",
+        { enabled: !!body.enabled, model: body.model ?? null, effort: body.effort ?? null });
+      return json({ override: { enabled: !!body.enabled, model: body.model ?? null, effort: body.effort ?? null } });
+    }
+
+    // v14: global pause of ALL workers (worker_paused='1' short-circuits every claim).
+    case "global_pause": {
+      const val = body.paused ? "1" : "0";
+      const { error } = await db.from("factory_settings")
+        .upsert([{ key: "worker_paused", value: val }], { onConflict: "key" });
+      if (error) return json({ error: error.message }, 500);
+      await logEvent("global_pause", body.paused ? "ALL workers paused" : "ALL workers resumed",
+        { paused: !!body.paused });
+      return json({ global_paused: !!body.paused });
     }
 
     case "create_calendar_item": {
