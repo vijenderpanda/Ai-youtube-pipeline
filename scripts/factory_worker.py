@@ -143,6 +143,13 @@ SCRIPTS_DIR = REPO / "scripts"
 DEFAULT_SUPABASE_URL = "https://xfqyovimnqdghiekicqr.supabase.co"
 BUCKET = "factory-renders"
 
+# Cross-platform child-process grouping so a stop/timeout can kill the WHOLE job
+# tree (claude + ffmpeg/Bash grandchildren). POSIX: new session -> own pgid, use
+# killpg. Windows: new process group, use `taskkill /T` to kill the tree.
+IS_WINDOWS = os.name == "nt"
+_POPEN_GROUP_KW = ({"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP}
+                   if IS_WINDOWS else {"start_new_session": True})
+
 POLL_SLEEP_S = 10
 LOG_FLUSH_S = 4  # also the v7 heartbeat_at + control-check cadence while a child runs
 STALE_REAP_S = 180  # v7: 'running' jobs with a heartbeat older than this are orphans
@@ -729,18 +736,28 @@ def map_model(model):
     return MODEL_MAP.get(m, m)
 
 
-def build_command(job, prompt):
+def claude_argv(*args):
+    """Argv to invoke the Claude CLI, cross-platform. On Windows an npm-installed
+    `claude` is a .cmd/.bat shim that CreateProcess can't launch from a list, so
+    wrap it in `cmd /c`; a native claude.exe (or POSIX) is called directly."""
     claude_bin = shutil.which("claude") or "claude"
-    return [
-        claude_bin, "-p", prompt,
+    argv = [claude_bin, *args]
+    if IS_WINDOWS and str(claude_bin).lower().endswith((".cmd", ".bat")):
+        return ["cmd", "/c", *argv]
+    return argv
+
+
+def build_command(job, prompt):
+    return claude_argv(
+        "-p", prompt,
         "--model", map_model(job.get("model")),
         "--effort", job.get("effort") or "high",
         "--output-format", "stream-json",
         "--verbose",
         "--permission-mode", "acceptEdits",
         "--allowedTools", ALLOWED_TOOLS,
-        "--chrome",  # real-Chrome tools (Suno flows etc.); requires Chrome open on this Mac
-    ]
+        "--chrome",  # real-Chrome tools (Suno flows etc.); requires Chrome open
+    )
 
 
 def apply_global_override(supa, job):
@@ -2493,12 +2510,11 @@ def synthesize_recap(log_text, error=None):
         + f"Output ONLY the JSON object. Log tail:\n{tail}"
     )
     try:
-        claude_bin = shutil.which("claude") or "claude"
         child_env = os.environ.copy()
         child_env.pop("ANTHROPIC_API_KEY", None)  # subscription auth only, like the main run
         proc = subprocess.run(
-            [claude_bin, "-p", prompt, "--model", "haiku", "--effort", "low",
-             "--output-format", "text"],
+            claude_argv("-p", prompt, "--model", "haiku", "--effort", "low",
+                        "--output-format", "text"),
             cwd=str(REPO), capture_output=True, text=True,
             timeout=RECAP_TIMEOUT_S, env=child_env)
         if proc.returncode != 0:
@@ -2512,9 +2528,25 @@ def synthesize_recap(log_text, error=None):
 
 
 def kill_proc_group(proc):
-    """Terminate the child's WHOLE process group: SIGTERM, STOP_GRACE_S seconds of
-    grace, then SIGKILL. The child is started with start_new_session=True, so its
-    pgid is its own pid and ffmpeg/Bash grandchildren die with it. Never raises."""
+    """Terminate the child's WHOLE process tree. POSIX: SIGTERM the process group,
+    STOP_GRACE_S grace, then SIGKILL. Windows: `taskkill /F /T` (kills the tree)
+    with a proc.kill() fallback. The child is launched with _POPEN_GROUP_KW so its
+    ffmpeg/Bash grandchildren are included. Never raises."""
+    if IS_WINDOWS:
+        try:
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)],
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                           timeout=STOP_GRACE_S)
+        except (OSError, subprocess.SubprocessError):
+            try:
+                proc.kill()
+            except OSError:
+                pass
+        try:
+            proc.wait(timeout=STOP_GRACE_S)
+        except subprocess.TimeoutExpired:
+            pass
+        return
     try:
         pgid = os.getpgid(proc.pid)
     except (OSError, ProcessLookupError):
@@ -2829,11 +2861,12 @@ def run_job(supa, job):
             log(f"  log flush failed: {e}")
 
     try:
-        # v7: start_new_session=True puts claude in its OWN process group, so a
-        # stop/timeout can kill the whole tree (ffmpeg/Bash grandchildren included)
+        # v7: put claude in its OWN process group/session (cross-platform via
+        # _POPEN_GROUP_KW), so a stop/timeout can kill the whole tree
+        # (ffmpeg/Bash grandchildren included).
         proc = subprocess.Popen(cmd, cwd=str(REPO), stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT, text=True, bufsize=1,
-                                env=child_env, start_new_session=True)
+                                env=child_env, **_POPEN_GROUP_KW)
     except OSError as e:
         fail(supa, job_id, f"could not start claude: {e}", buf, job=job)
         return

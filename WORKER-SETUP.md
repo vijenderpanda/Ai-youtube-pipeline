@@ -1,5 +1,9 @@
 # Factory Worker — install on any machine
 
+> **On Windows?** Follow **[WINDOWS-SETUP.md](WINDOWS-SETUP.md)** instead — it has
+> a native PowerShell installer (`install.ps1`) and logon autostart. This page
+> covers macOS and Linux.
+
 Run the local factory worker on a new Mac or Linux box. The worker claims jobs
 from Supabase (`factory_jobs`) and executes them with **`claude -p`**, using
 **that machine's own Claude Code subscription** — there is no Anthropic API key
