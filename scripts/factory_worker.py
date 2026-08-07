@@ -171,6 +171,7 @@ HEAVY_TYPES = ("assemble_episode", "produce_short", "preview_episode")
 WORKER_ID = (os.environ.get("FACTORY_WORKER_ID") or socket.gethostname() or "worker").strip()
 WORKER_NAME = (os.environ.get("FACTORY_WORKER_NAME") or socket.gethostname() or WORKER_ID).strip()
 WORKER_HEARTBEAT_S = 20  # how often to bump factory_workers.last_seen + reload routing
+LOG_PUSH_MAX = 30  # max log lines to push per heartbeat (newest first)
 STOP_GRACE_S = 5  # v7: SIGTERM -> this many seconds -> SIGKILL (whole process group)
 LOG_CAP_BYTES = 200_000
 JOB_TIMEOUT_S = 45 * 60
@@ -353,8 +354,42 @@ def now_iso():
     return datetime.now(timezone.utc).isoformat()
 
 
-def log(msg):
-    print(f"[{now_iso()}] {msg}", flush=True)
+# v15: thread-safe ring buffer that collects log lines for push to Supabase
+# during each heartbeat cycle. The dashboard Workers page shows these.
+_log_ring_lock = threading.Lock()
+_log_ring = []  # list of (iso_ts, level, message)
+
+
+def log(msg, level="info"):
+    ts = now_iso()
+    print(f"[{ts}] {msg}", flush=True)
+    with _log_ring_lock:
+        _log_ring.append((ts, level, msg))
+        # keep ring bounded in memory (2x push max)
+        if len(_log_ring) > LOG_PUSH_MAX * 2:
+            del _log_ring[:len(_log_ring) - LOG_PUSH_MAX]
+
+
+def _drain_log_ring():
+    """Pop all buffered log lines (newest last). Thread-safe."""
+    with _log_ring_lock:
+        lines = list(_log_ring)
+        _log_ring.clear()
+    return lines
+
+
+def _push_logs(supa, lines):
+    """Best-effort insert of log lines into factory_worker_logs. Never raises."""
+    if not lines:
+        return
+    # Take only the newest LOG_PUSH_MAX lines
+    lines = lines[-LOG_PUSH_MAX:]
+    rows = [{"worker_id": WORKER_ID, "ts": ts, "level": lvl, "message": msg}
+            for ts, lvl, msg in lines]
+    try:
+        supa.insert("factory_worker_logs", rows)
+    except (RuntimeError, requests.RequestException):
+        pass  # swallow -- log push is best-effort
 
 
 # ---------------------------------------------------------------- seeding
@@ -3358,6 +3393,8 @@ def main():
             if accept != hb_state["accept"]:
                 log(f"accept_types -> {accept if accept else 'ALL'}")
             hb_state.update(paused=paused, accept=accept, at=time.time())
+            # v15: push buffered log lines to Supabase (dashboard Workers page)
+            _push_logs(supa, _drain_log_ring())
 
         claimed = False
         if not hb_state["paused"] and len(active) < max_parallel:

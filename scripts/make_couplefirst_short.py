@@ -59,38 +59,68 @@ def categorize_shots(shots_dir):
     return cats
 
 
-def build_beats(cats, dur, cut=2.0):
-    """Couple-first order: G(hook) -> C(payoff) -> alternate, loop to opening frame."""
+def load_motion(cdir, motion_arg):
+    """Ordered list of the couple's intimate motion clips (Look -> Almost -> Touch first).
+    These are IDENTITY-LOCKED clips of the ONE approved couple (couple_library/leonardo_ids.json).
+    Default location = <couple>/motion/*.mp4."""
+    d = motion_arg or os.path.join(cdir, "motion")
+    if not os.path.isdir(d):
+        return []
+    order = ["look", "almost", "touch"]
+    def rank(f):
+        fl = f.lower()
+        for i, k in enumerate(order):
+            if k in fl:
+                return i
+        return len(order)
+    files = [f for f in os.listdir(d) if f.lower().endswith(".mp4")]
+    return [os.path.join(d, f) for f in sorted(files, key=rank)]
+
+
+def build_beats(cats, dur, cut=2.0, clips=None):
+    """Couple-first order. With motion clips: OPEN on the couple 'Look' clip (eyes to camera,
+    kills the cliff instantly), then alternate motion-clip payoff <-> heroine still, a new shot
+    every ~cut s, loop back to the opening clip. Without clips: the original stills-only cut."""
     G, C, Hh = cats["G"], cats["C"], cats["H"]
     if not G or not C:
         sys.exit("need at least one heroine (G) and one couple (C) shot")
     n = max(6, int(round(dur / cut)))
-    seq = []
-    gi = ci = hi = 0
-    for i in range(n):
-        if i == 0:
-            src = G[0]                                  # heroine hook = scroll-stopper
-        elif i == 1:
-            src = C[ci % len(C)]; ci += 1               # COUPLE payoff, early (kills the cliff)
-        elif i == n - 1:
-            src = G[0]                                  # loop back to the opening frame
-        elif i % 2 == 0:
-            if Hh and i % 6 == 0:
-                src = Hh[hi % len(Hh)]; hi += 1         # occasional hero cutaway
-            else:
-                gi += 1; src = G[gi % len(G)]
-        else:
-            ci += 1; src = C[ci % len(C)]
-        seq.append(src)
     base = round(dur / n, 3)
     durs = [base] * n
     durs[-1] = round(dur - base * (n - 1), 3)
     segs = []
-    for i, src in enumerate(seq):
-        z = [1.0, 1.08] if i % 2 == 0 else [1.07, 1.0]  # alternate push-in / ease-out
-        seg = {"kind": "still", "src": src, "dur": durs[i], "cx": [0.5, 0.5], "cy": 0.46, "zoom": z}
-        if i > 0:
-            seg["xfade_in"] = 0.0                        # hard cut on the beat
+    gi = ci = hi = 0
+    clips = clips or []
+    for i in range(n):
+        hard = {"xfade_in": 0.0} if i > 0 else {}
+        if clips:
+            # ONE-COUPLE rule: the motion clips are the approved identity-locked couple, whose
+            # face does NOT match the library stills -- so the whole motion short is built from
+            # the clips ALONE (Look opens, then Look/Almost/Touch cycle, loop back to Look).
+            if i == n - 1:
+                seg = {"kind": "clip", "src": clips[0], "dur": durs[i], "ss": 0.0}   # seamless loop
+            else:
+                src = clips[i % len(clips)]
+                pass_no = i // len(clips)
+                ss = round(min(0.3 + 2.2 * pass_no, 3.4), 2)                          # fresh window on reuse
+                seg = {"kind": "clip", "src": src, "dur": durs[i], "ss": ss}
+        else:                                                 # ---- stills-only fallback (original) ----
+            if i == 0:
+                src = G[0]                                     # heroine hook = scroll-stopper
+            elif i == 1:
+                src = C[ci % len(C)]; ci += 1
+            elif i == n - 1:
+                src = G[0]
+            elif i % 2 == 0:
+                if Hh and i % 6 == 0:
+                    src = Hh[hi % len(Hh)]; hi += 1
+                else:
+                    gi += 1; src = G[gi % len(G)]
+            else:
+                ci += 1; src = C[ci % len(C)]
+            z = [1.0, 1.08] if i % 2 == 0 else [1.07, 1.0]
+            seg = {"kind": "still", "src": src, "dur": durs[i], "cx": [0.5, 0.5], "cy": 0.46, "zoom": z}
+        seg.update(hard)
         segs.append(seg)
     return segs
 
@@ -140,15 +170,20 @@ def main():
     ap.add_argument("--lyrics", help="timing json {lines:[{s,e,text,hi?}]}")
     ap.add_argument("--out", required=True)
     ap.add_argument("--cut", type=float, default=2.0, help="seconds per beat (default 2.0)")
+    ap.add_argument("--motion", nargs="?", const="", default=None,
+                    help="use the couple's IDENTITY-LOCKED motion clips on hook+payoff beats. "
+                         "Bare --motion uses <couple>/motion/; pass a dir to override. Omit for stills-only.")
     a = ap.parse_args()
 
     cdir = resolve_couple(a)
     cats = categorize_shots(os.path.join(cdir, "shots"))
     dur = probe(a.audio)
-    print(f"couple {os.path.basename(cdir)} | shots G{len(cats['G'])}/C{len(cats['C'])}/H{len(cats['H'])} | audio {dur:.1f}s")
+    clips = load_motion(cdir, a.motion or None) if a.motion is not None else []
+    print(f"couple {os.path.basename(cdir)} | shots G{len(cats['G'])}/C{len(cats['C'])}/H{len(cats['H'])} "
+          f"| motion clips {len(clips)} | audio {dur:.1f}s")
 
     work = tempfile.mkdtemp(prefix="cfshort_")
-    cfg = {"audio": os.path.abspath(a.audio), "segments": build_beats(cats, dur, a.cut)}
+    cfg = {"audio": os.path.abspath(a.audio), "segments": build_beats(cats, dur, a.cut, clips)}
     cfg_p = os.path.join(work, "beats.json")
     json.dump(cfg, open(cfg_p, "w"), indent=1)
     montage = os.path.join(work, "montage.mp4")

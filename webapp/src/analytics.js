@@ -208,21 +208,29 @@ export function isMover(d, viewThreshold = 100) {
 export function networkRollup(deltas) {
   const vids = (deltas && deltas.videos) || []
   let dViews = 0, dEng = 0, movers = 0, newCount = 0
+  let totalViewsNow = 0, totalEngNow = 0
   let topGainer = null
   for (const d of vids) {
     if (d.is_new) { newCount++; continue }
     const dv = Number(d.d_views) || 0
     dViews += dv
     dEng += (Number(d.d_likes) || 0) + (Number(d.d_comments) || 0)
+    totalViewsNow += Number(d.views_now) || 0
+    // d_likes + d_comments are deltas; views_now - d_views = prev views;
+    // for engagement we don't have total eng in snapshot, so derive prev from delta
     if (isMover(d)) movers++
     if (!topGainer || dv > (Number(topGainer.d_views) || 0)) topGainer = d
   }
+  // v13: surface previous absolute values so the UI can show "was X"
+  const prevViews = totalViewsNow > 0 ? totalViewsNow - dViews : null
   return {
     curSyncAt: deltas ? deltas.cur_sync_at : null,
     prevSyncAt: deltas ? deltas.prev_sync_at : null,
     isFirst: deltas ? deltas.is_first : true,
     dViews, dEng, movers, newCount, topGainer,
     tracked: vids.length,
+    prevViews,
+    prevEng: null,  // no total engagement in snapshots yet; add when available
   }
 }
 

@@ -64,8 +64,25 @@ def pan_expr(scaled, crop, c0, c1, dur):
     return f"{a:.2f}+({b - a:.2f})*min(1,t/{dur:.3f})"
 
 
+def build_clip_beat(seg, idx, work):
+    """Render one 1080x1920 beat from a MOTION CLIP (mp4). The clip already carries the
+    motion, so no pan/zoom -- just cover-crop to 9:16 and trim to dur (optional ss offset
+    picks the best sub-window of the source clip)."""
+    src, dur = seg["src"], float(seg["dur"])
+    ss = float(seg.get("ss", 0.0))
+    out = os.path.join(work, f"beat{idx:02d}.mp4")
+    vf = (f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
+          f"fps={FPS},setsar=1,format=yuv420p")
+    run(["ffmpeg", "-y", "-v", "error", "-ss", f"{ss:.3f}", "-i", src, "-t", f"{dur:.3f}",
+         "-vf", vf, "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "17", out],
+        f"clip beat {idx}")
+    return out
+
+
 def build_beat(seg, idx, work):
-    """Render one 1080x1920 beat: full-bleed still with pan+push, or a card."""
+    """Render one 1080x1920 beat: motion clip, full-bleed still with pan+push, or a card."""
+    if seg.get("kind") == "clip":
+        return build_clip_beat(seg, idx, work)
     src, dur = seg["src"], float(seg["dur"])
     out = os.path.join(work, f"beat{idx:02d}.mp4")
     sw, sh = dims(src)

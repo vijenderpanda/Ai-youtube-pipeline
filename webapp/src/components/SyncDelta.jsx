@@ -1,11 +1,15 @@
 import { fmtNum } from './VideoPerf'
 import { networkRollup, fmtSigned, toneOf } from '../analytics'
-import { timeAgo } from '../format'
+import { timeAgo, syncWindow } from '../format'
 
 /**
  * "Since last sync" KPI strip — diffs the two most recent network snapshots
  * (?r=video_deltas). Until a second snapshot exists it shows a baseline notice
  * rather than a fabricated number (snapshot deltas need two syncs).
+ *
+ * v13: "vs X ago" bug-fix — now shows the window between the two syncs
+ * (e.g. "over 6h") not the age of the previous sync from now.
+ * Tiles also show previous absolute value so the user sees e.g. "+42 (was 174)".
  */
 export default function SyncDelta({ deltas, loading = false }) {
   const r = networkRollup(deltas)
@@ -13,9 +17,9 @@ export default function SyncDelta({ deltas, loading = false }) {
   const head = (
     <div className="gen-section">
       <span className="gen-section-label">Since last sync</span>
-      {!r.isFirst && r.prevSyncAt && (
-        <span className="gen-section-count" title={r.prevSyncAt}>
-          vs {timeAgo(r.prevSyncAt)}
+      {!r.isFirst && r.prevSyncAt && r.curSyncAt && (
+        <span className="gen-section-count" title={`${r.prevSyncAt} → ${r.curSyncAt}`}>
+          over {syncWindow(r.prevSyncAt, r.curSyncAt)}
         </span>
       )}
       <span className="gen-section-line" />
@@ -44,8 +48,10 @@ export default function SyncDelta({ deltas, loading = false }) {
   }
 
   const tiles = [
-    { label: 'views gained', value: fmtSigned(r.dViews, fmtNum), tone: toneOf(r.dViews) },
-    { label: 'likes + comments', value: fmtSigned(r.dEng, fmtNum), tone: toneOf(r.dEng) },
+    { label: 'views gained', value: fmtSigned(r.dViews, fmtNum), tone: toneOf(r.dViews),
+      prev: r.prevViews != null ? `was ${fmtNum(r.prevViews)}` : null },
+    { label: 'likes + comments', value: fmtSigned(r.dEng, fmtNum), tone: toneOf(r.dEng),
+      prev: r.prevEng != null ? `was ${fmtNum(r.prevEng)}` : null },
     { label: 'movers', value: fmtNum(r.movers), tone: '' },
     { label: 'new videos', value: fmtNum(r.newCount), tone: '' },
     { label: 'videos tracked', value: fmtNum(r.tracked), tone: '' },
@@ -59,6 +65,7 @@ export default function SyncDelta({ deltas, loading = false }) {
           <div className="card stat" key={t.label}>
             <div className={'stat-value' + (t.tone ? ` tone-${t.tone}` : '')}>{t.value}</div>
             <div className="stat-label">{t.label}</div>
+            {t.prev && <div className="stat-prev">{t.prev}</div>}
           </div>
         ))}
       </div>

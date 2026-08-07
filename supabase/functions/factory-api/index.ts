@@ -551,6 +551,20 @@ async function handleGet(url: URL): Promise<Response> {
       });
     }
 
+    // v15: worker log lines pushed by each machine during heartbeat
+    case "worker_logs": {
+      const wid = url.searchParams.get("worker_id");
+      if (!wid) return json({ error: "worker_id required" }, 400);
+      const limit = Math.min(200, parseInt(url.searchParams.get("limit") ?? "80", 10));
+      const { data, error } = await db.from("factory_worker_logs")
+        .select("ts, level, message")
+        .eq("worker_id", wid)
+        .order("ts", { ascending: false })
+        .limit(limit);
+      if (error) return json({ error: error.message }, 500);
+      return json({ logs: (data ?? []).reverse() });
+    }
+
     default:
       return json({ error: "unknown resource: " + (r ?? "(none)") }, 400);
   }

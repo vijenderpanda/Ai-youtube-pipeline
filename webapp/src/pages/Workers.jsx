@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { api } from '../api'
 import { usePoll } from '../hooks'
 import { typeLabel, MODEL_OPTIONS, EFFORTS } from '../jobMeta'
@@ -77,6 +77,60 @@ function timeAgo(iso) {
   if (s < 3600) return Math.floor(s / 60) + 'm ago'
   if (s < 86400) return Math.floor(s / 3600) + 'h ago'
   return Math.floor(s / 86400) + 'd ago'
+}
+
+const LEVEL_COLOR = { error: '#ef4444', warn: '#f59e0b', info: 'var(--dim, #888)' }
+
+function WorkerLogs({ workerId }) {
+  const [open, setOpen] = useState(false)
+  const [logs, setLogs] = useState(null)
+  const [err, setErr] = useState('')
+  const bottomRef = useRef(null)
+  const intervalRef = useRef(null)
+
+  useEffect(() => {
+    if (!open) { clearInterval(intervalRef.current); return }
+    const load = () => {
+      api.get(`?r=worker_logs&worker_id=${encodeURIComponent(workerId)}&limit=80`)
+        .then((d) => { setLogs(d.logs || []); setErr('') })
+        .catch((e) => setErr(e.message || 'failed'))
+    }
+    load()
+    intervalRef.current = setInterval(load, 6000)
+    return () => clearInterval(intervalRef.current)
+  }, [open, workerId])
+
+  useEffect(() => {
+    if (open && bottomRef.current) bottomRef.current.scrollIntoView({ behavior: 'smooth' })
+  }, [logs, open])
+
+  return (
+    <div>
+      <button className="btn btn-ghost btn-xs" onClick={() => setOpen(!open)}
+        style={{ fontSize: 12 }}>
+        {open ? '▾ hide logs' : '▸ logs'}
+      </button>
+      {open && (
+        <div style={{
+          marginTop: 6, background: 'var(--bg-inset, #111)', borderRadius: 6,
+          padding: '8px 10px', maxHeight: 260, overflowY: 'auto', fontSize: 11,
+          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+          lineHeight: 1.55,
+        }}>
+          {err && <div style={{ color: '#ef4444' }}>{err}</div>}
+          {logs && logs.length === 0 && <span style={{ color: 'var(--dim, #888)' }}>no logs yet</span>}
+          {logs && logs.map((l, i) => (
+            <div key={i} style={{ color: LEVEL_COLOR[l.level] || LEVEL_COLOR.info }}>
+              <span style={{ opacity: 0.5 }}>{l.ts?.slice(11, 19) || ''}</span>{' '}
+              {l.level !== 'info' && <span style={{ fontWeight: 600 }}>[{l.level}] </span>}
+              {l.message}
+            </div>
+          ))}
+          <div ref={bottomRef} />
+        </div>
+      )}
+    </div>
+  )
 }
 
 function WorkerCard({ worker, jobTypes, onChanged }) {
@@ -199,6 +253,8 @@ function WorkerCard({ worker, jobTypes, onChanged }) {
           {worker.paused ? 'Resume' : 'Pause'}
         </button>
       </div>
+
+      <WorkerLogs workerId={worker.worker_id} />
     </div>
   )
 }

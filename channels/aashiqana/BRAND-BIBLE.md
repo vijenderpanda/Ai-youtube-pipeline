@@ -35,6 +35,13 @@ held solo beauty shot and the couple (the romantic payoff) didn't arrive until ~
 - Caption "**Use this sound 🎵**"; cover = first frame (no custom thumbnail — playbook §5).
 Build with **`scripts/make_couplefirst_short.py`** (the standard Aashiqana-short assembler). The song
 itself must be **hook-first** (best line first, cold-open, no intro — see Sound DNA / QUALITY-LEDGER).
+- **MOTION path (restores the hook cliff):** pass **`--motion`** to weave the couple's identity-locked
+  intimate clips (`<couple>/motion/*.mp4`, ordered Look → Almost → Touch) as the hook + payoff beats
+  (`assemble_short_music.py` now has a `"clip"` beat kind). **ONE-COUPLE RULE:** the approved motion couple
+  (e.g. Midnight `7a43cb0a`, see `couple_library/leonardo_ids.json`) may NOT share a face with the library
+  disk stills, so with `--motion` the short is built from the **clips alone** — never mix disk stills of a
+  different face. First trim the song to a ~22–28s cold-open hook cut, then:
+  `make_couplefirst_short.py --couple couple_03_midnight --motion --audio hookcut.mp3 --lyrics timing.json --cut 2.2 --out short.mp4`.
 **Long-form** stays the fuller couple story, but its shots are framed so any of them re-cut into this Short pattern.
 
 ## 3b. Release strategy — Shorts-first, curiosity-led (LOCKED 2026-08-07)

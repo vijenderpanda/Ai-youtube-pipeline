@@ -10,6 +10,23 @@ export function timeAgo(iso) {
   return d.toLocaleDateString()
 }
 
+/**
+ * Duration between two ISO timestamps, formatted as a human-readable window.
+ * e.g. syncWindow("2026-08-06T10:00Z", "2026-08-07T08:00Z") → "22h"
+ * Shows the span between the two syncs, NOT how long ago the previous one was.
+ */
+export function syncWindow(fromIso, toIso) {
+  if (!fromIso || !toIso) return ''
+  const a = new Date(fromIso)
+  const b = new Date(toIso)
+  if (isNaN(a.getTime()) || isNaN(b.getTime())) return ''
+  const s = Math.abs(b.getTime() - a.getTime()) / 1000
+  if (s < 120) return `${Math.max(1, Math.round(s))}s`
+  if (s < 3600) return `${Math.round(s / 60)}m`
+  if (s < 86400) return `${Math.round(s / 3600)}h`
+  return `${Math.round(s / 86400)}d`
+}
+
 export function fmtDate(iso) {
   if (!iso) return ''
   const d = new Date(iso)
