@@ -48,8 +48,11 @@ def resolve_couple(args):
 
 
 def categorize_shots(shots_dir):
-    """-> {'G':[...heroine], 'C':[...couple], 'H':[...hero]} sorted absolute paths."""
+    """-> {'G':[...heroine], 'C':[...couple], 'H':[...hero]} sorted absolute paths.
+    Tolerates a missing shots/ dir (e.g. a motion-only couple like Midnight 7a43cb0a)."""
     cats = {"G": [], "C": [], "H": []}
+    if not os.path.isdir(shots_dir):
+        return cats
     for f in sorted(os.listdir(shots_dir)):
         if not f.lower().endswith((".jpg", ".jpeg", ".png")):
             continue
@@ -82,7 +85,7 @@ def build_beats(cats, dur, cut=2.0, clips=None):
     kills the cliff instantly), then alternate motion-clip payoff <-> heroine still, a new shot
     every ~cut s, loop back to the opening clip. Without clips: the original stills-only cut."""
     G, C, Hh = cats["G"], cats["C"], cats["H"]
-    if not G or not C:
+    if not clips and (not G or not C):      # stills need G+C; motion mode uses clips only
         sys.exit("need at least one heroine (G) and one couple (C) shot")
     n = max(6, int(round(dur / cut)))
     base = round(dur / n, 3)
@@ -199,10 +202,14 @@ def main():
     font_hi = find_font(["/System/Library/Fonts/Supplemental/Kohinoor.ttc",
                          "/System/Library/Fonts/Supplemental/DevanagariMT.ttc",
                          "/System/Library/Fonts/Kohinoor.ttc",
-                         "/Library/Fonts/Kohinoor.ttc"], 60)
+                         "/Library/Fonts/Kohinoor.ttc",
+                         "C:/Windows/Fonts/Nirmala.ttc",       # Windows Devanagari
+                         "C:/Windows/Fonts/mangal.ttf"], 60)
     font_ro = find_font(["/System/Library/Fonts/Supplemental/Georgia Bold.ttf",
                          "/System/Library/Fonts/Supplemental/Georgia.ttf",
-                         "/System/Library/Fonts/Supplemental/Arial Bold.ttf"], 52)
+                         "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+                         "C:/Windows/Fonts/georgiab.ttf",      # Windows serif bold
+                         "C:/Windows/Fonts/arialbd.ttf"], 52)
     if font_hi is None:
         print("!! no Devanagari font found — cards will be romanized only", file=sys.stderr)
     cards = [(ln, make_card(ln, i, work, font_hi, font_ro)) for i, ln in enumerate(lines)]
