@@ -92,27 +92,46 @@ if ($NoService) {
   exit 0
 }
 
-Say "Register a Scheduled Task to start the worker at logon?"
+Say "Set the worker to start automatically at logon?"
 $ans = Read-Host "  [y/N]"
 if ($ans -match '^[Yy]') {
   $runner = Join-Path $Repo "deploy\run-worker.ps1"
-  $action = New-ScheduledTaskAction -Execute "powershell.exe" `
-      -Argument "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$runner`""
-  $trigger = New-ScheduledTaskTrigger -AtLogOn
-  # Interactive user session (needed so `claude` uses YOUR subscription auth and
-  # Chrome-driving jobs can reach a real browser). Restart on crash.
-  $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries `
-      -DontStopIfGoingOnBatteries -StartWhenAvailable `
-      -RestartCount 999 -RestartInterval (New-TimeSpan -Minutes 1) `
-      -ExecutionTimeLimit (New-TimeSpan -Seconds 0)
-  Register-ScheduledTask -TaskName "FactoryWorker" -Action $action -Trigger $trigger `
-      -Settings $settings -Description "AI YouTube factory worker (claims Supabase jobs, runs claude -p)" `
-      -Force | Out-Null
-  Ok "Scheduled Task 'FactoryWorker' registered (starts at each logon)."
-  Write-Host "  start now:  Start-ScheduledTask -TaskName FactoryWorker"
-  Write-Host "  stop:       Stop-ScheduledTask  -TaskName FactoryWorker"
-  Write-Host "  remove:     Unregister-ScheduledTask -TaskName FactoryWorker -Confirm:`$false"
-  Write-Host "  logs:       Get-Content logs\factory_worker.log -Wait"
+  $registered = $false
+  # Preferred: a Scheduled Task (crash-restart via RestartCount). Some machines
+  # deny non-admin task registration (0x80070005) -> we catch it and fall back to
+  # a Startup-folder launcher, which needs no elevation.
+  try {
+    $action = New-ScheduledTaskAction -Execute "powershell.exe" `
+        -Argument "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$runner`""
+    $trigger = New-ScheduledTaskTrigger -AtLogOn
+    $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries `
+        -DontStopIfGoingOnBatteries -StartWhenAvailable `
+        -RestartCount 999 -RestartInterval (New-TimeSpan -Minutes 1) `
+        -ExecutionTimeLimit (New-TimeSpan -Seconds 0)
+    Register-ScheduledTask -TaskName "FactoryWorker" -Action $action -Trigger $trigger `
+        -Settings $settings -Description "AI YouTube factory worker (claims Supabase jobs, runs claude -p)" `
+        -Force -ErrorAction Stop | Out-Null
+    $registered = $true
+    Ok "Scheduled Task 'FactoryWorker' registered (starts at each logon)."
+    Write-Host "  start now:  Start-ScheduledTask -TaskName FactoryWorker"
+    Write-Host "  stop:       Stop-ScheduledTask  -TaskName FactoryWorker"
+    Write-Host "  remove:     Unregister-ScheduledTask -TaskName FactoryWorker -Confirm:`$false"
+    Write-Host "  logs:       Get-Content logs\factory_worker.log -Wait"
+  } catch {
+    Warn "Scheduled Task registration was denied (needs admin / blocked by policy)."
+    Warn "Falling back to a Startup-folder launcher (no admin required)."
+  }
+  if (-not $registered) {
+    $startup = [Environment]::GetFolderPath('Startup')
+    $cmdPath = Join-Path $startup "FactoryWorker.cmd"
+    # A tiny .cmd that launches the keep-alive runner hidden, at logon.
+    $body = "@echo off`r`nstart `"`" /min powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$runner`"`r`n"
+    Set-Content -Path $cmdPath -Value $body -Encoding ASCII
+    Ok "Startup launcher created: $cmdPath (runs at your next logon)."
+    Write-Host "  start now:  powershell -ExecutionPolicy Bypass -File deploy\run-worker.ps1"
+    Write-Host "  remove:     Remove-Item `"$cmdPath`""
+    Write-Host "  logs:       Get-Content logs\factory_worker.log -Wait"
+  }
 } else {
   Write-Host "Skipped. Run by hand: powershell -ExecutionPolicy Bypass -File deploy\run-worker.ps1"
 }
