@@ -124,13 +124,16 @@ if ($ans -match '^[Yy]') {
   if (-not $registered) {
     $startup = [Environment]::GetFolderPath('Startup')
     $cmdPath = Join-Path $startup "FactoryWorker.cmd"
-    # A tiny .cmd that launches the keep-alive runner hidden, at logon.
-    $body = "@echo off`r`nstart `"`" /min powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$runner`"`r`n"
+    $ctl = Join-Path $Repo "deploy\worker-ctl.ps1"
+    # A tiny .cmd that starts the worker via worker-ctl (pid-tracked, idempotent)
+    # hidden, at logon.
+    $body = "@echo off`r`npowershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$ctl`" start`r`n"
     Set-Content -Path $cmdPath -Value $body -Encoding ASCII
     Ok "Startup launcher created: $cmdPath (runs at your next logon)."
-    Write-Host "  start now:  powershell -ExecutionPolicy Bypass -File deploy\run-worker.ps1"
+    Write-Host "  start now:  powershell -ExecutionPolicy Bypass -File deploy\worker-ctl.ps1 start"
+    Write-Host "  stop:       powershell -ExecutionPolicy Bypass -File deploy\worker-ctl.ps1 stop"
+    Write-Host "  status:     powershell -ExecutionPolicy Bypass -File deploy\worker-ctl.ps1 status"
     Write-Host "  remove:     Remove-Item `"$cmdPath`""
-    Write-Host "  logs:       Get-Content logs\factory_worker.log -Wait"
   }
 } else {
   Write-Host "Skipped. Run by hand: powershell -ExecutionPolicy Bypass -File deploy\run-worker.ps1"

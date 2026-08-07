@@ -154,16 +154,35 @@ sure that ffmpeg is first on PATH (or set `FACTORY_FFMPEG` in `secrets\factory.e
 does not speed up `claude -p` reasoning or the Leonardo / Suno / ElevenLabs /
 HeyGen cloud calls — those are network-bound and dominate many jobs.
 
-## Managing the worker
+## Managing the worker (background)
 
-| Action | Command |
-|---|---|
-| Start now | `Start-ScheduledTask -TaskName FactoryWorker` |
-| Stop | `Stop-ScheduledTask -TaskName FactoryWorker` |
-| Remove autostart | `Unregister-ScheduledTask -TaskName FactoryWorker -Confirm:$false` |
-| Live logs | `Get-Content logs\factory_worker.log -Wait` |
-| One test claim | `$env:FACTORY_REPO=$PWD; python scripts\factory_worker.py --once` |
-| Pause claims (no restart) | in Supabase set `factory_settings.worker_paused = '1'` (`'0'` resumes) |
+Use **`deploy\worker-ctl.ps1`** — it runs the worker detached (keeps going after
+you close the terminal) and manages it. No admin needed.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy\worker-ctl.ps1 start     # run in background
+powershell -ExecutionPolicy Bypass -File deploy\worker-ctl.ps1 status    # running? + last log lines
+powershell -ExecutionPolicy Bypass -File deploy\worker-ctl.ps1 logs      # live tail
+powershell -ExecutionPolicy Bypass -File deploy\worker-ctl.ps1 pause     # stop claiming new jobs
+powershell -ExecutionPolicy Bypass -File deploy\worker-ctl.ps1 resume    # claim again
+powershell -ExecutionPolicy Bypass -File deploy\worker-ctl.ps1 restart   # stop + start
+powershell -ExecutionPolicy Bypass -File deploy\worker-ctl.ps1 stop      # terminate worker + its job tree
+```
+
+Tip: drop this alias in your PowerShell profile (`notepad $PROFILE`) so it's just `worker <action>`:
+
+```powershell
+function worker { powershell -ExecutionPolicy Bypass -File "$HOME\Ai-youtube-pipeline\deploy\worker-ctl.ps1" @args }
+```
+
+**Auto-start at logon** is set up by `install.ps1` (a Startup-folder launcher that
+calls `worker-ctl start`). To remove it: `Remove-Item "$([Environment]::GetFolderPath('Startup'))\FactoryWorker.cmd"`.
+
+Other controls:
+- **Pause/Resume** is also on the dashboard **Workers** tab (works for any machine).
+- **Global pause** (all workers): in Supabase set `factory_settings.worker_paused = '1'` (`'0'` resumes).
+- **One test claim, foreground:** `$env:FACTORY_REPO=$PWD; python scripts\factory_worker.py --once`
+- **If you ran install.ps1 as admin**, a `FactoryWorker` Scheduled Task is used instead — manage it with `Start-ScheduledTask` / `Stop-ScheduledTask -TaskName FactoryWorker`.
 
 ## Notes & gotchas
 
