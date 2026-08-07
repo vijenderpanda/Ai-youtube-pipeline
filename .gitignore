@@ -1,11 +1,11 @@
 # ─────────────────────────────────────────────────────────────
-# Secrets — NEVER commit
+# Secrets — private repo only; secrets/factory.env is tracked
 # ─────────────────────────────────────────────────────────────
 .env
 *.env
 !*.env.example
 *.key
-secrets/
+# secrets/ — now tracked (private repo); individual sensitive files below stay out
 client_secret*.json
 token.json
 token_*.json
