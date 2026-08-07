@@ -51,7 +51,7 @@ const POST_PATCH_FIELDS = [
 ];
 // v7: + control, heartbeat_at (job-control: stop requests + worker liveness)
 const JOB_LIST_COLS =
-  "id, channel_key, type, title, prompt, model, effort, status, result, error, created_at, started_at, finished_at, control, heartbeat_at";
+  "id, channel_key, type, title, prompt, model, effort, status, result, error, created_at, started_at, finished_at, control, heartbeat_at, assigned_worker, target_worker";
 
 const db = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -510,6 +510,32 @@ async function handleGet(url: URL): Promise<Response> {
       return json({ events: data });
     }
 
+    // v14: worker registry. Derives online/offline from last_seen (online =
+    // seen within WORKER_ONLINE_S) and reports each worker's current running
+    // load so the dashboard can show live status. job_types is the full set of
+    // routable types for the routing UI.
+    case "workers": {
+      const WORKER_ONLINE_S = 90;
+      const [workers, running] = await Promise.all([
+        db.from("factory_workers").select("*").order("registered_at", { ascending: true }),
+        db.from("factory_jobs").select("assigned_worker").eq("status", "running"),
+      ]);
+      if (workers.error) return json({ error: workers.error.message }, 500);
+      const load: Record<string, number> = {};
+      for (const j of (running.data ?? [])) {
+        const w = (j as { assigned_worker: string | null }).assigned_worker;
+        if (w) load[w] = (load[w] ?? 0) + 1;
+      }
+      const now = Date.now();
+      // deno-lint-ignore no-explicit-any
+      const rows = (workers.data ?? []).map((w: any) => ({
+        ...w,
+        running: load[w.worker_id] ?? 0,
+        online: w.last_seen ? (now - new Date(w.last_seen).getTime()) < WORKER_ONLINE_S * 1000 : false,
+      }));
+      return json({ workers: rows, job_types: JOB_TYPES });
+    }
+
     default:
       return json({ error: "unknown resource: " + (r ?? "(none)") }, 400);
   }
@@ -575,6 +601,7 @@ async function handlePost(body: any): Promise<Response> {
       if (model !== undefined) row.model = model;
       if (effort !== undefined) row.effort = effort;
       if (ultracode !== undefined) row.ultracode = Boolean(ultracode);
+      if (body.target_worker) row.target_worker = body.target_worker;  // v14: optional per-job pin
       const { data, error } = await db.from("factory_jobs").insert(row).select().single();
       if (error) return json({ error: error.message }, 500);
       await logEvent("job_created", `Job '${data.title ?? data.type}' queued for ${channel_key}`, {
@@ -615,6 +642,50 @@ async function handlePost(body: any): Promise<Response> {
         job_id: id,
         channel_key: data.channel_key,
       });
+      return json({ job: data });
+    }
+
+    // v14: edit a worker's dashboard-owned routing config. Accepts any of:
+    //   name (string), paused (bool), accept_types (string[]|null = all types),
+    //   max_parallel (int, advisory). worker_id is required and must exist.
+    case "update_worker": {
+      const { worker_id } = body;
+      if (!worker_id) return json({ error: "worker_id required" }, 400);
+      const patch: Record<string, unknown> = {};
+      if (body.name !== undefined) patch.name = body.name;
+      if (body.paused !== undefined) patch.paused = Boolean(body.paused);
+      if (body.max_parallel !== undefined) patch.max_parallel = body.max_parallel;
+      if (body.accept_types !== undefined) {
+        // null / [] => accept ALL types; else validate each against JOB_TYPES
+        const at = body.accept_types;
+        if (at !== null && !Array.isArray(at)) return json({ error: "accept_types must be an array or null" }, 400);
+        if (Array.isArray(at)) {
+          const bad = at.filter((t: string) => !JOB_TYPES.includes(t));
+          if (bad.length) return json({ error: "unknown job types: " + bad.join(", ") }, 400);
+        }
+        patch.accept_types = (Array.isArray(at) && at.length) ? at : null;
+      }
+      if (Object.keys(patch).length === 0) return json({ error: "nothing to update" }, 400);
+      const { data, error } = await db.from("factory_workers")
+        .update(patch).eq("worker_id", worker_id).select().maybeSingle();
+      if (error) return json({ error: error.message }, 500);
+      if (!data) return json({ error: "worker not found" }, 404);
+      await logEvent("worker_updated", `Worker '${data.name ?? worker_id}' updated`, { worker_id, patch });
+      return json({ worker: data });
+    }
+
+    // v14: pin (or unpin) a QUEUED job to a specific worker. target_worker=null clears it.
+    case "assign_job": {
+      const { id, target_worker } = body;
+      if (!id) return json({ error: "id required" }, 400);
+      const { data, error } = await db.from("factory_jobs")
+        .update({ target_worker: target_worker || null })
+        .eq("id", id).eq("status", "queued")
+        .select().maybeSingle();
+      if (error) return json({ error: error.message }, 500);
+      if (!data) return json({ error: "job not found or not queued" }, 409);
+      await logEvent("job_assigned", `Job ${id} pinned to ${target_worker || "any worker"}`,
+        { job_id: id, target_worker: target_worker || null });
       return json({ job: data });
     }
 

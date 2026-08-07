@@ -115,10 +115,12 @@ import csv
 import json
 import mimetypes
 import os
+import platform
 import re
 import shlex
 import shutil
 import signal
+import socket
 import subprocess
 import sys
 import threading
@@ -160,6 +162,15 @@ STALE_REAP_S = 180  # v7: 'running' jobs with a heartbeat older than this are or
 # Override the cap with FACTORY_MAX_PARALLEL in secrets/factory.env.
 MAX_PARALLEL_JOBS = 3
 HEAVY_TYPES = ("assemble_episode", "produce_short", "preview_episode")
+
+# v14: multi-worker. Each machine registers itself in factory_workers, heartbeats
+# last_seen, and reads its routing config (paused + accept_types) back from its
+# row every poll -- so the dashboard can pause a worker or change which job types
+# it pulls WITHOUT a restart. Claims go through factory_claim_job_v3, which routes
+# by accept_types (allow-list; empty=all) and per-job target_worker pins.
+WORKER_ID = (os.environ.get("FACTORY_WORKER_ID") or socket.gethostname() or "worker").strip()
+WORKER_NAME = (os.environ.get("FACTORY_WORKER_NAME") or socket.gethostname() or WORKER_ID).strip()
+WORKER_HEARTBEAT_S = 20  # how often to bump factory_workers.last_seen + reload routing
 STOP_GRACE_S = 5  # v7: SIGTERM -> this many seconds -> SIGKILL (whole process group)
 LOG_CAP_BYTES = 200_000
 JOB_TIMEOUT_S = 45 * 60
@@ -421,6 +432,66 @@ def seed_settings(supa):
         {"key": "default_publish_time", "value": "16:00"},  # v8: draft publish slot (local tz)
     ], on_conflict="key", resolution="ignore-duplicates")
     log("seeded factory_settings auto_sync defaults (ignore-duplicates)")
+
+
+# ---------------------------------------------------------------- v14: worker registry
+
+
+def detect_gpu():
+    """Best-effort NVIDIA GPU name via nvidia-smi (None if absent). Never raises."""
+    try:
+        exe = shutil.which("nvidia-smi")
+        if not exe:
+            return None
+        out = subprocess.run([exe, "--query-gpu=name", "--format=csv,noheader"],
+                             capture_output=True, text=True, timeout=10)
+        name = (out.stdout or "").strip().splitlines()
+        return name[0].strip() if name and name[0].strip() else None
+    except (OSError, subprocess.SubprocessError):
+        return None
+
+
+def register_worker(supa, max_parallel):
+    """Upsert this machine's row in factory_workers. Preserves dashboard-owned
+    fields (paused, accept_types, name) on re-registration by NOT overwriting them
+    here -- only identity/capability/liveness columns are (re)written."""
+    row = {
+        "worker_id": WORKER_ID,
+        "hostname": socket.gethostname(),
+        "os": platform.system(),
+        "gpu": detect_gpu(),
+        "max_parallel": max_parallel,
+        "last_seen": now_iso(),
+        "meta": {"python": platform.python_version(), "platform": platform.platform()},
+    }
+    # First insert seeds name (friendly default); later upserts leave name/paused/
+    # accept_types alone so dashboard edits stick.
+    try:
+        existing = supa.select("factory_workers", f"worker_id=eq.{WORKER_ID}&select=worker_id")
+    except (RuntimeError, requests.RequestException):
+        existing = []
+    if not existing:
+        row["name"] = WORKER_NAME
+    supa.insert("factory_workers", [row], on_conflict="worker_id",
+                resolution="merge-duplicates")
+    log(f"registered worker '{WORKER_NAME}' ({WORKER_ID}) os={row['os']} gpu={row['gpu'] or 'none'}")
+
+
+def worker_heartbeat(supa):
+    """Bump last_seen and read this worker's live routing config back in one
+    round-trip. Returns (paused: bool, accept_types: list|None). On ANY error
+    returns (False, None) so a heartbeat hiccup never stalls claiming."""
+    try:
+        rows = supa.patch_returning("factory_workers", f"worker_id=eq.{WORKER_ID}",
+                                    {"last_seen": now_iso()},
+                                    select="paused,accept_types")
+        if rows:
+            r = rows[0]
+            acc = r.get("accept_types")
+            return bool(r.get("paused")), (acc if acc else None)
+    except (RuntimeError, requests.RequestException):
+        pass
+    return False, None
 
 
 # ---------------------------------------------------------------- prompt + command
@@ -3240,9 +3311,14 @@ def main():
     # (asset generation, planning, briefs) fill the remaining slots.
     max_parallel = 1 if args.once else max(1, int(env.get("FACTORY_MAX_PARALLEL")
                                                   or MAX_PARALLEL_JOBS))
+    try:
+        register_worker(supa, max_parallel)
+    except (RuntimeError, requests.RequestException) as e:
+        log(f"WARNING: worker registration failed (continuing): {e}")
     log(f"worker ready -- polling for jobs (parallel x{max_parallel}, heavy serial)"
         + (" (--once)" if args.once else ""))
     active = {}  # job_id -> (thread, job_type)
+    hb_state = {"paused": False, "accept": None, "at": 0.0}  # cached routing config
 
     def _run_in_thread(job):
         try:
@@ -3253,23 +3329,40 @@ def main():
     while True:
         for jid in [j for j, (t, _) in active.items() if not t.is_alive()]:
             active.pop(jid)
+
+        # v14: heartbeat + reload this worker's routing config every ~20s. Cheap,
+        # and lets the dashboard pause the worker / change its accepted job types
+        # live. Failures are swallowed (returns defaults) so claiming never stalls.
+        if time.time() - hb_state["at"] >= WORKER_HEARTBEAT_S:
+            paused, accept = worker_heartbeat(supa)
+            if paused != hb_state["paused"]:
+                log(f"worker {'PAUSED' if paused else 'RESUMED'} via dashboard")
+            if accept != hb_state["accept"]:
+                log(f"accept_types -> {accept if accept else 'ALL'}")
+            hb_state.update(paused=paused, accept=accept, at=time.time())
+
         claimed = False
-        if len(active) < max_parallel:
+        if not hb_state["paused"] and len(active) < max_parallel:
             heavy_live = any(tp in HEAVY_TYPES for _, tp in active.values())
             exclude = list(HEAVY_TYPES) if heavy_live else []
+            accept = hb_state["accept"]  # None = all types
             try:
-                jobs = supa.rpc("factory_claim_job_v2", {"exclude_types": exclude}) or []
-            except (RuntimeError, requests.RequestException) as e:
-                # v2 RPC missing (old DB) -> old serial claim, but only when idle
-                # so the heavy-serial guarantee still holds
-                if active:
-                    jobs = []
-                else:
-                    try:
-                        jobs = supa.rpc("factory_claim_job") or []
-                    except (RuntimeError, requests.RequestException) as e2:
-                        log(f"claim failed: {e2}")
+                jobs = supa.rpc("factory_claim_job_v3",
+                                {"p_worker_id": WORKER_ID, "exclude_types": exclude,
+                                 "accept_types": accept}) or []
+            except (RuntimeError, requests.RequestException):
+                # v3 RPC missing (old DB) -> v2 (no routing), then v1 serial when idle
+                try:
+                    jobs = supa.rpc("factory_claim_job_v2", {"exclude_types": exclude}) or []
+                except (RuntimeError, requests.RequestException):
+                    if active:
                         jobs = []
+                    else:
+                        try:
+                            jobs = supa.rpc("factory_claim_job") or []
+                        except (RuntimeError, requests.RequestException) as e2:
+                            log(f"claim failed: {e2}")
+                            jobs = []
             if jobs:
                 job = jobs[0] if isinstance(jobs, list) else jobs
                 claimed = True

@@ -12,7 +12,10 @@
 # =============================================================================
 param([switch]$NoService)
 
-$ErrorActionPreference = "Stop"
+# Continue (not Stop): native tools like pip/ffmpeg write progress to stderr,
+# which under 'Stop' PowerShell turns into a terminating NativeCommandError even
+# on success. We check $LASTEXITCODE explicitly instead.
+$ErrorActionPreference = "Continue"
 $Repo = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $Repo
 
@@ -41,13 +44,13 @@ if (-not $PyExe) { Die "Python 3.9+ not found. Install from https://python.org (
 Ok "Python: $PyExe $($PyArgs -join ' ')"
 
 Say "Installing Python dependencies (requirements.txt)..."
-& $PyExe @PyArgs -m pip install -r requirements.txt 2>&1 | Out-File "$env:TEMP\factory_pip.log"
+& $PyExe @PyArgs -m pip install -r requirements.txt *> "$env:TEMP\factory_pip.log"
 if ($LASTEXITCODE -ne 0) { Die "pip install failed. See $env:TEMP\factory_pip.log" }
 Ok "dependencies installed"
 
 # -- 3. GPU / NVENC preflight -------------------------------------------------
 Say "Checking GPU video-encode acceleration (NVENC)..."
-& $PyExe @PyArgs scripts\gpu_check.py 2>&1 | Out-File "$env:TEMP\factory_gpu.log"
+& $PyExe @PyArgs scripts\gpu_check.py *> "$env:TEMP\factory_gpu.log"
 if ($LASTEXITCODE -eq 0) {
   Ok "NVENC works - the worker will offload video encoding to the RTX GPU."
 } else {
@@ -75,7 +78,7 @@ if (Test-Path .env) {
 # -- 5. Worker smoke test (constructs a job command; executes nothing) --------
 Say "Smoke-testing the worker (dry-run)..."
 $env:FACTORY_REPO = $Repo
-& $PyExe @PyArgs scripts\factory_worker.py --dry-run 2>&1 | Out-File "$env:TEMP\factory_dry.log"
+& $PyExe @PyArgs scripts\factory_worker.py --dry-run *> "$env:TEMP\factory_dry.log"
 if ($LASTEXITCODE -eq 0) {
   Ok "worker dry-run OK"
 } else {
