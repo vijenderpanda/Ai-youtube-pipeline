@@ -10,6 +10,38 @@ Claude once → the worker autostarts at logon.**
 
 ---
 
+## TL;DR — copy-paste the whole thing
+
+Open **PowerShell** and paste this block. It installs everything, clones the
+repo, and runs the installer. Two manual steps are called out with `#>>>`.
+
+```powershell
+# 1. Prerequisites (Claude CLI, Python, Git, GitHub CLI, NVENC ffmpeg)
+winget install --accept-package-agreements --accept-source-agreements Anthropic.ClaudeCode Python.Python.3.12 Git.Git GitHub.cli Gyan.FFmpeg
+
+#>>> Close and REOPEN PowerShell here so PATH refreshes, then continue:
+
+# 2. Get the code (private repo — this opens a browser to log in)
+gh auth login
+gh repo clone vijenderpanda/Ai-youtube-pipeline
+cd Ai-youtube-pipeline
+
+# 3. Install (checks tools, deps, GPU; offers logon-autostart — say y)
+powershell -ExecutionPolicy Bypass -File .\install.ps1
+
+#>>> Sign in to Claude once:  run `claude`, finish the browser login, then /exit
+#>>> Then edit secrets\factory.env and set SUPABASE_URL + SUPABASE_SERVICE_KEY:
+notepad secrets\factory.env
+
+# 4. Start it (also auto-starts at every logon)
+Start-ScheduledTask -TaskName FactoryWorker
+Get-Content logs\factory_worker.log -Wait
+```
+
+The rest of this page explains each step and how to verify the GPU.
+
+---
+
 ## 1. Install the four prerequisites
 
 Open **PowerShell** and install what's missing:
@@ -36,8 +68,21 @@ Close and reopen PowerShell so the new PATH entries take effect.
 
 ## 2. Clone and install
 
+The repo is **private**, so sign in to GitHub first. Easiest is the GitHub CLI:
+
 ```powershell
-git clone <your-repo-url> Ai-youtube-pipeline
+winget install GitHub.cli
+gh auth login          # choose GitHub.com → HTTPS → login with a browser
+gh repo clone vijenderpanda/Ai-youtube-pipeline
+cd Ai-youtube-pipeline
+powershell -ExecutionPolicy Bypass -File .\install.ps1
+```
+
+Prefer plain git? Use the HTTPS URL (it will prompt for your GitHub login /
+personal-access token the first time):
+
+```powershell
+git clone https://github.com/vijenderpanda/Ai-youtube-pipeline.git
 cd Ai-youtube-pipeline
 powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
