@@ -59,6 +59,13 @@ function Icon({ name }) {
         <path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3" />
       </>
     ),
+    workers: (
+      <>
+        <rect x="4" y="4" width="16" height="8" rx="1.5" />
+        <rect x="4" y="14" width="16" height="6" rx="1.5" />
+        <path d="M8 8h.01M8 17h.01" />
+      </>
+    ),
     lock: (
       <>
         <rect x="4" y="11" width="16" height="10" rx="2" />
@@ -93,6 +100,7 @@ const NAV = [
   { to: '/renders', label: 'Renders', icon: 'renders' },
   { to: '/posts', label: 'Posts', icon: 'posts' },
   { to: '/generators', label: 'Generators', icon: 'generators' },
+  { to: '/workers', label: 'Workers', icon: 'workers' },
 ]
 
 export default function Sidebar({ onLock }) {

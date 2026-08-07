@@ -15,10 +15,22 @@ export default function NewJobModal({ channels = [], initial = {}, onClose, onCr
     model: initial.model || 'opus',
     effort: initial.effort || 'high',
     ultracode: !!initial.ultracode,
+    target_worker: initial.target_worker || '',
   })
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [workers, setWorkers] = useState([])
   const { toast, show } = useToast()
+
+  // v14: offer to pin the job to a specific machine ("Run on"). Best-effort —
+  // if the workers endpoint fails we just omit the picker.
+  useEffect(() => {
+    let alive = true
+    api.get('?r=workers')
+      .then((r) => { if (alive) setWorkers(r.workers || []) })
+      .catch(() => {})
+    return () => { alive = false }
+  }, [])
 
   // If channels arrive after mount (e.g. deep-linked from Generators), pick the first one.
   useEffect(() => {
@@ -35,7 +47,9 @@ export default function NewJobModal({ channels = [], initial = {}, onClose, onCr
     setBusy(true)
     setError('')
     try {
-      const res = await api.post({ action: 'create_job', ...form })
+      const payload = { action: 'create_job', ...form }
+      if (!payload.target_worker) delete payload.target_worker  // '' = any worker
+      const res = await api.post(payload)
       onCreated(res.job)
     } catch (err) {
       setError(err.message)
@@ -123,6 +137,20 @@ export default function NewJobModal({ channels = [], initial = {}, onClose, onCr
             </select>
           </label>
         </div>
+        {workers.length > 0 && (
+          <label className="field">
+            <span className="field-label">Run on</span>
+            <select value={form.target_worker} onChange={set('target_worker')}>
+              <option value="">Any worker</option>
+              {workers.map((w) => (
+                <option key={w.worker_id} value={w.worker_id}>
+                  {(w.name || w.worker_id) + (w.online ? '' : ' (offline)') +
+                    (w.gpu ? ' · GPU' : '')}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <UltracodeToggle
           checked={form.ultracode}
           onChange={(v) => setForm((f) => ({ ...f, ultracode: v }))}
