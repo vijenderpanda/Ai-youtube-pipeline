@@ -3271,7 +3271,25 @@ def dry_run():
     print("--- END DRY RUN ---")
 
 
+def ensure_utf8_mode():
+    """Windows defaults open()/Path.read_text() to the locale codec (cp1252),
+    which chokes on UTF-8 repo files (PRODUCTION-PLAYBOOK.md, manifests, etc.).
+    Re-exec once in Python UTF-8 mode so every text read/write is UTF-8 no matter
+    how the worker was launched, and export PYTHONUTF8 so child python subprocesses
+    (network_stats.py, yt_upload.py, ...) inherit it. No-op off Windows / already-on."""
+    if os.name != "nt" or sys.flags.utf8_mode:
+        return
+    os.environ["PYTHONUTF8"] = "1"
+    if os.environ.get("FACTORY_UTF8_REEXEC") != "1":
+        os.environ["FACTORY_UTF8_REEXEC"] = "1"
+        try:
+            os.execv(sys.executable, [sys.executable, "-X", "utf8", *sys.argv])
+        except OSError:
+            pass  # re-exec failed; PYTHONUTF8 is still set for any children
+
+
 def main():
+    ensure_utf8_mode()
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--once", action="store_true", help="single claim attempt, then exit")
     ap.add_argument("--dry-run", action="store_true", help="print the exact claude command for a fake job; execute nothing")

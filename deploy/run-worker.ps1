@@ -34,6 +34,9 @@ New-Item -ItemType Directory -Force -Path logs | Out-Null
 $Log = Join-Path $Repo "logs\factory_worker.log"
 # Unbuffered Python so log lines appear promptly when tailing the file.
 $env:PYTHONUNBUFFERED = "1"
+# UTF-8 mode: Windows otherwise defaults file reads to cp1252 and chokes on the
+# repo's UTF-8 docs/manifests. Inherited by child python subprocesses too.
+$env:PYTHONUTF8 = "1"
 Write-Host "> Starting factory worker (Ctrl-C to stop)... logging to $Log" -ForegroundColor Cyan
 
 while ($true) {
