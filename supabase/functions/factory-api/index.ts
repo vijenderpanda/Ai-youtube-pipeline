@@ -997,13 +997,22 @@ async function handlePost(body: any): Promise<Response> {
       if (existing && existing.length > 0) {
         return json({ error: "an analytics_sync job is already " + existing[0].status }, 409);
       }
+      // Respect global model/effort override; fall back to sonnet/low (analytics
+      // is background intelligence, not creative work -- no need for heavy models).
+      const { data: settingsRows } = await db.from("factory_settings").select("key, value")
+        .in("key", ["override_enabled", "override_model", "override_effort"]);
+      const sv: Record<string, string> = {};
+      for (const r of (settingsRows ?? [])) sv[r.key] = r.value;
+      const overrideOn = (sv.override_enabled ?? "0") === "1";
+      const syncModel  = overrideOn && sv.override_model  ? sv.override_model  : "sonnet";
+      const syncEffort = overrideOn && sv.override_effort ? sv.override_effort : "low";
       const { data: job, error } = await db.from("factory_jobs")
         .insert({
           channel_key: "_network",
           type: "analytics_sync",
           title: "Analytics sync + AI suggestions",
-          model: "fable",
-          effort: "high",
+          model: syncModel,
+          effort: syncEffort,
           status: "queued",
         })
         .select().single();

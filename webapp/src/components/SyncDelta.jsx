@@ -47,14 +47,34 @@ export default function SyncDelta({ deltas, loading = false }) {
     )
   }
 
+  // For delta tiles: when delta === 0 show the previous absolute figure
+  // with an "unchanged" ribbon instead of a bare 0.
+  function deltaTile(label, delta, prev, fmt = fmtNum) {
+    const isZero = Number.isFinite(Number(delta)) && Number(delta) === 0
+    if (isZero && prev != null) {
+      return {
+        label,
+        value: fmt(prev),
+        tone: '',
+        badge: 'unchanged',
+        prev: null,
+      }
+    }
+    return {
+      label,
+      value: fmtSigned(delta, fmt),
+      tone: toneOf(delta),
+      badge: null,
+      prev: prev != null ? `was ${fmt(prev)}` : null,
+    }
+  }
+
   const tiles = [
-    { label: 'views gained', value: fmtSigned(r.dViews, fmtNum), tone: toneOf(r.dViews),
-      prev: r.prevViews != null ? `was ${fmtNum(r.prevViews)}` : null },
-    { label: 'likes + comments', value: fmtSigned(r.dEng, fmtNum), tone: toneOf(r.dEng),
-      prev: r.prevEng != null ? `was ${fmtNum(r.prevEng)}` : null },
-    { label: 'movers', value: fmtNum(r.movers), tone: '' },
-    { label: 'new videos', value: fmtNum(r.newCount), tone: '' },
-    { label: 'videos tracked', value: fmtNum(r.tracked), tone: '' },
+    deltaTile('views gained', r.dViews, r.prevViews),
+    deltaTile('likes + comments', r.dEng, r.prevEng),
+    { label: 'movers', value: fmtNum(r.movers), tone: '', badge: null },
+    { label: 'new videos', value: fmtNum(r.newCount), tone: '', badge: null },
+    { label: 'videos tracked', value: fmtNum(r.tracked), tone: '', badge: null },
   ]
 
   return (
@@ -62,7 +82,8 @@ export default function SyncDelta({ deltas, loading = false }) {
       {head}
       <div className="stat-grid">
         {tiles.map((t) => (
-          <div className="card stat" key={t.label}>
+          <div className="card stat" key={t.label} style={{ position: 'relative' }}>
+            {t.badge && <span className="sync-unchanged-badge">{t.badge}</span>}
             <div className={'stat-value' + (t.tone ? ` tone-${t.tone}` : '')}>{t.value}</div>
             <div className="stat-label">{t.label}</div>
             {t.prev && <div className="stat-prev">{t.prev}</div>}

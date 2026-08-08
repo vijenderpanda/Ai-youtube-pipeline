@@ -1569,8 +1569,8 @@ def run_analytics_sync(supa, job):
             "channel_key": "_network",
             "title": "AI content analysis",
             "prompt": "",
-            "model": job.get("model") or "fable",
-            "effort": "high",
+            "model": job.get("model") or "sonnet",
+            "effort": job.get("effort") or "low",
             "ultracode": bool(job.get("ultracode")),
         }])
         follow_id = created[0]["id"] if created else None
@@ -2532,8 +2532,8 @@ def maybe_auto_sync(supa):
             "channel_key": "_network",
             "title": f"Daily auto analytics sync ({hour} {tzname})",
             "prompt": "",
-            "model": "fable",
-            "effort": "high",
+            "model": "sonnet",
+            "effort": "low",
         }])
         job_id = created[0]["id"] if created else None
         supa.insert("factory_events", [{

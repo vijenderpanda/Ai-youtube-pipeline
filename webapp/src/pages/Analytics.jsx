@@ -5,6 +5,7 @@ import Chips, { ChipsGroup } from '../components/Chips'
 import SyncAnalyticsButton from '../components/SyncAnalyticsButton'
 import SyncDelta from '../components/SyncDelta'
 import Recommendations from '../components/Recommendations'
+import NetworkInsights from '../components/NetworkInsights'
 import NewJobModal from '../components/NewJobModal'
 import Toast, { useToast } from '../components/Toast'
 import { toISODate } from '../format'
@@ -180,6 +181,8 @@ export default function Analytics() {
       </section>
 
       <FallbackBanner statsRows={statsRows} />
+
+      <NetworkInsights videos={videos} channels={channels} accents={accents} />
 
       <Recommendations
         videos={videos}
