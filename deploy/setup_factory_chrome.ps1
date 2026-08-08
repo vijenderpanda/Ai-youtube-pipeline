@@ -41,11 +41,8 @@ $profileName = "Factory"
 
 Write-Host "[setup] Opening Chrome with Factory profile..."
 # Open Chrome with the Factory profile — owner signs in via AnyDesk
-Start-Process -FilePath $chrome -ArgumentList `
-    "--profile-directory=`"$profileName`"",
-    "--no-first-run",
-    "https://accounts.google.com/signin",
-    "chrome://version"
+$chromeArgs = @("--profile-directory=$profileName", "--no-first-run", "https://accounts.google.com/signin")
+Start-Process -FilePath $chrome -ArgumentList $chromeArgs
 
 Start-Sleep -Seconds 4
 
