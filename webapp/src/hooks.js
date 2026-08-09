@@ -16,8 +16,8 @@ export function usePoll(fetcher, intervalMs = 0, deps = []) {
 
   useEffect(() => {
     let alive = true
-    const run = async () => {
-      if (document.hidden) return
+    const run = async (skipHiddenCheck = false) => {
+      if (!skipHiddenCheck && document.hidden) return
       try {
         const data = await fnRef.current()
         if (alive) setState({ data, error: null, loading: false })
@@ -25,7 +25,7 @@ export function usePoll(fetcher, intervalMs = 0, deps = []) {
         if (alive) setState((s) => ({ data: s.data, error: e, loading: false }))
       }
     }
-    run()
+    run(true) // initial fetch always fires even if tab is hidden
     let id = null
     if (intervalMs > 0) id = setInterval(run, intervalMs)
     const onVis = () => {
