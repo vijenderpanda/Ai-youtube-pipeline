@@ -1,24 +1,51 @@
-import { useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import { usePoll } from '../hooks'
 import { resolveAccents, accentFor } from '../channelColor'
 import CalendarStatusChip from '../components/CalendarStatusChip'
 import EmptyState from '../components/EmptyState'
+import PlanContentModal from '../components/PlanContentModal'
+import Toast, { useToast } from '../components/Toast'
 import { fmtDayHeading } from '../format'
 
 /**
  * Studio — staged fragment production (see docs/STAGED-PIPELINE.md §5).
  * One card per staged episode; click through to its asset board.
+ * "+ New project" (v16) creates the calendar row AND stages it in one flow, so
+ * every asset generated for a post lives inside its Studio project from the
+ * start — no local scaffolding, no post-hoc syncing.
  */
 export default function Studio() {
   const stagedQ = usePoll(() => api.get('?r=staged'), 15000)
   const chansQ = usePoll(() => api.get('?r=channels'), 0)
+  const navigate = useNavigate()
+  const [modalOpen, setModalOpen] = useState(false)
+  const { toast, show } = useToast()
 
   const items = (stagedQ.data && stagedQ.data.items) || []
   const counts = (stagedQ.data && stagedQ.data.counts) || {}
   const channels = (chansQ.data && chansQ.data.channels) || []
   const accents = useMemo(() => resolveAccents(channels), [channels])
+
+  // Plan modal returns the fresh calendar item; we stage it immediately so the
+  // user lands on the Studio board with plan_assets already queued.
+  const onCreated = async (item) => {
+    if (!item || !item.id) {
+      show('Created but no id returned — open the calendar to stage manually.', 'error')
+      setModalOpen(false)
+      return
+    }
+    try {
+      await api.post({ action: 'stage_calendar_item', id: item.id })
+    } catch (err) {
+      show('Created but staging failed: ' + err.message + ' — open on the calendar and try again.', 'error')
+      setModalOpen(false)
+      return
+    }
+    setModalOpen(false)
+    navigate('/studio/' + item.id)
+  }
 
   return (
     <div className="page">
@@ -26,6 +53,17 @@ export default function Studio() {
         <div>
           <h1>Studio</h1>
           <p className="sub">Staged production · review every asset before assembly</p>
+        </div>
+        <div className="head-actions">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => setModalOpen(true)}
+            disabled={channels.length === 0}
+            title={channels.length === 0 ? 'Loading channels…' : 'Create a new Studio project'}
+          >
+            + New project
+          </button>
         </div>
       </header>
 
@@ -119,6 +157,15 @@ export default function Studio() {
           })}
         </div>
       )}
+
+      {modalOpen && (
+        <PlanContentModal
+          channels={channels}
+          onClose={() => setModalOpen(false)}
+          onCreated={onCreated}
+        />
+      )}
+      <Toast toast={toast} />
     </div>
   )
 }
