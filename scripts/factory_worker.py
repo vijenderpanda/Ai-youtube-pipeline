@@ -3033,11 +3033,19 @@ def run_shell_script_job(supa, job):
     except Exception:
         pass
 
+    # v16: .py scripts dispatch through python3 so finalize_episode.py + other
+    # deterministic Python steps can run under the shell_script job type without
+    # a shell wrapper. meta.script_args is an optional list of extra CLI flags.
+    extra_args = meta.get("script_args") or []
+    if not isinstance(extra_args, list):
+        extra_args = []
     if full.endswith(".ps1"):
         cmd = ["powershell.exe", "-NonInteractive", "-File", full,
-               "-RepoRoot", REPO]
+               "-RepoRoot", REPO, *[str(a) for a in extra_args]]
+    elif full.endswith(".py"):
+        cmd = ["python3", full, *[str(a) for a in extra_args]]
     else:
-        cmd = ["bash", full]
+        cmd = ["bash", full, *[str(a) for a in extra_args]]
 
     try:
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
