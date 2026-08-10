@@ -581,6 +581,54 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
                 f"CHANNEL GUIDELINES:\n{guidelines or '(none on file)'}\n\n"
                 f"JOB BRIEF:\n{jprompt}\n\n"
                 "STANDING RULES: follow docs/PRODUCTION-PLAYBOOK.md, premium quality bar.")
+    elif jtype == "produce_preview":
+        # v16: monolithic one-Claude-call short production that STOPS at a
+        # low-cost preview. Human reviews the preview MP4 in Studio; a scripted
+        # finalize_episode.py job later runs mastering + endcard + outro + arm
+        # YT. Cost profile: opus/medium ~$2.5/short (vs $4 for full produce_short),
+        # ~22-28 min wall vs 34 min. Human quality gate before spending on the
+        # 1080p master. See scripts/push_asset.py for the per-asset Studio
+        # visibility hook.
+        cal_id = (job.get("meta") or {}).get("calendar_id") or ""
+        body = (
+            "You are producing a low-res PREVIEW of a claude-tricks Short. "
+            "One Claude session, ~25 min budget, opus/medium tier. Do NOT master "
+            "at 1080p — that happens later via scripts/finalize_episode.py.\n\n"
+            f"CHANNEL GUIDELINES:\n{guidelines or '(none on file)'}\n\n"
+            f"JOB BRIEF (locked plan JSON follows):\n{jprompt}\n\n"
+            "STANDING RULES: follow docs/PRODUCTION-PLAYBOOK.md, premium quality bar.\n\n"
+            "PIPELINE (in order):\n"
+            "1. PLAN CHECK: the brief above is a locked plan. If it does NOT already "
+            "include a title, hook, beats, VO lines, wardrobe pick, and thumbnail "
+            "concept, STOP and write manifest with an error — do not fabricate a plan.\n"
+            "2. HOST POOL: run `python3 scripts/host_outfit.py --register-pool <ep_key>` "
+            "to get both center + 3/4 talking-photo IDs. Alternate between them "
+            "across cutaway beats — DO NOT use only center (that's the tell we're "
+            "fixing this cycle).\n"
+            "3. GENERATE ASSETS in order. After EACH asset lands on disk, call "
+            f"`python3 scripts/push_asset.py --calendar-id {cal_id} "
+            "--asset-key <slug> --file <path> --kind <image|video|audio|text> "
+            "--group <thumbnail|scene|clip|audio|overlay|other>` so Studio's "
+            "filmstrip populates live during your session. Assets that don't "
+            "get pushed are invisible to the reviewer.\n"
+            "4. WRITE SPEC at channels/claude-tricks/episodes/<ep_key>.v2.json in "
+            "the schema build_ep_v2.py accepts (EPISODES_V2 dict shape: title, tags, "
+            "cover, lines, hot_words, beats, steps, music, endcard, outro). Use a "
+            "recent shipped episode as a template.\n"
+            "5. PREVIEW RENDER: run `python3 channels/claude-tricks/build_ep_v2.py "
+            "--ep <ep_key> --preview --tag prev`. This produces "
+            "channels/claude-tricks/renders/ep<ep_key>_prev_raw.mp4 — 1080x1920, "
+            "unmastered VO, no music bed, no polish. That IS the preview.\n"
+            "6. QC LITE: run scripts/lipsync_align.py measure and scripts/probe_frames.py "
+            "corner on the preview raw. Log offsets but do NOT re-render — that's "
+            "for finalize_episode. Fail loudly only if lipsync offset > 60ms.\n"
+            "7. MANIFEST: write manifest_<job_id>.json listing the preview raw as "
+            "the primary file, plus a `spec_path` field pointing at the episodes/ "
+            "JSON so finalize_episode can pick up.\n\n"
+            "COST DISCIPLINE: no Leonardo (5 tokens left, blocked — use in-house "
+            "PIL mocks). No 1080p master. No endcard composite. No outro concat. "
+            "Those are finalize's job."
+        )
     elif jtype == "record_demo":
         body = ("Record an authentic tool demo using scripts/record_demo.py and frame it "
                 f"with the pro styles (scripts/style_punch.py etc.): {jprompt}")

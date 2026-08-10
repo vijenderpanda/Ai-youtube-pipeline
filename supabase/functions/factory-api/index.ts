@@ -24,6 +24,11 @@ const JOB_TYPES = [
   "generate_asset",
   "assemble_episode",
   "preview_episode",
+  // v16: monolithic one-Claude-call production that stops at a low-res preview
+  // (raw MP4, no mastering). Human reviews in Studio, then finalize_episode.py
+  // (via shell_script) runs mastering + endcard + outro + arm YT. Cost saving
+  // vs full produce_short: ~$1-2/short. See build_ep_v2.py --preview flag.
+  "produce_preview",
 ];
 // v8: staged job types carry meta.calendar_id for their episode
 const STAGED_JOB_TYPES = ["plan_assets", "generate_asset", "assemble_episode", "preview_episode"];

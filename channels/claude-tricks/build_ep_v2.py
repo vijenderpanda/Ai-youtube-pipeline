@@ -1215,11 +1215,28 @@ def run(cmd, **kw):
     print("+", " ".join(str(c) for c in cmd))
     subprocess.run(cmd, check=True, **kw)
 
-def build(ep, dry=False, tag="v2"):
+def build(ep, dry=False, tag="v2", preview=False):
     """tag = the render stem (ep<NN>_<tag>{,_raw,_outro}.mp4). Defaults to the
     historical "v2"; pass another (e.g. "v3") to cut a REVISION without
-    overwriting the shipped file, so old and new can be compared side by side."""
-    cfg = EPISODES_V2[ep]
+    overwriting the shipped file, so old and new can be compared side by side.
+
+    v16 preview=True: stop after Remotion writes the raw MP4. Skip the master
+    audio chain (ducked music + limiter), skip end-card overlay, skip outro
+    concat. The raw itself is a valid preview — 1080x1920, unmastered VO,
+    no music bed, no polish. produce_preview jobs use this to save the ~1-2
+    minutes of mastering + endcard/outro passes at their cost tier."""
+    # v16 fallback: if the ep isn't in the hardcoded EPISODES_V2 dict, look
+    # for a standalone JSON spec at channels/claude-tricks/episodes/<ep>.v2.json.
+    # This lets Claude produce a new short without editing the dict — the
+    # dict stays for the shipped catalogue, the JSON supports one-off drafts.
+    if ep in EPISODES_V2:
+        cfg = EPISODES_V2[ep]
+    else:
+        cfg_path = os.path.join(CH, "episodes", f"{ep}.v2.json")
+        if not os.path.exists(cfg_path):
+            raise KeyError(f"ep {ep!r} not in EPISODES_V2 and no fallback at {cfg_path}")
+        with open(cfg_path) as f:
+            cfg = json.load(f)
     A = os.path.join(CH, "assets", f"ep{ep}"); os.makedirs(A, exist_ok=True)
     R = os.path.join(CH, "renders"); os.makedirs(R, exist_ok=True)
 
@@ -1418,6 +1435,14 @@ def build(ep, dry=False, tag="v2"):
     run(["npx", "remotion", "render", "Short", raw, f"--props={sp}", *rflags],
         cwd=os.path.join(REPO, "remotion-studio"))
 
+    if preview:
+        # v16: stop after raw. Skip mastering, endcard, outro. The raw IS the
+        # preview — 1080x1920 with clean unmastered VO, no music bed, no polish.
+        # Human review happens on this file; scripted finalize_episode.py picks
+        # up the SAME cfg later and runs mastering + endcard + outro to publish.
+        print(f">> PREVIEW mode — stopped after raw: {raw}")
+        return raw
+
     # 5) master: sidechain-ducked music + limiter
     out = os.path.join(R, f"ep{ep}_{tag}.mp4")
     # per-episode bed override (cfg["music"], relative to assets/); defaults to
@@ -1512,11 +1537,16 @@ def build(ep, dry=False, tag="v2"):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--ep", required=True, choices=sorted(EPISODES_V2))
+    ap.add_argument("--ep", required=True,
+                    help="episode key from EPISODES_V2, OR a key with a "
+                         "fallback spec at episodes/<ep>.v2.json (v16)")
     ap.add_argument("--dry", action="store_true",
                     help="regenerate the episode spec JSON only (no render/master)")
+    ap.add_argument("--preview", action="store_true",
+                    help="v16: stop after Remotion raw render — no master, "
+                         "no endcard, no outro. For produce_preview jobs.")
     ap.add_argument("--tag", default="v2",
                     help="render stem: ep<NN>_<tag>.mp4 (use v3 for a re-cut so "
                          "the shipped v2 file survives for comparison)")
     a = ap.parse_args()
-    build(a.ep, dry=a.dry, tag=a.tag)
+    build(a.ep, dry=a.dry, tag=a.tag, preview=a.preview)
