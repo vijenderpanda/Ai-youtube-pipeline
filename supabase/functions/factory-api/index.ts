@@ -456,9 +456,14 @@ async function handleGet(url: URL): Promise<Response> {
 
     // v8: staged episodes in flight + per-item asset counts
     // (counts over the LATEST version of each asset_key only)
+    // v16: direct-mode calendar items with ≥1 asset row also surface here —
+    // produce_preview jobs run in direct mode and push assets via
+    // scripts/push_asset.py so Studio's filmstrip populates during the
+    // Claude session. A direct row with 0 assets is a plain calendar
+    // item (no in-flight production) and stays out of Studio.
     case "staged": {
       const { data: items, error } = await db.from("factory_calendar").select("*")
-        .eq("production_mode", "staged")
+        .in("production_mode", ["staged", "direct"])
         .in("status", ["queued", "produced"])
         .order("planned_date", { ascending: true });
       if (error) return json({ error: error.message }, 500);
@@ -483,7 +488,13 @@ async function handleGet(url: URL): Promise<Response> {
           if (a.status in c) c[a.status] += 1;
         }
       }
-      return json({ items, counts });
+      // v16: hide direct-mode calendar items that have no assets yet — those
+      // are plain unstarted rows, not in-flight production. Staged items are
+      // included regardless (their plan_assets job creates assets shortly).
+      const visibleItems = (items ?? []).filter((it) =>
+        it.production_mode === "staged" || (counts[it.id]?.total ?? 0) > 0
+      );
+      return json({ items: visibleItems, counts });
     }
 
     // v8: one staged episode — item + every asset version + its staged jobs
@@ -1165,6 +1176,68 @@ async function handlePost(body: any): Promise<Response> {
         { item_id: id, job_id: job.id, channel_key: item.channel_key },
       );
       return json({ item: updated, job });
+    }
+
+    // v16: add_asset — used by scripts/push_asset.py in a produce_preview
+    // session. Monolithic Claude jobs push each generated asset to the DB as
+    // it lands on disk so Studio's filmstrip populates live. Auto-approved
+    // (v1 asset from a monolithic pipeline is factory-QC'd inline, not
+    // reviewed) — reviewer sees the preview MP4 in Studio, not per-asset.
+    case "add_asset": {
+      const {
+        calendar_id, asset_key, group_key, kind,
+        filename, local_path, size_bytes, duration_s, title,
+      } = body;
+      if (!calendar_id || !UUID_RE.test(String(calendar_id))) {
+        return json({ error: "calendar_id (uuid) required" }, 400);
+      }
+      if (!asset_key || typeof asset_key !== "string") {
+        return json({ error: "asset_key (string) required" }, 400);
+      }
+      if (!kind || !["image", "video", "audio", "text", "other"].includes(kind)) {
+        return json({ error: "kind must be one of image|video|audio|text|other" }, 400);
+      }
+      // verify parent exists
+      const { data: cal, error: cErr } = await db.from("factory_calendar")
+        .select("id, channel_key").eq("id", calendar_id).maybeSingle();
+      if (cErr) return json({ error: cErr.message }, 500);
+      if (!cal) return json({ error: "calendar item not found" }, 404);
+      // dedup by (calendar_id, asset_key) — v1 only; monolithic path doesn't revise
+      const { data: existing } = await db.from("factory_assets")
+        .select("id, version").eq("calendar_id", calendar_id).eq("asset_key", asset_key)
+        .order("version", { ascending: false }).limit(1);
+      if (existing && existing.length > 0) {
+        return json({
+          asset: existing[0],
+          note: "already recorded, dedup by (calendar_id, asset_key)",
+        });
+      }
+      // position auto-increments across the calendar's assets
+      const { data: countRow } = await db.from("factory_assets")
+        .select("id", { count: "exact", head: true }).eq("calendar_id", calendar_id);
+      const position = ((countRow as unknown as { count?: number } | null)?.count ?? 0) + 1;
+      const { data: inserted, error: iErr } = await db.from("factory_assets")
+        .insert({
+          calendar_id,
+          channel_key: cal.channel_key,
+          asset_key,
+          version: 1,
+          group_key: group_key || "other",
+          kind,
+          title: title || asset_key,
+          status: "approved",
+          filename: filename || null,
+          local_path: local_path || null,
+          size_bytes: size_bytes ?? null,
+          duration_s: duration_s ?? null,
+          position,
+          spec: { prompt: "", params: {}, revision_notes: [] },
+        }).select().single();
+      if (iErr) return json({ error: iErr.message }, 500);
+      await logEvent("asset_pushed",
+        `Asset '${asset_key}' pushed from produce_preview session`,
+        { asset_id: inserted.id, calendar_id, channel_key: cal.channel_key });
+      return json({ asset: inserted });
     }
 
     // v8: approve the latest version of an asset (review → approved)
