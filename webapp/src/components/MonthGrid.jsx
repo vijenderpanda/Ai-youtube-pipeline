@@ -22,16 +22,20 @@ const WrenchSm = (
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const MAX_PILLS = 3
 
-function Pill({ item, accent, lc, challenged, disp }) {
+function Pill({ item, accent, lc, challenged, urgent, disp }) {
   const factory = item.kind === 'factory'
   const early = !!(disp && disp.early)
   const bits = [item.title || '(untitled)', LIFECYCLE_LABELS[lc] || lc]
   if (early) bits.push('early — ' + disp.earlyTip)
   if (challenged) bits.push('AI challenges this plan')
+  if (urgent) bits.push('urgent — decide before publish')
   return (
     <div
       className={
-        'mpill lc-' + lc + (factory ? ' kind-factory' : '') + (challenged ? ' challenged' : '')
+        'mpill lc-' + lc +
+        (factory ? ' kind-factory' : '') +
+        (challenged ? ' challenged' : '') +
+        (urgent ? ' urgent' : '')
       }
       style={{ '--ch': accent }}
       title={bits.join(' — ')}
@@ -59,6 +63,7 @@ export default function MonthGrid({
   postByJob,
   dispById = new Map(),
   challengedIds,
+  urgentIds = new Set(),
   onDayClick,
 }) {
   const month = cursor.getMonth()
@@ -138,6 +143,7 @@ export default function MonthGrid({
                     accent={accents[it.channel_key] || '#E91E63'}
                     lc={lifecycleOf(it, it.job_id ? postByJob.get(it.job_id) : null)}
                     challenged={challengedIds.has(it.id)}
+                    urgent={urgentIds.has(it.id)}
                     disp={dispById.get(it.id)}
                   />
                 ))}

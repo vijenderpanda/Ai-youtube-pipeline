@@ -99,6 +99,41 @@ export default function Calendar() {
     [challengerByTarget]
   )
 
+  // Urgency-before-schedule: originals with a live challenger AND ≤72h from
+  // their planned publish. Sorted soonest-first so the strip reads top-down
+  // like a "fix these before they ship" list.
+  const URGENT_HOURS = 72
+  const urgentPairs = useMemo(() => {
+    const now = Date.now()
+    const out = []
+    for (const [origId, challenger] of challengerByTarget) {
+      const orig = byId.get(origId)
+      if (!orig) continue
+      const displayD = displayDateOf(orig)
+      if (!displayD) continue
+      // parse as local midnight; publish slot is 16:00 IST but we compare to
+      // start-of-day tolerance since we care about a 72h window, not seconds.
+      const t = new Date(displayD + 'T00:00:00').getTime()
+      if (Number.isNaN(t)) continue
+      const hoursTo = Math.round((t - now) / 3_600_000)
+      if (hoursTo <= URGENT_HOURS && hoursTo > -24) {
+        out.push({ original: orig, challenger, hoursTo })
+      }
+    }
+    out.sort((a, b) => a.hoursTo - b.hoursTo)
+    return out
+  }, [challengerByTarget, byId, dispById]) // eslint-disable-line react-hooks/exhaustive-deps
+  const urgentOriginalIds = useMemo(
+    () => new Set(urgentPairs.map((p) => p.original.id)),
+    [urgentPairs]
+  )
+  const fmtHours = (h) => {
+    if (h <= 0) return 'past due'
+    if (h < 24) return h + 'h'
+    const d = Math.round(h / 24)
+    return d + 'd'
+  }
+
   const itemKind = (it) => it.kind || 'content'
   const items = allItems.filter(
     (it) =>
@@ -344,6 +379,61 @@ export default function Calendar() {
         </ChipsGroup>
       </div>
 
+      {urgentPairs.length > 0 && (
+        <section className="urgent-strip" aria-label="Urgent revisions">
+          <div className="urgent-strip-head">
+            <span className="urgent-strip-icon" aria-hidden="true">⚠</span>
+            <span className="urgent-strip-title">
+              Urgent revisions <span className="dim">({urgentPairs.length})</span>
+            </span>
+            <span className="urgent-strip-sub dim small">
+              Challenger AI suggestions within {URGENT_HOURS}h of publish — decide before they ship
+            </span>
+          </div>
+          <ul className="urgent-strip-list">
+            {urgentPairs.map(({ original, challenger, hoursTo }) => (
+              <li key={original.id} className="urgent-row" style={{ '--ch': accents[original.channel_key] || '#E91E63' }}>
+                <div className="urgent-row-when">
+                  <span className="urgent-row-eta">{fmtHours(hoursTo)}</span>
+                  <span className="urgent-row-chan">{original.channel_key}</span>
+                </div>
+                <div className="urgent-row-body">
+                  <button
+                    type="button"
+                    className="urgent-row-title link-btn"
+                    onClick={() => setSelectedId(original.id)}
+                    title="Open on the calendar"
+                  >
+                    {original.title || '(untitled)'}
+                  </button>
+                  {challenger.why_not && (
+                    <div className="urgent-row-why">{challenger.why_not}</div>
+                  )}
+                </div>
+                <div className="urgent-row-actions">
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-primary"
+                    disabled={!!chalBusy}
+                    onClick={() => runImproved(challenger)}
+                  >
+                    Run improved
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-ghost"
+                    disabled={!!chalBusy}
+                    onClick={() => keepOriginal(challenger)}
+                  >
+                    Keep
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {calQ.loading && calQ.data == null ? (
         <p className="dim">Loading…</p>
       ) : view === 'month' ? (
@@ -355,6 +445,7 @@ export default function Calendar() {
             postByJob={postByJob}
             dispById={dispById}
             challengedIds={challengedIds}
+            urgentIds={urgentOriginalIds}
             onDayClick={(ds) => setDayOpen(ds)}
           />
           <CalLegend />
