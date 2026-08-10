@@ -44,11 +44,15 @@ SHOTS = ("center", "three_quarter", "left_corner", "right_corner")
 
 def _outfit(name, d):
     o = {"name": name, "dir": d,
-         "heygen_cache": os.path.join(d, ".heygen_photo_id")}
+         "heygen_cache": os.path.join(d, ".heygen_photo_id"),
+         # v16: 3/4 yaw as a SECOND animatable source per outfit — closes ~30%
+         # of the "no variety" tell within a single episode's cutaways
+         "heygen_cache_3q": os.path.join(d, ".heygen_photo_id_3q")}
     for s in SHOTS:
         p = os.path.join(d, s + ".jpg")
         o[s] = p if os.path.exists(p) else None
-    o["face"] = o["center"]           # HeyGen talking-photo source
+    o["face"] = o["center"]           # HeyGen talking-photo source (primary)
+    o["face_3q"] = o["three_quarter"]  # HeyGen talking-photo source (yaw variant)
     return o
 
 
@@ -131,19 +135,18 @@ def _pool_save(p):
     json.dump(p, open(POOL, "w"), indent=2)
 
 
-def heygen_id(outfit, force=False):
-    """talking_photo_id (== avatar_group id) for this outfit, managed as an
-    ephemeral pool under HeyGen's 3-photo-avatar cap.
-
-    - If the outfit already holds a live avatar (in the pool) -> reuse it.
-    - Otherwise upload center.jpg. If HeyGen rejects it at the cap, delete the
-      least-recently-used avatar THIS POOL created (never the host or aashiqana),
-      then retry. Uploading/deleting are free; only rendering costs credits.
-    """
+def _heygen_id_for(outfit, source_key, cache_key, force=False):
+    """Shared upload+pool logic for either the primary (center) or the yaw
+    variant (three_quarter) HeyGen avatar of an outfit. source_key is the
+    outfit dict key holding the .jpg path ("face" or "face_3q"); cache_key
+    is the outfit dict key holding the .heygen_photo_id cache path.
+    Pool entries carry a "role" so eviction can prefer other-outfit victims
+    over the currently-registering outfit's other avatar."""
     import requests
     import heygen_avatar                            # scripts/ is on sys.path
 
-    cache = outfit["heygen_cache"]
+    cache = outfit[cache_key]
+    role = "3q" if cache_key == "heygen_cache_3q" else "center"
     pool = _pool_load()
 
     if not force and os.path.exists(cache):
@@ -155,30 +158,51 @@ def heygen_id(outfit, force=False):
             _pool_save(pool)
             return tid
 
-    if not outfit.get("face"):
-        raise RuntimeError(f"{outfit['name']} has no center.jpg to use as the HeyGen source")
+    src = outfit.get(source_key)
+    if not src:
+        raise RuntimeError(f"{outfit['name']} has no {source_key} source ({cache_key})")
 
     for _ in range(len(pool) + 2):
         try:
-            tid = heygen_avatar.upload_photo(outfit["face"], cache=cache)
+            tid = heygen_avatar.upload_photo(src, cache=cache)
             pool = [e for e in pool if e["heygen_id"] != tid]
-            pool.append({"heygen_id": tid, "outfit": outfit["name"], "ts": int(time.time())})
+            pool.append({"heygen_id": tid, "outfit": outfit["name"], "role": role,
+                         "ts": int(time.time())})
             _pool_save(pool)
             return tid
         except requests.HTTPError as ex:
             body = ex.response.text if ex.response is not None else ""
             if CAP_CODE not in body or not pool:
                 raise                                # not a cap error, or nothing of ours to free
-            pool.sort(key=lambda e: e["ts"])         # evict OUR least-recently-used outfit avatar
+            # v16: prefer evicting a DIFFERENT outfit's avatar; only fall back
+            # to same-outfit siblings when nothing else is on the pool
+            pool.sort(key=lambda e: (e["outfit"] == outfit["name"], e["ts"]))
             victim = pool.pop(0)
             heygen_avatar.delete_group(victim["heygen_id"])
-            vcache = os.path.join(LIBRARY, victim["outfit"], ".heygen_photo_id")
+            vcache_name = ".heygen_photo_id_3q" if victim.get("role") == "3q" else ".heygen_photo_id"
+            vcache = os.path.join(LIBRARY, victim["outfit"], vcache_name)
             if os.path.exists(vcache):
                 os.remove(vcache)
             _pool_save(pool)
-            print(f"   (evicted {victim['outfit']} to stay under HeyGen's cap)")
+            print(f"   (evicted {victim['outfit']}/{victim.get('role','center')} "
+                  f"to stay under HeyGen's cap)")
     raise RuntimeError("could not register outfit within HeyGen's 3-avatar cap "
                        "(free a slot or upgrade)")
+
+
+def heygen_id(outfit, force=False):
+    """talking_photo_id for the outfit's PRIMARY (center) avatar. Legacy API
+    — preserved for callers that only need one talking-photo per outfit."""
+    return _heygen_id_for(outfit, "face", "heygen_cache", force=force)
+
+
+def heygen_id_3q(outfit, force=False):
+    """talking_photo_id for the outfit's 3/4-yaw SECONDARY avatar.
+    v16: paired with heygen_id() to give a two-tid pool per episode, so a
+    single Short can alternate yaw across beats and dodge the static
+    talking-photo tell (~50% Vaibhav-DNA camera-angle parity — the hands
+    fix still requires HeyGen Video-Avatar and real desk footage)."""
+    return _heygen_id_for(outfit, "face_3q", "heygen_cache_3q", force=force)
 
 
 def log_use(episode_key, outfit):
@@ -194,7 +218,9 @@ def log_use(episode_key, outfit):
 def pick_and_register(episode_key, avoid_recent=2):
     """Pick this episode's outfit, ensure its HeyGen id exists, record the use.
     Returns (outfit, talking_photo_id). Idempotent: a rebuild reuses the same
-    outfit and does not duplicate the log row."""
+    outfit and does not duplicate the log row.
+    Only the PRIMARY (center) tid is registered — use pick_and_register_pool()
+    if a build wants the 3/4 yaw variant too."""
     o = pick(episode_key, avoid_recent)
     tid = heygen_id(o)
     if assigned(episode_key) != o["name"]:
@@ -202,18 +228,42 @@ def pick_and_register(episode_key, avoid_recent=2):
     return o, tid
 
 
+def pick_and_register_pool(episode_key, avoid_recent=2):
+    """Pick + register BOTH center and 3/4-yaw talking-photos, so a single Short
+    can alternate yaw across host cutaway beats. Returns (outfit, [center_tid,
+    three_quarter_tid]). If three_quarter.jpg is missing (never happens on the
+    current claude-tricks library — audit 2026-08-10), the pool collapses to
+    [center_tid] silently rather than fail the build.
+    v16: this is the entry point new plan_post / produce_preview jobs use."""
+    o = pick(episode_key, avoid_recent)
+    tids = [heygen_id(o)]
+    if o.get("face_3q"):
+        try:
+            tids.append(heygen_id_3q(o))
+        except Exception as e:
+            # 3q registration failure never fails the whole build — the primary
+            # tid is enough to render, just without yaw variety on this episode
+            print(f"   (skipped 3q register for {o['name']}: {e})")
+    if assigned(episode_key) != o["name"]:
+        log_use(episode_key, o)
+    return o, tids
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="dynamic host wardrobe picker")
     ap.add_argument("--list", action="store_true", help="list outfits + registration state")
     ap.add_argument("--pick", metavar="EP", help="show which outfit an episode key gets (no network)")
     ap.add_argument("--register", metavar="EP", help="pick + upload its center to HeyGen (free API call)")
+    ap.add_argument("--register-pool", metavar="EP",
+                    help="pick + upload BOTH center and 3/4-yaw to HeyGen (free API call, v16)")
     a = ap.parse_args()
     did = False
     if a.list:
         did = True
         for o in list_outfits():
             reg = "registered" if os.path.exists(o["heygen_cache"]) else "-"
-            print(f"{o['name']:34} {reg}")
+            reg_3q = "reg-3q" if os.path.exists(o["heygen_cache_3q"]) else "-"
+            print(f"{o['name']:34} center:{reg:14} 3q:{reg_3q}")
         print(f"\n{len(list_outfits())} outfits · library: {LIBRARY}")
     if a.pick:
         did = True
@@ -226,5 +276,12 @@ if __name__ == "__main__":
         did = True
         o, tid = pick_and_register(a.register)
         print(f"ep {a.register} -> {o['name']}   talking_photo_id = {tid}")
+    if a.register_pool:
+        did = True
+        o, tids = pick_and_register_pool(a.register_pool)
+        print(f"ep {a.register_pool} -> {o['name']}   talking_photo_ids = {tids}")
+        print(f"   center = {tids[0]}")
+        if len(tids) > 1:
+            print(f"   3q     = {tids[1]}")
     if not did:
         ap.print_help()
