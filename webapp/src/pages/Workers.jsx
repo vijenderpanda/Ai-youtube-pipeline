@@ -82,7 +82,9 @@ function timeAgo(iso) {
 const LEVEL_COLOR = { error: '#ef4444', warn: '#f59e0b', info: 'var(--dim, #888)' }
 
 function WorkerLogs({ workerId }) {
-  const [open, setOpen] = useState(false)
+  // v16: default OPEN so a fresh Workers page shows live streaming logs
+  // without an extra click. Users can still collapse per-card.
+  const [open, setOpen] = useState(true)
   const [logs, setLogs] = useState(null)
   const [err, setErr] = useState('')
   const bottomRef = useRef(null)
