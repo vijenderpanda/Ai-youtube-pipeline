@@ -898,8 +898,13 @@ def apply_global_override(supa, job):
 # ---------------------------------------------------------------- job execution
 
 
-def render_line(raw):
-    """Turn one stream-json stdout line into a short human-readable log line (or None to skip)."""
+def render_line(raw, buf=None):
+    """Turn one stream-json stdout line into a short human-readable log line (or None to skip).
+    v16: when a `result` event carries `total_cost_usd` + `usage` (input_tokens,
+    output_tokens, cache_creation_input_tokens, cache_read_input_tokens), splat
+    them onto buf.usage so run_job can attach them to factory_jobs.result. This
+    is the only place the Anthropic CLI emits real per-run cost + token totals
+    for a claude -p session."""
     raw = raw.rstrip("\n")
     if not raw.strip():
         return None
@@ -929,8 +934,25 @@ def render_line(raw):
                 parts.append(f"[tool:{block.get('name', '?')}] {inp}")
         return "\n".join(parts) or None
     if t == "result":
+        u = obj.get("usage") or {}
+        # v16: capture the CLI's own numbers so factory_jobs.result carries usage
+        if buf is not None:
+            buf.usage = {
+                "cost_usd": obj.get("total_cost_usd"),
+                "input_tokens": u.get("input_tokens"),
+                "output_tokens": u.get("output_tokens"),
+                "cache_read_input_tokens": u.get("cache_read_input_tokens"),
+                "cache_creation_input_tokens": u.get("cache_creation_input_tokens"),
+                "num_turns": obj.get("num_turns"),
+                "duration_ms": obj.get("duration_ms"),
+                "subtype": obj.get("subtype"),
+            }
         return (f"[result:{obj.get('subtype', '')}] turns={obj.get('num_turns', '?')} "
-                f"duration_ms={obj.get('duration_ms', '?')}")
+                f"duration_ms={obj.get('duration_ms', '?')} "
+                f"cost_usd={obj.get('total_cost_usd', '?')} "
+                f"in={u.get('input_tokens', '?')} out={u.get('output_tokens', '?')} "
+                f"cache_r={u.get('cache_read_input_tokens', '?')} "
+                f"cache_w={u.get('cache_creation_input_tokens', '?')}")
     return None  # tool results ("user" turns) etc. are too noisy for the dashboard
 
 
@@ -939,6 +961,8 @@ class LogBuffer:
         self._lines = []
         self._lock = threading.Lock()
         self.dirty = False
+        # v16: filled by render_line() on the CLI's `result` event
+        self.usage = None
 
     def add(self, line):
         with self._lock:
@@ -3136,7 +3160,7 @@ def run_job(supa, job):
 
     def reader():
         for raw in proc.stdout:
-            line = render_line(raw)
+            line = render_line(raw, buf)  # v16: buf receives usage from `result` event
             if line:
                 buf.add(line)
         proc.stdout.close()
@@ -3258,6 +3282,10 @@ def run_job(supa, job):
 
     buf.add(f"[worker] done at {now_iso()} -- uploaded {uploaded} file(s)")
     buf.dirty = True
+    # v16: attach the CLI's own cost + token totals to the job result so any
+    # dashboard rollup (or a later plan_post reader) can pull real $ per job
+    if getattr(buf, "usage", None):
+        result["usage"] = buf.usage
     try:
         supa.patch("factory_jobs", f"id=eq.{job_id}",
                    {"status": "done", "finished_at": now_iso(), "result": result, "logs": buf.text()})
