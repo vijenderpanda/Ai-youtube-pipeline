@@ -299,3 +299,18 @@ matches output rather than re-cutting the frozen component.
   beats in `build_ep_v2.py`. The one-off PIL script is retired/deleted; use StatBars for new
   episodes. The principles — generic bars, illustrative label, no scraped charts/logos — carry over
   unchanged.)*
+
+## 6. Archived (out of active planning context — 2026-08-10)
+
+Internal builds **Ep27 · Ep28 · Ep29 · Ep30** are archived. Local files live under
+`channels/claude-tricks/_archive/` — see `_archive/README.md`. Reasons: all four shipped as
+draft posts, none were armed inside their peg windows; Ep28's peg went stale (age 5d against a
+4d limit) between build and would-be-arm. Their per-episode rows STAY in §4 above as build-lesson
+history — the Playbook lessons they seeded (peg gate as a hard gate, in-house mock family, StatBars
+axis-band fix, `probe_frames.py` shipped-clip probe, `--fix-seed-terms` payoff gate) already
+propagated to `docs/PRODUCTION-PLAYBOOK.md`. Do not read these rows during current-batch planning.
+
+The unlisted YouTube video `cv1nzSC7mMY` "Google Just Put AI In Your Kid's Classroom" is likewise
+archived (11 views total, no plan to revive). Local files: none (`ep08` slot below was the internal
+build that shipped it, which remains in §4). External flip: pending — will privatise via
+`scripts/yt_cleanup.py` in a bundled action.
