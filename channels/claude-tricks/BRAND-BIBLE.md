@@ -26,7 +26,7 @@
 - **Sol** = a named, consistent **AI guide**: a trusted **senior operator, not a hype-man**. Measured, credible, quietly enthusiastic — the person a busy pro trusts to have already tested the thing.
 - **Not a real person.** One locked look (wardrobe / lighting / framing) reused across every video so identity never drifts. Generated + locked with a fixed seed (`assets/character/`), later turned into a **HeyGen Photo Avatar** for lip-synced cutaways.
 - **Role:** appears in **~1–2s cutaways** (2–4 per Short) plus the hook and recap. Always paired with the **real-screen proof pane** to offset the AI-avatar trust penalty. The screen recording is the main content; Sol is the trust device.
-- **Voice (LOCKED 2026-08-01):** ElevenLabs **"Hrithik — Charismatic Gen Z Male"**, `voice_id ZZ5OIPIzxVJswEhc0UXt`, style 0.5 — energetic Indian-English, Vaibhav-Sisinty-style delivery. Synthesize via `scripts/eleven_vo.py` `/with-timestamps` (real word-synced captions). Kokoro `am_michael` = free fallback only.
+- **Voice (LOCKED 2026-08-01):** ElevenLabs **"Hrithik — Charismatic Gen Z Male"**, `voice_id ZZ5OIPIzxVJswEhc0UXt`, **style 0.4** (was 0.5 in early drafts; playbook §17 locked this to 0.4 for sentence-break comprehension) — energetic Indian-English, Vaibhav-Sisinty-style delivery. Synthesize via `scripts/eleven_vo.py` `/with-timestamps` (real word-synced captions). Kokoro `am_michael` = free fallback only.
 - **Upgrade path — Video Avatar (photo → video, when ready):** record **~2 min of natural talking footage** at the desk mic — good light, locked framing, hands in frame, keep talking and gesturing naturally the whole take. Requires the **HeyGen Creator plan** (do not buy until the POC earns it). Unlike the current still-photo avatar, a video avatar **inherits the real hand gestures and micro-movements** from the footage — the energetic talking-hands look of **@vaibhavsisinty** Shorts — which kills the static talking-photo tell in cutaways. Drop-in swap: `scripts/heygen_avatar.py` already renders via v3 avatar mode (`POST /v3/videos`), so replacing the cached photo-avatar id with the new video-avatar id upgrades every render with no pipeline changes.
 
 ## 4. Format (per Short — the signature)
@@ -37,7 +37,7 @@
 - **Captions:** word-by-word **karaoke**, ALL-CAPS heavy condensed sans (Anton/Bebas), thick dark stroke, 1–3 words at a time, active word flips white → **electric magenta**. Burned from ElevenLabs timestamps (character-level → grouped into words).
 
 ## 5. Content strategy & series
-- **Mix: ~70% evergreen tips + ~30% AI news.** Tips = the reliable, batchable backbone; news = freshness + viral spikes (batched weekly via a "So What?" filter — one story → what it changes for your workflow + one action).
+- **Mix (LOCKED, news-forward): ~35% Claude/desktop/token/model tips + ~20% new-capability + ~45% news.** _(Supersedes the earlier "70% tips + 30% news" line — that split predated the news-forward pivot logged in PRODUCTION-PLAYBOOK.md around Ep22–Ep25.)_ Tips = the reliable, batchable backbone; new-capability = day-one demos of just-shipped features; news = freshness + viral spikes (batched weekly via a "So What?" filter — one story → what it changes for your workflow + one action).
 - **Recurring series (→ named playlists):**
   - **Prompt Teardown** (flagship): a weak prompt on screen, rebuilt live, visibly better output.
   - **60-Second Claude:** one power feature end-to-end (Projects, MCP, sub-agents, artifacts, Claude Code).
