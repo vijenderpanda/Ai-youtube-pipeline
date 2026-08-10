@@ -540,6 +540,13 @@ def suggestions_path(job_id):
     return RENDERS_OUT / f"suggestions_{job_id}.json"
 
 
+def factory_backlog_path():
+    """v16: kind='factory' suggestions land here (Markdown, review from Claude Code)
+    instead of factory_calendar rows that clutter every calendar surface. Convention
+    matches docs/NETWORK-ATTENTION.md and docs/PRODUCTION-PLAYBOOK.md."""
+    return REPO / "docs" / "FACTORY-BACKLOG.md"
+
+
 def brief_path(job_id):
     return RENDERS_OUT / f"brief_{job_id}.json"
 
@@ -1720,13 +1727,77 @@ def challenger_row(supa, s, row, buf):
     return row
 
 
+_BACKLOG_HEADER = (
+    "# Factory Backlog\n\n"
+    "Code / factory-internal suggestions written by `analyze_and_suggest` runs. Reviewed "
+    "from a Claude Code session (not the calendar). Content-facing suggestions still land "
+    "in `factory_calendar` and drive the calendar UI. See `scripts/factory_worker.py::ingest_suggestions`.\n\n"
+    "Sections are dedup'd by title. Flip `- [ ] open` to `- [x] done` once actioned; move "
+    "actioned items into an `# Actioned` section at the bottom if you want history.\n\n"
+)
+
+
+def _existing_backlog_titles(text):
+    """Set of every `## <title>` already present in the backlog (case-insensitive, trimmed)."""
+    out = set()
+    for line in text.splitlines():
+        if line.startswith("## "):
+            out.add(line[3:].strip().lower())
+    return out
+
+
+def append_factory_backlog(rows, job_id, buf):
+    """Append kind='factory' suggestion rows as new sections to docs/FACTORY-BACKLOG.md.
+    Dedup by title (case-insensitive). Returns the number appended (0 if all were dupes
+    or rows was empty). Never raises -- backlog failures are logged and swallowed so
+    the content-suggestion ingest stays authoritative."""
+    if not rows:
+        return 0
+    path = factory_backlog_path()
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        existing = path.read_text() if path.exists() else _BACKLOG_HEADER
+        seen = _existing_backlog_titles(existing)
+        chunks = []
+        for r in rows:
+            title = (r.get("title") or "").strip()
+            if not title or title.lower() in seen:
+                buf.add(f"[worker] backlog dupe skipped: {title!r}")
+                continue
+            seen.add(title.lower())
+            reason = (r.get("suggestion_reason") or "").strip() or "(no reason recorded)"
+            brief = (r.get("brief") or "").strip() or "(no brief)"
+            date = r.get("planned_date") or ""
+            chunks.append(
+                f"## {title}\n"
+                f"_source: analyze_and_suggest {job_id} · {date}_\n\n"
+                f"**Why:** {reason}\n\n"
+                f"**Interface / acceptance:**\n\n{brief}\n\n"
+                f"- [ ] open\n\n"
+            )
+        if not chunks:
+            return 0
+        # ensure file ends with a blank line before append
+        if existing and not existing.endswith("\n\n"):
+            existing = existing.rstrip("\n") + "\n\n"
+        path.write_text(existing + "".join(chunks))
+        buf.add(f"[worker] appended {len(chunks)} factory suggestion(s) to {path.relative_to(REPO)}")
+        return len(chunks)
+    except OSError as e:
+        buf.add(f"[worker] WARNING: could not append factory backlog: {e}")
+        return 0
+
+
 def ingest_suggestions(supa, job, buf):
-    """Parse suggestions_<JOBID>.json written by the analyze_and_suggest run and insert
-    each suggestion as a factory_calendar row (status 'suggested', origin 'ai_suggestion',
-    kind 'content'|'factory') plus the insights block into factory_insights.
+    """Parse suggestions_<JOBID>.json written by the analyze_and_suggest run.
+    v16: content suggestions land as factory_calendar rows (status 'suggested', origin
+    'ai_suggestion', kind 'content') and drive the calendar UI as before. Factory /
+    code suggestions (kind 'factory') are appended to docs/FACTORY-BACKLOG.md instead
+    -- they never enter factory_calendar, so every calendar surface stays content-only.
     v6: entries with replaces_ref become CHALLENGER rows (replaces_id + why_not,
     kind copied from the original) via challenger_row(); originals with a live
-    challenger are skipped. Returns (n_suggestions, analysis_summary, n_insights)."""
+    challenger are skipped.
+    Returns (n_total, analysis_summary, n_insights) where n_total = content + factory."""
     spath = suggestions_path(job["id"])
     if not spath.exists():
         buf.add(f"[worker] WARNING: no suggestions file at {spath}")
@@ -1776,21 +1847,31 @@ def ingest_suggestions(supa, job, buf):
             challenged.add(ref)
             n_chal += 1
         rows.append(row)
-    if rows:
+    # v16: split by kind. content -> factory_calendar (calendar UI). factory ->
+    # docs/FACTORY-BACKLOG.md (reviewed from Claude Code). challengers of factory
+    # originals inherit kind='factory' via challenger_row() and route here too.
+    content_rows = [r for r in rows if r.get("kind") != "factory"]
+    factory_rows = [r for r in rows if r.get("kind") == "factory"]
+    n_backlog = append_factory_backlog(factory_rows, job["id"], buf)
+    if content_rows:
         try:
-            supa.insert("factory_calendar", rows)
+            supa.insert("factory_calendar", content_rows)
             supa.insert("factory_events", [{
                 "kind": "suggestion",
-                "message": (f"{len(rows)} new AI suggestions"
-                            + (f" ({n_chal} challenger(s))" if n_chal else "")),
-                "meta": {"job_id": job["id"], "challengers": n_chal},
+                "message": (f"{len(content_rows)} new content suggestion(s)"
+                            + (f" ({n_chal} challenger(s))" if n_chal else "")
+                            + (f"; {n_backlog} factory item(s) -> docs/FACTORY-BACKLOG.md"
+                               if n_backlog else "")),
+                "meta": {"job_id": job["id"], "challengers": n_chal,
+                         "backlog_appended": n_backlog},
             }])
         except (RuntimeError, requests.RequestException) as e:
             buf.add(f"[worker] WARNING: could not insert suggestions: {e}")
-            return 0, summary, ingest_insights(supa, data, buf)
-    buf.add(f"[worker] ingested {len(rows)} AI suggestion(s) into factory_calendar"
-            + (f" ({n_chal} challenger(s))" if n_chal else ""))
-    return len(rows), summary, ingest_insights(supa, data, buf)
+            return n_backlog, summary, ingest_insights(supa, data, buf)
+    buf.add(f"[worker] ingested {len(content_rows)} content suggestion(s) into factory_calendar"
+            + (f" ({n_chal} challenger(s))" if n_chal else "")
+            + (f"; {n_backlog} factory item(s) appended to backlog" if n_backlog else ""))
+    return len(content_rows) + n_backlog, summary, ingest_insights(supa, data, buf)
 
 
 # ---------------------------------------------------------------- v9: staged production (docs/STAGED-PIPELINE.md)
