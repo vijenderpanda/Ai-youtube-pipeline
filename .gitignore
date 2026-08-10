@@ -9,7 +9,15 @@
 client_secret*.json
 token.json
 token_*.json
+token_*.bak
+*.prescopefix.bak
 *.sha256
+
+# ─────────────────────────────────────────────────────────────
+# Netlify CLI-generated (regenerated on every deploy — was producing
+# duplicate cache-header rules when tracked)
+# ─────────────────────────────────────────────────────────────
+webapp/.netlify/
 
 # ─────────────────────────────────────────────────────────────
 # Generated media — large; regenerate from prompts / pull from Supabase storage
