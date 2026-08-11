@@ -1314,7 +1314,13 @@ def build(ep, dry=False, tag="v2", preview=False):
         tid = tid_3q = open(CACHE).read().strip()
     def host_clip(name, t0, t1, photo=None):
         wav = os.path.join(A, f"{name}.wav"); mp4 = os.path.join(A, f"{name}.mp4")
-        if not os.path.exists(mp4):
+        # v16: also skip cache when FACTORY_REBUILD_HOSTS is set — lets a shell
+        # wrapper force fresh HeyGen renders across ALL runs (hook/mid/payoff)
+        # without needing shell-portable glob deletion (zsh nullglob failure
+        # bit Ep 10 v3: 'no matches' aborted the whole rm before v2_hook/payoff
+        # were removed, so the master reused stale clips).
+        stale = os.environ.get("FACTORY_REBUILD_HOSTS", "").lower() in ("1", "true", "yes")
+        if stale or not os.path.exists(mp4):
             run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(t0), "-t", str(t1 - t0),
                  "-i", vo, "-c:a", "pcm_s16le", wav])
             generate(photo or tid, upload_audio(wav), mp4)
