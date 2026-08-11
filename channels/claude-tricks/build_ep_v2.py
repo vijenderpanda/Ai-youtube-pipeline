@@ -1449,7 +1449,10 @@ def build(ep, dry=False, tag="v2", preview=False):
                 if si <= start_i <= sj - 1:
                     run_src = clip
                     break
-            segments.append({"src": "assets/" + rel(run_src), "dur": round(dur, 3)})
+            # v16.2: framed=True renders the host as a contained rounded card on
+            # the gradient bg (not a full-bleed giant face) — see Short.tsx FramedHost.
+            segments.append({"src": "assets/" + rel(run_src), "dur": round(dur, 3),
+                             "framed": True})
         elif b.startswith("rec:"):
             src, frm = b[4:].split("@")
             seg = {"src": f"assets/{src}", "dur": round(dur, 3), "from": float(frm)}
@@ -1645,7 +1648,10 @@ def build(ep, dry=False, tag="v2", preview=False):
 
     # optional reusable outro sting (subscribe/comment), music keeps rolling + fades
     if cfg.get("outro"):
-        outro = os.path.join(CH, "assets", "outro", "outro_sub_comment.mp4")
+        # v16.2: per-episode outro override (cfg["outro_src"], relative to assets/)
+        # so premium episodes can use a stronger question-CTA card instead of the
+        # shared subscribe/comment sting.
+        outro = os.path.join(CH, "assets", cfg.get("outro_src", "outro/outro_sub_comment.mp4"))
         out2 = os.path.join(R, f"ep{ep}_{tag}_outro.mp4")
         # `outro_dur` trims the sting (the asset itself is never re-rendered —
         # §15 bookends hygiene keeps it a shared branding asset). Needed when the

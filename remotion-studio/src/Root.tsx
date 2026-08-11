@@ -3,6 +3,7 @@ import { AbsoluteFill, Composition, getInputProps, staticFile, useVideoConfig } 
 import { Short, ShortProps, totalDuration, Cover, Watermark } from "./Short";
 import { StatBars, StatBarsProps } from "./components/StatBars";
 import { CodeDemo, CodeDemoProps } from "./components/CodeDemo";
+import { OutroCard, OutroCardProps } from "./components/OutroCard";
 
 const FPS = 30;
 
@@ -128,6 +129,20 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1200}
         defaultProps={codeDemoProps}
+      />
+      <Composition
+        id="OutroCard"
+        component={OutroCard}
+        durationInFrames={Math.round(4.2 * FPS)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{
+          avatar: "assets/character/host_library/outfit_11_sol_magenta/center.jpg",
+          question: "Which command would you build first?",
+          commentCta: "Comment your #1 👇",
+          tagline: "one AI trick, every single day",
+        }}
       />
     </>
   );

@@ -40,6 +40,8 @@ export type Seg = {
   pipZoom?: number;   // v16: scale the PIP video to fill the square (~70% face fill); default 1.55
   num?: string;
   lines?: string[];
+  framed?: boolean;   // v16.2: render a host clip as a contained rounded card on the gradient bg (not full-bleed giant face)
+  hostZoom?: number;  // v16.2: scale inside the framed host card (default 1.0)
 };
 /* pos: which corner the chip lives in — pick the one with dead space so the
    chip NEVER covers the content the beat is teaching (default tl).
@@ -93,8 +95,9 @@ const INK = "#0E0E14";
 // Reserved for the #NN callout system + CTA emphasis; magenta stays brand primary.
 const ACCENT = "#22D3EE";
 
-/* ---------- caption: small, bottom-third, spring pop, 1-3 words ---------- */
-const Caption: React.FC<{ word: Word; fps: number; y?: string }> = ({ word, fps, y }) => {
+/* ---------- caption: bottom, spring pop, 1-3 words. size for small pip-beat
+   captions in the bottom space (v16.2). ---------- */
+const Caption: React.FC<{ word: Word; fps: number; y?: string | number; size?: number }> = ({ word, fps, y, size }) => {
   const frame = useCurrentFrame();
   const startF = word.start * fps;
   const s = spring({ frame: frame - startF, fps, config: { damping: 12, mass: 0.4 } });
@@ -114,7 +117,7 @@ const Caption: React.FC<{ word: Word; fps: number; y?: string }> = ({ word, fps,
           transform: `scale(${scale})`,
           fontFamily: "Anton, Arial Black, sans-serif",
           fontWeight: 900,
-          fontSize: 78,
+          fontSize: size ?? 78,
           letterSpacing: 1,
           color: word.hot ? MAG : "white",
           textShadow:
@@ -413,17 +416,85 @@ const EmphasisText: React.FC<{ e: Emphasis; fps: number }> = ({ e, fps }) => {
   );
 };
 
-/* ---------- pipCallout (v16 Vaibhav-DNA numbered-list layout) ----------
-   Top zone: product screencap b-roll (video/image), cover-fit, anchored top,
-   fading into INK at the bottom so the callout row pops on dark (our brand
-   fades to ink, not Vaibhav's light grey — keeps Sol's magenta/dark identity).
-   Bottom-left: rounded-square host PIP. Right of it: giant lime "#NN" in
-   Playfair italic + up to 3 description lines. PIP + callout spring up together
-   on beat entry. The competitor's #NN callout is the attention anchor of every
-   numbered point; this is the single most-copied move from the 360K teardown. */
-const PIP_SIZE = 380;        // rounded-square host PIP edge (px)
+/* v16.2: gentle continuous float — a slow sine on translateY. The subtle
+   "alive" drift on every card/PIP/callout in the competitor's shorts (confirmed
+   frame-to-frame). Phase-offset per element so they don't bob in lockstep. */
+const floatY = (frame: number, fps: number, amp: number, periodS: number, phaseS = 0) =>
+  amp * Math.sin(((frame / fps) + phaseS) * ((2 * Math.PI) / periodS));
+
+/* v16.2: shared premium gradient backdrop for the card-based beats (pipCallout +
+   framed host) — magenta top glow + cyan bottom-right accent + deep violet-ink
+   base + a vignette. One look across the episode so beats feel like one system. */
+const GRAD_BG =
+  "radial-gradient(140% 88% at 50% 6%, rgba(224,33,138,0.30) 0%, rgba(150,28,116,0.12) 26%, rgba(14,14,20,0) 56%)," +
+  "radial-gradient(85% 55% at 84% 94%, rgba(34,211,238,0.12) 0%, rgba(14,14,20,0) 52%)," +
+  "linear-gradient(178deg, #1c1122 0%, #130d17 42%, #0E0E14 80%)";
+const Vignette: React.FC = () => (
+  <AbsoluteFill
+    style={{
+      background: "radial-gradient(120% 80% at 50% 42%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.45) 100%)",
+      pointerEvents: "none",
+    }}
+  />
+);
+
+/* ---------- framed host (v16.2) — a full-shot host beat rendered as a large
+   CONTAINED rounded card on the gradient (not a full-bleed giant face). Fixes
+   VJ's note that the tight outfit_11 crop filled the whole phone screen. */
+const FramedHost: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
+  const frame = useCurrentFrame();
+  const f = floatY(frame, fps, 7, 3.8, 0);
+  return (
+    <AbsoluteFill style={{ background: GRAD_BG }}>
+      <Vignette />
+      <div
+        style={{
+          position: "absolute",
+          left: 116,
+          right: 116,
+          top: 214,
+          height: 1180,
+          transform: `translateY(${f}px)`,
+          borderRadius: 32,
+          overflow: "hidden",
+          border: "1.5px solid rgba(255,255,255,0.12)",
+          boxShadow: "0 44px 100px rgba(0,0,0,0.6), 0 8px 44px rgba(224,33,138,0.12)",
+          background: INK,
+        }}
+      >
+        <OffthreadVideo
+          src={res(seg.src!)}
+          startFrom={Math.round((seg.from ?? 0) * fps)}
+          muted
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "57% 14%",
+            transform: `scale(${seg.hostZoom ?? 1.0})`,
+            transformOrigin: "57% 16%",
+          }}
+        />
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+/* ---------- pipCallout v2 (Vaibhav-DNA numbered-list layout) ----------
+   Redesign per VJ feedback (2026-08-11): the b-roll is no longer a hard
+   full-bleed section cropped-and-pasted. It's a ROUNDED-CORNER CARD inset from
+   the edges, floating on a dark magenta-tinted GRADIENT, with a soft shadow.
+   The host PIP is a rounded RECTANGLE (portrait), not a square (which was
+   half-cutting the face). Everything drifts with a gentle float. #NN stays big
+   cyan Playfair (our distinctive accent), description beside it. */
+const CARD_X = 44;
+const CARD_TOP = 70;
+const CARD_W = 1080 - 2 * CARD_X;        // 992
+const CARD_H = Math.round(CARD_W / 0.9); // ~1102 — matches the 1080x1200 CodeDemo aspect (no crop)
+const PIP_W = 360;
+const PIP_H = 464;                        // rounded RECTANGLE (portrait ~3:4), not a square
 const PIP_LEFT = 48;
-const PIP_BOTTOM = 330;      // lower-third, with breathing room below (Vaibhav's row sits ~65-83%, not jammed at the frame bottom)
+const PIP_BOTTOM = 240;
 const PipCallout: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
   const frame = useCurrentFrame();
   const s = spring({ frame, fps, config: { damping: 18, mass: 0.8 } });
@@ -432,36 +503,42 @@ const PipCallout: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
   const numRaw = (seg.num ?? "").replace(/^#/, "");
   const lines = seg.lines ?? [];
   const isVid = (seg.src ?? "").match(/\.(mp4|mov|webm|mkv)$/i);
+
+  // float offsets (phase-staggered)
+  const cardF = floatY(frame, fps, 7, 3.6, 0);
+  const pipF = floatY(frame, fps, 6, 4.0, 1.3);
+  const numF = floatY(frame, fps, 5, 4.4, 2.5);
+
+  const media = { width: "100%", height: "100%", objectFit: "cover" as const, objectPosition: "center top" as const };
+
   return (
-    <AbsoluteFill style={{ background: INK }}>
-      {/* top zone — product screencap */}
-      <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+    <AbsoluteFill style={{ background: GRAD_BG }}>
+      <Vignette />
+      {/* b-roll — a floating rounded card, inset from the edges */}
+      <div
+        style={{
+          position: "absolute",
+          left: CARD_X,
+          top: CARD_TOP,
+          width: CARD_W,
+          height: CARD_H,
+          transform: `translateY(${cardF}px)`,
+          borderRadius: 26,
+          overflow: "hidden",
+          border: "1.5px solid rgba(255,255,255,0.10)",
+          boxShadow:
+            "0 40px 90px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4), 0 8px 40px rgba(34,211,238,0.10)",
+          background: INK,
+        }}
+      >
         {isVid ? (
-          <OffthreadVideo
-            src={res(seg.src!)}
-            startFrom={Math.round((seg.from ?? 0) * fps)}
-            muted
-            style={{ width: "100%", height: "62%", objectFit: "cover", objectPosition: "center top" }}
-          />
+          <OffthreadVideo src={res(seg.src!)} startFrom={Math.round((seg.from ?? 0) * fps)} muted style={media} />
         ) : (
-          <Img
-            src={res(seg.src!)}
-            style={{ width: "100%", height: "62%", objectFit: "cover", objectPosition: "center top" }}
-          />
+          <Img src={res(seg.src!)} style={media} />
         )}
-        {/* fade the screencap bottom into INK so the callout row reads clean */}
-        <div
-          style={{
-            position: "absolute",
-            top: "40%",
-            left: 0,
-            width: "100%",
-            height: "60%",
-            background: `linear-gradient(180deg, rgba(14,14,20,0) 0%, ${INK} 40%)`,
-          }}
-        />
       </div>
-      {/* PIP + callout row */}
+
+      {/* PIP + callout row (spring-rise on entry, then gentle float) */}
       <div
         style={{
           position: "absolute",
@@ -470,21 +547,22 @@ const PipCallout: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
           right: 40,
           display: "flex",
           alignItems: "center",
-          gap: 40,
+          gap: 38,
           transform: `translateY(${rise}px)`,
           opacity: fade,
         }}
       >
-        {/* rounded-square host PIP */}
+        {/* host PIP — rounded RECTANGLE (portrait), fixed scale so the face isn't cut */}
         <div
           style={{
-            width: PIP_SIZE,
-            height: PIP_SIZE,
+            width: PIP_W,
+            height: PIP_H,
             flexShrink: 0,
-            borderRadius: 30,
+            transform: `translateY(${pipF}px)`,
+            borderRadius: 26,
             overflow: "hidden",
-            border: "2px solid rgba(255,255,255,0.14)",
-            boxShadow: "0 24px 60px rgba(0,0,0,0.55)",
+            border: "1.5px solid rgba(255,255,255,0.12)",
+            boxShadow: "0 28px 64px rgba(0,0,0,0.55)",
             background: INK,
           }}
         >
@@ -497,28 +575,26 @@ const PipCallout: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
-                objectPosition: "center top",
-                // v16: the HeyGen render is a chest-up talking-head (720x1280)
-                // framed for full-frame, not a 380px square. Without a zoom the
-                // face renders at ~75px physical and Sol's warm-eyes signal — the
-                // whole point of the host — dies. A fixed scale pulls the
-                // head-and-shoulders up to ~70% fill (matching Vaibhav's PIP).
-                // One zoom works across the whole wardrobe (all outfits share the
-                // same 2:3 recipe/seed/framing). Parent has overflow:hidden.
-                transform: `scale(${seg.pipZoom ?? 1.32})`,
-                transformOrigin: "50% 30%",
+                // v16.2: HeyGen framed outfit_11's face slightly RIGHT of center;
+                // objectPosition "57%" recenters it and the modest zoom fills the
+                // rounded rectangle without clipping the right cheek (the earlier
+                // 1.06 + center-crop was cutting it). Per-beat seg.pipZoom overrides.
+                objectPosition: "57% 16%",
+                transform: `scale(${seg.pipZoom ?? 1.08})`,
+                transformOrigin: "57% 18%",
               }}
             />
           ) : null}
         </div>
-        {/* callout number + lines */}
-        <div style={{ minWidth: 0, flex: 1 }}>
+
+        {/* callout number + description */}
+        <div style={{ minWidth: 0, flex: 1, transform: `translateY(${numF}px)` }}>
           <div
             style={{
               fontFamily: "'Playfair Display', Georgia, serif",
               fontStyle: "italic",
               fontWeight: 900,
-              fontSize: 200,
+              fontSize: 190,
               lineHeight: 0.9,
               letterSpacing: -4,
               textShadow: "0 6px 26px rgba(0,0,0,0.6)",
@@ -529,13 +605,13 @@ const PipCallout: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
           </div>
           <div
             style={{
-              marginTop: 14,
+              marginTop: 12,
               fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
               fontWeight: 600,
-              fontSize: 38,
-              lineHeight: 1.18,
+              fontSize: 37,
+              lineHeight: 1.2,
               color: "#F3F4F8",
-              textShadow: "0 2px 10px rgba(0,0,0,0.7)",
+              textShadow: "0 2px 12px rgba(0,0,0,0.85)",
             }}
           >
             {lines.map((ln, i) => (
@@ -636,6 +712,8 @@ export const Short: React.FC<ShortProps> = (props) => {
             <div style={paneFor(mode)}>
               {seg.kind === "pipCallout" ? (
                 <PipCallout seg={seg} fps={fps} />
+              ) : seg.framed && !news ? (
+                <FramedHost seg={seg} fps={fps} />
               ) : seg.kind === "statBars" && seg.stat ? (
                 <StatBars {...seg.stat} />
               ) : seg.kind === "image" ? (
@@ -701,8 +779,14 @@ export const Short: React.FC<ShortProps> = (props) => {
         .map((e, i) => (
           <EmphasisText key={i} e={e} fps={fps} />
         ))}
-      {activeCaption && !activeIsPip ? (
-        <Caption word={activeCaption} fps={fps} y={activeMode === "split" ? "47%" : undefined} />
+      {activeCaption ? (
+        activeIsPip ? (
+          // v16.2: small running captions with hot-word highlight in the bottom
+          // space below the pipCallout row (VJ feedback — use the blank space)
+          <Caption word={activeCaption} fps={fps} y={96} size={46} />
+        ) : (
+          <Caption word={activeCaption} fps={fps} y={activeMode === "split" ? "47%" : undefined} />
+        )
       ) : null}
       {props.cover && t <= props.cover.until ? <Cover c={props.cover} fps={fps} /> : null}
       {props.watermark !== false ? (

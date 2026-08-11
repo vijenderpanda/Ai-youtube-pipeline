@@ -1,54 +1,129 @@
 {
-  "title": "6 Claude Commands That Rewire How You Think 🧠 (Ranked)",
-  "tags": "claude code,slash commands,custom commands,claude commands,ai thinking partner,premortem,steelman,claude ai tips,ai for beginners,prompt engineering,ai productivity,ai tips",
-  "cover": {
-    "title1": "6 COMMANDS",
-    "title2": "RANKED",
-    "sub": "make claude think with you",
-    "emojis": "🧠",
-    "until": 1.6,
-    "bigTitle": 300,
-    "centerTitle": true
+ "title": "6 Claude Commands That Rewire How You Think \ud83e\udde0 (Ranked)",
+ "tags": "claude code,slash commands,custom commands,claude commands,ai thinking partner,premortem,steelman,claude ai tips,ai for beginners,prompt engineering,ai productivity,ai tips",
+ "cover": {
+  "title1": "6 COMMANDS",
+  "title2": "RANKED",
+  "sub": "make claude think with you",
+  "emojis": "\ud83e\udde0",
+  "until": 1.6,
+  "bigTitle": 300,
+  "centerTitle": true
+ },
+ "lines": [
+  "You use Claude for answers. So does everyone. That's the mistake.",
+  "Six commands make it think WITH you. Build each once, one file. Watch.",
+  "Six. Steelman builds the strongest case FOR your idea, before you fall for it.",
+  "Five. E-L-I-five re-explains your plan simply. The fuzzy part is where you're bluffing.",
+  "Four. Scout maps what you need to know before you commit.",
+  "Three. Devil argues against you, hard, using your own logic.",
+  "Two. Blindspots names what you can't see.",
+  "One. Premortem assumes you already failed, and tells you exactly why. This one rewired how I plan.",
+  "Stop asking Claude for answers. Make it argue with you.",
+  "Follow. I unpack one AI trick every single day."
+ ],
+ "hot_words": [
+  "ANSWERS",
+  "MISTAKE",
+  "THINK",
+  "ONCE",
+  "WATCH",
+  "STEELMAN",
+  "ELI5",
+  "SCOUT",
+  "DEVIL",
+  "BLINDSPOTS",
+  "PREMORTEM",
+  "STRONGEST",
+  "SIMPLY",
+  "BLUFFING",
+  "COMMIT",
+  "LOGIC",
+  "FAILED",
+  "REWIRED",
+  "ARGUE",
+  "FOLLOW",
+  "EVERY",
+  "DAY"
+ ],
+ "beats": [
+  "host",
+  "host",
+  "pip:steelman",
+  "pip:eli5",
+  "pip:scout",
+  "pip:devil",
+  "pip:blindspots",
+  "pip:premortem",
+  "host2",
+  "host2"
+ ],
+ "pips": {
+  "steelman": {
+   "src": "ep11/broll_steelman.mp4",
+   "from": 0.5,
+   "num": "06",
+   "lines": [
+    "/steelman",
+    "Strongest case FOR",
+    "your idea."
+   ]
   },
-  "lines": [
-    "You use Claude for answers. So does everyone. That's the mistake.",
-    "Six commands make it think WITH you. Build each once, one file. Watch.",
-    "Six. Steelman builds the strongest case FOR your idea, before you fall for it.",
-    "Five. E-L-I-five re-explains your plan simply. The fuzzy part is where you're bluffing.",
-    "Four. Scout maps what you need to know before you commit.",
-    "Three. Devil argues against you, hard, using your own logic.",
-    "Two. Blindspots names what you can't see.",
-    "One. Premortem assumes you already failed, and tells you exactly why. This one rewired how I plan.",
-    "Stop asking Claude for answers. Make it argue with you.",
-    "Follow. I unpack one AI trick every single day."
-  ],
-  "hot_words": [
-    "ANSWERS", "MISTAKE", "THINK", "ONCE", "WATCH",
-    "STEELMAN", "ELI5", "SCOUT", "DEVIL", "BLINDSPOTS", "PREMORTEM",
-    "STRONGEST", "SIMPLY", "BLUFFING", "COMMIT", "LOGIC", "FAILED", "REWIRED",
-    "ARGUE", "FOLLOW", "EVERY", "DAY"
-  ],
-  "beats": [
-    "host", "host",
-    "pip:steelman",
-    "pip:eli5",
-    "pip:scout",
-    "pip:devil",
-    "pip:blindspots",
-    "pip:premortem",
-    "host2", "host2"
-  ],
-  "pips": {
-    "steelman":   {"src": "ep11/broll_steelman.mp4",   "from": 0.5, "num": "06", "lines": ["/steelman", "Strongest case FOR", "your idea."]},
-    "eli5":       {"src": "ep11/broll_eli5.mp4",        "from": 0.5, "num": "05", "lines": ["/eli5", "Strips the jargon.", "Exposes the bluff."]},
-    "scout":      {"src": "ep11/broll_scout.mp4",       "from": 0.5, "num": "04", "lines": ["/scout", "Maps what to learn", "before you commit."]},
-    "devil":      {"src": "ep11/broll_devil.mp4",       "from": 0.5, "num": "03", "lines": ["/devil", "Argues against you —", "your own logic."]},
-    "blindspots": {"src": "ep11/broll_blindspots.mp4",  "from": 0.5, "num": "02", "lines": ["/blindspots", "Names what you", "can't see."]},
-    "premortem":  {"src": "ep11/broll_premortem.mp4",   "from": 0.5, "num": "01", "lines": ["/premortem", "Assumes you failed.", "Tells you why."]}
+  "eli5": {
+   "src": "ep11/broll_eli5.mp4",
+   "from": 0.5,
+   "num": "05",
+   "lines": [
+    "/eli5",
+    "Strips the jargon.",
+    "Exposes the bluff."
+   ]
   },
-  "steps": [],
-  "music": "music/bed_active.mp3",
-  "endcard": null,
-  "outro": true,
-  "outro_dur": 0
+  "scout": {
+   "src": "ep11/broll_scout.mp4",
+   "from": 0.5,
+   "num": "04",
+   "lines": [
+    "/scout",
+    "Maps what to learn",
+    "before you commit."
+   ]
+  },
+  "devil": {
+   "src": "ep11/broll_devil.mp4",
+   "from": 0.5,
+   "num": "03",
+   "lines": [
+    "/devil",
+    "Argues against you \u2014",
+    "your own logic."
+   ]
+  },
+  "blindspots": {
+   "src": "ep11/broll_blindspots.mp4",
+   "from": 0.5,
+   "num": "02",
+   "lines": [
+    "/blindspots",
+    "Names what you",
+    "can't see."
+   ]
+  },
+  "premortem": {
+   "src": "ep11/broll_premortem.mp4",
+   "from": 0.5,
+   "num": "01",
+   "lines": [
+    "/premortem",
+    "Assumes you failed.",
+    "Tells you why."
+   ]
+  }
+ },
+ "steps": [],
+ "music": "music/bed_active.mp3",
+ "endcard": null,
+ "outro": true,
+ "outro_dur": 0,
+ "outro_src": "ep11/outro_card.mp4"
 }
