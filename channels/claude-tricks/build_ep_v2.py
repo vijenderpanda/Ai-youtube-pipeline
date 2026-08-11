@@ -1297,20 +1297,27 @@ def build(ep, dry=False, tag="v2", preview=False):
     if os.environ.get("HOST_OUTFIT", "on").lower() not in ("off", "0", "no"):
         try:
             import host_outfit
-            _outfit, tid = host_outfit.pick_and_register(ep)
+            # v16: register the two-tid POOL (center + 3/4 yaw) so the hook and
+            # the payoff cutaway are shot from different angles. Rendering every
+            # cutaway off one talking photo is the static-avatar tell we're
+            # closing this cycle (Vaibhav-DNA camera-angle parity).
+            _outfit, _tids = host_outfit.pick_and_register_pool(ep)
+            tid = _tids[0]
+            tid_3q = _tids[-1]            # collapses to center if 3q is missing
             open(os.path.join(A, "host_outfit.txt"), "w").write(_outfit["name"] + "\n")
-            print(f">> host wardrobe for ep{ep}: {_outfit['name']}  (heygen {tid[:8]}...)")
+            print(f">> host wardrobe for ep{ep}: {_outfit['name']}  "
+                  f"(center {tid[:8]}..., 3q {tid_3q[:8]}...)")
         except Exception as e:
             print(f"!! host_outfit unavailable ({e}); using global .heygen_photo_id")
-            tid = open(CACHE).read().strip()
+            tid = tid_3q = open(CACHE).read().strip()
     else:
-        tid = open(CACHE).read().strip()
-    def host_clip(name, t0, t1):
+        tid = tid_3q = open(CACHE).read().strip()
+    def host_clip(name, t0, t1, photo=None):
         wav = os.path.join(A, f"{name}.wav"); mp4 = os.path.join(A, f"{name}.mp4")
         if not os.path.exists(mp4):
             run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(t0), "-t", str(t1 - t0),
                  "-i", vo, "-c:a", "pcm_s16le", wav])
-            generate(tid, upload_audio(wav), mp4)
+            generate(photo or tid, upload_audio(wav), mp4)
         return mp4
 
     beats = cfg["beats"]
@@ -1326,7 +1333,8 @@ def build(ep, dry=False, tag="v2", preview=False):
         hook_end = sum(seg_durs[:n_hook])
         pay_start = total - sum(seg_durs[-n_pay:]) if n_pay else total
         hook_mp4 = host_clip("v2_hook", 0, hook_end)
-        pay_mp4 = host_clip("v2_payoff", pay_start, total) if n_pay else None
+        # payoff shoots on the 3/4-yaw twin so the two cutaways alternate angle
+        pay_mp4 = host_clip("v2_payoff", pay_start, total, photo=tid_3q) if n_pay else None
 
     # 3) segments for remotion (paths relative to remotion public/)
     def rel(p): return os.path.relpath(p, os.path.join(CH, "assets")).replace("\\", "/")
@@ -1412,9 +1420,16 @@ def build(ep, dry=False, tag="v2", preview=False):
                              "start": round(line_starts[a2], 2),
                              "end": round(line_starts[b2] + seg_durs[b2], 2)}
                             for (txt, a2, b2) in cfg["emphasis"]]
-    sp = os.path.join(CH, "episodes", f"{ep}.{tag}.json")
+    # v16: write Remotion props to a build-local path (renders_out/props_ep<ep>_<tag>.json)
+    # so we DON'T clobber the human-readable spec at episodes/<ep>.<tag>.json. Ep 10's
+    # first master (2026-08-11) overwrote its own source spec, wiping title/lines/tags/
+    # endcard and forcing a factory_posts round-trip to recover the metadata. Props live
+    # in renders_out (gitignored) and are consumed only by Remotion.
+    props_dir = os.path.join(REPO, "renders_out")
+    os.makedirs(props_dir, exist_ok=True)
+    sp = os.path.join(props_dir, f"props_ep{ep}_{tag}.json")
     json.dump(spec, open(sp, "w"), indent=1)
-    print(f">> spec {sp} | total {total:.1f}s")
+    print(f">> props {sp} | total {total:.1f}s")
     if dry:
         print(">> DRY — spec written, skipping render/master")
         return sp
@@ -1485,7 +1500,11 @@ def build(ep, dry=False, tag="v2", preview=False):
     # the final image contradicted the keyword the whole teaser is measured on.
     # Requires `outro_dur` to cut the sting before its own comment chip appears —
     # two comment CTAs on one frame is the same defect wearing a hat.
-    if ec and not ec.get("over_outro"):
+    # v16: guard against endcard dicts that don't carry a src (Ep 10 first-master
+    # crashed here on cfg.endcard=None -> the finalize wrapper couldn't recover.
+    # Skipping silently keeps the master file usable; a badly-configured endcard
+    # is not worth aborting the whole ship over).
+    if ec and ec.get("src") and not ec.get("over_outro"):
         card = os.path.join(CH, "assets", ec["src"])
         assert os.path.exists(card), f"endcard missing: {card}"
         outc = os.path.join(R, f"ep{ep}_{tag}_cta.mp4")
@@ -1522,7 +1541,7 @@ def build(ep, dry=False, tag="v2", preview=False):
         print(f">> OUTRO APPENDED{f' (trimmed to {odur}s)' if odur else ''}", out2)
         out = out2
 
-    if ec and ec.get("over_outro"):
+    if ec and ec.get("src") and ec.get("over_outro"):
         card = os.path.join(CH, "assets", ec["src"])
         assert os.path.exists(card), f"endcard missing: {card}"
         outc = os.path.join(R, f"ep{ep}_{tag}_final.mp4")
