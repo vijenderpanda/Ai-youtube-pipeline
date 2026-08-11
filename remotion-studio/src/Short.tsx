@@ -20,7 +20,7 @@ export type Seg = {
   /* src omitted for kind "statBars" (chart is drawn in-comp, never pre-baked) */
   src?: string;
   dur: number;
-  kind?: "video" | "image" | "statBars";
+  kind?: "video" | "image" | "statBars" | "pipCallout";
   from?: number;
   /* per-beat pane mode (newsSplit only): "split" b-roll top + host bottom,
      "full" b-roll full-frame, "host" host full-frame */
@@ -29,6 +29,16 @@ export type Seg = {
      beats render the native 1080x1920 component, never a cover-fit image).
      stat.start is relative to THIS beat (Sequence-local frames). */
   stat?: StatBarsProps;
+  /* kind "pipCallout" (v16 Vaibhav-DNA): the flagship numbered-list layout.
+     `src` = the b-roll top zone (product screencap, video or image, cover-fit).
+     `pip` = the host talking-head clip shown as a rounded-square PIP bottom-left.
+     `num` = the callout number ("02") rendered huge in lime Playfair italic.
+     `lines` = 1-3 description lines beside the number.
+     `pipFrom` = start-from for the pip clip; `from` = start-from for the b-roll. */
+  pip?: string;
+  pipFrom?: number;
+  num?: string;
+  lines?: string[];
 };
 /* pos: which corner the chip lives in — pick the one with dead space so the
    chip NEVER covers the content the beat is teaching (default tl). */
@@ -364,6 +374,127 @@ const EmphasisText: React.FC<{ e: Emphasis; fps: number }> = ({ e, fps }) => {
   );
 };
 
+/* ---------- pipCallout (v16 Vaibhav-DNA numbered-list layout) ----------
+   Top zone: product screencap b-roll (video/image), cover-fit, anchored top,
+   fading into INK at the bottom so the callout row pops on dark (our brand
+   fades to ink, not Vaibhav's light grey — keeps Sol's magenta/dark identity).
+   Bottom-left: rounded-square host PIP. Right of it: giant lime "#NN" in
+   Playfair italic + up to 3 description lines. PIP + callout spring up together
+   on beat entry. The competitor's #NN callout is the attention anchor of every
+   numbered point; this is the single most-copied move from the 360K teardown. */
+const PIP_SIZE = 380;        // rounded-square host PIP edge (px)
+const PIP_LEFT = 48;
+const PIP_BOTTOM = 330;      // lower-third, with breathing room below (Vaibhav's row sits ~65-83%, not jammed at the frame bottom)
+const PipCallout: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
+  const frame = useCurrentFrame();
+  const s = spring({ frame, fps, config: { damping: 18, mass: 0.8 } });
+  const rise = interpolate(s, [0, 1], [70, 0]);
+  const fade = interpolate(s, [0, 1], [0, 1]);
+  const numRaw = (seg.num ?? "").replace(/^#/, "");
+  const lines = seg.lines ?? [];
+  const isVid = (seg.src ?? "").match(/\.(mp4|mov|webm|mkv)$/i);
+  return (
+    <AbsoluteFill style={{ background: INK }}>
+      {/* top zone — product screencap */}
+      <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+        {isVid ? (
+          <OffthreadVideo
+            src={res(seg.src!)}
+            startFrom={Math.round((seg.from ?? 0) * fps)}
+            muted
+            style={{ width: "100%", height: "62%", objectFit: "cover", objectPosition: "center top" }}
+          />
+        ) : (
+          <Img
+            src={res(seg.src!)}
+            style={{ width: "100%", height: "62%", objectFit: "cover", objectPosition: "center top" }}
+          />
+        )}
+        {/* fade the screencap bottom into INK so the callout row reads clean */}
+        <div
+          style={{
+            position: "absolute",
+            top: "40%",
+            left: 0,
+            width: "100%",
+            height: "60%",
+            background: `linear-gradient(180deg, rgba(14,14,20,0) 0%, ${INK} 40%)`,
+          }}
+        />
+      </div>
+      {/* PIP + callout row */}
+      <div
+        style={{
+          position: "absolute",
+          left: PIP_LEFT,
+          bottom: PIP_BOTTOM,
+          right: 40,
+          display: "flex",
+          alignItems: "center",
+          gap: 40,
+          transform: `translateY(${rise}px)`,
+          opacity: fade,
+        }}
+      >
+        {/* rounded-square host PIP */}
+        <div
+          style={{
+            width: PIP_SIZE,
+            height: PIP_SIZE,
+            flexShrink: 0,
+            borderRadius: 30,
+            overflow: "hidden",
+            border: "2px solid rgba(255,255,255,0.14)",
+            boxShadow: "0 24px 60px rgba(0,0,0,0.55)",
+            background: INK,
+          }}
+        >
+          {seg.pip ? (
+            <OffthreadVideo
+              src={res(seg.pip)}
+              startFrom={Math.round((seg.pipFrom ?? 0) * fps)}
+              muted
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }}
+            />
+          ) : null}
+        </div>
+        {/* callout number + lines */}
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <div
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontStyle: "italic",
+              fontWeight: 900,
+              fontSize: 200,
+              lineHeight: 0.9,
+              letterSpacing: -4,
+              textShadow: "0 6px 26px rgba(0,0,0,0.6)",
+            }}
+          >
+            <span style={{ color: "white" }}>#</span>
+            <span style={{ color: LIME }}>{numRaw}</span>
+          </div>
+          <div
+            style={{
+              marginTop: 14,
+              fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+              fontWeight: 600,
+              fontSize: 38,
+              lineHeight: 1.18,
+              color: "#F3F4F8",
+              textShadow: "0 2px 10px rgba(0,0,0,0.7)",
+            }}
+          >
+            {lines.map((ln, i) => (
+              <div key={i}>{ln}</div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
 /* ---------- watermark ----------
    v16: fade in only AFTER cover clears (frame > coverUntil + 0.3s) so the
    frame-zero + hook window stays visually clean. When there's no cover, fades
@@ -425,6 +556,10 @@ export const Short: React.FC<ShortProps> = (props) => {
   const activeMode: NonNullable<Seg["mode"]> = news
     ? props.segments[Math.max(activeIdx, 0)]?.mode ?? "split"
     : "full";
+  // v16: pipCallout beats carry their own description lines, so the word-by-word
+  // caption is suppressed there (it would collide with the callout row). The
+  // step chip is suppressed too — the #NN callout IS the step marker.
+  const activeIsPip = props.segments[Math.max(activeIdx, 0)]?.kind === "pipCallout";
   const paneFor = (mode: NonNullable<Seg["mode"]>): React.CSSProperties =>
     mode === "split"
       ? { position: "absolute", top: 0, left: 0, width: "100%", height: "55%", overflow: "hidden" }
@@ -446,7 +581,9 @@ export const Short: React.FC<ShortProps> = (props) => {
             durationInFrames={Math.round(seg.dur * fps)}
           >
             <div style={paneFor(mode)}>
-              {seg.kind === "statBars" && seg.stat ? (
+              {seg.kind === "pipCallout" ? (
+                <PipCallout seg={seg} fps={fps} />
+              ) : seg.kind === "statBars" && seg.stat ? (
                 <StatBars {...seg.stat} />
               ) : seg.kind === "image" ? (
                 <Img src={res(seg.src!)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -501,7 +638,7 @@ export const Short: React.FC<ShortProps> = (props) => {
       ) : null}
 
       {(props.steps ?? [])
-        .filter((s) => t >= s.start && t <= s.end)
+        .filter((s) => t >= s.start && t <= s.end && !activeIsPip)
         .map((s, i) => (
           <StepChip key={i} step={s} fps={fps} />
         ))}
@@ -511,7 +648,7 @@ export const Short: React.FC<ShortProps> = (props) => {
         .map((e, i) => (
           <EmphasisText key={i} e={e} fps={fps} />
         ))}
-      {activeCaption ? (
+      {activeCaption && !activeIsPip ? (
         <Caption word={activeCaption} fps={fps} y={activeMode === "split" ? "47%" : undefined} />
       ) : null}
       {props.cover && t <= props.cover.until ? <Cover c={props.cover} fps={fps} /> : null}
