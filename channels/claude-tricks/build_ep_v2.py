@@ -1322,25 +1322,69 @@ def build(ep, dry=False, tag="v2", preview=False):
 
     beats = cfg["beats"]
     news_split = cfg.get("layout") == "newsSplit"
+    # v16 host_runs: previously the beat parser only accepted a leading run of
+    # "host" + a trailing run of "host2", so a plan with mid-beat Sol cutaways
+    # (Ep 10 planned 7s/18s/35s/50s cutaways -- none rendered) was silently
+    # collapsed to hook + payoff only. Now we walk beats, collect every
+    # host-or-host2 run at its actual position, render one HeyGen clip per
+    # run, and alternate the tid across runs so yaw variety travels through
+    # the whole episode not just the bookends.
+    host_runs = []  # list of (kind, seg_start, seg_end_exclusive, t0, t1)
+    _seg_t = [0.0]
+    for d in seg_durs:
+        _seg_t.append(_seg_t[-1] + d)
+    i = 0
+    while i < len(beats):
+        b = beats[i]
+        if b in ("host", "host2"):
+            j = i
+            while j + 1 < len(beats) and beats[j + 1] == b:
+                j += 1
+            host_runs.append((b, i, j + 1, _seg_t[i], _seg_t[j + 1]))
+            i = j + 1
+        else:
+            i += 1
+    n_hook = beats.count("host")
+    n_pay = beats.count("host2")
+    hook_end = sum(seg_durs[:n_hook]) if beats[:1] == ["host"] else 0.0
     if news_split:
-        # one host clip spanning the whole VO, pinned to the bottom pane
         full_host = host_clip("v2_host", 0, total)
         hook_mp4 = pay_mp4 = None
         hook_end = 0.0
+        host_clip_by_run = {}
     else:
-        n_hook = beats.count("host")
-        n_pay = beats.count("host2")
-        hook_end = sum(seg_durs[:n_hook])
-        pay_start = total - sum(seg_durs[-n_pay:]) if n_pay else total
-        hook_mp4 = host_clip("v2_hook", 0, hook_end)
-        # payoff shoots on the 3/4-yaw twin so the two cutaways alternate angle
-        pay_mp4 = host_clip("v2_payoff", pay_start, total, photo=tid_3q) if n_pay else None
+        # Per-run HeyGen clips. Alternate photo across runs (index parity) so
+        # even runs use center (tid) and odd runs use 3q (tid_3q) — the yaw
+        # rotation the wardrobe pool was registered for. Continuity note: the
+        # legacy hook/payoff files stay as-is (v2_hook.mp4, v2_payoff.mp4) so
+        # existing episodes rebuild identically; new interleaved runs get
+        # v2_host_02.mp4 / v2_host_03.mp4 etc.
+        host_clip_by_run = {}
+        for run_idx, (kind, si, sj, t0, t1) in enumerate(host_runs):
+            if run_idx == 0 and kind == "host":
+                name = "v2_hook"
+                photo = tid                                      # center on hook
+            elif run_idx == len(host_runs) - 1 and kind == "host2":
+                name = "v2_payoff"
+                photo = tid                                      # center on payoff (continuity)
+            else:
+                name = f"v2_host_{run_idx:02d}"
+                photo = tid_3q if run_idx % 2 else tid            # alternate yaw
+            host_clip_by_run[(si, sj)] = host_clip(name, t0, t1, photo=photo)
+        # Preserve names old code paths still expect (segment builder below)
+        first_hook = next((k for k in host_clip_by_run
+                           if beats[k[0]] == "host"), None)
+        last_pay = next((k for k in reversed(list(host_clip_by_run))
+                         if beats[k[0]] == "host2"), None)
+        hook_mp4 = host_clip_by_run[first_hook] if first_hook else None
+        pay_mp4 = host_clip_by_run[last_pay] if last_pay else None
 
     # 3) segments for remotion (paths relative to remotion public/)
     def rel(p): return os.path.relpath(p, os.path.join(CH, "assets")).replace("\\", "/")
     segments, t0 = [], 0.0
     i = 0
     while i < len(beats):
+        start_i = i                           # v16: remember run start for host_clip_by_run lookup
         b = beats[i]
         dur = seg_durs[i]
         # merge consecutive identical beats
@@ -1353,10 +1397,17 @@ def build(ep, dry=False, tag="v2", preview=False):
         if b == "host" and news_split:
             segments.append({"src": "assets/" + rel(full_host), "dur": round(dur, 3),
                              "mode": "host"})
-        elif b == "host":
-            segments.append({"src": "assets/" + rel(hook_mp4), "dur": round(dur, 3)})
-        elif b == "host2":
-            segments.append({"src": "assets/" + rel(pay_mp4), "dur": round(dur, 3)})
+        elif b in ("host", "host2"):
+            # v16 interleaved-cutaway: find the run this beat belongs to (by the
+            # start_beat_index recorded when we walked beats above) and use ITS
+            # HeyGen clip. Legacy leading-run / trailing-run beats still land on
+            # v2_hook.mp4 / v2_payoff.mp4 unchanged.
+            run_src = hook_mp4 if b == "host" else pay_mp4
+            for (si, sj), clip in host_clip_by_run.items():
+                if si <= start_i <= sj - 1:
+                    run_src = clip
+                    break
+            segments.append({"src": "assets/" + rel(run_src), "dur": round(dur, 3)})
         elif b.startswith("rec:"):
             src, frm = b[4:].split("@")
             seg = {"src": f"assets/{src}", "dur": round(dur, 3), "from": float(frm)}
@@ -1471,8 +1522,14 @@ def build(ep, dry=False, tag="v2", preview=False):
     # itself stays locked.
     mg = float(cfg.get("music_gain_db", 0.0))
     pre = f"volume={mg}dB," if mg else ""
-    fc = (f"[1:a]{pre}volume=0.35,afade=t=in:st=0:d=1.5[m];"
-          "[0:a]volume=11dB,asplit=2[v1][v2];"
+    # v16 mix rebalance: raw measurement of ep10_v2 showed music at -17.4 LUFS
+    # vs VO at -22.4 LUFS post-gain — the bed was 5 LU LOUDER than the message,
+    # even after sidechain. Dropping music 0.35 -> 0.20 (-4.9 dB) and lifting VO
+    # +11dB -> +14dB puts the VO ~5 LU above music, the radio-quality
+    # talking-head ratio. Integrated master stays on the -18.4 LUFS spine (the
+    # sidechain + limiter already compensated); LRA tightens a touch.
+    fc = (f"[1:a]{pre}volume=0.20,afade=t=in:st=0:d=1.5[m];"
+          "[0:a]volume=14dB,asplit=2[v1][v2];"
           "[m][v2]sidechaincompress=threshold=0.05:ratio=8:attack=40:release=600[duck];"
           "[v1][duck]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.89[a]")
     run(["ffmpeg", "-y", "-i", raw, "-stream_loop", "-1", "-i", music,

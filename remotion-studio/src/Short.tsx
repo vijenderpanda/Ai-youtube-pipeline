@@ -43,7 +43,16 @@ export type ShortProps = {
   musicGain?: number;
   /* title2 optional: a lazy payload may send the whole hook as one long title1 —
      Cover auto-splits it into the mandatory two-line stack (see Cover below). */
-  cover?: { title1: string; title2?: string; sub?: string; emojis?: string; until: number };
+  cover?: {
+    title1: string;
+    title2?: string;
+    sub?: string;
+    emojis?: string;
+    until: number;
+    /* v16 premium cover: opt-in overrides for bigger, centered title */
+    bigTitle?: number;      // absolute font-size override for title1
+    centerTitle?: boolean;  // horizontally center the type stack instead of left-anchoring
+  };
   watermark?: boolean;
   fps?: number;
   /* news-split: persistent host pinned bottom, segments play in the top pane */
@@ -198,7 +207,11 @@ export const Cover: React.FC<{ c: NonNullable<ShortProps["cover"]>; fps: number 
   if (fitFont(line1 || " ", T1_BASE, COVER_BOX_W) < T1_MIN) {
     [line1, line2] = splitHook(`${line1} ${line2}`.trim());
   }
-  const f1 = fitFont(line1 || " ", T1_BASE, COVER_BOX_W);
+  // v16: premium cover opts — bigTitle overrides the frozen 225 base (Ep 10 v3
+  // ships bigTitle=300 for shorts-feed reach). centerTitle horizontally
+  // centers the type-stack box instead of left-anchoring at 44px.
+  const t1Base = c.bigTitle ?? T1_BASE;
+  const f1 = fitFont(line1 || " ", t1Base, COVER_BOX_W);
   const f2 = fitFont(line2 || " ", T2_BASE, COVER_BOX_W - CHIP_PAD_X);
   const extrudeDepth = Math.max(6, Math.round(f1 / 20)); // scale extrude with type
   // type-on reveal — keeps the angled/extruded poster style, adds a hook/edited feel
@@ -226,8 +239,11 @@ export const Cover: React.FC<{ c: NonNullable<ShortProps["cover"]>; fps: number 
         style={{
           position: "absolute",
           top: 150,
-          left: 44,
-          width: 990,
+          left: c.centerTitle ? 0 : 44,
+          right: c.centerTitle ? 0 : undefined,
+          width: c.centerTitle ? undefined : 990,
+          margin: c.centerTitle ? "0 auto" : undefined,
+          textAlign: c.centerTitle ? "center" : undefined,
           transform: `translateY(${slide}px)`,
           fontFamily: "Anton, Arial Black, sans-serif",
           textTransform: "uppercase",
@@ -342,8 +358,21 @@ const EmphasisText: React.FC<{ e: Emphasis; fps: number }> = ({ e, fps }) => {
   );
 };
 
-/* ---------- watermark ---------- */
-export const Watermark: React.FC = () => (
+/* ---------- watermark ----------
+   v16: fade in only AFTER cover clears (frame > coverUntil + 0.3s) so the
+   frame-zero + hook window stays visually clean. When there's no cover, fades
+   in at t=0.3s. Vaibhav-DNA covers have no watermark in the hook — the
+   watermark's job is on-scroll brand recall in the second half, not shouting
+   during the hook. */
+export const Watermark: React.FC<{ startF?: number }> = ({ startF = 0 }) => {
+  const frame = useCurrentFrame();
+  const fadeIn = interpolate(
+    frame,
+    [startF, startF + 8],
+    [0, 0.7],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+  );
+  return (
   <div
     style={{
       position: "absolute",
@@ -351,7 +380,7 @@ export const Watermark: React.FC = () => (
       right: 30,
       fontFamily: "Anton, Arial Black",
       fontSize: 34,
-      opacity: 0.8,
+      opacity: fadeIn,
       background: "rgba(10,10,16,0.5)",
       padding: "6px 16px",
       borderRadius: 14,
@@ -361,7 +390,8 @@ export const Watermark: React.FC = () => (
     <span style={{ color: MAG }}>UNPACKED</span>
     <span style={{ color: YELLOW }}> VJ</span>
   </div>
-);
+  );
+};
 
 /* ---------- main composition ---------- */
 export const Short: React.FC<ShortProps> = (props) => {
@@ -476,7 +506,14 @@ export const Short: React.FC<ShortProps> = (props) => {
         <Caption word={activeCaption} fps={fps} y={activeMode === "split" ? "47%" : undefined} />
       ) : null}
       {props.cover && t <= props.cover.until ? <Cover c={props.cover} fps={fps} /> : null}
-      {props.watermark !== false ? <Watermark /> : null}
+      {props.watermark !== false ? (
+        <Watermark
+          // v16: fade in after cover clears + a 0.3s grace so the hook window
+          // stays visually clean. With no cover, still delay 0.3s so a
+          // full-frame value pane at frame 0 isn't crowded.
+          startF={Math.round(((props.cover?.until ?? 0) + 0.3) * fps)}
+        />
+      ) : null}
 
       <Audio src={res(props.vo)} />
       {props.music ? <Audio src={res(props.music)} volume={musicVol} loop /> : null}

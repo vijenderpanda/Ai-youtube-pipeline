@@ -1,0 +1,908 @@
+{
+ "title": "Stop Copy-Pasting Between AIs \ud83d\uded1 (This 1 FREE Trick Runs Them Side By Side) \ud83e\udd2f",
+ "tags": "ai tools,free ai tools,chatgpt vs claude,ai side by side,compare ai models,ai productivity,ai tips,ai for beginners,parallel ai chat,ai workflow",
+ "cover": {
+  "title1": "2 AIs",
+  "title2": "1 PROMPT",
+  "sub": "zero copy-paste",
+  "emojis": "\ud83d\uded1\ud83e\udd2f",
+  "until": 1.6,
+  "bigTitle": 320,
+  "centerTitle": true
+ },
+ "lines": [
+  "You ask ChatGPT. Then Claude. Copy. Paste. Switch. Paste again.",
+  "Three tabs open. Four manual steps. Every single time.",
+  "And you're doing all that just to compare two answers.",
+  "There's a free tool that puts both models in one box.",
+  "One input, pick your models, no API keys, no subscription.",
+  "Type the prompt once, and hit send.",
+  "Both answers stream back at the same time, side by side.",
+  "You're not guessing which A.I. answered better.",
+  "You're reading both \u2014 and keeping the stronger one.",
+  "So what? One prompt. Two brains. Zero paste.",
+  "Follow. I unpack one AI trick every single day."
+ ],
+ "hot_words": [
+  "STOP",
+  "COPY-PASTING",
+  "AIS",
+  "FREE",
+  "PARALLEL",
+  "ONE",
+  "PROMPT",
+  "TWO",
+  "SIDE",
+  "BY",
+  "SIDE",
+  "COMPARE",
+  "TABS",
+  "SWITCH",
+  "MANUAL",
+  "STEPS",
+  "TOOL",
+  "BOTH",
+  "MODELS",
+  "BOX",
+  "INPUT",
+  "NO",
+  "API",
+  "KEYS",
+  "SUBSCRIPTION",
+  "PASTING",
+  "STREAM",
+  "SAME",
+  "TIME",
+  "BETTER",
+  "STRONGER",
+  "KEEPING",
+  "BRAINS",
+  "ZERO",
+  "PASTE",
+  "FOLLOW",
+  "UNPACK",
+  "EVERY",
+  "DAY"
+ ],
+ "beats": [
+  "host",
+  "rec:ep10/demo_parallel.mp4@3.2",
+  "rec:ep10/demo_parallel.mp4@9.6",
+  "host",
+  "rec:ep10/demo_parallel.mp4@16.0",
+  "host",
+  "rec:ep10/demo_parallel.mp4@22.4",
+  "rec:ep10/demo_parallel.mp4@28.8",
+  "rec:ep10/demo_parallel.mp4@35.2",
+  "host2",
+  "host2"
+ ],
+ "steps": [
+  [
+   "STEP 1/3 \u2014 TWO AIs \u00b7 ONE BOX",
+   3,
+   4
+  ],
+  [
+   "STEP 2/3 \u2014 TYPE ONCE, PICK MODELS",
+   5,
+   6
+  ],
+  [
+   "STEP 3/3 \u2014 READ BOTH \u00b7 KEEP THE WIN",
+   7,
+   8
+  ]
+ ],
+ "music": "music/bed_active.mp3",
+ "endcard": null,
+ "outro": null,
+ "_props_last_render": {
+  "segments": [
+   {
+    "src": "assets/ep10/v2_hook.mp4",
+    "dur": 8.26
+   },
+   {
+    "src": "assets/ep10/demo_parallel.mp4",
+    "dur": 3.84,
+    "from": 3.2
+   },
+   {
+    "src": "assets/ep10/demo_parallel.mp4",
+    "dur": 3.81,
+    "from": 9.6
+   },
+   {
+    "src": "assets/ep10/demo_parallel.mp4",
+    "dur": 3.57,
+    "from": 15.0
+   },
+   {
+    "src": "assets/ep10/demo_parallel.mp4",
+    "dur": 3.21,
+    "from": 18.5
+   },
+   {
+    "src": "assets/ep10/demo_parallel.mp4",
+    "dur": 3.49,
+    "from": 22.5
+   },
+   {
+    "src": "assets/ep10/demo_parallel.mp4",
+    "dur": 2.39,
+    "from": 27.0
+   },
+   {
+    "src": "assets/ep10/demo_parallel.mp4",
+    "dur": 3.49,
+    "from": 29.5
+   },
+   {
+    "src": "assets/ep10/demo_parallel.mp4",
+    "dur": 3.1,
+    "from": 40.0
+   },
+   {
+    "src": "assets/ep10/demo_parallel.mp4",
+    "dur": 2.71,
+    "from": 49.5
+   },
+   {
+    "src": "assets/ep10/v2_payoff.mp4",
+    "dur": 7.22
+   }
+  ],
+  "captions": [
+   {
+    "w": "YOU",
+    "start": 0.0,
+    "end": 0.17,
+    "hot": false
+   },
+   {
+    "w": "ASK",
+    "start": 0.27,
+    "end": 0.52,
+    "hot": false
+   },
+   {
+    "w": "ONE",
+    "start": 0.67,
+    "end": 0.95,
+    "hot": true
+   },
+   {
+    "w": "AI",
+    "start": 1.0,
+    "end": 1.57,
+    "hot": false
+   },
+   {
+    "w": "A",
+    "start": 1.66,
+    "end": 1.74,
+    "hot": false
+   },
+   {
+    "w": "QUESTION",
+    "start": 1.82,
+    "end": 2.31,
+    "hot": false
+   },
+   {
+    "w": "THEN",
+    "start": 2.55,
+    "end": 2.73,
+    "hot": false
+   },
+   {
+    "w": "YOU",
+    "start": 2.76,
+    "end": 2.83,
+    "hot": false
+   },
+   {
+    "w": "ASK",
+    "start": 2.91,
+    "end": 3.09,
+    "hot": false
+   },
+   {
+    "w": "ANOTHER",
+    "start": 3.13,
+    "end": 3.39,
+    "hot": false
+   },
+   {
+    "w": "ONE",
+    "start": 3.45,
+    "end": 3.7,
+    "hot": true
+   },
+   {
+    "w": "COPY",
+    "start": 4.18,
+    "end": 4.47,
+    "hot": true
+   },
+   {
+    "w": "THE",
+    "start": 4.52,
+    "end": 4.59,
+    "hot": false
+   },
+   {
+    "w": "PROMPT",
+    "start": 4.62,
+    "end": 5.11,
+    "hot": true
+   },
+   {
+    "w": "PASTE",
+    "start": 5.26,
+    "end": 5.61,
+    "hot": true
+   },
+   {
+    "w": "IT",
+    "start": 5.63,
+    "end": 5.84,
+    "hot": false
+   },
+   {
+    "w": "SWITCH",
+    "start": 6.01,
+    "end": 6.32,
+    "hot": true
+   },
+   {
+    "w": "TABS",
+    "start": 6.36,
+    "end": 6.87,
+    "hot": true
+   },
+   {
+    "w": "PASTE",
+    "start": 6.99,
+    "end": 7.3,
+    "hot": true
+   },
+   {
+    "w": "IT",
+    "start": 7.34,
+    "end": 7.41,
+    "hot": false
+   },
+   {
+    "w": "AGAIN",
+    "start": 7.45,
+    "end": 7.81,
+    "hot": true
+   },
+   {
+    "w": "THREE",
+    "start": 8.26,
+    "end": 8.51,
+    "hot": true
+   },
+   {
+    "w": "TABS",
+    "start": 8.56,
+    "end": 8.85,
+    "hot": true
+   },
+   {
+    "w": "OPEN",
+    "start": 8.92,
+    "end": 9.28,
+    "hot": true
+   },
+   {
+    "w": "FOUR",
+    "start": 9.39,
+    "end": 9.68,
+    "hot": true
+   },
+   {
+    "w": "MANUAL",
+    "start": 9.74,
+    "end": 10.07,
+    "hot": true
+   },
+   {
+    "w": "STEPS",
+    "start": 10.12,
+    "end": 10.59,
+    "hot": true
+   },
+   {
+    "w": "EVERY",
+    "start": 10.74,
+    "end": 10.97,
+    "hot": true
+   },
+   {
+    "w": "SINGLE",
+    "start": 11.01,
+    "end": 11.26,
+    "hot": false
+   },
+   {
+    "w": "TIME",
+    "start": 11.3,
+    "end": 11.62,
+    "hot": true
+   },
+   {
+    "w": "AND",
+    "start": 12.1,
+    "end": 12.22,
+    "hot": false
+   },
+   {
+    "w": "YOU'RE",
+    "start": 12.27,
+    "end": 12.46,
+    "hot": false
+   },
+   {
+    "w": "DOING",
+    "start": 12.5,
+    "end": 12.78,
+    "hot": false
+   },
+   {
+    "w": "ALL",
+    "start": 12.9,
+    "end": 13.14,
+    "hot": false
+   },
+   {
+    "w": "THAT",
+    "start": 13.22,
+    "end": 13.51,
+    "hot": false
+   },
+   {
+    "w": "JUST",
+    "start": 13.79,
+    "end": 14.05,
+    "hot": false
+   },
+   {
+    "w": "TO",
+    "start": 14.08,
+    "end": 14.14,
+    "hot": false
+   },
+   {
+    "w": "COMPARE",
+    "start": 14.21,
+    "end": 14.56,
+    "hot": true
+   },
+   {
+    "w": "TWO",
+    "start": 14.61,
+    "end": 14.73,
+    "hot": true
+   },
+   {
+    "w": "ANSWERS",
+    "start": 14.81,
+    "end": 15.44,
+    "hot": true
+   },
+   {
+    "w": "THERE'S",
+    "start": 15.91,
+    "end": 16.15,
+    "hot": false
+   },
+   {
+    "w": "A",
+    "start": 16.17,
+    "end": 16.21,
+    "hot": false
+   },
+   {
+    "w": "FREE",
+    "start": 16.25,
+    "end": 16.48,
+    "hot": true
+   },
+   {
+    "w": "TOOL",
+    "start": 16.53,
+    "end": 16.79,
+    "hot": true
+   },
+   {
+    "w": "THAT",
+    "start": 16.85,
+    "end": 16.97,
+    "hot": false
+   },
+   {
+    "w": "PUTS",
+    "start": 17.02,
+    "end": 17.24,
+    "hot": false
+   },
+   {
+    "w": "BOTH",
+    "start": 17.32,
+    "end": 17.61,
+    "hot": true
+   },
+   {
+    "w": "MODELS",
+    "start": 17.66,
+    "end": 18.04,
+    "hot": true
+   },
+   {
+    "w": "IN",
+    "start": 18.1,
+    "end": 18.18,
+    "hot": false
+   },
+   {
+    "w": "ONE",
+    "start": 18.26,
+    "end": 18.4,
+    "hot": true
+   },
+   {
+    "w": "BOX",
+    "start": 18.45,
+    "end": 18.91,
+    "hot": true
+   },
+   {
+    "w": "ONE",
+    "start": 19.48,
+    "end": 19.69,
+    "hot": true
+   },
+   {
+    "w": "INPUT",
+    "start": 19.73,
+    "end": 20.07,
+    "hot": true
+   },
+   {
+    "w": "AND",
+    "start": 20.11,
+    "end": 20.26,
+    "hot": false
+   },
+   {
+    "w": "YOU",
+    "start": 20.34,
+    "end": 20.49,
+    "hot": false
+   },
+   {
+    "w": "PICK",
+    "start": 20.64,
+    "end": 20.9,
+    "hot": true
+   },
+   {
+    "w": "WHICH",
+    "start": 20.97,
+    "end": 21.14,
+    "hot": false
+   },
+   {
+    "w": "MODELS",
+    "start": 21.2,
+    "end": 21.55,
+    "hot": true
+   },
+   {
+    "w": "IT",
+    "start": 21.61,
+    "end": 21.66,
+    "hot": false
+   },
+   {
+    "w": "GOES",
+    "start": 21.72,
+    "end": 21.91,
+    "hot": false
+   },
+   {
+    "w": "TO",
+    "start": 21.94,
+    "end": 22.2,
+    "hot": false
+   },
+   {
+    "w": "NO",
+    "start": 22.69,
+    "end": 22.85,
+    "hot": true
+   },
+   {
+    "w": "API",
+    "start": 22.94,
+    "end": 23.3,
+    "hot": false
+   },
+   {
+    "w": "KEYS",
+    "start": 23.34,
+    "end": 23.86,
+    "hot": true
+   },
+   {
+    "w": "NO",
+    "start": 24.01,
+    "end": 24.14,
+    "hot": true
+   },
+   {
+    "w": "SUBSCRIPTION",
+    "start": 24.2,
+    "end": 24.84,
+    "hot": true
+   },
+   {
+    "w": "NO",
+    "start": 24.96,
+    "end": 25.1,
+    "hot": true
+   },
+   {
+    "w": "PASTING",
+    "start": 25.18,
+    "end": 25.66,
+    "hot": false
+   },
+   {
+    "w": "TYPE",
+    "start": 26.18,
+    "end": 26.45,
+    "hot": false
+   },
+   {
+    "w": "THE",
+    "start": 26.47,
+    "end": 26.54,
+    "hot": false
+   },
+   {
+    "w": "PROMPT",
+    "start": 26.57,
+    "end": 26.85,
+    "hot": true
+   },
+   {
+    "w": "ONCE",
+    "start": 26.92,
+    "end": 27.2,
+    "hot": true
+   },
+   {
+    "w": "AND",
+    "start": 27.23,
+    "end": 27.35,
+    "hot": false
+   },
+   {
+    "w": "HIT",
+    "start": 27.41,
+    "end": 27.56,
+    "hot": false
+   },
+   {
+    "w": "SEND",
+    "start": 27.64,
+    "end": 28.04,
+    "hot": true
+   },
+   {
+    "w": "BOTH",
+    "start": 28.57,
+    "end": 28.87,
+    "hot": true
+   },
+   {
+    "w": "ANSWERS",
+    "start": 28.95,
+    "end": 29.37,
+    "hot": true
+   },
+   {
+    "w": "STREAM",
+    "start": 29.4,
+    "end": 29.69,
+    "hot": true
+   },
+   {
+    "w": "BACK",
+    "start": 29.76,
+    "end": 29.96,
+    "hot": false
+   },
+   {
+    "w": "AT",
+    "start": 30.02,
+    "end": 30.08,
+    "hot": false
+   },
+   {
+    "w": "THE",
+    "start": 30.13,
+    "end": 30.2,
+    "hot": false
+   },
+   {
+    "w": "SAME",
+    "start": 30.24,
+    "end": 30.46,
+    "hot": true
+   },
+   {
+    "w": "TIME",
+    "start": 30.5,
+    "end": 30.79,
+    "hot": true
+   },
+   {
+    "w": "SIDE",
+    "start": 30.82,
+    "end": 31.06,
+    "hot": true
+   },
+   {
+    "w": "BY",
+    "start": 31.09,
+    "end": 31.18,
+    "hot": false
+   },
+   {
+    "w": "SIDE",
+    "start": 31.24,
+    "end": 31.6,
+    "hot": true
+   },
+   {
+    "w": "NOW",
+    "start": 32.06,
+    "end": 32.22,
+    "hot": false
+   },
+   {
+    "w": "YOU'RE",
+    "start": 32.25,
+    "end": 32.43,
+    "hot": false
+   },
+   {
+    "w": "NOT",
+    "start": 32.46,
+    "end": 32.57,
+    "hot": false
+   },
+   {
+    "w": "GUESSING",
+    "start": 32.62,
+    "end": 32.95,
+    "hot": true
+   },
+   {
+    "w": "WHICH",
+    "start": 33.03,
+    "end": 33.22,
+    "hot": false
+   },
+   {
+    "w": "AI",
+    "start": 33.29,
+    "end": 33.69,
+    "hot": false
+   },
+   {
+    "w": "ANSWERED",
+    "start": 33.72,
+    "end": 34.09,
+    "hot": false
+   },
+   {
+    "w": "IT",
+    "start": 34.12,
+    "end": 34.19,
+    "hot": false
+   },
+   {
+    "w": "BETTER",
+    "start": 34.25,
+    "end": 34.7,
+    "hot": true
+   },
+   {
+    "w": "YOU'RE",
+    "start": 35.16,
+    "end": 35.38,
+    "hot": false
+   },
+   {
+    "w": "READING",
+    "start": 35.41,
+    "end": 35.66,
+    "hot": true
+   },
+   {
+    "w": "BOTH",
+    "start": 35.7,
+    "end": 36.12,
+    "hot": true
+   },
+   {
+    "w": "AND",
+    "start": 36.23,
+    "end": 36.37,
+    "hot": false
+   },
+   {
+    "w": "KEEPING",
+    "start": 36.43,
+    "end": 36.69,
+    "hot": true
+   },
+   {
+    "w": "THE",
+    "start": 36.72,
+    "end": 36.79,
+    "hot": false
+   },
+   {
+    "w": "STRONGER",
+    "start": 36.82,
+    "end": 37.13,
+    "hot": true
+   },
+   {
+    "w": "ONE",
+    "start": 37.18,
+    "end": 37.41,
+    "hot": true
+   },
+   {
+    "w": "SO",
+    "start": 37.87,
+    "end": 38.05,
+    "hot": false
+   },
+   {
+    "w": "WHAT",
+    "start": 38.09,
+    "end": 38.46,
+    "hot": false
+   },
+   {
+    "w": "ONE",
+    "start": 38.64,
+    "end": 38.87,
+    "hot": true
+   },
+   {
+    "w": "PROMPT",
+    "start": 38.91,
+    "end": 39.37,
+    "hot": true
+   },
+   {
+    "w": "TWO",
+    "start": 39.44,
+    "end": 39.64,
+    "hot": true
+   },
+   {
+    "w": "BRAINS",
+    "start": 39.68,
+    "end": 40.18,
+    "hot": true
+   },
+   {
+    "w": "ZERO",
+    "start": 40.39,
+    "end": 40.7,
+    "hot": true
+   },
+   {
+    "w": "PASTE",
+    "start": 40.76,
+    "end": 41.17,
+    "hot": true
+   },
+   {
+    "w": "FOLLOW",
+    "start": 41.65,
+    "end": 42.18,
+    "hot": true
+   },
+   {
+    "w": "I",
+    "start": 42.46,
+    "end": 42.52,
+    "hot": false
+   },
+   {
+    "w": "UNPACK",
+    "start": 42.63,
+    "end": 43.09,
+    "hot": false
+   },
+   {
+    "w": "ONE",
+    "start": 43.2,
+    "end": 43.49,
+    "hot": true
+   },
+   {
+    "w": "AI",
+    "start": 43.56,
+    "end": 43.9,
+    "hot": false
+   },
+   {
+    "w": "TRICK",
+    "start": 43.93,
+    "end": 44.16,
+    "hot": true
+   },
+   {
+    "w": "EVERY",
+    "start": 44.22,
+    "end": 44.42,
+    "hot": true
+   },
+   {
+    "w": "SINGLE",
+    "start": 44.45,
+    "end": 44.71,
+    "hot": false
+   },
+   {
+    "w": "DAY",
+    "start": 44.74,
+    "end": 45.09,
+    "hot": true
+   }
+  ],
+  "steps": [
+   {
+    "label": "STEP 1 \u2014 ONE BOX",
+    "start": 15.91,
+    "end": 22.69,
+    "pos": "bl"
+   },
+   {
+    "label": "STEP 2 \u2014 ONE PROMPT",
+    "start": 26.18,
+    "end": 32.06,
+    "pos": "br"
+   },
+   {
+    "label": "STEP 3 \u2014 KEEP THE BEST",
+    "start": 35.16,
+    "end": 37.87,
+    "pos": "tl"
+   }
+  ],
+  "vo": "assets/ep10/vo_v2.wav",
+  "cover": {
+   "title1": "2 AIs",
+   "title2": "1 PROMPT",
+   "sub": "zero copy-paste",
+   "emojis": "\ud83d\uded1\ud83e\udd2f",
+   "until": 1.8
+  },
+  "watermark": true
+ }
+}
