@@ -43,9 +43,14 @@ REPO = os.path.abspath(os.path.join(HERE, ".."))
 CH = os.path.join(REPO, "channels", "claude-tricks")
 
 # LUFS ratchet — see docs/PRODUCTION-PLAYBOOK.md §Audio + QUALITY-LEDGER.md
-# 2026-08-05: shipped-master spine is -18.4 LUFS integrated; ±0.3 LU tolerance
-LUFS_TARGET = -18.4
-LUFS_TOLERANCE = 0.3
+# 2026-08-11 (Vaibhav-DNA pass): spine moved from -18.4 -> -14.0 LUFS to match
+# the reference-loudness competitor teardown (vaibhavsisinty's 360K-view Short
+# MYOdDsEAMns integrates -14.4 LUFS; ours at -18.4 sounded 4dB quieter in the
+# YouTube Shorts feed). Chain now applies loudnorm=I=-14 as final normalize.
+# Tolerance widened to ±0.5 LU because single-pass loudnorm is less precise
+# than the earlier fixed-gain chain.
+LUFS_TARGET = -14.0
+LUFS_TOLERANCE = 0.5
 
 
 def run(cmd, **kw):

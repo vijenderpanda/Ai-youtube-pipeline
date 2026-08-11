@@ -1551,16 +1551,21 @@ def build(ep, dry=False, tag="v2", preview=False):
     # itself stays locked.
     mg = float(cfg.get("music_gain_db", 0.0))
     pre = f"volume={mg}dB," if mg else ""
-    # v16 mix rebalance: raw measurement of ep10_v2 showed music at -17.4 LUFS
-    # vs VO at -22.4 LUFS post-gain — the bed was 5 LU LOUDER than the message,
-    # even after sidechain. Dropping music 0.35 -> 0.20 (-4.9 dB) and lifting VO
-    # +11dB -> +14dB puts the VO ~5 LU above music, the radio-quality
-    # talking-head ratio. Integrated master stays on the -18.4 LUFS spine (the
-    # sidechain + limiter already compensated); LRA tightens a touch.
+    # v16 mix rebalance + Vaibhav-DNA loudness target:
+    #   Music 0.20 · VO +14 dB · sidechain gives VO ~5 LU dominance
+    #   (radio-quality talking-head ratio) — see Ep 10 v3 measurement.
+    #   loudnorm=I=-14:TP=-1:LRA=11 pulls the integrated to YouTube's
+    #   reference level (competitor teardown 2026-08-11: Vaibhav Sisinty's
+    #   360K-view Short 'MYOdDsEAMns' ships -14.4 LUFS; ours at -18.4 was
+    #   4 LU quieter in the feed). Single-pass loudnorm adds trivial
+    #   distortion at these low LRA values; alimiter catches any residual
+    #   over-shoot at -0.45 dBFS (raised from -1.0 to give the louder mix
+    #   room to breathe under YT's -1 TP recommendation).
     fc = (f"[1:a]{pre}volume=0.20,afade=t=in:st=0:d=1.5[m];"
           "[0:a]volume=14dB,asplit=2[v1][v2];"
           "[m][v2]sidechaincompress=threshold=0.05:ratio=8:attack=40:release=600[duck];"
-          "[v1][duck]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.89[a]")
+          "[v1][duck]amix=inputs=2:duration=first:normalize=0,"
+          "loudnorm=I=-14:TP=-1:LRA=11,alimiter=limit=0.95[a]")
     run(["ffmpeg", "-y", "-i", raw, "-stream_loop", "-1", "-i", music,
          "-filter_complex", fc, "-map", "0:v", "-map", "[a]",
          "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", out])
