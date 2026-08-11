@@ -360,7 +360,8 @@ EPISODES_V2 = {
       ("half the tokens — same answers", 5, 6),
     ],
   },
-  "11": {
+  "11_retired": {
+    "_note": "RETIRED — YrjPbZK28Oo deleted from YT. Key renamed 2026-08-11 so build key '11' falls through to the JSON spec (episodes/11.v2.json = the new '6 Commands Ranked' episode).",
     "title": "Those 20 \"Secret\" Claude Commands? FAKE 🤫 (Here's The Real Trick)",
     "tags": "claude commands,slash commands,claude code,claude ai tips,ai for beginners,prompt engineering,ai tips",
     "cover": {"title1": "20 SECRET", "title2": "COMMANDS?", "emojis": "🤫🛑⚡"},
