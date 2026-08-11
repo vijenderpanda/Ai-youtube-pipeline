@@ -97,25 +97,71 @@ def qc_gate(final_path):
     return (not issues), issues
 
 
-def arm_youtube(final_path, schedule_iso, dry=False):
+def build_description(spec, final_path):
+    """Build a description file from the spec + BRAND-BIBLE §8 boilerplate.
+    Returns the temp file path so yt_upload can pass --desc-file at it."""
+    title = spec.get("title", "")
+    lines = spec.get("lines", [])
+    hook_line = lines[0] if lines else title
+    # Compliance boilerplate — mandatory per channels/claude-tricks/BRAND-BIBLE.md §8
+    disclosure = "Not affiliated with Anthropic, OpenAI, or Google."
+    # Multi-entity: any lab named in title or lines gets listed
+    body_txt = " ".join(lines).lower() + " " + title.lower()
+    entities = []
+    if "claude" in body_txt or "anthropic" in body_txt:
+        entities.append("Anthropic")
+    if "chatgpt" in body_txt or "openai" in body_txt or "gpt" in body_txt:
+        entities.append("OpenAI")
+    if "gemini" in body_txt or "google" in body_txt:
+        entities.append("Google")
+    if entities:
+        disclosure = "Not affiliated with " + ", ".join(entities) + "."
+
+    tag_line = " ".join("#" + t.strip().replace(" ", "") for t in
+                        (spec.get("tags") or "").split(",") if t.strip())
+    desc = "\n".join([
+        hook_line,
+        "",
+        "AI Unpacked — no hype, just what actually works.",
+        "",
+        disclosure,
+        "",
+        tag_line,
+    ]).strip() + "\n"
+    p = final_path + ".desc.txt"
+    with open(p, "w") as f:
+        f.write(desc)
+    return p
+
+
+def arm_youtube(final_path, schedule_iso, spec, thumb_path=None, dry=False):
     """Upload the master to claude-tricks with a scheduled publish time.
-    scripts/yt_upload.py handles auth (secrets/token_claude-tricks.json) +
-    the mandatory synthetic-media/MFK flags per BRAND-BIBLE §8."""
+    scripts/yt_upload.py CLI: --video (path), --title, --desc-file,
+    --tags (csv), --publish-at (RFC3339 UTC), --privacy private,
+    --audience general, --synthetic, --thumbnail (path)."""
     yt_upload = os.path.join(HERE, "yt_upload.py")
     if not os.path.exists(yt_upload):
         return False, "yt_upload.py not found"
 
+    desc_path = build_description(spec, final_path)
+    title = spec.get("title") or os.path.basename(final_path)
+    tags = spec.get("tags") or ""
+
     cmd = ["python3", yt_upload, "--channel", "claude-tricks",
-           "--file", final_path,
+           "--video", final_path,
+           "--title", title,
+           "--desc-file", desc_path,
+           "--tags", tags,
            "--audience", "general",
-           "--synthetic",  # BRAND-BIBLE §8 mandatory
-           "--schedule", schedule_iso]
-    if dry:
-        cmd.append("--dry")
+           "--synthetic",  # BRAND-BIBLE §8 mandatory (synthetic media disclosure)
+           "--privacy", "private",  # yt_upload flips to public at publishAt
+           "--publish-at", schedule_iso]
+    if thumb_path and os.path.exists(thumb_path):
+        cmd += ["--thumbnail", thumb_path]
 
     r = run(cmd, capture_output=True, text=True)
     if r.returncode != 0:
-        return False, f"yt_upload exited {r.returncode}:\n{r.stdout}\n{r.stderr}"
+        return False, f"yt_upload exited {r.returncode}:\nSTDOUT:\n{r.stdout}\nSTDERR:\n{r.stderr}"
     return True, r.stdout.strip()
 
 
@@ -174,7 +220,30 @@ def main():
         print(f">> final master ready at: {final}")
         sys.exit(0)
 
-    ok, msg = arm_youtube(final, a.schedule, dry=a.dry)
+    # Load the spec Claude wrote for title + tags (needed by yt_upload.py)
+    spec_data = {}
+    if os.path.exists(spec):
+        try:
+            with open(spec) as f:
+                spec_data = json.load(f)
+        except (OSError, json.JSONDecodeError) as e:
+            print(f"!! could not read spec {spec}: {e}", file=sys.stderr)
+            sys.exit(1)
+
+    # Thumbnail lookup: prefer channels/claude-tricks/renders/thumb_ep<ep>.jpg
+    # (produce_preview writes it there); fall back to assets/ep<ep>/thumbnail.*
+    thumb = None
+    for cand in (
+        os.path.join(CH, "renders", f"thumb_ep{a.ep}.jpg"),
+        os.path.join(CH, "renders", f"thumb_ep{a.ep}.png"),
+        os.path.join(CH, "assets", f"ep{a.ep}", "thumbnail.jpg"),
+        os.path.join(CH, "assets", f"ep{a.ep}", "thumbnail.png"),
+    ):
+        if os.path.exists(cand):
+            thumb = cand
+            break
+
+    ok, msg = arm_youtube(final, a.schedule, spec_data, thumb_path=thumb, dry=a.dry)
     if not ok:
         print(f"!! YT arm FAILED: {msg}", file=sys.stderr)
         sys.exit(3)
