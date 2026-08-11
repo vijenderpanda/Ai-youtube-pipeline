@@ -86,12 +86,12 @@ const res = (p: string) => (p.startsWith("http") ? p : staticFile(p));
 const MAG = "#E0218A";     // brand primary — Sol identity, active caption word
 const YELLOW = "#FFD60A";  // brand secondary — hot-word alternate, chip fills
 const INK = "#0E0E14";
-// v16 Vaibhav-DNA: neon lime as the numeric-callout + CTA accent (competitor
-// teardown 2026-08-11 — every #NN hashtag callout and the community CTA pill
-// in his 360K Short is this color). Magenta stays the Sol/brand primary; lime
-// is reserved for the numbered-list callout system and CTA emphasis so the two
-// never fight for the same job.
-const LIME = "#B4FF00";
+// v16: the numbered-callout + CTA accent. Vaibhav uses neon lime; we deliberately
+// do NOT copy his color (the LAYOUT is the borrowed idea, the color stays ours) —
+// electric cyan #22D3EE is distinct from our magenta+yellow AND from his lime,
+// reads premium/tech on dark ink. One constant so it's a one-line change.
+// Reserved for the #NN callout system + CTA emphasis; magenta stays brand primary.
+const ACCENT = "#22D3EE";
 
 /* ---------- caption: small, bottom-third, spring pop, 1-3 words ---------- */
 const Caption: React.FC<{ word: Word; fps: number; y?: string }> = ({ word, fps, y }) => {
@@ -164,7 +164,7 @@ const StepChip: React.FC<{ step: Step; fps: number }> = ({ step, fps }) => {
         }}
       >
         <span style={{ color: "white" }}>#</span>
-        <span style={{ color: LIME }}>{numRaw}</span>
+        <span style={{ color: ACCENT }}>{numRaw}</span>
       </div>
     );
   }
@@ -525,7 +525,7 @@ const PipCallout: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
             }}
           >
             <span style={{ color: "white" }}>#</span>
-            <span style={{ color: LIME }}>{numRaw}</span>
+            <span style={{ color: ACCENT }}>{numRaw}</span>
           </div>
           <div
             style={{
