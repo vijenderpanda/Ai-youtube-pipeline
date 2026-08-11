@@ -96,7 +96,7 @@
  ],
  "music": "music/bed_active.mp3",
  "endcard": null,
- "outro": null,
+ "outro": true,
  "_props_last_render": {
   "segments": [
    {
@@ -904,5 +904,6 @@
    "until": 1.8
   },
   "watermark": true
- }
+ },
+ "outro_dur": 0
 }

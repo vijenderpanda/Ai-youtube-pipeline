@@ -1324,6 +1324,29 @@ def build(ep, dry=False, tag="v2", preview=False):
             run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(t0), "-t", str(t1 - t0),
                  "-i", vo, "-c:a", "pcm_s16le", wav])
             generate(photo or tid, upload_audio(wav), mp4)
+            # v16 inline lipsync auto-correct: a HeyGen render adds a
+            # per-clip audio lead (measured 123-234 ms on Ep25); left
+            # uncorrected, the host's mouth trails the voice by that much
+            # and the whole clip reads out of sync. Measure the clip vs the
+            # master VO from the beat's in-point; if lag > 45 ms (the
+            # audio-ahead-of-video detection threshold), regenerate a
+            # sync-corrected copy in place. Correlation < 0.85 = the render
+            # is NOT a straight time-shift and no cut fixes it (log a
+            # warning, ship as-is, human decides).
+            try:
+                sys.path.insert(0, os.path.join(REPO, "scripts"))
+                import lipsync_align
+                lag, corr = lipsync_align.measure(mp4, vo, at=t0, search=0.7)
+                print(f">> lipsync {name}: lag={lag*1000:+.0f}ms corr={corr:.3f}")
+                if corr < 0.85:
+                    print(f"!! lipsync corr low — leaving {name} uncut (human review)")
+                elif abs(lag) > 0.045:
+                    sync_mp4 = mp4 + ".sync.mp4"
+                    lipsync_align.cut(mp4, lag=lag, dur=(t1 - t0), out=sync_mp4)
+                    os.replace(sync_mp4, mp4)
+                    print(f">> lipsync corrected {name}: cut lag={lag*1000:+.0f}ms")
+            except Exception as e:
+                print(f"!! lipsync check failed for {name}: {e}")
         return mp4
 
     beats = cfg["beats"]
