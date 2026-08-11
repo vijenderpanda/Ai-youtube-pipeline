@@ -63,9 +63,15 @@ export type ShortProps = {
 
 const res = (p: string) => (p.startsWith("http") ? p : staticFile(p));
 
-const MAG = "#E0218A";
-const YELLOW = "#FFD60A";
+const MAG = "#E0218A";     // brand primary — Sol identity, active caption word
+const YELLOW = "#FFD60A";  // brand secondary — hot-word alternate, chip fills
 const INK = "#0E0E14";
+// v16 Vaibhav-DNA: neon lime as the numeric-callout + CTA accent (competitor
+// teardown 2026-08-11 — every #NN hashtag callout and the community CTA pill
+// in his 360K Short is this color). Magenta stays the Sol/brand primary; lime
+// is reserved for the numbered-list callout system and CTA emphasis so the two
+// never fight for the same job.
+const LIME = "#B4FF00";
 
 /* ---------- caption: small, bottom-third, spring pop, 1-3 words ---------- */
 const Caption: React.FC<{ word: Word; fps: number; y?: string }> = ({ word, fps, y }) => {
@@ -426,7 +432,10 @@ export const Short: React.FC<ShortProps> = (props) => {
 
   return (
     <AbsoluteFill style={{ background: INK }}>
-      <style>{`@font-face { font-family: 'Anton'; src: url('${staticFile("fonts/Anton.ttf")}'); }`}</style>
+      <style>{`
+        @font-face { font-family: 'Anton'; src: url('${staticFile("fonts/Anton.ttf")}'); }
+        @font-face { font-family: 'Playfair Display'; font-style: italic; font-weight: 400 900; src: url('${staticFile("fonts/PlayfairDisplay-Italic.ttf")}'); }
+      `}</style>
       {props.segments.map((seg, i) => {
         const mode = news ? seg.mode ?? "split" : "full";
         if (news && mode === "host") return null; // host layer covers this beat

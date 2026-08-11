@@ -51,7 +51,10 @@ const CoverDemoComp: React.FC<CoverDemoProps> = ({ c }) => {
   const { fps } = useVideoConfig();
   return (
     <AbsoluteFill>
-      <style>{`@font-face { font-family: 'Anton'; src: url('${staticFile("fonts/Anton.ttf")}'); }`}</style>
+      <style>{`
+        @font-face { font-family: 'Anton'; src: url('${staticFile("fonts/Anton.ttf")}'); }
+        @font-face { font-family: 'Playfair Display'; font-style: italic; font-weight: 400 900; src: url('${staticFile("fonts/PlayfairDisplay-Italic.ttf")}'); }
+      `}</style>
       <Cover c={c} fps={fps} />
       <Watermark />
     </AbsoluteFill>
