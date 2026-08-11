@@ -269,8 +269,13 @@ export const Cover: React.FC<{ c: NonNullable<ShortProps["cover"]>; fps: number 
   // ships bigTitle=300 for shorts-feed reach). centerTitle horizontally
   // centers the type-stack box instead of left-anchoring at 44px.
   const t1Base = c.bigTitle ?? T1_BASE;
-  const f1 = fitFont(line1 || " ", t1Base, COVER_BOX_W);
-  const f2 = fitFont(line2 || " ", T2_BASE, COVER_BOX_W - CHIP_PAD_X);
+  // COVER_BOX_W (990) is sized for a LEFT-anchored stack (44 → safe right edge).
+  // A centered stack of that same width sits flush to both edges, so the poster
+  // slant + extrude shadow then clip the frame. Fit centered titles to a
+  // narrower box that leaves symmetric margins with slant/extrude headroom.
+  const boxW = c.centerTitle ? 918 : COVER_BOX_W;
+  const f1 = fitFont(line1 || " ", t1Base, boxW);
+  const f2 = fitFont(line2 || " ", T2_BASE, boxW - CHIP_PAD_X);
   const extrudeDepth = Math.max(6, Math.round(f1 / 20)); // scale extrude with type
   // type-on reveal — keeps the angled/extruded poster style, adds a hook/edited feel
   const CHAR_F = 1.7;                       // frames per character
@@ -313,7 +318,7 @@ export const Cover: React.FC<{ c: NonNullable<ShortProps["cover"]>; fps: number 
             lineHeight: 0.98,
             color: "#F7F8FC",
             transform: slant,
-            transformOrigin: "left center",
+            transformOrigin: c.centerTitle ? "center center" : "left center",
             textShadow: extrude(extrudeDepth, "#3C0A28"),
             letterSpacing: 1,
           }}
