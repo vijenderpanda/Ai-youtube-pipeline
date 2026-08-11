@@ -89,9 +89,11 @@ def upload_image(path):
     print(">> image asset:", aid)
     return aid
 
-def generate(tid, audio_id, out, bg="#0E0E14", bg_image_asset=None, matting=None):
+def generate(tid, audio_id, out, bg="#0E0E14", bg_image_asset=None, matting=None, aspect="9:16"):
     """matting: None = auto (matte only when a replacement bg is requested);
-    with matting off the talking photo keeps its own background."""
+    with matting off the talking photo keeps its own background.
+    aspect: "9:16" (default, portrait host/PIP) or "16:9" (wide full-frame host
+    band — v16.3 index-rail layout renders the wide.jpg avatar this way)."""
     background = ({"type": "image", "asset_id": bg_image_asset}
                   if bg_image_asset else {"type": "color", "value": bg})
     do_matte = matting if matting is not None else bool(bg_image_asset)
@@ -101,7 +103,7 @@ def generate(tid, audio_id, out, bg="#0E0E14", bg_image_asset=None, matting=None
         "audio_asset_id": audio_id,
         "background": background,
         "resolution": "720p",
-        "aspect_ratio": "9:16",
+        "aspect_ratio": aspect,
         "expressiveness": "high",
     }
     if do_matte:

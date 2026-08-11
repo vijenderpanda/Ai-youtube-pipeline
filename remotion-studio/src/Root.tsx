@@ -127,7 +127,7 @@ export const RemotionRoot: React.FC = () => {
         durationInFrames={7 * FPS}
         fps={FPS}
         width={1080}
-        height={1200}
+        height={1500}
         defaultProps={codeDemoProps}
       />
       <Composition
@@ -138,7 +138,7 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={{
-          avatar: "assets/character/host_library/outfit_11_sol_magenta/center.jpg",
+          avatar: "assets/character/host_library/outfit_11_sol_magenta/cropeed_center_final.jpeg",
           question: "Which command would you build first?",
           commentCta: "Comment your #1 👇",
           tagline: "one AI trick, every single day",

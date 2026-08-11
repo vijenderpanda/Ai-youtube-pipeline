@@ -1313,7 +1313,7 @@ def build(ep, dry=False, tag="v2", preview=False):
             tid = tid_3q = open(CACHE).read().strip()
     else:
         tid = tid_3q = open(CACHE).read().strip()
-    def host_clip(name, t0, t1, photo=None):
+    def host_clip(name, t0, t1, photo=None, aspect="9:16"):
         wav = os.path.join(A, f"{name}.wav"); mp4 = os.path.join(A, f"{name}.mp4")
         # v16: also skip cache when FACTORY_REBUILD_HOSTS is set — lets a shell
         # wrapper force fresh HeyGen renders across ALL runs (hook/mid/payoff)
@@ -1324,7 +1324,7 @@ def build(ep, dry=False, tag="v2", preview=False):
         if stale or not os.path.exists(mp4):
             run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(t0), "-t", str(t1 - t0),
                  "-i", vo, "-c:a", "pcm_s16le", wav])
-            generate(photo or tid, upload_audio(wav), mp4)
+            generate(photo or tid, upload_audio(wav), mp4, aspect=aspect)
             # v16 inline lipsync auto-correct: a HeyGen render adds a
             # per-clip audio lead (measured 123-234 ms on Ep25); left
             # uncorrected, the host's mouth trails the voice by that much
@@ -1421,6 +1421,33 @@ def build(ep, dry=False, tag="v2", preview=False):
                 pip_clip_by_beat[bi] = host_clip(
                     f"v2_pip_{bb[4:]}", _seg_t[bi], _seg_t[bi + 1], photo=tid)
 
+    # v16.4 MIX ENGINE — each command (pip:) beat is randomly assigned a
+    # presentation mode so no two episodes feel templated: "splitWide" (recording
+    # + the SAME wide landscape host + #NN) or "recFull" (full-screen recording
+    # with a Ken-Burns pan + #NN, no host). Balanced half-and-half, shuffled with
+    # a seed derived from the episode key so the mix is varied but reproducible.
+    import hashlib as _hl, random as _rnd
+    _pids = [bb[4:] for bb in beats if bb.startswith("pip:")]
+    _rng = _rnd.Random(int(_hl.md5(str(ep).encode()).hexdigest(), 16))
+    _modes = (["splitWide"] * ((len(_pids) + 1) // 2)) + (["recFull"] * (len(_pids) // 2))
+    _rng.shuffle(_modes)
+    pip_mode = dict(zip(_pids, _modes))
+
+    # splitWide beats show a LANDSCAPE host — generate it through host_clip so it
+    # is cut from the master-VO slice AND lipsync-corrected (same path as the
+    # full-frame host clips). This fixes the desync from the earlier hand-rolled
+    # wide clips. Uses the WIDE photo-avatar (16:9 via generate(aspect=...)).
+    _wide_id = os.path.join(CH, "assets", "character", "host_library",
+                            "outfit_11_sol_magenta", ".heygen_photo_id_wide")
+    WIDE_TID = open(_wide_id).read().strip() if os.path.exists(_wide_id) else None
+    wpip_by_pid = {}
+    if not news_split and WIDE_TID:
+        for bi, bb in enumerate(beats):
+            if bb.startswith("pip:") and pip_mode.get(bb[4:]) == "splitWide":
+                pid = bb[4:]
+                wpip_by_pid[pid] = host_clip(f"v2_wpip_{pid}", _seg_t[bi], _seg_t[bi + 1],
+                                             photo=WIDE_TID, aspect="16:9")
+
     # 3) segments for remotion (paths relative to remotion public/)
     def rel(p): return os.path.relpath(p, os.path.join(CH, "assets")).replace("\\", "/")
     segments, t0 = [], 0.0
@@ -1468,21 +1495,25 @@ def build(ep, dry=False, tag="v2", preview=False):
             seg["stat"] = cfg["stats"][b[5:]]
             segments.append(seg)
         elif b.startswith("pip:"):
-            # v16 Vaibhav-DNA pipCallout: screencap top zone + host PIP bottom-left
-            # + big lime #NN callout. cfg["pips"][id] = {src, from?, num, lines}.
+            # v16.4 MIX ENGINE: recording + #NN callout, rendered as either a
+            # wide-host split-screen or a full-screen recording (see pip_mode).
             pid = b[4:]
             p = cfg["pips"][pid]
+            mode = pip_mode.get(pid, "splitWide")
+            if mode == "splitWide" and pid not in wpip_by_pid:
+                mode = "recFull"                                      # no wide clip -> fall back
             seg = {
-                "kind": "pipCallout",
+                "kind": mode,                                         # "splitWide" | "recFull"
                 "dur": round(dur, 3),
                 "src": f"assets/{p['src']}",
                 "from": float(p.get("from", 0)),
                 "num": str(p["num"]),
                 "lines": p["lines"],
             }
-            pip_mp4 = pip_clip_by_beat.get(start_i)
-            if pip_mp4:
-                seg["pip"] = "assets/" + rel(pip_mp4)
+            if mode == "splitWide":
+                # host_clip already cut this to the beat's VO slice + lipsync-
+                # corrected it, so play it from the top (pipFrom 0), in sync.
+                seg["pip"] = "assets/" + rel(wpip_by_pid[pid])
                 seg["pipFrom"] = 0.0
             segments.append(seg)
         i += 1
@@ -1524,12 +1555,32 @@ def build(ep, dry=False, tag="v2", preview=False):
         # proof visual for up to 3s. 1.8s keeps the thumbnail-safe poster beat
         # but lets B-roll peek through much earlier. Per-episode explicit pins
         # still win (some hooks need the poster hold). newsSplit stays 2.2.
-        "cover": {**cfg["cover"],
-                  "until": cfg["cover"].get(
-                      "until",
-                      round(min(max(hook_end + 0.6, 0.7), 1.8), 2) if not news_split else 2.2)},
         "watermark": True,
+        "epTag": cfg.get("epTag"),
     }
+    # v16.3: illustration hook opener REPLACES the poster cover on premium
+    # episodes (VJ: a title card reads as an intro + gets scrolled past). When
+    # cfg["hook"] is present we emit `hook` and drop `cover`; otherwise the
+    # legacy poster cover is emitted exactly as before.
+    if cfg.get("hook"):
+        hk = dict(cfg["hook"])
+        if not hk["image"].startswith(("assets/", "http")):
+            hk["image"] = "assets/" + hk["image"]
+        hk.setdefault("until", round(min(max(hook_end + 0.6, 1.6), 3.0), 2))
+        spec["hook"] = hk
+    else:
+        spec["cover"] = {**cfg["cover"],
+                         "until": cfg["cover"].get(
+                             "until",
+                             round(min(max(hook_end + 0.6, 0.7), 1.8), 2) if not news_split else 2.2)}
+    # v16.3: attach the static key line that fills each framed-host "THE IDEA"
+    # panel (order matches the framed segments: hook run, then payoff run, ...).
+    host_panels = cfg.get("host_panels", [])
+    framed_segs = [s for s in segments if s.get("framed")]
+    for s, panel in zip(framed_segs, host_panels):
+        s["hostLines"] = panel["lines"]
+        if panel.get("hot"):
+            s["hostHot"] = panel["hot"]
     if news_split:
         spec["layout"] = "newsSplit"
         spec["host"] = "assets/" + rel(full_host)

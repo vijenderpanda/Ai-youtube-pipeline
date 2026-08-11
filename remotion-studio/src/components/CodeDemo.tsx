@@ -95,29 +95,29 @@ export const CodeDemo: React.FC<CodeDemoProps> = ({
   return (
     <AbsoluteFill style={{ background: BG, fontFamily: "'SF Mono', 'JetBrains Mono', Menlo, monospace" }}>
       {/* title bar */}
-      <div style={{ height: 54, background: TITLE_BG, display: "flex", alignItems: "center", paddingLeft: 22, gap: 10 }}>
-        <span style={{ width: 15, height: 15, borderRadius: "50%", background: "#ff5f56" }} />
-        <span style={{ width: 15, height: 15, borderRadius: "50%", background: "#ffbd2e" }} />
-        <span style={{ width: 15, height: 15, borderRadius: "50%", background: "#27c93f" }} />
-        <span style={{ marginLeft: 22, color: "#cfcfcf", fontSize: 24, opacity: 0.9 }}>
+      <div style={{ height: 64, background: TITLE_BG, display: "flex", alignItems: "center", paddingLeft: 26, gap: 12 }}>
+        <span style={{ width: 17, height: 17, borderRadius: "50%", background: "#ff5f56" }} />
+        <span style={{ width: 17, height: 17, borderRadius: "50%", background: "#ffbd2e" }} />
+        <span style={{ width: 17, height: 17, borderRadius: "50%", background: "#27c93f" }} />
+        <span style={{ marginLeft: 24, color: "#cfcfcf", fontSize: 29, opacity: 0.9 }}>
           {commandKey}.md — claude-tricks
         </span>
       </div>
 
-      {/* editor pane (top ~46%) */}
-      <div style={{ height: 470, overflow: "hidden", padding: "14px 0", position: "relative" }}>
+      {/* editor pane */}
+      <div style={{ height: 690, overflow: "hidden", padding: "16px 0", position: "relative" }}>
         {/* file tab */}
-        <div style={{ position: "absolute", top: -14, left: 0, height: 42, background: BG, display: "flex", alignItems: "center", paddingLeft: 22, borderBottom: `2px solid ${PROMPT_G}` }}>
-          <span style={{ color: C_HR, fontSize: 22 }}>◆ </span>
-          <span style={{ color: FG, fontSize: 22, marginLeft: 8 }}>{commandKey}.md</span>
+        <div style={{ position: "absolute", top: -16, left: 0, height: 50, background: BG, display: "flex", alignItems: "center", paddingLeft: 26, borderBottom: `2px solid ${PROMPT_G}` }}>
+          <span style={{ color: C_HR, fontSize: 27 }}>◆ </span>
+          <span style={{ color: FG, fontSize: 27, marginLeft: 8 }}>{commandKey}.md</span>
         </div>
-        <div style={{ marginTop: 40 }}>
+        <div style={{ marginTop: 50 }}>
           {fileLines.map((ln, i) => {
             if (ln === "---") { inFront = !inFront; frontCount++; }
             const showFront = frontCount >= 1 && (inFront || (frontCount >= 2 && i <= fileLines.indexOf("---", fileLines.indexOf("---") + 1)));
             return (
-              <div key={i} style={{ display: "flex", fontSize: 25, lineHeight: "37px" }}>
-                <span style={{ width: 64, textAlign: "right", paddingRight: 20, color: GUTTER, flexShrink: 0 }}>{i + 1}</span>
+              <div key={i} style={{ display: "flex", fontSize: 32, lineHeight: "50px" }}>
+                <span style={{ width: 78, textAlign: "right", paddingRight: 24, color: GUTTER, flexShrink: 0 }}>{i + 1}</span>
                 <span style={{ whiteSpace: "pre-wrap", color: FG }}>{hl(ln, inFront && ln !== "---")}</span>
               </div>
             );
@@ -126,10 +126,10 @@ export const CodeDemo: React.FC<CodeDemoProps> = ({
       </div>
 
       {/* terminal pane (bottom) */}
-      <div style={{ flex: 1, background: TERM_BG, borderTop: "1px solid #333", padding: "16px 22px" }}>
-        <div style={{ color: "#888", fontSize: 21, marginBottom: 10 }}>TERMINAL</div>
+      <div style={{ flex: 1, background: TERM_BG, borderTop: "1px solid #333", padding: "22px 26px" }}>
+        <div style={{ color: "#888", fontSize: 26, marginBottom: 14, letterSpacing: 1 }}>TERMINAL</div>
         {/* command line */}
-        <div style={{ fontSize: 27, lineHeight: "40px" }}>
+        <div style={{ fontSize: 35, lineHeight: "52px" }}>
           <span style={{ color: PROMPT_G }}>❯ </span>
           <span style={{ color: "#fff" }}>{typed}</span>
           {!doneTyping && cursorOn ? (
@@ -137,7 +137,7 @@ export const CodeDemo: React.FC<CodeDemoProps> = ({
           ) : null}
         </div>
         {/* response */}
-        <div style={{ marginTop: 14 }}>
+        <div style={{ marginTop: 18 }}>
           {responseLines.map((ln, i) => {
             const appearAt = respStart + i * lineStagger;
             const s = spring({ frame: frame - appearAt * fps, fps, config: { damping: 20, mass: 0.5 } });
@@ -146,8 +146,8 @@ export const CodeDemo: React.FC<CodeDemoProps> = ({
               <div
                 key={i}
                 style={{
-                  fontSize: 26,
-                  lineHeight: "40px",
+                  fontSize: 34,
+                  lineHeight: "52px",
                   color: FG,
                   opacity: interpolate(s, [0, 1], [0, 1]),
                   transform: `translateY(${interpolate(s, [0, 1], [6, 0])}px)`,

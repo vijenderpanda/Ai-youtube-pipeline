@@ -73,7 +73,7 @@ export const OutroCard: React.FC<OutroCardProps> = ({ avatar, question, commentC
       >
         <Img
           src={avatar.startsWith("http") ? avatar : staticFile(avatar)}
-          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "57% 14%", transform: "scale(1.05)" }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 30%", transform: "scale(1.12)" }}
         />
       </div>
 

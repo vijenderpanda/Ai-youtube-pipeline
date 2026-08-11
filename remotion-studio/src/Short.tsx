@@ -20,7 +20,7 @@ export type Seg = {
   /* src omitted for kind "statBars" (chart is drawn in-comp, never pre-baked) */
   src?: string;
   dur: number;
-  kind?: "video" | "image" | "statBars" | "pipCallout";
+  kind?: "video" | "image" | "statBars" | "pipCallout" | "splitWide" | "recFull";
   from?: number;
   /* per-beat pane mode (newsSplit only): "split" b-roll top + host bottom,
      "full" b-roll full-frame, "host" host full-frame */
@@ -42,6 +42,8 @@ export type Seg = {
   lines?: string[];
   framed?: boolean;   // v16.2: render a host clip as a contained rounded card on the gradient bg (not full-bleed giant face)
   hostZoom?: number;  // v16.2: scale inside the framed host card (default 1.0)
+  hostLines?: string[]; // v16.3: static key line filling the framed-host "THE IDEA" panel (2-3 short lines)
+  hostHot?: string;     // v16.3: the word within hostLines to accent magenta
 };
 /* pos: which corner the chip lives in — pick the one with dead space so the
    chip NEVER covers the content the beat is teaching (default tl).
@@ -75,7 +77,21 @@ export type ShortProps = {
     bigTitle?: number;      // absolute font-size override for title1
     centerTitle?: boolean;  // horizontally center the type stack instead of left-anchoring
   };
+  /* v16.3 hook opener — an illustration-based scroll-stopper that REPLACES the
+     static poster cover for premium episodes (VJ: a title card reads as an
+     "intro" and gets scrolled past; a moving illustration + promise does not).
+     Rendered full-frame for `until` seconds over the first beat, then clears. */
+  hook?: {
+    image: string;             // illustration under assets/ (e.g. ep11/hook_art/debate_B.jpg)
+    lines: string[];           // headline lines, e.g. ["MAKE CLAUDE","THINK WITH YOU"]
+    hot?: string;              // word within lines to accent magenta
+    kicker?: string;           // small eyebrow above the headline
+    until: number;             // seconds it stays up
+  };
   watermark?: boolean;
+  /* v16.4: short episode tag shown in the consistent global header on EVERY beat
+     (brand recall + findability), e.g. "EP11 · 6 COMMANDS". */
+  epTag?: string;
   fps?: number;
   /* news-split: persistent host pinned bottom, segments play in the top pane */
   layout?: "cut" | "newsSplit";
@@ -126,6 +142,34 @@ const Caption: React.FC<{ word: Word; fps: number; y?: string | number; size?: n
         }}
       >
         {word.w}
+      </div>
+    </div>
+  );
+};
+
+/* PanelCaption (v16.3) — a running karaoke caption: advancing phrases with the
+   active word in magenta, so it RUNS with the VO (never a frozen line). Used in
+   the framed-host "THE IDEA" panel AND as a bottom strip on the split/recording
+   beats (VJ: captions on every frame). Position/size/chunk are parameterised. */
+const PanelCaption: React.FC<{ words: Word[]; t: number; top?: number; bottom?: number; size?: number; chunk?: number; plain?: boolean }> = ({ words, t, top = 924, bottom = 196, size = 100, chunk = 6, plain = false }) => {
+  if (!words.length) return null;
+  let ai = words.findIndex((w) => t >= w.start && t <= w.end);
+  if (ai < 0) {
+    for (let i = 0; i < words.length; i++) if (t >= words[i].start) ai = i;
+    if (ai < 0) ai = 0;
+  }
+  const g = Math.floor(ai / chunk);
+  const group = words.slice(g * chunk, g * chunk + chunk);
+  const localActive = ai - g * chunk;
+  // plain = the split/recording bottom strip: smaller, sentence-case, Helvetica
+  // (not the big Anton all-caps used in the host panel).
+  const cap = (w: string) => (plain ? w.charAt(0) + w.slice(1).toLowerCase() : w);
+  return (
+    <div style={{ position: "absolute", left: 72, right: 72, top, bottom, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ fontFamily: plain ? '"Helvetica Neue", Helvetica, Arial, sans-serif' : "Anton, Arial Black, sans-serif", fontWeight: plain ? 700 : 900, textTransform: plain ? "none" : "uppercase", textAlign: "center", lineHeight: plain ? 1.2 : 1.12, letterSpacing: plain ? 0 : 1, fontSize: size }}>
+        {group.map((w, i) => (
+          <span key={i} style={{ color: i === localActive ? MAG : "white", opacity: i === localActive ? 1 : 0.92, textShadow: plain ? "0 2px 10px rgba(0,0,0,0.9)" : "0 3px 0 #000, 0 -3px 0 #000, 3px 0 0 #000, -3px 0 0 #000, 0 8px 22px rgba(0,0,0,0.85)" }}>{cap(w.w)}{" "}</span>
+        ))}
       </div>
     </div>
   );
@@ -443,43 +487,61 @@ const Vignette: React.FC = () => (
   />
 );
 
-/* ---------- framed host (v16.2) — a full-shot host beat rendered as a large
-   CONTAINED rounded card on the gradient (not a full-bleed giant face). Fixes
-   VJ's note that the tight outfit_11 crop filled the whole phone screen. */
+/* ---------- framed host (v16.3, INDEX-RAIL) ----------------------------------
+   VJ-approved layout (2026-08-11): the WIDE (16:9) HeyGen host sits in a rounded
+   band; every zone is filled so there's no immature whitespace. Stack:
+     · HEADER  — AI UNPACKED lockup + tagline (corner watermark suppressed here)
+     · RAIL    — the #06→#01 ranked countdown, teasing the list on host beats
+     · HOST    — the wide talking-head card (float)
+     · PANEL   — a glass card filling the lower zone: "THE IDEA" label on top,
+                 the running caption drops into its centre (global overlay), and
+                 the @handle + FOLLOW anchor its bottom. Nothing is left empty. */
+const FH_RAIL = ["06", "05", "04", "03", "02", "01"];
+const FH_CARD_W = 1000;
+const FH_CARD_H = Math.round((FH_CARD_W * 9) / 16); // 562 — exact 16:9, zero crop
 const FramedHost: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
   const frame = useCurrentFrame();
-  const f = floatY(frame, fps, 7, 3.8, 0);
+  const f = floatY(frame, fps, 6, 3.8, 0);
+  const cardLeft = Math.round((1080 - FH_CARD_W) / 2); // 40
   return (
-    <AbsoluteFill style={{ background: GRAD_BG }}>
+    <AbsoluteFill style={{ background: GRAD_BG, fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
       <Vignette />
-      <div
-        style={{
-          position: "absolute",
-          left: 116,
-          right: 116,
-          top: 214,
-          height: 1180,
-          transform: `translateY(${f}px)`,
-          borderRadius: 32,
-          overflow: "hidden",
-          border: "1.5px solid rgba(255,255,255,0.12)",
-          boxShadow: "0 44px 100px rgba(0,0,0,0.6), 0 8px 44px rgba(224,33,138,0.12)",
-          background: INK,
-        }}
-      >
+
+      {/* HEADER is now the global lockup (rendered once at the top level). */}
+
+      {/* RAIL — ranked countdown tease */}
+      <div style={{ position: "absolute", top: 168, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 14 }}>
+        {FH_RAIL.map((n) => (
+          <div key={n} style={{ width: 116, height: 56, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontWeight: 900, fontSize: 38, border: "1.5px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.04)", color: "#9A94A4" }}>#{n}</div>
+        ))}
+      </div>
+
+      {/* HOST — wide 16:9 card, uncropped, floating */}
+      <div style={{ position: "absolute", left: cardLeft, top: 262, width: FH_CARD_W, height: FH_CARD_H, transform: `translateY(${f}px)`, borderRadius: 28, overflow: "hidden", border: "1.5px solid rgba(255,255,255,0.12)", boxShadow: "0 40px 96px rgba(0,0,0,0.6), 0 8px 44px rgba(224,33,138,0.14)", background: INK }}>
         <OffthreadVideo
           src={res(seg.src!)}
           startFrom={Math.round((seg.from ?? 0) * fps)}
           muted
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "57% 14%",
-            transform: `scale(${seg.hostZoom ?? 1.0})`,
-            transformOrigin: "57% 16%",
-          }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center", transform: `scale(${seg.hostZoom ?? 1.0})` }}
         />
+      </div>
+
+      {/* PANEL — glass card filling the lower zone (caption drops into its centre) */}
+      <div style={{ position: "absolute", left: 36, right: 36, top: 864, bottom: 96, borderRadius: 30, border: "1.5px solid rgba(255,255,255,0.10)", background: "linear-gradient(180deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 100%)", boxShadow: "0 30px 80px rgba(0,0,0,0.45)", overflow: "hidden" }}>
+        {/* label */}
+        <div style={{ position: "absolute", top: 30, left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ width: 30, height: 3, borderRadius: 2, background: MAG }} />
+          <div style={{ fontSize: 24, letterSpacing: 5, fontWeight: 800, color: MAG, textTransform: "uppercase" }}>the idea</div>
+          <div style={{ width: 30, height: 3, borderRadius: 2, background: MAG }} />
+        </div>
+        {/* the running karaoke caption drops into this panel centre (rendered by
+            the global overlay so it advances with the VO — see PanelCaption). */}
+        {/* handle + follow anchored bottom */}
+        <div style={{ position: "absolute", bottom: 34, left: 0, right: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 20 }}>
+          <div style={{ fontSize: 28, fontWeight: 700, color: "#C9C4D0", letterSpacing: 1 }}>@aiunpackedvj</div>
+          <div style={{ width: 6, height: 6, borderRadius: 3, background: ACCENT }} />
+          <div style={{ padding: "8px 22px", borderRadius: 999, border: `2px solid ${MAG}`, background: "rgba(224,33,138,0.12)", color: "white", fontWeight: 800, fontSize: 28, letterSpacing: 1 }}>FOLLOW ▸</div>
+        </div>
       </div>
     </AbsoluteFill>
   );
@@ -496,10 +558,10 @@ const CARD_X = 44;
 const CARD_TOP = 70;
 const CARD_W = 1080 - 2 * CARD_X;        // 992
 const CARD_H = Math.round(CARD_W / 0.9); // ~1102 — matches the 1080x1200 CodeDemo aspect (no crop)
-const PIP_W = 360;
-const PIP_H = 464;                        // rounded RECTANGLE (portrait ~3:4), not a square
+const PIP_W = 408;
+const PIP_H = 524;                        // rounded RECTANGLE (portrait ~3:4), not a square
 const PIP_LEFT = 48;
-const PIP_BOTTOM = 240;
+const PIP_BOTTOM = 210;
 const PipCallout: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
   const frame = useCurrentFrame();
   const s = spring({ frame, fps, config: { damping: 18, mass: 0.8 } });
@@ -580,48 +642,153 @@ const PipCallout: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
-                // v16.2: HeyGen framed outfit_11's face slightly RIGHT of center;
-                // objectPosition "57%" recenters it and the modest zoom fills the
-                // rounded rectangle without clipping the right cheek (the earlier
-                // 1.06 + center-crop was cutting it). Per-beat seg.pipZoom overrides.
-                objectPosition: "57% 16%",
-                transform: `scale(${seg.pipZoom ?? 1.08})`,
-                transformOrigin: "57% 18%",
+                // v16.3: the source is 720x1280 (9:16); this PIP box is WIDER than
+                // 9:16, so objectFit:cover already fits the full width — the whole
+                // face is in frame with NO horizontal crop. The earlier scale(1.08)
+                // zoom is what pushed the right cheek out of the box, so it's gone
+                // (pipZoom defaults to 1.0). objectPosition only biases the vertical
+                // window: 12% keeps hair→shoulders, face centered. No right-cut.
+                objectPosition: "50% 12%",
+                transform: `scale(${seg.pipZoom ?? 1.0})`,
+                transformOrigin: "50% 12%",
               }}
             />
           ) : null}
         </div>
 
-        {/* callout number + description */}
-        <div style={{ minWidth: 0, flex: 1, transform: `translateY(${numF}px)` }}>
-          <div
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontStyle: "italic",
-              fontWeight: 900,
-              fontSize: 190,
-              lineHeight: 0.9,
-              letterSpacing: -4,
-              textShadow: "0 6px 26px rgba(0,0,0,0.6)",
-            }}
-          >
-            <span style={{ color: "white" }}>#</span>
-            <span style={{ color: ACCENT }}>{numRaw}</span>
+        {/* callout — #NN + /command on one row (fills the space right of the
+            number), the description spanning below. Sized to fill the PIP height
+            so the bottom band reads full, not a lone number with dead space. */}
+        <div style={{ minWidth: 0, flex: 1, height: PIP_H, display: "flex", flexDirection: "column", justifyContent: "center", gap: 18, transform: `translateY(${numF}px)` }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 22, flexWrap: "wrap" }}>
+            <div
+              style={{
+                fontFamily: "'Playfair Display', Georgia, serif",
+                fontStyle: "italic",
+                fontWeight: 900,
+                fontSize: 168,
+                lineHeight: 0.85,
+                letterSpacing: -4,
+                textShadow: "0 6px 26px rgba(0,0,0,0.6)",
+              }}
+            >
+              <span style={{ color: "white" }}>#</span>
+              <span style={{ color: ACCENT }}>{numRaw}</span>
+            </div>
+            {lines[0] ? (
+              <div style={{ fontFamily: '"SF Mono", ui-monospace, Menlo, monospace', fontWeight: 700, fontSize: 52, color: ACCENT, textShadow: "0 2px 14px rgba(0,0,0,0.85)" }}>{lines[0]}</div>
+            ) : null}
           </div>
           <div
             style={{
-              marginTop: 12,
               fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-              fontWeight: 600,
-              fontSize: 37,
-              lineHeight: 1.2,
+              fontWeight: 700,
+              fontSize: 44,
+              lineHeight: 1.18,
               color: "#F3F4F8",
               textShadow: "0 2px 12px rgba(0,0,0,0.85)",
             }}
           >
-            {lines.map((ln, i) => (
+            {lines.slice(1).map((ln, i) => (
               <div key={i}>{ln}</div>
             ))}
+          </div>
+        </div>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+/* ---------- split-wide (v16.4) — the "split screen" beat, redesigned per VJ:
+   the host PIP is the SAME wide landscape avatar as the full-frame beats (brand
+   consistency), sitting bottom-LEFT with the #NN + /command + description filling
+   the RIGHT. Recording card up top (leaves room for the global header). One of
+   the randomized command-beat modes. seg.pip = the wide host clip. */
+const SplitWide: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
+  const frame = useCurrentFrame();
+  const s = spring({ frame, fps, config: { damping: 18, mass: 0.8 } });
+  const rise = interpolate(s, [0, 1], [70, 0]);
+  const fade = interpolate(s, [0, 1], [0, 1]);
+  const numRaw = (seg.num ?? "").replace(/^#/, "");
+  const lines = seg.lines ?? [];
+  const isVid = (seg.src ?? "").match(/\.(mp4|mov|webm|mkv)$/i);
+  const cardF = floatY(frame, fps, 7, 3.6, 0);
+  const hostF = floatY(frame, fps, 6, 4.0, 1.3);
+  const numF = floatY(frame, fps, 5, 4.4, 2.5);
+  const HOST_W = 596, HOST_H = Math.round((596 * 9) / 16); // 335, exact 16:9
+  return (
+    <AbsoluteFill style={{ background: GRAD_BG, fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
+      <Vignette />
+      {/* recording card — below the global header (fills to just above the host row) */}
+      <div style={{ position: "absolute", left: 36, top: 130, width: 1008, height: 1236, transform: `translateY(${cardF}px)`, borderRadius: 24, overflow: "hidden", border: "1.5px solid rgba(255,255,255,0.10)", boxShadow: "0 40px 90px rgba(0,0,0,0.55), 0 8px 40px rgba(34,211,238,0.10)", background: INK }}>
+        {isVid ? (
+          <OffthreadVideo src={res(seg.src!)} startFrom={Math.round((seg.from ?? 0) * fps)} muted style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
+        ) : (
+          <Img src={res(seg.src!)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
+        )}
+      </div>
+      {/* host (wide landscape) + callout row */}
+      <div style={{ position: "absolute", left: 44, right: 40, bottom: 176, display: "flex", alignItems: "center", gap: 34, transform: `translateY(${rise}px)`, opacity: fade }}>
+        <div style={{ width: HOST_W, height: HOST_H, flexShrink: 0, transform: `translateY(${hostF}px)`, borderRadius: 22, overflow: "hidden", border: "1.5px solid rgba(255,255,255,0.12)", boxShadow: "0 28px 64px rgba(0,0,0,0.55)", background: INK }}>
+          {seg.pip ? (
+            <OffthreadVideo src={res(seg.pip)} startFrom={Math.round((seg.pipFrom ?? 0) * fps)} muted style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center" }} />
+          ) : null}
+        </div>
+        <div style={{ minWidth: 0, flex: 1, height: HOST_H, display: "flex", flexDirection: "column", justifyContent: "center", gap: 14, transform: `translateY(${numF}px)` }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 18, flexWrap: "wrap" }}>
+            <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontWeight: 900, fontSize: 132, lineHeight: 0.85, letterSpacing: -3, textShadow: "0 6px 26px rgba(0,0,0,0.6)" }}>
+              <span style={{ color: "white" }}>#</span>
+              <span style={{ color: ACCENT }}>{numRaw}</span>
+            </div>
+            {lines[0] ? <div style={{ fontFamily: '"SF Mono", ui-monospace, Menlo, monospace', fontWeight: 700, fontSize: 44, color: ACCENT, textShadow: "0 2px 14px rgba(0,0,0,0.85)" }}>{lines[0]}</div> : null}
+          </div>
+          <div style={{ fontWeight: 700, fontSize: 40, lineHeight: 1.16, color: "#F3F4F8", textShadow: "0 2px 12px rgba(0,0,0,0.85)" }}>
+            {lines.slice(1).map((ln, i) => (<div key={i}>{ln}</div>))}
+          </div>
+        </div>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+/* ---------- rec-full (v16.4) — the "full screen recording" beat: the recording
+   dominates the frame with a gentle Ken-Burns push (the pan), NO host, and a
+   compact #NN + /command + description band below it. One of the randomized
+   command-beat modes, for rhythm against splitWide + framed host. */
+const RecFull: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
+  const frame = useCurrentFrame();
+  const dur = Math.max(1, seg.dur * fps);
+  // the recording is 0.9 aspect (1080x1200) — the card matches that aspect so
+  // objectFit:cover never crops the code SIDES. The pan is a gentle vertical
+  // drift within a small zoom (≤5%, so side-crop stays inside the window padding).
+  const REC_W = 1004, REC_H = Math.round(REC_W / 0.72); // 1394 — matches the tall 1080x1500 demo (no crop)
+  const zoom = interpolate(frame, [0, dur], [1.0, 1.035], { extrapolateRight: "clamp" });
+  const drift = interpolate(frame, [0, dur], [2, -14], { extrapolateRight: "clamp" });
+  const s = spring({ frame, fps, config: { damping: 18, mass: 0.8 } });
+  const rise = interpolate(s, [0, 1], [60, 0]);
+  const fade = interpolate(s, [0, 1], [0, 1]);
+  const numF = floatY(frame, fps, 5, 4.4, 2.5);
+  const numRaw = (seg.num ?? "").replace(/^#/, "");
+  const lines = seg.lines ?? [];
+  const isVid = (seg.src ?? "").match(/\.(mp4|mov|webm|mkv)$/i);
+  const media = { width: "100%", height: "100%", objectFit: "cover" as const, objectPosition: "center center" as const, transform: `scale(${zoom}) translateY(${drift}px)` };
+  return (
+    <AbsoluteFill style={{ background: GRAD_BG, fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
+      <Vignette />
+      {/* recording — tall (fills the frame), gentle pan (no side crop) */}
+      <div style={{ position: "absolute", left: (1080 - REC_W) / 2, top: 132, width: REC_W, height: REC_H, borderRadius: 24, overflow: "hidden", border: "1.5px solid rgba(255,255,255,0.10)", boxShadow: "0 40px 90px rgba(0,0,0,0.55), 0 8px 40px rgba(34,211,238,0.10)", background: INK }}>
+        {isVid ? <OffthreadVideo src={res(seg.src!)} startFrom={Math.round((seg.from ?? 0) * fps)} muted style={media} /> : <Img src={res(seg.src!)} style={media} />}
+      </div>
+      {/* #NN + /command + description — compact band below the tall recording */}
+      <div style={{ position: "absolute", left: 60, right: 60, top: 1528, bottom: 172, display: "flex", alignItems: "center", gap: 28, transform: `translateY(${rise}px)`, opacity: fade }}>
+        <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontWeight: 900, fontSize: 118, lineHeight: 0.85, letterSpacing: -3, transform: `translateY(${numF}px)`, textShadow: "0 6px 26px rgba(0,0,0,0.6)" }}>
+          <span style={{ color: "white" }}>#</span>
+          <span style={{ color: ACCENT }}>{numRaw}</span>
+        </div>
+        <div style={{ minWidth: 0, flex: 1 }}>
+          {lines[0] ? <div style={{ fontFamily: '"SF Mono", ui-monospace, Menlo, monospace', fontWeight: 700, fontSize: 42, color: ACCENT, textShadow: "0 2px 14px rgba(0,0,0,0.85)" }}>{lines[0]}</div> : null}
+          <div style={{ marginTop: 4, fontWeight: 700, fontSize: 36, lineHeight: 1.14, color: "#F3F4F8", textShadow: "0 2px 12px rgba(0,0,0,0.85)" }}>
+            {lines.slice(1).map((ln, i) => (<div key={i}>{ln}</div>))}
           </div>
         </div>
       </div>
@@ -664,6 +831,64 @@ export const Watermark: React.FC<{ startF?: number }> = ({ startF = 0 }) => {
   );
 };
 
+/* ---------- global header (v16.4) — ONE brand+episode lockup shown on every
+   beat (host / split / recording), so branding is consistent and the episode is
+   findable. Replaces the per-beat framed header + corner watermark. */
+export const GlobalHeader: React.FC<{ epTag?: string }> = ({ epTag }) => (
+  <div style={{ position: "absolute", top: 40, left: 0, right: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 8, fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
+    <div style={{ fontFamily: "Anton, Arial Black, sans-serif", fontSize: 46, letterSpacing: 2, textTransform: "uppercase", lineHeight: 1, textShadow: "0 2px 12px rgba(0,0,0,0.7)" }}>
+      <span style={{ color: "white" }}>AI </span>
+      <span style={{ color: MAG }}>UNPACKED</span>
+      <span style={{ color: YELLOW }}> VJ</span>
+    </div>
+    {epTag ? (
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ width: 34, height: 2, borderRadius: 1, background: ACCENT, opacity: 0.8 }} />
+        <div style={{ fontSize: 20, letterSpacing: 4, fontWeight: 700, color: "#C3C8D2", textTransform: "uppercase", textShadow: "0 2px 10px rgba(0,0,0,0.8)" }}>{epTag}</div>
+        <div style={{ width: 34, height: 2, borderRadius: 1, background: ACCENT, opacity: 0.8 }} />
+      </div>
+    ) : null}
+  </div>
+);
+
+/* ---------- hook opener (v16.3) — illustration + promise, replaces the poster
+   cover on premium episodes. A slow Ken-Burns push keeps it alive (a still card
+   is what gets scrolled past); the headline lives in the illustration's top
+   negative space with a magenta hot word, and it fades out to reveal the host. */
+const HookCard: React.FC<{ hook: NonNullable<ShortProps["hook"]>; fps: number }> = ({ hook, fps }) => {
+  const frame = useCurrentFrame();
+  const dur = Math.max(1, hook.until * fps);
+  const zoom = interpolate(frame, [0, dur], [1.05, 1.15], { extrapolateRight: "clamp" });
+  const drift = interpolate(frame, [0, dur], [0, -22], { extrapolateRight: "clamp" });
+  const inK = spring({ frame, fps, config: { damping: 16, mass: 0.7 } });
+  const headY = interpolate(inK, [0, 1], [46, 0]);
+  const headO = interpolate(frame, [2, 12], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const fadeOut = interpolate(frame, [dur - 8, dur], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  return (
+    <AbsoluteFill style={{ opacity: fadeOut, background: INK, fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
+      <Img src={res(hook.image)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 46%", transform: `scale(${zoom}) translateY(${drift}px)` }} />
+      <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(10,10,20,0.78) 0%, rgba(10,10,20,0.28) 24%, rgba(10,10,20,0) 44%, rgba(10,10,20,0) 70%, rgba(10,10,20,0.5) 100%)" }} />
+      {/* headline sits below the global header (top ~150) — the header's episode
+          tag replaces the old kicker, so it's dropped to avoid duplication. */}
+      <div style={{ position: "absolute", top: 176, left: 56, right: 56, transform: `translateY(${headY}px)`, opacity: headO }}>
+        <div style={{ fontFamily: "Anton, Arial Black, sans-serif", textTransform: "uppercase", lineHeight: 0.98 }}>
+          {hook.lines.map((ln, i) => {
+            const size = fitFont(ln, 128, 968);
+            return (
+              <div key={i} style={{ fontSize: size, color: "white", textShadow: "0 4px 0 #000, 0 10px 34px rgba(0,0,0,0.85)" }}>
+                {ln.split(" ").map((w, j) => {
+                  const hot = hook.hot && w.replace(/[^A-Za-z0-9]/g, "").toUpperCase() === hook.hot.toUpperCase();
+                  return <span key={j} style={{ color: hot ? MAG : "white" }}>{w}{" "}</span>;
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
 /* ---------- main composition ---------- */
 export const Short: React.FC<ShortProps> = (props) => {
   const { fps } = useVideoConfig();
@@ -693,7 +918,21 @@ export const Short: React.FC<ShortProps> = (props) => {
   // v16: pipCallout beats carry their own description lines, so the word-by-word
   // caption is suppressed there (it would collide with the callout row). The
   // step chip is suppressed too — the #NN callout IS the step marker.
-  const activeIsPip = props.segments[Math.max(activeIdx, 0)]?.kind === "pipCallout";
+  const activeKind = props.segments[Math.max(activeIdx, 0)]?.kind;
+  const activeIsPip = activeKind === "pipCallout";
+  const activeIsSplit = activeKind === "splitWide" || activeKind === "recFull";
+  const activeIsCallout = activeIsPip || activeIsSplit; // all carry their own #NN + text
+  // v16.3: framed-host beats carry a branded header + caption footer, so the
+  // caption drops into the footer band and the corner watermark is suppressed
+  // (the header IS the brand lockup on these beats).
+  const activeIsFramed = !news && props.segments[Math.max(activeIdx, 0)]?.framed === true;
+  // words spoken within the active beat — drives the rolling caption on framed
+  // (panel) AND split/recording (bottom strip) beats, so captions run everywhere.
+  const beatStart = segStarts[Math.max(activeIdx, 0)];
+  const beatDur = props.segments[Math.max(activeIdx, 0)]?.dur ?? 0;
+  const beatWords = (activeIsFramed || activeIsSplit)
+    ? props.captions.filter((w) => w.start >= beatStart - 1e-3 && w.start < beatStart + beatDur)
+    : [];
   const paneFor = (mode: NonNullable<Seg["mode"]>): React.CSSProperties =>
     mode === "split"
       ? { position: "absolute", top: 0, left: 0, width: "100%", height: "55%", overflow: "hidden" }
@@ -717,6 +956,10 @@ export const Short: React.FC<ShortProps> = (props) => {
             <div style={paneFor(mode)}>
               {seg.kind === "pipCallout" ? (
                 <PipCallout seg={seg} fps={fps} />
+              ) : seg.kind === "splitWide" ? (
+                <SplitWide seg={seg} fps={fps} />
+              ) : seg.kind === "recFull" ? (
+                <RecFull seg={seg} fps={fps} />
               ) : seg.framed && !news ? (
                 <FramedHost seg={seg} fps={fps} />
               ) : seg.kind === "statBars" && seg.stat ? (
@@ -774,7 +1017,7 @@ export const Short: React.FC<ShortProps> = (props) => {
       ) : null}
 
       {(props.steps ?? [])
-        .filter((s) => t >= s.start && t <= s.end && !activeIsPip)
+        .filter((s) => t >= s.start && t <= s.end && !activeIsCallout)
         .map((s, i) => (
           <StepChip key={i} step={s} fps={fps} />
         ))}
@@ -784,7 +1027,16 @@ export const Short: React.FC<ShortProps> = (props) => {
         .map((e, i) => (
           <EmphasisText key={i} e={e} fps={fps} />
         ))}
-      {activeCaption ? (
+      {/* v16.3: framed-host panel caption renders through word GAPS too (it holds
+          the current phrase), so it is NOT gated behind an active word. */}
+      {activeIsFramed ? (
+        <PanelCaption words={beatWords} t={t} />
+      ) : activeIsSplit ? (
+        // v16.4: split/recording beats get the running VO caption as a small,
+        // sentence-case strip low on the frame (VJ: captions on every frame,
+        // smaller + not all-caps here so it doesn't fight the #NN callout/desc).
+        <PanelCaption words={beatWords} t={t} top={1772} bottom={38} size={38} chunk={6} plain />
+      ) : activeCaption ? (
         activeIsPip ? (
           // v16.2: small running captions with hot-word highlight in the bottom
           // space below the pipCallout row (VJ feedback — use the blank space)
@@ -793,15 +1045,14 @@ export const Short: React.FC<ShortProps> = (props) => {
           <Caption word={activeCaption} fps={fps} y={activeMode === "split" ? "47%" : undefined} />
         )
       ) : null}
-      {props.cover && t <= props.cover.until ? <Cover c={props.cover} fps={fps} /> : null}
-      {props.watermark !== false ? (
-        <Watermark
-          // v16: fade in after cover clears + a 0.3s grace so the hook window
-          // stays visually clean. With no cover, still delay 0.3s so a
-          // full-frame value pane at frame 0 isn't crowded.
-          startF={Math.round(((props.cover?.until ?? 0) + 0.3) * fps)}
-        />
+      {props.hook && t <= props.hook.until ? (
+        <HookCard hook={props.hook} fps={fps} />
+      ) : props.cover && t <= props.cover.until ? (
+        <Cover c={props.cover} fps={fps} />
       ) : null}
+      {/* v16.4: ONE consistent global header on every beat (brand + episode tag),
+          rendered last so it sits above all beat layouts incl. the hook. */}
+      {props.watermark !== false ? <GlobalHeader epTag={props.epTag} /> : null}
 
       <Audio src={res(props.vo)} />
       {props.music ? <Audio src={res(props.music)} volume={musicVol} loop /> : null}

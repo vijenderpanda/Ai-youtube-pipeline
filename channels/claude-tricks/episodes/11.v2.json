@@ -1,15 +1,18 @@
 {
  "title": "6 Claude Commands That Rewire How You Think \ud83e\udde0 (Ranked)",
  "tags": "claude code,slash commands,custom commands,claude commands,ai thinking partner,premortem,steelman,claude ai tips,ai for beginners,prompt engineering,ai productivity,ai tips",
- "cover": {
-  "title1": "6 COMMANDS",
-  "title2": "RANKED",
-  "sub": "make claude think with you",
-  "emojis": "\ud83e\udde0",
-  "until": 1.6,
-  "bigTitle": 300,
-  "centerTitle": true
+ "epTag": "EP11 · 6 COMMANDS",
+ "hook": {
+  "image": "ep11/hook_art/debate_B.jpg",
+  "lines": ["MAKE CLAUDE", "THINK WITH YOU"],
+  "hot": "THINK",
+  "kicker": "6 commands \u00b7 ranked",
+  "until": 2.6
  },
+ "host_panels": [
+  {"lines": ["EVERYONE USES AI", "FOR ANSWERS \u2014", "THAT'S THE MISTAKE"], "hot": "MISTAKE"},
+  {"lines": ["STOP ASKING.", "MAKE IT ARGUE", "WITH YOU"], "hot": "ARGUE"}
+ ],
  "lines": [
   "You use Claude for answers. So does everyone. That's the mistake.",
   "Six commands make it think WITH you. Build each once, one file. Watch.",
