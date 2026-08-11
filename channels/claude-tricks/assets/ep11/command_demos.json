@@ -1,0 +1,83 @@
+{
+  "_note": "Real captured Claude responses to the 6 custom slash commands (Ep 11 b-roll content). Captured 2026-08-11 via the actual command prompts on self-contained examples. These are the authentic on-screen proof — do NOT edit the responses; they are real model output.",
+  "commands": [
+    {
+      "key": "premortem",
+      "num": "01",
+      "one_liner": "Assume it already failed. Find out why.",
+      "arg": "launching my $9/mo email-summary Chrome extension on Product Hunt next month",
+      "response": [
+        "Dead by month 4 — 11 paying users, killed the Stripe account.",
+        "Cause: Gmail ships free thread-summaries the week you launch.",
+        "Warning we ignore: 300 PH upvotes, only 4 convert to paid.",
+        "2k followers ≠ buyers — that's peers, not inbox-drowning execs.",
+        "Fix today: presell 15 annual seats before Product Hunt."
+      ]
+    },
+    {
+      "key": "blindspots",
+      "num": "02",
+      "one_liner": "Names what you're not seeing.",
+      "arg": "quitting my job to go full-time on my 800-subscriber, $0-revenue newsletter",
+      "response": [
+        "Stable paycheck → assumption, not fact — runway math undone.",
+        "800 free, $0 revenue: you haven't tested if they'll pay.",
+        "Not modeled: family whose risk tolerance you never surveyed.",
+        "Second-order: no salary kills the 'just for fun' spell.",
+        "Outsider's read: quitting a job to keep a hobby."
+      ]
+    },
+    {
+      "key": "devil",
+      "num": "03",
+      "one_liner": "Argues hard against your idea.",
+      "arg": "we should rewrite our Python monolith in Rust for performance",
+      "response": [
+        "Your monolith idles on API calls, not CPU — Rust won't help.",
+        "3-year-old code hides edge cases a rewrite silently drops.",
+        "A rewrite ships nothing for months while revenue waits.",
+        "Same logic that killed 'templated': effort, no payoff.",
+        "Collapses only if profiling proves you're CPU-bound."
+      ]
+    },
+    {
+      "key": "scout",
+      "num": "04",
+      "one_liner": "Maps what to learn before deciding.",
+      "arg": "adding an AI chatbot to our B2B analytics dashboard",
+      "response": [
+        "Settle it: do users ask 'why', not just 'what'?",
+        "Cheap test: Wizard-of-Oz it — human answers, 5 accounts, 2 weeks.",
+        "Point of no return: once sales pitches it, ripping it out burns trust.",
+        "Hidden cost: per-query LLM spend at scale — margin killer?",
+        "Real question: customer pull, or competitor-checkbox reflex?"
+      ]
+    },
+    {
+      "key": "eli5",
+      "num": "05",
+      "one_liner": "Strips the jargon to expose fuzzy thinking.",
+      "arg": "our plan to migrate from a monolith to microservices in 6 months",
+      "response": [
+        "Migrating: one big app → many small apps, over 6 months.",
+        "Big app = one Lego castle: touch a brick, it all wobbles.",
+        "Microservices = separate sets that snap via agreed connectors.",
+        "Fuzzy part: you didn't say WHO redraws the connector map.",
+        "Like remodeling a house room-by-room while living in it."
+      ]
+    },
+    {
+      "key": "steelman",
+      "num": "06",
+      "one_liner": "Builds the strongest case for it.",
+      "arg": "junior devs should learn to code without AI for their first year",
+      "response": [
+        "Real fluency needs friction — autocomplete skims past gaps.",
+        "Debugging your own bugs builds the model AI can't.",
+        "Fast wrong answers train bad instincts faster than slow right ones.",
+        "You can't judge AI code if you've never written what it replaces.",
+        "Strongest point: you can't supervise what you can't do yourself."
+      ]
+    }
+  ]
+}

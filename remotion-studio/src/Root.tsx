@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, Composition, getInputProps, staticFile, useVideoConfig } from "remotion";
 import { Short, ShortProps, totalDuration, Cover, Watermark } from "./Short";
 import { StatBars, StatBarsProps } from "./components/StatBars";
+import { CodeDemo, CodeDemoProps } from "./components/CodeDemo";
 
 const FPS = 30;
 
@@ -61,6 +62,31 @@ const CoverDemoComp: React.FC<CoverDemoProps> = ({ c }) => {
   );
 };
 
+// CodeDemo smoke-test default props — the real /premortem command + captured response
+const codeDemoProps: CodeDemoProps = {
+  commandKey: "premortem",
+  fileLines: [
+    "---",
+    "description: Imagine the plan already",
+    "  failed — work backward to find why",
+    "argument-hint: [the plan or decision]",
+    "---",
+    "",
+    "It is six months from now and this",
+    "has failed badly: $ARGUMENTS",
+    "",
+    "Write the post-mortem from that future.",
+  ],
+  termArg: "launching my SaaS side project next month",
+  responseLines: [
+    "Dead by month 4 — 11 paying users, killed Stripe.",
+    "Cause: Gmail ships free summaries the week you launch.",
+    "Warning we ignore: 300 upvotes, only 4 convert to paid.",
+    "2k followers ≠ buyers — peers, not inbox-drowning execs.",
+    "Fix today: presell 15 annual seats before Product Hunt.",
+  ],
+};
+
 export const RemotionRoot: React.FC = () => {
   const input = getInputProps() as unknown as ShortProps;
   const props = input && input.segments ? input : fallback;
@@ -93,6 +119,15 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={coverDemoLazyProps}
+      />
+      <Composition
+        id="CodeDemo"
+        component={CodeDemo}
+        durationInFrames={7 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1200}
+        defaultProps={codeDemoProps}
       />
     </>
   );
