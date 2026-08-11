@@ -37,6 +37,7 @@ export type Seg = {
      `pipFrom` = start-from for the pip clip; `from` = start-from for the b-roll. */
   pip?: string;
   pipFrom?: number;
+  pipZoom?: number;   // v16: scale the PIP video to fill the square (~70% face fill); default 1.55
   num?: string;
   lines?: string[];
 };
@@ -492,7 +493,21 @@ const PipCallout: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
               src={res(seg.pip)}
               startFrom={Math.round((seg.pipFrom ?? 0) * fps)}
               muted
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "center top",
+                // v16: the HeyGen render is a chest-up talking-head (720x1280)
+                // framed for full-frame, not a 380px square. Without a zoom the
+                // face renders at ~75px physical and Sol's warm-eyes signal — the
+                // whole point of the host — dies. A fixed scale pulls the
+                // head-and-shoulders up to ~70% fill (matching Vaibhav's PIP).
+                // One zoom works across the whole wardrobe (all outfits share the
+                // same 2:3 recipe/seed/framing). Parent has overflow:hidden.
+                transform: `scale(${seg.pipZoom ?? 1.32})`,
+                transformOrigin: "50% 30%",
+              }}
             />
           ) : null}
         </div>
