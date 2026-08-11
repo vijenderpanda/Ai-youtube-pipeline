@@ -41,8 +41,17 @@ export type Seg = {
   lines?: string[];
 };
 /* pos: which corner the chip lives in — pick the one with dead space so the
-   chip NEVER covers the content the beat is teaching (default tl). */
-export type Step = { label: string; start: number; end: number; pos?: "tl" | "tr" | "bl" | "br" };
+   chip NEVER covers the content the beat is teaching (default tl).
+   style "hashtag" (v16): render a lime Playfair "#NN" badge instead of the
+   glass "STEP 1/3" chip — keeps the numbered-list count alive over host-hero
+   beats between pipCallout beats (Vaibhav-DNA). `label` carries the number. */
+export type Step = {
+  label: string;
+  start: number;
+  end: number;
+  pos?: "tl" | "tr" | "bl" | "br";
+  style?: "chip" | "hashtag";
+};
 export type Emphasis = { text: string; start: number; end: number };
 export type ShortProps = {
   segments: Seg[];
@@ -130,6 +139,35 @@ const StepChip: React.FC<{ step: Step; fps: number }> = ({ step, fps }) => {
   const opacity = interpolate(s, [0, 1], [0, 1]);
   const vert: React.CSSProperties = pos.startsWith("t") ? { top: 172 } : { bottom: 566 };
   const horiz: React.CSSProperties = pos.endsWith("l") ? { left: 40 } : { right: 40 };
+
+  // v16 Vaibhav-DNA: hashtag variant — a lime Playfair "#NN" badge (no glass
+  // chrome). label carries the number ("02" or "#02"); the # is forced white,
+  // the number lime. Used to keep the running count alive over host-hero beats.
+  if (step.style === "hashtag") {
+    const numRaw = step.label.replace(/^#/, "");
+    return (
+      <div
+        style={{
+          position: "absolute",
+          ...vert,
+          ...horiz,
+          transform: `translateY(${interpolate(s, [0, 1], [40, 0])}px)`,
+          opacity,
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontStyle: "italic",
+          fontWeight: 900,
+          fontSize: 130,
+          lineHeight: 0.9,
+          letterSpacing: -3,
+          textShadow: "0 5px 22px rgba(0,0,0,0.6)",
+        }}
+      >
+        <span style={{ color: "white" }}>#</span>
+        <span style={{ color: LIME }}>{numRaw}</span>
+      </div>
+    );
+  }
+
   return (
     <div
       style={{
