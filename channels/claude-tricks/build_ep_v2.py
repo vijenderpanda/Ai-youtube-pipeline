@@ -1408,6 +1408,18 @@ def build(ep, dry=False, tag="v2", preview=False):
         hook_mp4 = host_clip_by_run[first_hook] if first_hook else None
         pay_mp4 = host_clip_by_run[last_pay] if last_pay else None
 
+    # v16 Vaibhav-DNA: pipCallout beats ("pip:<id>"). Each renders a HeyGen host
+    # clip of ITS OWN VO slice, shown small in the bottom-left rounded-square PIP
+    # while the beat's product screencap plays in the top zone. Consistent center
+    # tid across all pip beats so Sol reads as one continuous take across the
+    # numbered list (Vaibhav keeps the same PIP framing for every point).
+    pip_clip_by_beat = {}
+    if not news_split:
+        for bi, bb in enumerate(beats):
+            if bb.startswith("pip:"):
+                pip_clip_by_beat[bi] = host_clip(
+                    f"v2_pip_{bb[4:]}", _seg_t[bi], _seg_t[bi + 1], photo=tid)
+
     # 3) segments for remotion (paths relative to remotion public/)
     def rel(p): return os.path.relpath(p, os.path.join(CH, "assets")).replace("\\", "/")
     segments, t0 = [], 0.0
@@ -1451,6 +1463,24 @@ def build(ep, dry=False, tag="v2", preview=False):
                 seg["mode"] = mode
             seg["stat"] = cfg["stats"][b[5:]]
             segments.append(seg)
+        elif b.startswith("pip:"):
+            # v16 Vaibhav-DNA pipCallout: screencap top zone + host PIP bottom-left
+            # + big lime #NN callout. cfg["pips"][id] = {src, from?, num, lines}.
+            pid = b[4:]
+            p = cfg["pips"][pid]
+            seg = {
+                "kind": "pipCallout",
+                "dur": round(dur, 3),
+                "src": f"assets/{p['src']}",
+                "from": float(p.get("from", 0)),
+                "num": str(p["num"]),
+                "lines": p["lines"],
+            }
+            pip_mp4 = pip_clip_by_beat.get(start_i)
+            if pip_mp4:
+                seg["pip"] = "assets/" + rel(pip_mp4)
+                seg["pipFrom"] = 0.0
+            segments.append(seg)
         i += 1
 
     # steps -> absolute times
@@ -1459,7 +1489,10 @@ def build(ep, dry=False, tag="v2", preview=False):
     for d in seg_durs:
         line_starts.append(acc); acc += d
     # optional 4th tuple element = chip corner (tl/tr/bl/br) — put the chip in
-    # dead space, never over the content the beat is teaching (user feedback Ep11)
+    # dead space, never over the content the beat is teaching (user feedback Ep11).
+    # optional 5th tuple element = style ("chip"|"hashtag") — v16 Vaibhav-DNA:
+    # "hashtag" renders a lime Playfair #NN badge to keep the numbered-list count
+    # alive over host-hero beats between pipCallout beats.
     steps = []
     for tup in cfg["steps"]:
         lab, a, b = tup[0], tup[1], tup[2]
@@ -1467,6 +1500,8 @@ def build(ep, dry=False, tag="v2", preview=False):
               "end": round(line_starts[b] + seg_durs[b], 2)}
         if len(tup) > 3:
             st["pos"] = tup[3]
+        if len(tup) > 4:
+            st["style"] = tup[4]
         steps.append(st)
 
     spec = {
