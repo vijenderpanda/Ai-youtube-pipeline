@@ -56,15 +56,29 @@ def run(cmd, **kw):
 
 def measure_lufs(path):
     """Integrated loudness via ffmpeg's ebur128 filter. Returns float LUFS or
-    None on measurement failure (never raises — caller decides how to fail)."""
+    None on measurement failure (never raises — caller decides how to fail).
+
+    v16 fix: ebur128 emits per-frame running-loudness lines during the stream
+    (e.g. 'I: -70.0 LUFS' at t=0.1s while ramping up), THEN a 'Summary:' block
+    with the true integrated value at EOF. The old regex matched the first
+    streaming line and reported -70 dropouts for every valid file. Match only
+    inside the Summary block."""
     r = subprocess.run(
         ["ffmpeg", "-nostats", "-i", path, "-af", "ebur128=peak=true",
          "-f", "null", "-"],
         capture_output=True, text=True)
-    # ebur128 writes to stderr; look for the summary line "I: -18.4 LUFS"
-    m = re.search(r"I:\s+(-?[\d.]+)\s+LUFS", r.stderr)
+    # locate the 'Summary:' section (ebur128 writes it once, at end)
+    tail = r.stderr.rsplit("Summary:", 1)[-1] if "Summary:" in r.stderr else ""
+    m = re.search(r"Integrated loudness:\s*\n?\s*I:\s*(-?[\d.]+)\s+LUFS", tail)
     if not m:
-        return None
+        # fallback: last "I: NNN LUFS" line in the whole output
+        matches = re.findall(r"I:\s*(-?[\d.]+)\s+LUFS", r.stderr)
+        if not matches:
+            return None
+        try:
+            return float(matches[-1])
+        except ValueError:
+            return None
     try:
         return float(m.group(1))
     except ValueError:
