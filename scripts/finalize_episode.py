@@ -357,6 +357,23 @@ def main():
             print(">> WARNING: armed but could not parse a video_id from yt_upload "
                   "output — factory DB not synced. Check the post manually.")
 
+    # v17: advance the channel ep counter so the next channel-page produce
+    # auto-assigns ep+1 (sequential; the number is confirmed only here, at arm).
+    if not a.dry and str(a.ep).isdigit():
+        try:
+            sys.path.insert(0, HERE)
+            from factory_worker import Supa, load_env  # noqa: E402
+            env = load_env(); supa = Supa(env["SUPABASE_URL"], env["SUPABASE_SERVICE_KEY"])
+            cur = supa.select("factory_settings", "key=eq.claude-tricks_last_ep&select=value")
+            curn = int(cur[0]["value"]) if cur and str(cur[0].get("value") or "").isdigit() else 0
+            if int(a.ep) > curn:
+                supa.insert("factory_settings",
+                            [{"key": "claude-tricks_last_ep", "value": str(int(a.ep))}],
+                            on_conflict="key", resolution="merge-duplicates")
+                print(f">> ep counter -> claude-tricks_last_ep={int(a.ep)}")
+        except Exception as e:  # noqa: BLE001
+            print(f">> WARNING: could not advance ep counter: {e}")
+
     print(f">> DONE — master at {final}, scheduled {a.schedule}"
           + (f", video {video_id}" if video_id else ""))
 

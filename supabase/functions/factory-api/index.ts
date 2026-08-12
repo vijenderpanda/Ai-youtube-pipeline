@@ -1689,6 +1689,62 @@ async function handlePost(body: any): Promise<Response> {
       return json({ job });
     }
 
+    // v17: produce a new episode straight from the CHANNEL page — no calendar
+    // juggling, no manual ep number. Auto-assigns the next ep (last armed + 1;
+    // the counter `<channel>_last_ep` advances at ARM in finalize_episode.py, so
+    // abandoned drafts never burn a number), creates an internal calendar row +
+    // a produce_preview job on the LOCKED Ep11/Ep12 template. Body:
+    // {channel_key, title, brief, model?, effort?}.
+    case "produce_channel": {
+      const { channel_key } = body;
+      const title = String(body.title ?? "").trim();
+      const brief = String(body.brief ?? "").trim();
+      if (!channel_key) return json({ error: "channel_key required" }, 400);
+      if (!title) return json({ error: "title required" }, 400);
+      if (!brief) return json({ error: "brief required" }, 400);
+      // SERIAL guard: one produce in flight per channel. An unarmed direct
+      // episode still sitting at status='queued' (producing or awaiting finalize)
+      // blocks a new one — this is what keeps the provisional ep number
+      // collision-free (finish/arm or skip the current one first).
+      const { data: inFlight, error: ifErr } = await db.from("factory_calendar")
+        .select("id, title").eq("channel_key", channel_key)
+        .eq("production_mode", "direct").eq("status", "queued").limit(1);
+      if (ifErr) return json({ error: ifErr.message }, 500);
+      if (inFlight && inFlight.length > 0) {
+        return json({ error: `finish or arm the current episode first ('${inFlight[0].title}') — one produce at a time` }, 409);
+      }
+      // next ep = last armed + 1 (provisional; finalize advances the counter at arm)
+      const { data: cRow } = await db.from("factory_settings")
+        .select("value").eq("key", `${channel_key}_last_ep`).maybeSingle();
+      const lastEp = parseInt(String(cRow?.value ?? "0"), 10) || 0;
+      const nextEp = String(lastEp + 1);
+      const model = body.model ?? "opus";
+      const effort = body.effort ?? "medium";
+      const today = new Date().toISOString().slice(0, 10);
+      // internal calendar row (origin manual so it's a normal item; the user
+      // manages it from the channel page + Studio, not the calendar)
+      const { data: item, error: iErr } = await db.from("factory_calendar")
+        .insert({
+          channel_key, planned_date: today, title, brief,
+          status: "queued", origin: "manual", production_mode: "direct",
+          model, effort,
+        }).select().single();
+      if (iErr) return json({ error: iErr.message }, 500);
+      const { data: job, error: jErr } = await db.from("factory_jobs")
+        .insert({
+          channel_key, type: "produce_preview",
+          title: "Preview — " + title, prompt: brief,
+          model, effort, status: "queued",
+          meta: { calendar_id: item.id, ep: nextEp, source: "channel_planner" },
+        }).select().single();
+      if (jErr) return json({ error: jErr.message }, 500);
+      await db.from("factory_calendar").update({ job_id: job.id }).eq("id", item.id);
+      await logEvent("channel_produce",
+        `Ep${nextEp} produce queued for ${channel_key}: '${title}'`,
+        { item_id: item.id, job_id: job.id, channel_key, ep: nextEp });
+      return json({ calendar_id: item.id, job, ep: nextEp });
+    }
+
     default:
       return json({ error: "unknown action: " + (body.action ?? "(none)") }, 400);
   }

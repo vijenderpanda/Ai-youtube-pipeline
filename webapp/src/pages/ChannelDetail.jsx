@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import { usePoll } from '../hooks'
 import JobTable from '../components/JobTable'
@@ -10,6 +10,7 @@ import EmptyState from '../components/EmptyState'
 
 export default function ChannelDetail() {
   const { channelKey } = useParams()
+  const navigate = useNavigate()
   const chansQ = usePoll(() => api.get('?r=channels'), 0)
   const jobsQ = usePoll(
     () => api.get(`?r=jobs&channel=${encodeURIComponent(channelKey)}&limit=25`),
@@ -34,6 +35,28 @@ export default function ChannelDetail() {
   const [selectedJob, setSelectedJob] = useState(null)
   const [showNewJob, setShowNewJob] = useState(false)
   const [statusBusy, setStatusBusy] = useState(false)
+  // v17: channel-page produce (locked Ep11/Ep12 template, auto ep-sequencing)
+  const [pTitle, setPTitle] = useState('')
+  const [pBrief, setPBrief] = useState('')
+  const [producing, setProducing] = useState(false)
+  const [pErr, setPErr] = useState('')
+
+  const doProduce = async () => {
+    if (producing) return
+    setProducing(true)
+    setPErr('')
+    try {
+      const d = await api.post({
+        action: 'produce_channel', channel_key: channelKey,
+        title: pTitle.trim(), brief: pBrief.trim(),
+      })
+      setPTitle(''); setPBrief('')
+      navigate('/studio/' + d.calendar_id)
+    } catch (e) {
+      setPErr(e.message)
+    }
+    setProducing(false)
+  }
 
   const guidelines = draft != null ? draft : (channel && channel.guidelines) || ''
   const dirty = draft != null && draft !== ((channel && channel.guidelines) || '')
@@ -109,6 +132,49 @@ export default function ChannelDetail() {
         <div className="error-bar">{(chansQ.error || jobsQ.error).message}</div>
       )}
       {saveErr && <div className="error-bar">{saveErr}</div>}
+
+      {channelKey === 'claude-tricks' && (
+        <section className="card panel">
+          <div className="panel-head">
+            <h2>Produce new episode</h2>
+            <span className="tag" title="Locked craft template — every produce follows Ep11/Ep12">
+              🔒 Ep11/Ep12 template
+            </span>
+          </div>
+          <p className="dim small" style={{ marginTop: 0 }}>
+            Give it a topic + brief. It produces on the locked template, then you review in
+            Studio and Finalize &amp; Arm — the <strong>episode number is assigned automatically</strong>{' '}
+            (next in sequence) when you arm. No calendar needed.
+          </p>
+          <label className="field">
+            <span className="field-label">Title</span>
+            <input
+              value={pTitle}
+              onChange={(e) => setPTitle(e.target.value)}
+              placeholder="e.g. Ask AI For a Table, Not a Wall of Text 📊"
+            />
+          </label>
+          <label className="field">
+            <span className="field-label">Brief / idea</span>
+            <textarea
+              rows={5}
+              value={pBrief}
+              onChange={(e) => setPBrief(e.target.value)}
+              placeholder="The tip, the on-screen demo, why it'll go viral, and any facts to verify first…"
+            />
+          </label>
+          <div className="drawer-actions cal-actions">
+            {pErr && <span className="saved-msg" style={{ color: '#f87171' }}>{pErr}</span>}
+            <button
+              className="btn btn-primary"
+              onClick={doProduce}
+              disabled={producing || !pTitle.trim() || !pBrief.trim()}
+            >
+              {producing ? 'Queuing…' : '▶ Produce next episode'}
+            </button>
+          </div>
+        </section>
+      )}
 
       <section className="card panel">
         <div className="panel-head">
