@@ -594,6 +594,184 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
                 f"CHANNEL GUIDELINES:\n{guidelines or '(none on file)'}\n\n"
                 f"JOB BRIEF:\n{jprompt}\n\n"
                 "STANDING RULES: follow docs/PRODUCTION-PLAYBOOK.md, premium quality bar.")
+    elif jtype == "produce_preview" and key == "already-happening":
+        # v17: "already-happening" is a CINEMATIC, host-less channel whose 6 motion
+        # clips CANNOT be generated headlessly (Leonardo's generation API is
+        # 402-blocked; the web UI needs an interactive Chrome session). So this
+        # headless produce_preview session preps everything it CAN — script +
+        # fact-check receipts + VO + a per-episode build_ep<ep>.py + an ANIMATIC
+        # (VO + running captions over BLACK placeholder beds; that animatic IS the
+        # Studio preview) — and writes a MOTION-TODO.md sentinel carrying the 6 Wan
+        # 2.6 prompts for a human to render in Chrome. scripts/finalize_already_
+        # happening.py refuses to arm until those 6 real clips replace the
+        # placeholders and MOTION-TODO.md is deleted. See
+        # channels/already-happening/PRODUCTION-BLUEPRINT.md (the locked recipe).
+        cal_id = (job.get("meta") or {}).get("calendar_id") or ""
+        ep = str((job.get("meta") or {}).get("ep") or "").strip()
+        ep_title = re.sub(r"^Preview\s*[—:-]\s*", "", (job.get("title") or "")).strip()
+        body = (
+            "You are producing the ANIMATIC PREVIEW of an 'already-happening' Short "
+            "(host-less cinematic channel on the near future of AI, teal identity). "
+            "ONE headless Claude session. You CANNOT generate motion footage — "
+            "Leonardo's generation API is blocked and there is no browser here; a "
+            "human renders the 6 Wan 2.6 clips in Chrome AFTER you. Your job is to "
+            "prep everything else and STOP at a black-bed animatic.\n\n"
+            f"EP KEY: use ep = {ep!r} for ALL paths and names (channels/already-"
+            f"happening/episodes/ep{ep}.*, assets/ep{ep}/, renders/ep{ep}/). Do NOT "
+            f"invent a different number.\n"
+            f"EPISODE TITLE (from the channel planner): {ep_title!r} — this is the "
+            "locked YouTube title; build the script to deliver it.\n\n"
+            f"CHANNEL GUIDELINES:\n{guidelines or '(none on file)'}\n\n"
+            f"TOPIC / BRIEF:\n{jprompt}\n\n"
+            "READ FIRST: channels/already-happening/PRODUCTION-BLUEPRINT.md and "
+            "channels/already-happening/CHANNEL-SETUP.md and docs/PRODUCTION-"
+            "PLAYBOOK.md. build_ep01_v3.py is the CANONICAL builder/template.\n\n"
+            "PIPELINE (in order — do each, push each to Studio as it lands):\n"
+            "1. SCRIPT: write a 6-beat script on the locked spine (cold-open hook -> "
+            "TODAY anchor -> +5yr extrapolation -> gut-punch impact -> binary "
+            "button), punchy AI-Unpacked style (short lines, curiosity gaps), VO "
+            f"total ~28-35s. Alternate wonder/provocation vs the previous episode. "
+            "FACT-CHECK GATE (the channel's whole wedge): VERIFY every on-screen "
+            "number/claim with WebSearch against a DATED primary source; keep stated "
+            "figures CONSERVATIVE. If an anchor can't be verified, pick another — "
+            "never fabricate. Write channels/already-happening/episodes/"
+            f"ep{ep}.script.json (beats + title + hot_words) and episodes/"
+            f"ep{ep}.receipts.md (each claim -> dated source URL).\n"
+            "2. VO (Brian, non-robotic): for i in 1..6 run `python3 scripts/eleven_vo.py "
+            f"--voice nPczCjzI2devNBz1zQrb --text \"<beat i>\" --out channels/already-"
+            f"happening/renders/ep{ep}/vo/beat<i>.wav --style 0.32 --speed 1.0`. Each "
+            "call also writes beat<i>.wav.words.json (word timing that drives the "
+            "running captions). Push each wav to Studio.\n"
+            "3. MOTION PROMPTS (for the human, NOT for you): write 6 Wan 2.6 prompts, "
+            "one per beat — cinematic, grounded-futuristic, electric-teal, explicit "
+            "camera move, end each with 'coherent stable shapes, no distortion'. Vary "
+            "all 6 visuals genuinely (anti-throttle). Write them to channels/already-"
+            f"happening/assets/ep{ep}/MOTION-TODO.md (a numbered checklist: model=Wan "
+            "2.6, 9:16, 5s, audio OFF; download to assets/ep"
+            f"{ep}/motion/beat<i>.mp4; delete this file when all 6 are real) AND into "
+            f"the episode manifest (step 8). Do NOT try to generate motion.\n"
+            "4. PLACEHOLDER BEDS (so the UNMODIFIED builder can render an animatic): "
+            "for i in 1..6 create a black 720x1280 clip of beat<i>'s VO duration with "
+            "a faint centered teal glow -> channels/already-happening/assets/ep"
+            f"{ep}/motion/beat<i>.mp4 (ffmpeg lavfi color=black + the VO length). "
+            "These are DISPOSABLE — the human overwrites them with real Wan 2.6 "
+            "clips. Keep each well under 200KB so finalize can tell them from real "
+            "footage.\n"
+            "5. BUILDER: `cp channels/already-happening/build_ep01_v3.py channels/"
+            f"already-happening/build_ep{ep}.py` and edit ONLY the marked spots: MOT "
+            f"= assets/ep{ep}/motion, VO = renders/ep{ep}/vo, OUT = renders/ep{ep}, "
+            "the BEATS clip filenames (beat1.mp4..beat6.mp4 paired to beat1..beat6 "
+            "VO), the HOT keyword set (this topic's numbers + punchy nouns), and the "
+            f"output name -> ep{ep}.mp4. Do NOT touch the opener / brand bug / end "
+            "card / grade / bed_3 score / encode — those are the LOCKED brand frame "
+            "(cold-open stays 'THE FUTURE ISN'T COMING').\n"
+            f"6. ANIMATIC RENDER: run `python3 channels/already-happening/build_ep{ep}.py`. "
+            f"It renders channels/already-happening/renders/ep{ep}/ep{ep}.mp4 (cold-"
+            "open + black beds + VO + running teal captions + end card). COPY it to "
+            f"renders/ep{ep}/ep{ep}_prev.mp4 (the '_prev' + 'ep{ep}_' name lets the "
+            "worker stamp it as the Studio preview). This animatic is the QC gate for "
+            "SCRIPT + VO + CAPTION TIMING only — motion comes later.\n"
+            "7. PUSH TO STUDIO: after each asset lands call `python3 scripts/push_asset.py "
+            f"--calendar-id {cal_id} --asset-key <slug> --file <path> --kind "
+            "<text|audio|video> --group <other|audio|clip>` — push the script, the "
+            "receipts, the MOTION-TODO.md (so the reviewer sees the 6 prompts), the 6 "
+            "VO wavs, and the animatic. Unpushed assets are invisible to the reviewer.\n"
+            f"8. EPISODE MANIFEST: write channels/already-happening/episodes/ep{ep}.json "
+            '= {"ep": str, "title": str, "tags": str (csv), "description_path": '
+            f'"episodes/ep{ep}_description.txt", "builder": "build_ep{ep}.py", '
+            f'"output": "renders/ep{ep}/ep{ep}_web.mp4", "motion_dir": "assets/ep{ep}/'
+            'motion", "motion_clips": ["beat1.mp4",...,"beat6.mp4"], "motion_prompts": '
+            '[{"beat": int, "prompt": str, "file": "beat<i>.mp4"}]}. Also write '
+            f"episodes/ep{ep}_description.txt (SEO description + 3-5 hashtags led by "
+            "#Shorts, per CHANNEL-SETUP.md).\n"
+            f"9. JOB MANIFEST: write {manifest_path(job['id'])} with files = [{{\"path\": "
+            f"\"channels/already-happening/renders/ep{ep}/ep{ep}_prev.mp4\", \"kind\": "
+            "\"video\", \"channel_key\": \"already-happening\"}] plus a recap "
+            "(headline/steps/decisions/issues/outputs/next). The animatic is the only "
+            "file here — it becomes the Studio preview; NO post is drafted for it.\n\n"
+            "COST DISCIPLINE: NO motion generation (blocked — the human does it), NO "
+            "Leonardo image gen, ffmpeg/PIL only. STOP at the animatic. Finalize "
+            "(after the human renders motion) will build the real cut + arm YouTube."
+        )
+    elif jtype == "produce_preview" and key == "aashiqana":
+        # v18: Aashiqana sensual-motion Shorts. Like already-happening, the
+        # creative generation CANNOT run headlessly — both the Suno song AND the
+        # Leonardo keyframes+Hailuo motion need an interactive, logged-in Chrome
+        # session + human face/keyframe approvals. So this session preps the
+        # DETERMINISTIC parts (word-first hookcut + caption timing + manifest +
+        # description) and writes a LEONARDO-TODO.md sentinel carrying the locked
+        # 8 prompts (1 anchor + 4 keyframes + 4 motion) for a human to render in
+        # Chrome. If the human has ALREADY dropped the 4 motion clips + hookcut,
+        # it assembles + brands a preview. scripts/finalize_aashiqana.py assembles
+        # (if needed) + arms once the clips are real and the sentinel is gone.
+        # Locked recipe: channels/aashiqana/SHORTS-TEMPLATE-LOCKED.md.
+        cal_id = (job.get("meta") or {}).get("calendar_id") or ""
+        ep = str((job.get("meta") or {}).get("ep") or "").strip()
+        ep_title = re.sub(r"^Preview\s*[—:-]\s*", "", (job.get("title") or "")).strip()
+        body = (
+            "You are producing the PREVIEW of an Aashiqana Short (premium AI Hindi "
+            "romantic-song channel, monsoon/golden palette). ONE headless Claude "
+            "session. You CANNOT generate the song or the couple footage headlessly "
+            "— Suno and Leonardo both need an interactive logged-in Chrome session "
+            "with human approvals. Prep everything deterministic, leave a sentinel "
+            "for the interactive steps, and STOP.\n\n"
+            f"EP KEY: ep = {ep!r}. TITLE (locked, from planner): {ep_title!r}.\n\n"
+            f"CHANNEL GUIDELINES:\n{guidelines or '(none on file)'}\n\n"
+            f"BRIEF:\n{jprompt}\n\n"
+            "READ FIRST (non-negotiable): channels/aashiqana/SHORTS-TEMPLATE-LOCKED.md "
+            "(the locked pipeline), channels/aashiqana/BRAND-BIBLE.md, and "
+            "docs/PRODUCTION-PLAYBOOK.md. Reusable: scripts/assemble_motion_generic.py "
+            "and channels/aashiqana/songs/03-aadhi-raat/polish_short.py "
+            "(--src --out --pov1 --pov2).\n\n"
+            "PIPELINE (do the deterministic parts; push each to Studio):\n"
+            "1. SONG SLUG: derive a song slug from the brief (e.g. 02-aaja-ve). Use "
+            "channels/aashiqana/songs/<slug>/ for ALL paths.\n"
+            "2. HOOK AUDIO (only if a Suno mp3 already exists at songs/<slug>/"
+            "renders/*.mp3 or track/*.mp3): whisper-verify (faster_whisper small, hi, "
+            "word_timestamps) where the VOCAL WORD starts, then cut a ~24s word-first "
+            "hookcut that OPENS on the word at 0.0s (never humming) -> songs/<slug>/"
+            "renders/<slug>_hookcut.mp3. Build songs/<slug>/lyrics/timing_hook.json "
+            "(4 bilingual lines: {s,e,text,hi}). If no mp3 yet, note it in the "
+            "sentinel and skip.\n"
+            "3. LEONARDO-TODO.md (for the human — the interactive gate): write "
+            "channels/aashiqana/songs/<slug>/LEONARDO-TODO.md with the 8 locked "
+            "prompts from SHORTS-TEMPLATE-LOCKED.md, adapted to THIS song's SETTING "
+            "(pick a setting that ROTATES OFF the previous short's location): "
+            "(a) 1 anchor prompt (Nano Banana 2, 2:3, fresh couple, VJ approves face); "
+            "(b) 4 keyframe prompts K1 establishing / K2 her single / K3 bold beat "
+            "(embrace-from-behind) / K4 near-kiss (Nano Banana 2, Image-Ref=anchor, "
+            "tasteful wording — NO 'sensual/lips/almost-kiss/bare shoulders' or "
+            "Leonardo disables Generate); (c) 4 Hailuo 2.3 motion prompts (start-frame, "
+            "9:16, 6s: front-to-camera turn / push-in / from-behind hot turn / "
+            "sink-to-bed). Tell the human to drop the 4 clips into songs/<slug>/_motion/"
+            "CLIP_{anchor,her,behind,kiss}.mp4 and delete this file when done.\n"
+            "4. IF the 4 motion clips + the hookcut already exist (human did Leonardo): "
+            "assemble `python3 scripts/assemble_motion_generic.py --clips <ordered "
+            "CLIP_*.mp4> --audio songs/<slug>/renders/<slug>_hookcut.mp3 --lyrics "
+            "songs/<slug>/lyrics/timing_hook.json --out songs/<slug>/renders/<slug>_"
+            "motion_prev.mp4`, then brand `python3 channels/aashiqana/songs/03-aadhi-"
+            "raat/polish_short.py --src <prev> --out songs/<slug>/renders/<slug>_"
+            "branded.mp4 --pov1 \"<Hinglish POV tied to the hook lyric>\" --pov2 "
+            "\"<2nd line>\"`. That branded file is the Studio preview. Else render "
+            "nothing (the sentinel stands).\n"
+            "5. DESCRIPTION: write songs/<slug>/description_short.txt = the hook line "
+            "+ '🎧 Use this sound.' + the AI/synthetic disclosure (original song & "
+            "visuals created with AI, not affiliated) + @aashiqana.diaries + #shorts "
+            "#hindisong #lovesong hashtags.\n"
+            "6. MANIFEST: write channels/aashiqana/episodes/ep" + ep + ".json = "
+            '{"ep": str, "title": str, "tags": str (csv), "song_slug": str, '
+            '"branded_path": "channels/aashiqana/songs/<slug>/renders/<slug>_branded.mp4", '
+            '"description_path": "channels/aashiqana/songs/<slug>/description_short.txt"}.\n'
+            f"7. PUSH: after each asset call `python3 scripts/push_asset.py --calendar-id "
+            f"{cal_id} --asset-key <slug> --file <path> --kind <text|audio|video> "
+            "--group <other|audio|clip>` — push the hookcut, the LEONARDO-TODO.md, and "
+            "the branded preview if it exists. Unpushed assets are invisible in Studio.\n"
+            f"8. JOB MANIFEST: write {manifest_path(job['id'])} with files = [the branded "
+            "preview if it exists, else the LEONARDO-TODO.md as kind text] + a recap "
+            "(headline/steps/decisions/issues/outputs/next). NO post is drafted here.\n\n"
+            "COST DISCIPLINE: ffmpeg/PIL/whisper only. NO Suno, NO Leonardo, NO Seedance. "
+            "STOP at the preview-or-sentinel. Finalize assembles (if needed) + arms YouTube."
+        )
     elif jtype == "produce_preview":
         # v16: monolithic one-Claude-call short production that STOPS at a
         # low-cost preview. Human reviews the preview MP4 in Studio; a scripted
@@ -747,6 +925,47 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
             f"Write {brief_path(job['id'])}: "
             '{"title": str, "brief": str (production-ready), "tags": [str, ...]}\n'
             "Planning only -- do NOT produce any videos and do NOT write a manifest."
+        )
+    elif jtype == "plan_content" and key == "already-happening":
+        # v17: idea engine for the "already-happening" cinematic channel. Grounded
+        # speculation — every idea is a near-future-of-AI claim ANCHORED to a real,
+        # dated capability today. Ranked list; each idea is a production-ready brief
+        # the user can pick -> produce_channel (the animatic pipeline above).
+        body = (
+            f"You are the content strategist for 'already-happening' ('{key}'): a host-less "
+            "CINEMATIC Shorts channel on the near future of AI. Thesis: the future isn't "
+            "coming — it's already happening. Every episode anchors a +5yr claim to a REAL "
+            "capability that exists TODAY (grounded speculation, never sci-fi fantasy). "
+            "Electric-teal identity, ~28-40s, alternate wonder/provocation.\n"
+            f"Read {ctx_path or '(context file missing)'} (guidelines, last-30d stats, recent "
+            "episode titles, calendar) + channels/already-happening/PRODUCTION-BLUEPRINT.md + "
+            "CHANNEL-SETUP.md.\n\n"
+            "Produce a RANKED list of 5 ideas for the NEXT Short, each driven by ONE signal:\n"
+            "1. ANALYTICS -- read the ctx stats (this channel is new; judge by TREND, never "
+            "fabricate). Favour the spine that has held retention; propose a topic that plays "
+            "to it.\n"
+            "2. BREAKING NEWS -- WebSearch a REAL AI capability that shipped THIS WEEK "
+            "(verified + dated); make it the TODAY anchor, then extrapolate 5yr. CITE source "
+            "+ date in why_viral.\n"
+            "3. NEW DOMAIN -- pick a life domain NOT yet covered (Ep01 transport, Ep02 jobs "
+            "are done — so health, money, education, relationships, creativity, law, war, "
+            "food, aging...); anchor it to a real deployed system today.\n"
+            "4. UPCOMING EVENT -- from the calendar + today's date, a near-term hook (a launch, "
+            "a deadline, a date) that pegs a grounded future claim.\n"
+            "5. WILDCARD -- your single strongest bet, any angle.\n\n"
+            "Every idea MUST fit the locked 6-beat spine (cold-open hook -> TODAY anchor -> "
+            "+5yr extrapolation -> gut-punch -> binary button) and PASS the fact-check gate: "
+            "the TODAY anchor MUST be a verifiable, dated, CONSERVATIVE fact (one wrong stat "
+            "detonates the 'this is REAL' brand). VERIFY with WebSearch — never fabricate.\n"
+            f"Write {plan_content_path(job['id'])}: "
+            '{"ideas": [{"rank": int (1=best), '
+            '"angle": "analytics"|"news"|"domain"|"event"|"wildcard", '
+            '"title": str (provocation/curiosity, keyword front-loaded, 40-55 chars), '
+            '"hook": str (the <=1.5s spoken cold-open line), '
+            '"why_viral": str (1-2 sentences; cite the dated source that anchors it), '
+            '"brief": str (production-ready: the 6-beat outline, the verified TODAY anchor + '
+            'its source, and the 6 shot ideas -- enough for produce_channel to run)}]}\n'
+            "Rank by viral potential. Planning only -- do NOT produce videos, do NOT write a manifest."
         )
     elif jtype == "plan_content":
         # v17: the channel-page "Plan content" idea engine. Ranked list across 4

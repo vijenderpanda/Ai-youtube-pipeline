@@ -50,8 +50,35 @@ export default function ChannelDetail() {
     vaibhav: { icon: '🏆', label: 'Vaibhav-DNA' },
     news: { icon: '📰', label: 'News' },
     event: { icon: '📅', label: 'Event' },
+    domain: { icon: '🌐', label: 'Domain' },
     wildcard: { icon: '🎲', label: 'Wildcard' },
   }
+
+  // v17: channels that can produce a full episode from this page. Each has a
+  // locked craft template; the produce pipeline + copy differ per channel.
+  const PRODUCE_CFG = {
+    'claude-tricks': {
+      templateTag: '🔒 Ep11/Ep12 template',
+      templateTitle: 'Locked craft template — every produce follows Ep11/Ep12',
+      titlePh: 'e.g. Ask AI For a Table, Not a Wall of Text 📊',
+      briefPh: "The tip, the on-screen demo, why it'll go viral, and any facts to verify first…",
+    },
+    'already-happening': {
+      templateTag: '🔒 Cinematic blueprint',
+      templateTitle: 'Locked cinematic blueprint — every produce follows Ep01',
+      titlePh: "e.g. You're the last generation that will ever drive a car",
+      briefPh:
+        'The topic, the verified TODAY anchor (dated primary source), the +5yr leap, and 6 shot ideas…',
+    },
+    'aashiqana': {
+      templateTag: '🔒 Sensual-motion Shorts template',
+      templateTitle: 'Locked recipe — fresh couple → keyframes → Hailuo motion → premium brand',
+      titlePh: 'e.g. Aadhi Raat — 2am situationship, neon rooftop',
+      briefPh:
+        'Song concept + mood, couple vibe, the SETTING to rotate to (not the last short), Suno style tags, the hook line…',
+    },
+  }
+  const pcfg = PRODUCE_CFG[channelKey]
 
   const doPlanContent = async () => {
     if (planning) return
@@ -180,25 +207,36 @@ export default function ChannelDetail() {
       )}
       {saveErr && <div className="error-bar">{saveErr}</div>}
 
-      {channelKey === 'claude-tricks' && (
+      {pcfg && (
         <section className="card panel">
           <div className="panel-head">
             <h2>Produce new episode</h2>
             <div className="panel-actions">
-              <span className="tag" title="Locked craft template — every produce follows Ep11/Ep12">
-                🔒 Ep11/Ep12 template
+              <span className="tag" title={pcfg.templateTitle}>
+                {pcfg.templateTag}
               </span>
               <button className="btn btn-ghost btn-sm" onClick={doPlanContent} disabled={planning}>
                 {planning ? 'Thinking… (~1–2 min)' : '✨ Plan content'}
               </button>
             </div>
           </div>
-          <p className="dim small" style={{ marginTop: 0 }}>
-            <strong>Plan content</strong> for ranked ideas from analytics · Vaibhav-DNA · recent news ·
-            upcoming events — or write your own below. Produces on the locked template → review in
-            Studio → Finalize &amp; Arm; the <strong>episode number is auto-assigned</strong> when you
-            arm. No calendar needed.
-          </p>
+          {channelKey === 'already-happening' ? (
+            <p className="dim small" style={{ marginTop: 0 }}>
+              <strong>Plan content</strong> for grounded-speculation ideas from analytics · breaking
+              AI news · a new life domain · upcoming events — or write your own below. Produces the
+              script + VO + an <strong>animatic preview</strong> and the 6 Wan&nbsp;2.6 motion prompts →
+              review in Studio → generate the 6 clips in Chrome (they replace the placeholders) →
+              <strong> Finalize &amp; Arm</strong>. The <strong>episode number is auto-assigned</strong>{' '}
+              when you arm. No calendar needed.
+            </p>
+          ) : (
+            <p className="dim small" style={{ marginTop: 0 }}>
+              <strong>Plan content</strong> for ranked ideas from analytics · Vaibhav-DNA · recent news ·
+              upcoming events — or write your own below. Produces on the locked template → review in
+              Studio → Finalize &amp; Arm; the <strong>episode number is auto-assigned</strong> when you
+              arm. No calendar needed.
+            </p>
+          )}
           {planErr && <div className="error-bar">{planErr}</div>}
           {ideas.length > 0 && (
             <div className="idea-list" style={{ display: 'grid', gap: 10, marginBottom: 16 }}>
@@ -238,7 +276,7 @@ export default function ChannelDetail() {
             <input
               value={pTitle}
               onChange={(e) => setPTitle(e.target.value)}
-              placeholder="e.g. Ask AI For a Table, Not a Wall of Text 📊"
+              placeholder={pcfg.titlePh}
             />
           </label>
           <label className="field">
@@ -247,7 +285,7 @@ export default function ChannelDetail() {
               rows={5}
               value={pBrief}
               onChange={(e) => setPBrief(e.target.value)}
-              placeholder="The tip, the on-screen demo, why it'll go viral, and any facts to verify first…"
+              placeholder={pcfg.briefPh}
             />
           </label>
           <div className="drawer-actions cal-actions">

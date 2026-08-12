@@ -1664,6 +1664,19 @@ async function handlePost(body: any): Promise<Response> {
         return json({ error: "a finalize job for this item is already " + liveFin[0].status }, 409);
       }
       const scheduleIso = when.toISOString().replace(/\.\d{3}Z$/, "Z"); // RFC3339 UTC
+      // v17: already-happening finalizes with a DIFFERENT deterministic script —
+      // it gates on the human-rendered Wan 2.6 motion clips (MOTION-TODO.md
+      // sentinel) then builds the real cut + arms. claude-tricks keeps its own.
+      // v18: each channel finalizes with its own deterministic script.
+      // aashiqana = LOCKED sensual-motion Shorts template (SHORTS-TEMPLATE-LOCKED.md):
+      // LUFS-master the branded cut + arm via yt_upload (--synthetic, Music, non-kids).
+      const chKey = item.channel_key;
+      const scriptPath = chKey === "already-happening"
+        ? "scripts/finalize_already_happening.py"
+        : chKey === "aashiqana"
+        ? "scripts/finalize_aashiqana.py"
+        : "scripts/finalize_episode.py";
+      const finTag = (chKey === "already-happening" || chKey === "aashiqana") ? "v3" : "v2";
       const { data: job, error: jobErr } = await db.from("factory_jobs")
         .insert({
           channel_key: item.channel_key,
@@ -1673,10 +1686,10 @@ async function handlePost(body: any): Promise<Response> {
           meta: {
             calendar_id,
             ep,
-            script_path: "scripts/finalize_episode.py",
+            script_path: scriptPath,
             script_args: [
               "--ep", ep,
-              "--tag", "v2",
+              "--tag", finTag,
               "--schedule", scheduleIso,
               "--calendar-id", calendar_id,
             ],
