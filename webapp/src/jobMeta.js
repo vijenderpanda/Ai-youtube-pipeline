@@ -23,7 +23,7 @@ export const TYPE_LABELS = {
   generate_asset: 'Generate asset',
   assemble_episode: 'Assemble episode',
   preview_episode: 'Draft preview',
-  produce_preview: 'Produce preview (v16)',
+  produce_preview: 'Produce preview',
   shell_script: 'Finalize / script',
 }
 

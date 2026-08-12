@@ -194,7 +194,7 @@ export default function Studio() {
       ) : nothingStaged ? (
         <EmptyState
           message="Nothing staged yet"
-          hint="Open a planned item on the Calendar and choose “Produce in stages” — the factory plans the asset list, generates each fragment as its own job, and you review them all here before the final assembly."
+          hint="Open a planned item on the Calendar and hit “Produce” — the factory builds each part as its own job, and you review them all here before the final cut."
         />
       ) : noMatches ? (
         <EmptyState

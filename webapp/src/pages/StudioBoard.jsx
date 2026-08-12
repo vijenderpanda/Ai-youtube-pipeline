@@ -610,7 +610,7 @@ export default function StudioBoard() {
       ) : !item ? (
         <EmptyState
           message="Not a staged episode"
-          hint="This calendar item has no staged assets. Stage it from the Calendar with “Produce in stages”."
+          hint="This item hasn’t been produced yet. Open it on the Calendar and hit “Produce”."
         />
       ) : total === 0 ? (
         <EmptyState
