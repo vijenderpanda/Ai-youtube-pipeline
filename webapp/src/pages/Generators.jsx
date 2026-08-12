@@ -347,8 +347,8 @@ export default function Generators() {
     <div className="page">
       <header className="page-head">
         <div>
-          <h1>Generators</h1>
-          <p className="sub">The scripts that build the content — your map of what to improve next</p>
+          <h1>Formats</h1>
+          <p className="sub">The reusable recipes your videos are made from.</p>
         </div>
       </header>
 

@@ -1,4 +1,7 @@
 import { NavLink } from 'react-router-dom'
+import { api } from '../api'
+import { usePoll } from '../hooks'
+import { resolveStage } from '../pipeline'
 
 function Icon({ name }) {
   const paths = {
@@ -90,20 +93,59 @@ function Icon({ name }) {
   )
 }
 
-const NAV = [
-  { to: '/', label: 'Overview', icon: 'overview', end: true },
-  { to: '/analytics', label: 'Analytics', icon: 'analytics' },
-  { to: '/calendar', label: 'Calendar', icon: 'calendar' },
-  { to: '/studio', label: 'Studio', icon: 'studio' },
-  { to: '/channels', label: 'Channels', icon: 'channels' },
-  { to: '/jobs', label: 'Jobs', icon: 'jobs' },
-  { to: '/renders', label: 'Renders', icon: 'renders' },
-  { to: '/posts', label: 'Posts', icon: 'posts' },
-  { to: '/generators', label: 'Generators', icon: 'generators' },
-  { to: '/workers', label: 'Workers', icon: 'workers' },
+/**
+ * Workflow-spine navigation (global IA redesign): Today, then CREATE → GROW,
+ * with machine internals dimmed under BEHIND THE SCENES. Routes never change —
+ * only labels, grouping and emphasis. Max two badges in the whole sidebar:
+ * Today (things waiting on the creator) and Activity (failed tasks).
+ */
+const NAV_GROUPS = [
+  { label: null, items: [{ to: '/', label: 'Today', icon: 'overview', end: true, badge: 'today' }] },
+  {
+    label: 'Create',
+    items: [
+      { to: '/calendar', label: 'Plan', icon: 'calendar' },
+      { to: '/studio', label: 'Studio', icon: 'studio' },
+      { to: '/posts', label: 'Publish', icon: 'posts' },
+    ],
+  },
+  {
+    label: 'Grow',
+    items: [
+      { to: '/analytics', label: 'Insights', icon: 'analytics' },
+      { to: '/channels', label: 'Channels', icon: 'channels' },
+    ],
+  },
+  {
+    label: 'Behind the scenes',
+    quiet: true,
+    items: [
+      { to: '/jobs', label: 'Activity', icon: 'jobs', badge: 'failed' },
+      { to: '/renders', label: 'Library', icon: 'renders' },
+      { to: '/generators', label: 'Formats', icon: 'generators' },
+      { to: '/workers', label: 'Machines', icon: 'workers' },
+    ],
+  },
 ]
 
 export default function Sidebar({ onLock }) {
+  // Badge data rides the endpoints the app already polls elsewhere.
+  const stagedQ = usePoll(() => api.get('?r=staged'), 15000)
+  const jobsQ = usePoll(() => api.get('?r=jobs&limit=100'), 30000)
+
+  const items = (stagedQ.data && stagedQ.data.items) || []
+  const counts = (stagedQ.data && stagedQ.data.counts) || {}
+  const todayCount = items.filter((it) => resolveStage(it, counts[it.id] || {}).action).length
+  const failedCount = ((jobsQ.data && jobsQ.data.jobs) || []).filter((j) => j.status === 'failed').length
+
+  const badge = (kind) => {
+    if (kind === 'today' && todayCount > 0)
+      return <span className="nav-badge nav-badge-today">{todayCount}</span>
+    if (kind === 'failed' && failedCount > 0)
+      return <span className="nav-badge nav-badge-failed">{failedCount}</span>
+    return null
+  }
+
   return (
     <aside className="sidebar">
       <div className="brand">
@@ -114,16 +156,22 @@ export default function Sidebar({ onLock }) {
         </div>
       </div>
       <nav className="nav">
-        {NAV.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            end={item.end}
-            className={({ isActive }) => 'nav-item' + (isActive ? ' active' : '')}
-          >
-            <Icon name={item.icon} />
-            <span className="nav-label">{item.label}</span>
-          </NavLink>
+        {NAV_GROUPS.map((g, gi) => (
+          <div key={gi} className={'nav-group' + (g.quiet ? ' nav-group-quiet' : '')}>
+            {g.label && <div className="nav-group-label">{g.label}</div>}
+            {g.items.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                className={({ isActive }) => 'nav-item' + (isActive ? ' active' : '')}
+              >
+                <Icon name={item.icon} />
+                <span className="nav-label">{item.label}</span>
+                {item.badge && badge(item.badge)}
+              </NavLink>
+            ))}
+          </div>
         ))}
       </nav>
       <div className="sidebar-foot">

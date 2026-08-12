@@ -68,7 +68,7 @@ function localToIso(v) {
   return isNaN(d.getTime()) ? null : d.toISOString()
 }
 
-function PostCard({ post, renderPath, onToast, refresh }) {
+function PostCard({ post, renderPath, onToast, refresh, primaryArm = false }) {
   const editable = post.status === 'draft' || post.status === 'armed'
   const [form, setForm] = useState({
     yt_title: post.yt_title || '',
@@ -232,7 +232,7 @@ function PostCard({ post, renderPath, onToast, refresh }) {
           )}
           {post.status === 'draft' && (
             <button
-              className="btn btn-primary btn-sm"
+              className={(primaryArm ? 'btn btn-primary' : 'btn btn-ghost') + ' btn-sm'}
               onClick={arm}
               disabled={!!busy || !form.yt_title.trim() || !form.publish_at}
               title={
@@ -325,8 +325,8 @@ export default function Posts() {
     <div className="page">
       <header className="page-head">
         <div>
-          <h1>Posts</h1>
-          <p className="sub">Review, arm and schedule finished videos for YouTube</p>
+          <h1>Publish</h1>
+          <p className="sub">Give each finished video a date and send it to YouTube.</p>
         </div>
       </header>
 
@@ -363,6 +363,7 @@ export default function Posts() {
             <PostCard
               key={p.id}
               post={p}
+              primaryArm={p.id === (filtered.find((x) => x.status === 'draft') || {}).id}
               renderPath={p.render_id ? renderPaths[p.render_id] : null}
               onToast={show}
               refresh={postsQ.refresh}

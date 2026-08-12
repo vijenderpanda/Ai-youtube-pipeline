@@ -16,7 +16,7 @@ import { resolveAccents, accentFor } from '../channelColor'
 // Sort key: unblock failures first, then review, then ship-ready.
 const URGENCY = { fix: 0, review: 1, arm: 2 }
 
-export default function DoNext() {
+export default function DoNext({ hero = false }) {
   const stagedQ = usePoll(() => api.get('?r=staged'), 10000)
   const chansQ = usePoll(() => api.get('?r=channels'), 0)
   const navigate = useNavigate()
@@ -74,9 +74,12 @@ export default function DoNext() {
         </div>
       ) : (
         <ul className="donext-list">
-          {tasks.map(({ it, stage, action }) => {
+          {tasks.map(({ it, stage, action }, ti) => {
             const accent = accentFor(it.channel_key, accents)
             const name = chanName[it.channel_key] || it.channel_key
+            // One champagne button per screen: in hero mode only the TOP task
+            // gets the primary; everything below is a quiet ghost.
+            const primary = hero ? ti === 0 : action.kind === 'arm'
             return (
               <li key={it.id} className="donext-row">
                 <span className="donext-dot" style={{ background: accent }} aria-hidden="true" />
@@ -86,7 +89,7 @@ export default function DoNext() {
                 </div>
                 <span className={`donext-stage stage-${stage}`}>{stage.toUpperCase()}</span>
                 <button
-                  className={'btn btn-sm ' + (action.kind === 'arm' ? 'btn-primary' : 'btn-ghost')}
+                  className={'btn btn-sm ' + (primary ? 'btn-primary' : 'btn-ghost')}
                   onClick={() => navigate('/studio/' + it.id)}
                 >
                   {action.label}

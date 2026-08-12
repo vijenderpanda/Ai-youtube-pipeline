@@ -115,7 +115,7 @@ export default function Studio() {
       <header className="page-head">
         <div>
           <h1>Studio</h1>
-          <p className="sub">Staged production · review every asset before assembly</p>
+          <p className="sub">Watch drafts, ask for changes, and approve what’s ready.</p>
         </div>
         <div className="head-actions">
           <button

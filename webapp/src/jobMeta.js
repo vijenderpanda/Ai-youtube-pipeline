@@ -31,6 +31,33 @@ export function typeLabel(t) {
   return TYPE_LABELS[t] || t
 }
 
+/**
+ * Plain-creator-language phrase for a job, used as the Activity card eyebrow.
+ * tense: 'now' (present continuous) | 'past'. Never shows the raw type.
+ */
+const ACTIVITY_PHRASES = {
+  produce_preview: ['Making a preview cut', 'Made a preview cut'],
+  preview_episode: ['Making a preview cut', 'Made a preview cut'],
+  generate_asset: ['Making a piece of the video', 'Made a piece of the video'],
+  plan_assets: ['Planning the shots', 'Planned the shots'],
+  assemble_episode: ['Putting the video together', 'Put the video together'],
+  produce_short: ['Making a Short', 'Made a Short'],
+  record_demo: ['Recording a screen demo', 'Recorded a screen demo'],
+  analytics_sync: ['Updating your stats', 'Updated your stats'],
+  analyze_and_suggest: ['Looking for ideas in your numbers', 'Looked for ideas in your numbers'],
+  suggest_brief: ['Drafting an idea brief', 'Drafted an idea brief'],
+  plan_content: ['Coming up with content ideas', 'Came up with content ideas'],
+  channel_intake: ['Thinking through your channel idea', 'Thought through your channel idea'],
+  new_channel_scaffold: ['Setting up a new channel', 'Set up a new channel'],
+  shell_script: ['Running housekeeping', 'Ran housekeeping'],
+  custom: ['Working on a task', 'Finished a task'],
+}
+export function activityPhrase(type, tense = 'now') {
+  const p = ACTIVITY_PHRASES[type]
+  if (!p) return tense === 'now' ? 'Working on a task' : 'Finished a task'
+  return tense === 'now' ? p[0] : p[1]
+}
+
 export const MODEL_OPTIONS = [
   { value: 'fable', label: 'Fable 5 — deepest' },
   { value: 'opus', label: 'opus' },

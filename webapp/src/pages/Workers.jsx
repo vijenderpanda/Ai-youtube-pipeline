@@ -272,10 +272,8 @@ export default function Workers() {
     <div className="page">
       <header className="page-head">
         <div>
-          <h1>Workers</h1>
-          <p className="sub">
-            Machines running the local worker · refreshes every 8s · online = heartbeat within 90s
-          </p>
+          <h1>Machines</h1>
+          <p className="sub">The computers doing the factory’s work.</p>
         </div>
       </header>
 

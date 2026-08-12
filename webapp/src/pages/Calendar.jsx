@@ -300,8 +300,8 @@ export default function Calendar() {
     <div className="page">
       <header className="page-head">
         <div>
-          <h1>Calendar</h1>
-          <p className="sub">Content plan · AI suggestions land here after each analytics sync</p>
+          <h1>Plan</h1>
+          <p className="sub">Decide what each channel publishes next, and when.</p>
         </div>
         <div className="head-actions">
           <SyncAnalyticsButton onToast={show} />

@@ -94,7 +94,7 @@ export default function Channels() {
       <header className="page-head">
         <div>
           <h1>Channels</h1>
-          <p className="sub">Every channel the factory produces for</p>
+          <p className="sub">One home per channel — its look, its rules, its health.</p>
         </div>
         <div className="head-actions">
           <button className="btn btn-ghost" onClick={() => setShowNew(true)} title="Create a channel from a bare form">
