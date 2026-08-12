@@ -180,8 +180,82 @@ def arm_youtube(final_path, schedule_iso, spec, thumb_path=None, dry=False):
 
     r = run(cmd, capture_output=True, text=True)
     if r.returncode != 0:
-        return False, f"yt_upload exited {r.returncode}:\nSTDOUT:\n{r.stdout}\nSTDERR:\n{r.stderr}"
-    return True, r.stdout.strip()
+        return False, f"yt_upload exited {r.returncode}:\nSTDOUT:\n{r.stdout}\nSTDERR:\n{r.stderr}", None
+    # yt_upload.py prints ">> UPLOADED: https://youtu.be/<id>" (or a recovery-mode
+    # line with the same shape). Pull the 11-char video id back so the factory DB
+    # sync can record the real scheduled post.
+    m = re.search(r"youtu\.be/([A-Za-z0-9_-]{6,})", r.stdout or "")
+    video_id = m.group(1) if m else None
+    return True, r.stdout.strip(), video_id
+
+
+def sync_factory_db(calendar_id, video_id, schedule_iso, spec, final_path, desc_path=None):
+    """v16 gap-4 fix: finalize arms YouTube DIRECTLY (via yt_upload.py), so the
+    factory app never saw a factory_posts row for it — Ep11 needed a manual
+    Supa.insert. This writes that row automatically: a factory_posts row already
+    at status='scheduled' (real video_id + publish_at), and flips the linked
+    factory_calendar item to 'produced'. The worker's publisher only ever touches
+    status='armed' rows, so a 'scheduled' row is never re-uploaded; it flips to
+    'published' lazily once publish_at passes. Best-effort: the video is already
+    armed on YouTube, so a DB hiccup here must NOT fail the job — it prints a
+    loud WARNING with the manual fallback and returns False."""
+    try:
+        sys.path.insert(0, HERE)
+        from factory_worker import Supa, load_env  # noqa: E402
+        env = load_env()
+        supa = Supa(env["SUPABASE_URL"], env["SUPABASE_SERVICE_KEY"])
+    except Exception as e:  # noqa: BLE001
+        print(f">> WARNING: factory DB sync skipped (could not init Supa): {e}")
+        return False
+
+    tags = [t.strip() for t in (spec.get("tags") or "").split(",") if t.strip()]
+    yt_desc = ""
+    if desc_path and os.path.exists(desc_path):
+        try:
+            with open(desc_path) as f:
+                yt_desc = f.read().strip()
+        except OSError:
+            pass
+    row = {
+        "channel_key": "claude-tricks",
+        "local_path": final_path,
+        "yt_title": (spec.get("title") or os.path.basename(final_path))[:100],
+        "yt_description": yt_desc,
+        "tags": tags,
+        "audience": "general",
+        "synthetic": True,           # BRAND-BIBLE §8 synthetic-media disclosure
+        "publish_at": schedule_iso,
+        "video_id": video_id,
+        "status": "scheduled",       # already live on YouTube's schedule
+    }
+    ok = True
+    try:
+        supa.insert("factory_posts", [row])
+        print(f">> factory DB: factory_posts row inserted (scheduled, video {video_id})")
+    except Exception as e:  # noqa: BLE001
+        ok = False
+        print(f">> WARNING: could not insert factory_posts row: {e}")
+        print(f">> MANUAL FALLBACK: insert a factory_posts row (status=scheduled, "
+              f"video_id={video_id}, publish_at={schedule_iso}) yourself.")
+    if calendar_id:
+        try:
+            supa.patch("factory_calendar", f"id=eq.{calendar_id}",
+                       {"status": "produced"})
+            print(f">> factory DB: calendar item {calendar_id} -> produced")
+        except Exception as e:  # noqa: BLE001
+            ok = False
+            print(f">> WARNING: could not flip calendar {calendar_id} to produced: {e}")
+    try:
+        supa.insert("factory_events", [{
+            "kind": "post_scheduled",
+            "message": f"finalize armed claude-tricks: {row['yt_title']!r} "
+                       f"(video {video_id}, publish {schedule_iso})",
+            "meta": {"calendar_id": calendar_id, "video_id": video_id,
+                     "channel_key": "claude-tricks", "source": "finalize_episode.py"},
+        }])
+    except Exception:  # noqa: BLE001
+        pass
+    return ok
 
 
 def main():
@@ -199,6 +273,11 @@ def main():
                     help="run master + QC only, do NOT touch YouTube")
     ap.add_argument("--dry", action="store_true",
                     help="pass --dry through to yt_upload (arm smoke test)")
+    ap.add_argument("--calendar-id",
+                    help="factory_calendar item id — when given (and the arm "
+                         "succeeds), a scheduled factory_posts row is inserted and "
+                         "the calendar item is flipped to 'produced' so the app "
+                         "reflects the arm without a manual DB write (v16 gap-4).")
     a = ap.parse_args()
 
     # 1) VERIFY SPEC EXISTS
@@ -262,12 +341,24 @@ def main():
             thumb = cand
             break
 
-    ok, msg = arm_youtube(final, a.schedule, spec_data, thumb_path=thumb, dry=a.dry)
+    ok, msg, video_id = arm_youtube(final, a.schedule, spec_data, thumb_path=thumb, dry=a.dry)
     if not ok:
         print(f"!! YT arm FAILED: {msg}", file=sys.stderr)
         sys.exit(3)
     print(f">> YT armed for {a.schedule}: {msg}")
-    print(f">> DONE — master at {final}, scheduled {a.schedule}")
+
+    # v16 gap-4: record the arm in the factory DB so the app reflects it (no more
+    # manual Supa.insert). Skipped on --dry (no real upload → no real video_id).
+    if a.calendar_id and not a.dry:
+        if video_id:
+            sync_factory_db(a.calendar_id, video_id, a.schedule, spec_data, final,
+                            desc_path=final + ".desc.txt")
+        else:
+            print(">> WARNING: armed but could not parse a video_id from yt_upload "
+                  "output — factory DB not synced. Check the post manually.")
+
+    print(f">> DONE — master at {final}, scheduled {a.schedule}"
+          + (f", video {video_id}" if video_id else ""))
 
 
 if __name__ == "__main__":

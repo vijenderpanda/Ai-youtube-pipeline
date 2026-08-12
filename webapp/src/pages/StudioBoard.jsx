@@ -102,7 +102,8 @@ export default function StudioBoard() {
   const chansQ = usePoll(() => api.get('?r=channels'), 0)
   const { toast, show } = useToast()
   const [confirmAssemble, setConfirmAssemble] = useState(false)
-  const [busy, setBusy] = useState('') // '' | 'assemble' | 'preview'
+  const [busy, setBusy] = useState('') // '' | 'assemble' | 'preview' | 'finalize'
+  const [schedule, setSchedule] = useState('') // v16: datetime-local for Finalize & Arm
   const [selectedKey, setSelectedKey] = useState(null)
   const [pinned, setPinned] = useState({}) // asset_key -> version number displayed (absent = latest)
   const [docsOpen, setDocsOpen] = useState(false)
@@ -304,6 +305,44 @@ export default function StudioBoard() {
     setBusy('')
   }
 
+  // v16: direct-mode (produce_preview) items don't ASSEMBLE — they FINALIZE:
+  // master + LUFS QC + arm YouTube via scripts/finalize_episode.py (a
+  // shell_script job). The preview MP4 in the program monitor above is the QC
+  // gate. finalize_episode.py writes the scheduled post + flips this item to
+  // produced, so the app reflects the arm with no manual DB write.
+  const isDirect = !!item && item.production_mode === 'direct'
+  const finalizeJob = newestOf('shell_script')
+  const finalizeActive =
+    !!finalizeJob && (finalizeJob.status === 'queued' || finalizeJob.status === 'running')
+  const canFinalize = isDirect && !!item?.preview_path && !finalizeActive
+  const finalizeTitle = !isDirect
+    ? 'Finalize is for monolithic preview (claude-tricks) episodes'
+    : !item?.preview_path
+      ? 'Produce a preview first — the preview MP4 is the QC gate'
+      : finalizeActive
+        ? 'A finalize job is already queued or running'
+        : !schedule
+          ? 'Pick a publish date/time first'
+          : 'Master + LUFS QC + arm YouTube for the chosen time'
+
+  const doFinalize = async () => {
+    if (busy) return
+    if (!schedule) {
+      show('Pick a publish date/time first', 'error')
+      return
+    }
+    const iso = new Date(schedule).toISOString() // local datetime-local → UTC
+    setBusy('finalize')
+    try {
+      await api.post({ action: 'finalize_episode', calendar_id: calendarId, schedule: iso })
+      show('Finalize & arm queued — master + LUFS + YouTube schedule', 'ok')
+      boardQ.refresh()
+    } catch (e) {
+      show(e.message, 'error')
+    }
+    setBusy('')
+  }
+
   // ── Selection → displayed version ──────────────────────────────────
   const selected = selectedKey ? latestByKey.get(selectedKey) || null : null
   const history = selected ? olderByKey.get(selected.asset_key) || [] : []
@@ -478,20 +517,49 @@ export default function StudioBoard() {
           )}
         </div>
         <div className="head-actions">
-          {assembleJob && (
-            <span className="assemble-status" title={assembleJob.title || 'Assembly job'}>
-              <span className="tag dim-tag">assembly</span>
-              <StatusChip status={assembleJob.status} />
-            </span>
+          {isDirect ? (
+            <>
+              {finalizeJob && (
+                <span className="assemble-status" title={finalizeJob.title || 'Finalize job'}>
+                  <span className="tag dim-tag">finalize</span>
+                  <StatusChip status={finalizeJob.status} />
+                </span>
+              )}
+              <input
+                type="datetime-local"
+                className="finalize-when"
+                value={schedule}
+                onChange={(e) => setSchedule(e.target.value)}
+                title="Local publish time — YouTube flips public at this moment"
+                style={{ marginRight: '.4rem' }}
+              />
+              <button
+                className="btn btn-primary"
+                onClick={doFinalize}
+                disabled={!canFinalize || !!busy || !schedule}
+                title={finalizeTitle}
+              >
+                {busy === 'finalize' ? 'Queuing…' : 'Finalize & Arm ▶'}
+              </button>
+            </>
+          ) : (
+            <>
+              {assembleJob && (
+                <span className="assemble-status" title={assembleJob.title || 'Assembly job'}>
+                  <span className="tag dim-tag">assembly</span>
+                  <StatusChip status={assembleJob.status} />
+                </span>
+              )}
+              <button
+                className="btn btn-primary"
+                onClick={() => setConfirmAssemble(true)}
+                disabled={!canAssemble || !!busy}
+                title={assembleTitle}
+              >
+                Assemble ▶
+              </button>
+            </>
           )}
-          <button
-            className="btn btn-primary"
-            onClick={() => setConfirmAssemble(true)}
-            disabled={!canAssemble || !!busy}
-            title={assembleTitle}
-          >
-            Assemble ▶
-          </button>
         </div>
       </header>
 

@@ -29,13 +29,17 @@ export default function CalendarDrawer({
   })
   const [status, setStatus] = useState(item.status || 'planned')
   const [jobId, setJobId] = useState(item.job_id || null)
-  const [busy, setBusy] = useState('') // '' | 'save' | 'run' | 'status' | 'stage'
+  const [busy, setBusy] = useState('') // '' | 'save' | 'run' | 'status' | 'stage' | 'preview'
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
   const [justQueued, setJustQueued] = useState(false)
+  const [ep, setEp] = useState('') // v16: episode key for the produce_preview path
 
   const locked = status === 'queued' || status === 'produced' || status === 'superseded'
   const suggested = status === 'suggested'
+  // v16: claude-tricks produces via the MONOLITHIC preview engine (build_ep_v2),
+  // not the generic staged fanout — see docs/STAGED-PIPELINE.md + FACTORY.md.
+  const isClaudeTricks = item.channel_key === 'claude-tricks'
   const set = (k) => (e) => {
     setSaved(false)
     setForm((f) => ({ ...f, [k]: e.target.value }))
@@ -99,6 +103,30 @@ export default function CalendarDrawer({
     try {
       await api.post({ action: 'stage_calendar_item', id: item.id })
       if (onToast) onToast('Staged — the factory is planning the asset list', 'ok')
+      onChanged()
+      navigate('/studio/' + item.id)
+      return
+    } catch (e) {
+      setError(e.message)
+    }
+    setBusy('')
+  }
+
+  // v16: produce the claude-tricks Short via the monolithic preview engine.
+  // Queues a produce_preview job (build_ep_v2 --preview) tied to this calendar
+  // item; assets stream into the Studio board, then the preview MP4 is
+  // reviewable there before Finalize & Arm. `ep` names episodes/<ep>.v2.json.
+  const producePreview = async () => {
+    if (busy) return
+    if (!ep.trim()) {
+      setError('Enter the episode number (e.g. 12) before producing the preview')
+      return
+    }
+    setBusy('preview')
+    setError('')
+    try {
+      await api.post({ action: 'produce_preview', calendar_id: item.id, ep: ep.trim() })
+      if (onToast) onToast(`Preview queued — the v16 engine is producing Ep ${ep.trim()}`, 'ok')
       onChanged()
       navigate('/studio/' + item.id)
       return
@@ -342,14 +370,35 @@ export default function CalendarDrawer({
                 <button className="btn btn-ghost" onClick={save} disabled={!!busy}>
                   {busy === 'save' ? 'Saving…' : 'Save changes'}
                 </button>
-                <button
-                  className="btn btn-primary"
-                  onClick={stage}
-                  disabled={!!busy || !form.title.trim() || locked}
-                  title="Plan the asset list, then review each fragment in the Studio before assembly"
-                >
-                  {busy === 'stage' ? 'Staging…' : '▶ Produce in stages'}
-                </button>
+                {isClaudeTricks ? (
+                  <>
+                    <input
+                      className="ep-input"
+                      value={ep}
+                      onChange={(e) => setEp(e.target.value)}
+                      placeholder="ep # (e.g. 12)"
+                      title="Episode key — names channels/claude-tricks/episodes/<ep>.v2.json; threaded to Finalize"
+                      style={{ width: '6.5rem' }}
+                    />
+                    <button
+                      className="btn btn-primary"
+                      onClick={producePreview}
+                      disabled={!!busy || !form.title.trim() || locked || !ep.trim()}
+                      title="Monolithic v16 engine (build_ep_v2 --preview) → review the preview in Studio → Finalize & Arm"
+                    >
+                      {busy === 'preview' ? 'Queuing…' : '▶ Produce preview (v16)'}
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    className="btn btn-primary"
+                    onClick={stage}
+                    disabled={!!busy || !form.title.trim() || locked}
+                    title="Plan the asset list, then review each fragment in the Studio before assembly"
+                  >
+                    {busy === 'stage' ? 'Staging…' : '▶ Produce in stages'}
+                  </button>
+                )}
               </div>
             </>
           )}

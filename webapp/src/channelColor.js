@@ -13,6 +13,7 @@ export const CHANNEL_PALETTE = {
   vehicles: '#F59E0B', // amber-orange
   aashiqana: '#F472B6', // rose
   'language-abc': '#34D399', // mint
+  'already-happening': '#22D3EE', // electric teal
   _network: '#94A3B8', // factory-wide items — neutral steel
 }
 

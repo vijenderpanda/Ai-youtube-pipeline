@@ -1295,13 +1295,25 @@ def build(ep, dry=False, tag="v2", preview=False):
     # cutaway wears the same clothes, while different episodes rotate the library
     # (assets/character/host_library/). One tid per episode == consistency for free.
     # Opt out with HOST_OUTFIT=off to use the single legacy .heygen_photo_id.
-    if os.environ.get("HOST_OUTFIT", "on").lower() not in ("off", "0", "no"):
+    # 2026-08-11 (VJ directive): host generations are PINNED to the Ep11 host
+    # (outfit_11_sol_magenta). Random per-episode outfit rotation
+    # (host_outfit.pick_and_register_pool) is HELD until HOST_OUTFIT_POOL=on.
+    #
+    # v16.4 host layout (Short.tsx FramedHost) is a WIDE 16:9 talking-head CARD.
+    # So the framed host clips (host/host2 beats) MUST render 16:9 from the WIDE
+    # avatar (.heygen_photo_id_wide, wide.jpg) — exactly what shipped Ep11 used.
+    # The near-square PIP crop (.heygen_photo_id_pip, cropeed_center_final.jpeg)
+    # is ONLY for the small pipCallout box; feeding it to the host letterboxes +
+    # over-crops the face (the Ep32 regression this fixes). `framed_tid` = the
+    # wide avatar for host beats; `tid` stays the pip for the small box.
+    _o11 = os.path.join(CH, "assets", "character", "host_library", "outfit_11_sol_magenta")
+    _o11_pip = os.path.join(_o11, ".heygen_photo_id_pip")
+    _o11_wide = os.path.join(_o11, ".heygen_photo_id_wide")
+    framed_tid = open(_o11_wide).read().strip() if os.path.exists(_o11_wide) else None
+    _pool_on = os.environ.get("HOST_OUTFIT_POOL", "").lower() in ("on", "1", "yes", "true")
+    if _pool_on and os.environ.get("HOST_OUTFIT", "on").lower() not in ("off", "0", "no"):
         try:
             import host_outfit
-            # v16: register the two-tid POOL (center + 3/4 yaw) so the hook and
-            # the payoff cutaway are shot from different angles. Rendering every
-            # cutaway off one talking photo is the static-avatar tell we're
-            # closing this cycle (Vaibhav-DNA camera-angle parity).
             _outfit, _tids = host_outfit.pick_and_register_pool(ep)
             tid = _tids[0]
             tid_3q = _tids[-1]            # collapses to center if 3q is missing
@@ -1309,10 +1321,17 @@ def build(ep, dry=False, tag="v2", preview=False):
             print(f">> host wardrobe for ep{ep}: {_outfit['name']}  "
                   f"(center {tid[:8]}..., 3q {tid_3q[:8]}...)")
         except Exception as e:
-            print(f"!! host_outfit unavailable ({e}); using global .heygen_photo_id")
-            tid = tid_3q = open(CACHE).read().strip()
+            print(f"!! host_outfit unavailable ({e}); using ep11 pinned host")
+            tid = tid_3q = open(_o11_pip if os.path.exists(_o11_pip) else CACHE).read().strip()
+    elif os.path.exists(_o11_pip):
+        tid = tid_3q = open(_o11_pip).read().strip()   # small pipCallout box only
+        open(os.path.join(A, "host_outfit.txt"), "w").write("outfit_11_sol_magenta (PINNED)\n")
+        print(f">> host PINNED to Ep11 (framed host = WIDE {(framed_tid or '?')[:8]}..., "
+              f"pip box = {tid[:8]}...) — rotation held until HOST_OUTFIT_POOL=on")
     else:
         tid = tid_3q = open(CACHE).read().strip()
+    if not framed_tid:
+        framed_tid = tid   # fallback if the wide-avatar id file is missing
     def host_clip(name, t0, t1, photo=None, aspect="9:16"):
         wav = os.path.join(A, f"{name}.wav"); mp4 = os.path.join(A, f"{name}.mp4")
         # v16: also skip cache when FACTORY_REBUILD_HOSTS is set — lets a shell
@@ -1393,14 +1412,15 @@ def build(ep, dry=False, tag="v2", preview=False):
         for run_idx, (kind, si, sj, t0, t1) in enumerate(host_runs):
             if run_idx == 0 and kind == "host":
                 name = "v2_hook"
-                photo = tid                                      # center on hook
             elif run_idx == len(host_runs) - 1 and kind == "host2":
                 name = "v2_payoff"
-                photo = tid                                      # center on payoff (continuity)
             else:
                 name = f"v2_host_{run_idx:02d}"
-                photo = tid_3q if run_idx % 2 else tid            # alternate yaw
-            host_clip_by_run[(si, sj)] = host_clip(name, t0, t1, photo=photo)
+            # v16.4: the FramedHost card is 16:9, so render the host WIDE from the
+            # wide avatar (framed_tid). No yaw rotation — the wide talking head is
+            # a single premium landscape shot (the Ep11 look), not the old 9:16
+            # portrait pool that letterboxes inside the 16:9 card.
+            host_clip_by_run[(si, sj)] = host_clip(name, t0, t1, photo=framed_tid, aspect="16:9")
         # Preserve names old code paths still expect (segment builder below)
         first_hook = next((k for k in host_clip_by_run
                            if beats[k[0]] == "host"), None)
@@ -1485,6 +1505,13 @@ def build(ep, dry=False, tag="v2", preview=False):
             seg = {"src": f"assets/{src}", "dur": round(dur, 3), "from": float(frm)}
             if news_split and mode:
                 seg["mode"] = mode
+            # v16.5: on an episode whose recording IS the taught content edge to
+            # edge (a comparison table), the default Anton-78 caption at bottom
+            # 21% lands on the cells. cap_low_rec drops every rec beat's running
+            # caption into the low plain strip instead — measured, not guessed
+            # (probe_frames corner on this tape: no corner is clean at bottom).
+            if cfg.get("cap_low_rec"):
+                seg["capLow"] = True
             segments.append(seg)
         elif b.startswith("stat:"):
             # chart beat: locked StatBars comp draws it in-frame at 1080x1920
@@ -1507,7 +1534,7 @@ def build(ep, dry=False, tag="v2", preview=False):
                 "dur": round(dur, 3),
                 "src": f"assets/{p['src']}",
                 "from": float(p.get("from", 0)),
-                "num": str(p["num"]),
+                "num": str(p.get("num", "")),   # optional: single-tip callouts have no rank
                 "lines": p["lines"],
             }
             if mode == "splitWide":
@@ -1557,6 +1584,10 @@ def build(ep, dry=False, tag="v2", preview=False):
         # still win (some hooks need the poster hold). newsSplit stays 2.2.
         "watermark": True,
         "epTag": cfg.get("epTag"),
+        # v16.5: dark scrim under the global header for episodes cut from a LIGHT
+        # recording (claude.ai's cream chat column) — without it the white/magenta
+        # lockup washes out and collides with the app's own header text.
+        "headerScrim": bool(cfg.get("header_scrim")),
     }
     # v16.3: illustration hook opener REPLACES the poster cover on premium
     # episodes (VJ: a title card reads as an intro + gets scrolled past). When

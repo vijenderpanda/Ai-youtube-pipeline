@@ -488,11 +488,35 @@ async function handleGet(url: URL): Promise<Response> {
           if (a.status in c) c[a.status] += 1;
         }
       }
-      // v16: hide direct-mode calendar items that have no assets yet — those
-      // are plain unstarted rows, not in-flight production. Staged items are
-      // included regardless (their plan_assets job creates assets shortly).
+      // v16: a direct-mode item whose produce_preview job is still queued/running
+      // but hasn't pushed its first asset yet must ALSO surface — otherwise the
+      // user clicks "Produce preview" and can't find the in-flight episode in the
+      // Studio list for the first few minutes (the exact confusion this closes).
+      const activeDirect = new Set<string>();
+      const directIds = (items ?? [])
+        .filter((it) => it.production_mode === "direct").map((it) => it.id);
+      if (directIds.length > 0) {
+        const { data: pj, error: pErr } = await db.from("factory_jobs")
+          .select("meta, status").eq("type", "produce_preview")
+          .in("status", ["queued", "running"]);
+        if (pErr) return json({ error: pErr.message }, 500);
+        for (const j of (pj ?? [])) {
+          const cid = (j.meta as Record<string, unknown> | null)?.calendar_id;
+          if (typeof cid === "string" && directIds.includes(cid)) {
+            activeDirect.add(cid);
+            counts[cid] = counts[cid] ?? {
+              total: 0, queued: 0, generating: 0, review: 0, approved: 0, skipped: 0, failed: 0,
+            };
+          }
+        }
+      }
+      // hide direct-mode calendar items that have no assets AND no in-flight
+      // preview job — those are plain unstarted rows, not production. Staged
+      // items are included regardless (their plan_assets job creates assets soon).
       const visibleItems = (items ?? []).filter((it) =>
-        it.production_mode === "staged" || (counts[it.id]?.total ?? 0) > 0
+        it.production_mode === "staged" ||
+        (counts[it.id]?.total ?? 0) > 0 ||
+        activeDirect.has(it.id)
       );
       return json({ items: visibleItems, counts });
     }
@@ -508,7 +532,10 @@ async function handleGet(url: URL): Promise<Response> {
         db.from("factory_assets").select("*").eq("calendar_id", calendarId)
           .order("created_at", { ascending: false }),
         db.from("factory_jobs").select("id, type, status, title, created_at")
-          .in("type", STAGED_JOB_TYPES)
+          // v16: also surface the monolithic preview job + its finalize
+          // (shell_script) job so the direct-mode board can show their status
+          // and gate the Finalize & Arm button.
+          .in("type", [...STAGED_JOB_TYPES, "produce_preview", "shell_script"])
           .eq("meta->>calendar_id", calendarId)
           .order("created_at", { ascending: false }),
       ]);
@@ -1528,6 +1555,135 @@ async function handlePost(body: any): Promise<Response> {
       await logEvent(
         "assembly_queued",
         `Assembly queued for '${item.title}' (${approved} approved asset(s))`,
+        { item_id: calendar_id, job_id: job.id, channel_key: item.channel_key },
+      );
+      return json({ job });
+    }
+
+    // v16: produce a claude-tricks Short via the MONOLITHIC preview path
+    // (build_ep_v2 engine) instead of the generic v9 plan_assets fanout. One
+    // produce_preview job renders an unmastered preview + pushes each asset to
+    // Studio live; the human reviews the preview in the board, then finalizes
+    // (below) to master + arm YouTube. Body: {calendar_id, ep}. `ep` is the
+    // episode key (e.g. "12") — it names channels/claude-tricks/episodes/<ep>.v2.json
+    // and is threaded to finalize via the job's meta so both agree.
+    case "produce_preview": {
+      const { calendar_id } = body;
+      const ep = body.ep === undefined || body.ep === null ? "" : String(body.ep).trim();
+      if (!calendar_id || !UUID_RE.test(String(calendar_id))) {
+        return json({ error: "calendar_id (uuid) required" }, 400);
+      }
+      if (!ep) return json({ error: "ep (episode key, e.g. \"12\") required" }, 400);
+      const { data: item, error: itemErr } = await db.from("factory_calendar")
+        .select("*").eq("id", calendar_id).maybeSingle();
+      if (itemErr) return json({ error: itemErr.message }, 500);
+      if (!item) return json({ error: "calendar item not found" }, 404);
+      if (item.status === "produced") {
+        return json({ error: "calendar item already produced" }, 409);
+      }
+      // one preview at a time per item (a retry after done/failed is fine)
+      const { data: liveJobs, error: ljErr } = await db.from("factory_jobs")
+        .select("id, status").eq("type", "produce_preview")
+        .eq("meta->>calendar_id", calendar_id)
+        .in("status", ["queued", "running"]).limit(1);
+      if (ljErr) return json({ error: ljErr.message }, 500);
+      if (liveJobs && liveJobs.length > 0) {
+        return json({ error: "a preview job for this item is already " + liveJobs[0].status }, 409);
+      }
+      const { data: job, error: jobErr } = await db.from("factory_jobs")
+        .insert({
+          channel_key: item.channel_key,
+          type: "produce_preview",
+          title: "Preview — " + item.title,
+          prompt: item.brief,
+          model: item.model,
+          effort: item.effort,
+          ultracode: item.ultracode,
+          status: "queued",
+          meta: { calendar_id: item.id, ep },
+        })
+        .select().single();
+      if (jobErr) return json({ error: jobErr.message }, 500);
+      // direct mode + queued so the Studio index (?r=staged) surfaces it once
+      // its first asset lands; keep job_id pointing at the preview job.
+      const { data: updated, error: updErr } = await db.from("factory_calendar")
+        .update({ status: "queued", production_mode: "direct", job_id: job.id })
+        .eq("id", calendar_id).select().single();
+      if (updErr) return json({ error: updErr.message }, 500);
+      await logEvent(
+        "preview_queued",
+        `Monolithic preview queued for '${item.title}' (ep ${ep}, ${item.channel_key})`,
+        { item_id: calendar_id, job_id: job.id, channel_key: item.channel_key },
+      );
+      return json({ item: updated, job });
+    }
+
+    // v16: finalize a preview-approved claude-tricks Short — master + LUFS QC +
+    // arm YouTube — by queuing a shell_script job that runs
+    // scripts/finalize_episode.py (deterministic, ~$0 Claude). The ep key is
+    // pulled from the item's produce_preview job so preview + finalize + spec
+    // file all agree. finalize_episode.py writes the scheduled factory_posts row
+    // and flips this item to 'produced' itself (via --calendar-id). Body:
+    // {calendar_id, schedule} where schedule is an ISO-8601 UTC publish time.
+    case "finalize_episode": {
+      const { calendar_id, schedule } = body;
+      if (!calendar_id || !UUID_RE.test(String(calendar_id))) {
+        return json({ error: "calendar_id (uuid) required" }, 400);
+      }
+      const when = new Date(String(schedule ?? ""));
+      if (!schedule || isNaN(when.getTime())) {
+        return json({ error: "schedule (ISO-8601 UTC publish time) required" }, 400);
+      }
+      if (when.getTime() <= Date.now()) {
+        return json({ error: "schedule must be in the future" }, 400);
+      }
+      const { data: item, error: itemErr } = await db.from("factory_calendar")
+        .select("*").eq("id", calendar_id).maybeSingle();
+      if (itemErr) return json({ error: itemErr.message }, 500);
+      if (!item) return json({ error: "calendar item not found" }, 404);
+      // ep key comes from the produce_preview job (newest for this item)
+      const { data: pvJobs, error: pvErr } = await db.from("factory_jobs")
+        .select("id, meta, status, created_at").eq("type", "produce_preview")
+        .eq("meta->>calendar_id", calendar_id)
+        .order("created_at", { ascending: false }).limit(1);
+      if (pvErr) return json({ error: pvErr.message }, 500);
+      const ep = pvJobs && pvJobs.length ? String((pvJobs[0].meta as Record<string, unknown> | null)?.ep ?? "").trim() : "";
+      if (!ep) {
+        return json({ error: "no produce_preview job with an ep key for this item — produce a preview first" }, 409);
+      }
+      // one finalize in flight per item
+      const { data: liveFin, error: lfErr } = await db.from("factory_jobs")
+        .select("id, status").eq("type", "shell_script")
+        .eq("meta->>calendar_id", calendar_id)
+        .in("status", ["queued", "running"]).limit(1);
+      if (lfErr) return json({ error: lfErr.message }, 500);
+      if (liveFin && liveFin.length > 0) {
+        return json({ error: "a finalize job for this item is already " + liveFin[0].status }, 409);
+      }
+      const scheduleIso = when.toISOString().replace(/\.\d{3}Z$/, "Z"); // RFC3339 UTC
+      const { data: job, error: jobErr } = await db.from("factory_jobs")
+        .insert({
+          channel_key: item.channel_key,
+          type: "shell_script",
+          title: "Finalize & arm — " + item.title,
+          status: "queued",
+          meta: {
+            calendar_id,
+            ep,
+            script_path: "scripts/finalize_episode.py",
+            script_args: [
+              "--ep", ep,
+              "--tag", "v2",
+              "--schedule", scheduleIso,
+              "--calendar-id", calendar_id,
+            ],
+          },
+        })
+        .select().single();
+      if (jobErr) return json({ error: jobErr.message }, 500);
+      await logEvent(
+        "finalize_queued",
+        `Finalize + arm queued for '${item.title}' (ep ${ep}, publish ${scheduleIso})`,
         { item_id: calendar_id, job_id: job.id, channel_key: item.channel_key },
       );
       return json({ job });

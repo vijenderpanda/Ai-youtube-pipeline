@@ -98,7 +98,7 @@ SITES = {
     "duckai":     {"url": "https://duck.ai", "input": "textarea", "submit": "button[type=submit]"},
     "perplexity": {"url": "https://www.perplexity.ai", "input": "textarea, div[contenteditable=true]", "submit": "button[aria-label*='Submit']"},
     "chatgpt":    {"url": "https://chatgpt.com", "input": "#prompt-textarea, textarea", "submit": "[data-testid='send-button'], button[aria-label*='Send']", "profile": True},
-    "claude":     {"url": "https://claude.ai/new", "input": "div[contenteditable=true]", "submit": "button[aria-label*='Send']", "profile": True},
+    "claude":     {"url": "https://claude.ai/new", "input": "div[contenteditable=true]", "submit": "button[aria-label='Send message'], button[aria-label*='Send']", "profile": True},
     "gemini":     {"url": "https://gemini.google.com/app", "input": "div[contenteditable=true]", "submit": "button[aria-label*='Send']", "profile": True},
 }
 
@@ -112,6 +112,7 @@ MOBILE_UA = ("Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) "
 # [data-message-author-role="assistant"] matches NOTHING on mobile web, so a
 # check written against it alone silently never fires and reports "no answer".
 ANSWER_SELECTORS = [
+    ".font-claude-response",                             # claude.ai (2026-08)
     'li[data-message-role="assistant"] [data-assistant-markdown]',
     'li[data-message-role="assistant"]',
     '[data-message-author-role="assistant"]',
@@ -239,9 +240,16 @@ def redact_pii(page):
     because its click path walks THROUGH the profile menu; a prompt->answer
     take never opens it, so a sweep plus standing CSS is enough here.
     """
+    # 2026-08-11: claude.ai chat links moved to /chat/ + /code/ (were /c/) and the
+    # account row is now [data-testid='user-menu-button'] (was accounts-profile-button)
+    # -- the old two selectors matched NOTHING, so the recents sidebar leaked real
+    # personal chat titles on camera. Blur every recents surface + the account row;
+    # the demo runs in the main column so this never touches the taught content.
     page.add_style_tag(content="""
-      a[href^='/c/'] { filter: blur(7px) !important; }
-      [data-testid='accounts-profile-button'] { filter: blur(7px) !important; }
+      a[href^='/c/'], a[href^='/chat/'], a[href^='/code/'] { filter: blur(7px) !important; }
+      [data-row-main-button], [aria-label^='More options for'] { filter: blur(7px) !important; }
+      .dframe-recents-by-mode, .df-recents-anchor, [class*='recents'] { filter: blur(8px) !important; }
+      [data-testid='accounts-profile-button'], [data-testid='user-menu-button'] { filter: blur(7px) !important; }
     """)
     return page.evaluate("""() => {
       const rx = /[\\w.+-]+@[\\w-]+\\.[\\w.]+/;
@@ -483,11 +491,37 @@ def record(url, input_sel, prompt, out, wait_after=14, pre_wait=4, profile=None,
             human_type(el, text)
             tl[pre + "typing_end"] = mark()
             time.sleep(0.6)
-            if submit_sel and page.locator(submit_sel).first.is_visible():
-                page.locator(submit_sel).first.click()
-            else:
+            # Submit: prefer the VISIBLE send button (claude.ai keeps hidden
+            # duplicates in the DOM, so a bare .first can resolve to an invisible
+            # one and silently fall through to Enter — which does NOT send on the
+            # current claude.ai build, leaving the prompt stuck in the composer).
+            _sb = page.locator(submit_sel).locator("visible=true").first if submit_sel else None
+            _clicked = False
+            if _sb is not None:
+                try:
+                    if _sb.count() and _sb.is_visible():
+                        _sb.click()
+                        _clicked = True
+                except Exception:
+                    _clicked = False
+            if not _clicked:
                 page.keyboard.press("Enter")
             tl[pre + "submit"] = mark()
+            # Verify the send actually fired (composer emptied / navigation);
+            # if not, fall back to the other method once before giving up.
+            time.sleep(0.8)
+            try:
+                still = (el.inner_text(timeout=500) or "").strip()
+            except Exception:
+                still = ""
+            if still and text[:12] in still:
+                if _clicked:
+                    page.keyboard.press("Enter")
+                elif _sb is not None and _sb.count():
+                    try:
+                        _sb.click()
+                    except Exception:
+                        pass
             time.sleep(2)
             assert_not_login_wall(page, "after submit")  # some sites gate on send
             dismiss_popups()

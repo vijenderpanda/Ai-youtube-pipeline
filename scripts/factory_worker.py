@@ -219,6 +219,7 @@ UPLOAD_DEFAULTS = {
     "vehicles":      {"audience": "kids",       "synthetic": False, "token_file": "token_vehicles.json"},
     "claude-tricks": {"audience": "notForKids", "synthetic": True,  "token_file": "token_claude-tricks.json"},
     "aashiqana":     {"audience": "notForKids", "synthetic": True,  "token_file": "token_aashiqana.json"},
+    "already-happening": {"audience": "notForKids", "synthetic": True,  "token_file": "token_already-happening.json"},
 }
 
 # v2: history.csv stores DISPLAY channel names; map (case-insensitive substring)
@@ -229,6 +230,7 @@ DISPLAY_MAP = [
     (("rumble", "truck", "vehicle"), "vehicles"),
     (("aashiqana",), "aashiqana"),
     (("language", "abc", "poly"), "language-abc"),
+    (("already happening",), "already-happening"),
 ]
 
 MISSING_KEY_MSG = f"""
@@ -261,6 +263,9 @@ CHANNEL_SEED = [
     {"key": "language-abc", "name": "Poly",
      "niche": "multilingual early-learning", "accent": "teal",
      "match": "language-abc"},
+    {"key": "already-happening", "name": "Already Happening",
+     "niche": "cinematic near-future AI Shorts grounded in what's real today", "accent": "#22D3EE",
+     "match": "already-happening"},
 ]
 
 # ---------------------------------------------------------------- env / config
@@ -601,20 +606,37 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
             "1. PLAN CHECK: the brief above is a locked plan. If it does NOT already "
             "include a title, hook, beats, VO lines, wardrobe pick, and thumbnail "
             "concept, STOP and write manifest with an error — do not fabricate a plan.\n"
-            "2. HOST POOL: run `python3 scripts/host_outfit.py --register-pool <ep_key>` "
-            "to get both center + 3/4 talking-photo IDs. Alternate between them "
-            "across cutaway beats — DO NOT use only center (that's the tell we're "
-            "fixing this cycle).\n"
+            "2. HOST: the host is PINNED to the Ep11 host (outfit_11_sol_magenta) by "
+            "build_ep_v2.py automatically — do NOT register an outfit pool and do NOT "
+            "pick a random outfit folder (that rotation is HELD per owner directive "
+            "2026-08-11; it re-enables via HOST_OUTFIT_POOL=on). Every host cutaway "
+            "is the Ep11 magenta Sol; you do not choose wardrobe.\n"
             "3. GENERATE ASSETS in order. After EACH asset lands on disk, call "
             f"`python3 scripts/push_asset.py --calendar-id {cal_id} "
             "--asset-key <slug> --file <path> --kind <image|video|audio|text> "
             "--group <thumbnail|scene|clip|audio|overlay|other>` so Studio's "
             "filmstrip populates live during your session. Assets that don't "
             "get pushed are invisible to the reviewer.\n"
-            "4. WRITE SPEC at channels/claude-tricks/episodes/<ep_key>.v2.json in "
-            "the schema build_ep_v2.py accepts (EPISODES_V2 dict shape: title, tags, "
-            "cover, lines, hot_words, beats, steps, music, endcard, outro). Use a "
-            "recent shipped episode as a template.\n"
+            "4. WRITE SPEC at channels/claude-tricks/episodes/<ep_key>.v2.json. "
+            "TEMPLATE STRICTLY from channels/claude-tricks/episodes/11.v2.json — the "
+            "LOCKED v16.4 standard. Copy its structure; change ONLY the content "
+            "(title, tags, epTag, lines, hot_words, and the demo). Do NOT drift to "
+            "ep10/older templates. INVARIANTS:\n"
+            "   - Opener: a `hook` block (illustration image + lines + hot + kicker), "
+            "NEVER a `cover` title card (cover reads as an intro and gets scrolled "
+            "past). If no hook illustration exists, generate one (in-house PIL/mock) "
+            "— do not fall back to `cover`.\n"
+            "   - `steps`: [] (EMPTY, no step chips) UNLESS this is a ranked countdown.\n"
+            "   - RANKING: only a RANKED-COUNTDOWN episode (multiple numbered items) "
+            "uses `pip:` beats each carrying a `num` (06..01) — that is what shows the "
+            "header ranking rail. A SINGLE-TIP / how-to episode (most episodes) has NO "
+            "`num` anywhere and uses ONE `rec:<demo>@<t>` demo beat; the rail then "
+            "auto-hides (Short.tsx gates it on `num` presence).\n"
+            "   - Host beats stay `host`/`host2`; build renders them WIDE 16:9 from the "
+            "pinned Ep11 wide avatar — do NOT set a host photo or use the pip crop.\n"
+            "   - Keep `music: music/bed_active.mp3`. Set header_scrim/cap_low_rec ONLY "
+            "when the demo recording is a LIGHT/full-frame screen (then both are correct "
+            "— they keep the header legible + captions off the content).\n"
             "5. PREVIEW RENDER: run `python3 channels/claude-tricks/build_ep_v2.py "
             "--ep <ep_key> --preview --tag prev`. This produces "
             "channels/claude-tricks/renders/ep<ep_key>_prev_raw.mp4 — 1080x1920, "
@@ -1187,7 +1209,12 @@ def upload_manifest_files(supa, job, manifest):
                     log(f"  credited {len(contribs)} contributor(s) for {p.name}")
                 except (RuntimeError, requests.RequestException) as e:
                     log(f"  contributor insert failed for {p.name}: {e}")
-            if kind == "video":
+            # v16 gap-2: a produce_preview job's video IS the unmastered preview
+            # raw — it must reach Studio as a render (above) but must NEVER become
+            # an armable factory_posts row (arming it would publish the unmastered
+            # cut). The mastered master + its scheduled post come later, from
+            # scripts/finalize_episode.py. So skip drafting a post for previews.
+            if kind == "video" and job.get("type") != "produce_preview":
                 drafts += make_post_draft(supa, job, entry, p, channel_key, render_id)
         except (RuntimeError, requests.RequestException, OSError) as e:
             log(f"  upload failed for {entry}: {e}")
@@ -2267,6 +2294,65 @@ def finish_preview_episode(supa, job, buf):
     return {"summary": out.get("summary") or "", "preview_path": storage}
 
 
+def stamp_preview_from_render(supa, job, buf):
+    """v16: a produce_preview job uploads its unmastered preview MP4 as a
+    factory_render (public URL) but drafts NO post (gap-2 suppression). So the
+    reviewer can WATCH it, copy that render's storage_path onto the calendar's
+    preview_path/preview_at -- the exact field StudioBoard's program monitor
+    renders (<video src=RENDERS_BASE+preview_path>). Best-effort; a failure here
+    never fails the job (the render is still on the Renders page)."""
+    cal_id = (job.get("meta") or {}).get("calendar_id")
+    if not cal_id:
+        buf.add("[worker] note: produce_preview job has no meta.calendar_id -- "
+                "preview not stamped (Studio review needs the calendar link)")
+        return
+    try:
+        rows = supa.select(
+            "factory_renders",
+            f"job_id=eq.{job['id']}&kind=eq.video"
+            "&select=storage_path,filename,created_at&order=created_at.desc")
+    except (RuntimeError, requests.RequestException) as e:
+        buf.add(f"[worker] WARNING: could not read preview render to stamp: {e}")
+        return
+    if not rows:
+        buf.add("[worker] note: produce_preview had no video render to stamp")
+        return
+    # prefer a filename that looks like the preview raw (ep<ep>_prev_raw.mp4)
+    pick = next((r for r in rows if "prev" in (r.get("filename") or "").lower()), rows[0])
+    storage = pick.get("storage_path")
+    if not storage:
+        return
+    # v16: the produce_preview session picks its OWN ep key (it avoids colliding
+    # with already-shipped episodes, e.g. asked for ep12 but used ep31). meta.ep
+    # set at trigger time can therefore be stale, and finalize_episode reads it to
+    # build --ep. So learn the ACTUAL ep from the preview filename and write it
+    # back, keeping finalize in sync no matter what the session chose.
+    m = re.search(r"ep(\d+)_", pick.get("filename") or "")
+    if m:
+        actual_ep = m.group(1)
+        meta = dict(job.get("meta") or {})
+        if str(meta.get("ep") or "") != actual_ep:
+            meta["ep"] = actual_ep
+            try:
+                supa.patch("factory_jobs", f"id=eq.{job['id']}", {"meta": meta})
+                buf.add(f"[worker] corrected job meta.ep -> {actual_ep} "
+                        f"(session's real ep, from {pick.get('filename')})")
+            except (RuntimeError, requests.RequestException) as e:
+                buf.add(f"[worker] WARNING: could not correct meta.ep: {e}")
+    try:
+        supa.patch("factory_calendar", f"id=eq.{cal_id}",
+                   {"preview_path": storage, "preview_at": now_iso()})
+        supa.insert("factory_events", [{
+            "kind": "preview_ready",
+            "message": f"produce_preview draft ready ({pick.get('filename')})",
+            "meta": {"job_id": job["id"], "calendar_id": cal_id,
+                     "channel_key": job.get("channel_key")},
+        }])
+        buf.add(f"[worker] stamped calendar {cal_id[:8]} preview_path <- {storage}")
+    except (RuntimeError, requests.RequestException) as e:
+        buf.add(f"[worker] WARNING: could not stamp preview_path: {e}")
+
+
 # ---------------------------------------------------------------- v4: post publisher
 
 
@@ -3315,6 +3401,10 @@ def run_job(supa, job):
             summary = manifest.get("summary") or "(no summary in manifest)"
             recap = sanitize_recap(manifest.get("recap"))  # v6: run wrote its own recap
             uploaded, drafts = upload_manifest_files(supa, job, manifest)
+            # v16: make the produce_preview raw watchable in the Studio program
+            # monitor (it drafts no post, so preview_path is its only review hook).
+            if job.get("type") == "produce_preview":
+                stamp_preview_from_render(supa, job, buf)
         else:
             summary = "completed, but no manifest was written (nothing uploaded)"
             buf.add(f"[worker] note: no manifest at {mpath}")
@@ -3358,7 +3448,12 @@ def run_job(supa, job):
     # happens at assembly completion, keyed explicitly by meta.calendar_id.
     if job.get("type") == "assemble_episode":
         mark_calendar_produced_by_id(supa, (job.get("meta") or {}).get("calendar_id"))
-    elif job.get("type") not in ("plan_assets", "generate_asset", "preview_episode"):
+    elif job.get("type") not in ("plan_assets", "generate_asset", "preview_episode",
+                                 "produce_preview"):
+        # v16: produce_preview is only a PREVIEW — calendar.job_id points at it, but
+        # the episode is not 'produced' until scripts/finalize_episode.py masters +
+        # arms it (finalize flips the item to produced itself, via --calendar-id).
+        # Flipping here would falsely mark a preview-only (or QC-blocked) item done.
         mark_calendar_produced(supa, job_id)
     log(f"job {job_id} done, uploaded={uploaded}")
 

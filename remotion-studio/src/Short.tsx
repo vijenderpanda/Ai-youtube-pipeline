@@ -44,6 +44,13 @@ export type Seg = {
   hostZoom?: number;  // v16.2: scale inside the framed host card (default 1.0)
   hostLines?: string[]; // v16.3: static key line filling the framed-host "THE IDEA" panel (2-3 short lines)
   hostHot?: string;     // v16.3: the word within hostLines to accent magenta
+  /* v16.5: the default rec caption is Anton 78px at bottom 21% (~y1517), which
+     lands squarely on the lower rows of a full-frame recording. On a beat whose
+     WHOLE FRAME is the taught content (a comparison table), that breaks the
+     "captions live in dead space, never on the content" rule. `capLow` moves the
+     running caption to the small plain strip at the very bottom of the frame —
+     over the composer/disclaimer chrome, never over a cell. */
+  capLow?: boolean;
 };
 /* pos: which corner the chip lives in — pick the one with dead space so the
    chip NEVER covers the content the beat is teaching (default tl).
@@ -65,6 +72,13 @@ export type ShortProps = {
   vo: string;
   music?: string;
   musicGain?: number;
+  /* v16.5 (VJ 2026-08-11): true only for ranked-countdown episodes. Gates the
+     FramedHost "#06→#01" rail so single-tip / how-to episodes show no ranking.
+     Omitted => inferred from whether any beat carries a `num`. */
+  ranked?: boolean;
+  /* v16.5: dark gradient under the global header — see GlobalHeader. Set it on
+     episodes cut from a LIGHT recording, where the lockup otherwise washes out. */
+  headerScrim?: boolean;
   /* title2 optional: a lazy payload may send the whole hook as one long title1 —
      Cover auto-splits it into the mandatory two-line stack (see Cover below). */
   cover?: {
@@ -76,6 +90,17 @@ export type ShortProps = {
     /* v16 premium cover: opt-in overrides for bigger, centered title */
     bigTitle?: number;      // absolute font-size override for title1
     centerTitle?: boolean;  // horizontally center the type stack instead of left-anchoring
+    /* v16.5 FRAME-ZERO BAKE (publish blocker, Ep 11 QC). The type-on reveal
+       starts title1 at zero characters and springs the stack up from +70px, so
+       frame 0 — the Shorts feed thumbnail — shipped BLANK. `baked: true` renders
+       the finished poster at frame 0: full title text, full chip, no slide, no
+       caret. probe_frames then reads the whole title at full opacity on frame 0.
+       Opt-in, so every already-shipped episode still rebuilds byte-identical. */
+    baked?: boolean;
+    /* v16.5: override the locked yellow title2 chip (e.g. channel magenta).
+       Opt-in — omitted, the chip stays #FFD60A as every shipped cover has it. */
+    chipColor?: string;
+    chipInk?: string;
   };
   /* v16.3 hook opener — an illustration-based scroll-stopper that REPLACES the
      static poster cover for premium episodes (VJ: a title card reads as an
@@ -298,8 +323,9 @@ export const Cover: React.FC<{ c: NonNullable<ShortProps["cover"]>; fps: number 
       })
     : 1;
   const opacity = fadeOut * peekDip;
+  const baked = c.baked === true;
   const intro = spring({ frame, fps, config: { damping: 14, mass: 0.6 } });
-  const slide = interpolate(intro, [0, 1], [70, 0]);
+  const slide = baked ? 0 : interpolate(intro, [0, 1], [70, 0]);
   const slant = "perspective(900px) rotateY(-4deg) rotateZ(-3deg) skewY(-1deg)";
 
   /* enforce the two-line stack */
@@ -325,14 +351,16 @@ export const Cover: React.FC<{ c: NonNullable<ShortProps["cover"]>; fps: number 
   const CHAR_F = 1.7;                       // frames per character
   const t1Start = 5;
   const t1End = t1Start + line1.length * CHAR_F;
-  const shown1 = line1.slice(0, Math.max(0, Math.min(line1.length, Math.floor((frame - t1Start) / CHAR_F))));
-  const caretOn = frame < t1End && Math.floor(frame / 6) % 2 === 0;
+  const shown1 = baked
+    ? line1
+    : line1.slice(0, Math.max(0, Math.min(line1.length, Math.floor((frame - t1Start) / CHAR_F))));
+  const caretOn = !baked && frame < t1End && Math.floor(frame / 6) % 2 === 0;
   const t2Start = t1End + 4;
   const chipSpring = spring({ frame: frame - t2Start, fps, config: { damping: 13, mass: 0.5 } });
-  const chipScale = interpolate(chipSpring, [0, 1], [0.7, 1]);
-  const chipOpacity = interpolate(frame, [t2Start, t2Start + 3], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const chipScale = baked ? 1 : interpolate(chipSpring, [0, 1], [0.7, 1]);
+  const chipOpacity = baked ? 1 : interpolate(frame, [t2Start, t2Start + 3], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const subStart = t2Start + 10;
-  const subOpacity = interpolate(frame, [subStart, subStart + 8], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const subOpacity = baked ? 1 : interpolate(frame, [subStart, subStart + 8], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   return (
     <AbsoluteFill style={{ opacity }}>
@@ -388,8 +416,8 @@ export const Cover: React.FC<{ c: NonNullable<ShortProps["cover"]>; fps: number 
               display: "inline-block",
               marginTop: 34,
               padding: "10px 34px 16px",
-              background: "#FFD60A",
-              color: "#100C16",
+              background: c.chipColor ?? "#FFD60A",
+              color: c.chipInk ?? "#100C16",
               fontSize: f2,
               lineHeight: 1.0,
               borderRadius: 20,
@@ -499,7 +527,7 @@ const Vignette: React.FC = () => (
 const FH_RAIL = ["06", "05", "04", "03", "02", "01"];
 const FH_CARD_W = 1000;
 const FH_CARD_H = Math.round((FH_CARD_W * 9) / 16); // 562 — exact 16:9, zero crop
-const FramedHost: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
+const FramedHost: React.FC<{ seg: Seg; fps: number; ranked?: boolean }> = ({ seg, fps, ranked }) => {
   const frame = useCurrentFrame();
   const f = floatY(frame, fps, 6, 3.8, 0);
   const cardLeft = Math.round((1080 - FH_CARD_W) / 2); // 40
@@ -509,12 +537,16 @@ const FramedHost: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
 
       {/* HEADER is now the global lockup (rendered once at the top level). */}
 
-      {/* RAIL — ranked countdown tease */}
-      <div style={{ position: "absolute", top: 168, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 14 }}>
-        {FH_RAIL.map((n) => (
-          <div key={n} style={{ width: 116, height: 56, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontWeight: 900, fontSize: 38, border: "1.5px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.04)", color: "#9A94A4" }}>#{n}</div>
-        ))}
-      </div>
+      {/* RAIL — ranked countdown tease. VJ 2026-08-11: shown ONLY on ranked
+          episodes; a single-tip / how-to episode passes ranked=false and the
+          host beat carries no ranking rail. */}
+      {ranked && (
+        <div style={{ position: "absolute", top: 168, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 14 }}>
+          {FH_RAIL.map((n) => (
+            <div key={n} style={{ width: 116, height: 56, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontWeight: 900, fontSize: 38, border: "1.5px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.04)", color: "#9A94A4" }}>#{n}</div>
+          ))}
+        </div>
+      )}
 
       {/* HOST — wide 16:9 card, uncropped, floating */}
       <div style={{ position: "absolute", left: cardLeft, top: 262, width: FH_CARD_W, height: FH_CARD_H, transform: `translateY(${f}px)`, borderRadius: 28, overflow: "hidden", border: "1.5px solid rgba(255,255,255,0.12)", boxShadow: "0 40px 96px rgba(0,0,0,0.6), 0 8px 44px rgba(224,33,138,0.14)", background: INK }}>
@@ -736,11 +768,14 @@ const SplitWide: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
         </div>
         <div style={{ minWidth: 0, flex: 1, height: HOST_H, display: "flex", flexDirection: "column", justifyContent: "center", gap: 14, transform: `translateY(${numF}px)` }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 18, flexWrap: "wrap" }}>
-            <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontWeight: 900, fontSize: 132, lineHeight: 0.85, letterSpacing: -3, textShadow: "0 6px 26px rgba(0,0,0,0.6)" }}>
-              <span style={{ color: "white" }}>#</span>
-              <span style={{ color: ACCENT }}>{numRaw}</span>
-            </div>
-            {lines[0] ? <div style={{ fontFamily: '"SF Mono", ui-monospace, Menlo, monospace', fontWeight: 700, fontSize: 44, color: ACCENT, textShadow: "0 2px 14px rgba(0,0,0,0.85)" }}>{lines[0]}</div> : null}
+            {/* #NN only on RANKED episodes; single-tip callouts lead with the label */}
+            {numRaw ? (
+              <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontWeight: 900, fontSize: 132, lineHeight: 0.85, letterSpacing: -3, textShadow: "0 6px 26px rgba(0,0,0,0.6)" }}>
+                <span style={{ color: "white" }}>#</span>
+                <span style={{ color: ACCENT }}>{numRaw}</span>
+              </div>
+            ) : null}
+            {lines[0] ? <div style={{ fontFamily: '"SF Mono", ui-monospace, Menlo, monospace', fontWeight: 800, fontSize: numRaw ? 44 : 52, letterSpacing: numRaw ? 0 : 1, color: ACCENT, textShadow: "0 2px 14px rgba(0,0,0,0.85)" }}>{lines[0]}</div> : null}
           </div>
           <div style={{ fontWeight: 700, fontSize: 40, lineHeight: 1.16, color: "#F3F4F8", textShadow: "0 2px 12px rgba(0,0,0,0.85)" }}>
             {lines.slice(1).map((ln, i) => (<div key={i}>{ln}</div>))}
@@ -781,10 +816,13 @@ const RecFull: React.FC<{ seg: Seg; fps: number }> = ({ seg, fps }) => {
       </div>
       {/* #NN + /command + description — compact band below the tall recording */}
       <div style={{ position: "absolute", left: 60, right: 60, top: 1528, bottom: 172, display: "flex", alignItems: "center", gap: 28, transform: `translateY(${rise}px)`, opacity: fade }}>
-        <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontWeight: 900, fontSize: 118, lineHeight: 0.85, letterSpacing: -3, transform: `translateY(${numF}px)`, textShadow: "0 6px 26px rgba(0,0,0,0.6)" }}>
-          <span style={{ color: "white" }}>#</span>
-          <span style={{ color: ACCENT }}>{numRaw}</span>
-        </div>
+        {/* #NN only on RANKED episodes; single-tip callouts show just the label + line */}
+        {numRaw ? (
+          <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontWeight: 900, fontSize: 118, lineHeight: 0.85, letterSpacing: -3, transform: `translateY(${numF}px)`, textShadow: "0 6px 26px rgba(0,0,0,0.6)" }}>
+            <span style={{ color: "white" }}>#</span>
+            <span style={{ color: ACCENT }}>{numRaw}</span>
+          </div>
+        ) : null}
         <div style={{ minWidth: 0, flex: 1 }}>
           {lines[0] ? <div style={{ fontFamily: '"SF Mono", ui-monospace, Menlo, monospace', fontWeight: 700, fontSize: 42, color: ACCENT, textShadow: "0 2px 14px rgba(0,0,0,0.85)" }}>{lines[0]}</div> : null}
           <div style={{ marginTop: 4, fontWeight: 700, fontSize: 36, lineHeight: 1.14, color: "#F3F4F8", textShadow: "0 2px 12px rgba(0,0,0,0.85)" }}>
@@ -834,7 +872,17 @@ export const Watermark: React.FC<{ startF?: number }> = ({ startF = 0 }) => {
 /* ---------- global header (v16.4) — ONE brand+episode lockup shown on every
    beat (host / split / recording), so branding is consistent and the episode is
    findable. Replaces the per-beat framed header + corner watermark. */
-export const GlobalHeader: React.FC<{ epTag?: string }> = ({ epTag }) => (
+/* v16.5 `scrim`: the header is white/magenta type with a soft drop shadow, which
+   reads on the dark terminal captures this channel has always cut. On a LIGHT
+   recording (claude.ai's cream chat column, Ep 32) it washes out completely and
+   collides with the app's own header text. `scrim` lays a short dark gradient
+   under it so the lockup stays legible on any tape. Opt-in per episode, so the
+   shipped dark-capture episodes rebuild unchanged. */
+export const GlobalHeader: React.FC<{ epTag?: string; scrim?: boolean }> = ({ epTag, scrim }) => (
+  <>
+  {scrim ? (
+    <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 210, background: "linear-gradient(180deg, rgba(8,6,12,0.82) 0%, rgba(8,6,12,0.55) 52%, rgba(8,6,12,0) 100%)", pointerEvents: "none" }} />
+  ) : null}
   <div style={{ position: "absolute", top: 40, left: 0, right: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 8, fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
     <div style={{ fontFamily: "Anton, Arial Black, sans-serif", fontSize: 46, letterSpacing: 2, textTransform: "uppercase", lineHeight: 1, textShadow: "0 2px 12px rgba(0,0,0,0.7)" }}>
       <span style={{ color: "white" }}>AI </span>
@@ -849,6 +897,7 @@ export const GlobalHeader: React.FC<{ epTag?: string }> = ({ epTag }) => (
       </div>
     ) : null}
   </div>
+  </>
 );
 
 /* ---------- hook opener (v16.3) — illustration + promise, replaces the poster
@@ -926,11 +975,20 @@ export const Short: React.FC<ShortProps> = (props) => {
   // caption drops into the footer band and the corner watermark is suppressed
   // (the header IS the brand lockup on these beats).
   const activeIsFramed = !news && props.segments[Math.max(activeIdx, 0)]?.framed === true;
+  // v16.5: beat opts its running caption out of the 78px bottom-third band and
+  // into the low plain strip, because its whole frame is taught content.
+  const activeCapLow = props.segments[Math.max(activeIdx, 0)]?.capLow === true;
+  // v16.5 (VJ 2026-08-11): the FramedHost "#06→#01" ranked-countdown RAIL must
+  // appear ONLY on ranked-countdown episodes. Infer "ranked" from the presence of
+  // any numbered callout beat (pip/split/recFull carry a `num`); a single-tip /
+  // how-to episode has none, so its host beats show no ranking rail. An explicit
+  // props.ranked wins if the build sets it.
+  const ranked = props.ranked ?? props.segments.some((s) => !!s.num);
   // words spoken within the active beat — drives the rolling caption on framed
   // (panel) AND split/recording (bottom strip) beats, so captions run everywhere.
   const beatStart = segStarts[Math.max(activeIdx, 0)];
   const beatDur = props.segments[Math.max(activeIdx, 0)]?.dur ?? 0;
-  const beatWords = (activeIsFramed || activeIsSplit)
+  const beatWords = (activeIsFramed || activeIsSplit || activeCapLow)
     ? props.captions.filter((w) => w.start >= beatStart - 1e-3 && w.start < beatStart + beatDur)
     : [];
   const paneFor = (mode: NonNullable<Seg["mode"]>): React.CSSProperties =>
@@ -961,7 +1019,7 @@ export const Short: React.FC<ShortProps> = (props) => {
               ) : seg.kind === "recFull" ? (
                 <RecFull seg={seg} fps={fps} />
               ) : seg.framed && !news ? (
-                <FramedHost seg={seg} fps={fps} />
+                <FramedHost seg={seg} fps={fps} ranked={ranked} />
               ) : seg.kind === "statBars" && seg.stat ? (
                 <StatBars {...seg.stat} />
               ) : seg.kind === "image" ? (
@@ -1031,7 +1089,7 @@ export const Short: React.FC<ShortProps> = (props) => {
           the current phrase), so it is NOT gated behind an active word. */}
       {activeIsFramed ? (
         <PanelCaption words={beatWords} t={t} />
-      ) : activeIsSplit ? (
+      ) : activeIsSplit || activeCapLow ? (
         // v16.4: split/recording beats get the running VO caption as a small,
         // sentence-case strip low on the frame (VJ: captions on every frame,
         // smaller + not all-caps here so it doesn't fight the #NN callout/desc).
@@ -1052,7 +1110,7 @@ export const Short: React.FC<ShortProps> = (props) => {
       ) : null}
       {/* v16.4: ONE consistent global header on every beat (brand + episode tag),
           rendered last so it sits above all beat layouts incl. the hook. */}
-      {props.watermark !== false ? <GlobalHeader epTag={props.epTag} /> : null}
+      {props.watermark !== false ? <GlobalHeader epTag={props.epTag} scrim={props.headerScrim} /> : null}
 
       <Audio src={res(props.vo)} />
       {props.music ? <Audio src={res(props.music)} volume={musicVol} loop /> : null}

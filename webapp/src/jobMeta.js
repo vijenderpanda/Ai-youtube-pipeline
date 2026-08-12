@@ -22,6 +22,9 @@ export const TYPE_LABELS = {
   plan_assets: 'Plan assets',
   generate_asset: 'Generate asset',
   assemble_episode: 'Assemble episode',
+  preview_episode: 'Draft preview',
+  produce_preview: 'Produce preview (v16)',
+  shell_script: 'Finalize / script',
 }
 
 export function typeLabel(t) {
