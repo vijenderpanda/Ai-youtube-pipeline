@@ -62,7 +62,7 @@ const POST_PATCH_FIELDS = [
 ];
 // v7: + control, heartbeat_at (job-control: stop requests + worker liveness)
 const JOB_LIST_COLS =
-  "id, channel_key, type, title, prompt, model, effort, status, result, error, created_at, started_at, finished_at, control, heartbeat_at, assigned_worker, target_worker";
+  "id, channel_key, type, title, prompt, model, effort, status, result, meta, error, created_at, started_at, finished_at, control, heartbeat_at, assigned_worker, target_worker";
 
 const db = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -1693,6 +1693,13 @@ async function handlePost(body: any): Promise<Response> {
         .select("*").eq("id", calendar_id).maybeSingle();
       if (itemErr) return json({ error: itemErr.message }, 500);
       if (!item) return json({ error: "calendar item not found" }, 404);
+      // no YouTube arm while the channel is still incubating — lock the baseline first
+      const { data: finCh, error: finChErr } = await db.from("factory_channels")
+        .select("lifecycle").eq("key", item.channel_key).maybeSingle();
+      if (finChErr) return json({ error: finChErr.message }, 500);
+      if (finCh?.lifecycle === "incubating") {
+        return json({ error: "this channel is incubating — lock the baseline before scheduling on YouTube" }, 409);
+      }
       // ep key comes from the produce_preview job (newest for this item)
       const { data: pvJobs, error: pvErr } = await db.from("factory_jobs")
         .select("id, meta, status, created_at").eq("type", "produce_preview")
@@ -1767,6 +1774,19 @@ async function handlePost(body: any): Promise<Response> {
       if (!channel_key) return json({ error: "channel_key required" }, 400);
       if (!title) return json({ error: "title required" }, 400);
       if (!brief) return json({ error: "brief required" }, 400);
+      // Incubation: while a channel is incubating the ONLY production is its Ep01
+      // TEMP (refined via revise_preview, frozen via lock_baseline). A fresh
+      // produce is blocked EXCEPT the incubation Ep01 itself (body.incubation),
+      // which the app auto-fires once the bring-up scaffold completes. The Ep01
+      // produce runs the channel's own cloned blueprint via meta.incubation.
+      const incubation = body.incubation === true;
+      const { data: pcCh, error: pcChErr } = await db.from("factory_channels")
+        .select("lifecycle").eq("key", channel_key).maybeSingle();
+      if (pcChErr) return json({ error: pcChErr.message }, 500);
+      if (!pcCh) return json({ error: "channel not found" }, 404);
+      if (pcCh.lifecycle === "incubating" && !incubation) {
+        return json({ error: "this channel is incubating — refine Episode 1 in the Studio (Revise / Lock), don't start a new one yet" }, 409);
+      }
       // SERIAL guard: one produce in flight per channel. An unarmed direct
       // episode still sitting at status='queued' (producing or awaiting finalize)
       // blocks a new one — this is what keeps the provisional ep number
@@ -1800,7 +1820,10 @@ async function handlePost(body: any): Promise<Response> {
           channel_key, type: "produce_preview",
           title: "Preview — " + title, prompt: brief,
           model, effort, status: "queued",
-          meta: { calendar_id: item.id, ep: nextEp, source: "channel_planner" },
+          meta: {
+            calendar_id: item.id, ep: nextEp, source: "channel_planner",
+            ...(incubation ? { incubation: true, iteration: 1 } : {}),
+          },
         }).select().single();
       if (jErr) return json({ error: jErr.message }, 500);
       await db.from("factory_calendar").update({ job_id: job.id }).eq("id", item.id);
@@ -1808,6 +1831,144 @@ async function handlePost(body: any): Promise<Response> {
         `Ep${nextEp} produce queued for ${channel_key}: '${title}'`,
         { item_id: item.id, job_id: job.id, channel_key, ep: nextEp });
       return json({ calendar_id: item.id, job, ep: nextEp });
+    }
+
+    // ── v18: incubation loop (Phase B) ───────────────────────────────
+    // A newly-created channel starts lifecycle='incubating'. Its Ep01 is
+    // produced as a TEMP, refined via revise_preview (re-run the preview with
+    // appended feedback), then frozen via lock_baseline (incubating→active +
+    // rewrite the blueprint into the locked canonical recipe). finalize_episode
+    // and a fresh produce_channel are BLOCKED until the baseline is locked — no
+    // YouTube arm off an unfrozen channel.
+
+    // revise_preview {calendar_id, feedback}: append the feedback to the item
+    // brief + the produce job's meta.feedback_log[], bump meta.iteration, and
+    // re-queue produce_preview on the SAME ep so the reviewer iterates Ep01 in
+    // place. (factory_calendar has no meta column, so the iteration/log live on
+    // the produce_preview job's meta and carry forward across revisions.)
+    case "revise_preview": {
+      const { calendar_id } = body;
+      const feedback = String(body.feedback ?? "").trim();
+      if (!calendar_id || !UUID_RE.test(String(calendar_id))) {
+        return json({ error: "calendar_id (uuid) required" }, 400);
+      }
+      if (!feedback) return json({ error: "feedback required" }, 400);
+      const { data: item, error: itemErr } = await db.from("factory_calendar")
+        .select("*").eq("id", calendar_id).maybeSingle();
+      if (itemErr) return json({ error: itemErr.message }, 500);
+      if (!item) return json({ error: "calendar item not found" }, 404);
+      // one preview at a time per item (don't stack revisions)
+      const { data: liveJobs, error: ljErr } = await db.from("factory_jobs")
+        .select("id, status").eq("type", "produce_preview")
+        .eq("meta->>calendar_id", String(calendar_id))
+        .in("status", ["queued", "running"]).limit(1);
+      if (ljErr) return json({ error: ljErr.message }, 500);
+      if (liveJobs && liveJobs.length > 0) {
+        return json({ error: "a preview is still " + liveJobs[0].status + " — let it finish before revising" }, 409);
+      }
+      // carry ep + iteration + feedback_log + incubation flag from the newest
+      // produce_preview job for this item
+      const { data: pvJobs, error: pvErr } = await db.from("factory_jobs")
+        .select("meta, created_at").eq("type", "produce_preview")
+        .eq("meta->>calendar_id", String(calendar_id))
+        .order("created_at", { ascending: false }).limit(1);
+      if (pvErr) return json({ error: pvErr.message }, 500);
+      const prevMeta = (pvJobs && pvJobs.length ? pvJobs[0].meta : null) as Record<string, unknown> | null;
+      const ep = String(prevMeta?.ep ?? "").trim();
+      if (!ep) {
+        return json({ error: "no produce_preview job with an ep key for this item — produce it first" }, 409);
+      }
+      const prevIter = Number(prevMeta?.iteration ?? 1) || 1;
+      const iteration = prevIter + 1;
+      const prevLog = Array.isArray(prevMeta?.feedback_log) ? prevMeta!.feedback_log as unknown[] : [];
+      const feedback_log = [...prevLog, { iteration, feedback, at: new Date().toISOString() }];
+      const incubation = prevMeta?.incubation === undefined ? true : !!prevMeta?.incubation;
+      const newBrief = `${item.brief || ""}\n\n--- Revision ${iteration} feedback ---\n${feedback}`.trim();
+      // append the feedback to the brief so the next produce sees it
+      const { error: upErr } = await db.from("factory_calendar")
+        .update({ brief: newBrief, status: "queued", production_mode: "direct" })
+        .eq("id", calendar_id);
+      if (upErr) return json({ error: upErr.message }, 500);
+      const { data: job, error: jobErr } = await db.from("factory_jobs")
+        .insert({
+          channel_key: item.channel_key,
+          type: "produce_preview",
+          title: `Revision ${iteration} — ${item.title}`,
+          prompt: newBrief,
+          model: item.model,
+          effort: item.effort,
+          ultracode: item.ultracode,
+          status: "queued",
+          meta: { calendar_id, ep, iteration, feedback_log, incubation, source: "revise" },
+        })
+        .select().single();
+      if (jobErr) return json({ error: jobErr.message }, 500);
+      await db.from("factory_calendar").update({ job_id: job.id }).eq("id", calendar_id);
+      await logEvent(
+        "preview_revised",
+        `Revision ${iteration} queued for '${item.title}' (ep ${ep}, ${item.channel_key})`,
+        { item_id: calendar_id, job_id: job.id, channel_key: item.channel_key, iteration },
+      );
+      return json({ job, iteration });
+    }
+
+    // lock_baseline {channel_key, calendar_id}: the reviewer is happy with the
+    // Ep01 TEMP — promote the channel incubating→active, record the baseline_ref
+    // (the ep the recipe is frozen from) + a <key>_baseline_locked flag, and
+    // queue a freeze_baseline scaffold that rewrites the blueprint into the
+    // locked canonical recipe. After this, produce/finalize work normally.
+    case "lock_baseline": {
+      const { channel_key, calendar_id } = body;
+      if (!channel_key) return json({ error: "channel_key required" }, 400);
+      if (!calendar_id || !UUID_RE.test(String(calendar_id))) {
+        return json({ error: "calendar_id (uuid) required" }, 400);
+      }
+      const { data: channel, error: chErr } = await db.from("factory_channels")
+        .select("*").eq("key", channel_key).maybeSingle();
+      if (chErr) return json({ error: chErr.message }, 500);
+      if (!channel) return json({ error: "channel not found" }, 404);
+      if (channel.lifecycle !== "incubating") {
+        return json({ error: "this channel's baseline is already locked (it is " + (channel.lifecycle ?? "active") + ")" }, 409);
+      }
+      const { data: item, error: itemErr } = await db.from("factory_calendar")
+        .select("*").eq("id", calendar_id).maybeSingle();
+      if (itemErr) return json({ error: itemErr.message }, 500);
+      if (!item) return json({ error: "calendar item not found" }, 404);
+      if (item.channel_key !== channel_key) {
+        return json({ error: "that episode belongs to a different channel" }, 400);
+      }
+      if (!item.preview_path) {
+        return json({ error: "produce and review Episode 1 before locking the baseline" }, 409);
+      }
+      // ep the recipe is frozen from (newest produce_preview job for the item)
+      const { data: pvJobs, error: pvErr } = await db.from("factory_jobs")
+        .select("meta, created_at").eq("type", "produce_preview")
+        .eq("meta->>calendar_id", String(calendar_id))
+        .order("created_at", { ascending: false }).limit(1);
+      if (pvErr) return json({ error: pvErr.message }, 500);
+      const ep = String((pvJobs && pvJobs.length ? (pvJobs[0].meta as Record<string, unknown> | null)?.ep : "") ?? "").trim();
+      if (!ep) return json({ error: "no produce_preview job with an ep key for this item" }, 409);
+      // promote the channel + record the baseline
+      const { data: updated, error: upErr } = await db.from("factory_channels")
+        .update({ lifecycle: "active", baseline_ref: ep }).eq("key", channel_key).select().single();
+      if (upErr) return json({ error: upErr.message }, 500);
+      await db.from("factory_settings")
+        .upsert({ key: `${channel_key}_baseline_locked`, value: ep }, { onConflict: "key" });
+      // freeze the blueprint into the locked canonical recipe from the approved Ep01
+      const { data: freezeJob, error: fErr } = await db.from("factory_jobs")
+        .insert({
+          channel_key, type: "new_channel_scaffold",
+          title: "Lock baseline — " + (channel.name || channel_key),
+          status: "queued", model: "opus", effort: "medium",
+          meta: { phase: "freeze_baseline", channel_key, calendar_id, ep, baseline_ref: ep },
+        }).select().single();
+      if (fErr) return json({ error: fErr.message }, 500);
+      await logEvent(
+        "baseline_locked",
+        `Baseline locked for '${channel.name || channel_key}' from ep ${ep} — channel is now active`,
+        { channel_key, item_id: calendar_id, ep, freeze_job: freezeJob.id },
+      );
+      return json({ channel: updated, freeze_job: freezeJob, ep });
     }
 
     // v17: channel-page idea engine. Queues a plan_content job; the client polls

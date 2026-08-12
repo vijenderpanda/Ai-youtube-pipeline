@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import { usePoll } from '../hooks'
@@ -79,6 +79,47 @@ export default function ChannelDetail() {
     },
   }
   const pcfg = PRODUCE_CFG[channelKey]
+
+  // ── v18: incubation loop ───────────────────────────────────────────
+  // A freshly-created channel is 'incubating' until its Ep01 TEMP is locked as
+  // the baseline. jobs come back newest-first, so .find() gives the latest.
+  const incubating = !!channel && channel.lifecycle === 'incubating'
+  const scaffoldJob = jobs.find((j) => j.type === 'new_channel_scaffold')
+  const producePreview = jobs.find((j) => j.type === 'produce_preview')
+  const firstEp = (scaffoldJob && scaffoldJob.result && scaffoldJob.result.first_episode) || null
+  const ep01CalId =
+    (producePreview && producePreview.meta && producePreview.meta.calendar_id) || null
+  const [autoErr, setAutoErr] = useState('')
+  const autoFiredRef = useRef(false)
+
+  // Auto-produce Ep01 TEMP once the bring-up scaffold completes and handed us a
+  // first-episode brief — the incubation kickoff. Server guards (incubating +
+  // one-produce-per-channel) make a duplicate fire a harmless 409, so a ref
+  // guard plus "already a produce_preview" check is enough.
+  useEffect(() => {
+    if (!incubating || autoFiredRef.current) return
+    if (!scaffoldJob || scaffoldJob.status !== 'done') return
+    if (!firstEp || !firstEp.title || !firstEp.brief) return
+    if (producePreview) return // Ep01 already underway/done
+    autoFiredRef.current = true
+    setAutoErr('')
+    ;(async () => {
+      try {
+        await api.post({
+          action: 'produce_channel', channel_key: channelKey,
+          title: firstEp.title, brief: firstEp.brief, incubation: true,
+        })
+        jobsQ.refresh()
+      } catch (e) {
+        // 409 = a produce already started (other tab/refresh) — benign; let the
+        // poll surface it. Anything else: show it and allow a manual retry.
+        if (!/incubating|one produce|already/i.test(e.message || '')) {
+          setAutoErr(e.message)
+          autoFiredRef.current = false
+        }
+      }
+    })()
+  }, [incubating, scaffoldJob, firstEp, producePreview, channelKey])
 
   const doPlanContent = async () => {
     if (planning) return
@@ -212,7 +253,83 @@ export default function ChannelDetail() {
       )}
       {saveErr && <div className="error-bar">{saveErr}</div>}
 
-      {pcfg && (
+      {incubating && (
+        <section className="card panel incubation-banner">
+          <div className="panel-head">
+            <h2>
+              <span className="incubating-pill">● Incubating</span> Locking your look
+            </h2>
+          </div>
+          <p className="dim small" style={{ marginTop: 0 }}>
+            New channels start here. The factory produces <strong>Episode 1 as a temp</strong>,
+            you refine it with feedback in the Studio, then <strong>Lock it as the baseline</strong>{' '}
+            your future episodes follow. Nothing publishes to YouTube until you lock.
+          </p>
+          {autoErr && <div className="error-bar">{autoErr}</div>}
+          {(() => {
+            const running = (j) => j && (j.status === 'queued' || j.status === 'running')
+            const failed = (j) => j && (j.status === 'failed' || j.status === 'cancelled')
+            if (failed(scaffoldJob)) {
+              return (
+                <div className="incubation-state is-error">
+                  Setup job failed{scaffoldJob.error ? ` — ${scaffoldJob.error}` : ''}. Retry it
+                  from the Jobs list below.
+                </div>
+              )
+            }
+            if (!scaffoldJob || running(scaffoldJob)) {
+              return (
+                <div className="incubation-state">
+                  <span className="asset-pulse pulse-queued" />
+                  Setting up {channel ? channel.name : channelKey} — building its home on disk and
+                  the Episode 1 blueprint. This runs on your worker.
+                </div>
+              )
+            }
+            if (producePreview && producePreview.status === 'done') {
+              return (
+                <div className="incubation-cta">
+                  <div className="incubation-state is-ready">
+                    ✓ Episode 1 preview is ready to review.
+                  </div>
+                  {ep01CalId && (
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => navigate('/studio/' + ep01CalId)}
+                    >
+                      Review &amp; refine in Studio →
+                    </button>
+                  )}
+                </div>
+              )
+            }
+            if (running(producePreview)) {
+              return (
+                <div className="incubation-cta">
+                  <div className="incubation-state">
+                    <span className="asset-pulse" />
+                    Producing Episode 1 (temp)…
+                  </div>
+                  {ep01CalId && (
+                    <Link className="btn btn-ghost" to={'/studio/' + ep01CalId}>
+                      Watch in Studio →
+                    </Link>
+                  )}
+                </div>
+              )
+            }
+            // scaffold done, kicking off the Ep01 produce
+            return (
+              <div className="incubation-state">
+                <span className="asset-pulse pulse-queued" />
+                Starting Episode 1 (temp)…
+              </div>
+            )
+          })()}
+        </section>
+      )}
+
+      {pcfg && !incubating && (
         <section className="card panel">
           <div className="panel-head">
             <h2>Produce new episode</h2>

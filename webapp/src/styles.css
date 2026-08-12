@@ -5688,3 +5688,30 @@ a.out-chip:hover {
 .wizard-done h1 { font-size: 24px; font-weight: 800; margin-bottom: var(--s-3); }
 .wizard-done p { max-width: 46ch; margin: 0 auto var(--s-5); line-height: 1.55; }
 .wizard-done-actions { display: flex; gap: var(--s-3); justify-content: center; }
+
+/* ── v18: incubation loop (Ep01 TEMP → lock baseline) ───────────────── */
+/* Amber "not yet live" treatment — neutral chrome + a warm pending accent,
+   never a channel color (channel color arrives only via --ch). */
+.incubating-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 2px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+  color: var(--warn); background: var(--warn-soft);
+  border: 1px solid rgba(224, 177, 94, 0.32);
+  white-space: nowrap;
+}
+.incubation-panel, .incubation-banner { border-color: rgba(224, 177, 94, 0.28); }
+.incubation-panel .panel-head h2,
+.incubation-banner .panel-head h2 {
+  display: flex; align-items: center; gap: 10px;
+}
+.incubation-state {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--text-2); margin-top: var(--s-2);
+}
+.incubation-state.is-ready { color: var(--green); font-weight: 600; }
+.incubation-state.is-error { color: var(--red); }
+.incubation-cta {
+  display: flex; align-items: center; gap: var(--s-4);
+  flex-wrap: wrap; margin-top: var(--s-3);
+}

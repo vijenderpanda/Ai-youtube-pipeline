@@ -104,8 +104,10 @@ export default function StudioBoard() {
   const chansQ = usePoll(() => api.get('?r=channels'), 0)
   const { toast, show } = useToast()
   const [confirmAssemble, setConfirmAssemble] = useState(false)
-  const [busy, setBusy] = useState('') // '' | 'assemble' | 'preview' | 'finalize'
+  const [busy, setBusy] = useState('') // '' | 'assemble' | 'preview' | 'finalize' | 'revise' | 'lock'
   const [schedule, setSchedule] = useState('') // datetime-local for scheduling
+  const [feedback, setFeedback] = useState('') // v18: incubation revision note
+  const [confirmLock, setConfirmLock] = useState(false)
   const [selectedKey, setSelectedKey] = useState(null)
   const [pinned, setPinned] = useState({}) // asset_key -> version number displayed (absent = latest)
   const [docsOpen, setDocsOpen] = useState(false)
@@ -137,6 +139,10 @@ export default function StudioBoard() {
   const channels = (chansQ.data && chansQ.data.channels) || []
   const accents = useMemo(() => resolveAccents(channels), [channels])
   const accent = item ? accentFor(item.channel_key, accents) : '#8f9bb3'
+  // v18: while the channel is incubating, this board refines the Ep01 TEMP
+  // (Revise ⇄ Lock) instead of scheduling to YouTube.
+  const channel = item ? channels.find((c) => c.key === item.channel_key) : null
+  const incubating = !!channel && channel.lifecycle === 'incubating'
 
   // Latest version per asset_key — the only rows whose status matters.
   const latestByKey = useMemo(() => {
@@ -363,6 +369,49 @@ export default function StudioBoard() {
     setBusy('')
   }
 
+  // ── v18: incubation loop — this preview IS Ep01 TEMP ───────────────
+  // The newest produce_preview job carries the running revision number.
+  const previewJobDirect = newestOf('produce_preview')
+  const iteration = Number((previewJobDirect && previewJobDirect.meta && previewJobDirect.meta.iteration) || 1)
+  const previewBusy =
+    !!previewJobDirect &&
+    (previewJobDirect.status === 'queued' || previewJobDirect.status === 'running')
+  const canRefine = incubating && !!item?.preview_path && !previewBusy
+
+  const doRevise = async () => {
+    if (busy) return
+    const note = feedback.trim()
+    if (!note) {
+      show('Write what to change first', 'error')
+      return
+    }
+    setBusy('revise')
+    try {
+      const d = await api.post({ action: 'revise_preview', calendar_id: calendarId, feedback: note })
+      show(`Revision ${d.iteration || iteration + 1} queued — re-producing Episode 1`, 'ok')
+      setFeedback('')
+      boardQ.refresh()
+    } catch (e) {
+      show(e.message, 'error')
+    }
+    setBusy('')
+  }
+
+  const doLock = async () => {
+    if (busy || !item) return
+    setBusy('lock')
+    try {
+      await api.post({ action: 'lock_baseline', channel_key: item.channel_key, calendar_id: calendarId })
+      show('Baseline locked — the channel is now active', 'ok')
+      setConfirmLock(false)
+      boardQ.refresh()
+      chansQ.refresh()
+    } catch (e) {
+      show(e.message, 'error')
+    }
+    setBusy('')
+  }
+
   // ── Selection → displayed version ──────────────────────────────────
   const selected = selectedKey ? latestByKey.get(selectedKey) || null : null
   const history = selected ? olderByKey.get(selected.asset_key) || [] : []
@@ -537,7 +586,33 @@ export default function StudioBoard() {
           )}
         </div>
         <div className="head-actions">
-          {isDirect ? (
+          {isDirect && incubating ? (
+            <>
+              <span className="tag incubating-pill" title="This channel is incubating — refine Episode 1, then lock the baseline">
+                ● incubating · Rev {iteration}
+              </span>
+              {previewJobDirect && (
+                <span className="assemble-status" title={previewJobDirect.title || 'Preview job'}>
+                  <span className="tag dim-tag">Ep01 temp</span>
+                  <StatusChip status={previewJobDirect.status} />
+                </span>
+              )}
+              <button
+                className="btn btn-primary"
+                onClick={() => setConfirmLock(true)}
+                disabled={!canRefine || !!busy}
+                title={
+                  !item?.preview_path
+                    ? 'Produce Episode 1 first — you review it before locking'
+                    : previewBusy
+                      ? 'A revision is still producing…'
+                      : 'Freeze this as the baseline recipe — the channel goes active'
+                }
+              >
+                🔒 Lock as baseline
+              </button>
+            </>
+          ) : isDirect ? (
             <>
               {finalizeJob && (
                 <span className="assemble-status" title={finalizeJob.title || 'Finalize job'}>
@@ -582,6 +657,63 @@ export default function StudioBoard() {
           )}
         </div>
       </header>
+
+      {incubating && (
+        <section className="card panel incubation-panel">
+          <div className="panel-head">
+            <h2>
+              <span className="incubating-pill">● Incubating</span> Refine Episode 1, then lock it
+            </h2>
+            <span className="dim small">Revision {iteration}</span>
+          </div>
+          <p className="dim small" style={{ marginTop: 0 }}>
+            This is Episode 1 as a <strong>temp</strong>. Watch the preview above, then either send
+            it back with notes or lock it — locking freezes this look/sound as the channel’s{' '}
+            <strong>baseline recipe</strong> and flips the channel to active. Nothing publishes to
+            YouTube until you lock.
+          </p>
+          <label className="field">
+            <span className="field-label">What should change?</span>
+            <textarea
+              rows={3}
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              placeholder="e.g. hook is too slow, cut the intro card; make the captions bigger; warmer grade…"
+              disabled={!!busy}
+            />
+          </label>
+          <div className="drawer-actions cal-actions">
+            <button
+              className="btn btn-ghost"
+              onClick={doRevise}
+              disabled={!canRefine || !!busy || !feedback.trim()}
+              title={
+                !item?.preview_path
+                  ? 'Produce Episode 1 first'
+                  : previewBusy
+                    ? 'A revision is still producing…'
+                    : 'Re-produce Episode 1 with this feedback'
+              }
+            >
+              {busy === 'revise' ? 'Queuing…' : '↻ Revise with feedback'}
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => setConfirmLock(true)}
+              disabled={!canRefine || !!busy}
+              title={
+                !item?.preview_path
+                  ? 'Produce Episode 1 first — you review it before locking'
+                  : previewBusy
+                    ? 'A revision is still producing…'
+                    : 'Freeze this as the baseline recipe — the channel goes active'
+              }
+            >
+              🔒 Lock as baseline
+            </button>
+          </div>
+        </section>
+      )}
 
       {item && <PipelineRail current={resolveStage(item, countsFromAssets(assets)).stage} accent={accent} />}
 
@@ -791,6 +923,26 @@ export default function StudioBoard() {
             This queues one <b>assemble_episode</b> job that stitches the {approvedCount}{' '}
             approved asset{approvedCount === 1 ? '' : 's'} into the final video and drafts the
             post. Skipped assets are left out.
+          </p>
+        </ConfirmDialog>
+      )}
+
+      {confirmLock && (
+        <ConfirmDialog
+          title="Lock this as the baseline?"
+          confirmLabel="Lock baseline"
+          busy={busy === 'lock'}
+          onConfirm={doLock}
+          onCancel={() => setConfirmLock(false)}
+        >
+          <p>
+            This freezes Episode 1’s look and sound as{' '}
+            <b>{channel ? channel.name : item?.channel_key}</b>’s canonical recipe — every future
+            episode follows it. The channel flips from <b>incubating</b> to <b>active</b>, and
+            producing/scheduling to YouTube unlocks.
+          </p>
+          <p className="dim small">
+            You can still edit the blueprint later, but the incubation loop ends here.
           </p>
         </ConfirmDialog>
       )}

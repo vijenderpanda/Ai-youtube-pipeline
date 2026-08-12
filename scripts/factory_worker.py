@@ -588,6 +588,10 @@ def channel_intake_path(job_id):
     return RENDERS_OUT / f"channel_intake_{job_id}.json"
 
 
+def channel_scaffold_path(job_id):
+    return RENDERS_OUT / f"channel_scaffold_{job_id}.json"
+
+
 def build_prompt(job, guidelines="", ctx_path=None, asset=None):
     jtype = job.get("type") or "custom"
     jprompt = (job.get("prompt") or "").strip()
@@ -598,6 +602,54 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
                 f"CHANNEL GUIDELINES:\n{guidelines or '(none on file)'}\n\n"
                 f"JOB BRIEF:\n{jprompt}\n\n"
                 "STANDING RULES: follow docs/PRODUCTION-PLAYBOOK.md, premium quality bar.")
+    elif jtype == "produce_preview" and (job.get("meta") or {}).get("incubation"):
+        # v18: incubation Ep01 TEMP for a brand-new channel. The channel has no
+        # bespoke render pipeline yet — produce a watchable ~30s TEMP by FOLLOWING
+        # this channel's own cloned blueprint, improvising with in-house tools. The
+        # human reviews it, revises via feedback (appended to the brief below), and
+        # once approved the blueprint is frozen (lock_baseline). Do NOT master at
+        # 1080p and do NOT arm YouTube — this stops at a preview like every other.
+        cal_id = (job.get("meta") or {}).get("calendar_id") or ""
+        ep_key = str((job.get("meta") or {}).get("ep") or "").strip()
+        iteration = int((job.get("meta") or {}).get("iteration") or 1)
+        body = (
+            f"You are producing the Episode 1 TEMP for the NEW, incubating channel "
+            f"'{key}'. This is revision {iteration}. One Claude session, ~25 min budget, "
+            "opus/medium tier. It is a TEMP for review — the creator will give feedback "
+            "and you'll revise; once they approve, this channel's blueprint gets LOCKED "
+            "from what you make here, so make it genuinely good and on-brand.\n\n"
+            f"READ FIRST (this channel's law): channels/{key}/PRODUCTION-BLUEPRINT.md, "
+            f"channels/{key}/BRAND-BIBLE.md, and channels/{key}/channel.json. FOLLOW the "
+            "blueprint's beat spine, visual/audio identity, and invariants exactly.\n\n"
+            + (f"EP KEY: use ep_key = {ep_key} for ALL files "
+               f"(channels/{key}/episodes/{ep_key}.json, channels/{key}/assets/ep{ep_key}/, "
+               f"channels/{key}/renders/ep{ep_key}_*). Do NOT invent a different number.\n\n"
+               if ep_key else "")
+            + f"JOB BRIEF (includes any accumulated revision feedback — honor it):\n"
+            f"{jprompt}\n\n"
+            "PIPELINE (in order):\n"
+            "1. PLAN: develop the brief into a full plan that fits the blueprint (title, "
+            "hook, VO/script ~28-38s, the shot/asset list, on-screen text). VERIFY every "
+            "factual claim with WebSearch first; if a claim can't be verified OR an asset "
+            "can't be honestly made, STOP with a manifest error (never fabricate).\n"
+            "2. GENERATE ASSETS in blueprint order using IN-HOUSE tools only (PIL/ffmpeg "
+            "mocks, ElevenLabs VO if the style has a voice, existing scripts/ helpers). Do "
+            "NOT spend on blocked external generators — mock a placeholder and note it. "
+            "After EACH asset lands on disk, call `python3 scripts/push_asset.py "
+            f"--calendar-id {cal_id} --asset-key <slug> --file <path> --kind "
+            "<image|video|audio|text> --group <thumbnail|scene|clip|audio|overlay|other>` "
+            "so Studio's filmstrip populates live — unpushed assets are invisible to the "
+            "reviewer.\n"
+            f"3. WRITE SPEC at channels/{key}/episodes/{ep_key or '01'}.json capturing the "
+            "plan you produced (so freeze_baseline can lock the recipe from it).\n"
+            "4. PREVIEW RENDER: stitch the assets into a single ~30s vertical (9:16 unless "
+            "the blueprint says otherwise) TEMP MP4 with the VO — unmastered, no premium "
+            "polish. That IS the preview.\n"
+            "5. MANIFEST: write manifest_<job_id>.json listing the preview MP4 as the "
+            "primary file, plus a `spec_path` field pointing at the episodes/ JSON.\n\n"
+            "COST DISCIPLINE: in-house mocks only, no 1080p master, no endcard/outro "
+            "concat, no external paid generators. Those come after the baseline is locked."
+        )
     elif jtype == "produce_preview" and key == "already-happening":
         # v17: "already-happening" is a CINEMATIC, host-less channel whose 6 motion
         # clips CANNOT be generated headlessly (Leonardo's generation API is
@@ -862,7 +914,109 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
         body = ("Record an authentic tool demo using scripts/record_demo.py and frame it "
                 f"with the pro styles (scripts/style_punch.py etc.): {jprompt}")
     elif jtype == "new_channel_scaffold":
-        body = f"Scaffold a new channel per job instructions: {jprompt}"
+        # v18: two-phase channel bring-up for the incubation loop.
+        #   phase='bringup'        -> write channels/<key>/ from the wizard brand
+        #                             jsonb, clone a blueprint from the chosen
+        #                             production style, gen brand assets, and hand
+        #                             the app a ready Ep01 brief to auto-produce.
+        #   phase='freeze_baseline' -> rewrite that blueprint into the LOCKED
+        #                             canonical recipe from the approved Ep01 TEMP.
+        meta = job.get("meta") or {}
+        phase = str(meta.get("phase") or "bringup").strip()
+        out_json = channel_scaffold_path(job["id"])
+        if phase == "freeze_baseline":
+            cal_id = str(meta.get("calendar_id") or "").strip()
+            ep_key = str(meta.get("ep") or "").strip()
+            body = (
+                f"You are FREEZING the baseline for the incubating channel '{key}'. The "
+                "creator approved its Episode 1 TEMP; your job is to rewrite the channel's "
+                "blueprint into the LOCKED, canonical recipe that every future episode of "
+                "this channel MUST follow — captured tightly enough that a fresh producer "
+                "reproduces the exact look/sound without guessing.\n\n"
+                f"APPROVED EPISODE: ep_key = {ep_key or '(see the newest preview)'}"
+                f"{', calendar_id ' + cal_id if cal_id else ''}. Study what actually shipped "
+                "in the approved TEMP:\n"
+                f"  - the preview render + the pushed assets under channels/{key}/ "
+                "(images, clips, audio, overlays),\n"
+                f"  - any spec/plan JSON the produce wrote under channels/{key}/,\n"
+                "  - the brief + accumulated revision feedback on the calendar item.\n\n"
+                "THEN rewrite these files so they describe the APPROVED result as LOCKED law "
+                "(not the earlier draft aspirations):\n"
+                f"  1. channels/{key}/PRODUCTION-BLUEPRINT.md — the canonical, reproducible "
+                "recipe: exact beat spine + timings, the shot/asset recipe, fonts/type "
+                "treatment, colour grade + accent hex, motion/host treatment, audio bed + "
+                "loudness (LUFS), caption style, opener/outro rules, and the hard INVARIANTS "
+                "('always / never') that define the format. Pin real values from the approved "
+                "episode — no placeholders.\n"
+                f"  2. channels/{key}/BRAND-BIBLE.md — reconcile it with the locked recipe.\n"
+                f"  3. channels/{key}/channel.json — set \"baseline_ep\" to the approved ep "
+                "and \"lifecycle\": \"active\".\n\n"
+                "Do NOT re-render or re-produce anything, do NOT arm YouTube, do NOT touch "
+                "other channels or any factory scripts. This is a documentation-freeze pass.\n\n"
+                f"FINALLY write {out_json} (this JSON IS the job result — no manifest, no "
+                "renders):\n"
+                '{"phase": "freeze_baseline", "locked": true, "baseline_ep": "<ep>", '
+                '"blueprint_path": "channels/<key>/PRODUCTION-BLUEPRINT.md", '
+                '"summary": "<2-3 sentences: what the locked recipe pins>", '
+                '"invariants": ["<the always/never rules you locked>", ...], '
+                '"files": ["<repo-relative paths you wrote/updated>", ...]}'
+            )
+        else:  # bringup
+            brand = meta.get("brand") or {}
+            body = (
+                f"You are BRINGING UP a brand-new YouTube channel, key '{key}'. It was just "
+                "created in the factory wizard and is 'incubating': set up its home on disk so "
+                "the app can immediately produce Episode 1 as a TEMP the creator will refine "
+                "and then lock. Work ONLY inside channels/" + key + "/ (plus this job's result "
+                "JSON) — never edit factory scripts or other channels.\n\n"
+                f"THE CREATOR'S BRAND ANSWERS (machine-readable, from the wizard):\n"
+                f"{json.dumps(brand, indent=2)[:3000]}\n\n"
+                "STEP 1 — SCAFFOLD FILES:\n"
+                f"  - channels/{key}/channel.json — key, name, and the normalized brand fields "
+                "(niche, audience, format/aspect, runtime target, production style, tone, accent "
+                "hex, made_for_kids from the audience answer, cadence). Add "
+                "\"lifecycle\": \"incubating\".\n"
+                f"  - channels/{key}/BRAND-BIBLE.md — the human-readable brand bible: vision, "
+                "purpose, audience, voice/tone, visual identity (accent, type, grade), the "
+                "format + cadence, and explicit do/don't rules. This is the channel's north "
+                "star; write it well.\n\n"
+                "STEP 2 — CLONE A BLUEPRINT FROM THE CHOSEN PRODUCTION STYLE. Read the brand's "
+                "production style and clone the CLOSEST existing channel blueprint as the "
+                f"skeleton for channels/{key}/PRODUCTION-BLUEPRINT.md, then adapt it to THIS "
+                "channel's brand (do not copy the source channel's topic/identity):\n"
+                "   - host-less / cinematic    -> channels/already-happening/PRODUCTION-BLUEPRINT.md\n"
+                "   - synthetic / avatar host  -> channels/claude-tricks/BRAND-BIBLE.md (avatar-host build)\n"
+                "   - illustrated / baked-text -> channels/pip-moonlit-garden/BRAND-BIBLE.md (baked-in text)\n"
+                "   - image-to-video / story   -> channels/aashiqana/SHORTS-TEMPLATE-LOCKED.md\n"
+                "   Pick the best fit from the production answer; if unclear, use host-less "
+                "cinematic. The blueprint is a SKELETON for now (it gets frozen into the locked "
+                "recipe after Ep01 is approved) — capture the beat spine, the asset recipe, the "
+                "visual/audio identity, and the invariants, and clearly mark it 'DRAFT — locks "
+                "after Ep01'.\n\n"
+                "STEP 3 — BRAND ASSETS: generate a channel icon and a banner consistent with the "
+                f"accent + identity, into channels/{key}/brand/ (use in-house PIL/ffmpeg mocks or "
+                "an existing gen_brand.py you can adapt as a NEW file under this channel — do not "
+                "spend on blocked external generators). If you can only mock them, that's fine "
+                "for incubation; note it.\n\n"
+                "STEP 4 — REPORT (do NOT do) the owner wiring this channel still needs before it "
+                "can arm on YouTube: the YouTube OAuth token for this channel and its "
+                "UPLOAD_DEFAULTS entry (audience/made_for_kids/tags/description defaults). List "
+                "exactly what the owner must add and where.\n\n"
+                "STEP 5 — PROPOSE EPISODE 1: draft ONE production-ready Ep01 brief that fits the "
+                "blueprint (a strong opening topic for this channel), so the app can auto-produce "
+                "the TEMP. Title + a detailed brief (the beat outline + any facts to verify).\n\n"
+                f"FINALLY write {out_json} (this JSON IS the job result — no manifest, no "
+                "renders):\n"
+                '{"phase": "bringup", "production_style": "<the style you cloned>", '
+                '"cloned_from": "<source blueprint path>", '
+                '"first_episode": {"title": "<Ep01 title>", "brief": "<production-ready Ep01 '
+                'brief>"}, '
+                '"wiring_report": "<the exact owner steps for the YouTube token + UPLOAD_DEFAULTS '
+                'entry>", '
+                '"assets": {"icon": "<path or \'mocked\'>", "banner": "<path or \'mocked\'>"}, '
+                '"files": ["<repo-relative paths you created>", ...], '
+                '"summary": "<2-3 sentences on what you set up>"}'
+            )
     elif jtype == "analyze_and_suggest":
         body = (
             "You are the content strategist for this YouTube factory. "
@@ -3767,6 +3921,33 @@ def run_job(supa, job):
                   "ready_to_advance": bool(data.get("ready_to_advance", True))}
         done_msg = f"channel_intake done: {len(clean)} option(s)"
         buf.add(f"[worker] {len(clean)} wizard options stored in job.result")
+    elif job.get("type") == "new_channel_scaffold":
+        # v18: the scaffold JSON IS the result. bringup hands the app a ready Ep01
+        # brief (result.first_episode) to auto-produce; freeze_baseline confirms the
+        # blueprint is locked. Files created on disk are the real side effect; the
+        # JSON is best-effort context, so a missing/partial one is non-fatal.
+        phase = str((job.get("meta") or {}).get("phase") or "bringup")
+        spath = channel_scaffold_path(job_id)
+        result = {"phase": phase}
+        try:
+            data = json.loads(spath.read_text())
+            if isinstance(data, dict):
+                result.update(data)
+        except (OSError, json.JSONDecodeError) as e:
+            buf.add(f"[worker] note: no/invalid scaffold JSON at {spath}: {e}")
+        # recap synthesized from the log tail so the Jobs drawer explains what happened
+        recap = synthesize_recap(buf.text())
+        if recap:
+            result["recap"] = recap
+        uploaded = 0
+        if phase == "freeze_baseline":
+            done_msg = (f"baseline frozen for '{job.get('channel_key')}'"
+                        + (f" (ep {result.get('baseline_ep')})" if result.get("baseline_ep") else ""))
+        else:
+            fe = result.get("first_episode") or {}
+            done_msg = (f"channel '{job.get('channel_key')}' scaffolded"
+                        + (f" — Ep01: {str(fe.get('title'))[:80]!r}" if fe.get("title") else ""))
+        buf.add(f"[worker] new_channel_scaffold {phase} result stored in job.result")
     elif job.get("type") == "plan_assets":
         # v9: the plan JSON becomes factory_assets rows + generate_asset jobs
         result = ingest_asset_plan(supa, job, buf)
