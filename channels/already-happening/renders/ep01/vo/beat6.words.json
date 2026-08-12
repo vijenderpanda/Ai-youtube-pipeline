@@ -1,0 +1,127 @@
+[
+ {
+  "w": "BUT",
+  "start": 0.0,
+  "end": 0.2
+ },
+ {
+  "w": "THE",
+  "start": 0.22,
+  "end": 0.29
+ },
+ {
+  "w": "CATCH",
+  "start": 0.35,
+  "end": 0.61
+ },
+ {
+  "w": "IS",
+  "start": 0.66,
+  "end": 0.73
+ },
+ {
+  "w": "REAL",
+  "start": 0.85,
+  "end": 1.3
+ },
+ {
+  "w": "THE",
+  "start": 1.62,
+  "end": 1.75
+ },
+ {
+  "w": "AI",
+  "start": 1.81,
+  "end": 2.18
+ },
+ {
+  "w": "PICKS",
+  "start": 2.28,
+  "end": 2.5
+ },
+ {
+  "w": "YOUR",
+  "start": 2.52,
+  "end": 2.63
+ },
+ {
+  "w": "ROUTE",
+  "start": 2.68,
+  "end": 3.03
+ },
+ {
+  "w": "YOUR",
+  "start": 3.16,
+  "end": 3.32
+ },
+ {
+  "w": "SPEED",
+  "start": 3.38,
+  "end": 3.94
+ },
+ {
+  "w": "AND",
+  "start": 4.18,
+  "end": 4.33
+ },
+ {
+  "w": "WHO",
+  "start": 4.39,
+  "end": 4.52
+ },
+ {
+  "w": "GETS",
+  "start": 4.57,
+  "end": 4.74
+ },
+ {
+  "w": "PRIORITY",
+  "start": 4.78,
+  "end": 5.26
+ },
+ {
+  "w": "IN",
+  "start": 5.32,
+  "end": 5.36
+ },
+ {
+  "w": "TRAFFIC",
+  "start": 5.41,
+  "end": 5.91
+ },
+ {
+  "w": "SO",
+  "start": 5.98,
+  "end": 6.14
+ },
+ {
+  "w": "WOULD",
+  "start": 6.17,
+  "end": 6.3
+ },
+ {
+  "w": "YOU",
+  "start": 6.34,
+  "end": 6.41
+ },
+ {
+  "w": "GIVE",
+  "start": 6.46,
+  "end": 6.58
+ },
+ {
+  "w": "UP",
+  "start": 6.62,
+  "end": 6.7
+ },
+ {
+  "w": "THE",
+  "start": 6.75,
+  "end": 6.82
+ },
+ {
+  "w": "WHEEL",
+  "start": 6.85,
+  "end": 7.43
+ }
+]

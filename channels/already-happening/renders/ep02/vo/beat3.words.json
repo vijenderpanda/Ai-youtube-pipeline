@@ -1,0 +1,77 @@
+[
+ {
+  "w": "IT",
+  "start": 0.0,
+  "end": 0.15
+ },
+ {
+  "w": "DRAFTS",
+  "start": 0.2,
+  "end": 0.52
+ },
+ {
+  "w": "THE",
+  "start": 0.57,
+  "end": 0.64
+ },
+ {
+  "w": "EMAILS",
+  "start": 0.71,
+  "end": 1.16
+ },
+ {
+  "w": "IT",
+  "start": 1.18,
+  "end": 1.25
+ },
+ {
+  "w": "WRITES",
+  "start": 1.29,
+  "end": 1.54
+ },
+ {
+  "w": "THE",
+  "start": 1.59,
+  "end": 1.66
+ },
+ {
+  "w": "CODE",
+  "start": 1.71,
+  "end": 2.04
+ },
+ {
+  "w": "IT",
+  "start": 2.07,
+  "end": 2.12
+ },
+ {
+  "w": "CLOSES",
+  "start": 2.17,
+  "end": 2.52
+ },
+ {
+  "w": "THE",
+  "start": 2.57,
+  "end": 2.63
+ },
+ {
+  "w": "TICKETS",
+  "start": 2.68,
+  "end": 3.17
+ },
+ {
+  "w": "WHILE",
+  "start": 3.29,
+  "end": 3.56
+ },
+ {
+  "w": "YOU",
+  "start": 3.6,
+  "end": 3.68
+ },
+ {
+  "w": "SLEEP",
+  "start": 3.73,
+  "end": 4.41
+ }
+]

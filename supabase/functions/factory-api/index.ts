@@ -471,13 +471,32 @@ async function handleGet(url: URL): Promise<Response> {
         .order("planned_date", { ascending: true });
       if (error) return json({ error: error.message }, 500);
       const counts: Record<string, Record<string, number>> = {};
+      // v17: per-episode cover thumbnail for the Studio grid. Best servable image
+      // asset (latest version, storage_path present), scored so the designed
+      // thumbnail/hook still wins over an incidental mid-scene frame. Path is a
+      // factory-renders storage key; the client prefixes RENDERS_BASE. Many fresh
+      // direct-mode previews have local-only assets (no storage_path) — those
+      // simply get no cover and the client renders a branded fallback.
+      const covers: Record<string, string> = {};
+      const coverScore: Record<string, number> = {};
+      const rank = (assetKey: string): number => {
+        const k = assetKey.toLowerCase();
+        if (k.includes("thumb") || k.includes("cover")) return 4;
+        if (k.includes("hook")) return 3;
+        if (k.includes("endcard") || k.includes("outro")) return 1;
+        if (k.includes("frame") || k.includes("still") || k.includes("scene")) return 2;
+        return 2;
+      };
       const ids = (items ?? []).map((i) => i.id);
       if (ids.length > 0) {
         const { data: assets, error: aErr } = await db.from("factory_assets")
-          .select("calendar_id, asset_key, version, status")
+          .select("calendar_id, asset_key, version, status, kind, storage_path")
           .in("calendar_id", ids);
         if (aErr) return json({ error: aErr.message }, 500);
-        const latest = new Map<string, { calendar_id: string; version: number; status: string }>();
+        const latest = new Map<string, {
+          calendar_id: string; asset_key: string; version: number; status: string;
+          kind: string | null; storage_path: string | null;
+        }>();
         for (const a of assets ?? []) {
           const key = a.calendar_id + ":" + a.asset_key;
           const cur = latest.get(key);
@@ -489,6 +508,14 @@ async function handleGet(url: URL): Promise<Response> {
           });
           c.total += 1;
           if (a.status in c) c[a.status] += 1;
+          // cover candidate: only images we can actually serve
+          if (a.kind === "image" && a.storage_path) {
+            const s = rank(a.asset_key);
+            if (s > (coverScore[a.calendar_id] ?? -1)) {
+              coverScore[a.calendar_id] = s;
+              covers[a.calendar_id] = a.storage_path;
+            }
+          }
         }
       }
       // v16: a direct-mode item whose produce_preview job is still queued/running
@@ -521,7 +548,7 @@ async function handleGet(url: URL): Promise<Response> {
         (counts[it.id]?.total ?? 0) > 0 ||
         activeDirect.has(it.id)
       );
-      return json({ items: visibleItems, counts });
+      return json({ items: visibleItems, counts, covers });
     }
 
     // v8: one staged episode — item + every asset version + its staged jobs

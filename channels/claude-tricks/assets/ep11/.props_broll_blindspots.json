@@ -1,0 +1,26 @@
+{
+ "commandKey": "blindspots",
+ "fileLines": [
+  "---",
+  "description: Name what I'm not seeing in",
+  "  this decision",
+  "argument-hint: [the decision or",
+  "  situation]",
+  "---",
+  "",
+  "Here is what I'm working on: $ARGUMENTS",
+  "",
+  "Act as the person in the room who sees",
+  "  what everyone else missed. Do NOT"
+ ],
+ "termArg": "quitting my job to go full-time on my 800-subscri...",
+ "responseLines": [
+  "Stable paycheck \u2192 assumption, not fact \u2014 runway math undone.",
+  "800 free, $0 revenue: you haven't tested if they'll pay.",
+  "Not modeled: family whose risk tolerance you never surveyed.",
+  "Second-order: no salary kills the 'just for fun' spell.",
+  "Outsider's read: quitting a job to keep a hobby."
+ ],
+ "typeStart": 1.0,
+ "lineStagger": 0.45
+}

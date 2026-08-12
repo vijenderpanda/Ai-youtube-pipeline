@@ -1,0 +1,87 @@
+[
+ {
+  "w": "RIGHT",
+  "start": 0.0,
+  "end": 0.28
+ },
+ {
+  "w": "NOW",
+  "start": 0.33,
+  "end": 0.51
+ },
+ {
+  "w": "CARS",
+  "start": 0.55,
+  "end": 0.85
+ },
+ {
+  "w": "DRIVE",
+  "start": 0.89,
+  "end": 1.15
+ },
+ {
+  "w": "THEMSELVES",
+  "start": 1.18,
+  "end": 1.61
+ },
+ {
+  "w": "EVERY",
+  "start": 1.73,
+  "end": 2.0
+ },
+ {
+  "w": "DAY",
+  "start": 2.04,
+  "end": 2.18
+ },
+ {
+  "w": "IN",
+  "start": 2.22,
+  "end": 2.28
+ },
+ {
+  "w": "PHOENIX",
+  "start": 2.33,
+  "end": 2.89
+ },
+ {
+  "w": "SAN",
+  "start": 2.96,
+  "end": 3.13
+ },
+ {
+  "w": "FRANCISCO",
+  "start": 3.19,
+  "end": 3.87
+ },
+ {
+  "w": "AND",
+  "start": 3.92,
+  "end": 4.1
+ },
+ {
+  "w": "AUSTIN",
+  "start": 4.17,
+  "end": 4.7
+ },
+ {
+  "w": "NOBODY",
+  "start": 5.21,
+  "end": 5.6
+ },
+ {
+  "w": "TOUCHES",
+  "start": 5.64,
+  "end": 5.94
+ },
+ {
+  "w": "THE",
+  "start": 5.99,
+  "end": 6.06
+ },
+ {
+  "w": "WHEEL",
+  "start": 6.09,
+  "end": 6.69
+ }
+]

@@ -1,0 +1,87 @@
+[
+ {
+  "w": "THE",
+  "start": 0.0,
+  "end": 0.16
+ },
+ {
+  "w": "OFFICE",
+  "start": 0.23,
+  "end": 0.56
+ },
+ {
+  "w": "DOESN'T",
+  "start": 0.59,
+  "end": 0.87
+ },
+ {
+  "w": "GROW",
+  "start": 0.91,
+  "end": 1.31
+ },
+ {
+  "w": "IT",
+  "start": 1.36,
+  "end": 1.47
+ },
+ {
+  "w": "GOES",
+  "start": 1.52,
+  "end": 1.7
+ },
+ {
+  "w": "QUIET",
+  "start": 1.75,
+  "end": 2.25
+ },
+ {
+  "w": "ONE",
+  "start": 2.69,
+  "end": 2.94
+ },
+ {
+  "w": "PERSON",
+  "start": 2.98,
+  "end": 3.38
+ },
+ {
+  "w": "SIGNING",
+  "start": 3.41,
+  "end": 3.75
+ },
+ {
+  "w": "OFF",
+  "start": 3.81,
+  "end": 3.95
+ },
+ {
+  "w": "ON",
+  "start": 4.0,
+  "end": 4.06
+ },
+ {
+  "w": "THE",
+  "start": 4.09,
+  "end": 4.16
+ },
+ {
+  "w": "WORK",
+  "start": 4.19,
+  "end": 4.39
+ },
+ {
+  "w": "OF",
+  "start": 4.43,
+  "end": 4.49
+ },
+ {
+  "w": "TEN",
+  "start": 4.56,
+  "end": 4.76
+ },
+ {
+  "w": "MACHINES",
+  "start": 4.83,
+  "end": 5.71
+ }
+]

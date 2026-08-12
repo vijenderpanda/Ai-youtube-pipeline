@@ -1,0 +1,76 @@
+{
+  "ep": 1,
+  "channel": "already-happening",
+  "title": "You Already Live in the Last Generation That Drives",
+  "topic": "Autonomous transport",
+  "angle": "wonder-leaning, provocation button",
+  "runtime_target_s": 38,
+  "vo_voice": "documentary-calm, certain, not hype",
+  "leonardo_recipe": {
+    "model": "Kino XL",
+    "preset": "Cinematic",
+    "alchemy": true,
+    "aspect": "9:16 (832x1472)",
+    "char_ref": "NONE",
+    "style": "anamorphic cinematic, photoreal, volumetric light, shallow depth of field, subtle film grain, cold teal-blue grade",
+    "negative": "cartoon, illustration, 3d render, cgi, plastic, oversaturated, text, watermark, logo, deformed, lowres, cluttered"
+  },
+  "beats": [
+    {
+      "id": "s1_coldopen",
+      "t": "0.0-3.5",
+      "vo": "There's a city where fifty thousand people a week ride in cars with no one at the wheel.",
+      "text_on_screen": "NO ONE\nIS DRIVING",
+      "text_pos": "lower-third",
+      "prompt": "cinematic POV shot from inside a car at night, looking at an empty driver seat and a steering wheel turning by itself, blurred neon city lights through the windshield, cold teal and blue color grade, anamorphic lens flare, shallow depth of field, volumetric light, photoreal, film grain, moody"
+    },
+    {
+      "id": "s2_thetell",
+      "t": "3.5-6.0",
+      "vo": "And this isn't a demo. It's a Tuesday.",
+      "text_on_screen": "not a demo.\na Tuesday.",
+      "text_pos": "upper-third",
+      "prompt": "ordinary daytime city street, an everyday person in casual clothes calmly stepping into the back seat of a sleek white autonomous car with a spinning sensor dome on the roof, documentary realism, mundane normal life, soft overcast light, cool color grade, photoreal, cinematic, shallow depth of field"
+    },
+    {
+      "id": "s3_today",
+      "t": "6.0-13.0",
+      "vo": "Today, driverless cars already run every single day in Phoenix, San Francisco, and Austin. Millions of rides. No steering wheel touched.",
+      "text_on_screen": "TODAY  ->",
+      "text_pos": "lower-third",
+      "prompt": "wide cinematic street shot of a sleek white self-driving car with a roof sensor array driving through a sunlit modern American city intersection, other cars around, real world documentary feel, crisp, photoreal, cool cinematic color grade, anamorphic, depth"
+    },
+    {
+      "id": "s4_leap",
+      "t": "13.0-22.0",
+      "vo": "Now push it five years. The tech doesn't get worse, it gets cheaper. A pod arrives in ninety seconds. It costs less than owning a car. So why would you own one?",
+      "text_on_screen": "+5 YEARS",
+      "text_pos": "upper-third",
+      "prompt": "near-future city street at golden hour, a fleet of sleek minimal driverless pods flowing smoothly in clean lanes, no parked cars anywhere, wide clean streets, futuristic but grounded and realistic, cinematic, teal and warm amber grade, volumetric light, photoreal, anamorphic"
+    },
+    {
+      "id": "s5_impact",
+      "t": "22.0-31.0",
+      "vo": "Here's the part nobody's ready for. A third of every city is parking. Empty it out, and you hand that land back. As parks, as homes, as streets for people. Your garage becomes a room.",
+      "text_on_screen": "1/3 of the city\nwas parking",
+      "text_pos": "lower-third",
+      "prompt": "a former asphalt parking lot transformed into a lush green public park full of trees and people relaxing, warm golden sunlight, hopeful uplifting mood, cinematic, photoreal, shallow depth of field, gentle warm color grade with cool shadows, film grain",
+      "grade_note": "warm light bleeds into the cold grade here - the wonder beat"
+    },
+    {
+      "id": "s6_button",
+      "t": "31.0-38.0",
+      "vo": "But the catch is real. The AI picks your route, your speed, and who gets priority in traffic. So, would you give up the wheel?",
+      "text_on_screen": "Would you give up\nthe wheel?  yes / no",
+      "text_pos": "center-lower",
+      "prompt": "cinematic close POV of a human hand hovering just above a steering wheel but not gripping it, tense moment, empty driver seat, cold teal blue grade returns, dramatic single light source, shallow depth of field, photoreal, film grain, moody"
+    }
+  ],
+  "caption": "50,000 people a week already ride in cars with no one at the wheel. It's not the future — it's already happening. Would YOU give up the wheel? 👇",
+  "hashtags": ["#AI", "#SelfDriving", "#FutureTech", "#Waymo", "#AlreadyHappening"],
+  "pinned_comment": "Be honest — would you trust it at 70mph on the highway, or only in the city? 👀",
+  "fact_anchors": [
+    "Waymo reported 250k+ paid rides/week across Phoenix, SF, LA, Austin (2025) — our '50k' and 'millions' claims are deliberately conservative.",
+    "'~1/3 of car-centric US cities is parking' — well-documented in urban planning literature."
+  ]
+}

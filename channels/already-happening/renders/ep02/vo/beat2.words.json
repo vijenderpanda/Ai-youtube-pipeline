@@ -1,0 +1,82 @@
+[
+ {
+  "w": "RIGHT",
+  "start": 0.0,
+  "end": 0.26
+ },
+ {
+  "w": "NOW",
+  "start": 0.29,
+  "end": 0.46
+ },
+ {
+  "w": "ONE",
+  "start": 0.5,
+  "end": 0.7
+ },
+ {
+  "w": "AI",
+  "start": 0.73,
+  "end": 1.01
+ },
+ {
+  "w": "REVIEWS",
+  "start": 1.09,
+  "end": 1.38
+ },
+ {
+  "w": "A",
+  "start": 1.43,
+  "end": 1.45
+ },
+ {
+  "w": "CONTRACT",
+  "start": 1.52,
+  "end": 2.04
+ },
+ {
+  "w": "IN",
+  "start": 2.09,
+  "end": 2.15
+ },
+ {
+  "w": "SECONDS",
+  "start": 2.22,
+  "end": 2.74
+ },
+ {
+  "w": "AND",
+  "start": 3.06,
+  "end": 3.22
+ },
+ {
+  "w": "FLAGS",
+  "start": 3.26,
+  "end": 3.58
+ },
+ {
+  "w": "THE",
+  "start": 3.6,
+  "end": 3.67
+ },
+ {
+  "w": "RISKS",
+  "start": 3.7,
+  "end": 3.89
+ },
+ {
+  "w": "YOUR",
+  "start": 3.92,
+  "end": 4.04
+ },
+ {
+  "w": "LAWYERS",
+  "start": 4.09,
+  "end": 4.37
+ },
+ {
+  "w": "MISS",
+  "start": 4.41,
+  "end": 4.97
+ }
+]

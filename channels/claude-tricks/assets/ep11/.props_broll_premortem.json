@@ -1,0 +1,26 @@
+{
+ "commandKey": "premortem",
+ "fileLines": [
+  "---",
+  "description: Imagine the plan already",
+  "  failed \u2014 work backward to find why",
+  "argument-hint: [the plan or decision]",
+  "---",
+  "",
+  "It is six months from now and this has",
+  "  failed badly: $ARGUMENTS",
+  "",
+  "Write the post-mortem from that future.",
+  "  Don't hedge \u2014 assume it went wrong."
+ ],
+ "termArg": "launching my $9/mo email-summary Chrome extension...",
+ "responseLines": [
+  "Dead by month 4 \u2014 11 paying users, killed the Stripe account.",
+  "Cause: Gmail ships free thread-summaries the week you launch.",
+  "Warning we ignore: 300 PH upvotes, only 4 convert to paid.",
+  "2k followers \u2260 buyers \u2014 that's peers, not inbox-drowning execs.",
+  "Fix today: presell 15 annual seats before Product Hunt."
+ ],
+ "typeStart": 1.0,
+ "lineStagger": 0.45
+}

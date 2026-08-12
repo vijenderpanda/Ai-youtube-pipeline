@@ -1,0 +1,92 @@
+[
+ {
+  "w": "SOON",
+  "start": 0.0,
+  "end": 0.55
+ },
+ {
+  "w": "YOU",
+  "start": 0.72,
+  "end": 0.84
+ },
+ {
+  "w": "JUST",
+  "start": 0.92,
+  "end": 1.08
+ },
+ {
+  "w": "TAP",
+  "start": 1.11,
+  "end": 1.32
+ },
+ {
+  "w": "YOUR",
+  "start": 1.38,
+  "end": 1.49
+ },
+ {
+  "w": "PHONE",
+  "start": 1.52,
+  "end": 1.93
+ },
+ {
+  "w": "NINETY",
+  "start": 2.37,
+  "end": 2.69
+ },
+ {
+  "w": "SECONDS",
+  "start": 2.74,
+  "end": 3.03
+ },
+ {
+  "w": "LATER",
+  "start": 3.06,
+  "end": 3.35
+ },
+ {
+  "w": "A",
+  "start": 3.39,
+  "end": 3.44
+ },
+ {
+  "w": "POD",
+  "start": 3.52,
+  "end": 3.77
+ },
+ {
+  "w": "PULLS",
+  "start": 3.82,
+  "end": 4.06
+ },
+ {
+  "w": "UP",
+  "start": 4.12,
+  "end": 4.33
+ },
+ {
+  "w": "CHEAPER",
+  "start": 4.54,
+  "end": 4.92
+ },
+ {
+  "w": "THAN",
+  "start": 4.96,
+  "end": 5.08
+ },
+ {
+  "w": "OWNING",
+  "start": 5.13,
+  "end": 5.33
+ },
+ {
+  "w": "A",
+  "start": 5.38,
+  "end": 5.4
+ },
+ {
+  "w": "CAR",
+  "start": 5.46,
+  "end": 6.08
+ }
+]

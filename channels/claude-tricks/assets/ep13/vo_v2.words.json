@@ -1,0 +1,492 @@
+[
+ {
+  "w": "STOP",
+  "start": 0.0,
+  "end": 0.31
+ },
+ {
+  "w": "RE-EXPLAINING",
+  "start": 0.37,
+  "end": 0.93
+ },
+ {
+  "w": "YOUR",
+  "start": 0.96,
+  "end": 1.06
+ },
+ {
+  "w": "STYLE",
+  "start": 1.09,
+  "end": 1.52
+ },
+ {
+  "w": "EVERY",
+  "start": 1.67,
+  "end": 2.1
+ },
+ {
+  "w": "SINGLE",
+  "start": 2.16,
+  "end": 2.63
+ },
+ {
+  "w": "CHAT",
+  "start": 2.81,
+  "end": 3.29
+ },
+ {
+  "w": "<BREAK",
+  "start": 3.83,
+  "end": 3.83
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 3.83,
+  "end": 3.83
+ },
+ {
+  "w": "/>",
+  "start": 3.83,
+  "end": 3.83
+ },
+ {
+  "w": "TYPE",
+  "start": 3.83,
+  "end": 4.13
+ },
+ {
+  "w": "IT",
+  "start": 4.16,
+  "end": 4.23
+ },
+ {
+  "w": "ONCE",
+  "start": 4.31,
+  "end": 4.69
+ },
+ {
+  "w": "IN",
+  "start": 4.72,
+  "end": 4.87
+ },
+ {
+  "w": "ONE",
+  "start": 4.93,
+  "end": 5.07
+ },
+ {
+  "w": "BOX",
+  "start": 5.11,
+  "end": 5.57
+ },
+ {
+  "w": "AND",
+  "start": 5.72,
+  "end": 5.86
+ },
+ {
+  "w": "EVERY",
+  "start": 5.96,
+  "end": 6.21
+ },
+ {
+  "w": "FUTURE",
+  "start": 6.26,
+  "end": 6.63
+ },
+ {
+  "w": "CHAT",
+  "start": 6.66,
+  "end": 6.93
+ },
+ {
+  "w": "ALREADY",
+  "start": 7.0,
+  "end": 7.33
+ },
+ {
+  "w": "KNOWS",
+  "start": 7.36,
+  "end": 7.8
+ },
+ {
+  "w": "<BREAK",
+  "start": 8.43,
+  "end": 8.43
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 8.43,
+  "end": 8.43
+ },
+ {
+  "w": "/>",
+  "start": 8.43,
+  "end": 8.43
+ },
+ {
+  "w": "SETTINGS",
+  "start": 8.43,
+  "end": 8.99
+ },
+ {
+  "w": "PROFILE",
+  "start": 9.07,
+  "end": 9.62
+ },
+ {
+  "w": "INSTRUCTIONS",
+  "start": 9.65,
+  "end": 10.19
+ },
+ {
+  "w": "FOR",
+  "start": 10.24,
+  "end": 10.36
+ },
+ {
+  "w": "CLAUDE",
+  "start": 10.4,
+  "end": 10.88
+ },
+ {
+  "w": "ONE",
+  "start": 11.03,
+  "end": 11.25
+ },
+ {
+  "w": "RULE:",
+  "start": 11.29,
+  "end": 11.66
+ },
+ {
+  "w": "SHORT",
+  "start": 11.77,
+  "end": 12.01
+ },
+ {
+  "w": "BULLET",
+  "start": 12.05,
+  "end": 12.28
+ },
+ {
+  "w": "POINTS",
+  "start": 12.33,
+  "end": 12.82
+ },
+ {
+  "w": "NO",
+  "start": 12.93,
+  "end": 13.08
+ },
+ {
+  "w": "PREAMBLE",
+  "start": 13.15,
+  "end": 13.73
+ },
+ {
+  "w": "SAVE",
+  "start": 13.91,
+  "end": 14.4
+ },
+ {
+  "w": "<BREAK",
+  "start": 15.02,
+  "end": 15.02
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 15.02,
+  "end": 15.02
+ },
+ {
+  "w": "/>",
+  "start": 15.02,
+  "end": 15.02
+ },
+ {
+  "w": "NOW",
+  "start": 15.02,
+  "end": 15.21
+ },
+ {
+  "w": "A",
+  "start": 15.29,
+  "end": 15.34
+ },
+ {
+  "w": "BRAND",
+  "start": 15.51,
+  "end": 15.97
+ },
+ {
+  "w": "NEW",
+  "start": 16.18,
+  "end": 16.39
+ },
+ {
+  "w": "CHAT",
+  "start": 16.47,
+  "end": 16.96
+ },
+ {
+  "w": "NOTHING",
+  "start": 17.21,
+  "end": 17.53
+ },
+ {
+  "w": "CARRIED",
+  "start": 17.59,
+  "end": 17.86
+ },
+ {
+  "w": "OVER",
+  "start": 17.9,
+  "end": 18.27
+ },
+ {
+  "w": "I",
+  "start": 18.48,
+  "end": 18.54
+ },
+ {
+  "w": "ASK",
+  "start": 18.62,
+  "end": 18.82
+ },
+ {
+  "w": "SOMETHING",
+  "start": 18.88,
+  "end": 19.27
+ },
+ {
+  "w": "COMPLETELY",
+  "start": 19.35,
+  "end": 19.9
+ },
+ {
+  "w": "UNRELATED",
+  "start": 19.95,
+  "end": 20.57
+ },
+ {
+  "w": "<BREAK",
+  "start": 21.04,
+  "end": 21.04
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 21.04,
+  "end": 21.04
+ },
+ {
+  "w": "/>",
+  "start": 21.04,
+  "end": 21.04
+ },
+ {
+  "w": "USED",
+  "start": 21.04,
+  "end": 21.29
+ },
+ {
+  "w": "CAR",
+  "start": 21.35,
+  "end": 21.52
+ },
+ {
+  "w": "ADVICE",
+  "start": 21.56,
+  "end": 22.14
+ },
+ {
+  "w": "NO",
+  "start": 22.38,
+  "end": 22.56
+ },
+ {
+  "w": "PREAMBLE",
+  "start": 22.67,
+  "end": 23.45
+ },
+ {
+  "w": "STRAIGHT",
+  "start": 23.73,
+  "end": 24.07
+ },
+ {
+  "w": "INTO",
+  "start": 24.09,
+  "end": 24.24
+ },
+ {
+  "w": "BULLETS",
+  "start": 24.29,
+  "end": 24.8
+ },
+ {
+  "w": "I",
+  "start": 25.01,
+  "end": 25.07
+ },
+ {
+  "w": "NEVER",
+  "start": 25.15,
+  "end": 25.32
+ },
+ {
+  "w": "ASKED",
+  "start": 25.37,
+  "end": 25.55
+ },
+ {
+  "w": "FOR",
+  "start": 25.58,
+  "end": 25.66
+ },
+ {
+  "w": "THAT",
+  "start": 25.7,
+  "end": 25.82
+ },
+ {
+  "w": "FORMAT",
+  "start": 25.88,
+  "end": 26.19
+ },
+ {
+  "w": "HERE",
+  "start": 26.25,
+  "end": 26.54
+ },
+ {
+  "w": "<BREAK",
+  "start": 27.06,
+  "end": 27.06
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 27.06,
+  "end": 27.06
+ },
+ {
+  "w": "/>",
+  "start": 27.06,
+  "end": 27.06
+ },
+ {
+  "w": "TWO",
+  "start": 27.06,
+  "end": 27.25
+ },
+ {
+  "w": "SECONDS",
+  "start": 27.31,
+  "end": 27.64
+ },
+ {
+  "w": "OF",
+  "start": 27.68,
+  "end": 27.74
+ },
+ {
+  "w": "SETUP",
+  "start": 27.78,
+  "end": 28.26
+ },
+ {
+  "w": "EVERY",
+  "start": 28.47,
+  "end": 28.8
+ },
+ {
+  "w": "ANSWER",
+  "start": 28.89,
+  "end": 29.23
+ },
+ {
+  "w": "AFTER",
+  "start": 29.3,
+  "end": 29.59
+ },
+ {
+  "w": "IT",
+  "start": 29.65,
+  "end": 29.79
+ },
+ {
+  "w": "FORMATTED",
+  "start": 29.84,
+  "end": 30.3
+ },
+ {
+  "w": "YOUR",
+  "start": 30.36,
+  "end": 30.49
+ },
+ {
+  "w": "WAY",
+  "start": 30.55,
+  "end": 30.92
+ },
+ {
+  "w": "<BREAK",
+  "start": 31.41,
+  "end": 31.41
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 31.41,
+  "end": 31.41
+ },
+ {
+  "w": "/>",
+  "start": 31.41,
+  "end": 31.41
+ },
+ {
+  "w": "FOLLOW",
+  "start": 31.41,
+  "end": 31.94
+ },
+ {
+  "w": "I",
+  "start": 32.18,
+  "end": 32.25
+ },
+ {
+  "w": "UNPACK",
+  "start": 32.37,
+  "end": 32.73
+ },
+ {
+  "w": "ONE",
+  "start": 32.84,
+  "end": 33.08
+ },
+ {
+  "w": "A-I",
+  "start": 33.15,
+  "end": 33.46
+ },
+ {
+  "w": "TRICK",
+  "start": 33.58,
+  "end": 33.84
+ },
+ {
+  "w": "EVERY",
+  "start": 33.99,
+  "end": 34.27
+ },
+ {
+  "w": "SINGLE",
+  "start": 34.32,
+  "end": 34.62
+ },
+ {
+  "w": "DAY",
+  "start": 34.66,
+  "end": 35.16
+ }
+]

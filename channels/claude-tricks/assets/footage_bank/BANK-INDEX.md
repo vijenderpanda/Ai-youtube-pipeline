@@ -15,6 +15,17 @@ carries the measured beat times an episode's in-points must come from.
 | `session_b_prompt_structure` | 64.633s | structuring the prompt instead of piling on words | fix-forbid: clean | unused |
 | `session_c_task_overload` | 45.967s | one task per ask instead of five at once | fix-forbid: clean | unused |
 | `session_d_document_grounding` | 83.433s | pasting the actual document instead of describing it | fail: `depends`, `often`, `usually`; fix-seed: `Reinstatement Levy`, `Schedule C` | **build 30** (shipped as `assets/ep30/raw_doc.mp4`) |
+| `table_demo_real` | 51.333s | asking for the ANSWER AS A TABLE, not just the answer | fix-seed: `Notion`, `Obsidian` (headers `Feature`/`Notion`/`Obsidian` render from 36.95s) | **build 32** (copied to `assets/ep32/table_demo.mp4`) |
+
+⚠ `table_demo_real` is the one bank tape shot on **claude.ai logged IN** (`--site claude
+--require-login --redact-pii`), not logged-out chatgpt.com — so it carries no auth chrome and the
+sidebar is redacted. Read the fail half before writing to it: the first answer is **not** literal
+prose. It is a long sectioned answer (2175 chars) with a *per-app* 2-column `Aspect | Details`
+table under each of Google Docs / Notion / Obsidian, and only the Google Docs section fits on
+screen — the tape never scrolls, so Notion/Obsidian are only ever implied by the heading peeking
+in at the bottom edge (~20.5s). The honest contrast is **three blocks you scroll and
+cross-reference vs one 4-column grid you scan across**, NOT "wall of prose vs table". A script
+that says "wall of text" over this footage is overclaiming against its own frame.
 
 **Source:** `chatgpt.com` logged OUT (`--no-profile --dark`). Two consequences worth knowing
 before planning a beat on any of these: the frame carries **Log in / Sign up for free** chrome

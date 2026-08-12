@@ -1,0 +1,79 @@
+{
+  "typing_start": 2.297,
+  "typing_end": 19.052,
+  "submit": 20.057,
+  "answer_start": 20.057,
+  "answer_end": 34.992,
+  "scrolls": [],
+  "duration": 61.833,
+  "first_token": 23.309,
+  "first_personalized": 27.667,
+  "matched_term": "Obsidian",
+  "personalized_delay_s": 4.358,
+  "observed": {
+    "answer_selector": ".font-claude-response",
+    "answer_head": "Weighed three note-taking tools against beginner needs and preferences\n\ue027\nWeighed three note-taking tools against beginner needs and preferences\n\nAs a total beginner, here's the honest truth: Google Docs is probably your safest bet to start with. It's the least intimidating option, and you almost certainly already know how to use it. You just open it up, start typing, and boom\u2014you're taking notes. ",
+    "answer_chars": 2897,
+    "logged_in": true,
+    "pii_blurred": 0,
+    "forbidden_term": null,
+    "fix_answer_selector": ".font-claude-response",
+    "fix_answer_head": "Restructured comparative analysis into tabular format\n\ue027\nRestructured comparative analysis into tabular format\nAspect\tGoogle Docs\tObsidian\tNotion\nEase of Use\tExtremely simple; minimal learning curve\tModerate; need to learn Markdown and linking\tSteep; lots of features to explore\nCost\tFree (with Google account)\tFree or optional paid sync\tFree (with limitations) or paid\nStorage\tCloud (Google Drive)\tLo",
+    "fix_answer_chars": 1170,
+    "fix_forbidden_term": null,
+    "fix_seed_matched": [
+      "Notion",
+      "Obsidian"
+    ],
+    "fix_seed_first": "Notion"
+  },
+  "fix_typing_start": 38.887,
+  "fix_typing_end": 44.065,
+  "fix_submit": 44.899,
+  "fix_answer_end": 61.784,
+  "fix_first_token": 47.734,
+  "fix_seeded": 48.767,
+  "fix_seeded_delay_s": 1.033,
+  "punches": [
+    {
+      "t0": 2.197,
+      "t1": 19.352,
+      "center": [
+        0.506,
+        0.333
+      ],
+      "zoom": 1.141,
+      "label": "compose"
+    },
+    {
+      "t0": 23.109,
+      "t1": 34.792,
+      "center": [
+        0.5,
+        0.952
+      ],
+      "zoom": 1.02,
+      "label": "robotic"
+    },
+    {
+      "t0": 38.787,
+      "t1": 44.365,
+      "center": [
+        0.506,
+        0.895
+      ],
+      "zoom": 1.2,
+      "label": "fixline"
+    },
+    {
+      "t0": 47.534,
+      "t1": 61.684,
+      "center": [
+        0.5,
+        0.829
+      ],
+      "zoom": 1.02,
+      "label": "human"
+    }
+  ]
+}

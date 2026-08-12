@@ -1,0 +1,99 @@
+{
+  "title": "Claude Buried Your Answer In A Wall Of Text — One Line Fixes It 🧱",
+  "tags": "claude artifacts,claude ai tips,wall of text,ai productivity,claude tips,artifact panel,ai for beginners,prompt tips,claude ai,ai writing,ai tips",
+  "cover": {
+    "title1": "STOP READING",
+    "title2": "WALLS OF TEXT",
+    "sub": "one line fixes it",
+    "emojis": "🧱"
+  },
+  "outro": true,
+  "_demo_note": "IN-HOUSE MOCK, not a vendor tape. The planned path was a real logged-in claude.ai capture (record_demo.py --site claude --require-login --redact-pii --followup). Plan-time preflight passed (logged_in:true, 'Artifacts' visible), but the live take failed on TWO independent gates, so the brief's sanctioned fallback was taken: (1) the prompt was never actually submitted - Enter did not send on claude.ai's tiptap composer, the URL stayed on /new and the text sat in the composer, so watch_answer never saw an answer and first_token came back None (this is exactly the SITES/ANSWER_SELECTORS gap the file's own playbook 10b comment warns about: ANSWER_SELECTORS carries only chatgpt/desktop markup and matches NOTHING on claude.ai); (2) the 540x960 mobile viewport renders the recents sidebar EXPANDED, and its body text carried real personal conversation titles and the account name - redaction could not be verified clean frame-by-frame. The 84s take was DELETED rather than shipped or held. Demo beats are therefore scripts/make_artifact_mock.py (playbook 13 grammar: no vendor name, no logo, no lookalike branding, ILLUSTRATIVE footer inside the caption-safe band). The Artifacts concept is generic and the fact is uncontested, so a labelled mock is honest here - but this episode shows OUR mock, and the script never claims to be showing the product.",
+  "lines": [
+    "Claude buried your answer.",
+    "One line fixes it.",
+    "Put it in an artifact — and Claude builds the real thing.",
+    "A clean document. Formatted, scrollable, yours to keep.",
+    "Copy, edit, or download it in one click.",
+    "Stop copying answers out by hand — tell Claude to put it in an artifact.",
+    "Long answer you'll actually use? Ask for an artifact.",
+    "Follow. I unpack one AI trick every single day."
+  ],
+  "hot_words": [
+    "BURIED",
+    "ANSWER",
+    "THIS",
+    "ONE",
+    "LINE",
+    "FIXES",
+    "PUT",
+    "ARTIFACT",
+    "BUILDS",
+    "REAL",
+    "THING",
+    "CLEAN",
+    "DOCUMENT",
+    "FORMATTED",
+    "SCROLLABLE",
+    "YOURS",
+    "KEEP",
+    "COPY",
+    "EDIT",
+    "DOWNLOAD",
+    "CLICK",
+    "STOP",
+    "COPYING",
+    "HAND",
+    "TELL",
+    "LONG",
+    "ACTUALLY",
+    "USE",
+    "ASK",
+    "FOLLOW",
+    "UNPACK",
+    "TRICK",
+    "EVERY",
+    "DAY"
+  ],
+  "_beat_note": "PROOF-AT-4s, achieved STRUCTURALLY not by clipping words. Two earlier cuts failed the 4.0s gate at 4.81s and 4.82s: three pre-panel lines carry 3x0.4s of locked breaks, leaving ~2.8s of speech for the hook + wall + fix, i.e. ~6 words total - unshippable against the brief's own 'comprehension pacing, NOT max speed' rule. Clipping line 3 to 'One line.' gained NOTHING (4.81 -> 4.82s) because ElevenLabs re-draws the whole take and lines 1-2 grew to absorb the saving; TTS duration is not deterministic, so chasing the gate word-by-word is unbounded. The fix: mock_ask.png ALREADY shows the wall of text AND the typed 'put that in an artifact' in the composer, so the separate hold_wall beat was redundant. Dropping it removes one line and one 0.4s break from the pre-panel run: wall+fix both land at 2.07s and the ARTIFACT PANEL renders at 3.82s, under the gate with real margin. hold_wall.mp4 is retained on disk, now unused. SINGLE-BEAT: one move, no stacked demos.",
+  "beats": [
+    "host",
+    "rec:ep31/hold_ask.mp4@0.0",
+    "rec:ep31/hold_panel.mp4@0.0",
+    "rec:ep31/hold_done.mp4@0.0",
+    "rec:ep31/hold_done.mp4@3.0",
+    "host2",
+    "host2",
+    "host2"
+  ],
+  "_steps_note": "Three chips over the three teaching beats (type the line -> panel renders -> copy it), re-probed with probe_frames.py corner over the NEW cut windows (Ep26 rule). Ep25 v4 rule - reading what the ink IS: tl carries only the decorative 'AI ASSISTANT' header strip, which sits above the artifact panel's top edge and above the wall body, so a tl chip never covers the content being taught. br is rejected on the ask beat despite scoring clean: it sits on the composer, which is the thing that beat is teaching.",
+  "steps": [
+    [
+      "STEP 1/3 · ONE LINE",
+      1,
+      1,
+      "tl"
+    ],
+    [
+      "STEP 2/3 · ARTIFACT PANEL",
+      2,
+      3,
+      "tl"
+    ],
+    [
+      "STEP 3/3 · COPY IT",
+      4,
+      4,
+      "tl"
+    ]
+  ],
+  "emphasis": [
+    [
+      "ask for an artifact",
+      6,
+      6
+    ]
+  ],
+  "music": "music/bed_active.mp3",
+  "endcard": null
+}

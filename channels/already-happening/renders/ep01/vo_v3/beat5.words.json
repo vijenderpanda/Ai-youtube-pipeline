@@ -1,0 +1,112 @@
+[
+ {
+  "w": "SO",
+  "start": 0.0,
+  "end": 0.17
+ },
+ {
+  "w": "NO",
+  "start": 0.26,
+  "end": 0.33
+ },
+ {
+  "w": "ONE",
+  "start": 0.38,
+  "end": 0.5
+ },
+ {
+  "w": "OWNS",
+  "start": 0.53,
+  "end": 0.72
+ },
+ {
+  "w": "ONE",
+  "start": 0.79,
+  "end": 1.14
+ },
+ {
+  "w": "AND",
+  "start": 1.46,
+  "end": 1.6
+ },
+ {
+  "w": "A",
+  "start": 1.65,
+  "end": 1.68
+ },
+ {
+  "w": "THIRD",
+  "start": 1.74,
+  "end": 1.93
+ },
+ {
+  "w": "OF",
+  "start": 1.95,
+  "end": 2.0
+ },
+ {
+  "w": "THE",
+  "start": 2.03,
+  "end": 2.1
+ },
+ {
+  "w": "CITY",
+  "start": 2.15,
+  "end": 2.43
+ },
+ {
+  "w": "ALL",
+  "start": 2.45,
+  "end": 2.58
+ },
+ {
+  "w": "THAT",
+  "start": 2.62,
+  "end": 2.73
+ },
+ {
+  "w": "PARKING",
+  "start": 2.77,
+  "end": 3.3
+ },
+ {
+  "w": "TURNS",
+  "start": 3.68,
+  "end": 3.99
+ },
+ {
+  "w": "BACK",
+  "start": 4.06,
+  "end": 4.3
+ },
+ {
+  "w": "INTO",
+  "start": 4.35,
+  "end": 4.5
+ },
+ {
+  "w": "PARKS",
+  "start": 4.57,
+  "end": 5.18
+ },
+ {
+  "w": "HOMES",
+  "start": 5.42,
+  "end": 6.05
+ },
+ {
+  "w": "STREETS",
+  "start": 6.43,
+  "end": 6.78
+ },
+ {
+  "w": "FOR",
+  "start": 6.82,
+  "end": 6.93
+ },
+ {
+  "w": "PEOPLE",
+  "start": 6.98,
+  "end": 7.62
+ }
+]

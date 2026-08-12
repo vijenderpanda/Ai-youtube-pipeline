@@ -1,0 +1,26 @@
+{
+ "commandKey": "scout",
+ "fileLines": [
+  "---",
+  "description: List what I'd need to know",
+  "  before deciding this",
+  "argument-hint: [the decision]",
+  "---",
+  "",
+  "Before I decide this, scout the ground:",
+  "  $ARGUMENTS",
+  "",
+  "Don't give me an answer. Give me the map",
+  "  of what I don't yet know."
+ ],
+ "termArg": "adding an AI chatbot to our B2B analytics dashboard",
+ "responseLines": [
+  "Settle it: do users ask 'why', not just 'what'?",
+  "Cheap test: Wizard-of-Oz it \u2014 human answers, 5 accounts, 2 weeks.",
+  "Point of no return: once sales pitches it, ripping it out burns trust.",
+  "Hidden cost: per-query LLM spend at scale \u2014 margin killer?",
+  "Real question: customer pull, or competitor-checkbox reflex?"
+ ],
+ "typeStart": 1.0,
+ "lineStagger": 0.45
+}

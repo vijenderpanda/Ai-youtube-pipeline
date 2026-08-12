@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "heygen_id": "dc9533a1e07944a1ad32e6dcb19b678f",
+    "outfit": "_untracked",
+    "role": "center",
+    "ts": 1786434837
+  },
+  {
+    "heygen_id": "184a41d13f5645eb900d1d7dd88edce7",
+    "outfit": "outfit_06_cream_turtleneck",
+    "role": "center",
+    "ts": 1786449367
+  },
+  {
+    "heygen_id": "f55806a47753494fac94b0b3cc60e8b6",
+    "outfit": "outfit_11_sol_magenta",
+    "role": "wide",
+    "ts": 0
+  }
+]

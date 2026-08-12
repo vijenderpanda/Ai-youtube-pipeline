@@ -1,0 +1,162 @@
+[
+ {
+  "w": "NOW",
+  "start": 0.0,
+  "end": 0.19
+ },
+ {
+  "w": "PUSH",
+  "start": 0.26,
+  "end": 0.51
+ },
+ {
+  "w": "IT",
+  "start": 0.56,
+  "end": 0.64
+ },
+ {
+  "w": "FIVE",
+  "start": 0.7,
+  "end": 0.94
+ },
+ {
+  "w": "YEARS",
+  "start": 0.97,
+  "end": 1.36
+ },
+ {
+  "w": "THE",
+  "start": 1.74,
+  "end": 1.86
+ },
+ {
+  "w": "TECH",
+  "start": 1.9,
+  "end": 2.08
+ },
+ {
+  "w": "DOESN'T",
+  "start": 2.12,
+  "end": 2.35
+ },
+ {
+  "w": "GET",
+  "start": 2.38,
+  "end": 2.48
+ },
+ {
+  "w": "WORSE",
+  "start": 2.53,
+  "end": 2.98
+ },
+ {
+  "w": "IT",
+  "start": 3.13,
+  "end": 3.25
+ },
+ {
+  "w": "GETS",
+  "start": 3.3,
+  "end": 3.47
+ },
+ {
+  "w": "CHEAPER",
+  "start": 3.53,
+  "end": 4.0
+ },
+ {
+  "w": "A",
+  "start": 4.33,
+  "end": 4.41
+ },
+ {
+  "w": "POD",
+  "start": 4.5,
+  "end": 4.79
+ },
+ {
+  "w": "ARRIVES",
+  "start": 4.84,
+  "end": 5.22
+ },
+ {
+  "w": "IN",
+  "start": 5.28,
+  "end": 5.35
+ },
+ {
+  "w": "NINETY",
+  "start": 5.43,
+  "end": 5.7
+ },
+ {
+  "w": "SECONDS",
+  "start": 5.76,
+  "end": 6.29
+ },
+ {
+  "w": "IT",
+  "start": 6.5,
+  "end": 6.63
+ },
+ {
+  "w": "COSTS",
+  "start": 6.69,
+  "end": 6.97
+ },
+ {
+  "w": "LESS",
+  "start": 7.05,
+  "end": 7.28
+ },
+ {
+  "w": "THAN",
+  "start": 7.3,
+  "end": 7.42
+ },
+ {
+  "w": "OWNING",
+  "start": 7.46,
+  "end": 7.64
+ },
+ {
+  "w": "A",
+  "start": 7.69,
+  "end": 7.71
+ },
+ {
+  "w": "CAR",
+  "start": 7.77,
+  "end": 8.24
+ },
+ {
+  "w": "SO",
+  "start": 8.68,
+  "end": 8.84
+ },
+ {
+  "w": "WHY",
+  "start": 8.9,
+  "end": 9.06
+ },
+ {
+  "w": "WOULD",
+  "start": 9.1,
+  "end": 9.24
+ },
+ {
+  "w": "YOU",
+  "start": 9.28,
+  "end": 9.36
+ },
+ {
+  "w": "OWN",
+  "start": 9.42,
+  "end": 9.57
+ },
+ {
+  "w": "ONE",
+  "start": 9.64,
+  "end": 10.12
+ }
+]

@@ -1,0 +1,87 @@
+[
+ {
+  "w": "THIS",
+  "start": 0.0,
+  "end": 0.21
+ },
+ {
+  "w": "CAR",
+  "start": 0.27,
+  "end": 0.42
+ },
+ {
+  "w": "HAS",
+  "start": 0.46,
+  "end": 0.58
+ },
+ {
+  "w": "NO",
+  "start": 0.64,
+  "end": 0.72
+ },
+ {
+  "w": "DRIVER",
+  "start": 0.78,
+  "end": 1.28
+ },
+ {
+  "w": "AND",
+  "start": 1.6,
+  "end": 1.76
+ },
+ {
+  "w": "IN",
+  "start": 1.83,
+  "end": 1.9
+ },
+ {
+  "w": "ONE",
+  "start": 1.99,
+  "end": 2.17
+ },
+ {
+  "w": "CITY",
+  "start": 2.22,
+  "end": 2.53
+ },
+ {
+  "w": "FIFTY",
+  "start": 2.58,
+  "end": 2.87
+ },
+ {
+  "w": "THOUSAND",
+  "start": 2.91,
+  "end": 3.25
+ },
+ {
+  "w": "PEOPLE",
+  "start": 3.3,
+  "end": 3.56
+ },
+ {
+  "w": "RIDE",
+  "start": 3.6,
+  "end": 3.81
+ },
+ {
+  "w": "IN",
+  "start": 3.84,
+  "end": 3.9
+ },
+ {
+  "w": "IT",
+  "start": 3.97,
+  "end": 4.05
+ },
+ {
+  "w": "EVERY",
+  "start": 4.14,
+  "end": 4.37
+ },
+ {
+  "w": "WEEK",
+  "start": 4.41,
+  "end": 5.02
+ }
+]

@@ -1,0 +1,112 @@
+{
+ "title": "Stop Re-Explaining Your Style to AI 🔁 (2-Second Fix)",
+ "tags": "claude ai tips,ai for beginners,prompt engineering,ai productivity,custom instructions,claude custom instructions,instructions for claude,chatgpt tips,ai tips,claude ai,ai shorts,ai workflow",
+ "epTag": "EP13 · SET IT ONCE",
+ "host_panels": [
+  {
+   "lines": [
+    "YOU RETYPE",
+    "THE SAME RULE",
+    "EVERY CHAT"
+   ],
+   "hot": "EVERY"
+  },
+  {
+   "lines": [
+    "SET IT ONCE.",
+    "EVERY ANSWER,",
+    "FOREVER"
+   ],
+   "hot": "ONCE"
+  }
+ ],
+ "lines": [
+  "Stop re-explaining your style. Every. Single. Chat.",
+  "Type it once, in one box, and every future chat already knows.",
+  "Settings, Profile, Instructions for Claude. One rule: short bullet points, no preamble. Save.",
+  "Now a brand new chat. Nothing carried over. I ask something completely unrelated.",
+  "Used car advice. No preamble, straight into bullets. I never asked for that format here.",
+  "Two seconds of setup. Every answer after it, formatted your way.",
+  "Follow. I unpack one A-I trick every single day."
+ ],
+ "hot_words": [
+  "STOP",
+  "STYLE",
+  "EVERY",
+  "SINGLE",
+  "CHAT",
+  "ONCE",
+  "KNOWS",
+  "INSTRUCTIONS",
+  "RULE",
+  "BULLET",
+  "PREAMBLE",
+  "SAVE",
+  "BRAND",
+  "NEW",
+  "NOTHING",
+  "UNRELATED",
+  "BULLETS",
+  "NEVER",
+  "FORMAT",
+  "SETUP",
+  "FOREVER",
+  "FOLLOW",
+  "TRICK",
+  "DAY"
+ ],
+ "beats": [
+  "host",
+  "host",
+  "pip:setonce",
+  "pip:newchat",
+  "pip:proof",
+  "host2",
+  "host2"
+ ],
+ "steps": [],
+ "music": "music/bed_active.mp3",
+ "endcard": null,
+ "outro": true,
+ "outro_dur": 0,
+ "outro_src": "ep13/outro_card.mp4",
+ "hook": {
+  "image": "ep13/hook_art/set_once.jpg",
+  "lines": [
+   "STOP RE-EXPLAINING",
+   "YOURSELF TO AI"
+  ],
+  "hot": "STOP",
+  "kicker": "set it once · every chat after it",
+  "until": 2.6
+ },
+ "pips": {
+  "setonce": {
+   "src": "ep13/prefs_demo.mp4",
+   "from": 13.2,
+   "lines": [
+    "1. SET IT ONCE",
+    "Instructions for Claude",
+    "one rule, then Save"
+   ]
+  },
+  "newchat": {
+   "src": "ep13/prefs_demo.mp4",
+   "from": 26.0,
+   "lines": [
+    "2. BRAND-NEW CHAT",
+    "Nothing carried over.",
+    "Unrelated question."
+   ]
+  },
+  "proof": {
+   "src": "ep13/prefs_demo.mp4",
+   "from": 36.0,
+   "lines": [
+    "IT JUST WORKS",
+    "Bullets. No preamble.",
+    "Never asked twice."
+   ]
+  }
+ }
+}

@@ -1,0 +1,52 @@
+[
+ {
+  "w": "AI",
+  "start": 0.0,
+  "end": 0.44
+ },
+ {
+  "w": "ALREADY",
+  "start": 0.51,
+  "end": 0.87
+ },
+ {
+  "w": "DOES",
+  "start": 0.92,
+  "end": 1.1
+ },
+ {
+  "w": "YOUR",
+  "start": 1.15,
+  "end": 1.25
+ },
+ {
+  "w": "JOB",
+  "start": 1.31,
+  "end": 1.74
+ },
+ {
+  "w": "YOU",
+  "start": 1.95,
+  "end": 2.07
+ },
+ {
+  "w": "JUST",
+  "start": 2.16,
+  "end": 2.36
+ },
+ {
+  "w": "HAVEN'T",
+  "start": 2.42,
+  "end": 2.68
+ },
+ {
+  "w": "BEEN",
+  "start": 2.72,
+  "end": 2.87
+ },
+ {
+  "w": "TOLD",
+  "start": 2.9,
+  "end": 3.48
+ }
+]

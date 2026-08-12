@@ -17,6 +17,34 @@ export const CHANNEL_PALETTE = {
   _network: '#94A3B8', // factory-wide items — neutral steel
 }
 
+/**
+ * Per-channel glyph used on Studio cards (and anywhere we render a branded
+ * fallback cover). Chosen to read at a glance next to the accent color. New
+ * channels fall back to a monogram of their display name / key.
+ */
+export const CHANNEL_EMOJI = {
+  'claude-tricks': '🤖',
+  vehicles: '🚚',
+  aashiqana: '🌧️',
+  'language-abc': '🌍',
+  lulla: '🌙',
+  'already-happening': '⚡',
+  _network: '🛠️',
+}
+
+export function channelEmoji(key) {
+  return CHANNEL_EMOJI[key] || null
+}
+
+/** Two-letter-ish monogram fallback when a channel has no emoji. */
+export function channelMonogram(nameOrKey) {
+  const s = String(nameOrKey || '').replace(/[^a-z0-9 ]/gi, ' ').trim()
+  if (!s) return '★'
+  const parts = s.split(/\s+/)
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase()
+  return s.slice(0, 2).toUpperCase()
+}
+
 const HASH_PALETTE = [
   '#7C9CF5',
   '#F472B6',

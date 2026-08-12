@@ -1,0 +1,26 @@
+{
+ "commandKey": "devil",
+ "fileLines": [
+  "---",
+  "description: Devil's advocate \u2014 argue",
+  "  hard against my last idea",
+  "argument-hint: [idea, or leave blank for",
+  "  my last message]",
+  "---",
+  "",
+  "Take the opposing side of this, and",
+  "  argue it like you mean it: $ARGUMENTS",
+  "",
+  "(If nothing is provided, argue against"
+ ],
+ "termArg": "we should rewrite our Python monolith in Rust for...",
+ "responseLines": [
+  "Your monolith idles on API calls, not CPU \u2014 Rust won't help.",
+  "3-year-old code hides edge cases a rewrite silently drops.",
+  "A rewrite ships nothing for months while revenue waits.",
+  "Same logic that killed 'templated': effort, no payoff.",
+  "Collapses only if profiling proves you're CPU-bound."
+ ],
+ "typeStart": 1.0,
+ "lineStagger": 0.45
+}

@@ -1,0 +1,92 @@
+[
+ {
+  "w": "THERE'S",
+  "start": 0.0,
+  "end": 0.29
+ },
+ {
+  "w": "A",
+  "start": 0.34,
+  "end": 0.37
+ },
+ {
+  "w": "CITY",
+  "start": 0.46,
+  "end": 0.79
+ },
+ {
+  "w": "WHERE",
+  "start": 0.84,
+  "end": 1.01
+ },
+ {
+  "w": "FIFTY",
+  "start": 1.07,
+  "end": 1.37
+ },
+ {
+  "w": "THOUSAND",
+  "start": 1.43,
+  "end": 1.8
+ },
+ {
+  "w": "PEOPLE",
+  "start": 1.85,
+  "end": 2.14
+ },
+ {
+  "w": "A",
+  "start": 2.17,
+  "end": 2.21
+ },
+ {
+  "w": "WEEK",
+  "start": 2.26,
+  "end": 2.47
+ },
+ {
+  "w": "RIDE",
+  "start": 2.53,
+  "end": 2.73
+ },
+ {
+  "w": "IN",
+  "start": 2.75,
+  "end": 2.82
+ },
+ {
+  "w": "CARS",
+  "start": 2.89,
+  "end": 3.26
+ },
+ {
+  "w": "WITH",
+  "start": 3.31,
+  "end": 3.45
+ },
+ {
+  "w": "NO",
+  "start": 3.54,
+  "end": 3.68
+ },
+ {
+  "w": "ONE",
+  "start": 3.75,
+  "end": 3.84
+ },
+ {
+  "w": "AT",
+  "start": 3.87,
+  "end": 3.91
+ },
+ {
+  "w": "THE",
+  "start": 3.95,
+  "end": 4.02
+ },
+ {
+  "w": "WHEEL",
+  "start": 4.05,
+  "end": 4.69
+ }
+]

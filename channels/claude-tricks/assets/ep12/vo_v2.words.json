@@ -1,447 +1,492 @@
 [
  {
-  "w": "YOU'RE",
+  "w": "YOU",
   "start": 0.0,
-  "end": 0.24
+  "end": 0.19
  },
  {
-  "w": "USING",
-  "start": 0.28,
-  "end": 0.51
+  "w": "ASKED",
+  "start": 0.3,
+  "end": 0.52
  },
  {
-  "w": "CLAUDE",
+  "w": "A",
   "start": 0.56,
-  "end": 0.82
+  "end": 0.58
  },
  {
-  "w": "IN",
-  "start": 0.85,
-  "end": 0.89
+  "w": "GREAT",
+  "start": 0.63,
+  "end": 0.85
  },
  {
-  "w": "A",
-  "start": 0.93,
-  "end": 0.95
- },
- {
-  "w": "BROWSER",
-  "start": 0.99,
-  "end": 1.28
- },
- {
-  "w": "TAB",
-  "start": 1.31,
-  "end": 1.71
- },
- {
-  "w": "THAT'S",
-  "start": 1.79,
-  "end": 2.0
- },
- {
-  "w": "THE",
-  "start": 2.03,
-  "end": 2.1
- },
- {
-  "w": "WEAK",
-  "start": 2.16,
-  "end": 2.32
- },
- {
-  "w": "VERSION",
-  "start": 2.39,
-  "end": 2.9
+  "w": "QUESTION",
+  "start": 0.92,
+  "end": 1.49
  },
  {
   "w": "<BREAK",
-  "start": 3.45,
-  "end": 3.45
+  "start": 1.95,
+  "end": 1.95
  },
  {
   "w": "TIME=\"0.4S\"",
-  "start": 3.45,
-  "end": 3.45
+  "start": 1.95,
+  "end": 1.95
  },
  {
   "w": "/>",
-  "start": 3.45,
-  "end": 3.45
- },
- {
-  "w": "THERE'S",
-  "start": 3.45,
-  "end": 3.67
- },
- {
-  "w": "A",
-  "start": 3.69,
-  "end": 3.71
- },
- {
-  "w": "DESKTOP",
-  "start": 3.77,
-  "end": 4.2
- },
- {
-  "w": "APP",
-  "start": 4.32,
-  "end": 4.64
- },
- {
-  "w": "WATCH",
-  "start": 4.71,
-  "end": 5.28
- },
- {
-  "w": "<BREAK",
-  "start": 5.85,
-  "end": 5.85
- },
- {
-  "w": "TIME=\"0.4S\"",
-  "start": 5.85,
-  "end": 5.85
- },
- {
-  "w": "/>",
-  "start": 5.85,
-  "end": 5.85
- },
- {
-  "w": "OPTION",
-  "start": 5.85,
-  "end": 6.2
- },
- {
-  "w": "SPACE",
-  "start": 6.26,
-  "end": 6.75
- },
- {
-  "w": "AND",
-  "start": 6.78,
-  "end": 6.93
+  "start": 1.95,
+  "end": 1.95
  },
  {
   "w": "CLAUDE",
-  "start": 6.99,
-  "end": 7.28
+  "start": 1.95,
+  "end": 2.3
  },
  {
-  "w": "POPS",
-  "start": 7.31,
-  "end": 7.57
- },
- {
-  "w": "UP",
-  "start": 7.62,
-  "end": 7.75
- },
- {
-  "w": "OVER",
-  "start": 7.84,
-  "end": 8.06
- },
- {
-  "w": "ANYTHING",
-  "start": 8.09,
-  "end": 8.57
- },
- {
-  "w": "<BREAK",
-  "start": 9.08,
-  "end": 9.08
- },
- {
-  "w": "TIME=\"0.4S\"",
-  "start": 9.08,
-  "end": 9.08
- },
- {
-  "w": "/>",
-  "start": 9.08,
-  "end": 9.08
- },
- {
-  "w": "DRAG",
-  "start": 9.08,
-  "end": 9.38
- },
- {
-  "w": "A",
-  "start": 9.42,
-  "end": 9.44
- },
- {
-  "w": "WHOLE",
-  "start": 9.48,
-  "end": 9.67
- },
- {
-  "w": "FOLDER",
-  "start": 9.72,
-  "end": 10.1
- },
- {
-  "w": "STRAIGHT",
-  "start": 10.22,
-  "end": 10.56
- },
- {
-  "w": "IN",
-  "start": 10.62,
-  "end": 10.9
- },
- {
-  "w": "<BREAK",
-  "start": 11.45,
-  "end": 11.45
- },
- {
-  "w": "TIME=\"0.4S\"",
-  "start": 11.45,
-  "end": 11.45
- },
- {
-  "w": "/>",
-  "start": 11.45,
-  "end": 11.45
+  "w": "BURIED",
+  "start": 2.35,
+  "end": 2.62
  },
  {
   "w": "IT",
-  "start": 11.45,
-  "end": 11.59
- },
- {
-  "w": "READS",
-  "start": 11.64,
-  "end": 11.83
- },
- {
-  "w": "YOUR",
-  "start": 11.87,
-  "end": 11.98
- },
- {
-  "w": "REAL",
-  "start": 12.03,
-  "end": 12.22
- },
- {
-  "w": "FILES",
-  "start": 12.29,
-  "end": 12.89
- },
- {
-  "w": "NO",
-  "start": 13.06,
-  "end": 13.22
- },
- {
-  "w": "COPY",
-  "start": 13.3,
-  "end": 13.53
- },
- {
-  "w": "PASTE",
-  "start": 13.57,
-  "end": 14.03
+  "start": 2.66,
+  "end": 2.93
  },
  {
   "w": "<BREAK",
-  "start": 14.49,
-  "end": 14.49
+  "start": 3.47,
+  "end": 3.47
  },
  {
   "w": "TIME=\"0.4S\"",
-  "start": 14.49,
-  "end": 14.49
+  "start": 3.47,
+  "end": 3.47
  },
  {
   "w": "/>",
-  "start": 14.49,
-  "end": 14.49
- },
- {
-  "w": "ASK",
-  "start": 14.49,
-  "end": 15.0
- },
- {
-  "w": "AND",
-  "start": 15.08,
-  "end": 15.26
- },
- {
-  "w": "IT",
-  "start": 15.3,
-  "end": 15.37
- },
- {
-  "w": "ANSWERS",
-  "start": 15.44,
-  "end": 15.8
- },
- {
-  "w": "FROM",
-  "start": 15.84,
-  "end": 15.95
- },
- {
-  "w": "YOUR",
-  "start": 15.99,
-  "end": 16.08
- },
- {
-  "w": "FILES",
-  "start": 16.14,
-  "end": 16.64
- },
- {
-  "w": "<BREAK",
-  "start": 17.17,
-  "end": 17.17
- },
- {
-  "w": "TIME=\"0.4S\"",
-  "start": 17.17,
-  "end": 17.17
- },
- {
-  "w": "/>",
-  "start": 17.17,
-  "end": 17.17
- },
- {
-  "w": "FREE",
-  "start": 17.17,
-  "end": 17.6
- },
- {
-  "w": "AT",
-  "start": 17.72,
-  "end": 17.88
- },
- {
-  "w": "CLAUDE",
-  "start": 17.94,
-  "end": 18.27
- },
- {
-  "w": "DOT",
-  "start": 18.33,
-  "end": 18.59
- },
- {
-  "w": "A",
-  "start": 18.7,
-  "end": 18.82
- },
- {
-  "w": "I",
-  "start": 18.94,
-  "end": 19.05
- },
- {
-  "w": "SLASH",
-  "start": 19.14,
-  "end": 19.48
- },
- {
-  "w": "DOWNLOAD",
-  "start": 19.54,
-  "end": 20.09
- },
- {
-  "w": "<BREAK",
-  "start": 20.56,
-  "end": 20.56
- },
- {
-  "w": "TIME=\"0.4S\"",
-  "start": 20.56,
-  "end": 20.56
- },
- {
-  "w": "/>",
-  "start": 20.56,
-  "end": 20.56
+  "start": 3.47,
+  "end": 3.47
  },
  {
   "w": "SO",
-  "start": 20.56,
-  "end": 20.72
+  "start": 3.47,
+  "end": 3.68
  },
  {
-  "w": "WHY",
-  "start": 20.77,
-  "end": 20.96
+  "w": "I",
+  "start": 3.8,
+  "end": 3.89
  },
  {
-  "w": "ARE",
-  "start": 21.0,
-  "end": 21.11
+  "w": "ADDED",
+  "start": 4.0,
+  "end": 4.28
+ },
+ {
+  "w": "FIVE",
+  "start": 4.35,
+  "end": 4.62
+ },
+ {
+  "w": "WORDS",
+  "start": 4.67,
+  "end": 5.26
+ },
+ {
+  "w": "AS",
+  "start": 5.43,
+  "end": 5.61
+ },
+ {
+  "w": "A",
+  "start": 5.65,
+  "end": 5.68
+ },
+ {
+  "w": "PLAIN",
+  "start": 5.72,
+  "end": 5.99
+ },
+ {
+  "w": "TABLE",
+  "start": 6.04,
+  "end": 6.44
+ },
+ {
+  "w": "<BREAK",
+  "start": 6.93,
+  "end": 6.93
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 6.93,
+  "end": 6.93
+ },
+ {
+  "w": "/>",
+  "start": 6.93,
+  "end": 6.93
+ },
+ {
+  "w": "SAME",
+  "start": 6.93,
+  "end": 7.2
+ },
+ {
+  "w": "QUESTION",
+  "start": 7.23,
+  "end": 7.72
+ },
+ {
+  "w": "NOW",
+  "start": 8.16,
+  "end": 8.32
+ },
+ {
+  "w": "IT'S",
+  "start": 8.37,
+  "end": 8.5
+ },
+ {
+  "w": "A",
+  "start": 8.52,
+  "end": 8.54
+ },
+ {
+  "w": "GRID",
+  "start": 8.59,
+  "end": 8.82
  },
  {
   "w": "YOU",
-  "start": 21.14,
-  "end": 21.21
+  "start": 8.88,
+  "end": 8.96
  },
  {
-  "w": "STILL",
-  "start": 21.27,
-  "end": 21.5
+  "w": "CAN",
+  "start": 9.01,
+  "end": 9.12
  },
  {
-  "w": "IN",
-  "start": 21.56,
-  "end": 21.62
+  "w": "SCAN",
+  "start": 9.18,
+  "end": 9.72
  },
  {
-  "w": "A",
-  "start": 21.66,
-  "end": 21.7
+  "w": "<BREAK",
+  "start": 10.16,
+  "end": 10.16
  },
  {
-  "w": "TAB",
-  "start": 21.75,
-  "end": 22.12
+  "w": "TIME=\"0.4S\"",
+  "start": 10.16,
+  "end": 10.16
  },
  {
-  "w": "FOLLOW",
-  "start": 22.23,
-  "end": 22.56
+  "w": "/>",
+  "start": 10.16,
+  "end": 10.16
  },
  {
-  "w": "FOR",
-  "start": 22.62,
-  "end": 22.73
+  "w": "FEATURE",
+  "start": 10.16,
+  "end": 10.52
+ },
+ {
+  "w": "DOWN",
+  "start": 10.55,
+  "end": 10.72
+ },
+ {
+  "w": "THE",
+  "start": 10.74,
+  "end": 10.81
+ },
+ {
+  "w": "SIDE",
+  "start": 10.84,
+  "end": 11.23
+ },
+ {
+  "w": "EVERY",
+  "start": 11.34,
+  "end": 11.63
+ },
+ {
+  "w": "APP",
+  "start": 11.7,
+  "end": 11.9
+ },
+ {
+  "w": "ACROSS",
+  "start": 11.95,
+  "end": 12.24
+ },
+ {
+  "w": "THE",
+  "start": 12.26,
+  "end": 12.33
+ },
+ {
+  "w": "TOP",
+  "start": 12.37,
+  "end": 12.74
+ },
+ {
+  "w": "<BREAK",
+  "start": 13.22,
+  "end": 13.22
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 13.22,
+  "end": 13.22
+ },
+ {
+  "w": "/>",
+  "start": 13.22,
+  "end": 13.22
+ },
+ {
+  "w": "LEARNING",
+  "start": 13.22,
+  "end": 13.55
+ },
+ {
+  "w": "CURVE",
+  "start": 13.62,
+  "end": 14.12
+ },
+ {
+  "w": "COST",
+  "start": 14.29,
+  "end": 14.83
+ },
+ {
+  "w": "COLLABORATION",
+  "start": 14.9,
+  "end": 15.59
+ },
+ {
+  "w": "\u2014",
+  "start": 15.74,
+  "end": 15.84
  },
  {
   "w": "ONE",
-  "start": 22.81,
-  "end": 23.01
+  "start": 15.92,
+  "end": 16.15
  },
  {
-  "w": "AI",
-  "start": 23.08,
-  "end": 23.35
+  "w": "ROW",
+  "start": 16.2,
+  "end": 16.36
  },
  {
-  "w": "SKILL",
-  "start": 23.38,
-  "end": 23.65
+  "w": "EACH",
+  "start": 16.43,
+  "end": 16.85
+ },
+ {
+  "w": "<BREAK",
+  "start": 17.36,
+  "end": 17.36
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 17.36,
+  "end": 17.36
+ },
+ {
+  "w": "/>",
+  "start": 17.36,
+  "end": 17.36
+ },
+ {
+  "w": "COMPARE",
+  "start": 17.36,
+  "end": 17.76
+ },
+ {
+  "w": "ONE",
+  "start": 17.82,
+  "end": 17.98
+ },
+ {
+  "w": "ROW",
+  "start": 18.03,
+  "end": 18.41
+ },
+ {
+  "w": "PICK",
+  "start": 18.62,
+  "end": 18.9
+ },
+ {
+  "w": "IN",
+  "start": 19.02,
+  "end": 19.12
+ },
+ {
+  "w": "SECONDS",
+  "start": 19.2,
+  "end": 19.82
+ },
+ {
+  "w": "<BREAK",
+  "start": 20.33,
+  "end": 20.33
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 20.33,
+  "end": 20.33
+ },
+ {
+  "w": "/>",
+  "start": 20.33,
+  "end": 20.33
+ },
+ {
+  "w": "NO",
+  "start": 20.33,
+  "end": 20.5
+ },
+ {
+  "w": "SCROLLING",
+  "start": 20.57,
+  "end": 20.95
+ },
+ {
+  "w": "BACK",
+  "start": 20.99,
+  "end": 21.18
+ },
+ {
+  "w": "UP",
+  "start": 21.23,
+  "end": 21.52
+ },
+ {
+  "w": "<BREAK",
+  "start": 21.99,
+  "end": 21.99
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 21.99,
+  "end": 21.99
+ },
+ {
+  "w": "/>",
+  "start": 21.99,
+  "end": 21.99
+ },
+ {
+  "w": "SAME",
+  "start": 21.99,
+  "end": 22.26
+ },
+ {
+  "w": "QUESTION",
+  "start": 22.29,
+  "end": 22.81
+ },
+ {
+  "w": "USABLE",
+  "start": 22.99,
+  "end": 23.38
+ },
+ {
+  "w": "ANSWER",
+  "start": 23.42,
+  "end": 23.91
+ },
+ {
+  "w": "<BREAK",
+  "start": 24.37,
+  "end": 24.37
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 24.37,
+  "end": 24.37
+ },
+ {
+  "w": "/>",
+  "start": 24.37,
+  "end": 24.37
+ },
+ {
+  "w": "COMPARING",
+  "start": 24.37,
+  "end": 24.83
+ },
+ {
+  "w": "ANYTHING",
+  "start": 24.88,
+  "end": 25.38
+ },
+ {
+  "w": "END",
+  "start": 25.44,
+  "end": 25.64
+ },
+ {
+  "w": "WITH:",
+  "start": 25.7,
+  "end": 26.01
+ },
+ {
+  "w": "AS",
+  "start": 26.22,
+  "end": 26.41
  },
  {
   "w": "A",
-  "start": 23.7,
-  "end": 23.72
+  "start": 26.46,
+  "end": 26.48
+ },
+ {
+  "w": "TABLE",
+  "start": 26.54,
+  "end": 26.98
+ },
+ {
+  "w": "FOLLOW",
+  "start": 27.13,
+  "end": 27.41
+ },
+ {
+  "w": "FOR",
+  "start": 27.46,
+  "end": 27.54
+ },
+ {
+  "w": "ONE",
+  "start": 27.61,
+  "end": 27.76
+ },
+ {
+  "w": "AI",
+  "start": 27.81,
+  "end": 28.04
+ },
+ {
+  "w": "TRICK",
+  "start": 28.09,
+  "end": 28.27
+ },
+ {
+  "w": "EVERY",
+  "start": 28.33,
+  "end": 28.5
  },
  {
   "w": "DAY",
-  "start": 23.77,
-  "end": 24.29
+  "start": 28.55,
+  "end": 29.02
  }
 ]

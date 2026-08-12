@@ -1,0 +1,26 @@
+{
+ "commandKey": "steelman",
+ "fileLines": [
+  "---",
+  "description: Build the strongest",
+  "  possible version of the argument",
+  "  before I judge it",
+  "argument-hint: [the position or idea]",
+  "---",
+  "",
+  "Steelman this \u2014 build the strongest,",
+  "  most honest case FOR it, stronger than",
+  "  I could make myself: $ARGUMENTS",
+  ""
+ ],
+ "termArg": "junior devs should learn to code without AI for t...",
+ "responseLines": [
+  "Real fluency needs friction \u2014 autocomplete skims past gaps.",
+  "Debugging your own bugs builds the model AI can't.",
+  "Fast wrong answers train bad instincts faster than slow right ones.",
+  "You can't judge AI code if you've never written what it replaces.",
+  "Strongest point: you can't supervise what you can't do yourself."
+ ],
+ "typeStart": 1.0,
+ "lineStagger": 0.45
+}

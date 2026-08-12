@@ -100,8 +100,13 @@ def build_beats(cats, dur, cut=2.0, clips=None):
             # ONE-COUPLE rule: the motion clips are the approved identity-locked couple, whose
             # face does NOT match the library stills -- so the whole motion short is built from
             # the clips ALONE (Look opens, then Look/Almost/Touch cycle, loop back to Look).
-            if i == n - 1:
-                seg = {"kind": "clip", "src": clips[0], "dur": durs[i], "ss": 0.0}   # seamless loop
+            # HOOK: open (and loop-close) on the 'Look' clip's eyes-to-camera moment (late window),
+            # so the strongest scroll-stopper lands at 0s instead of ~6s (kills the 3.6s cliff).
+            hook_ss = 3.0
+            if i == 0:
+                seg = {"kind": "clip", "src": clips[0], "dur": durs[i], "ss": hook_ss}
+            elif i == n - 1:
+                seg = {"kind": "clip", "src": clips[0], "dur": durs[i], "ss": hook_ss}   # seamless loop
             else:
                 src = clips[i % len(clips)]
                 pass_no = i // len(clips)
@@ -199,10 +204,10 @@ def main():
         return
 
     lines = json.load(open(a.lyrics)).get("lines", [])
-    font_hi = find_font(["/System/Library/Fonts/Supplemental/Kohinoor.ttc",
-                         "/System/Library/Fonts/Supplemental/DevanagariMT.ttc",
-                         "/System/Library/Fonts/Kohinoor.ttc",
+    font_hi = find_font(["/System/Library/Fonts/Kohinoor.ttc",
+                         "/System/Library/Fonts/Supplemental/Kohinoor.ttc",
                          "/Library/Fonts/Kohinoor.ttc",
+                         "/System/Library/Fonts/Supplemental/DevanagariMT.ttc",
                          "C:/Windows/Fonts/Nirmala.ttc",       # Windows Devanagari
                          "C:/Windows/Fonts/mangal.ttf"], 60)
     font_ro = find_font(["/System/Library/Fonts/Supplemental/Georgia Bold.ttf",

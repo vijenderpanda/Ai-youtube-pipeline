@@ -1,0 +1,26 @@
+{
+ "commandKey": "eli5",
+ "fileLines": [
+  "---",
+  "description: Re-explain my own plan",
+  "  simply enough to expose the hand-",
+  "  waving",
+  "argument-hint: [the plan or concept]",
+  "---",
+  "",
+  "Explain this back to me the way you'd",
+  "  explain it to a smart twelve-year-old:",
+  "  $ARGUMENTS",
+  ""
+ ],
+ "termArg": "our plan to migrate from a monolith to microservi...",
+ "responseLines": [
+  "Migrating: one big app \u2192 many small apps, over 6 months.",
+  "Big app = one Lego castle: touch a brick, it all wobbles.",
+  "Microservices = separate sets that snap via agreed connectors.",
+  "Fuzzy part: you didn't say WHO redraws the connector map.",
+  "Like remodeling a house room-by-room while living in it."
+ ],
+ "typeStart": 1.0,
+ "lineStagger": 0.45
+}

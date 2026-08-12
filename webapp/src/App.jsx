@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { getToken, clearToken, setUnauthorizedHandler } from './api'
+import { useVersionWatch } from './useVersionWatch'
 import Sidebar from './components/Sidebar'
 import LockScreen from './components/LockScreen'
 import Overview from './pages/Overview'
@@ -20,6 +21,7 @@ import StudioBoard from './pages/StudioBoard'
 export default function App() {
   const [authed, setAuthed] = useState(() => !!getToken())
   const [authError, setAuthError] = useState('')
+  const staleBuild = useVersionWatch()
 
   useEffect(() => {
     setUnauthorizedHandler((err) => {
@@ -50,6 +52,14 @@ export default function App() {
 
   return (
     <div className="shell">
+      {staleBuild && (
+        <div className="update-banner" role="status">
+          <span>A newer dashboard version is live — reload to see the latest episodes &amp; features.</span>
+          <button className="btn btn-primary btn-sm" onClick={() => window.location.reload()}>
+            Reload now
+          </button>
+        </div>
+      )}
       <Sidebar onLock={lock} />
       <main className="main">
         <Routes>
