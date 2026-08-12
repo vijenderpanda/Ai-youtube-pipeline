@@ -918,7 +918,10 @@ EPISODES_V2 = {
     # the ep23/§4 overlay-covers-content failure waiting to happen.
     "emphasis": [],
   },
-  "12": {
+  "12_retired": {
+    "_note": "RETIRED 2026-08-12 — never shipped. Key renamed so build '12' falls "
+             "through to episodes/12.v2.json (the armed Ep12 'Ask For A Table'). "
+             "Ep numbers are assigned at ARM time, sequentially; do not reuse '12'.",
     "title": "Claude Has A DESKTOP App (Most People Miss It) 🖥️",
     "tags": "claude desktop,claude app,ai productivity,ai for beginners,claude ai tips,ai tips",
     "cover": {"title1": "CLAUDE ON", "title2": "YOUR DESKTOP", "emojis": "🖥️⚡"},
