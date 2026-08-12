@@ -44,7 +44,9 @@ def main():
     ap.add_argument("--out", required=True, help="output mp4 (relative to channel dir ok)")
     ap.add_argument("--q", required=True, help="question, lines split by '|'")
     ap.add_argument("--pill", default="Comment yours 👇")
-    ap.add_argument("--avatar", default="assets/channel/avatar_host_v3.jpg")
+    # default = the Ep11 magenta Sol host (matches the episode host + Ep11's own
+    # outro card); NOT the legacy green-shirt channel avatar.
+    ap.add_argument("--avatar", default="assets/character/host_library/outfit_11_sol_magenta/cropeed_center_final.jpeg")
     a = ap.parse_args()
 
     # ---- background: dark with a breathing magenta bloom behind the avatar ----
