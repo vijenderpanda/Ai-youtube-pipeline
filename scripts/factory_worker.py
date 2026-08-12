@@ -197,7 +197,7 @@ RECAP_SCHEMA = (
     '"next": [str, ...] (suggested follow-up, max 2, may be empty)}'
 )
 RECAP_SKIP_TYPES = ("suggest_brief", "analytics_sync", "plan_assets", "generate_asset",
-                    "preview_episode", "plan_content")  # results already structured
+                    "preview_episode", "plan_content", "channel_intake")  # results already structured
 RECAP_TIMEOUT_S = 180  # haiku fallback summarizer cap; recap is always best-effort
 RECAP_LOG_TAIL_CHARS = 6000  # ~6KB of log tail fed to the summarizer
 
@@ -582,6 +582,10 @@ def staged_ctx_path(job_id):
 
 def preview_out_path(job_id):
     return RENDERS_OUT / f"preview_out_{job_id}.json"
+
+
+def channel_intake_path(job_id):
+    return RENDERS_OUT / f"channel_intake_{job_id}.json"
 
 
 def build_prompt(job, guidelines="", ctx_path=None, asset=None):
@@ -1001,6 +1005,27 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
             'produce_channel to run)}]}\n'
             "Rank by viral potential. Planning only -- do NOT produce videos, do NOT write a manifest."
         )
+    elif jtype == "channel_intake":
+        # v18: channel-creation wizard -- suggest tailored options for one step.
+        meta = job.get("meta") or {}
+        ans = meta.get("answers") or {}
+        question = str(meta.get("question") or "the next channel attribute")
+        field = str(meta.get("field") or "value")
+        body = (
+            "You are helping a creator design a NEW YouTube channel in a step-by-step wizard.\n"
+            f"Their answers so far (JSON): {json.dumps(ans)[:1600]}\n\n"
+            f"CURRENT QUESTION: {question}\n"
+            f"Suggest 4-6 SHORT, punchy, DISTINCT options the creator can tap to answer for "
+            f"'{field}'. Tailor them to THIS specific channel idea -- never generic filler. Each "
+            "option = a 2-5 word label + a one-line value (the actual answer text they'd pick).\n"
+            "If the question is about competitors/references or production style, use WebSearch to "
+            "ground the options in real, current examples (keep the value text clean, no URLs).\n"
+            f"Write {channel_intake_path(job['id'])}: "
+            '{"question": str (optional cleaner restatement), '
+            '"options": [{"label": str (2-5 words), "value": str (one line)}], '
+            '"ready_to_advance": true}\n'
+            "Options only -- do NOT produce anything, no manifest, no renders."
+        )
     elif jtype == "plan_assets":
         body = (
             f"You are the asset planner for channel {key} (staged production -- read "
@@ -1181,7 +1206,8 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
         "(issues/next may be empty if genuinely none); recap.outputs mirrors the final "
         "deliverables, one short note phrase each."
     )
-    if jtype in ("suggest_brief", "plan_content", "plan_assets", "generate_asset", "preview_episode"):
+    if jtype in ("suggest_brief", "plan_content", "plan_assets", "generate_asset", "preview_episode",
+                 "channel_intake"):
         prompt = body  # structured-result jobs: their own JSON only, no manifest / renders
     else:
         prompt = f"{body}\n\n{manifest}"
@@ -3710,6 +3736,37 @@ def run_job(supa, job):
         done_msg = (f"plan_content '{job.get('channel_key')}' done: {len(clean)} idea(s), "
                     f"top: {str(clean[0]['title'])[:80]!r}")
         buf.add(f"[worker] {len(clean)} content ideas stored in job.result")
+    elif job.get("type") == "channel_intake":
+        # v18: the wizard options JSON IS the result -- no manifest, no renders
+        ipath = channel_intake_path(job_id)
+        try:
+            data = json.loads(ipath.read_text())
+        except (OSError, json.JSONDecodeError) as e:
+            fail(supa, job_id,
+                 f"channel_intake finished but the options JSON is missing/unreadable ({ipath}): {e}",
+                 buf, job=job)
+            return
+        opts = data.get("options") if isinstance(data, dict) else None
+        if not isinstance(opts, list) or not opts:
+            fail(supa, job_id, "channel_intake JSON has no 'options' list", buf, job=job)
+            return
+        clean = []
+        for o in opts:
+            if not isinstance(o, dict):
+                continue
+            value = str(o.get("value") or o.get("label") or "").strip()
+            if not value:
+                continue
+            clean.append({"label": str(o.get("label") or value).strip()[:48], "value": value})
+        clean = clean[:6]
+        if not clean:
+            fail(supa, job_id, "channel_intake options all lack a value", buf, job=job)
+            return
+        uploaded = 0
+        result = {"options": clean, "question": data.get("question"),
+                  "ready_to_advance": bool(data.get("ready_to_advance", True))}
+        done_msg = f"channel_intake done: {len(clean)} option(s)"
+        buf.add(f"[worker] {len(clean)} wizard options stored in job.result")
     elif job.get("type") == "plan_assets":
         # v9: the plan JSON becomes factory_assets rows + generate_asset jobs
         result = ingest_asset_plan(supa, job, buf)

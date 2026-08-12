@@ -8,6 +8,7 @@ import Overview from './pages/Overview'
 import Analytics from './pages/Analytics'
 import Calendar from './pages/Calendar'
 import Channels from './pages/Channels'
+import ChannelWizard from './pages/ChannelWizard'
 import ChannelDetail from './pages/ChannelDetail'
 import ChannelAnalysis from './pages/ChannelAnalysis'
 import Jobs from './pages/Jobs'
@@ -69,6 +70,7 @@ export default function App() {
           <Route path="/studio" element={<Studio />} />
           <Route path="/studio/:calendarId" element={<StudioBoard />} />
           <Route path="/channels" element={<Channels />} />
+          <Route path="/channels/new" element={<ChannelWizard />} />
           <Route path="/channels/:channelKey" element={<ChannelDetail />} />
           <Route path="/channels/:channelKey/analysis" element={<ChannelAnalysis />} />
           <Route path="/jobs" element={<Jobs />} />

@@ -32,6 +32,9 @@ const JOB_TYPES = [
   // v17: channel-page idea engine — ranked ideas across analytics / Vaibhav-DNA /
   // news / upcoming events. Structured result (job.result.ideas), no renders.
   "plan_content",
+  // v18: channel-creation wizard — per-step conversational suggestion engine.
+  // Structured result (job.result: {options,question,ready_to_advance}), no renders.
+  "channel_intake",
 ];
 // v8: staged job types carry meta.calendar_id for their episode
 const STAGED_JOB_TYPES = ["plan_assets", "generate_asset", "assemble_episode", "preview_episode"];
@@ -267,6 +270,17 @@ async function handleGet(url: URL): Promise<Response> {
       if (error) return json({ error: error.message }, 500);
       if (!data) return json({ error: "job not found" }, 404);
       return json({ job: data });
+    }
+
+    // v18: reload an in-progress channel-wizard draft (resume/refresh)
+    case "channel_draft": {
+      const id = url.searchParams.get("id");
+      if (!id || !UUID_RE.test(id)) return json({ error: "id (uuid) required" }, 400);
+      const { data, error } = await db.from("factory_channel_drafts")
+        .select("*").eq("id", id).maybeSingle();
+      if (error) return json({ error: error.message }, 500);
+      if (!data) return json({ error: "draft not found" }, 404);
+      return json({ draft: data });
     }
 
     case "renders": {
@@ -671,7 +685,7 @@ async function handlePost(body: any): Promise<Response> {
       if (!key || !patch || typeof patch !== "object") {
         return json({ error: "key and patch required" }, 400);
       }
-      const allowed = ["name", "niche", "accent", "guidelines", "status"];
+      const allowed = ["name", "niche", "accent", "guidelines", "status", "brand", "lifecycle", "baseline_ref"];
       const clean: Record<string, unknown> = {};
       for (const k of allowed) if (k in patch) clean[k] = patch[k];
       if (Object.keys(clean).length === 0) {
@@ -1819,6 +1833,128 @@ async function handlePost(body: any): Promise<Response> {
       await logEvent("plan_content_queued", "Content-ideas job queued for " + channel_key,
         { job_id: job.id, channel_key });
       return json({ job });
+    }
+
+    // ── v18: channel-creation wizard ─────────────────────────────────
+    // A draft accumulates the creator's answers step by step; each step can ask
+    // the factory for AI-suggested options (wizard_suggest → channel_intake job);
+    // finalize creates the channel (incubating) + queues its bring-up scaffold.
+
+    case "create_channel_draft": {
+      const seed = body.seed === undefined || body.seed === null ? null : String(body.seed);
+      const { data: draft, error } = await db.from("factory_channel_drafts")
+        .insert({ seed }).select().single();
+      if (error) return json({ error: error.message }, 500);
+      await logEvent("channel_draft_started", "Channel wizard started", { draft_id: draft.id });
+      return json({ draft });
+    }
+
+    case "update_channel_draft": {
+      const { draft_id } = body;
+      if (!draft_id || !UUID_RE.test(String(draft_id))) {
+        return json({ error: "draft_id (uuid) required" }, 400);
+      }
+      const { data: draft, error: dErr } = await db.from("factory_channel_drafts")
+        .select("*").eq("id", draft_id).maybeSingle();
+      if (dErr) return json({ error: dErr.message }, 500);
+      if (!draft) return json({ error: "draft not found" }, 404);
+      const answers = {
+        ...((draft.answers as Record<string, unknown>) ?? {}),
+        ...(body.patch && typeof body.patch === "object" ? body.patch : {}),
+      };
+      const transcript = Array.isArray(draft.transcript) ? [...draft.transcript] : [];
+      if (body.transcript_entry) transcript.push(body.transcript_entry);
+      const upd: Record<string, unknown> = {
+        answers, transcript, updated_at: new Date().toISOString(),
+      };
+      if (typeof body.step === "number") upd.step = body.step;
+      const { data: out, error } = await db.from("factory_channel_drafts")
+        .update(upd).eq("id", draft_id).select().single();
+      if (error) return json({ error: error.message }, 500);
+      return json({ draft: out });
+    }
+
+    case "wizard_suggest": {
+      const { draft_id } = body;
+      const step = typeof body.step === "number"
+        ? body.step
+        : (body.step !== undefined && body.step !== null ? parseInt(String(body.step), 10) : NaN);
+      if (!draft_id || !UUID_RE.test(String(draft_id))) {
+        return json({ error: "draft_id (uuid) required" }, 400);
+      }
+      if (Number.isNaN(step)) return json({ error: "step (number) required" }, 400);
+      // reuse an in-flight suggestion job for this draft rather than stacking them
+      const { data: live, error: lErr } = await db.from("factory_jobs")
+        .select("id, status").eq("type", "channel_intake")
+        .eq("meta->>draft_id", String(draft_id))
+        .in("status", ["queued", "running"]).limit(1);
+      if (lErr) return json({ error: lErr.message }, 500);
+      if (live && live.length > 0) return json({ job: live[0] });
+      const { data: job, error } = await db.from("factory_jobs")
+        .insert({
+          channel_key: "_network", type: "channel_intake",
+          model: "sonnet", effort: "medium",
+          title: "Channel wizard · step " + step, status: "queued",
+          meta: {
+            draft_id, step,
+            field: body.field ?? null,
+            question: body.question ?? null,
+            answers: body.answers && typeof body.answers === "object" ? body.answers : {},
+          },
+        }).select().single();
+      if (error) return json({ error: error.message }, 500);
+      return json({ job });
+    }
+
+    case "finalize_channel_draft": {
+      const { draft_id } = body;
+      if (!draft_id || !UUID_RE.test(String(draft_id))) {
+        return json({ error: "draft_id (uuid) required" }, 400);
+      }
+      const { data: draft, error: dErr } = await db.from("factory_channel_drafts")
+        .select("*").eq("id", draft_id).maybeSingle();
+      if (dErr) return json({ error: dErr.message }, 500);
+      if (!draft) return json({ error: "draft not found" }, 404);
+      if (draft.created_channel_key) {
+        return json({ error: "this draft already created a channel" }, 409);
+      }
+      const a = (draft.answers as Record<string, unknown>) ?? {};
+      const key = String(a.key ?? "").trim().toLowerCase();
+      const name = String(a.name ?? "").trim();
+      if (!key || !name) return json({ error: "channel name and key are required before creating" }, 400);
+      if (!/^[a-z0-9][a-z0-9-]*$/.test(key)) {
+        return json({ error: "key must be lowercase letters, numbers and hyphens" }, 400);
+      }
+      const { data: channel, error: cErr } = await db.from("factory_channels")
+        .insert({
+          key, name,
+          niche: (a.niche as string) ?? null,
+          accent: (a.accent as string) ?? null,
+          guidelines: (a.guidelines as string) ?? "",
+          brand: a,               // the captured answers ARE the machine-readable brand bible
+          status: "active",
+          lifecycle: "incubating",
+        }).select().single();
+      if (cErr) return json({ error: cErr.message }, cErr.code === "23505" ? 409 : 500);
+      // seed the episode counter so the first produce auto-assigns Ep 1
+      await db.from("factory_settings")
+        .upsert({ key: `${key}_last_ep`, value: "0" }, { onConflict: "key" });
+      // queue the bring-up scaffold (worker writes channels/<key>/, blueprint, brand assets)
+      const { data: scaffoldJob, error: sErr } = await db.from("factory_jobs")
+        .insert({
+          channel_key: key, type: "new_channel_scaffold",
+          title: "Set up channel — " + name, status: "queued",
+          model: "opus", effort: "medium",
+          meta: { phase: "bringup", draft_id, brand: a },
+        }).select().single();
+      if (sErr) return json({ error: sErr.message }, 500);
+      await db.from("factory_channel_drafts")
+        .update({ status: "created", created_channel_key: key, updated_at: new Date().toISOString() })
+        .eq("id", draft_id);
+      await logEvent("channel_created",
+        `Channel '${name}' (${key}) created via wizard — incubating`,
+        { key, draft_id, scaffold_job: scaffoldJob.id });
+      return json({ channel, scaffold_job: scaffoldJob });
     }
 
     default:

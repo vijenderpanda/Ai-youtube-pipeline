@@ -96,9 +96,14 @@ export default function Channels() {
           <h1>Channels</h1>
           <p className="sub">Every channel the factory produces for</p>
         </div>
-        <button className="btn btn-primary" onClick={() => setShowNew(true)}>
-          + New Channel
-        </button>
+        <div className="head-actions">
+          <button className="btn btn-ghost" onClick={() => setShowNew(true)} title="Create a channel from a bare form">
+            Quick add
+          </button>
+          <button className="btn btn-primary" onClick={() => navigate('/channels/new')}>
+            + New channel
+          </button>
+        </div>
       </header>
 
       {error && <div className="error-bar">{error.message}</div>}
