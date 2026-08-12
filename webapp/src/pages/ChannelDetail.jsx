@@ -83,6 +83,20 @@ export default function ChannelDetail() {
   const templates = (tplsQ.data && tplsQ.data.templates) || []
   const tpl =
     (channel && channel.template && templates.find((t) => t.key === channel.template)) || null
+  // v19.1: format picker — switch which registry template drives this channel's
+  // produce pipeline. Reversible; templates whose name says "proposal" pilot first.
+  const [tplBusy, setTplBusy] = useState(false)
+  const setTemplate = async (key) => {
+    if (tplBusy) return
+    setTplBusy(true)
+    try {
+      await api.post({ action: 'update_channel', key: channelKey, patch: { template: key || null } })
+      chansQ.refresh()
+    } catch (e) {
+      setSaveErr(e.message)
+    }
+    setTplBusy(false)
+  }
   const tui = (tpl && tpl.produce_ui) || null
   // any channel with a template produces from this page; produce_ui carries the copy
   const pcfg = tui && tui.tag
@@ -349,9 +363,27 @@ export default function ChannelDetail() {
           <div className="panel-head">
             <h2>Produce new episode</h2>
             <div className="panel-actions">
-              <span className="tag" title={pcfg.templateTitle}>
-                {pcfg.templateTag}
-              </span>
+              {templates.length > 0 ? (
+                <select
+                  className="act-chan-select"
+                  value={(channel && channel.template) || ''}
+                  onChange={(e) => setTemplate(e.target.value)}
+                  disabled={tplBusy}
+                  title={tpl ? tpl.description || pcfg.templateTitle : pcfg.templateTitle}
+                  aria-label="Production format"
+                >
+                  {!(channel && channel.template) && <option value="">🔒 {pcfg.templateTag.replace('🔒 ', '')} (built-in)</option>}
+                  {templates.map((t) => (
+                    <option key={t.key} value={t.key}>
+                      {/proposal/i.test(t.name) ? '🧪 ' : '🔒 '}{t.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <span className="tag" title={pcfg.templateTitle}>
+                  {pcfg.templateTag}
+                </span>
+              )}
               <button className="btn btn-ghost btn-sm" onClick={doPlanContent} disabled={planning}>
                 {planning ? 'Thinking… (~1–2 min)' : '✨ Plan content'}
               </button>
