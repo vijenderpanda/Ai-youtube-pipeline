@@ -5475,3 +5475,115 @@ a.out-chip:hover {
     scroll-behavior: auto !important;
   }
 }
+
+/* ══ Workflow-first pipeline (Phase A) ══════════════════════════════ */
+
+/* ── PipelineRail: PLAN → PRODUCE → QC → ARM → LIVE ── */
+.rail {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: var(--s-4) 0 var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--hairline);
+  overflow-x: auto;
+}
+.rail-step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex: 1;
+  min-width: max-content;
+}
+.rail-node {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  flex: none;
+  border: 1.5px solid var(--border-strong);
+  color: var(--faint);
+  background: var(--panel-2);
+  transition: all var(--dur) var(--ease);
+}
+.rail-label {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--dim);
+  white-space: nowrap;
+}
+.rail-line {
+  flex: 1;
+  height: 2px;
+  min-width: 24px;
+  margin: 0 var(--s-2);
+  border-radius: 2px;
+  background: var(--border);
+}
+/* done */
+.rail-step.is-done .rail-node {
+  border-color: transparent;
+  color: #fff;
+  background: color-mix(in srgb, var(--ch, var(--neutral)) 62%, transparent);
+}
+.rail-step.is-done .rail-label { color: var(--text-2); }
+.rail-step.is-done .rail-line { background: color-mix(in srgb, var(--ch, var(--neutral)) 45%, var(--border)); }
+/* current */
+.rail-step.is-now .rail-node {
+  border-color: var(--ch, var(--accent));
+  color: var(--ch, var(--accent));
+  background: color-mix(in srgb, var(--ch, var(--accent)) 16%, var(--panel));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ch, var(--accent)) 16%, transparent);
+}
+.rail-step.is-now .rail-label { color: var(--text); font-weight: 700; }
+
+/* ── DoNext: guided execution queue ── */
+.donext-panel { margin-bottom: var(--s-5); }
+.donext-list { list-style: none; display: flex; flex-direction: column; }
+.donext-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-1);
+  border-top: 1px solid var(--border-soft);
+}
+.donext-row:first-child { border-top: 0; }
+.donext-dot {
+  width: 9px; height: 9px; border-radius: 50%; flex: none;
+  box-shadow: 0 0 8px color-mix(in srgb, currentColor 0%, transparent);
+}
+.donext-main { flex: 1; min-width: 0; }
+.donext-title {
+  font-size: var(--fs-base); font-weight: 620; line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.donext-sub { margin-top: 1px; }
+.donext-stage {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.08em;
+  padding: 3px 9px; border-radius: var(--r-pill); flex: none;
+  color: var(--dim); background: color-mix(in srgb, var(--neutral) 14%, transparent);
+}
+.donext-stage.stage-qc { color: var(--warn); background: var(--warn-soft); }
+.donext-stage.stage-arm { color: var(--accent-deep); background: var(--accent-soft); }
+.donext-stage.stage-live { color: var(--success); background: var(--success-soft); }
+.donext-row .btn { flex: none; }
+
+.donext-clear {
+  display: flex; align-items: center; gap: var(--s-3);
+  padding: var(--s-3) var(--s-1);
+}
+.donext-clear-mark {
+  width: 30px; height: 30px; border-radius: 50%; flex: none;
+  display: grid; place-items: center; font-size: 15px; font-weight: 800;
+  color: var(--success); background: var(--success-soft);
+}
+.donext-clear-title { font-size: var(--fs-base); font-weight: 650; }

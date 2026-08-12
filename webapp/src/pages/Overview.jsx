@@ -3,6 +3,7 @@ import { api } from '../api'
 import { usePoll } from '../hooks'
 import StatusChip from '../components/StatusChip'
 import EmptyState from '../components/EmptyState'
+import DoNext from '../components/DoNext'
 import SyncAnalyticsButton from '../components/SyncAnalyticsButton'
 import Toast, { useToast } from '../components/Toast'
 import { timeAgo } from '../format'
@@ -44,6 +45,8 @@ export default function Overview() {
       </header>
 
       {error && <div className="error-bar">{error.message}</div>}
+
+      <DoNext />
 
       <div className="stat-grid">
         {cards.map((c) => (

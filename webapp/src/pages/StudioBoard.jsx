@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom'
 import { api } from '../api'
 import { usePoll } from '../hooks'
 import { resolveAccents, accentFor } from '../channelColor'
+import { resolveStage, countsFromAssets } from '../pipeline'
+import PipelineRail from '../components/PipelineRail'
 import { RENDERS_BASE } from '../config'
 import { mediaKind, fileExt } from '../mediaKind'
 import AssetInspector, {
@@ -562,6 +564,8 @@ export default function StudioBoard() {
           )}
         </div>
       </header>
+
+      {item && <PipelineRail current={resolveStage(item, countsFromAssets(assets)).stage} accent={accent} />}
 
       {boardQ.error && <div className="error-bar">{boardQ.error.message}</div>}
 
