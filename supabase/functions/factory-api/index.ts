@@ -1599,15 +1599,23 @@ async function handlePost(body: any): Promise<Response> {
     // and is threaded to finalize via the job's meta so both agree.
     case "produce_preview": {
       const { calendar_id } = body;
-      const ep = body.ep === undefined || body.ep === null ? "" : String(body.ep).trim();
+      let ep = body.ep === undefined || body.ep === null ? "" : String(body.ep).trim();
       if (!calendar_id || !UUID_RE.test(String(calendar_id))) {
         return json({ error: "calendar_id (uuid) required" }, 400);
       }
-      if (!ep) return json({ error: "ep (episode key, e.g. \"12\") required" }, 400);
       const { data: item, error: itemErr } = await db.from("factory_calendar")
         .select("*").eq("id", calendar_id).maybeSingle();
       if (itemErr) return json({ error: itemErr.message }, 500);
       if (!item) return json({ error: "calendar item not found" }, 404);
+      // ep auto-assigns (last armed + 1) when the client doesn't pass one, so the
+      // creator never types an episode number. finalize advances the counter at
+      // arm. An explicit ep is still honored (back-compat).
+      if (!ep) {
+        const { data: cRow } = await db.from("factory_settings")
+          .select("value").eq("key", `${item.channel_key}_last_ep`).maybeSingle();
+        const lastEp = parseInt(String(cRow?.value ?? "0"), 10) || 0;
+        ep = String(lastEp + 1);
+      }
       if (item.status === "produced") {
         return json({ error: "calendar item already produced" }, 409);
       }

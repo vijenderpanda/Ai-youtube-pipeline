@@ -33,12 +33,11 @@ export default function CalendarDrawer({
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
   const [justQueued, setJustQueued] = useState(false)
-  const [ep, setEp] = useState('') // v16: episode key for the produce_preview path
 
   const locked = status === 'queued' || status === 'produced' || status === 'superseded'
   const suggested = status === 'suggested'
-  // v16: claude-tricks produces via the MONOLITHIC preview engine (build_ep_v2),
-  // not the generic staged fanout — see docs/STAGED-PIPELINE.md + FACTORY.md.
+  // claude-tricks produces via the monolithic preview engine (episode number is
+  // auto-assigned at produce time); other channels produce in staged fragments.
   const isClaudeTricks = item.channel_key === 'claude-tricks'
   const set = (k) => (e) => {
     setSaved(false)
@@ -95,14 +94,21 @@ export default function CalendarDrawer({
     navigate('/jobs', { state: { openJob: jobId } })
   }
 
+  // Never lose an unsaved title/brief edit when producing: persist the form
+  // first, then kick off production. (Producing used to run on the last-saved
+  // brief and silently drop in-drawer edits.)
+  const persistForm = () =>
+    api.post({ action: 'update_calendar_item', id: item.id, patch: form })
+
   // Staged production: plan the asset list, then review fragments in the Studio.
   const stage = async () => {
     if (busy) return
     setBusy('stage')
     setError('')
     try {
+      await persistForm()
       await api.post({ action: 'stage_calendar_item', id: item.id })
-      if (onToast) onToast('Staged — the factory is planning the asset list', 'ok')
+      if (onToast) onToast('Producing — review each part in the Studio', 'ok')
       onChanged()
       navigate('/studio/' + item.id)
       return
@@ -112,21 +118,17 @@ export default function CalendarDrawer({
     setBusy('')
   }
 
-  // v16: produce the claude-tricks Short via the monolithic preview engine.
-  // Queues a produce_preview job (build_ep_v2 --preview) tied to this calendar
-  // item; assets stream into the Studio board, then the preview MP4 is
-  // reviewable there before Finalize & Arm. `ep` names episodes/<ep>.v2.json.
+  // Produce the claude-tricks Short via the monolithic preview engine. Assets
+  // stream into the Studio board, then the preview is reviewable there before
+  // scheduling. The episode number is auto-assigned server-side.
   const producePreview = async () => {
     if (busy) return
-    if (!ep.trim()) {
-      setError('Enter the episode number (e.g. 12) before producing the preview')
-      return
-    }
     setBusy('preview')
     setError('')
     try {
-      await api.post({ action: 'produce_preview', calendar_id: item.id, ep: ep.trim() })
-      if (onToast) onToast(`Preview queued — the v16 engine is producing Ep ${ep.trim()}`, 'ok')
+      await persistForm()
+      await api.post({ action: 'produce_preview', calendar_id: item.id })
+      if (onToast) onToast('Producing — review it in the Studio when it’s ready', 'ok')
       onChanged()
       navigate('/studio/' + item.id)
       return
@@ -370,35 +372,14 @@ export default function CalendarDrawer({
                 <button className="btn btn-ghost" onClick={save} disabled={!!busy}>
                   {busy === 'save' ? 'Saving…' : 'Save changes'}
                 </button>
-                {isClaudeTricks ? (
-                  <>
-                    <input
-                      className="ep-input"
-                      value={ep}
-                      onChange={(e) => setEp(e.target.value)}
-                      placeholder="ep # (e.g. 12)"
-                      title="Episode key — names channels/claude-tricks/episodes/<ep>.v2.json; threaded to Finalize"
-                      style={{ width: '6.5rem' }}
-                    />
-                    <button
-                      className="btn btn-primary"
-                      onClick={producePreview}
-                      disabled={!!busy || !form.title.trim() || locked || !ep.trim()}
-                      title="Monolithic v16 engine (build_ep_v2 --preview) → review the preview in Studio → Finalize & Arm"
-                    >
-                      {busy === 'preview' ? 'Queuing…' : '▶ Produce preview (v16)'}
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    className="btn btn-primary"
-                    onClick={stage}
-                    disabled={!!busy || !form.title.trim() || locked}
-                    title="Plan the asset list, then review each fragment in the Studio before assembly"
-                  >
-                    {busy === 'stage' ? 'Staging…' : '▶ Produce in stages'}
-                  </button>
-                )}
+                <button
+                  className="btn btn-primary"
+                  onClick={isClaudeTricks ? producePreview : stage}
+                  disabled={!!busy || !form.title.trim() || locked}
+                  title="Produce the episode, then review it in the Studio before scheduling"
+                >
+                  {busy === 'preview' || busy === 'stage' ? 'Producing…' : '▶ Produce'}
+                </button>
               </div>
             </>
           )}

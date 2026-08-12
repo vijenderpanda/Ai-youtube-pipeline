@@ -105,7 +105,7 @@ export default function StudioBoard() {
   const { toast, show } = useToast()
   const [confirmAssemble, setConfirmAssemble] = useState(false)
   const [busy, setBusy] = useState('') // '' | 'assemble' | 'preview' | 'finalize'
-  const [schedule, setSchedule] = useState('') // v16: datetime-local for Finalize & Arm
+  const [schedule, setSchedule] = useState('') // datetime-local for scheduling
   const [selectedKey, setSelectedKey] = useState(null)
   const [pinned, setPinned] = useState({}) // asset_key -> version number displayed (absent = latest)
   const [docsOpen, setDocsOpen] = useState(false)
@@ -116,6 +116,24 @@ export default function StudioBoard() {
   const item = (boardQ.data && boardQ.data.item) || null
   const assets = (boardQ.data && boardQ.data.assets) || []
   const jobs = (boardQ.data && boardQ.data.jobs) || []
+
+  // Pre-fill a sensible publish time so the creator confirms one, never invents
+  // one from a blank field: the planned date at 09:00 local, or tomorrow 09:00
+  // if that's already past. They can still change it before scheduling.
+  useEffect(() => {
+    if (!item || schedule) return
+    const pad = (n) => String(n).padStart(2, '0')
+    const now = new Date()
+    let d = item.planned_date ? new Date(item.planned_date + 'T09:00') : null
+    if (!d || isNaN(d.getTime()) || d.getTime() < now.getTime()) {
+      d = new Date(now)
+      d.setDate(d.getDate() + 1)
+      d.setHours(9, 0, 0, 0)
+    }
+    setSchedule(
+      `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+    )
+  }, [item, schedule])
   const channels = (chansQ.data && chansQ.data.channels) || []
   const accents = useMemo(() => resolveAccents(channels), [channels])
   const accent = item ? accentFor(item.channel_key, accents) : '#8f9bb3'
@@ -318,14 +336,14 @@ export default function StudioBoard() {
     !!finalizeJob && (finalizeJob.status === 'queued' || finalizeJob.status === 'running')
   const canFinalize = isDirect && !!item?.preview_path && !finalizeActive
   const finalizeTitle = !isDirect
-    ? 'Finalize is for monolithic preview (claude-tricks) episodes'
+    ? 'Only preview-style episodes are scheduled from here'
     : !item?.preview_path
-      ? 'Produce a preview first — the preview MP4 is the QC gate'
+      ? 'Produce the episode first — you review it before scheduling'
       : finalizeActive
-        ? 'A finalize job is already queued or running'
+        ? 'Already scheduling…'
         : !schedule
-          ? 'Pick a publish date/time first'
-          : 'Master + LUFS QC + arm YouTube for the chosen time'
+          ? 'Pick a publish date and time first'
+          : 'Finish the final cut and schedule it on YouTube for this time'
 
   const doFinalize = async () => {
     if (busy) return
@@ -337,7 +355,7 @@ export default function StudioBoard() {
     setBusy('finalize')
     try {
       await api.post({ action: 'finalize_episode', calendar_id: calendarId, schedule: iso })
-      show('Finalize & arm queued — master + LUFS + YouTube schedule', 'ok')
+      show('Scheduling — finishing the final cut and setting the YouTube time', 'ok')
       boardQ.refresh()
     } catch (e) {
       show(e.message, 'error')
@@ -541,7 +559,7 @@ export default function StudioBoard() {
                 disabled={!canFinalize || !!busy || !schedule}
                 title={finalizeTitle}
               >
-                {busy === 'finalize' ? 'Queuing…' : 'Finalize & Arm ▶'}
+                {busy === 'finalize' ? 'Scheduling…' : 'Approve & schedule ▶'}
               </button>
             </>
           ) : (
@@ -581,8 +599,7 @@ export default function StudioBoard() {
           </div>
           {genActive > 0 && (
             <span className="chip queue-hint">
-              {genActive} generation job{genActive === 1 ? '' : 's'} queued/running — the Mac
-              runs one at a time
+              {genActive} part{genActive === 1 ? '' : 's'} still being produced
             </span>
           )}
         </div>
