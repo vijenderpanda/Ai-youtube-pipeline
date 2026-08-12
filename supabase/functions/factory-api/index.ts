@@ -2020,6 +2020,49 @@ async function handlePost(body: any): Promise<Response> {
       return json({ job });
     }
 
+    // v19.2: create a template by CLONING an existing one's pipeline wiring
+    // (produce/plan/finalize routing + blueprint) and overriding the creative
+    // surface (name, description, runtime, produce-panel copy). Registry rows
+    // are plain data, so a clone is immediately usable by the channel picker.
+    // Body: { name, clone_from, description?, runtime_s?, aspect?, produce_ui?, blueprint_source? }
+    case "create_template": {
+      const name = String(body.name ?? "").trim();
+      const cloneFrom = String(body.clone_from ?? "").trim();
+      if (!name) return json({ error: "name required" }, 400);
+      if (!cloneFrom) return json({ error: "clone_from (existing template key) required" }, 400);
+      const { data: parent, error: pErr } = await db.from("factory_templates")
+        .select("*").eq("key", cloneFrom).maybeSingle();
+      if (pErr) return json({ error: pErr.message }, 500);
+      if (!parent) return json({ error: "clone_from template not found" }, 404);
+      const key = String(body.key ?? name).trim().toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48);
+      if (!key) return json({ error: "could not derive a key from the name" }, 400);
+      const { data: row, error } = await db.from("factory_templates")
+        .insert({
+          key,
+          name,
+          description: body.description != null ? String(body.description) : parent.description,
+          produce_style: parent.produce_style,
+          plan_style: parent.plan_style,
+          finalize_script: parent.finalize_script,
+          finalize_tag: parent.finalize_tag,
+          blueprint_source: body.blueprint_source != null && String(body.blueprint_source).trim()
+            ? String(body.blueprint_source).trim()
+            : parent.blueprint_source,
+          aspect: body.aspect != null ? String(body.aspect) : parent.aspect,
+          runtime_s: body.runtime_s != null ? parseInt(String(body.runtime_s), 10) || parent.runtime_s : parent.runtime_s,
+          model: parent.model,
+          effort: parent.effort,
+          produce_ui: body.produce_ui && typeof body.produce_ui === "object"
+            ? body.produce_ui
+            : parent.produce_ui,
+        }).select().single();
+      if (error) return json({ error: error.message }, error.code === "23505" ? 409 : 500);
+      await logEvent("template_created",
+        `Template '${name}' (${key}) created from ${cloneFrom}`, { key, clone_from: cloneFrom });
+      return json({ template: row });
+    }
+
     // ── v18: channel-creation wizard ─────────────────────────────────
     // A draft accumulates the creator's answers step by step; each step can ask
     // the factory for AI-suggested options (wizard_suggest → channel_intake job);

@@ -6,6 +6,7 @@ import { RENDERS_BASE } from '../config'
 import Chips, { ChipSearch, ChipsGroup } from '../components/Chips'
 import EmptyState from '../components/EmptyState'
 import Lightbox from '../components/Lightbox'
+import TemplatesPanel from '../components/TemplatesPanel'
 
 // Fixed category set, in display order. 'uncategorized' always last.
 const CATEGORIES = [
@@ -354,6 +355,12 @@ export default function Generators() {
 
       {error && <div className="error-bar">{error.message}</div>}
 
+      <TemplatesPanel />
+
+      <div className="act-lane-head" style={{ marginTop: 'var(--s-4)' }}>
+        <span className="act-lane-label">Build scripts</span>
+        <span className="dim small">the machinery behind the templates</span>
+      </div>
       <div className="chips-bar">
         <ChipsGroup label="Category">
           <Chips options={catOptions} value={cat} onChange={setCat} ariaLabel="Category" />
