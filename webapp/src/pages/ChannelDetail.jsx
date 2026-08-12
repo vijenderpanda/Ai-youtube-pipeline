@@ -124,6 +124,11 @@ export default function ChannelDetail() {
         action: 'produce_channel', channel_key: channelKey,
         title: pTitle.trim(), brief: pBrief.trim(),
       })
+      if (!d || !d.calendar_id) {
+        // surface a bad/empty response instead of routing to /studio/undefined;
+        // keep the title/brief so the user can retry without retyping.
+        throw new Error('produce started but no project id came back — check the Jobs list, the episode may still be queued')
+      }
       setPTitle(''); setPBrief('')
       navigate('/studio/' + d.calendar_id)
     } catch (e) {
