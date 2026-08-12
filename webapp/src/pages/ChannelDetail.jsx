@@ -40,6 +40,53 @@ export default function ChannelDetail() {
   const [pBrief, setPBrief] = useState('')
   const [producing, setProducing] = useState(false)
   const [pErr, setPErr] = useState('')
+  // v17: idea engine (ranked 4-signal ideas)
+  const [planning, setPlanning] = useState(false)
+  const [ideas, setIdeas] = useState([])
+  const [planErr, setPlanErr] = useState('')
+
+  const ANGLE = {
+    analytics: { icon: '📊', label: 'Analytics' },
+    vaibhav: { icon: '🏆', label: 'Vaibhav-DNA' },
+    news: { icon: '📰', label: 'News' },
+    event: { icon: '📅', label: 'Event' },
+    wildcard: { icon: '🎲', label: 'Wildcard' },
+  }
+
+  const doPlanContent = async () => {
+    if (planning) return
+    setPlanning(true)
+    setPlanErr('')
+    try {
+      const d = await api.post({ action: 'plan_content', channel_key: channelKey })
+      const jobId = d.job && d.job.id
+      if (!jobId) throw new Error('planning job did not start')
+      const start = Date.now()
+      let job = null
+      while (Date.now() - start < 240000) {
+        await new Promise((r) => setTimeout(r, 3000))
+        const jr = await api.get(`?r=job&id=${jobId}`)
+        job = jr.job || jr
+        if (job.status === 'done') break
+        if (job.status === 'failed' || job.status === 'cancelled')
+          throw new Error(job.error || 'planning failed — is the worker running?')
+      }
+      const result = (job && job.result) || {}
+      const list = Array.isArray(result.ideas) ? result.ideas : []
+      if (!list.length) throw new Error('planning timed out or returned no ideas')
+      setIdeas(list)
+    } catch (e) {
+      setPlanErr(e.message)
+    }
+    setPlanning(false)
+  }
+
+  const useIdea = (idea) => {
+    setPTitle(idea.title || '')
+    setPBrief(idea.brief || '')
+    setIdeas([])
+    setPErr('')
+  }
 
   const doProduce = async () => {
     if (producing) return
@@ -137,15 +184,55 @@ export default function ChannelDetail() {
         <section className="card panel">
           <div className="panel-head">
             <h2>Produce new episode</h2>
-            <span className="tag" title="Locked craft template — every produce follows Ep11/Ep12">
-              🔒 Ep11/Ep12 template
-            </span>
+            <div className="panel-actions">
+              <span className="tag" title="Locked craft template — every produce follows Ep11/Ep12">
+                🔒 Ep11/Ep12 template
+              </span>
+              <button className="btn btn-ghost btn-sm" onClick={doPlanContent} disabled={planning}>
+                {planning ? 'Thinking… (~1–2 min)' : '✨ Plan content'}
+              </button>
+            </div>
           </div>
           <p className="dim small" style={{ marginTop: 0 }}>
-            Give it a topic + brief. It produces on the locked template, then you review in
-            Studio and Finalize &amp; Arm — the <strong>episode number is assigned automatically</strong>{' '}
-            (next in sequence) when you arm. No calendar needed.
+            <strong>Plan content</strong> for ranked ideas from analytics · Vaibhav-DNA · recent news ·
+            upcoming events — or write your own below. Produces on the locked template → review in
+            Studio → Finalize &amp; Arm; the <strong>episode number is auto-assigned</strong> when you
+            arm. No calendar needed.
           </p>
+          {planErr && <div className="error-bar">{planErr}</div>}
+          {ideas.length > 0 && (
+            <div className="idea-list" style={{ display: 'grid', gap: 10, marginBottom: 16 }}>
+              {ideas.map((idea, i) => {
+                const a = ANGLE[idea.angle] || { icon: '💡', label: idea.angle || 'idea' }
+                return (
+                  <div
+                    key={i}
+                    className="card"
+                    style={{ padding: 14, display: 'flex', gap: 12, alignItems: 'flex-start' }}
+                  >
+                    <div className="mono dim" style={{ fontSize: 22, fontWeight: 800, minWidth: 30 }}>
+                      #{idea.rank ?? i + 1}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                        <span className="tag" title={a.label}>{a.icon} {a.label}</span>
+                        <strong>{idea.title}</strong>
+                      </div>
+                      {idea.hook && (
+                        <div className="dim small" style={{ marginTop: 4 }}>🎙️ {idea.hook}</div>
+                      )}
+                      {idea.why_viral && (
+                        <div className="small" style={{ marginTop: 4 }}>{idea.why_viral}</div>
+                      )}
+                    </div>
+                    <button className="btn btn-primary btn-sm" onClick={() => useIdea(idea)}>
+                      Use this
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          )}
           <label className="field">
             <span className="field-label">Title</span>
             <input

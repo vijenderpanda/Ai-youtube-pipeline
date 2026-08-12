@@ -197,7 +197,7 @@ RECAP_SCHEMA = (
     '"next": [str, ...] (suggested follow-up, max 2, may be empty)}'
 )
 RECAP_SKIP_TYPES = ("suggest_brief", "analytics_sync", "plan_assets", "generate_asset",
-                    "preview_episode")  # results already structured
+                    "preview_episode", "plan_content")  # results already structured
 RECAP_TIMEOUT_S = 180  # haiku fallback summarizer cap; recap is always best-effort
 RECAP_LOG_TAIL_CHARS = 6000  # ~6KB of log tail fed to the summarizer
 
@@ -560,6 +560,14 @@ def brief_ctx_path(job_id):
     return RENDERS_OUT / f"brief_ctx_{job_id}.json"
 
 
+def plan_content_path(job_id):
+    return RENDERS_OUT / f"plan_content_{job_id}.json"
+
+
+def plan_content_ctx_path(job_id):
+    return RENDERS_OUT / f"plan_content_ctx_{job_id}.json"
+
+
 def assets_plan_path(job_id):
     return RENDERS_OUT / f"assets_plan_{job_id}.json"
 
@@ -739,6 +747,40 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
             f"Write {brief_path(job['id'])}: "
             '{"title": str, "brief": str (production-ready), "tags": [str, ...]}\n'
             "Planning only -- do NOT produce any videos and do NOT write a manifest."
+        )
+    elif jtype == "plan_content":
+        # v17: the channel-page "Plan content" idea engine. Ranked list across 4
+        # signals (analytics / Vaibhav-DNA / recent news / upcoming events). Each
+        # idea carries a production-ready brief so the user can pick -> produce_channel.
+        body = (
+            f"You are the content strategist for the AI Unpacked channel ('{key}': a premium "
+            "AI-tips Short channel for GENERAL beginners; synthetic host Sol, magenta).\n"
+            f"Read {ctx_path or '(context file missing)'} (guidelines, last-30d stats, recent "
+            "episode titles, upcoming calendar) + docs/PRODUCTION-PLAYBOOK.md.\n\n"
+            "Produce a RANKED list of 5 ideas for the NEXT Short, each driven by ONE signal:\n"
+            "1. ANALYTICS -- run `python scripts/yt_retention.py --channel claude-tricks --days 30 "
+            "--summary` and read the ctx stats. On this channel curriculum beats news ~3:1 on the "
+            "15s hold and stacked demo beats bleed at 5-13s -> favour SINGLE-BEAT curriculum; "
+            "propose a topic that plays to what actually holds retention.\n"
+            "2. VAIBHAV-DNA -- competitor DNA (@vaibhavsisinty, verified): Stop-X + FREE + 2-emoji "
+            "hook, ~28s, one concrete fix reaching the screen fast; propose a topic in that mold.\n"
+            "3. RECENT NEWS -- WebSearch what is BREAKING in AI this week (verified + dated); a "
+            "timely, beginner-relevant peg. CITE the source + date in why_viral.\n"
+            "4. UPCOMING EVENT -- from the calendar + today's date, a near-term hook (e.g. "
+            "Independence Day 15 Aug, a product launch, a price deadline); a tie-in for a viral peg.\n"
+            "5. WILDCARD -- your single strongest bet, any angle.\n\n"
+            "Every idea MUST fit the LOCKED Ep11/Ep12 template (single-beat how-to OR ranked "
+            "countdown; a REAL on-screen demo; ~28s; Sol host). VERIFY every factual claim with "
+            "WebSearch -- never fabricate.\n"
+            f"Write {plan_content_path(job['id'])}: "
+            '{"ideas": [{"rank": int (1=best), '
+            '"angle": "analytics"|"vaibhav"|"news"|"event"|"wildcard", '
+            '"title": str (YouTube title w/ emoji, Vaibhav-DNA hook grammar), '
+            '"hook": str (the <=1.5s spoken hook line), '
+            '"why_viral": str (1-2 sentences; cite the evidence/source/date), '
+            '"brief": str (production-ready brief following the Ep11/Ep12 template -- enough for '
+            'produce_channel to run)}]}\n'
+            "Rank by viral potential. Planning only -- do NOT produce videos, do NOT write a manifest."
         )
     elif jtype == "plan_assets":
         body = (
@@ -920,7 +962,7 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
         "(issues/next may be empty if genuinely none); recap.outputs mirrors the final "
         "deliverables, one short note phrase each."
     )
-    if jtype in ("suggest_brief", "plan_assets", "generate_asset", "preview_episode"):
+    if jtype in ("suggest_brief", "plan_content", "plan_assets", "generate_asset", "preview_episode"):
         prompt = body  # structured-result jobs: their own JSON only, no manifest / renders
     else:
         prompt = f"{body}\n\n{manifest}"
@@ -1785,6 +1827,40 @@ def dump_brief_context(supa, job):
     }
     RENDERS_OUT.mkdir(exist_ok=True)
     path = brief_ctx_path(job["id"])
+    path.write_text(json.dumps(ctx, indent=2, default=str))
+    return path
+
+
+def dump_plan_content_context(supa, job):
+    """v17: context for the plan_content idea engine — guidelines + last-30d stats +
+    recent published/job titles + upcoming calendar (near-term events). The prompt
+    itself runs yt_retention.py + WebSearch for the deeper signals."""
+    key = job.get("channel_key") or ""
+    today = datetime.now(timezone.utc).date()
+    chan = supa.select("factory_channels", f"key=eq.{key}&select=key,name,niche,guidelines")
+    jobs = supa.select("factory_jobs",
+                       f"select=title&channel_key=eq.{key}&order=created_at.desc&limit=20")
+    posts = supa.select("factory_posts",
+                        f"select=yt_title,status,publish_at&channel_key=eq.{key}"
+                        "&order=publish_at.desc&limit=15")
+    ctx = {
+        "generated_at": now_iso(),
+        "today": str(today),
+        "channel": chan[0] if chan else {"key": key},
+        "stats_last_30d": supa.select(
+            "factory_stats",
+            f"select=date,views,subs&channel_key=eq.{key}"
+            f"&date=gte.{today - timedelta(days=30)}&order=date.asc"),
+        "recent_published_titles": [p["yt_title"] for p in posts if p.get("yt_title")],
+        "recent_job_titles": [j["title"] for j in jobs if j.get("title")],
+        "calendar_next_21d": supa.select(
+            "factory_calendar",
+            f"select=planned_date,title,status&channel_key=eq.{key}"
+            f"&planned_date=gte.{today}&planned_date=lte.{today + timedelta(days=21)}"
+            f"&order=planned_date.asc"),
+    }
+    RENDERS_OUT.mkdir(exist_ok=True)
+    path = plan_content_ctx_path(job["id"])
     path.write_text(json.dumps(ctx, indent=2, default=str))
     return path
 
@@ -3271,6 +3347,13 @@ def run_job(supa, job):
         except (RuntimeError, requests.RequestException, OSError) as e:
             fail(supa, job_id, f"could not build brief context: {e}", LogBuffer(), job=job)
             return
+    elif job.get("type") == "plan_content":
+        try:
+            ctx_path = dump_plan_content_context(supa, job)
+            log(f"  wrote plan_content context {ctx_path}")
+        except (RuntimeError, requests.RequestException, OSError) as e:
+            fail(supa, job_id, f"could not build plan_content context: {e}", LogBuffer(), job=job)
+            return
     elif job.get("type") == "assemble_episode":
         try:
             ctx_path = dump_staged_context(supa, job)
@@ -3382,6 +3465,32 @@ def run_job(supa, job):
                   "tags": brief.get("tags") or []}
         done_msg = f"suggest_brief '{job.get('title') or job_id}' done: {str(brief['title'])[:120]!r}"
         buf.add(f"[worker] brief {str(brief['title'])[:120]!r} stored in job.result")
+    elif job.get("type") == "plan_content":
+        # v17: the ranked ideas JSON IS the result -- no manifest, no renders
+        ppath = plan_content_path(job_id)
+        try:
+            plan = json.loads(ppath.read_text())
+        except (OSError, json.JSONDecodeError) as e:
+            fail(supa, job_id,
+                 f"plan_content finished but the ideas JSON is missing/unreadable ({ppath}): {e}",
+                 buf, job=job)
+            return
+        ideas = plan.get("ideas") if isinstance(plan, dict) else None
+        if not isinstance(ideas, list) or not ideas:
+            fail(supa, job_id, "plan_content JSON has no 'ideas' list", buf, job=job)
+            return
+        # keep only well-formed ideas, sorted by rank
+        clean = [i for i in ideas if isinstance(i, dict)
+                 and str(i.get("title") or "").strip() and str(i.get("brief") or "").strip()]
+        clean.sort(key=lambda i: i.get("rank", 99))
+        if not clean:
+            fail(supa, job_id, "plan_content ideas all lack a title/brief", buf, job=job)
+            return
+        uploaded = 0
+        result = {"ideas": clean}
+        done_msg = (f"plan_content '{job.get('channel_key')}' done: {len(clean)} idea(s), "
+                    f"top: {str(clean[0]['title'])[:80]!r}")
+        buf.add(f"[worker] {len(clean)} content ideas stored in job.result")
     elif job.get("type") == "plan_assets":
         # v9: the plan JSON becomes factory_assets rows + generate_asset jobs
         result = ingest_asset_plan(supa, job, buf)

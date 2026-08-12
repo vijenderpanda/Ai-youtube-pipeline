@@ -29,6 +29,9 @@ const JOB_TYPES = [
   // (via shell_script) runs mastering + endcard + outro + arm YT. Cost saving
   // vs full produce_short: ~$1-2/short. See build_ep_v2.py --preview flag.
   "produce_preview",
+  // v17: channel-page idea engine — ranked ideas across analytics / Vaibhav-DNA /
+  // news / upcoming events. Structured result (job.result.ideas), no renders.
+  "plan_content",
 ];
 // v8: staged job types carry meta.calendar_id for their episode
 const STAGED_JOB_TYPES = ["plan_assets", "generate_asset", "assemble_episode", "preview_episode"];
@@ -1743,6 +1746,31 @@ async function handlePost(body: any): Promise<Response> {
         `Ep${nextEp} produce queued for ${channel_key}: '${title}'`,
         { item_id: item.id, job_id: job.id, channel_key, ep: nextEp });
       return json({ calendar_id: item.id, job, ep: nextEp });
+    }
+
+    // v17: channel-page idea engine. Queues a plan_content job; the client polls
+    // ?r=job&id= until done and reads job.result.ideas (ranked). Body: {channel_key}.
+    case "plan_content": {
+      const { channel_key } = body;
+      if (!channel_key) return json({ error: "channel_key required" }, 400);
+      const { data: live, error: lErr } = await db.from("factory_jobs")
+        .select("id, status").eq("type", "plan_content").eq("channel_key", channel_key)
+        .in("status", ["queued", "running"]).limit(1);
+      if (lErr) return json({ error: lErr.message }, 500);
+      if (live && live.length > 0) {
+        return json({ error: "a content-ideas job is already " + live[0].status }, 409);
+      }
+      const { data: job, error } = await db.from("factory_jobs")
+        .insert({
+          channel_key, type: "plan_content",
+          model: "sonnet", effort: "medium",
+          title: "Content ideas: " + channel_key, status: "queued",
+        })
+        .select().single();
+      if (error) return json({ error: error.message }, 500);
+      await logEvent("plan_content_queued", "Content-ideas job queued for " + channel_key,
+        { job_id: job.id, channel_key });
+      return json({ job });
     }
 
     default:
