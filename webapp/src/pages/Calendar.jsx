@@ -282,7 +282,7 @@ export default function Calendar() {
           <CalItem
             key={it.id}
             item={it}
-            accent={accents[it.channel_key] || '#E91E63'}
+            accent={accents[it.channel_key] || '#94A3B8'}
             post={it.job_id ? postByJob.get(it.job_id) : null}
             disp={dispById.get(it.id)}
             challenger={challengerByTarget.get(it.id) || null}
@@ -392,7 +392,7 @@ export default function Calendar() {
           </div>
           <ul className="urgent-strip-list">
             {urgentPairs.map(({ original, challenger, hoursTo }) => (
-              <li key={original.id} className="urgent-row" style={{ '--ch': accents[original.channel_key] || '#E91E63' }}>
+              <li key={original.id} className="urgent-row" style={{ '--ch': accents[original.channel_key] || '#94A3B8' }}>
                 <div className="urgent-row-when">
                   <span className="urgent-row-eta">{fmtHours(hoursTo)}</span>
                   <span className="urgent-row-chan">{original.channel_key}</span>

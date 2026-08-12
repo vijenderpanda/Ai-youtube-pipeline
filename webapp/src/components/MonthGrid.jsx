@@ -140,7 +140,7 @@ export default function MonthGrid({
                   <Pill
                     key={it.id}
                     item={it}
-                    accent={accents[it.channel_key] || '#E91E63'}
+                    accent={accents[it.channel_key] || '#94A3B8'}
                     lc={lifecycleOf(it, it.job_id ? postByJob.get(it.job_id) : null)}
                     challenged={challengedIds.has(it.id)}
                     urgent={urgentIds.has(it.id)}

@@ -54,7 +54,7 @@ export default function Recommendations({ videos, accents = {}, onAction, limit 
                 <div className="rec-head">
                   <span
                     className="accent-dot accent-dot-sm"
-                    style={{ background: accents[v.channel_key] || '#E91E63' }}
+                    style={{ background: accents[v.channel_key] || '#94A3B8' }}
                     title={v.channel_key || ''}
                   />
                   <a

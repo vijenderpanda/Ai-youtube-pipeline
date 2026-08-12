@@ -10,7 +10,7 @@ function NewChannelModal({ onClose, onCreated }) {
     key: '',
     name: '',
     niche: '',
-    accent: '#E91E63',
+    accent: '#94A3B8',
     guidelines: '',
   })
   const [busy, setBusy] = useState(false)
@@ -116,7 +116,7 @@ export default function Channels() {
               onClick={() => navigate(`/channels/${encodeURIComponent(c.key)}`)}
             >
               <div className="channel-top">
-                <span className="accent-dot" style={{ background: c.accent || '#E91E63' }} />
+                <span className="accent-dot" style={{ background: c.accent || '#94A3B8' }} />
                 <span className={'status-pill' + (c.status === 'active' ? ' on' : '')}>
                   {c.status || 'active'}
                 </span>

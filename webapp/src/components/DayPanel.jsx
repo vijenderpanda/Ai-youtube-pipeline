@@ -51,7 +51,7 @@ export default function DayPanel({
                 <CalItem
                   key={it.id}
                   item={it}
-                  accent={accents[it.channel_key] || '#E91E63'}
+                  accent={accents[it.channel_key] || '#94A3B8'}
                   post={it.job_id ? postByJob.get(it.job_id) : null}
                   disp={dispById.get(it.id)}
                   detail

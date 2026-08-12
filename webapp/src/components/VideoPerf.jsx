@@ -129,7 +129,7 @@ export function VideoCard({ v, accent, weak }) {
       <div className="perf-top">
         <span
           className="accent-dot"
-          style={{ background: accent || '#E91E63' }}
+          style={{ background: accent || '#94A3B8' }}
           title={v.channel_key || ''}
         />
         <a
@@ -314,7 +314,7 @@ const COLS = [
     sortVal: (v) => v.channel_key || '',
     render: (v, accents) => (
       <>
-        <span className="accent-dot accent-dot-sm" style={{ background: accents[v.channel_key] || '#E91E63' }} />
+        <span className="accent-dot accent-dot-sm" style={{ background: accents[v.channel_key] || '#94A3B8' }} />
         <span className="dim mono small">{v.channel_key || '—'}</span>
       </>
     ),

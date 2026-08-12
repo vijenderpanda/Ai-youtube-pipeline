@@ -183,7 +183,7 @@ export default function ChannelDetail() {
           <h1 className="with-dot">
             <span
               className="accent-dot"
-              style={{ background: (channel && channel.accent) || '#E91E63' }}
+              style={{ background: (channel && channel.accent) || '#94A3B8' }}
             />
             {channel ? channel.name || channel.key : channelKey}
           </h1>
