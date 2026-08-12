@@ -252,6 +252,15 @@ async function handleGet(url: URL): Promise<Response> {
       return json({ channels: data });
     }
 
+    // v19: the template registry — every production pipeline as data
+    // (produce_style / plan_style / finalize routing / produce-panel copy).
+    case "templates": {
+      const { data, error } = await db.from("factory_templates").select("*")
+        .order("created_at", { ascending: true });
+      if (error) return json({ error: error.message }, 500);
+      return json({ templates: data });
+    }
+
     case "jobs": {
       const limit = clampLimit(url.searchParams.get("limit"), 50, 200);
       let q = db.from("factory_jobs").select(JOB_LIST_COLS)
@@ -685,7 +694,7 @@ async function handlePost(body: any): Promise<Response> {
       if (!key || !patch || typeof patch !== "object") {
         return json({ error: "key and patch required" }, 400);
       }
-      const allowed = ["name", "niche", "accent", "guidelines", "status", "brand", "lifecycle", "baseline_ref"];
+      const allowed = ["name", "niche", "accent", "guidelines", "status", "brand", "lifecycle", "baseline_ref", "template"];
       const clean: Record<string, unknown> = {};
       for (const k of allowed) if (k in patch) clean[k] = patch[k];
       if (Object.keys(clean).length === 0) {
@@ -1695,7 +1704,7 @@ async function handlePost(body: any): Promise<Response> {
       if (!item) return json({ error: "calendar item not found" }, 404);
       // no YouTube arm while the channel is still incubating — lock the baseline first
       const { data: finCh, error: finChErr } = await db.from("factory_channels")
-        .select("lifecycle").eq("key", item.channel_key).maybeSingle();
+        .select("lifecycle, template").eq("key", item.channel_key).maybeSingle();
       if (finChErr) return json({ error: finChErr.message }, 500);
       if (finCh?.lifecycle === "incubating") {
         return json({ error: "this channel is incubating — lock the baseline before scheduling on YouTube" }, 409);
@@ -1720,19 +1729,34 @@ async function handlePost(body: any): Promise<Response> {
         return json({ error: "a finalize job for this item is already " + liveFin[0].status }, 409);
       }
       const scheduleIso = when.toISOString().replace(/\.\d{3}Z$/, "Z"); // RFC3339 UTC
-      // v17: already-happening finalizes with a DIFFERENT deterministic script —
-      // it gates on the human-rendered Wan 2.6 motion clips (MOTION-TODO.md
-      // sentinel) then builds the real cut + arms. claude-tricks keeps its own.
-      // v18: each channel finalizes with its own deterministic script.
-      // aashiqana = LOCKED sensual-motion Shorts template (SHORTS-TEMPLATE-LOCKED.md):
-      // LUFS-master the branded cut + arm via yt_upload (--synthetic, Music, non-kids).
+      // v19: finalize routing comes from the channel's TEMPLATE (factory_templates
+      // row: finalize_script + finalize_tag). A template with no finalize script
+      // yet (the starter templates) 409s honestly instead of running another
+      // channel's script. Channels with no template keep the legacy key mapping.
       const chKey = item.channel_key;
-      const scriptPath = chKey === "already-happening"
-        ? "scripts/finalize_already_happening.py"
-        : chKey === "aashiqana"
-        ? "scripts/finalize_aashiqana.py"
-        : "scripts/finalize_episode.py";
-      const finTag = (chKey === "already-happening" || chKey === "aashiqana") ? "v3" : "v2";
+      let scriptPath = "";
+      let finTag = "";
+      if (finCh?.template) {
+        const { data: tpl, error: tplErr } = await db.from("factory_templates")
+          .select("finalize_script, finalize_tag").eq("key", finCh.template).maybeSingle();
+        if (tplErr) return json({ error: tplErr.message }, 500);
+        if (tpl) {
+          if (!tpl.finalize_script) {
+            return json({ error: "this channel's template has no finalize pipeline yet — a deterministic finalize script needs to be added before it can arm YouTube" }, 409);
+          }
+          scriptPath = tpl.finalize_script;
+          finTag = tpl.finalize_tag || "v2";
+        }
+      }
+      if (!scriptPath) {
+        // legacy fallback (template missing or its row was deleted)
+        scriptPath = chKey === "already-happening"
+          ? "scripts/finalize_already_happening.py"
+          : chKey === "aashiqana"
+          ? "scripts/finalize_aashiqana.py"
+          : "scripts/finalize_episode.py";
+        finTag = (chKey === "already-happening" || chKey === "aashiqana") ? "v3" : "v2";
+      }
       const { data: job, error: jobErr } = await db.from("factory_jobs")
         .insert({
           channel_key: item.channel_key,
@@ -2086,6 +2110,20 @@ async function handlePost(body: any): Promise<Response> {
       if (!/^[a-z0-9][a-z0-9-]*$/.test(key)) {
         return json({ error: "key must be lowercase letters, numbers and hyphens" }, 400);
       }
+      // v19: the wizard's production-style answer picks a starter TEMPLATE from
+      // the registry — it drives the blueprint clone at bring-up and all later
+      // produce/plan/finalize routing. Order matters: "Host-less cinematic"
+      // contains "host", so the host-less test runs first.
+      const prod = String(a.production ?? "").toLowerCase();
+      const templateKey =
+        /host-?less|cinematic/.test(prod) ? "cinematic"
+        : /avatar|host/.test(prod) ? "avatar-host"
+        : /illustrat|baked/.test(prod) ? "baked-text"
+        : /image|story|motion/.test(prod) ? "image-story"
+        : "cinematic";
+      const { data: tplRow } = await db.from("factory_templates")
+        .select("key, produce_style, plan_style, blueprint_source")
+        .eq("key", templateKey).maybeSingle();
       const { data: channel, error: cErr } = await db.from("factory_channels")
         .insert({
           key, name,
@@ -2095,6 +2133,7 @@ async function handlePost(body: any): Promise<Response> {
           brand: a,               // the captured answers ARE the machine-readable brand bible
           status: "active",
           lifecycle: "incubating",
+          template: tplRow ? templateKey : null,
         }).select().single();
       if (cErr) return json({ error: cErr.message }, cErr.code === "23505" ? 409 : 500);
       // seed the episode counter so the first produce auto-assigns Ep 1
@@ -2106,7 +2145,7 @@ async function handlePost(body: any): Promise<Response> {
           channel_key: key, type: "new_channel_scaffold",
           title: "Set up channel — " + name, status: "queued",
           model: "opus", effort: "medium",
-          meta: { phase: "bringup", draft_id, brand: a },
+          meta: { phase: "bringup", draft_id, brand: a, template: tplRow ?? null },
         }).select().single();
       if (sErr) return json({ error: sErr.message }, 500);
       await db.from("factory_channel_drafts")

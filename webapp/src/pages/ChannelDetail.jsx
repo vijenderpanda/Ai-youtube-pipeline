@@ -54,8 +54,9 @@ export default function ChannelDetail() {
     wildcard: { icon: '🎲', label: 'Wildcard' },
   }
 
-  // v17: channels that can produce a full episode from this page. Each has a
-  // locked craft template; the produce pipeline + copy differ per channel.
+  // v17: channels that can produce a full episode from this page. v19: the
+  // copy now comes from the channel's TEMPLATE (factory_templates.produce_ui);
+  // this dict is the legacy fallback if the registry fetch fails.
   const PRODUCE_CFG = {
     'claude-tricks': {
       templateTag: '🔒 Ep11/Ep12 template',
@@ -78,7 +79,21 @@ export default function ChannelDetail() {
         'Song concept + mood, couple vibe, the SETTING to rotate to (not the last short), Suno style tags, the hook line…',
     },
   }
-  const pcfg = PRODUCE_CFG[channelKey]
+  const tplsQ = usePoll(() => api.get('?r=templates'), 0)
+  const templates = (tplsQ.data && tplsQ.data.templates) || []
+  const tpl =
+    (channel && channel.template && templates.find((t) => t.key === channel.template)) || null
+  const tui = (tpl && tpl.produce_ui) || null
+  // any channel with a template produces from this page; produce_ui carries the copy
+  const pcfg = tui && tui.tag
+    ? {
+        templateTag: tui.tag,
+        templateTitle: tui.tag_title || '',
+        titlePh: tui.title_ph || 'Episode title…',
+        briefPh: tui.brief_ph || 'The idea, the beats, and any facts to verify first…',
+        flow: tui.flow || '',
+      }
+    : PRODUCE_CFG[channelKey]
 
   // ── v18: incubation loop ───────────────────────────────────────────
   // A freshly-created channel is 'incubating' until its Ep01 TEMP is locked as
@@ -342,7 +357,16 @@ export default function ChannelDetail() {
               </button>
             </div>
           </div>
-          {channelKey === 'already-happening' ? (
+          {pcfg.flow ? (
+            // registry-authored flow copy (factory_templates.produce_ui.flow —
+            // owner-written HTML from the service-role DB, same trust domain as
+            // the rest of the dashboard)
+            <p
+              className="dim small"
+              style={{ marginTop: 0 }}
+              dangerouslySetInnerHTML={{ __html: pcfg.flow }}
+            />
+          ) : channelKey === 'already-happening' ? (
             <p className="dim small" style={{ marginTop: 0 }}>
               <strong>Plan content</strong> for grounded-speculation ideas from analytics · breaking
               AI news · a new life domain · upcoming events — or write your own below. Produces the

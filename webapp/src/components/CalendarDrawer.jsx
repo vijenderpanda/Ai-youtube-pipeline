@@ -16,6 +16,7 @@ export default function CalendarDrawer({
   onClose,
   onChanged,
   onToast = null,
+  channels = [],
 }) {
   const navigate = useNavigate()
   const [form, setForm] = useState({
@@ -36,9 +37,12 @@ export default function CalendarDrawer({
 
   const locked = status === 'queued' || status === 'produced' || status === 'superseded'
   const suggested = status === 'suggested'
-  // claude-tricks produces via the monolithic preview engine (episode number is
-  // auto-assigned at produce time); other channels produce in staged fragments.
-  const isClaudeTricks = item.channel_key === 'claude-tricks'
+  // v19: any channel with a TEMPLATE produces via the monolithic preview engine
+  // (episode number auto-assigned at produce time); channels without one keep
+  // the staged-fragments pipeline. Legacy fallback: claude-tricks stays direct
+  // even if the channels list hasn't loaded yet.
+  const chan = channels.find((c) => c.key === item.channel_key)
+  const isDirect = chan && chan.template ? true : item.channel_key === 'claude-tricks'
   const set = (k) => (e) => {
     setSaved(false)
     setForm((f) => ({ ...f, [k]: e.target.value }))
@@ -118,9 +122,9 @@ export default function CalendarDrawer({
     setBusy('')
   }
 
-  // Produce the claude-tricks Short via the monolithic preview engine. Assets
-  // stream into the Studio board, then the preview is reviewable there before
-  // scheduling. The episode number is auto-assigned server-side.
+  // Produce a template channel's episode via the monolithic preview engine.
+  // Assets stream into the Studio board, then the preview is reviewable there
+  // before scheduling. The episode number is auto-assigned server-side.
   const producePreview = async () => {
     if (busy) return
     setBusy('preview')
@@ -374,7 +378,7 @@ export default function CalendarDrawer({
                 </button>
                 <button
                   className="btn btn-primary"
-                  onClick={isClaudeTricks ? producePreview : stage}
+                  onClick={isDirect ? producePreview : stage}
                   disabled={!!busy || !form.title.trim() || locked}
                   title="Produce the episode, then review it in the Studio before scheduling"
                 >

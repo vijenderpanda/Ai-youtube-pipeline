@@ -592,33 +592,79 @@ def channel_scaffold_path(job_id):
     return RENDERS_OUT / f"channel_scaffold_{job_id}.json"
 
 
-def build_prompt(job, guidelines="", ctx_path=None, asset=None):
+# v19: template registry (factory_templates). A channel's template row names its
+# production pipeline (produce_style / plan_style / blueprint_source); the
+# per-channel prompt branches below select on STYLE, not channel key. Channels
+# with no template resolve through LEGACY_TEMPLATE_STYLES so behavior never
+# regresses if the DB rows are missing or the fetch fails.
+LEGACY_TEMPLATE_STYLES = {
+    "claude-tricks": {"produce_style": "claude-tricks-v16", "plan_style": "ai-unpacked"},
+    "already-happening": {"produce_style": "cinematic-animatic", "plan_style": "cinematic"},
+    "aashiqana": {"produce_style": "sensual-motion", "plan_style": "blueprint"},
+}
+
+
+def channel_template(supa, key):
+    """factory_channels.template -> factory_templates row (dict), else the legacy
+    per-key style stub, else None. Best-effort: any fetch error falls back."""
+    if not key or key == "_network":
+        return None
+    try:
+        rows = supa.select("factory_channels", f"key=eq.{key}&select=template")
+        tkey = rows[0].get("template") if rows else None
+        if tkey:
+            trows = supa.select("factory_templates", f"key=eq.{tkey}&select=*")
+            if trows:
+                return trows[0]
+    except (RuntimeError, requests.RequestException) as e:
+        log(f"  could not fetch template for {key} (using legacy styles): {e}")
+    return LEGACY_TEMPLATE_STYLES.get(key)
+
+
+def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
     jtype = job.get("type") or "custom"
     jprompt = (job.get("prompt") or "").strip()
     key = job.get("channel_key") or ""
+    # v19: prompt branches select on the channel's template STYLE, not its key
+    # (channel_template() already fell back to the legacy per-key styles).
+    # No style at all -> the historical defaults below, exactly as before.
+    tpl = template or {}
+    produce_style = str(tpl.get("produce_style") or "")
+    plan_style = str(tpl.get("plan_style") or "")
 
     if jtype == "produce_short":
         body = (f"Produce a short for channel {key}.\n\n"
                 f"CHANNEL GUIDELINES:\n{guidelines or '(none on file)'}\n\n"
                 f"JOB BRIEF:\n{jprompt}\n\n"
                 "STANDING RULES: follow docs/PRODUCTION-PLAYBOOK.md, premium quality bar.")
-    elif jtype == "produce_preview" and (job.get("meta") or {}).get("incubation"):
-        # v18: incubation Ep01 TEMP for a brand-new channel. The channel has no
-        # bespoke render pipeline yet — produce a watchable ~30s TEMP by FOLLOWING
-        # this channel's own cloned blueprint, improvising with in-house tools. The
-        # human reviews it, revises via feedback (appended to the brief below), and
-        # once approved the blueprint is frozen (lock_baseline). Do NOT master at
-        # 1080p and do NOT arm YouTube — this stops at a preview like every other.
+    elif jtype == "produce_preview" and (
+        (job.get("meta") or {}).get("incubation") or produce_style == "blueprint"
+    ):
+        # v18: incubation Ep01 TEMP for a brand-new channel; v19: also every
+        # post-lock produce for a 'blueprint'-style template channel (no bespoke
+        # render pipeline — the channel's own blueprint IS the pipeline). Produce
+        # a watchable ~30s cut by FOLLOWING the blueprint, improvising with
+        # in-house tools. Do NOT master at 1080p and do NOT arm YouTube — this
+        # stops at a preview like every other produce.
         cal_id = (job.get("meta") or {}).get("calendar_id") or ""
         ep_key = str((job.get("meta") or {}).get("ep") or "").strip()
         iteration = int((job.get("meta") or {}).get("iteration") or 1)
-        body = (
+        incub = bool((job.get("meta") or {}).get("incubation"))
+        intro = (
             f"You are producing the Episode 1 TEMP for the NEW, incubating channel "
             f"'{key}'. This is revision {iteration}. One Claude session, ~25 min budget, "
             "opus/medium tier. It is a TEMP for review — the creator will give feedback "
             "and you'll revise; once they approve, this channel's blueprint gets LOCKED "
             "from what you make here, so make it genuinely good and on-brand.\n\n"
-            f"READ FIRST (this channel's law): channels/{key}/PRODUCTION-BLUEPRINT.md, "
+        ) if incub else (
+            f"You are producing the next episode PREVIEW for the channel '{key}'. "
+            "One Claude session, ~25 min budget, opus/medium tier. The channel's "
+            "blueprint is its LOCKED baseline recipe — follow it exactly; the human "
+            "reviews the preview in Studio before any finalize/arm.\n\n"
+        )
+        body = (
+            intro
+            + f"READ FIRST (this channel's law): channels/{key}/PRODUCTION-BLUEPRINT.md, "
             f"channels/{key}/BRAND-BIBLE.md, and channels/{key}/channel.json. FOLLOW the "
             "blueprint's beat spine, visual/audio identity, and invariants exactly.\n\n"
             + (f"EP KEY: use ep_key = {ep_key} for ALL files "
@@ -650,7 +696,7 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
             "COST DISCIPLINE: in-house mocks only, no 1080p master, no endcard/outro "
             "concat, no external paid generators. Those come after the baseline is locked."
         )
-    elif jtype == "produce_preview" and key == "already-happening":
+    elif jtype == "produce_preview" and produce_style == "cinematic-animatic":
         # v17: "already-happening" is a CINEMATIC, host-less channel whose 6 motion
         # clips CANNOT be generated headlessly (Leonardo's generation API is
         # 402-blocked; the web UI needs an interactive Chrome session). So this
@@ -749,7 +795,7 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
             "Leonardo image gen, ffmpeg/PIL only. STOP at the animatic. Finalize "
             "(after the human renders motion) will build the real cut + arm YouTube."
         )
-    elif jtype == "produce_preview" and key == "aashiqana":
+    elif jtype == "produce_preview" and produce_style == "sensual-motion":
         # v18: Aashiqana sensual-motion Shorts. Like already-happening, the
         # creative generation CANNOT run headlessly — both the Suno song AND the
         # Leonardo keyframes+Hailuo motion need an interactive, logged-in Chrome
@@ -963,6 +1009,35 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
             )
         else:  # bringup
             brand = meta.get("brand") or {}
+            # v19: the wizard already picked a starter template — its
+            # blueprint_source is THE file to clone. The style mapping below
+            # stays as fallback for jobs queued before the registry existed.
+            tpl_meta = meta.get("template") or {}
+            bsrc = str(tpl_meta.get("blueprint_source") or "").strip()
+            clone_step = (
+                (
+                    f"STEP 2 — CLONE THE BLUEPRINT. This channel's template is "
+                    f"'{tpl_meta.get('key')}'; clone {bsrc} as the skeleton for "
+                    f"channels/{key}/PRODUCTION-BLUEPRINT.md, then adapt it to THIS "
+                    "channel's brand (do not copy the source channel's topic/identity). "
+                ) if bsrc else (
+                    "STEP 2 — CLONE A BLUEPRINT FROM THE CHOSEN PRODUCTION STYLE. Read the brand's "
+                    "production style and clone the CLOSEST existing channel blueprint as the "
+                    f"skeleton for channels/{key}/PRODUCTION-BLUEPRINT.md, then adapt it to THIS "
+                    "channel's brand (do not copy the source channel's topic/identity):\n"
+                    "   - host-less / cinematic    -> channels/already-happening/PRODUCTION-BLUEPRINT.md\n"
+                    "   - synthetic / avatar host  -> channels/claude-tricks/BRAND-BIBLE.md (avatar-host build)\n"
+                    "   - illustrated / baked-text -> channels/pip-moonlit-garden/BRAND-BIBLE.md (baked-in text)\n"
+                    "   - image-to-video / story   -> channels/aashiqana/SHORTS-TEMPLATE-LOCKED.md\n"
+                    "   Pick the best fit from the production answer; if unclear, use host-less "
+                    "cinematic. "
+                )
+            ) + (
+                "The blueprint is a SKELETON for now (it gets frozen into the locked "
+                "recipe after Ep01 is approved) — capture the beat spine, the asset recipe, the "
+                "visual/audio identity, and the invariants, and clearly mark it 'DRAFT — locks "
+                "after Ep01'.\n\n"
+            )
             body = (
                 f"You are BRINGING UP a brand-new YouTube channel, key '{key}'. It was just "
                 "created in the factory wizard and is 'incubating': set up its home on disk so "
@@ -980,19 +1055,7 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
                 "purpose, audience, voice/tone, visual identity (accent, type, grade), the "
                 "format + cadence, and explicit do/don't rules. This is the channel's north "
                 "star; write it well.\n\n"
-                "STEP 2 — CLONE A BLUEPRINT FROM THE CHOSEN PRODUCTION STYLE. Read the brand's "
-                "production style and clone the CLOSEST existing channel blueprint as the "
-                f"skeleton for channels/{key}/PRODUCTION-BLUEPRINT.md, then adapt it to THIS "
-                "channel's brand (do not copy the source channel's topic/identity):\n"
-                "   - host-less / cinematic    -> channels/already-happening/PRODUCTION-BLUEPRINT.md\n"
-                "   - synthetic / avatar host  -> channels/claude-tricks/BRAND-BIBLE.md (avatar-host build)\n"
-                "   - illustrated / baked-text -> channels/pip-moonlit-garden/BRAND-BIBLE.md (baked-in text)\n"
-                "   - image-to-video / story   -> channels/aashiqana/SHORTS-TEMPLATE-LOCKED.md\n"
-                "   Pick the best fit from the production answer; if unclear, use host-less "
-                "cinematic. The blueprint is a SKELETON for now (it gets frozen into the locked "
-                "recipe after Ep01 is approved) — capture the beat spine, the asset recipe, the "
-                "visual/audio identity, and the invariants, and clearly mark it 'DRAFT — locks "
-                "after Ep01'.\n\n"
+                + clone_step +
                 "STEP 3 — BRAND ASSETS: generate a channel icon and a banner consistent with the "
                 f"accent + identity, into channels/{key}/brand/ (use in-house PIL/ffmpeg mocks or "
                 "an existing gen_brand.py you can adapt as a NEW file under this channel — do not "
@@ -1084,7 +1147,7 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
             '{"title": str, "brief": str (production-ready), "tags": [str, ...]}\n'
             "Planning only -- do NOT produce any videos and do NOT write a manifest."
         )
-    elif jtype == "plan_content" and key == "already-happening":
+    elif jtype == "plan_content" and plan_style == "cinematic":
         # v17: idea engine for the "already-happening" cinematic channel. Grounded
         # speculation — every idea is a near-future-of-AI claim ANCHORED to a real,
         # dated capability today. Ranked list; each idea is a production-ready brief
@@ -1123,6 +1186,41 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None):
             '"why_viral": str (1-2 sentences; cite the dated source that anchors it), '
             '"brief": str (production-ready: the 6-beat outline, the verified TODAY anchor + '
             'its source, and the 6 shot ideas -- enough for produce_channel to run)}]}\n'
+            "Rank by viral potential. Planning only -- do NOT produce videos, do NOT write a manifest."
+        )
+    elif jtype == "plan_content" and plan_style == "blueprint":
+        # v19: generic blueprint-driven idea engine for template channels with no
+        # bespoke planner (new channels + aashiqana). Reads the channel's OWN
+        # blueprint/brand files instead of assuming any specific format.
+        body = (
+            f"You are the content strategist for the YouTube channel '{key}'.\n"
+            f"READ FIRST (this channel's law): channels/{key}/PRODUCTION-BLUEPRINT.md, "
+            f"channels/{key}/BRAND-BIBLE.md, channels/{key}/channel.json, and "
+            f"{ctx_path or '(context file missing)'} (guidelines, recent stats, episode "
+            "titles, upcoming calendar).\n\n"
+            "Produce a RANKED list of 5 ideas for the NEXT episode, each driven by ONE "
+            "signal:\n"
+            "1. ANALYTICS -- read the ctx stats (small/new channel: judge by TREND, never "
+            "fabricate). Favour what has held retention so far.\n"
+            "2. NICHE PULSE -- WebSearch what is working RIGHT NOW in this channel's "
+            "niche (formats, hooks, competitor angles; verified + dated). CITE source + "
+            "date in why_viral.\n"
+            "3. FRESH GROUND -- a topic/angle the channel has NOT covered yet that fits "
+            "the brand bible.\n"
+            "4. UPCOMING EVENT -- from the calendar + today's date, a near-term peg (a "
+            "launch, a date, a season) for a timely episode.\n"
+            "5. WILDCARD -- your single strongest bet, any angle.\n\n"
+            "Every idea MUST fit the channel's locked blueprint (beat spine, runtime, "
+            "identity, invariants). VERIFY every factual claim with WebSearch -- never "
+            "fabricate.\n"
+            f"Write {plan_content_path(job['id'])}: "
+            '{"ideas": [{"rank": int (1=best), '
+            '"angle": "analytics"|"niche"|"fresh"|"event"|"wildcard", '
+            '"title": str (YouTube title in this channel\'s voice), '
+            '"hook": str (the cold-open line), '
+            '"why_viral": str (1-2 sentences; cite the evidence/source/date), '
+            '"brief": str (production-ready brief following the channel blueprint -- '
+            'enough for produce_channel to run)}]}\n'
             "Rank by viral potential. Planning only -- do NOT produce videos, do NOT write a manifest."
         )
     elif jtype == "plan_content":
@@ -3769,7 +3867,14 @@ def run_job(supa, job):
             fail(supa, job_id, f"could not build draft preview context: {e}", LogBuffer(), job=job)
             return
 
-    prompt = build_prompt(job, guidelines, ctx_path=ctx_path, asset=asset)
+    # v19: prompt branches select on the channel's TEMPLATE style (registry row,
+    # legacy per-key fallback inside channel_template). Only the types whose
+    # prompts branch on style need it.
+    template = None
+    if job.get("type") in ("produce_preview", "plan_content", "new_channel_scaffold"):
+        template = channel_template(supa, job.get("channel_key"))
+
+    prompt = build_prompt(job, guidelines, ctx_path=ctx_path, asset=asset, template=template)
     apply_global_override(supa, job)  # v13: global model/effort override (if enabled)
     cmd = build_command(job, prompt)
 
