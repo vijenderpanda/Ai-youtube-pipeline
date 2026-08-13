@@ -18,6 +18,9 @@ _ap.add_argument("--pov1", default="POV: woh insaan jise tum")
 _ap.add_argument("--pov2", default="chhod hi nahi paate")
 _ap.add_argument("--cta", default="a new love song every week",
                  help="italic end-card tagline (serial chapters pass the Unki Kahani line)")
+_ap.add_argument("--sub-at", type=float, default=0,
+                 help="pop a red SUBSCRIBE pill onto the end card at this second "
+                      "(time it to the whispered 'subscribe'; 0 = no pill)")
 _args = _ap.parse_args()
 SRC = _args.src
 OUT = _args.out
@@ -190,6 +193,22 @@ wk = _args.cta
 bb = ed.textbbox((0, 0), wk, font=wk_f); ed.text((cx - (bb[2] - bb[0]) / 2 - bb[0], 1112), wk, font=wk_f, fill=(235, 225, 210, 220))
 end.save(f"{work}/end.png")
 
+# subscribe pill — pops when the whisper says the word, so sound and screen agree
+SUB_AT = _args.sub_at
+if SUB_AT:
+    sub = Image.new("RGBA", (W, H), (0, 0, 0, 0)); sd = ImageDraw.Draw(sub)
+    st_txt = spaced("SUBSCRIBE", 1); sf = GEO(44)
+    bb = sd.textbbox((0, 0), st_txt, font=sf)
+    tw, th = bb[2] - bb[0], bb[3] - bb[1]
+    pw, ph = tw + 130, 100
+    x0, y0 = (W - pw) // 2, 1188
+    sd.rounded_rectangle([x0 + 4, y0 + 6, x0 + pw + 4, y0 + ph + 6], radius=50, fill=(0, 0, 0, 90))
+    sd.rounded_rectangle([x0, y0, x0 + pw, y0 + ph], radius=50, fill=(230, 33, 23, 255),
+                         outline=(255, 255, 255, 70), width=2)
+    sd.text(((W - tw) // 2 - bb[0], y0 + (ph - th) // 2 - bb[1]), st_txt, font=sf,
+            fill=(255, 255, 255, 255))
+    sub.save(f"{work}/sub.png")
+
 # ---- ffmpeg overlay chain ----
 # timings (video ~22s)
 fc = (
@@ -199,10 +218,17 @@ fc = (
     "[4:v]format=rgba,fade=t=in:st=19.2:d=0.7:alpha=1[end];"    # premium end card fades in
     "[c][end]overlay=0:0:enable='gte(t,19.2)'[v]"
 )
-subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", SRC,
+inputs = ["-i", SRC,
     "-i", f"{work}/pov.png", "-i", f"{work}/wm.png", "-i", f"{work}/wfi.png",
-    "-loop", "1", "-t", "23", "-i", f"{work}/end.png",
-    "-filter_complex", fc, "-map", "[v]", "-map", "0:a",
+    "-loop", "1", "-t", "23", "-i", f"{work}/end.png"]
+if SUB_AT:
+    inputs += ["-loop", "1", "-t", "23", "-i", f"{work}/sub.png"]
+    fc = fc.replace("[c][end]overlay=0:0:enable='gte(t,19.2)'[v]",
+        "[c][end]overlay=0:0:enable='gte(t,19.2)'[d];"
+        f"[5:v]format=rgba,fade=t=in:st={SUB_AT}:d=0.25:alpha=1[sub];"
+        f"[d][sub]overlay=0:0:enable='gte(t,{SUB_AT})'[v]")
+subprocess.run(["ffmpeg", "-y", "-loglevel", "error"] + inputs +
+    ["-filter_complex", fc, "-map", "[v]", "-map", "0:a",
     "-c:v", "libx264", "-crf", "18", "-pix_fmt", "yuv420p", "-c:a", "copy",
     "-movflags", "+faststart", OUT], check=True)
 d = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", OUT],
