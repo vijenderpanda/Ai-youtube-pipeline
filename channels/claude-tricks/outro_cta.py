@@ -44,10 +44,19 @@ def _norm(s):
     return "".join(c for c in (s or "").lower() if c.isalnum())
 
 
+_MONTHS = {"Jan": "January", "Feb": "February", "Mar": "March", "Apr": "April",
+           "Jun": "June", "Jul": "July", "Aug": "August", "Sep": "September",
+           "Sept": "September", "Oct": "October", "Nov": "November", "Dec": "December"}
+
+
 def clean_title(title):
-    """YT title -> speakable tease: drop emojis/hashtags, keep spoken punctuation."""
+    """YT title -> speakable tease: drop emojis/hashtags, keep spoken punctuation,
+    fix the bits TTS reads badly ('--' pause-dashes, 'Aug 19' month abbrevs)."""
     t = re.sub(r"#\w+", "", title or "")
     t = "".join(c for c in t if c.isascii() or c in "—–’‘“”")
+    t = t.replace("--", "—")
+    t = re.sub(r"\b(" + "|".join(_MONTHS) + r")\.?(?=\s+\d)",
+               lambda m: _MONTHS[m.group(1)], t)
     t = re.sub(r"\s+", " ", t).strip(" -—–·|").strip()
     if len(t) > MAX_TEASE_CHARS:
         cut = max(t.rfind(m, 0, MAX_TEASE_CHARS) for m in ("—", ":", ","))
