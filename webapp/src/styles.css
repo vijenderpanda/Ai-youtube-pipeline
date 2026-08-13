@@ -5965,3 +5965,5 @@ a.out-chip:hover {
 .tpl-meta { margin-top: 2px; }
 .tpl-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); margin-top: auto; padding-top: 6px; }
 .tpl-used { color: var(--success); font-weight: 650; }
+
+.tpl-refs { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }

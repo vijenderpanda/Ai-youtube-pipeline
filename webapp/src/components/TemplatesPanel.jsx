@@ -12,6 +12,12 @@ import Modal from './Modal'
  */
 
 function NewFormatModal({ templates, onClose, onCreated }) {
+  // step 'links' → paste competitor links, Analyze auto-fills everything;
+  // step 'form'  → review the suggestion ("is this what you want?") and create.
+  const [step, setStep] = useState('links')
+  const [links, setLinks] = useState('')
+  const [refs, setRefs] = useState([])
+  const [analyzing, setAnalyzing] = useState(false)
   const [form, setForm] = useState({
     name: '',
     clone_from: templates[0] ? templates[0].key : '',
@@ -24,6 +30,32 @@ function NewFormatModal({ templates, onClose, onCreated }) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
+
+  const analyze = async () => {
+    const urls = links.split(/\s+/).map((s) => s.trim()).filter(Boolean)
+    if (urls.length === 0 || analyzing) return
+    setAnalyzing(true)
+    setError('')
+    try {
+      const d = await api.post({ action: 'analyze_reference_urls', urls })
+      const s = d.suggestion || {}
+      setRefs(d.refs || [])
+      setForm((f) => ({
+        ...f,
+        name: s.name || f.name,
+        clone_from: s.clone_from || f.clone_from,
+        description: s.description || f.description,
+        runtime_s: s.runtime_s != null ? String(s.runtime_s) : f.runtime_s,
+        tag: s.tag || f.tag,
+        title_ph: s.title_ph || f.title_ph,
+        brief_ph: s.brief_ph || f.brief_ph,
+      }))
+      setStep('form')
+    } catch (e) {
+      setError(e.message)
+    }
+    setAnalyzing(false)
+  }
 
   const submit = async (e) => {
     e.preventDefault()
@@ -54,12 +86,55 @@ function NewFormatModal({ templates, onClose, onCreated }) {
     }
   }
 
+  if (step === 'links') {
+    return (
+      <Modal title="New format" onClose={onClose} width={560}>
+        <div className="form">
+          <label className="field">
+            <span className="field-label">Paste 1–5 reference links <span className="dim">(competitor Shorts or videos whose format you want)</span></span>
+            <textarea
+              rows={4}
+              value={links}
+              onChange={(e) => setLinks(e.target.value)}
+              placeholder={'https://youtube.com/shorts/…\nhttps://youtube.com/shorts/…'}
+              autoFocus
+            />
+          </label>
+          <p className="dim small" style={{ margin: 0 }}>
+            The factory reads their <b>format</b> — structure, length, packaging grammar — never their
+            content or identity. Every field on the next step is filled in for you to review.
+          </p>
+          {error && <div className="form-error">{error}</div>}
+          <div className="form-actions">
+            <button type="button" className="btn btn-ghost" onClick={onClose}>Cancel</button>
+            <button type="button" className="btn btn-ghost" onClick={() => setStep('form')}>
+              Start blank instead
+            </button>
+            <button type="button" className="btn btn-primary" onClick={analyze} disabled={analyzing || !links.trim()}>
+              {analyzing ? 'Reading the links…' : '✨ Analyze & suggest'}
+            </button>
+          </div>
+        </div>
+      </Modal>
+    )
+  }
+
   return (
-    <Modal title="New format" onClose={onClose} width={560}>
+    <Modal title={refs.length > 0 ? 'Is this the format you want?' : 'New format'} onClose={onClose} width={560}>
       <form className="form" onSubmit={submit}>
+        {refs.length > 0 && (
+          <div className="tpl-refs">
+            {refs.map((r, i) => (
+              <span key={i} className={'tag ' + (r.error ? 'dim-tag' : '')} title={r.error || r.url}>
+                {r.error ? '⚠ ' + (r.url || '').slice(0, 28) : `▶ ${r.author} · ${r.seconds ? r.seconds + 's' : '?s'}`}
+              </span>
+            ))}
+            <span className="dim small">read from your links — everything below is editable</span>
+          </div>
+        )}
         <label className="field">
           <span className="field-label">Name</span>
-          <input value={form.name} onChange={set('name')} placeholder="e.g. Kinetic Countdown v2" required autoFocus />
+          <input value={form.name} onChange={set('name')} placeholder="e.g. Kinetic Countdown v2" required autoFocus={refs.length === 0} />
         </label>
         <label className="field">
           <span className="field-label">Start from <span className="dim">(inherits its whole production pipeline)</span></span>
@@ -95,8 +170,11 @@ function NewFormatModal({ templates, onClose, onCreated }) {
         {error && <div className="form-error">{error}</div>}
         <div className="form-actions">
           <button type="button" className="btn btn-ghost" onClick={onClose}>Cancel</button>
+          <button type="button" className="btn btn-ghost" onClick={() => { setStep('links'); setError('') }}>
+            ← Back to links
+          </button>
           <button type="submit" className="btn btn-primary" disabled={busy || !form.name.trim() || !form.clone_from}>
-            {busy ? 'Creating…' : 'Create format'}
+            {busy ? 'Creating…' : refs.length > 0 ? 'Yes — lock it in' : 'Create format'}
           </button>
         </div>
       </form>

@@ -2020,6 +2020,94 @@ async function handlePost(body: any): Promise<Response> {
       return json({ job });
     }
 
+    // v19.3: analyze competitor/reference video links and suggest a complete
+    // New-Format form (FORMAT only — structure, length, packaging grammar —
+    // never identity or content). Fetches public oEmbed + watch-page metadata
+    // per URL, then derives archetype heuristics. Body: { urls: string[] } (≤5).
+    case "analyze_reference_urls": {
+      const urls = Array.isArray(body.urls) ? body.urls.map(String).slice(0, 5) : [];
+      if (urls.length === 0) return json({ error: "urls (array of YouTube links) required" }, 400);
+      const vid = (u: string) => {
+        const m = u.match(/(?:shorts\/|watch\?v=|youtu\.be\/)([\w-]{6,20})/);
+        return m ? m[1] : null;
+      };
+      const refs: Record<string, unknown>[] = [];
+      for (const u of urls) {
+        const id = vid(u);
+        if (!id) { refs.push({ url: u, error: "not a recognizable YouTube link" }); continue; }
+        try {
+          const oe = await fetch(
+            `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`,
+          ).then((r) => (r.ok ? r.json() : null));
+          let seconds: number | null = null;
+          try {
+            const page = await fetch(`https://www.youtube.com/watch?v=${id}`, {
+              headers: { "user-agent": "Mozilla/5.0" },
+            }).then((r) => (r.ok ? r.text() : ""));
+            const lm = page.match(/"lengthSeconds":"(\d+)"/);
+            if (lm) seconds = parseInt(lm[1], 10);
+          } catch (_e) { /* duration is best-effort */ }
+          refs.push(oe
+            ? { url: u, id, title: oe.title, author: oe.author_name, seconds }
+            : { url: u, id, error: "video metadata not reachable" });
+        } catch (_e) {
+          refs.push({ url: u, id, error: "fetch failed" });
+        }
+      }
+      const good = refs.filter((r) => !r.error) as { title: string; author: string; seconds: number | null }[];
+      if (good.length === 0) return json({ refs, error: "none of the links could be read" }, 422);
+
+      // archetype from title grammar (format signal, not content)
+      const titles = good.map((r) => String(r.title || "")).join(" || ");
+      const t = titles.toLowerCase();
+      let archetype = "single-tip", cloneFrom = "ai-unpacked-v16",
+        titlePh = "Stop ___ (Do ___ Instead)",
+        briefPh = "The tip, the on-screen proof, why it'll hold attention, and any facts to verify first…";
+      if (/top ?\d|best ?\d|\d+ (things|ways|tools|plugins|commands|tips|tricks|apps|sites)/i.test(t)) {
+        archetype = "ranked-countdown"; cloneFrom = "kinetic-countdown-v1";
+        titlePh = "Top 5 ___ That ___";
+        briefPh = "The 5 items ranked, one concrete number per item, and the #1 payoff…";
+      } else if (/song|music|lyric|love|romantic|♪|lofi/i.test(t)) {
+        archetype = "music"; cloneFrom = "sensual-motion-v18";
+        titlePh = "Song title 🥀 | mood line #shorts";
+        briefPh = "Song concept + mood, the setting, the hook line…";
+      } else if (/future|will|by 20\d\d|already|prediction/i.test(t)) {
+        archetype = "cinematic-speculation"; cloneFrom = "cinematic-animatic-v17";
+        titlePh = "You're the last generation that will ___";
+        briefPh = "The topic, today's verified anchor, the +5yr leap, and 6 shot ideas…";
+      }
+      // validate clone target exists; fall back to the first registry row
+      const { data: tpls } = await db.from("factory_templates").select("key");
+      const keys = new Set((tpls ?? []).map((x: { key: string }) => x.key));
+      if (!keys.has(cloneFrom)) cloneFrom = (tpls && tpls[0] && tpls[0].key) || "ai-unpacked-v16";
+
+      const secs = good.map((r) => r.seconds).filter((s): s is number => s != null && s > 0);
+      const runtime = secs.length
+        ? Math.round(secs.reduce((a, b) => a + b, 0) / secs.length)
+        : 30;
+      const srcLine = good.map((r) => `${r.author} — “${String(r.title).slice(0, 60)}”`).join("; ");
+      const suggestion = {
+        name: archetype === "ranked-countdown" ? "Ranked Countdown (from reference)"
+          : archetype === "music" ? "Music Short (from reference)"
+          : archetype === "cinematic-speculation" ? "Cinematic Speculation (from reference)"
+          : "Single-Tip Short (from reference)",
+        clone_from: cloneFrom,
+        runtime_s: Math.min(Math.max(runtime, 15), 60),
+        description:
+          `Format read from ${srcLine} (${runtime}s). ${archetype} structure with our locked ` +
+          `distribution rules: proof-hook inside 2s, pattern-interrupt rhythm, loop-seam ending, ` +
+          `spoken series-CTA in the last 3s, search-intent title for the tail.`,
+        tag: "🧪 " + (archetype === "ranked-countdown" ? "Ranked Countdown"
+          : archetype === "music" ? "Music Short"
+          : archetype === "cinematic-speculation" ? "Cinematic Speculation"
+          : "Single-Tip"),
+        title_ph: titlePh,
+        brief_ph: briefPh,
+        archetype,
+      };
+      return json({ refs, suggestion });
+    }
+
     // v19.2: create a template by CLONING an existing one's pipeline wiring
     // (produce/plan/finalize routing + blueprint) and overriding the creative
     // surface (name, description, runtime, produce-panel copy). Registry rows
