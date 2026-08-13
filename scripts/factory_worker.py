@@ -220,6 +220,9 @@ UPLOAD_DEFAULTS = {
     "claude-tricks": {"audience": "notForKids", "synthetic": True,  "token_file": "token_claude-tricks.json"},
     "aashiqana":     {"audience": "notForKids", "synthetic": True,  "token_file": "token_aashiqana.json"},
     "already-happening": {"audience": "notForKids", "synthetic": True,  "token_file": "token_already-happening.json"},
+    # calm-ai: incubating (scaffolded 2026-08-12). token_calm-ai.json does NOT exist
+    # yet — a human OAuth step, see channels/calm-ai/NEEDS-ATTENTION.md.
+    "calm-ai":       {"audience": "notForKids", "synthetic": True,  "token_file": "token_calm-ai.json"},
 }
 
 # v2: history.csv stores DISPLAY channel names; map (case-insensitive substring)
@@ -231,6 +234,7 @@ DISPLAY_MAP = [
     (("aashiqana",), "aashiqana"),
     (("language", "abc", "poly"), "language-abc"),
     (("already happening",), "already-happening"),
+    (("calm ai",), "calm-ai"),
 ]
 
 MISSING_KEY_MSG = f"""
@@ -266,6 +270,14 @@ CHANNEL_SEED = [
     {"key": "already-happening", "name": "Already Happening",
      "niche": "cinematic near-future AI Shorts grounded in what's real today", "accent": "#22D3EE",
      "match": "already-happening"},
+    # calm-ai — scaffolded on disk 2026-08-12, but its factory_channels row (and the
+    # scaffold job itself) were DELETED from Supabase mid-scaffold. CHANNEL_SEED runs on
+    # every worker start, so leaving this active would silently resurrect a channel that
+    # may have been removed on purpose. Uncomment when VJ confirms the channel is wanted
+    # — see channels/calm-ai/NEEDS-ATTENTION.md item 0.
+    # {"key": "calm-ai", "name": "Calm AI",
+    #  "niche": "de-escalated AI news for busy adults — what it actually means for your week",
+    #  "accent": "#6366F1", "match": "calm-ai"},
 ]
 
 # ---------------------------------------------------------------- env / config
@@ -926,7 +938,11 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
             "outro_card.mp4 --q \"line1|line2\" --pill \"Comment yours\"` with an "
             "episode-specific engagement question — and set `outro_src: "
             "\"ep<ep_key>/outro_card.mp4\"`. NEVER ep10's subscribe/comment sting nor "
-            "ep11's literal 'which command' card.\n"
+            "ep11's literal 'which command' card. KEEP the template's `outro_cta: "
+            "\"auto\"` (VJ-approved 2026-08-13): at finalize, Sol SPEAKS a series "
+            "CTA over the card (next-planned-episode tease from factory_calendar, "
+            "else the series promise). Do NOT write a custom outro_cta line and do "
+            "NOT put any CTA before the outro segment — payoff first stays law.\n"
             "   - Opener: a `hook` block (illustration image + lines + hot + kicker), "
             "NEVER a `cover` title card (cover reads as an intro and gets scrolled "
             "past). If no hook illustration exists, generate one (in-house PIL/mock) "

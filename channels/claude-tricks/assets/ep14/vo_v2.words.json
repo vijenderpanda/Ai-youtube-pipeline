@@ -1,0 +1,507 @@
+[
+ {
+  "w": "AN",
+  "start": 0.0,
+  "end": 0.16
+ },
+ {
+  "w": "A-I",
+  "start": 0.28,
+  "end": 0.63
+ },
+ {
+  "w": "IS",
+  "start": 0.71,
+  "end": 0.84
+ },
+ {
+  "w": "LEGALLY",
+  "start": 0.93,
+  "end": 1.25
+ },
+ {
+  "w": "ALLOWED",
+  "start": 1.31,
+  "end": 1.61
+ },
+ {
+  "w": "TO",
+  "start": 1.65,
+  "end": 1.7
+ },
+ {
+  "w": "DIAGNOSE",
+  "start": 1.76,
+  "end": 2.25
+ },
+ {
+  "w": "YOU",
+  "start": 2.29,
+  "end": 2.39
+ },
+ {
+  "w": "\u2014",
+  "start": 2.48,
+  "end": 2.55
+ },
+ {
+  "w": "WITH",
+  "start": 2.65,
+  "end": 2.83
+ },
+ {
+  "w": "NO",
+  "start": 2.93,
+  "end": 3.09
+ },
+ {
+  "w": "DOCTOR",
+  "start": 3.16,
+  "end": 3.46
+ },
+ {
+  "w": "IN",
+  "start": 3.5,
+  "end": 3.54
+ },
+ {
+  "w": "THE",
+  "start": 3.56,
+  "end": 3.63
+ },
+ {
+  "w": "ROOM",
+  "start": 3.66,
+  "end": 3.94
+ },
+ {
+  "w": "<BREAK",
+  "start": 4.42,
+  "end": 4.42
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 4.42,
+  "end": 4.42
+ },
+ {
+  "w": "/>",
+  "start": 4.42,
+  "end": 4.42
+ },
+ {
+  "w": "THAT'S",
+  "start": 4.42,
+  "end": 4.71
+ },
+ {
+  "w": "NOT",
+  "start": 4.77,
+  "end": 4.91
+ },
+ {
+  "w": "COMING",
+  "start": 4.97,
+  "end": 5.39
+ },
+ {
+  "w": "IT'S",
+  "start": 5.56,
+  "end": 5.76
+ },
+ {
+  "w": "BEEN",
+  "start": 5.79,
+  "end": 5.94
+ },
+ {
+  "w": "TRUE",
+  "start": 5.98,
+  "end": 6.21
+ },
+ {
+  "w": "SINCE",
+  "start": 6.25,
+  "end": 6.44
+ },
+ {
+  "w": "TWENTY-EIGHTEEN",
+  "start": 6.47,
+  "end": 7.17
+ },
+ {
+  "w": "<BREAK",
+  "start": 7.63,
+  "end": 7.63
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 7.63,
+  "end": 7.63
+ },
+ {
+  "w": "/>",
+  "start": 7.63,
+  "end": 7.63
+ },
+ {
+  "w": "THE",
+  "start": 7.63,
+  "end": 7.75
+ },
+ {
+  "w": "F-D-A",
+  "start": 7.81,
+  "end": 8.27
+ },
+ {
+  "w": "CLEARED",
+  "start": 8.35,
+  "end": 8.6
+ },
+ {
+  "w": "A",
+  "start": 8.63,
+  "end": 8.65
+ },
+ {
+  "w": "SYSTEM",
+  "start": 8.7,
+  "end": 8.95
+ },
+ {
+  "w": "TO",
+  "start": 9.0,
+  "end": 9.04
+ },
+ {
+  "w": "CATCH",
+  "start": 9.1,
+  "end": 9.32
+ },
+ {
+  "w": "DIABETIC",
+  "start": 9.38,
+  "end": 9.81
+ },
+ {
+  "w": "EYE",
+  "start": 9.87,
+  "end": 9.96
+ },
+ {
+  "w": "DISEASE",
+  "start": 9.98,
+  "end": 10.29
+ },
+ {
+  "w": "ON",
+  "start": 10.33,
+  "end": 10.41
+ },
+ {
+  "w": "ITS",
+  "start": 10.45,
+  "end": 10.55
+ },
+ {
+  "w": "OWN",
+  "start": 10.61,
+  "end": 10.89
+ },
+ {
+  "w": "NO",
+  "start": 11.17,
+  "end": 11.32
+ },
+ {
+  "w": "CLINICIAN",
+  "start": 11.37,
+  "end": 11.77
+ },
+ {
+  "w": "READS",
+  "start": 11.83,
+  "end": 12.02
+ },
+ {
+  "w": "THE",
+  "start": 12.04,
+  "end": 12.11
+ },
+ {
+  "w": "SCAN",
+  "start": 12.13,
+  "end": 12.5
+ },
+ {
+  "w": "<BREAK",
+  "start": 13.02,
+  "end": 13.02
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 13.02,
+  "end": 13.02
+ },
+ {
+  "w": "/>",
+  "start": 13.02,
+  "end": 13.02
+ },
+ {
+  "w": "NINE",
+  "start": 13.02,
+  "end": 13.25
+ },
+ {
+  "w": "HUNDRED",
+  "start": 13.28,
+  "end": 13.51
+ },
+ {
+  "w": "PATIENTS",
+  "start": 13.55,
+  "end": 14.1
+ },
+ {
+  "w": "TEN",
+  "start": 14.27,
+  "end": 14.44
+ },
+ {
+  "w": "ORDINARY",
+  "start": 14.5,
+  "end": 14.81
+ },
+ {
+  "w": "CLINICS",
+  "start": 14.85,
+  "end": 15.39
+ },
+ {
+  "w": "EIGHTY-SEVEN",
+  "start": 15.6,
+  "end": 16.1
+ },
+ {
+  "w": "PERCENT",
+  "start": 16.15,
+  "end": 16.41
+ },
+ {
+  "w": "SENSITIVITY",
+  "start": 16.44,
+  "end": 17.17
+ },
+ {
+  "w": "NINETY-ONE",
+  "start": 17.29,
+  "end": 17.69
+ },
+ {
+  "w": "PERCENT",
+  "start": 17.72,
+  "end": 18.0
+ },
+ {
+  "w": "SPECIFICITY",
+  "start": 18.04,
+  "end": 18.76
+ },
+ {
+  "w": "<BREAK",
+  "start": 19.26,
+  "end": 19.26
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 19.26,
+  "end": 19.26
+ },
+ {
+  "w": "/>",
+  "start": 19.26,
+  "end": 19.26
+ },
+ {
+  "w": "BUT",
+  "start": 19.26,
+  "end": 19.45
+ },
+ {
+  "w": "READ",
+  "start": 19.53,
+  "end": 19.84
+ },
+ {
+  "w": "WHAT",
+  "start": 20.12,
+  "end": 20.32
+ },
+ {
+  "w": "IT'S",
+  "start": 20.36,
+  "end": 20.49
+ },
+ {
+  "w": "CLEARED",
+  "start": 20.53,
+  "end": 20.82
+ },
+ {
+  "w": "FOR",
+  "start": 20.86,
+  "end": 21.2
+ },
+ {
+  "w": "SCREENING",
+  "start": 21.41,
+  "end": 21.98
+ },
+ {
+  "w": "NEVER",
+  "start": 22.13,
+  "end": 22.36
+ },
+ {
+  "w": "TREATMENT",
+  "start": 22.4,
+  "end": 22.87
+ },
+ {
+  "w": "<BREAK",
+  "start": 23.38,
+  "end": 23.38
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 23.38,
+  "end": 23.38
+ },
+ {
+  "w": "/>",
+  "start": 23.38,
+  "end": 23.38
+ },
+ {
+  "w": "A-I",
+  "start": 23.38,
+  "end": 23.66
+ },
+ {
+  "w": "CAN",
+  "start": 23.73,
+  "end": 23.85
+ },
+ {
+  "w": "SCREEN",
+  "start": 23.89,
+  "end": 24.16
+ },
+ {
+  "w": "YOU",
+  "start": 24.22,
+  "end": 24.45
+ },
+ {
+  "w": "ONLY",
+  "start": 24.57,
+  "end": 24.82
+ },
+ {
+  "w": "A",
+  "start": 24.87,
+  "end": 24.89
+ },
+ {
+  "w": "DOCTOR",
+  "start": 24.94,
+  "end": 25.23
+ },
+ {
+  "w": "CAN",
+  "start": 25.27,
+  "end": 25.38
+ },
+ {
+  "w": "TREAT",
+  "start": 25.41,
+  "end": 25.59
+ },
+ {
+  "w": "YOU",
+  "start": 25.64,
+  "end": 25.83
+ },
+ {
+  "w": "<BREAK",
+  "start": 26.33,
+  "end": 26.33
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 26.33,
+  "end": 26.33
+ },
+ {
+  "w": "/>",
+  "start": 26.33,
+  "end": 26.33
+ },
+ {
+  "w": "USE",
+  "start": 26.33,
+  "end": 26.54
+ },
+ {
+  "w": "IT",
+  "start": 26.57,
+  "end": 26.67
+ },
+ {
+  "w": "AS",
+  "start": 26.73,
+  "end": 26.83
+ },
+ {
+  "w": "A",
+  "start": 26.88,
+  "end": 26.9
+ },
+ {
+  "w": "SECOND",
+  "start": 26.95,
+  "end": 27.19
+ },
+ {
+  "w": "OPINION",
+  "start": 27.24,
+  "end": 27.55
+ },
+ {
+  "w": "\u2014",
+  "start": 27.68,
+  "end": 27.74
+ },
+ {
+  "w": "NEVER",
+  "start": 27.95,
+  "end": 28.15
+ },
+ {
+  "w": "THE",
+  "start": 28.2,
+  "end": 28.27
+ },
+ {
+  "w": "LAST",
+  "start": 28.32,
+  "end": 28.53
+ },
+ {
+  "w": "ONE",
+  "start": 28.6,
+  "end": 29.07
+ }
+]

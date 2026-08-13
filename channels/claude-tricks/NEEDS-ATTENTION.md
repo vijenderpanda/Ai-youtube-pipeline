@@ -1,20 +1,8 @@
-# Needs attention — AI Unpacked (`claude-tricks`) — 2026-08-12 06:37
+# Needs attention — AI Unpacked (`claude-tricks`) — 2026-08-13 06:37
 
-Empty guarded publish slots: **2026-08-13, 2026-08-14, 2026-08-15, 2026-08-16, 2026-08-17, 2026-08-19**
+Empty guarded publish slots: **2026-08-14, 2026-08-15, 2026-08-16, 2026-08-17, 2026-08-19**
 
 Calendar: `channels/claude-tricks/CONTENT-CALENDAR.csv` · cadence: daily (news-forward) · slot time: 16:00 IST
-
-## 2026-08-13 — NEWS SLOT — fetch feeds day-of
-- **ep**: 15
-- **pillar**: news
-- **category**: news
-- **banner_line1**: SO WHAT?
-- **banner_line2**: THIS WEEK IN AI
-- **hook_promise**: (top AI story decoded)
-- **production_note**: radar + WebSearch same-day
-- **footage_source**: news radar + screenshots
-- **fact_check_rule**: same-day only
-- **tags**: ai news;claude ai;ai updates;anthropic;openai;ai tips
 
 ## 2026-08-14 — Prompt Caching Cut My AI Bill 80% 💸 (5-Second Setup)
 - **ep**: 16

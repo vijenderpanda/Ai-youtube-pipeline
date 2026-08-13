@@ -55,6 +55,26 @@ bilingual karaoke-style captions + premium branding. Sensual but **tasteful & Yo
   (`--src --out --pov1 --pov2`).
 - Public review host: Supabase `factory-renders` bucket, `aashiqana/<song>/…` (upsert = stable URL).
 
+## Serial mode (added 2026-08-13 — see BRAND-BIBLE §3c)
+When a song is the ACTIVE SERIAL ("Unki Kahani" chapters), the template runs with these deltas:
+1. **No fresh anchor** — Image Reference = the registered identity frames of the serial couple
+   (`couple_library/leonardo_ids.json`), i.e. the previous chapter's approved keyframes picked
+   from Your Generations. Face approval already stands; keyframe stills still get VJ review
+   before motion spend.
+2. **Setting rotates within the couple's world** — new location each chapter, same
+   world/mood/wardrobe DNA (satisfies non-negotiable #2 chapter-to-chapter).
+3. **Different bar each chapter** (Ch.1 hook/chorus → Ch.2 verse 1 → …), still word-first
+   at 0.0s, whisper-verified.
+4. **Chapter furniture** — description header "Chapter N of Unki Kahani — <leads>' story" +
+   link to previous chapter + "next chapter Thursday" tease; POV lines advance the story;
+   the Short must still work standalone and loop.
+5. **Cadence** — TWO serials: **Aadhi Raat couple Thursdays 17:00 IST** · **Aaja Ve couple
+   (Aarav & Meher) Fridays 13:00 IST**. Song name in every title disambiguates the chapters.
+6. **Spoken outro CTA — required (VJ 2026-08-13, "no spoken cta" = a reject):** whispered
+   story-question via `eleven_vo.py` (Lily `pFZP5JQG7iQjIQuC4Bku`, style 0.5, speed 0.92) →
+   mix over the last ~5.5s with music ducked 0.35 → SUBSCRIBE pill at the spoken word via the
+   CTA polish (`polish_short_cta.py --sub-at`), then re-level to −14 LUFS (+1 dB after duck).
+
 ## Shipped with this template
-- Aadhi Raat kiss-open → youtu.be/nXhtuR-dHqU (armed 2026-08-12 13:30 IST)
-- Aaja Ve golden-bedroom → youtu.be/RUm7xNDaAGQ (armed 2026-08-13 13:00 IST)
+- Aadhi Raat kiss-open → youtu.be/nXhtuR-dHqU (armed 2026-08-12 13:30 IST) — **= Unki Kahani Ch.1 (active serial)**
+- Aaja Ve golden-bedroom → youtu.be/RUm7xNDaAGQ (armed 2026-08-13 13:00 IST) — series frozen after Ch.1; Ch.2 built + held

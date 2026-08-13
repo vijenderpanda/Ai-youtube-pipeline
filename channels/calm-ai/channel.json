@@ -1,0 +1,30 @@
+{
+  "key": "calm-ai",
+  "name": "Calm AI",
+  "tagline": "AI news, minus the panic.",
+  "format": "shorts-only",
+  "aspect": "9:16",
+  "runtime_target_s": 32,
+  "made_for_kids": false,
+  "production": "host-less-cinematic",
+  "tone": "calm-explainer",
+  "audience": "busy parents / general adults, beginner-friendly",
+  "angle": "one real thing that happened -> what it actually means for your week -> the one thing worth doing (or not doing)",
+  "spine": "cold-open reassurance -> what happened (dated) -> why the panic version is wrong -> what it means for YOU -> one calm action",
+  "cadence_days": 2,
+  "cadence_label": "3x per week (Mon / Wed / Fri)",
+  "guard_days": 5,
+  "slot_time_ist": "21:30",
+  "calendar": "CONTENT-CALENDAR.csv",
+  "visual_identity": {
+    "accent_hex": "6366F1",
+    "base_grade": "soft indigo-slate, low contrast, no hard whites",
+    "type": "humanist sans, generous tracking, baked text in dead space",
+    "loudness_lufs": -14,
+    "music_bed": "../claude-tricks/assets/music/bed_4.mp3"
+  },
+  "produce_hint": "open a Claude session -> 'produce the next calendar row for calm-ai'",
+  "created": "2026-08-12",
+  "lifecycle": "incubating",
+  "notes": "Third channel in the AI cluster. Wedge vs siblings: AI Unpacked (claude-tricks) = tips + host; Already Happening = cinematic future-shock; Calm AI = de-escalation, 'here is what this actually means for your week'. Distinct accent (indigo), distinct bed (bed_4), distinct posting days so the three never blur."
+}

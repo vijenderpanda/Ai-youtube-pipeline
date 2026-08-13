@@ -1,6 +1,44 @@
 {
   "_doc": "Canonical Leonardo identity anchors per couple. ALWAYS reuse these exact start-frame IDs (and seeds once captured) so every motion clip / short is the SAME face. Never pick lookalike thumbnails from Your Uploads — drive the start frame by ID via the generate URL: https://app.leonardo.ai/generate?model=hailuo-2_3&aspectRatio=9:16&size=RESOLUTION_768&duration=6&startFrame=[{\"id\":\"<ID>\",\"type\":\"GENERATED\",\"width\":848,\"height\":1264}]",
   "couples": {
+    "aadhiraat_serial": {
+      "codename": "Unki Kahani serial couple (Aadhi Raat, neon-rooftop midnight city)",
+      "status": "ACTIVE SERIAL 2026-08-13 (VJ: Aadhi Raat kiss-open = Ch.1, chapters every Thursday 17:00 IST)",
+      "origin": "fresh NB2 anchor batch gen 1f195e86 (songs/03-aadhi-raat/_anchor_candidates/), template v1 era — NOT the same face as the old 'midnight' library couple below",
+      "identity_frames": [
+        {"role": "primary Image Ref (both faces) — CANONICAL", "image_id": "8d74157c-4d51-4b62-956c-400a155c93d7", "type": "GENERATED", "dims": "848x1264", "gen_prefix": "1f195e9b", "file": "songs/03-aadhi-raat/_keyframes/cinematic-night-close-two-shot-of-th_1f195e9b_0.jpg", "note": "captured 2026-08-13 from imageGuidance URL param during Ch.2 session; find in Your Generations via search 'night close two-shot'"},
+        {"role": "her solo ref", "gen_prefix": "1f195e97", "file": "songs/03-aadhi-raat/_keyframes/cinematic-night-portrait-of-the-same_1f195e97_0.jpg"}
+      ],
+      "world": "midnight city neon (SAIYAARA sign bokeh), her: black satin shirt + gold hoops + wavy bob; him: denim jacket over grey tee, light stubble, pompadour",
+      "leads": "names TBD (Aarav & Meher was the UNPUBLISHED Aaja Ve naming — do not reuse)",
+      "chapters": [
+        {"ch": 1, "video": "https://youtu.be/nXhtuR-dHqU", "bar": "hook/chorus (Tujhe chhodun bhi to kaise)", "setting": "neon rooftop", "armed": "2026-08-12 13:30 IST"},
+        {"ch": 2, "video": "https://youtu.be/whB9e_p5-zE", "bar": "verse 1 (Na tu meri, na main tera), track 35.93-59.5s of cand_255b0392", "setting": "2am apartment, rain window", "armed": "2026-08-13 17:00 IST",
+         "keyframe_gens": {"hook": "1f196dc0-3389-6f50-b308-a22c73aa072b/img 46418ebb", "suspense": "1f196dc0-fe82-6680-a726-2779173bd12b/img a1b85135", "heat": "1f196dc1-9b8a-69a0-a9f9-f1e4408b9aad/img f2a12589", "hold": "1f196dc2-46f6-6e10-8e11-88c51956294b/img ef492cf0"},
+         "note": "hold keyframe (seated hug from behind) = end-card underlay pattern per VJ"}
+      ]
+    },
+    "tuhihai_remaster": {
+      "codename": "Tu Hi Hai long-form remaster couple (monsoon drenched-rain world)",
+      "status": "VJ approved HOT_C1 2026-08-13 ('hot_c1 is good') — cast for the 4:17 MV remaster of TRmiRnKEKJc",
+      "identity_frames": [
+        {"role": "CANONICAL anchor (drenched street close two-shot)", "image_id": "7dfed238-7195-4a5f-978a-473966fbfa8b", "gen_id": "1f196e6f-61f5-68d0-ae73-7c19eeae4751", "type": "GENERATED", "dims": "848x1264", "file": "songs/01-baarish-aur-tum/_anchor_remaster/HOT_C1.jpg"}
+      ],
+      "world": "monsoon night street amber+teal; her: deep-teal chiffon kurti (off-shoulder when drenched) + soaked wavy hair; him: white shirt rolled sleeves, light stubble. Long-form = 16:9 (NB2 1376x768, Hailuo 16:9 768p, upscale 1080p at stitch)",
+      "note": "heat directive: carry Aadhi Raat-level tension through every scene (VJ rejected the first cute umbrella cast)"
+    },
+    "goldenhour_aajave": {
+      "codename": "Unki Kahani serial couple #2 — Aarav & Meher (Aaja Ve, golden-hour/bedroom world)",
+      "status": "ACTIVE SERIAL 2026-08-13 (VJ: Aaja Ve chapters every Friday 13:00 IST)",
+      "identity_frames": [
+        {"role": "anchor (from parallel session)", "gen_id": "1f196233 (prefix)", "image_id": "d4f1a4e7 (prefix — capture full UUIDs from Your Generations next chapter session)", "files": "songs/02-aaja-ve/_keyframes/ + _keyframes_ch2/"}
+      ],
+      "leads": "Aarav & Meher (public in Ch.2 description)",
+      "chapters": [
+        {"ch": 1, "video": "https://youtu.be/RUm7xNDaAGQ", "setting": "golden bedroom", "armed": "2026-08-13 13:00 IST"},
+        {"ch": 2, "video": "https://youtu.be/8o2OKu0C6eg", "bar": "laal-dress verse (Wo shaam yaad hai)", "setting": "golden-hour memory", "armed": "2026-08-14 13:00 IST (rescheduled from Sat 15th to match Friday rule)"}
+      ]
+    },
     "midnight": {
       "codename": "Midnight (neon Saiyaara-energy)",
       "status": "approved 2026-08-07 (VJ: 'Almost looks good, build all hook motions for this couple only')",

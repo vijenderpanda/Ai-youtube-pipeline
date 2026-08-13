@@ -43,6 +43,13 @@ itself must be **hook-first** (best line first, cold-open, no intro — see Soun
   different face. First trim the song to a ~22–28s cold-open hook cut, then:
   `make_couplefirst_short.py --couple couple_03_midnight --motion --audio hookcut.mp3 --lyrics timing.json --cut 2.2 --out short.mp4`.
 **Long-form** stays the fuller couple story, but its shots are framed so any of them re-cut into this Short pattern.
+- **LONG-FORM caption style (LOCKED 2026-08-13, VJ "Talab" reference): 2–3 word chunks,
+  true whisper word-sync** — big Devanagari (Kohinoor, white, stroke) + romanized (Georgia, amber)
+  stacked, centered lower third, each chunk on screen exactly while sung. Built by
+  `songs/01-baarish-aur-tum/build_remaster_v2.py` (whisper words → chunk at >0.6s gaps / max 3
+  words → PIL PNGs → batched ffmpeg overlays). **Long-forms ONLY — the Shorts templates keep
+  their bilingual line-cards; do not apply chunks to Shorts.** Also: trim any instrumental
+  intro so the first vocal lands ~2s in, and open on a charged couple close-up (hooky start).
 
 ## 3b. Release strategy — Shorts-first, curiosity-led (LOCKED 2026-08-07)
 The channel is cold; don't spend on long-form until a song proves it earns attention.
@@ -51,6 +58,36 @@ The channel is cold; don't spend on long-form until a song proves it earns atten
 - **Measure** with `scripts/yt_retention.py`: which couple / hook / mood actually **sustains** (retention is a sustain problem, not a hook problem — playbook §13).
 - **Phase 2 (analytics-gated, after 1–2 weeks):** only songs whose Shorts prove out get the **full long-form music video**. Losers stay Shorts-only. No long-form spend on unproven tracks.
 - **Identity discipline:** every Short uses ONE couple, driven by the **exact start-frame ID** in `couple_library/leonardo_ids.json` — never lookalike thumbnails (see COUPLE-LIBRARY / memory). Intimate motion clips (Look/Almost/Touch) carry the couple payoff beats; the heroine open stays a Ken Burns still.
+
+## 3c. Serial mode — "Unki Kahani" chapter Shorts (LOCKED 2026-08-13)
+The channel's serial format: **ONE couple = one ongoing story, told in weekly chapter Shorts**
+built on the locked template (SHORTS-TEMPLATE-LOCKED.md §Serial mode).
+- **TWO parallel couple-serials run under the Unki Kahani umbrella (VJ 2026-08-13):**
+  · **Aadhi Raat couple** (neon midnight-city world, Song #03) — **every THURSDAY 17:00 IST**.
+    Ch.1 kiss-open youtu.be/nXhtuR-dHqU · Ch.2 verse-1 youtu.be/whB9e_p5-zE.
+  · **Aaja Ve golden-bedroom couple — "Aarav & Meher"** (golden-hour world, Song #02) —
+    **every FRIDAY 13:00 IST**. Ch.1 youtu.be/RUm7xNDaAGQ · Ch.2 youtu.be/8o2OKu0C6eg (Fri 2026-08-14).
+- **Disambiguation rule:** the SONG NAME sits in every chapter title ("… | Aadhi Raat | Unki Kahani
+  Ch. N" / "… | Aaja Ve | Unki Kahani Ch. N") — two Ch. Ns may coexist in the same week, the song
+  tag + couple keeps them distinct. Never cross the couples or their worlds.
+- **Identity:** every chapter drives NB2 Image-Ref off the SAME registered identity frames
+  (`couple_library/leonardo_ids.json` → `aadhiraat_serial`) — the previous chapter's approved
+  keyframes are the canonical face source, never lookalikes.
+- **Setting rotation applies WITHIN the couple's world:** a NEW location each chapter
+  (rooftop → 2am apartment → taxi → stairwell…), but always the same world/mood/wardrobe DNA.
+  The template's "never repeat last Short's location" rule is satisfied chapter-to-chapter.
+- **Continuity furniture in every chapter:** description header "Chapter N of Unki Kahani —
+  <lead names>' story" + link to the previous chapter + "next chapter Thursday" tease; POV hook
+  line advances the story; each chapter still works standalone (word-first hook, loopable).
+- **Bar rule:** each chapter opens on a DIFFERENT bar of the song (Ch.1 = hook/chorus,
+  Ch.2 = verse 1 …), whisper-verified word-first.
+- **Outro stack — REQUIRED on every chapter (VJ 2026-08-13):** whispered story-question CTA
+  (Lily voice via `scripts/eleven_vo.py`, ~5s, music ducked to 0.35 under it) + "<DAY> dekhna…
+  miss na ho, subscribe kar lena" + **red SUBSCRIBE pill popping ON the spoken word**
+  (branch polish `--sub-at <abs word ts>`; words.json from eleven_vo gives the offset).
+  Re-check integrated loudness after the mix (ducking drops it ~1 dB — compensate to −14 LUFS).
+- **Nasha lane (Song #04) is NOT a serial:** standalone mood Shorts, **every Wednesday**,
+  fresh couple per song allowed, no chapter furniture.
 
 ## 4. Visual system — the AI couple
 - **Cast from the couple LIBRARY, by mood-tag (LOCKED 2026-08-07) — do NOT re-generate a couple per song.**
@@ -86,7 +123,9 @@ The channel is cold; don't spend on long-form until a song proves it earns atten
 | # | Title | Theme | Status |
 |---|---|---|---|
 | 01 | Tu Hi Hai (Baarish Aur Tum) | first love / rain | ✅ LIVE 2026-08-03 (long-form TRmiRnKEKJc + Short 1yWfA_Tg61Y, karaoke v3) · + final-chorus **hook cut** Short 2026-08-05 · + **lyric duel** Short 2026-08-06 (both derivative, see QUALITY-LEDGER §4b) |
-| 02 | Aaja Ve | golden-hour yearning / "come to me" | ✅ LIVE 2026-08-03 (long-form ZQQvRrGWGLk + Short TMVJHHv7v4c) — 30/40 on the ledger, beat A1+A6 |
+| 02 | Aaja Ve | golden-hour yearning / "come to me" | ✅ LIVE 2026-08-03 (long-form ZQQvRrGWGLk + Short TMVJHHv7v4c) — 30/40 on the ledger, beat A1+A6 · golden-bedroom Short armed 2026-08-13 (RUm7xNDaAGQ) · **series FROZEN — Ch.2 built + HELD (§3c)** |
+| 03 | Aadhi Raat | situationship / midnight city | ✅ armed 2026-08-12 (kiss-open Short nXhtuR-dHqU) · **ACTIVE SERIAL — "Unki Kahani" Ch.1, chapters every Thursday 17:00 IST (§3c)** |
+| 04 | Nasha | rain / intoxication | standalone Wednesday lane, NOT a serial (§3c) — ep4 manifest ready (`episodes/ep4.json`) |
 
 ### Song #01 production notes (reusable)
 - Song: Suno Pro V1 `d7e8b8d0-45dd-4d74-b1c0-e54dfe7a6711` (4:17). Alt V2 `6c050f89…`.

@@ -1,0 +1,112 @@
+[
+ {
+  "w": "TOMORROW",
+  "start": 0.0,
+  "end": 0.4
+ },
+ {
+  "w": "IS",
+  "start": 0.44,
+  "end": 0.5
+ },
+ {
+  "w": "FRIDAY",
+  "start": 0.55,
+  "end": 0.88
+ },
+ {
+  "w": "\u2014",
+  "start": 1.06,
+  "end": 1.15
+ },
+ {
+  "w": "WE",
+  "start": 1.2,
+  "end": 1.33
+ },
+ {
+  "w": "LEARN",
+  "start": 1.42,
+  "end": 1.71
+ },
+ {
+  "w": "AND",
+  "start": 1.88,
+  "end": 2.09
+ },
+ {
+  "w": "BUILD",
+  "start": 2.16,
+  "end": 2.36
+ },
+ {
+  "w": "SOMETHING",
+  "start": 2.38,
+  "end": 2.66
+ },
+ {
+  "w": "FROM",
+  "start": 2.69,
+  "end": 2.81
+ },
+ {
+  "w": "SCRATCH",
+  "start": 2.87,
+  "end": 3.32
+ },
+ {
+  "w": "TOGETHER",
+  "start": 3.37,
+  "end": 3.92
+ },
+ {
+  "w": "MEET",
+  "start": 4.25,
+  "end": 4.46
+ },
+ {
+  "w": "ME",
+  "start": 4.5,
+  "end": 4.59
+ },
+ {
+  "w": "THERE",
+  "start": 4.63,
+  "end": 4.82
+ },
+ {
+  "w": "\u2014",
+  "start": 4.93,
+  "end": 5.04
+ },
+ {
+  "w": "FOLLOW",
+  "start": 5.16,
+  "end": 5.46
+ },
+ {
+  "w": "SO",
+  "start": 5.63,
+  "end": 5.74
+ },
+ {
+  "w": "YOU",
+  "start": 5.78,
+  "end": 5.85
+ },
+ {
+  "w": "DON'T",
+  "start": 5.89,
+  "end": 6.03
+ },
+ {
+  "w": "MISS",
+  "start": 6.06,
+  "end": 6.22
+ },
+ {
+  "w": "IT",
+  "start": 6.26,
+  "end": 6.64
+ }
+]

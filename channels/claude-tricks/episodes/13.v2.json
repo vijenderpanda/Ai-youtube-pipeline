@@ -1,66 +1,66 @@
 {
- "title": "Stop Re-Explaining Your Style to AI 🔁 (2-Second Fix)",
- "tags": "claude ai tips,ai for beginners,prompt engineering,ai productivity,custom instructions,claude custom instructions,instructions for claude,chatgpt tips,ai tips,claude ai,ai shorts,ai workflow",
- "epTag": "EP13 · SET IT ONCE",
+ "title": "You Have 50% More Claude Code Right Now ⚡ (Ends Aug 19)",
+ "tags": "claude code,claude code limits,claude code usage,anthropic,usage limits,weekly limits,claude pro,claude max,claude ai tips,ai productivity,ai for beginners,ai tips,ai news,ai shorts",
+ "epTag": "EP13 · THE +50% BOOST",
  "host_panels": [
   {
    "lines": [
-    "YOU RETYPE",
-    "THE SAME RULE",
-    "EVERY CHAT"
+    "YOU'RE SITTING ON",
+    "50% MORE THAN",
+    "YOU THINK"
    ],
-   "hot": "EVERY"
+   "hot": "MORE"
   },
   {
    "lines": [
-    "SET IT ONCE.",
-    "EVERY ANSWER,",
-    "FOREVER"
+    "CHECK YOUR",
+    "USAGE PAGE",
+    "BEFORE IT GOES"
    ],
-   "hot": "ONCE"
+   "hot": "USAGE"
   }
  ],
  "lines": [
-  "Stop re-explaining your style. Every. Single. Chat.",
-  "Type it once, in one box, and every future chat already knows.",
-  "Settings, Profile, Instructions for Claude. One rule: short bullet points, no preamble. Save.",
-  "Now a brand new chat. Nothing carried over. I ask something completely unrelated.",
-  "Used car advice. No preamble, straight into bullets. I never asked for that format here.",
-  "Two seconds of setup. Every answer after it, formatted your way.",
-  "Follow. I unpack one A-I trick every single day."
+  "You're sitting on fifty percent more Claude Code right now.",
+  "It ends August nineteenth.",
+  "Anthropic raised weekly limits by half. Pro, Max, Team.",
+  "Type slash usage. That bar is your week.",
+  "Front-load the expensive work now. Big refactors, full test runs.",
+  "After the nineteenth, you hit the wall a third sooner.",
+  "Check your usage page before a boost like this quietly expires."
  ],
  "hot_words": [
-  "STOP",
-  "STYLE",
-  "EVERY",
-  "SINGLE",
-  "CHAT",
-  "ONCE",
-  "KNOWS",
-  "INSTRUCTIONS",
-  "RULE",
-  "BULLET",
-  "PREAMBLE",
-  "SAVE",
-  "BRAND",
-  "NEW",
+  "FIFTY",
+  "PERCENT",
+  "MORE",
+  "WEEK",
+  "ENDS",
+  "NINETEENTH",
+  "QUIETLY",
+  "HALF",
   "NOTHING",
-  "UNRELATED",
-  "BULLETS",
-  "NEVER",
-  "FORMAT",
-  "SETUP",
-  "FOREVER",
-  "FOLLOW",
-  "TRICK",
-  "DAY"
+  "USAGE",
+  "BAR",
+  "WEEK",
+  "BIGGER",
+  "FRONT-LOAD",
+  "EXPENSIVE",
+  "REFACTORS",
+  "WEDNESDAY",
+  "DROP",
+  "BACK",
+  "WALL",
+  "THIRD",
+  "SOONER",
+  "CHECK",
+  "EXPIRES"
  ],
  "beats": [
   "host",
-  "host",
-  "pip:setonce",
-  "pip:newchat",
-  "pip:proof",
+  "stat:boost",
+  "stat:boost",
+  "pip:usage",
+  "pip:batch",
   "host2",
   "host2"
  ],
@@ -70,42 +70,48 @@
  "outro": true,
  "outro_dur": 0,
  "outro_src": "ep13/outro_card.mp4",
+ "outro_cta": "auto",
+ "header_scrim": true,
  "hook": {
-  "image": "ep13/hook_art/set_once.jpg",
+  "image": "ep13/hook_art/boost_ends.jpg",
   "lines": [
-   "STOP RE-EXPLAINING",
-   "YOURSELF TO AI"
+   "YOU HAVE 50% MORE",
+   "CLAUDE CODE RIGHT NOW"
   ],
-  "hot": "STOP",
-  "kicker": "set it once · every chat after it",
+  "hot": "50%",
+  "kicker": "and it ends aug 19",
   "until": 2.6
  },
+ "stats": {
+  "boost": {
+   "title": "YOUR CLAUDE CODE WEEK",
+   "subtitle": "WEEKLY LIMIT, INDEXED · ILLUSTRATIVE",
+   "footer": "PROMO ENDS AUG 19, 11:59PM PT",
+   "bars": [
+    {"label": "NOW (BOOSTED)", "value": 150, "display": "150", "hot": true, "delta": "+50%"},
+    {"label": "AFTER AUG 19", "value": 100, "display": "100"}
+   ],
+   "start": 0.15,
+   "height": 1400
+  }
+ },
  "pips": {
-  "setonce": {
-   "src": "ep13/prefs_demo.mp4",
-   "from": 13.2,
+  "usage": {
+   "src": "ep13/boost_demo.mp4",
+   "from": 4.2,
    "lines": [
-    "1. SET IT ONCE",
-    "Instructions for Claude",
-    "one rule, then Save"
+    "SEE IT YOURSELF",
+    "/usage — the boost",
+    "is already on"
    ]
   },
-  "newchat": {
-   "src": "ep13/prefs_demo.mp4",
-   "from": 26.0,
+  "batch": {
+   "src": "ep13/boost_demo.mp4",
+   "from": 9.0,
    "lines": [
-    "2. BRAND-NEW CHAT",
-    "Nothing carried over.",
-    "Unrelated question."
-   ]
-  },
-  "proof": {
-   "src": "ep13/prefs_demo.mp4",
-   "from": 36.0,
-   "lines": [
-    "IT JUST WORKS",
-    "Bullets. No preamble.",
-    "Never asked twice."
+    "DO THIS BEFORE WED",
+    "Front-load the",
+    "token-heavy jobs"
    ]
   }
  }

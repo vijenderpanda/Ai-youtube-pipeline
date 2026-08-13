@@ -177,3 +177,18 @@
 ## Radar 2026-08-12 08:08
 - [ ] Saber denies replacing Rideshare Stimulator&#8217;s writers with ChatGPT
   https://www.theverge.com/games/978558/rideshare-stimulator-writer-ai-saber-interactive
+
+## Radar 2026-08-12 20:24
+- [ ] Everything announced at Made by Google &#8217;26: Pixel 11, Pixel Watch 5, Pixel Tag, and tons of Gemini features
+  https://techcrunch.com/2026/08/12/google-unveils-pixel-11-lineup-new-airtag-rival-and-gemini-features-at-made-by-google-2026/
+- [ ] Of course the ChatGPT dog cancer vaccine spawned a startup
+  https://www.theverge.com/ai-artificial-intelligence/978671/ai-cured-dog-cancer-mrna-vaccine-startup-gamgee
+
+## Radar 2026-08-12 23:24
+- [ ] OpenAI-backed Thrive Holdings raises $2B to bring AI to the enterprise
+  https://techcrunch.com/2026/08/12/openai-backed-thrive-holdings-raises-2b-to-bring-ai-to-the-enterprise/
+
+## Radar 2026-08-13 05:24
+- [ ] Some Claude users are mad that Anthropic&#8217;s new watermarks will catch them using it at their jobs, classes
+  https://techcrunch.com/2026/08/12/some-claude-users-are-mad-that-anthropics-new-watermarks-will-catch-them-cheating-at-their-jobs-classes/
+- PEG-CHECK 2026-08-13 08:47 | peg="Anthropic 50% weekly Claude Code usage boost through Aug 19 2026" | air=2026-08-13 | first_seen=? | age=?d | limit=4d | UNVERIFIED

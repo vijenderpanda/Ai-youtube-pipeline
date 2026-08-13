@@ -47,6 +47,10 @@ def main():
     # default = the Ep11 magenta Sol host (matches the episode host + Ep11's own
     # outro card); NOT the legacy green-shirt channel avatar.
     ap.add_argument("--avatar", default="assets/character/host_library/outfit_11_sol_magenta/cropeed_center_final.jpeg")
+    # card length; the default 4.2s matches ep11's outro_card. A spoken outro
+    # CTA (outro_cta.py) needs ~0.45s lead-in + VO + 0.8s hold — pass that here
+    # when pre-rendering to length (build_ep_v2 can also retime a 4.2s card).
+    ap.add_argument("--dur", type=float, default=4.2)
     a = ap.parse_args()
 
     # ---- background: dark with a breathing magenta bloom behind the avatar ----
@@ -86,11 +90,13 @@ def main():
     os.makedirs(os.path.dirname(out), exist_ok=True)
     jpg = out.rsplit(".", 1)[0] + ".jpg"
     bg.convert("RGB").save(jpg, quality=93)
-    # gentle Ken-Burns push -> mp4 (~4.2s to match ep11 outro_card length)
+    # gentle Ken-Burns push -> mp4. Total push stays 6% whatever the duration
+    # (zoom rate scales with the frame count, so a longer card pushes slower).
+    frames = max(int(round(a.dur * 30)), 30)
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-loop", "1", "-i", jpg,
-        "-vf", ("scale=2160:3840,zoompan=z='1+0.06*on/126':x='(iw-iw/zoom)/2':"
-                "y='(ih-ih/zoom)/2':d=126:s=1080x1920:fps=30"),
-        "-t", "4.2", "-c:v", "libx264", "-pix_fmt", "yuv420p", out], check=True)
+        "-vf", (f"scale=2160:3840,zoompan=z='1+0.06*on/{frames}':x='(iw-iw/zoom)/2':"
+                f"y='(ih-ih/zoom)/2':d={frames}:s=1080x1920:fps=30"),
+        "-t", str(a.dur), "-c:v", "libx264", "-pix_fmt", "yuv420p", out], check=True)
     print(">> outro card:", out)
 
 

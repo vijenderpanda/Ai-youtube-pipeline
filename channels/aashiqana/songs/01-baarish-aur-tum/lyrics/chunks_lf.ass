@@ -1,0 +1,134 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Italic, Alignment, MarginL, MarginR, MarginV, Outline, Shadow, BorderStyle, Encoding
+Style: dev,Kohinoor Devanagari,92,&H00FFFFFF,&H00000000,&H7F000000,-1,0,2,60,60,150,4,2,1,1
+Style: rom,Georgia,52,&H0078D6FF,&H00000000,&H7F000000,-1,0,2,60,60,86,3,1,1,1
+
+[Events]
+Format: Layer, Start, End, Style, MarginL, MarginR, MarginV, Text
+Dialogue: 0,0:00:02.00,0:00:04.67,dev,,0,0,150,भीगी सी राहो
+Dialogue: 0,0:00:02.00,0:00:04.67,rom,,0,0,86,bhigi si raho
+Dialogue: 0,0:00:04.72,0:00:06.59,dev,,0,0,150,में हम तुम
+Dialogue: 0,0:00:04.72,0:00:06.59,rom,,0,0,86,mem hama tuma
+Dialogue: 0,0:00:06.64,0:00:11.11,dev,,0,0,150,को चाहे तु
+Dialogue: 0,0:00:06.64,0:00:11.11,rom,,0,0,86,ko cahe tu
+Dialogue: 0,0:00:11.16,0:00:13.15,dev,,0,0,150,पास हो जब
+Dialogue: 0,0:00:11.16,0:00:13.15,rom,,0,0,86,pasa ho jaba
+Dialogue: 0,0:00:13.20,0:00:16.57,dev,,0,0,150,तो मुसम हसी,
+Dialogue: 0,0:00:13.20,0:00:16.57,rom,,0,0,86,to musama hasi,
+Dialogue: 0,0:00:17.70,0:00:20.39,dev,,0,0,150,तेरे बिना एजा,
+Dialogue: 0,0:00:17.70,0:00:20.39,rom,,0,0,86,tere bina eja,
+Dialogue: 0,0:00:21.08,0:00:24.35,dev,,0,0,150,कुछ भी नहीं
+Dialogue: 0,0:00:21.08,0:00:24.35,rom,,0,0,86,kucha bhi nahim
+Dialogue: 0,0:00:25.10,0:00:27.45,dev,,0,0,150,तो बारिश वर
+Dialogue: 0,0:00:25.10,0:00:27.45,rom,,0,0,86,to barisa vara
+Dialogue: 0,0:00:27.50,0:00:29.39,dev,,0,0,150,तुम तो पल
+Dialogue: 0,0:00:27.50,0:00:29.39,rom,,0,0,86,tuma to pala
+Dialogue: 0,0:00:29.44,0:00:31.89,dev,,0,0,150,की ये काहानी,
+Dialogue: 0,0:00:29.44,0:00:31.89,rom,,0,0,86,ki ye kahani,
+Dialogue: 0,0:00:34.60,0:00:37.11,dev,,0,0,150,भीग गई है
+Dialogue: 0,0:00:34.60,0:00:37.11,rom,,0,0,86,bhiga gai hai
+Dialogue: 0,0:00:37.16,0:00:42.13,dev,,0,0,150,मेरी हरक रवानी,
+Dialogue: 0,0:00:37.16,0:00:42.13,rom,,0,0,86,meri haraka ravani,
+Dialogue: 0,0:00:42.18,0:00:45.93,dev,,0,0,150,तम जा जरा
+Dialogue: 0,0:00:42.18,0:00:45.93,rom,,0,0,86,tama ja jara
+Dialogue: 0,0:00:45.98,0:00:47.77,dev,,0,0,150,ये लम हा
+Dialogue: 0,0:00:45.98,0:00:47.77,rom,,0,0,86,ye lama ha
+Dialogue: 0,0:00:47.82,0:00:49.45,dev,,0,0,150,यही,
+Dialogue: 0,0:00:47.82,0:00:49.45,rom,,0,0,86,yahi,
+Dialogue: 0,0:00:50.24,0:00:52.95,dev,,0,0,150,तेर बिना एजा,
+Dialogue: 0,0:00:50.24,0:00:52.95,rom,,0,0,86,tera bina eja,
+Dialogue: 0,0:00:53.36,0:00:57.43,dev,,0,0,150,कुछ भी नहीं
+Dialogue: 0,0:00:53.36,0:00:57.43,rom,,0,0,86,kucha bhi nahim
+Dialogue: 0,0:01:15.98,0:01:18.27,dev,,0,0,150,पलको पे उत्री
+Dialogue: 0,0:01:15.98,0:01:18.27,rom,,0,0,86,palako pe utri
+Dialogue: 0,0:01:18.32,0:01:18.97,dev,,0,0,150,है,
+Dialogue: 0,0:01:18.32,0:01:18.97,rom,,0,0,86,hai,
+Dialogue: 0,0:01:19.46,0:01:22.59,dev,,0,0,150,तेरी ही परचाया,
+Dialogue: 0,0:01:19.46,0:01:22.59,rom,,0,0,86,teri hi paracaya,
+Dialogue: 0,0:01:24.12,0:01:25.75,dev,,0,0,150,हल मूड पे
+Dialogue: 0,0:01:24.12,0:01:25.75,rom,,0,0,86,hala muda pe
+Dialogue: 0,0:01:25.80,0:01:27.53,dev,,0,0,150,मिलती है,
+Dialogue: 0,0:01:25.80,0:01:27.53,rom,,0,0,86,milati hai,
+Dialogue: 0,0:01:28.42,0:01:31.59,dev,,0,0,150,तेरी ही तनहाया,
+Dialogue: 0,0:01:28.42,0:01:31.59,rom,,0,0,86,teri hi tanahaya,
+Dialogue: 0,0:01:32.34,0:01:34.93,dev,,0,0,150,दिल कहता है,
+Dialogue: 0,0:01:32.34,0:01:34.93,rom,,0,0,86,dila kahata hai,
+Dialogue: 0,0:01:35.02,0:01:37.13,dev,,0,0,150,बस इतनी सी
+Dialogue: 0,0:01:35.02,0:01:37.13,rom,,0,0,86,basa itani si
+Dialogue: 0,0:01:37.18,0:01:41.23,dev,,0,0,150,बात, ठाम लोहार,
+Dialogue: 0,0:01:37.18,0:01:41.23,rom,,0,0,86,bata, thama lohara,
+Dialogue: 0,0:01:41.28,0:01:42.91,dev,,0,0,150,ना छोडो ये
+Dialogue: 0,0:01:41.28,0:01:42.91,rom,,0,0,86,na chodo ye
+Dialogue: 0,0:01:42.96,0:01:43.79,dev,,0,0,150,सा,
+Dialogue: 0,0:01:42.96,0:01:43.79,rom,,0,0,86,sa,
+Dialogue: 0,0:01:44.24,0:01:45.95,dev,,0,0,150,तो बारिश वर
+Dialogue: 0,0:01:44.24,0:01:45.95,rom,,0,0,86,to barisa vara
+Dialogue: 0,0:01:46.00,0:01:47.95,dev,,0,0,150,तुम तो पल
+Dialogue: 0,0:01:46.00,0:01:47.95,rom,,0,0,86,tuma to pala
+Dialogue: 0,0:01:48.00,0:01:50.53,dev,,0,0,150,की ये काहानी,
+Dialogue: 0,0:01:48.00,0:01:50.53,rom,,0,0,86,ki ye kahani,
+Dialogue: 0,0:01:53.16,0:01:55.69,dev,,0,0,150,भीग ग़ी है
+Dialogue: 0,0:01:53.16,0:01:55.69,rom,,0,0,86,bhiga gi hai
+Dialogue: 0,0:01:55.74,0:01:56.99,dev,,0,0,150,मेरी,
+Dialogue: 0,0:01:55.74,0:01:56.99,rom,,0,0,86,meri,
+Dialogue: 0,0:01:57.46,0:02:01.21,dev,,0,0,150,हर एक रवानी,
+Dialogue: 0,0:01:57.46,0:02:01.21,rom,,0,0,86,hara eka ravani,
+Dialogue: 0,0:02:02.34,0:02:04.45,dev,,0,0,150,तम जा जरा
+Dialogue: 0,0:02:02.34,0:02:04.45,rom,,0,0,86,tama ja jara
+Dialogue: 0,0:02:04.50,0:02:06.31,dev,,0,0,150,ये लम हा
+Dialogue: 0,0:02:04.50,0:02:06.31,rom,,0,0,86,ye lama ha
+Dialogue: 0,0:02:06.36,0:02:07.59,dev,,0,0,150,यही,
+Dialogue: 0,0:02:06.36,0:02:07.59,rom,,0,0,86,yahi,
+Dialogue: 0,0:02:08.76,0:02:11.47,dev,,0,0,150,तेर बिना एजा,
+Dialogue: 0,0:02:08.76,0:02:11.47,rom,,0,0,86,tera bina eja,
+Dialogue: 0,0:02:12.14,0:02:15.99,dev,,0,0,150,कुछ भी नहीं
+Dialogue: 0,0:02:12.14,0:02:15.99,rom,,0,0,86,kucha bhi nahim
+Dialogue: 0,0:02:34.06,0:02:36.35,dev,,0,0,150,जुप जुप सी
+Dialogue: 0,0:02:34.06,0:02:36.35,rom,,0,0,86,jupa jupa si
+Dialogue: 0,0:02:36.40,0:02:38.95,dev,,0,0,150,बाते आखो से
+Dialogue: 0,0:02:36.40,0:02:38.95,rom,,0,0,86,bate akho se
+Dialogue: 0,0:02:39.00,0:02:41.53,dev,,0,0,150,हो जाए, तेरे
+Dialogue: 0,0:02:39.00,0:02:41.53,rom,,0,0,86,ho jae, tere
+Dialogue: 0,0:02:41.58,0:02:43.77,dev,,0,0,150,मेरे दर्विया आब
+Dialogue: 0,0:02:41.58,0:02:43.77,rom,,0,0,86,mere darviya aba
+Dialogue: 0,0:02:43.82,0:02:46.27,dev,,0,0,150,दूरिया ना ए,
+Dialogue: 0,0:02:43.82,0:02:46.27,rom,,0,0,86,duriya na e,
+Dialogue: 0,0:02:46.32,0:02:49.15,dev,,0,0,150,ये सपने सजालू,
+Dialogue: 0,0:02:46.32,0:02:49.15,rom,,0,0,86,ye sapane sajalu,
+Dialogue: 0,0:02:49.36,0:02:51.27,dev,,0,0,150,तेरी पाहो में
+Dialogue: 0,0:02:49.36,0:02:51.27,rom,,0,0,86,teri paho mem
+Dialogue: 0,0:02:51.32,0:02:54.09,dev,,0,0,150,मैं, तु मेरी
+Dialogue: 0,0:02:51.32,0:02:54.09,rom,,0,0,86,maim, tu meri
+Dialogue: 0,0:02:54.14,0:02:55.37,dev,,0,0,150,मन्जल,
+Dialogue: 0,0:02:54.14,0:02:55.37,rom,,0,0,86,manjala,
+Dialogue: 0,0:02:55.80,0:02:56.89,dev,,0,0,150,तो ही मेरा
+Dialogue: 0,0:02:55.80,0:02:56.89,rom,,0,0,86,to hi mera
+Dialogue: 0,0:02:56.94,0:02:57.85,dev,,0,0,150,यकी,
+Dialogue: 0,0:02:56.94,0:02:57.85,rom,,0,0,86,yaki,
+Dialogue: 0,0:02:58.36,0:03:00.03,dev,,0,0,150,हो बारिश वर
+Dialogue: 0,0:02:58.36,0:03:00.03,rom,,0,0,86,ho barisa vara
+Dialogue: 0,0:03:00.08,0:03:01.95,dev,,0,0,150,तुम तो पल
+Dialogue: 0,0:03:00.08,0:03:01.95,rom,,0,0,86,tuma to pala
+Dialogue: 0,0:03:02.00,0:03:04.59,dev,,0,0,150,की ये काहानी,
+Dialogue: 0,0:03:02.00,0:03:04.59,rom,,0,0,86,ki ye kahani,
+Dialogue: 0,0:03:07.28,0:03:09.63,dev,,0,0,150,भीग ग़ी है
+Dialogue: 0,0:03:07.28,0:03:09.63,rom,,0,0,86,bhiga gi hai
+Dialogue: 0,0:03:09.68,0:03:11.13,dev,,0,0,150,मेरी,
+Dialogue: 0,0:03:09.68,0:03:11.13,rom,,0,0,86,meri,
+Dialogue: 0,0:03:11.66,0:03:14.89,dev,,0,0,150,हर एक रवानी,
+Dialogue: 0,0:03:11.66,0:03:14.89,rom,,0,0,86,hara eka ravani,
+Dialogue: 0,0:03:16.32,0:03:19.31,dev,,0,0,150,तम्जा जरा ये
+Dialogue: 0,0:03:16.32,0:03:19.31,rom,,0,0,86,tamja jara ye
+Dialogue: 0,0:03:19.36,0:03:21.97,dev,,0,0,150,लमहा यही,
+Dialogue: 0,0:03:19.36,0:03:21.97,rom,,0,0,86,lamaha yahi,
+Dialogue: 0,0:03:22.90,0:03:24.87,dev,,0,0,150,तेरे बना ये
+Dialogue: 0,0:03:22.90,0:03:24.87,rom,,0,0,86,tere bana ye
+Dialogue: 0,0:03:24.92,0:03:27.79,dev,,0,0,150,जाहा कुछ भी
+Dialogue: 0,0:03:24.92,0:03:27.79,rom,,0,0,86,jaha kucha bhi
+Dialogue: 0,0:03:27.84,0:03:31.03,dev,,0,0,150,नहीं
+Dialogue: 0,0:03:27.84,0:03:31.03,rom,,0,0,86,nahim

@@ -1,0 +1,32 @@
+{
+  "title": "claude-code — ~/project",
+  "steps": [
+    {"type": "pause", "dur": 0.6},
+    {"type": "type", "text": "/usage", "color": "magenta", "cps": 9},
+    {"type": "pause", "dur": 0.8},
+    {"type": "out", "lps": 5, "lines": [
+      ["", "dim"],
+      ["  WEEKLY LIMIT — resets Monday", "dim"],
+      ["", "dim"],
+      ["  boosted   ████████████████████  150%", "green"],
+      ["  standard  █████████████         100%", "dim"],
+      ["", "dim"],
+      ["  promotional +50% active", "green"],
+      ["  ends Aug 19, 11:59pm PT", "yellow"]
+    ]},
+    {"type": "pause", "dur": 2.2},
+    {"type": "out", "lps": 6, "lines": [["", "dim"], ["", "dim"]]},
+    {"type": "type", "text": "> refactor the auth module, then run the full suite", "color": "white", "cps": 26},
+    {"type": "pause", "dur": 0.7},
+    {"type": "out", "lps": 5, "lines": [
+      ["", "dim"],
+      ["  the expensive jobs — do them while the", "dim"],
+      ["  ceiling is still high", "dim"],
+      ["", "dim"],
+      ["  ✓ big refactors", "green"],
+      ["  ✓ full test runs", "green"],
+      ["  ✓ repo-wide reviews", "green"]
+    ]},
+    {"type": "pause", "dur": 2.4}
+  ]
+}

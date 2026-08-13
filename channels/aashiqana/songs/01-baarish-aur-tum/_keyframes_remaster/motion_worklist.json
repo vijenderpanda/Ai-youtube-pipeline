@@ -1,0 +1,18 @@
+{
+  "_doc": "Tu Hi Hai remaster motion worklist. Hailuo 2.3, 16:9, 6s, RESOLUTION_768, startFrame width 1376 height 768. Gate-2 approved 2026-08-13.",
+  "clips": [
+    {"n": 1,  "kf": "B1_spin_0",    "img": "9878b22c-b964-445f-a6e3-13ebdc2ffb55", "motion": "she spins away from him laughing, drenched kurti flaring, their joined hands stretching, rain flying, slow cinematic arc, keep both faces exactly the same, no morphing, no warping"},
+    {"n": 2,  "kf": "B1_spin_0",    "img": "9878b22c-b964-445f-a6e3-13ebdc2ffb55", "motion": "she spins back in toward him and lands against his chest, both laughing, rain splashing softly, keep both faces exactly the same, no morphing, no warping"},
+    {"n": 3,  "kf": "B2_pull_0",    "img": "774a7c7b-1679-4f4a-aaa7-f68565372693", "motion": "slow cinematic push-in as they hold the charged pause, slow breathing, her hand tightening slightly on his chest, rain streaking through the light, keep both faces exactly the same, no morphing, no warping"},
+    {"n": 4,  "kf": "B2_pull_0",    "img": "774a7c7b-1679-4f4a-aaa7-f68565372693", "motion": "he leans slowly closer and she tilts her face up, eyes slowly closing, rain falling around them, keep both faces exactly the same, no morphing, no warping"},
+    {"n": 5,  "kf": "B3_umbrella_1","img": "58e9a0b2-1941-48a4-8abd-ab2f4628513f", "motion": "they laugh softly in the pouring rain, heads tilting, joined hands swinging gently between them, keep both faces exactly the same, no morphing, no warping"},
+    {"n": 6,  "kf": "B4_walk_0",    "img": "b80938fe-89c6-4c1a-a58e-62387c112405", "motion": "slow cinematic tracking as they walk away down the glistening street under the umbrella, reflections shimmering on the wet road, keep both figures exactly the same, no morphing, no warping"},
+    {"n": 7,  "kf": "B5_cafe_1",    "img": "bef4ff65-5682-4216-99c3-463ed65f4fa3", "motion": "he gently tucks the wet strand of hair behind her ear, she looks up at him with a soft laugh, warm lamplight flickering slightly, keep both faces exactly the same, no morphing, no warping"},
+    {"n": 8,  "kf": "B6_chai_0",    "img": "983fe7de-6025-4052-b92b-5f4a25cc836d", "motion": "steam rising from the chai, she blinks slowly and smiles watching the rain through the glass, raindrops sliding down the window, slow push-in, keep her face exactly the same, no morphing, no warping"},
+    {"n": 9,  "kf": "B7_behind_1",  "img": "5b40e415-69b8-4439-9769-7d84bfd728b3", "motion": "he tightens the hold from behind, she settles back against him with a slow breath, gentle sway, city bokeh shimmering, keep both faces exactly the same, no morphing, no warping"},
+    {"n": 10, "kf": "B8_chin_0",    "img": "6e08f0e1-2dfb-45b2-8e0e-7c3928871278", "motion": "he lifts her chin slowly, their faces drawing closer without touching, rain falling through the amber light, keep both faces exactly the same, no morphing, no warping"},
+    {"n": 11, "kf": "B8_chin_0",    "img": "6e08f0e1-2dfb-45b2-8e0e-7c3928871278", "motion": "she rises slowly toward him, eyes closing, a slow shared breath as the rain glints around them, keep both faces exactly the same, no morphing, no warping"},
+    {"n": 12, "kf": "B9_hills_0",   "img": "64136285-09a2-4ff1-a355-e3063ffd7d52", "motion": "she runs ahead pulling him by the hand, both laughing, mist drifting across the ridge, camera tracking alongside, keep both faces exactly the same, no morphing, no warping"},
+    {"n": 13, "kf": "B10_hold_0",   "img": "6abd6def-77ab-460f-82f2-7a744b7496ab", "motion": "gentle sway in the forehead-to-forehead hold, mist drifting past them, slow breathing, soft golden light shifting, keep both faces exactly the same, no morphing, no warping"}
+  ]
+}

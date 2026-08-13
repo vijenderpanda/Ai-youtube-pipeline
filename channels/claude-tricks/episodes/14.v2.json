@@ -1,0 +1,119 @@
+{
+ "title": "An AI Can Legally Diagnose You — No Doctor Needed 🩺",
+ "tags": "ai news,ai in healthcare,fda ai approval,autonomous ai,medical ai,diabetic retinopathy,ai screening,ai for beginners,ai tips,health tech,ai diagnosis,ai shorts",
+ "epTag": "EP14 · AI CAN DIAGNOSE YOU",
+ "host_panels": [
+  {
+   "lines": [
+    "AN AI CAN",
+    "DIAGNOSE YOU —",
+    "NO DOCTOR NEEDED"
+   ],
+   "hot": "DIAGNOSE"
+  },
+  {
+   "lines": [
+    "IT CAN SCREEN YOU.",
+    "ONLY A DOCTOR",
+    "CAN TREAT YOU"
+   ],
+   "hot": "TREAT"
+  }
+ ],
+ "lines": [
+  "An A-I is legally allowed to diagnose you — with no doctor in the room.",
+  "That's not coming. It's been true since twenty-eighteen.",
+  "The F-D-A cleared a system to catch diabetic eye disease on its own. No clinician reads the scan.",
+  "Nine hundred patients, ten ordinary clinics. Eighty-seven percent sensitivity, ninety-one percent specificity.",
+  "But read what it's cleared FOR. Screening. Never treatment.",
+  "A-I can screen you. Only a doctor can treat you.",
+  "Use it as a second opinion — never the last one."
+ ],
+ "hot_words": [
+  "LEGALLY",
+  "DIAGNOSE",
+  "NO",
+  "DOCTOR",
+  "ROOM",
+  "COMING",
+  "TWENTY-EIGHTEEN",
+  "FDA",
+  "CLEARED",
+  "OWN",
+  "CLINICIAN",
+  "SCAN",
+  "NINE",
+  "HUNDRED",
+  "PATIENTS",
+  "EIGHTY-SEVEN",
+  "SENSITIVITY",
+  "FOR",
+  "SCREENING",
+  "NEVER",
+  "TREATMENT",
+  "SCREEN",
+  "TREAT",
+  "SECOND",
+  "OPINION",
+  "LAST"
+ ],
+ "beats": [
+  "host",
+  "host",
+  "pip:scan",
+  "stat:accuracy",
+  "pip:limits",
+  "host2",
+  "host2"
+ ],
+ "steps": [],
+ "music": "music/bed_active.mp3",
+ "endcard": null,
+ "outro": true,
+ "outro_dur": 0,
+ "outro_src": "ep14/outro_card.mp4",
+ "outro_cta": "auto",
+ "hook": {
+  "image": "ep14/hook_art/no_doctor.jpg",
+  "lines": [
+   "AN AI CAN LEGALLY",
+   "DIAGNOSE YOU"
+  ],
+  "hot": "DIAGNOSE",
+  "kicker": "no doctor in the room · since 2018",
+  "until": 2.6
+ },
+ "stats": {
+  "accuracy": {
+   "title": "AUTONOMOUS AI EYE SCREENING",
+   "subtitle": "FDA PIVOTAL TRIAL · 900 PATIENTS · 10 PRIMARY-CARE SITES",
+   "footer": "FIGURES: ABRAMOFF ET AL · NPJ DIGITAL MEDICINE · AUG 2018",
+   "bars": [
+    {"label": "SENSITIVITY", "value": 87.2, "display": "87.2%", "hot": true},
+    {"label": "SPECIFICITY", "value": 90.7, "display": "90.7%"}
+   ],
+   "start": 0.15,
+   "height": 1400
+  }
+ },
+ "pips": {
+  "scan": {
+   "src": "ep14/screening_mock.mp4",
+   "from": 0.5,
+   "lines": [
+    "NO HUMAN IN THE LOOP",
+    "Software issued",
+    "the referral"
+   ]
+  },
+  "limits": {
+   "src": "ep14/screening_mock.mp4",
+   "from": 6.5,
+   "lines": [
+    "READ THE FINE PRINT",
+    "Cleared to spot it.",
+    "Not to fix it."
+   ]
+  }
+ }
+}
