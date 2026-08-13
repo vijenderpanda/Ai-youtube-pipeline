@@ -36,6 +36,13 @@ CHANNEL_KEY = "claude-tricks"
 TEASE_TMPL = "Tomorrow: {tease} — follow so it finds you."
 FALLBACK_LINE = ("One thirty-second Claude trick, every day — "
                  "follow so the next one finds you.")
+# Friday = the learning-and-building series slot (VJ directive 2026-08-13):
+# no daily Short on Fridays; the Thursday episode's outro hands off to the
+# series instead. Named variant when a Friday chapter is already planned.
+FRIDAY_TMPL = ("Tomorrow is Friday — we build: {tease}. "
+               "Meet me there — follow so you don't miss it.")
+FRIDAY_LINE = ("Tomorrow is Friday — we learn and build something from scratch, "
+               "together. Meet me there — follow so you don't miss it.")
 VO_TARGET_LUFS = -14.0   # channel spine (PLAYBOOK §Audio, finalize QC gate)
 MAX_TEASE_CHARS = 80     # keeps the outro segment ≤ ~8s of speech
 
@@ -69,42 +76,94 @@ def clean_title(title):
     return t
 
 
-def next_planned_title(exclude_id=None, exclude_title=None):
-    """Next planned/queued content item on this channel's factory calendar.
-    Returns (title, planned_date) or None. Best-effort: ANY failure (no
-    secrets, network, schema drift) -> None, the caller falls back to the
-    series promise — a missing tease must never fail a finalize."""
-    try:
-        from factory_worker import Supa, load_env
-        env = load_env()
-        supa = Supa(env["SUPABASE_URL"], env["SUPABASE_SERVICE_KEY"])
-        today = datetime.date.today().isoformat()
-        rows = supa.select("factory_calendar", (
-            f"channel_key=eq.{CHANNEL_KEY}"
-            "&status=in.(planned,queued)"
-            f"&planned_date=gte.{today}"
-            "&or=(kind.eq.content,kind.is.null)"
-            "&order=planned_date.asc&limit=6"
-            "&select=id,title,planned_date,status,kind"))
-    except Exception as e:  # noqa: BLE001
-        print(f">> outro_cta: calendar lookup failed ({e}) — using series promise")
-        return None
+def _supa():
+    from factory_worker import Supa, load_env
+    env = load_env()
+    return Supa(env["SUPABASE_URL"], env["SUPABASE_SERVICE_KEY"])
+
+
+def _upcoming(supa, from_date, exclude_id=None, exclude_title=None, on_date=None):
+    """Teasable content rows from `from_date` on — or exactly ON `on_date` —
+    excluding this episode's own row. Teasable = planned/queued/produced
+    (produced = already armed on YouTube, the most certain of all). NEVER
+    `suggested`: an unapproved topic must not be promised on-air."""
+    date_filter = (f"planned_date=eq.{on_date}" if on_date
+                   else f"planned_date=gte.{from_date}")
+    rows = supa.select("factory_calendar", (
+        f"channel_key=eq.{CHANNEL_KEY}"
+        "&status=in.(planned,queued,produced)"
+        f"&{date_filter}"
+        "&or=(kind.eq.content,kind.is.null)"
+        "&order=planned_date.asc&limit=6"
+        "&select=id,title,planned_date,status,kind,type"))
+    out = []
     for r in rows or []:
         if exclude_id and str(r.get("id")) == str(exclude_id):
             continue
         if exclude_title and _norm(r.get("title")) == _norm(exclude_title):
             continue
+        # internal production items (footage tapes etc.) are calendar rows but
+        # never viewer-facing episodes — teasing one would be nonsense on air
+        if (r.get("type") or "") in ("record_demo", "shell_script"):
+            continue
         if clean_title(r.get("title")):
-            return clean_title(r.get("title")), r.get("planned_date")
-    return None
+            out.append(r)
+    return out
 
 
-def compose_line(cfg_title=None, calendar_id=None):
-    """-> (spoken_line, source_note)."""
-    nxt = next_planned_title(exclude_id=calendar_id, exclude_title=cfg_title)
-    if nxt:
-        title, date = nxt
-        return TEASE_TMPL.format(tease=title), f"tease:{date}"
+def compose_line(cfg_title=None, calendar_id=None, ref_date=None):
+    """-> (spoken_line, source_note). DAY-AWARE relative to the episode's own
+    PUBLISH date (its calendar row's planned_date via calendar_id, or
+    `ref_date`, else today — finalize runs before publish, and 'tomorrow' must
+    be the VIEWER'S tomorrow):
+      - tomorrow is FRIDAY  -> the learning-and-building series handoff
+        (names the Friday chapter when one is planned, generic line otherwise)
+      - next planned item IS tomorrow -> "Tomorrow: <tease>"
+      - next planned item is later / none -> series promise (never claim a
+        'tomorrow' the calendar can't back)
+    Best-effort: any lookup failure degrades to the calendar-free lines."""
+    supa = None
+    try:
+        supa = _supa()
+    except Exception as e:  # noqa: BLE001
+        print(f">> outro_cta: no calendar access ({e}) — composing without it")
+
+    ref = None
+    if ref_date:
+        ref = datetime.date.fromisoformat(str(ref_date))
+    elif calendar_id and supa:
+        try:
+            own = supa.select("factory_calendar",
+                              f"id=eq.{calendar_id}&select=planned_date")
+            if own:
+                ref = datetime.date.fromisoformat(own[0]["planned_date"])
+        except Exception:  # noqa: BLE001
+            pass
+    ref = ref or datetime.date.today()
+    tomorrow = ref + datetime.timedelta(days=1)
+
+    if tomorrow.weekday() == 4:  # Friday -> series handoff, never a daily tease
+        if supa:
+            try:
+                rows = _upcoming(supa, None, exclude_id=calendar_id,
+                                 exclude_title=cfg_title,
+                                 on_date=tomorrow.isoformat())
+                if rows:
+                    return (FRIDAY_TMPL.format(tease=clean_title(rows[0]["title"])),
+                            f"friday-series:{tomorrow.isoformat()}")
+            except Exception as e:  # noqa: BLE001
+                print(f">> outro_cta: friday lookup failed ({e}) — generic series line")
+        return FRIDAY_LINE, "friday-series"
+
+    if supa:
+        try:
+            rows = _upcoming(supa, tomorrow.isoformat(), exclude_id=calendar_id,
+                             exclude_title=cfg_title)
+            if rows and rows[0]["planned_date"] == tomorrow.isoformat():
+                return (TEASE_TMPL.format(tease=clean_title(rows[0]["title"])),
+                        f"tease:{rows[0]['planned_date']}")
+        except Exception as e:  # noqa: BLE001
+            print(f">> outro_cta: calendar lookup failed ({e}) — using series promise")
     return FALLBACK_LINE, "series-promise"
 
 
@@ -167,10 +226,13 @@ if __name__ == "__main__":
     ap.add_argument("--exclude-title", help="this episode's own title (skip in tease)")
     ap.add_argument("--calendar-id", help="this episode's calendar row id (skip in tease)")
     ap.add_argument("--text", help="verbatim line instead of auto-compose")
+    ap.add_argument("--ref-date", help="simulate the episode's publish date "
+                    "(YYYY-MM-DD) — 'tomorrow' is computed from this")
     a = ap.parse_args()
     if a.dry:
         line, note = ((a.text, "verbatim") if a.text else
-                      compose_line(cfg_title=a.exclude_title, calendar_id=a.calendar_id))
+                      compose_line(cfg_title=a.exclude_title, calendar_id=a.calendar_id,
+                                   ref_date=a.ref_date))
         print(json.dumps({"line": line, "source": note}, indent=1))
         sys.exit(0)
     if not a.ep:
