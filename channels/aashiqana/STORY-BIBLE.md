@@ -56,7 +56,9 @@ Leonardo prompt wording stays tame (template rule #4); the VISUAL carries the he
 Placement: last ~3s, voice at full level with the music **ducked** under it.
 Voice: soft female whisper (Lily / the song's own female-echo texture). ≤ 9 words.
 
-Formula: **[tiny story tease] + [open question]? …Friday.**
+Formula: **[open question]? … "Friday dekhna… miss na ho, subscribe kar lena."**
+(VJ 2026-08-13: the question hooks, then the whisper says exactly what to do —
+watch Friday + subscribe so you don't miss it. Keep the whole whisper ≤ ~4.5s.)
 
 | After a … chapter | Whisper (Hinglish) |
 |---|---|
