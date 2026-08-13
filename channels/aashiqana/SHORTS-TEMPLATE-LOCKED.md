@@ -1,8 +1,10 @@
-# Aashiqana — LOCKED Sensual-Motion Shorts Template (v1, 2026-08-12)
+# Aashiqana — LOCKED Sensual-Motion Shorts Template (v2 serialized, 2026-08-13)
 
 > The proven, repeatable pipeline for premium Aashiqana Shorts. Every future short
 > matches this level. Validated on **Aadhi Raat (kiss-open)** and **Aaja Ve** (both armed).
 > Companion: `BRAND-BIBLE.md` (spine), `QUALITY-LEDGER.md` (bar), memory `[[aashiqana-connected-motion]]`.
+> **v2 (VJ-approved 2026-08-13): the channel is a SERIAL — "Unki Kahani", Aarav & Meher.**
+> Full rationale + decisions: `SERIALIZATION-PROPOSAL.md`. Deltas from v1 are marked **[v2]**.
 
 ## The bar (what "same level" means)
 A ~22s vertical Short = **4 identity-locked, DIFFERENT connected shots** of ONE AI couple that
@@ -23,10 +25,15 @@ bilingual karaoke-style captions + premium branding. Sensual but **tasteful & Yo
 5. **Synthetic disclosure ON** at upload + AI disclosure in description (never a celebrity likeness).
 
 ## Pipeline (the exact steps)
-1. **Anchor** — Leonardo web → **Nano Banana 2**, 2:3 (848×1264). Either reuse a locked couple or
-   generate a FRESH anchor (×4) in the song's vibe; VJ approves the face. Lock it.
-   *(Exact library-couple faces are unrecoverable — local upload to Leonardo is sandbox-blocked —
-   so fresh-anchor is the reliable identity path.)*
+1. **Anchor — [v2] THE serial couple, not a fresh cast.** Every canonical chapter uses the
+   **golden-bedroom Aaja Ve couple** (`goldenhour_aajave` in `couple_library/leonardo_ids.json`;
+   VJ-picked 2026-08-13 for their sensual tension; on screen as youtu.be/RUm7xNDaAGQ = Ch.1).
+   **Their gen IDs are PENDING-CAPTURE** — before producing Ch.2, open *Your Generations*
+   (~2026-08-12), match `songs/02-aaja-ve/_keyframes/*.jpg`, and fill the registry; then drive
+   identity BY ID per the IDENTITY-LOCK rule — never eyeball-pick thumbnails. New stills:
+   Nano Banana 2 with **Image Reference = the captured anchor generation** (2:3, 848×1264).
+   The rotate-the-setting rule (#2) still holds — same couple, new world each chapter. Fresh
+   anchors are allowed ONLY for non-canon one-offs, and a fresh face never gets a chapter number.
 2. **4 keyframes** — Nano Banana 2, **Image Reference = the anchor** (pick from Your Generations,
    NOT upload). Beats: **K1 establishing embrace · K2 her single · K3 the bold intimate beat
    (embrace-from-behind) · K4 near-kiss payoff**. Prompt "the SAME couple/woman from the reference…".
@@ -48,6 +55,27 @@ bilingual karaoke-style captions + premium branding. Sensual but **tasteful & Yo
 6. **Arm** — `scripts/yt_upload.py --channel aashiqana --video <branded> --title "…#shorts"
    --desc-file <desc> --tags "…" --category 10 --audience general --synthetic --privacy public
    --publish-at <RFC3339 UTC>`. Cover = first frame (no custom thumb, playbook §5).
+   **[v2]** Prefer arming through `scripts/finalize_aashiqana.py` with a manifest carrying the
+   serial fields — it decorates title/description, adds the playlist, and prints the pin command.
+
+## [v2] Serialization — Unki Kahani (chapters)
+- **The frame:** each song = a chapter of ONE ongoing story (Aarav & Meher). Numbered chapters
+  ship on **Friday**; other days are unnumbered "diary pages" (same couple, non-canon beats).
+- **Manifest fields** (`episodes/ep<N>.json`): `"chapter": N` (canonical Fridays ONLY — omit for
+  pages), `"prev_video_id"` (Ch. N-1 link), `"story_beat"` ("one-line beat, feeds the pin").
+- **What finalize does when `chapter` is set:** title gains ` | Unki Kahani Ch.N` (100-char
+  guard); description gets the 3-line chapter block (chapter · missed-previous link · "Next
+  chapter Friday. Follow @aashiqana.diaries"); the Short joins the **story playlist**
+  (`channel.json serial.playlist_id`); the end card swaps to **"follow their story — agla
+  chapter Friday"** (`polish_short.py --cta`); the `yt_engage.py --pin` command prints ready
+  to run (pin itself = 1 Studio click; needs the one-time force-ssl `--auth`, playbook §9b).
+- **CTA is text-only, never spoken** — a voice stinger would break USE-THIS-SOUND reuse.
+- **Story spine on screen:** write the `--pov1/--pov2` hook as serial copy where the lyric
+  allows ("Ch.3 — woh laut aaya"), not generic POV.
+- **Retro-labels + playlist bootstrap:** `scripts/yt_serialize.py` (`--init-playlist`,
+  `--retrofit <VIDEO_ID> <N>`). **Ch.1 = Aaja Ve golden-bedroom youtu.be/RUm7xNDaAGQ**;
+  Aadhi Raat (youtu.be/nXhtuR-dHqU, Midnight couple) stays a standalone — different face,
+  never numbered.
 
 ## Reusable assets
 - `scripts/assemble_motion_generic.py` — generic connected-motion stitcher (any song).

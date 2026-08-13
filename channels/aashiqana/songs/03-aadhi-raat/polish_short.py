@@ -16,6 +16,8 @@ _ap.add_argument("--src", default="channels/aashiqana/songs/03-aadhi-raat/render
 _ap.add_argument("--out", default="channels/aashiqana/songs/03-aadhi-raat/renders/aadhiraat_kissopen_branded.mp4")
 _ap.add_argument("--pov1", default="POV: woh insaan jise tum")
 _ap.add_argument("--pov2", default="chhod hi nahi paate")
+_ap.add_argument("--cta", default="a new love song every week",
+                 help="italic end-card tagline (serial chapters pass the Unki Kahani line)")
 _args = _ap.parse_args()
 SRC = _args.src
 OUT = _args.out
@@ -184,7 +186,7 @@ hf = GEOI(38)
 bb = ed.textbbox((0, 0), HANDLE, font=hf); ed.text((cx - (bb[2] - bb[0]) / 2 - bb[0], 1044), HANDLE, font=hf, fill=(255, 255, 255, 220), stroke_width=1, stroke_fill=(0, 0, 0, 140))
 # weekly tagline (italic)
 wk_f = F([PLAYFAIR, "/System/Library/Fonts/Supplemental/Georgia Italic.ttf"], 40)
-wk = "a new love song every week"
+wk = _args.cta
 bb = ed.textbbox((0, 0), wk, font=wk_f); ed.text((cx - (bb[2] - bb[0]) / 2 - bb[0], 1112), wk, font=wk_f, fill=(235, 225, 210, 220))
 end.save(f"{work}/end.png")
 

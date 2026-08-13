@@ -36,6 +36,58 @@ def run(cmd, **kw):
     return subprocess.run(cmd, check=False, **kw)
 
 
+# ---- Serialization: Unki Kahani (SERIALIZATION-PROPOSAL.md, approved 2026-08-13) ----
+# A Short is a numbered CHAPTER only when its manifest carries "chapter": N —
+# weekday "diary pages" stay undecorated by omitting it (Friday-canon rule, D3).
+# Optional manifest fields: "prev_video_id" (Ch. N-1 link), "story_beat" (pin copy).
+
+def serial_config():
+    try:
+        return json.load(open(os.path.join(CH, "channel.json"))).get("serial") or {}
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def chapter_title(title, chapter, story):
+    """Append the ' | <story> Ch.N' chip, keeping YouTube's 100-char cap."""
+    if not title or story.lower() in title.lower():
+        return title
+    chip = f" | {story} Ch.{chapter}"
+    low = title.lower()
+    if "#shorts" in low:
+        i = low.rindex("#shorts")
+        cand = title[:i].rstrip() + chip + " " + title[i:]
+    else:
+        cand = title + chip
+    if len(cand) <= 100:
+        return cand
+    swapped = title.replace(" | New Hindi Love Song", chip, 1)
+    if chip in swapped and len(swapped) <= 100:
+        return swapped
+    print(f">> WARNING: no room for the {story} chip in {title!r} — title left untouched")
+    return title
+
+
+def chapter_desc_file(desc_file, man, ser, workdir):
+    """Write a decorated copy of the description with the chapter block on top."""
+    n = int(man["chapter"])
+    lines = [f"Chapter {n} of {ser.get('story', 'Unki Kahani')} — "
+             f"{ser.get('couple', 'Aarav & Meher')}'s story."]
+    if man.get("prev_video_id"):
+        lines.append(f"Missed Chapter {n - 1}? → https://youtu.be/{man['prev_video_id']}")
+    lines.append(f"Next chapter {ser.get('chapter_day', 'Friday')}. Follow @aashiqana.diaries")
+    body = ""
+    if desc_file and os.path.exists(desc_file):
+        try:
+            body = open(desc_file).read().strip()
+        except OSError:
+            pass
+    out = os.path.join(workdir, f"description_ch{n}.txt")
+    with open(out, "w") as f:
+        f.write("\n".join(lines) + ("\n\n" + body + "\n" if body else "\n"))
+    return out
+
+
 def measure_lufs(path):
     r = subprocess.run(["ffmpeg", "-nostats", "-i", path, "-af", "ebur128=peak=true",
                         "-f", "null", "-"], capture_output=True, text=True)
@@ -98,8 +150,12 @@ def assemble_from_clips(man):
         print("!! assemble failed"); return None
     pov1 = man.get("pov1", "POV: jiske bina har")
     pov2 = man.get("pov2", "shaam adhoori")
-    r = run(["python3", os.path.join(CH, "songs", "03-aadhi-raat", "polish_short.py"),
-             "--src", prev, "--out", branded, "--pov1", pov1, "--pov2", pov2])
+    cmd = ["python3", os.path.join(CH, "songs", "03-aadhi-raat", "polish_short.py"),
+           "--src", prev, "--out", branded, "--pov1", pov1, "--pov2", pov2]
+    if man.get("chapter"):
+        day = serial_config().get("chapter_day", "Friday")
+        cmd += ["--cta", f"follow their story — agla chapter {day}"]
+    r = run(cmd)
     if r.returncode != 0 or not os.path.exists(branded):
         print("!! branding failed"); return None
     return branded
@@ -120,7 +176,7 @@ def web_master(src):
     return dst
 
 
-def arm_youtube(final_path, schedule_iso, man, desc_file, dry=False):
+def arm_youtube(final_path, schedule_iso, man, desc_file, dry=False, playlist=None):
     yt = os.path.join(HERE, "yt_upload.py")
     title = man.get("title") or os.path.basename(final_path)
     cmd = ["python3", yt, "--channel", "aashiqana", "--video", final_path,
@@ -129,6 +185,8 @@ def arm_youtube(final_path, schedule_iso, man, desc_file, dry=False):
            "--privacy", "public", "--publish-at", schedule_iso]
     if desc_file and os.path.exists(desc_file):
         cmd += ["--desc-file", desc_file]
+    if playlist:
+        cmd += ["--playlist", playlist]
     if dry:
         cmd += ["--dry"]
     r = run(cmd, capture_output=True, text=True)
@@ -237,11 +295,27 @@ def main():
         if os.path.exists(cp):
             desc_file = cp
             break
-    ok, msg, video_id = arm_youtube(final, a.schedule, man, desc_file, dry=a.dry)
+    ser = serial_config()
+    chapter = man.get("chapter")
+    playlist = None
+    if chapter and ser:
+        man["title"] = chapter_title(man.get("title") or "", chapter, ser.get("story", "Unki Kahani"))
+        desc_file = chapter_desc_file(desc_file, man, ser, os.path.dirname(branded))
+        playlist = ser.get("playlist_id")
+        if not playlist:
+            print(">> WARNING: serial.playlist_id missing in channel.json — chapter won't join the "
+                  "story playlist (create it once: scripts/yt_serialize.py --init-playlist)")
+    ok, msg, video_id = arm_youtube(final, a.schedule, man, desc_file, dry=a.dry, playlist=playlist)
     if not ok:
         print(f"!! YT arm FAILED: {msg}", file=sys.stderr)
         sys.exit(3)
     print(f">> YT armed for {a.schedule}: {msg}")
+    if chapter and ser and video_id and not a.dry:
+        beat = (man.get("story_beat") or "").strip()
+        pin = ((f"Chapter {chapter}: {beat} " if beat else f"Chapter {chapter}. ")
+               + f"Agla chapter {ser.get('chapter_day', 'Friday')} — miss mat karna 🥀 Follow karo.")
+        print(">> PIN (comment posts via API; pinning itself is 1 Studio click):\n"
+              f"   python3 scripts/yt_engage.py --channel aashiqana --video {video_id} --pin {pin!r}")
     if a.calendar_id and not a.dry and video_id:
         sync_factory_db(a.calendar_id, video_id, a.schedule, man, final, desc_file)
     if not a.dry:

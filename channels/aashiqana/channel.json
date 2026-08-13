@@ -7,5 +7,13 @@
   "guard_days": 11,
   "slot_time_ist": "16:00",
   "calendar": "CONTENT-CALENDAR.csv",
-  "produce_hint": "open a Claude session -> 'produce the next Aashiqana calendar row (song brief -> Suno -> Leonardo -> karaoke v3)'"
+  "produce_hint": "open a Claude session -> 'produce the next Aashiqana calendar row (song brief -> Suno -> Leonardo -> karaoke v3)'",
+  "serial": {
+    "story": "Unki Kahani",
+    "couple": "Aarav & Meher",
+    "couple_id": "goldenhour_aajave",
+    "start_frame_id": null,
+    "chapter_day": "Friday",
+    "playlist_id": "PLLBJA4Jj3lEg"
+  }
 }

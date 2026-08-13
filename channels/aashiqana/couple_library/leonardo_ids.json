@@ -1,9 +1,25 @@
 {
   "_doc": "Canonical Leonardo identity anchors per couple. ALWAYS reuse these exact start-frame IDs (and seeds once captured) so every motion clip / short is the SAME face. Never pick lookalike thumbnails from Your Uploads — drive the start frame by ID via the generate URL: https://app.leonardo.ai/generate?model=hailuo-2_3&aspectRatio=9:16&size=RESOLUTION_768&duration=6&startFrame=[{\"id\":\"<ID>\",\"type\":\"GENERATED\",\"width\":848,\"height\":1264}]",
+  "serial_couple": "goldenhour_aajave",
+  "serial_note": "VJ 2026-08-13: the Aaja Ve golden-bedroom couple = THE recurring pair (Aarav & Meher) for the Unki Kahani serialization — VJ prefers their sensual tension over the Aadhi Raat/Midnight couple. Every canonical chapter reuses their identity. See SERIALIZATION-PROPOSAL.md + channel.json 'serial'.",
   "couples": {
+    "goldenhour_aajave": {
+      "codename": "Golden-bedroom (Aaja Ve) — Aarav & Meher, THE serial couple",
+      "status": "serial couple, VJ 2026-08-13 ('i like this version couple, sensual tension more than the aadhi raat couple'). Shipped as youtu.be/RUm7xNDaAGQ (Ch.1).",
+      "start_frame_id": "PENDING-CAPTURE",
+      "start_frame_type": "GENERATED",
+      "dims": "848x1264",
+      "note": "Fresh NB2 anchor cast 2026-08-12 for the Aaja Ve template short — gen IDs were NOT recorded at production time, but every image was GENERATED in the Leonardo web account so they sit in Your Generations (~2026-08-12). CAPTURE TODO before Chapter 2 production: open Your Generations (claude-in-chrome / leo_chrome.py --fetch), match these disk files, and fill the IDs here — anchor + 4 keyframes minimum. Until captured, motion re-use is limited to the 4 existing clips.",
+      "disk_refs": {
+        "anchor_candidates": "songs/02-aaja-ve/_gh_anchors/gh_{0..3}.jpg (VJ-approved pick = the one the keyframes match)",
+        "keyframes": "songs/02-aaja-ve/_keyframes/{anchor_0,her_0,her_1,behind_0,behind_1,kiss_0,kiss_1}.jpg",
+        "motion": "songs/02-aaja-ve/_motion/CLIP_{her,anchor,behind,kiss}.mp4"
+      },
+      "hook_motions": []
+    },
     "midnight": {
       "codename": "Midnight (neon Saiyaara-energy)",
-      "status": "approved 2026-08-07 (VJ: 'Almost looks good, build all hook motions for this couple only')",
+      "status": "approved 2026-08-07 (VJ: 'Almost looks good, build all hook motions for this couple only'); NOT the serial couple — Aadhi Raat youtu.be/nXhtuR-dHqU stays a standalone (2026-08-13)",
       "start_frame_id": "7a43cb0a-43ab-4ee5-b737-0394c0939a0f",
       "start_frame_type": "GENERATED",
       "dims": "848x1264",
