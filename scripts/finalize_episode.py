@@ -116,6 +116,34 @@ def qc_gate(final_path):
     return (not issues), issues
 
 
+# Series-follow numbering (VJ pick 2026-08-13): the YouTube title carries a
+# "30 Claude tricks in 30 days" challenge suffix so every audition viewer sees
+# there's a next episode to follow. The Vaibhav-DNA hook grammar stays LOCKED
+# and FIRST — the suffix rides at the END, and if the combined title would
+# blow YouTube's 100-char cap the SUFFIX is dropped, never the hook truncated.
+# Day count == ep counter (Ep13 = Day 13/30; one counter, no drift). After the
+# challenge window the suffix falls back to plain series numbering
+# ("| Claude Tricks #31") so the series cue never disappears.
+CHALLENGE_LEN = 30
+YT_TITLE_MAX = 100
+
+
+def apply_series_suffix(title, ep):
+    """Append the series suffix to a locked hook title. Idempotent (safe on
+    finalize re-runs); no-op for non-numeric ep keys or when the cap bites."""
+    if not title or not str(ep).isdigit():
+        return title
+    n = int(ep)
+    if re.search(r"(Day \d+/\d+|Claude Tricks #\d+)\s*$", title):
+        return title
+    suffix = (f" — Day {n}/{CHALLENGE_LEN}" if n <= CHALLENGE_LEN
+              else f" | Claude Tricks #{n}")
+    if len(title) + len(suffix) > YT_TITLE_MAX:
+        print(f">> series suffix dropped: title + suffix exceeds {YT_TITLE_MAX} chars")
+        return title
+    return title + suffix
+
+
 def build_description(spec, final_path):
     """Build a description file from the spec + BRAND-BIBLE §8 boilerplate.
     Returns the temp file path so yt_upload can pass --desc-file at it."""
@@ -140,6 +168,10 @@ def build_description(spec, final_path):
                         (spec.get("tags") or "").split(",") if t.strip())
     desc = "\n".join([
         hook_line,
+        "",
+        # Series promise — every viewer must see there's a next episode to follow
+        # (VJ directive 2026-08-13; series-follow pass).
+        "One 30-second Claude trick, every day.",
         "",
         "AI Unpacked — no hype, just what actually works.",
         "",
@@ -327,6 +359,14 @@ def main():
         except (OSError, json.JSONDecodeError) as e:
             print(f"!! could not read spec {spec}: {e}", file=sys.stderr)
             sys.exit(1)
+
+    # Series-follow suffix — mutate the spec title HERE so arm_youtube and
+    # sync_factory_db both ship the identical suffixed title.
+    if spec_data.get("title"):
+        suffixed = apply_series_suffix(spec_data["title"], a.ep)
+        if suffixed != spec_data["title"]:
+            print(f">> series title: {suffixed!r}")
+            spec_data["title"] = suffixed
 
     # Thumbnail lookup: prefer channels/claude-tricks/renders/thumb_ep<ep>.jpg
     # (produce_preview writes it there); fall back to assets/ep<ep>/thumbnail.*
