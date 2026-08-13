@@ -57,6 +57,9 @@ def clean_title(title):
     t = t.replace("--", "—")
     t = re.sub(r"\b(" + "|".join(_MONTHS) + r")\.?(?=\s+\d)",
                lambda m: _MONTHS[m.group(1)], t)
+    # trailing "(Ranked)" / "(Here's Your Rule)" parentheticals are YT packaging,
+    # not speech — drop them from the spoken tease
+    t = re.sub(r"\s*\([^)]*\)\s*$", "", t)
     t = re.sub(r"\s+", " ", t).strip(" -—–·|").strip()
     if len(t) > MAX_TEASE_CHARS:
         cut = max(t.rfind(m, 0, MAX_TEASE_CHARS) for m in ("—", ":", ","))
