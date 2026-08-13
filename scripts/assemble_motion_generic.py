@@ -59,19 +59,26 @@ def main():
                 try: return ImageFont.truetype(p,size)
                 except: pass
         return None
-    fhi=font(["/System/Library/Fonts/Kohinoor.ttc","/System/Library/Fonts/Supplemental/Kohinoor.ttc"],62)
-    fro=font(["/System/Library/Fonts/Supplemental/Georgia Bold.ttf"],52)
+    HI_CANDS=["/System/Library/Fonts/Kohinoor.ttc","/System/Library/Fonts/Supplemental/Kohinoor.ttc"]
+    RO_CANDS=["/System/Library/Fonts/Supplemental/Georgia Bold.ttf"]
     lines=json.load(open(a.lyrics))["lines"]
     def card(ln,idx):
         img=Image.new("RGBA",(W,H),(0,0,0,0)); d=ImageDraw.Draw(img)
-        def ctr(t,ft,y,fill):
-            if not t or not ft: return y
+        def ctr(t,cands,size,y,fill):
+            if not t: return y
+            # shrink until the line fits the frame; a clipped lyric is worse than a smaller one
+            ft=font(cands,size)
+            while ft and size>30:
+                bb=d.textbbox((0,0),t,font=ft,stroke_width=5)
+                if bb[2]-bb[0]<=W-50: break
+                size-=2; ft=font(cands,size)
+            if not ft: return y
             bb=d.textbbox((0,0),t,font=ft,stroke_width=5); w=bb[2]-bb[0]
             d.text(((W-w)//2-bb[0],y),t,font=ft,fill=fill,stroke_width=5,stroke_fill=(0,0,0,235))
             return y+(bb[3]-bb[1])+16
         y=1350
-        y=ctr(ln.get("hi",""),fhi,y,(255,255,255,255))
-        ctr(ln.get("text",""),fro,y,(255,214,120,255))
+        y=ctr(ln.get("hi",""),HI_CANDS,62,y,(255,255,255,255))
+        ctr(ln.get("text",""),RO_CANDS,52,y,(255,214,120,255))
         p=f"{work}/card{idx}.png"; img.save(p); return p
     cards=[(card(l,i),l) for i,l in enumerate(lines)]
     inp=["-i",montage]; fc=[]; prev="0:v"

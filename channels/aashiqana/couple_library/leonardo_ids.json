@@ -6,16 +6,33 @@
     "goldenhour_aajave": {
       "codename": "Golden-bedroom (Aaja Ve) — Aarav & Meher, THE serial couple",
       "status": "serial couple, VJ 2026-08-13 ('i like this version couple, sensual tension more than the aadhi raat couple'). Shipped as youtu.be/RUm7xNDaAGQ (Ch.1).",
-      "start_frame_id": "PENDING-CAPTURE",
-      "start_frame_type": "GENERATED",
+      "identity_ref_gen": "1f196233-23dd-61d0-bffc-2450d586565f",
+      "identity_ref_image_index": 0,
+      "identity_ref_note": "= _keyframes/anchor_0.jpg (K1 golden-bedroom embrace) — the SHIPPED Ch.1 face. Use THIS generation as the NB2 Image Reference for every new serial still (Select Media > Your Generations; verify the selected chip's thumbnail URL contains this gen id). CAPTURED 2026-08-13 by byte-matching disk files to CDN full-res (md5, all 11 exact).",
       "dims": "848x1264",
-      "note": "Fresh NB2 anchor cast 2026-08-12 for the Aaja Ve template short — gen IDs were NOT recorded at production time, but every image was GENERATED in the Leonardo web account so they sit in Your Generations (~2026-08-12). CAPTURE TODO before Chapter 2 production: open Your Generations (claude-in-chrome / leo_chrome.py --fetch), match these disk files, and fill the IDs here — anchor + 4 keyframes minimum. Until captured, motion re-use is limited to the 4 existing clips.",
+      "identity_ref_image_id": "d4f1a4e7-2218-402e-a89f-1af78f6d8485",
+      "gens": {
+        "anchor_cast_x4": {"gen_id": "1f19620b-3334-6e80-ac51-12618817c4ee", "files": {"gh_0": 3, "gh_1": 0, "gh_2": 2, "gh_3": 1}},
+        "ch2_her": {"gen_id": "1f196c87-9a0c-6140-a77f-aa2ece9393fc", "files": {"CH2_K1_her": 0}, "image_id": "4d150fa8-6107-4143-ad1d-3652a051d95e", "motion_gen": "1f196c96-7144-62d0-ab5b-9018ca6c9c03", "motion_alt": "1f196c97-564f-66e0-99b5-12a46a052b9d"},
+        "ch2_watch": {"gen_id": "1f196c89-1e67-6060-bf83-30c1cca4b859", "files": {"CH2_K2_watch": 0}, "image_id": "5d7f37ae-6fc2-4886-b570-0784b85e752a", "motion_gen": "1f196c9c-de25-60b0-be65-08775dc57200"},
+        "ch2_rose": {"gen_id": "1f196c8a-feff-6400-ab4a-c24bcb3a6dd8", "files": {"CH2_K3_rose": 1}, "image_id": "b7682afa-eaf1-42c2-89dc-aafd9935c256", "motion_gen": "1f196ca6-4e86-6cb0-99cd-b561f7069444"},
+        "ch2_ache": {"gen_id": "1f196c8b-7724-6160-b19a-df902cbb8869", "files": {"CH2_K4_ache": 0}, "image_id": "c1d3028a-6c50-4e67-953b-0c79d4a50187", "motion_gen": "1f196caa-c468-6920-8973-b02194048eb1"},
+        "kf_anchor": {"gen_id": "1f196233-23dd-61d0-bffc-2450d586565f", "files": {"anchor_0": 0}},
+        "kf_her": {"gen_id": "1f196283-5ce5-6950-9ca2-4309a0c017d6", "files": {"her_0": 1, "her_1": 0}},
+        "kf_behind": {"gen_id": "1f196287-3508-60f0-a9ac-145b9e868c73", "files": {"behind_0": 0, "behind_1": 1}},
+        "kf_kiss": {"gen_id": "1f196288-152c-66e0-9b46-37e741d46973", "files": {"kiss_0": 1, "kiss_1": 0}}
+      },
       "disk_refs": {
-        "anchor_candidates": "songs/02-aaja-ve/_gh_anchors/gh_{0..3}.jpg (VJ-approved pick = the one the keyframes match)",
+        "anchor_candidates": "songs/02-aaja-ve/_gh_anchors/gh_{0..3}.jpg",
         "keyframes": "songs/02-aaja-ve/_keyframes/{anchor_0,her_0,her_1,behind_0,behind_1,kiss_0,kiss_1}.jpg",
         "motion": "songs/02-aaja-ve/_motion/CLIP_{her,anchor,behind,kiss}.mp4"
       },
-      "hook_motions": []
+      "hook_motions": [
+        {"beat": "her turn-to-camera", "gen_id": "1f1962a3-73be-6120-a8a9-3d1cc36bdb59", "file": "songs/02-aaja-ve/_motion/CLIP_her.mp4", "match": "by-prompt"},
+        {"beat": "behind turn-within-arms", "gen_id": "1f1962a6-f820-61e0-a00e-8ecbbb995c99", "file": "songs/02-aaja-ve/_motion/CLIP_behind.mp4", "match": "by-prompt"},
+        {"beat": "near-kiss sink-to-sit", "gen_id": "1f1962a9-65a9-6e30-a153-a142b1329300", "file": "songs/02-aaja-ve/_motion/CLIP_kiss.mp4", "match": "by-prompt"},
+        {"beat": "golden-bedroom embrace push-in", "gen_id": "1f1962ab-eeb2-63b0-9574-93dbdd241794", "file": "songs/02-aaja-ve/_motion/CLIP_anchor.mp4", "match": "by-prompt"}
+      ]
     },
     "midnight": {
       "codename": "Midnight (neon Saiyaara-energy)",
