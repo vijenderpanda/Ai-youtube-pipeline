@@ -37,6 +37,7 @@
 - **Captions:** word-by-word **karaoke**, ALL-CAPS heavy condensed sans (Anton/Bebas), thick dark stroke, 1–3 words at a time, active word flips white → **electric magenta**. Burned from ElevenLabs timestamps (character-level → grouped into words).
 
 ## 5. Content strategy & series
+- **Publish cadence (VJ directive 2026-08-13): daily at 16:00 IST EXCEPT FRIDAYS — Fridays are VJ's blocked learning/building day, the channel goes dark.** Planners must not place claude-tricks content items on a Friday `planned_date`, and nothing gets armed for a Friday slot. The spoken outro tease says "Tomorrow: …", so consecutive publish days must stay consecutive — when shifting the schedule, move the WHOLE chain together (armed publishAt + factory_posts.publish_at + calendar planned_date), never one episode alone.
 - **Mix (LOCKED, news-forward): ~35% Claude/desktop/token/model tips + ~20% new-capability + ~45% news.** _(Supersedes the earlier "70% tips + 30% news" line — that split predated the news-forward pivot logged in PRODUCTION-PLAYBOOK.md around Ep22–Ep25.)_ Tips = the reliable, batchable backbone; new-capability = day-one demos of just-shipped features; news = freshness + viral spikes (batched weekly via a "So What?" filter — one story → what it changes for your workflow + one action).
 - **Recurring series (→ named playlists):**
   - **Prompt Teardown** (flagship): a weak prompt on screen, rebuilt live, visibly better output.
