@@ -1,0 +1,747 @@
+[
+ {
+  "w": "STOP",
+  "start": 0.0,
+  "end": 0.29
+ },
+ {
+  "w": "PAYING",
+  "start": 0.34,
+  "end": 0.51
+ },
+ {
+  "w": "FOR",
+  "start": 0.55,
+  "end": 0.63
+ },
+ {
+  "w": "WEBSITES",
+  "start": 0.67,
+  "end": 1.17
+ },
+ {
+  "w": "TONIGHT",
+  "start": 1.38,
+  "end": 1.78
+ },
+ {
+  "w": "YOUR",
+  "start": 2.03,
+  "end": 2.16
+ },
+ {
+  "w": "IDEA",
+  "start": 2.21,
+  "end": 2.45
+ },
+ {
+  "w": "GOES",
+  "start": 2.51,
+  "end": 2.68
+ },
+ {
+  "w": "LIVE",
+  "start": 2.74,
+  "end": 3.03
+ },
+ {
+  "w": "\u2014",
+  "start": 3.15,
+  "end": 3.25
+ },
+ {
+  "w": "FOR",
+  "start": 3.42,
+  "end": 3.55
+ },
+ {
+  "w": "FREE",
+  "start": 3.6,
+  "end": 3.88
+ },
+ {
+  "w": "WELCOME",
+  "start": 4.37,
+  "end": 4.74
+ },
+ {
+  "w": "TO",
+  "start": 4.76,
+  "end": 4.81
+ },
+ {
+  "w": "BUILD",
+  "start": 4.87,
+  "end": 5.02
+ },
+ {
+  "w": "CLUB",
+  "start": 5.04,
+  "end": 5.28
+ },
+ {
+  "w": "ONE",
+  "start": 5.42,
+  "end": 5.62
+ },
+ {
+  "w": "REAL",
+  "start": 5.65,
+  "end": 5.83
+ },
+ {
+  "w": "MOVE",
+  "start": 5.89,
+  "end": 6.14
+ },
+ {
+  "w": "EVERY",
+  "start": 6.2,
+  "end": 6.42
+ },
+ {
+  "w": "FRIDAY",
+  "start": 6.47,
+  "end": 6.82
+ },
+ {
+  "w": "BY",
+  "start": 7.02,
+  "end": 7.14
+ },
+ {
+  "w": "CHAPTER",
+  "start": 7.19,
+  "end": 7.48
+ },
+ {
+  "w": "SIX",
+  "start": 7.52,
+  "end": 7.79
+ },
+ {
+  "w": "YOU'VE",
+  "start": 8.09,
+  "end": 8.29
+ },
+ {
+  "w": "BUILT",
+  "start": 8.31,
+  "end": 8.5
+ },
+ {
+  "w": "A",
+  "start": 8.54,
+  "end": 8.57
+ },
+ {
+  "w": "REAL",
+  "start": 8.62,
+  "end": 8.81
+ },
+ {
+  "w": "APP",
+  "start": 8.9,
+  "end": 9.12
+ },
+ {
+  "w": "CHAPTER",
+  "start": 9.65,
+  "end": 9.97
+ },
+ {
+  "w": "ONE",
+  "start": 10.04,
+  "end": 10.25
+ },
+ {
+  "w": "THIS",
+  "start": 10.56,
+  "end": 10.75
+ },
+ {
+  "w": "PROMPT",
+  "start": 10.81,
+  "end": 11.09
+ },
+ {
+  "w": "IS",
+  "start": 11.13,
+  "end": 11.21
+ },
+ {
+  "w": "THE",
+  "start": 11.25,
+  "end": 11.32
+ },
+ {
+  "w": "WHOLE",
+  "start": 11.36,
+  "end": 11.53
+ },
+ {
+  "w": "TRICK",
+  "start": 11.55,
+  "end": 11.78
+ },
+ {
+  "w": "\u2014",
+  "start": 11.94,
+  "end": 12.03
+ },
+ {
+  "w": "IT'S",
+  "start": 12.14,
+  "end": 12.32
+ },
+ {
+  "w": "PINNED",
+  "start": 12.37,
+  "end": 12.59
+ },
+ {
+  "w": "IN",
+  "start": 12.61,
+  "end": 12.65
+ },
+ {
+  "w": "THE",
+  "start": 12.69,
+  "end": 12.76
+ },
+ {
+  "w": "COMMENTS",
+  "start": 12.79,
+  "end": 13.22
+ },
+ {
+  "w": "THREE",
+  "start": 13.5,
+  "end": 13.73
+ },
+ {
+  "w": "SECTIONS",
+  "start": 13.78,
+  "end": 14.26
+ },
+ {
+  "w": "SECTION",
+  "start": 14.79,
+  "end": 15.16
+ },
+ {
+  "w": "ONE",
+  "start": 15.23,
+  "end": 15.37
+ },
+ {
+  "w": "INTERVIEWS",
+  "start": 15.41,
+  "end": 15.79
+ },
+ {
+  "w": "YOU",
+  "start": 15.84,
+  "end": 15.96
+ },
+ {
+  "w": "SIX",
+  "start": 16.34,
+  "end": 16.58
+ },
+ {
+  "w": "QUESTIONS",
+  "start": 16.64,
+  "end": 17.11
+ },
+ {
+  "w": "NAME",
+  "start": 17.53,
+  "end": 17.95
+ },
+ {
+  "w": "WHAT",
+  "start": 18.34,
+  "end": 18.53
+ },
+ {
+  "w": "YOU",
+  "start": 18.59,
+  "end": 18.66
+ },
+ {
+  "w": "SELL",
+  "start": 18.71,
+  "end": 18.97
+ },
+ {
+  "w": "YOUR",
+  "start": 19.23,
+  "end": 19.33
+ },
+ {
+  "w": "WHATSAPP",
+  "start": 19.38,
+  "end": 19.83
+ },
+ {
+  "w": "ANSWER",
+  "start": 20.19,
+  "end": 20.65
+ },
+ {
+  "w": "LIKE",
+  "start": 20.93,
+  "end": 21.13
+ },
+ {
+  "w": "YOU'RE",
+  "start": 21.15,
+  "end": 21.29
+ },
+ {
+  "w": "TEXTING",
+  "start": 21.32,
+  "end": 21.7
+ },
+ {
+  "w": "SECTION",
+  "start": 22.26,
+  "end": 22.62
+ },
+ {
+  "w": "TWO",
+  "start": 22.67,
+  "end": 22.86
+ },
+ {
+  "w": "LOCKS",
+  "start": 22.99,
+  "end": 23.28
+ },
+ {
+  "w": "THE",
+  "start": 23.31,
+  "end": 23.38
+ },
+ {
+  "w": "QUALITY",
+  "start": 23.43,
+  "end": 23.82
+ },
+ {
+  "w": "ONE",
+  "start": 24.01,
+  "end": 24.23
+ },
+ {
+  "w": "FILE",
+  "start": 24.27,
+  "end": 24.68
+ },
+ {
+  "w": "MOBILE-FIRST",
+  "start": 24.95,
+  "end": 25.67
+ },
+ {
+  "w": "MAKE",
+  "start": 25.96,
+  "end": 26.16
+ },
+ {
+  "w": "IT",
+  "start": 26.19,
+  "end": 26.24
+ },
+ {
+  "w": "LOOK",
+  "start": 26.26,
+  "end": 26.4
+ },
+ {
+  "w": "EXPENSIVE",
+  "start": 26.45,
+  "end": 27.05
+ },
+ {
+  "w": "SECTION",
+  "start": 27.52,
+  "end": 27.84
+ },
+ {
+  "w": "THREE",
+  "start": 27.89,
+  "end": 28.11
+ },
+ {
+  "w": "HANDS",
+  "start": 28.17,
+  "end": 28.42
+ },
+ {
+  "w": "YOU",
+  "start": 28.47,
+  "end": 28.57
+ },
+ {
+  "w": "THE",
+  "start": 28.64,
+  "end": 28.71
+ },
+ {
+  "w": "FINISHED",
+  "start": 28.77,
+  "end": 29.07
+ },
+ {
+  "w": "FILE",
+  "start": 29.11,
+  "end": 29.43
+ },
+ {
+  "w": "\u2014",
+  "start": 29.49,
+  "end": 29.59
+ },
+ {
+  "w": "INDEX",
+  "start": 29.87,
+  "end": 30.21
+ },
+ {
+  "w": "DOT",
+  "start": 30.27,
+  "end": 30.44
+ },
+ {
+  "w": "HTML",
+  "start": 30.56,
+  "end": 31.18
+ },
+ {
+  "w": "USE",
+  "start": 31.71,
+  "end": 31.91
+ },
+ {
+  "w": "IT",
+  "start": 31.93,
+  "end": 32.0
+ },
+ {
+  "w": "AS",
+  "start": 32.04,
+  "end": 32.12
+ },
+ {
+  "w": "IT",
+  "start": 32.18,
+  "end": 32.25
+ },
+ {
+  "w": "IS",
+  "start": 32.32,
+  "end": 32.59
+ },
+ {
+  "w": "OR",
+  "start": 32.91,
+  "end": 33.07
+ },
+ {
+  "w": "CHANGE",
+  "start": 33.12,
+  "end": 33.46
+ },
+ {
+  "w": "ANYTHING",
+  "start": 33.55,
+  "end": 33.97
+ },
+ {
+  "w": "YOU",
+  "start": 34.01,
+  "end": 34.08
+ },
+ {
+  "w": "LIKE",
+  "start": 34.13,
+  "end": 34.42
+ },
+ {
+  "w": "IT",
+  "start": 34.62,
+  "end": 34.76
+ },
+ {
+  "w": "COMES",
+  "start": 34.82,
+  "end": 35.0
+ },
+ {
+  "w": "BACK",
+  "start": 35.05,
+  "end": 35.2
+ },
+ {
+  "w": "PERSONALIZED",
+  "start": 35.27,
+  "end": 35.86
+ },
+ {
+  "w": "TO",
+  "start": 35.89,
+  "end": 35.95
+ },
+ {
+  "w": "YOU",
+  "start": 36.01,
+  "end": 36.14
+ },
+ {
+  "w": "SAVE",
+  "start": 36.64,
+  "end": 36.9
+ },
+ {
+  "w": "THE",
+  "start": 36.92,
+  "end": 36.99
+ },
+ {
+  "w": "FILE",
+  "start": 37.04,
+  "end": 37.41
+ },
+ {
+  "w": "DRAG",
+  "start": 37.58,
+  "end": 37.87
+ },
+ {
+  "w": "IT",
+  "start": 37.92,
+  "end": 37.98
+ },
+ {
+  "w": "ONTO",
+  "start": 38.01,
+  "end": 38.2
+ },
+ {
+  "w": "NETLIFY",
+  "start": 38.26,
+  "end": 38.66
+ },
+ {
+  "w": "DROP",
+  "start": 38.71,
+  "end": 38.95
+ },
+ {
+  "w": "NO",
+  "start": 39.18,
+  "end": 39.35
+ },
+ {
+  "w": "CARD",
+  "start": 39.44,
+  "end": 39.75
+ },
+ {
+  "w": "NO",
+  "start": 39.93,
+  "end": 40.08
+ },
+ {
+  "w": "SETUP",
+  "start": 40.15,
+  "end": 40.47
+ },
+ {
+  "w": "THAT",
+  "start": 41.03,
+  "end": 41.19
+ },
+ {
+  "w": "URL",
+  "start": 41.26,
+  "end": 41.63
+ },
+ {
+  "w": "IS",
+  "start": 41.66,
+  "end": 41.7
+ },
+ {
+  "w": "REAL",
+  "start": 41.77,
+  "end": 42.03
+ },
+ {
+  "w": "IT",
+  "start": 42.35,
+  "end": 42.49
+ },
+ {
+  "w": "LOOKS",
+  "start": 42.55,
+  "end": 42.74
+ },
+ {
+  "w": "LIKE",
+  "start": 42.77,
+  "end": 42.91
+ },
+ {
+  "w": "YOU",
+  "start": 42.95,
+  "end": 43.03
+ },
+ {
+  "w": "PAID",
+  "start": 43.11,
+  "end": 43.33
+ },
+ {
+  "w": "A",
+  "start": 43.38,
+  "end": 43.4
+ },
+ {
+  "w": "DESIGNER",
+  "start": 43.46,
+  "end": 43.93
+ },
+ {
+  "w": "HOMEWORK",
+  "start": 44.45,
+  "end": 45.02
+ },
+ {
+  "w": "SHIP",
+  "start": 45.31,
+  "end": 45.57
+ },
+ {
+  "w": "YOURS",
+  "start": 45.63,
+  "end": 45.92
+ },
+ {
+  "w": "AND",
+  "start": 46.15,
+  "end": 46.31
+ },
+ {
+  "w": "DROP",
+  "start": 46.37,
+  "end": 46.59
+ },
+ {
+  "w": "YOUR",
+  "start": 46.65,
+  "end": 46.75
+ },
+ {
+  "w": "LIVE",
+  "start": 46.81,
+  "end": 47.08
+ },
+ {
+  "w": "LINK",
+  "start": 47.12,
+  "end": 47.41
+ },
+ {
+  "w": "IN",
+  "start": 47.62,
+  "end": 47.74
+ },
+ {
+  "w": "THE",
+  "start": 47.77,
+  "end": 47.84
+ },
+ {
+  "w": "COMMENTS",
+  "start": 47.89,
+  "end": 48.3
+ },
+ {
+  "w": "\u2014",
+  "start": 48.47,
+  "end": 48.66
+ },
+ {
+  "w": "I'M",
+  "start": 48.69,
+  "end": 48.83
+ },
+ {
+  "w": "CHECKING",
+  "start": 48.88,
+  "end": 49.18
+ },
+ {
+  "w": "EVERY",
+  "start": 49.27,
+  "end": 49.56
+ },
+ {
+  "w": "SINGLE",
+  "start": 49.61,
+  "end": 49.89
+ },
+ {
+  "w": "ONE",
+  "start": 49.95,
+  "end": 50.16
+ },
+ {
+  "w": "CHAPTER",
+  "start": 50.47,
+  "end": 50.82
+ },
+ {
+  "w": "TWO",
+  "start": 50.86,
+  "end": 51.06
+ },
+ {
+  "w": "NEXT",
+  "start": 51.33,
+  "end": 51.52
+ },
+ {
+  "w": "FRIDAY",
+  "start": 51.55,
+  "end": 51.88
+ },
+ {
+  "w": "\u2014",
+  "start": 52.04,
+  "end": 52.09
+ },
+ {
+  "w": "YOUR",
+  "start": 52.21,
+  "end": 52.34
+ },
+ {
+  "w": "SITE",
+  "start": 52.4,
+  "end": 52.67
+ },
+ {
+  "w": "GETS",
+  "start": 52.71,
+  "end": 52.9
+ },
+ {
+  "w": "SMART",
+  "start": 52.92,
+  "end": 53.26
+ }
+]

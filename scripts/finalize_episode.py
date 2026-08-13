@@ -128,16 +128,31 @@ CHALLENGE_LEN = 30
 YT_TITLE_MAX = 100
 
 
-def apply_series_suffix(title, ep):
+def apply_series_suffix(title, ep, spec=None):
     """Append the series suffix to a locked hook title. Idempotent (safe on
-    finalize re-runs); no-op for non-numeric ep keys or when the cap bites."""
-    if not title or not str(ep).isdigit():
+    finalize re-runs); no-op for unknown ep keys or when the cap bites.
+
+    Build Club (Fridays, VJ 2026-08-13): a spec carrying series == "build-club"
+    gets " — Build Club Ch. <chapter>" instead of the Day-counter suffix. The
+    chapter number lives IN the spec (chapters are content-ordered and can't
+    shuffle at arm time the way dailies do), and Build Club ep keys are
+    non-numeric ("bc01"), so the Day/30 counter never sees Fridays — no skip
+    logic, no drift."""
+    if not title:
         return title
-    n = int(ep)
-    if re.search(r"(Day \d+/\d+|Claude Tricks #\d+)\s*$", title):
+    if re.search(r"(Day \d+/\d+|Claude Tricks #\d+|Build Club Ch\. \d+)\s*$", title):
         return title
-    suffix = (f" — Day {n}/{CHALLENGE_LEN}" if n <= CHALLENGE_LEN
-              else f" | Claude Tricks #{n}")
+    if (spec or {}).get("series") == "build-club":
+        ch = (spec or {}).get("chapter")
+        if not str(ch).isdigit():
+            return title
+        suffix = f" — Build Club Ch. {int(ch)}"
+    elif str(ep).isdigit():
+        n = int(ep)
+        suffix = (f" — Day {n}/{CHALLENGE_LEN}" if n <= CHALLENGE_LEN
+                  else f" | Claude Tricks #{n}")
+    else:
+        return title
     if len(title) + len(suffix) > YT_TITLE_MAX:
         print(f">> series suffix dropped: title + suffix exceeds {YT_TITLE_MAX} chars")
         return title
@@ -166,12 +181,28 @@ def build_description(spec, final_path):
 
     tag_line = " ".join("#" + t.strip().replace(" ", "") for t in
                         (spec.get("tags") or "").split(",") if t.strip())
+    # Series promise — every viewer must see there's a next episode to follow
+    # (VJ directive 2026-08-13; series-follow pass). Build Club specs carry
+    # the Friday promise + the week's homework instead of the daily line.
+    if spec.get("series") == "build-club":
+        promise = ["Build Club — one real build move, every Friday. "
+                   "By Chapter 6 you've shipped a real app."]
+        # §0 NORTH STAR (BUILD-CLUB.md): dreamer-intent SEO copy + the gift
+        # link ride in the description, both authored per-chapter in the spec.
+        if spec.get("seo_line"):
+            promise.append(spec["seo_line"])
+        hw = (spec.get("homework") or "").strip()
+        if hw:
+            promise.append("This week's homework: " + hw)
+        if spec.get("gift_line"):
+            promise.append(spec["gift_line"])
+    else:
+        promise = ["One 30-second Claude trick, every day."]
+
     desc = "\n".join([
         hook_line,
         "",
-        # Series promise — every viewer must see there's a next episode to follow
-        # (VJ directive 2026-08-13; series-follow pass).
-        "One 30-second Claude trick, every day.",
+        *promise,
         "",
         "AI Unpacked — no hype, just what actually works.",
         "",
@@ -322,7 +353,10 @@ def main():
     # 2) MASTER RENDER — build_ep_v2 without --preview does the full pipeline:
     #    Remotion render + audio master + endcard + outro concat.
     build = os.path.join(CH, "build_ep_v2.py")
-    r = run(["python3", build, "--ep", a.ep, "--tag", a.tag])
+    # --calendar-id rides through so an outro_cta spec can EXCLUDE this episode's
+    # own calendar row from its next-episode tease lookup (outro_cta.py).
+    r = run(["python3", build, "--ep", a.ep, "--tag", a.tag]
+            + (["--calendar-id", a.calendar_id] if a.calendar_id else []))
     if r.returncode != 0:
         print(f"!! master render exited {r.returncode}", file=sys.stderr)
         sys.exit(1)
@@ -363,7 +397,7 @@ def main():
     # Series-follow suffix — mutate the spec title HERE so arm_youtube and
     # sync_factory_db both ship the identical suffixed title.
     if spec_data.get("title"):
-        suffixed = apply_series_suffix(spec_data["title"], a.ep)
+        suffixed = apply_series_suffix(spec_data["title"], a.ep, spec=spec_data)
         if suffixed != spec_data["title"]:
             print(f">> series title: {suffixed!r}")
             spec_data["title"] = suffixed

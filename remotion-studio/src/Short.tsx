@@ -13,6 +13,17 @@ import {
 } from "remotion";
 import { fitFont, splitHook } from "./components/fitText";
 import { StatBars, StatBarsProps } from "./components/StatBars";
+import {
+  BuildRail,
+  ChapterCard,
+  PauseCard,
+  PhoneFrame,
+  RecipeCard,
+  ChapterPayload,
+  PausePayload,
+  RecipePayload,
+  RailPayload,
+} from "./components/BuildClub";
 
 /* ---------- types (props come from a per-episode JSON) ---------- */
 export type Word = { w: string; start: number; end: number; hot?: boolean };
@@ -20,7 +31,8 @@ export type Seg = {
   /* src omitted for kind "statBars" (chart is drawn in-comp, never pre-baked) */
   src?: string;
   dur: number;
-  kind?: "video" | "image" | "statBars" | "pipCallout" | "splitWide" | "recFull";
+  kind?: "video" | "image" | "statBars" | "pipCallout" | "splitWide" | "recFull"
+    | "chapterCard" | "pauseCard" | "recipeCard";
   from?: number;
   /* per-beat pane mode (newsSplit only): "split" b-roll top + host bottom,
      "full" b-roll full-frame, "host" host full-frame */
@@ -51,6 +63,14 @@ export type Seg = {
      running caption to the small plain strip at the very bottom of the frame —
      over the composer/disclaimer chrome, never over a cell. */
   capLow?: boolean;
+  /* Build Club: case a real phone recording in the drawn high-end device
+     bezel (components/BuildClub.tsx PhoneFrame). Set by the `|phone` rec
+     suffix in build_ep_v2. */
+  frame?: "phone";
+  /* Build Club (Friday bc eps): full-frame card beats — components/BuildClub.tsx */
+  chapter?: ChapterPayload;
+  pause?: PausePayload;
+  recipe?: RecipePayload;
 };
 /* pos: which corner the chip lives in — pick the one with dead space so the
    chip NEVER covers the content the beat is teaching (default tl).
@@ -112,6 +132,17 @@ export type ShortProps = {
     hot?: string;              // word within lines to accent magenta
     kicker?: string;           // small eyebrow above the headline
     until: number;             // seconds it stays up
+    /* frame-zero bake (same rule as cover.baked): the Shorts feed thumbnail IS
+       frame 0, so the headline must be fully on at frame 0 — no slide, no fade. */
+    baked?: boolean;
+    /* Build Club (VJ 2026-08-13: "the host frame doesn't talk"): the hook art
+       is a PNG with an alpha window over the FramedHost card zone, and the
+       HookCard root goes transparent — the REAL talking host clip underneath
+       shows through the hole from frame 0. */
+    seeThrough?: boolean;
+    /* headline block top override (default 176) — see-through hooks move the
+       type below the host window. */
+    headTop?: number;
   };
   watermark?: boolean;
   /* v16.4: short episode tag shown in the consistent global header on EVERY beat
@@ -122,6 +153,8 @@ export type ShortProps = {
   layout?: "cut" | "newsSplit";
   host?: string;
   emphasis?: Emphasis[];
+  /* Build Club: persistent 3-node progress rail over the teaching window */
+  rail?: RailPayload;
 };
 
 const res = (p: string) => (p.startsWith("http") ? p : staticFile(p));
@@ -910,16 +943,21 @@ const HookCard: React.FC<{ hook: NonNullable<ShortProps["hook"]>; fps: number }>
   const zoom = interpolate(frame, [0, dur], [1.05, 1.15], { extrapolateRight: "clamp" });
   const drift = interpolate(frame, [0, dur], [0, -22], { extrapolateRight: "clamp" });
   const inK = spring({ frame, fps, config: { damping: 16, mass: 0.7 } });
-  const headY = interpolate(inK, [0, 1], [46, 0]);
-  const headO = interpolate(frame, [2, 12], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const headY = hook.baked ? 0 : interpolate(inK, [0, 1], [46, 0]);
+  const headO = hook.baked
+    ? 1
+    : interpolate(frame, [2, 12], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const fadeOut = interpolate(frame, [dur - 8, dur], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const see = !!hook.seeThrough;
   return (
-    <AbsoluteFill style={{ opacity: fadeOut, background: INK, fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
-      <Img src={res(hook.image)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 46%", transform: `scale(${zoom}) translateY(${drift}px)` }} />
-      <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(10,10,20,0.78) 0%, rgba(10,10,20,0.28) 24%, rgba(10,10,20,0) 44%, rgba(10,10,20,0) 70%, rgba(10,10,20,0.5) 100%)" }} />
+    <AbsoluteFill style={{ opacity: fadeOut, background: see ? "transparent" : INK, fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
+      <Img src={res(hook.image)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 46%", transform: see ? undefined : `scale(${zoom}) translateY(${drift}px)` }} />
+      {see ? null : (
+        <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(10,10,20,0.78) 0%, rgba(10,10,20,0.28) 24%, rgba(10,10,20,0) 44%, rgba(10,10,20,0) 70%, rgba(10,10,20,0.5) 100%)" }} />
+      )}
       {/* headline sits below the global header (top ~150) — the header's episode
           tag replaces the old kicker, so it's dropped to avoid duplication. */}
-      <div style={{ position: "absolute", top: 176, left: 56, right: 56, transform: `translateY(${headY}px)`, opacity: headO }}>
+      <div style={{ position: "absolute", top: hook.headTop ?? 176, left: 56, right: 56, transform: `translateY(${headY}px)`, opacity: headO }}>
         <div style={{ fontFamily: "Anton, Arial Black, sans-serif", textTransform: "uppercase", lineHeight: 0.98 }}>
           {hook.lines.map((ln, i) => {
             const size = fitFont(ln, 128, 968);
@@ -1018,12 +1056,20 @@ export const Short: React.FC<ShortProps> = (props) => {
                 <SplitWide seg={seg} fps={fps} />
               ) : seg.kind === "recFull" ? (
                 <RecFull seg={seg} fps={fps} />
+              ) : seg.kind === "chapterCard" && seg.chapter ? (
+                <ChapterCard chapter={seg.chapter} fps={fps} />
+              ) : seg.kind === "pauseCard" && seg.pause ? (
+                <PauseCard pause={seg.pause} fps={fps} />
+              ) : seg.kind === "recipeCard" && seg.recipe ? (
+                <RecipeCard recipe={seg.recipe} fps={fps} />
               ) : seg.framed && !news ? (
                 <FramedHost seg={seg} fps={fps} ranked={ranked} />
               ) : seg.kind === "statBars" && seg.stat ? (
                 <StatBars {...seg.stat} />
               ) : seg.kind === "image" ? (
                 <Img src={res(seg.src!)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              ) : seg.frame === "phone" ? (
+                <PhoneFrame seg={seg} fps={fps} />
               ) : (
                 <OffthreadVideo
                   src={res(seg.src!)}
@@ -1085,6 +1131,9 @@ export const Short: React.FC<ShortProps> = (props) => {
         .map((e, i) => (
           <EmphasisText key={i} e={e} fps={fps} />
         ))}
+      {/* Build Club: the persistent PROMPT->FILE->LIVE rail (hides itself
+          outside [starts[0], until]; sits at top 170, clear of GlobalHeader) */}
+      {props.rail ? <BuildRail rail={props.rail} t={t} fps={fps} /> : null}
       {/* v16.3: framed-host panel caption renders through word GAPS too (it holds
           the current phrase), so it is NOT gated behind an active word. */}
       {activeIsFramed ? (

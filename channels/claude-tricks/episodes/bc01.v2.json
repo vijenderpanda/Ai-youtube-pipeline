@@ -1,0 +1,138 @@
+{
+ "_status": "LOCKED 2026-08-13 (VJ) — Build Club Ch.1; format locked from mockup ideation; tapes real (anitas-tiffin.netlify.app live)",
+ "series": "build-club",
+ "chapter": 1,
+ "title": "Your Idea Goes LIVE Tonight — From Your Phone (FREE) 🚀",
+ "tags": "build a website with ai,no code website,free website,make a website from your phone,start your business online,claude ai,claude app,netlify,ai for beginners,side hustle ideas,small business website,build club,ai tips",
+ "epTag": "BUILD CLUB · CH 1/6",
+ "homework": "Ship your site free and drop your LIVE LINK in the comments — add the word SHIPPED so I can find you (links can take a while to appear while YouTube reviews them). This week I'm gifting one month of Claude Pro to my favourite shipped site — my personal gift, not affiliated with Anthropic.",
+ "lines": [
+  "Stick with me till the end — and your business is live on the internet tonight, for free.",
+  "Welcome to Build Club. One practical step every Friday — free, quick, and with real homework.",
+  "And you can do this live, with me, right now — just your mobile phone. Nothing else.",
+  "One trick makes it work: give the A-I your full context, and it steers the build to your needs.",
+  "The full prompt is waiting in the pinned comment. Tap. Copy.",
+  "Paste it into Claude, and wait — it starts asking about YOUR business.",
+  "Answer like you're texting. Your name, your prices, your vibe.",
+  "It hands back your whole website as one file — and tells you exactly how to save it on your phone.",
+  "Same prompt for everyone — the polish is on you. How good can yours look?",
+  "Now netlify dot app in your browser — a free account, one minute — and choose that file. No card ever.",
+  "And that U-R-L? Real. Your idea — live, from your phone, tonight.",
+  "Drop your link in the comments — I'm reading every one. Next Friday, chapter two: we unlock the next step."
+ ],
+ "hot_words": [
+  "STICK", "END", "BUSINESS", "LIVE", "TONIGHT", "FREE", "BUILD", "CLUB",
+  "FRIDAY", "PRACTICAL", "HOMEWORK", "SPEED", "ANYONE", "FULL", "CONTEXT",
+  "PROMPT", "PINNED", "SIX", "QUESTIONS", "PRICES", "VIBE", "HONEST",
+  "TEXTING", "STEERS", "YOUR", "NEEDS", "ONE", "FILE", "INDEX", "HTML",
+  "WEBSITE", "SAME", "JOB", "YOU", "POLISHED", "NETLIFY", "DROP", "NO",
+  "CARD", "URL", "IDEA", "LINK", "COMMENTS", "EVERY", "NEXT", "CHAPTER",
+  "UNLOCK", "STEP", "MOBILE", "PHONE", "TAP", "COPY", "PASTE", "DOWNLOAD",
+  "BROWSER", "CHOOSE", "WAIT"
+ ],
+ "beats": [
+  "host",
+  "chapter",
+  "host",
+  "host",
+  "rec:epbc01/pinned_broll.mp4@0.0",
+  "rec:bc01/appA1.mp4@67.3|phone",
+  "pip:answers",
+  "rec:bc01/appA4.mp4@121.0|phone",
+  "rec:bc01/appA4.mp4@70.5|phone",
+  "rec:bc01/appB2.mp4@12.5|phone",
+  "pip:live",
+  "recipe"
+ ],
+ "steps": [],
+ "host_panels": [
+  {
+   "lines": ["STICK TILL THE END —", "YOUR BUSINESS", "GOES LIVE TONIGHT"],
+   "hot": "LIVE"
+  },
+  {
+   "lines": ["DO IT LIVE, WITH ME —", "JUST YOUR PHONE", "FULL CONTEXT IN"],
+   "hot": "PHONE"
+  }
+ ],
+ "hook": {
+  "image": "epbc01/hook_art/stop_paying.png",
+  "lines": ["STICK TILL THE END", "YOU GO LIVE TONIGHT"],
+  "hot": "LIVE",
+  "kicker": "BUILD CLUB · CHAPTER 1/6",
+  "until": 2.4,
+  "baked": true,
+  "seeThrough": true,
+  "headTop": 846
+ },
+ "chapter_card": {
+  "kicker": "BUILD CLUB",
+  "word": "CHAPTER",
+  "num": "ONE",
+  "chip": "YOUR IDEA GOES LIVE",
+  "sub": "one move, every friday",
+  "season": [1, 6]
+ },
+ "pause": {
+  "title": "PAUSE — COPY THIS PROMPT",
+  "lines": [
+   {"t": "SECTION 1 — INTERVIEW ME FIRST", "hot": true},
+   {"t": "   it asks you 6 quick questions"},
+   {"t": "SECTION 2 — QUALITY RULES", "hot": true},
+   {"t": "   ONE file · mobile-first ·"},
+   {"t": "   make it look expensive"},
+   {"t": "SECTION 3 — HAND-OVER", "hot": true},
+   {"t": "   the finished index.html"}
+  ],
+  "note": "feed it FULL context — it steers to YOUR needs",
+  "sub": "full prompt, word for word, in the pinned comment"
+ },
+ "recipe": {
+  "title": "THE RECIPE",
+  "rows": [
+   {"t": "PASTE THE PINNED PROMPT", "sub": "answer its 6 questions like a text"},
+   {"t": "SAVE  INDEX.HTML", "sub": "one file — your whole website"},
+   {"t": "DRAG ONTO NETLIFY DROP", "sub": "no card, no setup — live URL"}
+  ],
+  "hwTitle": "HOMEWORK",
+  "hwLine": "Ship yours this week.",
+  "hwChip": "DROP YOUR LIVE LINK 👇",
+  "tease": "NEXT FRIDAY · CH 2 — YOUR SITE GETS SMART",
+  "season": [1, 6]
+ },
+ "rail": {
+  "labels": ["1 PROMPT", "2 FILE", "3 LIVE"],
+  "start_lines": [4, 7, 9],
+  "until_line": 11
+ },
+ "pips": {
+  "answers": {
+   "src": "bc01/appA1.mp4",
+   "from": 95.0,
+   "num": "",
+   "lines": ["IT ASKS.", "YOU ANSWER.", "LIKE A TEXT."]
+  },
+  "live": {
+   "src": "bc01/appB2.mp4",
+   "from": 115.0,
+   "num": "",
+   "lines": ["YOUR SITE.", "LIVE. FREE.", "FROM YOUR PHONE."]
+  }
+ },
+ "music": "music/bed_active.mp3",
+ "music_gain_db": 1.0,
+ "header_scrim": true,
+ "outro": true,
+ "outro_src": "epbc01/outro_card.mp4",
+ "outro_dur": 0,
+ "outro_cta": "I'm reading every single comment this weekend — show me what you built. My Claude gift is in the description — first three builders get a free month. And next Friday? Your site learns to talk.",
+ "seo_line": "Build a real website with AI — no code, no laptop, completely free. In this chapter you use the Claude app on your phone + Netlify to take your business idea live in one evening: perfect for small businesses, side hustles, students, and anyone stuck at 'someday'.",
+ "gift_line": "🎁 My Claude gift — the first 3 builders who use this link get a free month of Claude Pro: https://claude.ai/referral/fIQUSk0Uig?s=android (personal referral link, not sponsored)",
+ "_production_notes": {
+  "live_url": "https://anitas-tiffin.netlify.app (permanent, VJ account, exact on-camera file)",
+  "drop_demo_url": "https://steady-naiad-78b49a.netlify.app (Drop take, unclaimed — expires ~1h after 2026-08-13 shoot; optional VJ claim)",
+  "tape_offsets": "tape_a_claude marks +~10s = video time; Voila on tape_a_drop at ~11s",
+  "share_prompt": "assets/bc01/SHARE-PROMPT.txt = pinned comment, verbatim",
+  "arm": "Fri 2026-08-14 16:00 IST (10:30Z) · playlist 'Build Club — Season 1' id=PLIuiep7RRSGE (created 2026-08-13; add via yt_upload --video-id recovery mode post-arm)"
+ }
+}

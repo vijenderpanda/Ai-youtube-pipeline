@@ -1,0 +1,182 @@
+[
+ {
+  "w": "I'M",
+  "start": 0.0,
+  "end": 0.21
+ },
+ {
+  "w": "READING",
+  "start": 0.27,
+  "end": 0.52
+ },
+ {
+  "w": "EVERY",
+  "start": 0.59,
+  "end": 0.85
+ },
+ {
+  "w": "SINGLE",
+  "start": 0.89,
+  "end": 1.16
+ },
+ {
+  "w": "COMMENT",
+  "start": 1.21,
+  "end": 1.49
+ },
+ {
+  "w": "THIS",
+  "start": 1.51,
+  "end": 1.62
+ },
+ {
+  "w": "WEEKEND",
+  "start": 1.67,
+  "end": 2.0
+ },
+ {
+  "w": "\u2014",
+  "start": 2.11,
+  "end": 2.17
+ },
+ {
+  "w": "SHOW",
+  "start": 2.32,
+  "end": 2.51
+ },
+ {
+  "w": "ME",
+  "start": 2.57,
+  "end": 2.62
+ },
+ {
+  "w": "WHAT",
+  "start": 2.66,
+  "end": 2.77
+ },
+ {
+  "w": "YOU",
+  "start": 2.81,
+  "end": 2.88
+ },
+ {
+  "w": "BUILT",
+  "start": 2.94,
+  "end": 3.31
+ },
+ {
+  "w": "MY",
+  "start": 3.48,
+  "end": 3.68
+ },
+ {
+  "w": "CLAUDE",
+  "start": 3.8,
+  "end": 4.18
+ },
+ {
+  "w": "GIFT",
+  "start": 4.23,
+  "end": 4.56
+ },
+ {
+  "w": "IS",
+  "start": 4.69,
+  "end": 4.88
+ },
+ {
+  "w": "IN",
+  "start": 4.93,
+  "end": 4.99
+ },
+ {
+  "w": "THE",
+  "start": 5.02,
+  "end": 5.08
+ },
+ {
+  "w": "DESCRIPTION",
+  "start": 5.16,
+  "end": 5.61
+ },
+ {
+  "w": "\u2014",
+  "start": 5.76,
+  "end": 5.85
+ },
+ {
+  "w": "FIRST",
+  "start": 5.98,
+  "end": 6.28
+ },
+ {
+  "w": "THREE",
+  "start": 6.34,
+  "end": 6.57
+ },
+ {
+  "w": "BUILDERS",
+  "start": 6.62,
+  "end": 7.02
+ },
+ {
+  "w": "GET",
+  "start": 7.08,
+  "end": 7.21
+ },
+ {
+  "w": "A",
+  "start": 7.26,
+  "end": 7.28
+ },
+ {
+  "w": "FREE",
+  "start": 7.33,
+  "end": 7.52
+ },
+ {
+  "w": "MONTH",
+  "start": 7.56,
+  "end": 7.89
+ },
+ {
+  "w": "AND",
+  "start": 7.96,
+  "end": 8.1
+ },
+ {
+  "w": "NEXT",
+  "start": 8.17,
+  "end": 8.35
+ },
+ {
+  "w": "FRIDAY",
+  "start": 8.37,
+  "end": 8.85
+ },
+ {
+  "w": "YOUR",
+  "start": 8.93,
+  "end": 9.09
+ },
+ {
+  "w": "SITE",
+  "start": 9.16,
+  "end": 9.44
+ },
+ {
+  "w": "LEARNS",
+  "start": 9.48,
+  "end": 9.68
+ },
+ {
+  "w": "TO",
+  "start": 9.74,
+  "end": 9.81
+ },
+ {
+  "w": "TALK",
+  "start": 9.89,
+  "end": 10.49
+ }
+]

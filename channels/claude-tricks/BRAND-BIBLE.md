@@ -37,12 +37,13 @@
 - **Captions:** word-by-word **karaoke**, ALL-CAPS heavy condensed sans (Anton/Bebas), thick dark stroke, 1–3 words at a time, active word flips white → **electric magenta**. Burned from ElevenLabs timestamps (character-level → grouped into words).
 
 ## 5. Content strategy & series
+- **Publish cadence (VJ directive 2026-08-13): daily Short at 16:00 IST Sat–Thu; FRIDAY is the learning-and-building SERIES slot** (chaptered, building something from scratch — VJ's blocked learning/building day feeds it; chapter ideas in pipeline). Planners must not place daily-Short items on a Friday `planned_date` — Friday rows are series chapters only. The spoken outro is DAY-AWARE (`outro_cta.py`): a Thursday episode hands off to the Friday series ("Tomorrow is Friday — meet me there"), other days tease the next episode ONLY when it genuinely publishes tomorrow, else the series promise. When shifting the schedule, move the WHOLE chain together (armed publishAt + factory_posts.publish_at + calendar planned_date) so consecutive days stay consecutive.
 - **Mix (LOCKED, news-forward): ~35% Claude/desktop/token/model tips + ~20% new-capability + ~45% news.** _(Supersedes the earlier "70% tips + 30% news" line — that split predated the news-forward pivot logged in PRODUCTION-PLAYBOOK.md around Ep22–Ep25.)_ Tips = the reliable, batchable backbone; new-capability = day-one demos of just-shipped features; news = freshness + viral spikes (batched weekly via a "So What?" filter — one story → what it changes for your workflow + one action).
 - **Recurring series (→ named playlists):**
   - **Prompt Teardown** (flagship): a weak prompt on screen, rebuilt live, visibly better output.
   - **60-Second Claude:** one power feature end-to-end (Projects, MCP, sub-agents, artifacts, Claude Code).
   - **Steal This Workflow:** a copy-paste system/automation — the newsletter opt-in engine.
-  - **Built With Claude:** a real micro-build under a minute.
+  - **Built With Claude:** a real micro-build under a minute. **→ LAUNCHED as "Build Club" (Fridays, serialized, LOCKED 2026-08-13): the Friday daily slot belongs to a chaptered weekly build with homework + SHIPPED comment CTA — full series bible in `BUILD-CLUB.md`.**
   - **So What? — AI News, decoded** (the 30%): anti-hype, batched weekly.
   - Occasional **Claude vs ChatGPT: one real task** (reach beyond the Claude audience).
 - **Hook formulas:** problem-out-loud + weak output on screen · before/after result-flash · curiosity gap + number · contrarian ("Stop using ChatGPT for this") · "steal this."

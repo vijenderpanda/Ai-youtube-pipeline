@@ -1,0 +1,142 @@
+# Build Club — Friday Series Bible (LOCKED 2026-08-13, VJ)
+
+> **Fridays on AI Unpacked belong to Build Club.** A serialized weekly build for people
+> who want to make things easy and fast: one real move per chapter, homework for the
+> week, next chapter next Friday. Activates the BRAND-BIBLE §5 "Built With Claude" +
+> "Steal This Workflow" lanes as one serialized format.
+>
+> The daily template-locked flow is UNTOUCHED — Build Club replaces the Friday daily
+> slot only. Everything else about the channel (host, look, captions, compliance,
+> mix engine) is inherited from BRAND-BIBLE.md + PRODUCTION-PLAYBOOK.md.
+
+---
+
+## 0. Who it's for & the voice — NORTH STAR (VJ note 2026-08-13)
+> Applies to every Build Club chapter: **title, SEO, VO script, hook, and outro.**
+> Read this before writing a word of any chapter.
+
+- **Who we're talking to:** every would-be entrepreneur, anywhere in the world, who
+  has an idea or a dream but hasn't been able to *put it into action*. The person
+  stuck at "someday" / "I'm not technical" / "I wouldn't know where to start."
+- **What each chapter is:** a gentle push off the fence. Not a lecture, not a flex —
+  a small, doable session that says *you can start this today.*
+- **The feeling every line should carry:** "Starting is genuinely easy now. It's
+  never been this cheap or this fast. Start the thing you dream of — and I'm right
+  here to help, one little session at a time." Warm, encouraging, on-your-side.
+  Never intimidating, never gatekeep-y, never assumes prior skill.
+- **How it shows up in the craft:**
+  - **SEO/title:** speak to the dreamer's intent ("start your idea today",
+    "no coding", "build the thing you keep putting off") — not just the tech noun.
+  - **VO tone:** second-person, encouraging, "you can do this", low-friction.
+    Remove any word that could make a beginner feel behind.
+  - **Hook:** still Vaibhav-DNA (§2), but the *promise* is emotional — the push —
+    not just the mechanic.
+  - **Outro:** the homework CTA is the push made concrete — "you just started,
+    now ship it, I'm checking every link" (§2 homework mechanic).
+- This is the emotional layer *on top of* the locked format below — it never
+  overrides the STANDALONE-FIRST rule or any QC gate; it sets the words we choose
+  inside those rails.
+
+---
+
+## 1. The promise
+**"One real build move, every Friday. By Chapter 6 you've shipped a real app."**
+Every chapter teaches something a beginner can genuinely replicate in a week with
+free tools. Everything shown is the real stack this channel's own factory runs on
+(Claude Code → Netlify → Supabase → scheduled automation) — the authenticity moat,
+per BRAND-BIBLE §1.
+
+## 2. Chapter grammar (the locked format)
+- **Length:** 55–75s (vs the daily 25–40s). Pacing rules still apply — 0.4s sentence
+  breaks, style 0.4, followable not frantic (playbook §7).
+- **STANDALONE-FIRST (the #1 rule).** The Shorts feed serves cold viewers Chapter 4
+  who never saw Chapter 1. Every chapter must open with the current state *working on
+  screen* + today's one move, and be fully satisfying alone. Series stamp + recap
+  ≤ 2 seconds ("Build Club, Chapter 3. This site already answers questions.").
+  "Chapter N" is a bonus layer for followers, never a dependency for strangers.
+- **ONE move per chapter, 3 steps max.** The proof pane does the teaching; the exact
+  copy-paste prompt lives in the pinned comment, not squeezed on screen.
+- **Real deploy on screen.** The thing must actually go live / actually run during
+  the recording. No mockups of the result — the live URL / fired job IS the payoff.
+- **Homework outro (locked mechanic):** via the shipped `outro_cta` engine — Sol
+  speaks the homework + cliffhanger over the question card:
+  *"Ship yours, drop your LIVE LINK in the comments — I'm checking every one.
+  Chapter N+1 next Friday — we ___."* The link IS the CTA (VJ 2026-08-13); the
+  word **SHIPPED** rides along in the pinned comment/description so homework
+  stays countable. ⚠️ YouTube holds many viewer comments containing URLs for
+  review — approving them from Studio comment review is a DAILY human step on
+  publish weekends, and the pinned comment warns viewers their link may take a
+  while to appear.
+- **The shared prompt is the deliverable — and it's REAL.** Each chapter's
+  copy-paste prompt is an engineered, sectioned prompt (Ch.1:
+  `assets/bc01/SHARE-PROMPT.txt` — SECTION 1 interview · SECTION 2 quality
+  rules · SECTION 3 hand-over). The episode explains the sections, tells
+  viewers "use as-is or change what you like — it comes back personalized",
+  and the on-camera demo runs THAT exact prompt. Never share a prompt the
+  demo didn't run, never show a simplified on-screen version that differs
+  from the pinned one.
+- **Hook grammar:** Vaibhav-DNA stays locked and FIRST (Stop-X / FREE / result-flash).
+  The chapter suffix rides at the end of the title, applied at finalize.
+
+## 3. Numbering & plumbing (how it coexists with Day N/30)
+- **Ep keys are `bc01`–`bc06`** (non-numeric on purpose) → the daily Day/30 counter
+  never sees Fridays. No skip logic, no drift; dailies keep their own sequence on
+  the other six days.
+- **Spec carries `"series": "build-club"`, `"chapter": N`, `"homework": "…"`.**
+  `finalize_episode.py apply_series_suffix()` appends `— Build Club Ch. N` from the
+  spec (chapters are content-ordered, so unlike dailies the number is NOT assigned
+  at arm time). `build_description()` swaps the daily promise line for the Build
+  Club promise + the week's homework.
+- **Playlist:** every chapter goes into the **"Build Club — Season 1"** playlist
+  — id `PLIuiep7RRSGE` (created 2026-08-13; `yt_upload --playlist PLIuiep7RRSGE`,
+  or post-arm via `--video-id <id> --playlist PLIuiep7RRSGE` recovery mode).
+- **Slot:** Friday 16:00 IST, same as the daily slot it replaces.
+
+## 4. Season 1 — "Your idea → a live app" (Aug 14 – Sep 18, 2026)
+| Ch | Friday | One move | Homework |
+|----|--------|----------|----------|
+| bc01 | Aug 14 | Idea → live website (Claude one-file page + Netlify Drop) | Ship yours, comment SHIPPED |
+| bc02 | Aug 21 | Add one AI feature to the live site | Add one to yours |
+| bc03 | Aug 28 | Give it memory (Supabase free tier) | Store one real thing |
+| bc04 | Sep 4 | Runs while you sleep (free scheduled job) | Automate one task |
+| bc05 | Sep 11 | It talks to you (notification hook) | Wire one alert |
+| bc06 | Sep 18 | Launch day — domain, polish, season finale | Post your link |
+
+- Chapters bc02–bc06 get full briefs the week they produce (calendar rows hold the
+  skeleton). Each build move must be verified against the CURRENT free tier at
+  production time (playbook §1.5 — verify reality).
+- **After bc06:** compile all six chapters into ONE long-form video — this fulfils
+  the curriculum-shorts→long-form plan already on file for the channel.
+- **Season 2 candidate (VJ-approved direction):** the meta build — "I'm building a
+  YouTube channel run entirely by AI" — using this channel's own factory as the
+  story. Save it until Build Club has an audience.
+
+## 5. KPIs (what "working" means)
+- **Homework count:** `yt_engage.py --count-keyword SHIPPED` AND
+  `--count-keyword netlify` per chapter — unique_authors union is the real
+  number (people who shipped). Live links in comments are the strongest
+  proof-of-homework signal a Short can produce.
+- **Affiliate (verified 2026-08-13):** Netlify runs a partner/affiliate track —
+  ~20% recurring rev-share (12–24 mo) via PartnerStack, manual approval
+  ~3–5 days. **VJ human step: apply.** Until approved, all copy stays
+  "everything free"; once live, the tracked link joins descriptions + pinned
+  comments (with the FTC disclosure line per BRAND-BIBLE §8).
+- **Return rate:** chapter N+1 views from subscribers vs chapter N (Analytics 2.0
+  deltas) — the serialization signal.
+- **Subs/100 views vs the daily baseline** — Build Club's whole thesis is that an
+  unfinished build converts viewers into subscribers better than a daily tip.
+- Pinned comment on every chapter = the exact copy-paste prompt
+  (`yt_engage.py --pin` + the one human Studio click for the actual pin).
+
+## 6. Production checklist (per chapter)
+1. Brief finalized + free-tier reality check (day before).
+2. Footage: Playwright/VHS of the REAL run — the deploy/job must genuinely happen.
+3. Spec: `episodes/bcNN.v2.json` with `series`/`chapter`/`homework` fields.
+4. Render via `build_ep_v2.py` (v16.4 engine, all locked QC gates apply).
+5. **ARM SWITCH (VJ directive 2026-08-13): NEVER arm without VJ's explicit go.**
+   Production stops at the master: `finalize_episode.py --ep bcNN --skip-arm`
+   (master + QC only). Present frames + the master to VJ; only after a written
+   go: `finalize_episode.py --ep bcNN --schedule <iso>` + playlist add.
+   (bc01 v1 was armed pre-directive and retired the same day — the rule exists
+   because a produced chapter is a proposal, not a release.)
+6. Post-publish: pin the prompt comment; Monday `--count-keyword SHIPPED` reading.

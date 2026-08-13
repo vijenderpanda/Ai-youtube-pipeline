@@ -314,3 +314,15 @@ The unlisted YouTube video `cv1nzSC7mMY` "Google Just Put AI In Your Kid's Class
 archived (11 views total, no plan to revive). Local files: none (`ep08` slot below was the internal
 build that shipped it, which remains in §4). External flip: pending — will privatise via
 `scripts/yt_cleanup.py` in a bundled action.
+
+---
+
+## Build Club bc01 — "Stop Paying For Websites" (Ch. 1) · ARMED 2026-08-14 16:00 IST · youtu.be/_ebCZEGFu74
+
+**First Build Club episode (Friday serialized builder slot; series bible BUILD-CLUB.md).** 53.7s body + 5.1s spoken-CTA outro. Delivered `epbc01_v2_outro.mp4` **−14.20 LUFS** (finalize gate −14.0±0.5 PASS, first try at `music_gain_db 1.0`). Title suffix "— Build Club Ch. 1" applied by the new series-aware `apply_series_suffix` (chapter from spec, Day/30 counter untouched — bc keys are non-numeric so dailies never see Fridays).
+
+- **New engine surface (additive, daily template untouched):** beat tokens `chapter`/`pause`/`recipe` → in-comp ChapterCard/PauseCard/RecipeCard (`remotion-studio/src/components/BuildClub.tsx`) + `rail` spec pass-through → persistent PROMPT→FILE→LIVE progress rail at top 170. `hook.baked` added (frame-zero thumbnail rule — HookCard's slide/fade left frame 0 headline-less; same class as the Ep11 cover bake).
+- **All footage REAL:** claude.ai interview tape (the pinned 3-section prompt run verbatim; Claude asked 6 questions one at a time), real 10.5KB index.html extracted from the page, Netlify Drop deploy ON CAMERA ("Voilà, your project is live"), same file permanently live at **anitas-tiffin.netlify.app** (VJ account, CLI deploy after the zip-API path served text/plain — always `netlify-cli deploy`, never raw zip POST). Phone tape re-shot after Playwright letterbox defect (viewport 540×960@dsf2 records CSS px pinned top-left in the 1080×1920 canvas — crop+lanczos upscale fixed; next time record viewport 1080×1920 dsf1).
+- **Drop automation lesson:** Netlify Drop's React dropzone ignores synthetic DragEvents AND a failed CDP drag re-renders the page (killing the file inputs) — the reliable path is `set_input_files` on the `accept=".zip,.html,.htm"` input, FIRST, immediately after load. Unclaimed drop sites are password-gated (401) + expire in 1h — never film tape B against them.
+- **Host:** pinned outfit_11 (wide f55806a4 / pip dc9533a1), 4 clips, lipsync +23ms corr 0.99 — no cuts needed. Sol appears: hook wide band (baked art `gen_bc01_hook.py` — art carries visuals only, HookCard owns all words), splitWide beside the live site, spoken outro CTA (+17.9dB to −14 spine).
+- **KPI to watch:** `yt_engage --count-keyword SHIPPED` + `--count-keyword netlify` unique authors; Ch.2 return rate; subs/100 vs daily baseline. Pinned comment = `assets/bc01/SHARE-PROMPT.txt` verbatim (post-publish + one Studio pin click). Playlist `PLIuiep7RRSGE`.
