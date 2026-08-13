@@ -10,6 +10,7 @@ export const shortSchema = z.object({
   ),
   style: z.enum(["tier1", "tier2"]),
   handle: z.string(),
+  fps: z.number(),
   durationInFrames: z.number(),
 });
 

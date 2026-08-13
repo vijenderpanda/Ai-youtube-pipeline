@@ -16,10 +16,12 @@ export const RemotionRoot: React.FC = () => (
       captions: [],
       style: "tier2" as const,
       handle: "@yourchannel",
+      fps: 30,
       durationInFrames: 300,
     }}
     calculateMetadata={({ props }) => ({
       durationInFrames: props.durationInFrames,
+      fps: props.fps,
     })}
   />
 );

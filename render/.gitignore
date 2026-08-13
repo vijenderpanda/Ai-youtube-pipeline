@@ -1,0 +1,5 @@
+node_modules/
+out/
+props.json
+# staged per-clip by render_short.py — never commit clip payloads
+public/input.mp4

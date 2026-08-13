@@ -203,6 +203,26 @@ def overlay_captions(video, items, H, out):
          "-t", str(probe_dur(video)), *venc("18", "veryfast"),
          "-pix_fmt", "yuv420p", out])
 
+def render_captions_remotion(stage_video, spec, fps, out):
+    """Kinetic karaoke captions via the Remotion render layer (repo-root render/),
+    behind the spec flag caption_engine="remotion". Maps the PNG-caption spec to
+    the word-timestamp contract and leaves every other layer untouched. Keeps the
+    FULL source duration so a trailing no-caption tail is never truncated."""
+    import sys
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if repo_root not in sys.path:
+        sys.path.insert(0, repo_root)
+    from render_short import render_short
+    words = [{"text": c["w"], "startMs": int(float(c["start"]) * 1000),
+              "endMs": int(float(c["end"]) * 1000)} for c in spec["captions"]]
+    # Default "tier1" = captions only. This channel carries its own watermark /
+    # logo / banner branding, so the tier2 story-bar + Follow chrome stays OFF
+    # unless a spec explicitly opts in via "caption_style": "tier2".
+    render_short(stage_video, words, out,
+                 style=spec.get("caption_style", "tier1"),
+                 handle=spec.get("handle", "@aiunpacked"),
+                 fps=fps, duration_s=probe_dur(stage_video))
+
 # ---------- audio ----------
 def mux_audio(video, vo, music, gain, out):
     if music and os.path.exists(music):
@@ -245,9 +265,15 @@ def main():
             stage = av_out
 
     if spec.get("captions"):
-        items = render_caption_pngs(spec["captions"], accent, spec.get("caption_size", 150), tmp)
         cap_out = os.path.join(tmp, "capped.mp4")
-        overlay_captions(stage, items, H, cap_out); stage = cap_out
+        # caption_engine: "png" (default, PIL word overlays) | "remotion" (kinetic
+        # karaoke via render/). Default preserves current renders exactly.
+        if spec.get("caption_engine") == "remotion":
+            render_captions_remotion(stage, spec, FPS, cap_out)
+        else:
+            items = render_caption_pngs(spec["captions"], accent, spec.get("caption_size", 150), tmp)
+            overlay_captions(stage, items, H, cap_out)
+        stage = cap_out
 
     # timed banners (e.g. thumbnail-style topic cover over the hook, fading out)
     for bi, b in enumerate(spec.get("banners", [])):

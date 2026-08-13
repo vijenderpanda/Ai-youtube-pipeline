@@ -49,21 +49,26 @@ def render_short(
     style: str = "tier2",
     handle: str = "@yourchannel",
     fps: int = 30,
+    duration_s: float | None = None,
 ) -> str:
     """Render a premium captioned short.
 
     words: [{"text": str, "startMs": int, "endMs": int}, ...]  # per word, from Whisper
+    duration_s: total output length. Pass the SOURCE CLIP duration so a trailing
+        no-caption tail isn't truncated. Defaults to the last caption's end time.
     Returns out_path.
     """
     PUBLIC.mkdir(parents=True, exist_ok=True)
     shutil.copy(clip_path, PUBLIC / "input.mp4")
 
-    duration_s = words[-1]["endMs"] / 1000 if words else 5
+    if duration_s is None:
+        duration_s = words[-1]["endMs"] / 1000 if words else 5
     props = {
         "videoSrc": "input.mp4",
         "captions": words,
         "style": style,
         "handle": handle,
+        "fps": fps,
         "durationInFrames": max(1, round(duration_s * fps)),
     }
 
