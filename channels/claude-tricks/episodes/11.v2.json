@@ -128,5 +128,6 @@
  "endcard": null,
  "outro": true,
  "outro_dur": 0,
- "outro_src": "ep11/outro_card.mp4"
+ "outro_src": "ep11/outro_card.mp4",
+ "outro_cta": "auto"
 }

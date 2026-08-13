@@ -290,7 +290,10 @@ def main():
     # 2) MASTER RENDER — build_ep_v2 without --preview does the full pipeline:
     #    Remotion render + audio master + endcard + outro concat.
     build = os.path.join(CH, "build_ep_v2.py")
-    r = run(["python3", build, "--ep", a.ep, "--tag", a.tag])
+    # --calendar-id rides through so an outro_cta spec can EXCLUDE this episode's
+    # own calendar row from its next-episode tease lookup (outro_cta.py).
+    r = run(["python3", build, "--ep", a.ep, "--tag", a.tag]
+            + (["--calendar-id", a.calendar_id] if a.calendar_id else []))
     if r.returncode != 0:
         print(f"!! master render exited {r.returncode}", file=sys.stderr)
         sys.exit(1)

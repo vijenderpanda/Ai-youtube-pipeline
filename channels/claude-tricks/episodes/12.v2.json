@@ -65,6 +65,7 @@
  "outro": true,
  "outro_dur": 0,
  "outro_src": "ep12/outro_card.mp4",
+ "outro_cta": "auto",
  "header_scrim": true,
  "hook": {
   "image": "ep12/hook_art/wall_to_table.jpg",

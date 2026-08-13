@@ -1219,7 +1219,29 @@ def run(cmd, **kw):
     print("+", " ".join(str(c) for c in cmd))
     subprocess.run(cmd, check=True, **kw)
 
-def build(ep, dry=False, tag="v2", preview=False):
+def outro_fc(pre, fst, ratio=None, gain_db=None):
+    """Filtergraph for the outro concat (inputs: 0=mastered body, 1=outro card,
+    2=music bed looped, 3=CTA wav — 3 only in the spoken-CTA variant).
+    gain_db=None -> the shipped silent-card graph, byte-for-byte. gain_db set ->
+    spoken-CTA variant: card retimed by `ratio` (slower Ken-Burns, same frames),
+    VO leveled onto the -14 spine rides over the 0.30 bed, limiter mirrors the
+    master chain. Module-level so audition_outro_cta.py exercises the SAME
+    graph the builder ships — a test harness with its own copy would drift."""
+    if gain_db is None:
+        return ("[1:v]fps=30,format=yuv420p[ov];"
+                f"[2:a]{pre}volume=0.30,afade=t=out:st={fst}:d=1.2,apad[oa];"
+                "[0:v][0:a][ov][oa]concat=n=2:v=1:a=1[v][a]")
+    ov = (f"[1:v]setpts={ratio:.5f}*PTS,fps=30,format=yuv420p[ov];"
+          if ratio and ratio > 1.001 else "[1:v]fps=30,format=yuv420p[ov];")
+    return (ov +
+            f"[2:a]{pre}volume=0.30,afade=t=out:st={fst}:d=1.2[bed];"
+            "[3:a]aformat=channel_layouts=stereo,"
+            f"volume={gain_db}dB,adelay=450:all=1[cta];"
+            "[bed][cta]amix=inputs=2:duration=first:normalize=0,"
+            "alimiter=limit=0.95,apad[oa];"
+            "[0:v][0:a][ov][oa]concat=n=2:v=1:a=1[v][a]")
+
+def build(ep, dry=False, tag="v2", preview=False, calendar_id=None):
     """tag = the render stem (ep<NN>_<tag>{,_raw,_outro}.mp4). Defaults to the
     historical "v2"; pass another (e.g. "v3") to cut a REVISION without
     overwriting the shipped file, so old and new can be compared side by side.
@@ -1747,17 +1769,51 @@ def build(ep, dry=False, tag="v2", preview=False):
         # a fade pinned at 2.6s never fires inside a 1.6s sting.
         odur = float(cfg.get("outro_dur", 0) or 0)
         tin = ["-t", str(odur)] if odur else []
-        fst = round(max(odur - 1.2, 0.0), 3) if odur else 2.6
-        fc2 = ("[1:v]fps=30,format=yuv420p[ov];"
-               f"[2:a]{pre}volume=0.30,afade=t=out:st={fst}:d=1.2,apad[oa];"
-               "[0:v][0:a][ov][oa]concat=n=2:v=1:a=1[v][a]")
-        run(["ffmpeg", "-y", "-i", out] + tin + ["-i", outro,
-             "-stream_loop", "-1", "-i", music,
-             "-filter_complex", fc2, "-map", "[v]", "-map", "[a]",
-             *venc("18", "veryfast"),
-             "-c:a", "aac", "-b:a", "192k", "-shortest", out2])
-        print(f">> OUTRO APPENDED{f' (trimmed to {odur}s)' if odur else ''}", out2)
-        out = out2
+        # 2026-08-13 subscriber-conversion experiment: cfg["outro_cta"] makes Sol
+        # SPEAK a series CTA (next-episode tease from factory_calendar, or the
+        # series promise) OVER the question card. Absent (all locked templates
+        # today) -> the shipped filtergraph below runs unchanged. HELD pending
+        # VJ approval of the test render — do not add outro_cta to the locked
+        # templates until then. See channels/claude-tricks/outro_cta.py.
+        cta = None
+        if cfg.get("outro_cta"):
+            if CH not in sys.path:
+                sys.path.insert(0, CH)
+            from outro_cta import prepare_cta, probe_dur
+            cta = prepare_cta(cfg, A, ELEVEN_VOICE, style=STYLE,
+                              calendar_id=calendar_id)
+        if cta:
+            # The card must HOLD until the spoken line lands: retime the card
+            # (slower Ken-Burns push, same frames) instead of re-rendering the
+            # branding asset (§15 bookends hygiene). 0.45s lead-in before Sol
+            # speaks, 0.8s hold after. A sting trimmed by outro_dur keeps its
+            # trim (the cut point is a measurement) and is then retimed.
+            base = probe_dur(outro)
+            if odur:
+                base = min(base, odur)
+                print(f"!! outro_cta over a trimmed sting ({odur}s) — retiming "
+                      "the trimmed cut; check the sting's element schedule")
+            need = 0.45 + cta["dur_s"] + 0.8
+            T = round(max(base, need), 3)
+            fst = round(max(T - 1.6, 0.3), 3)
+            fc2 = outro_fc(pre, fst, ratio=T / base, gain_db=cta["gain_db"])
+            run(["ffmpeg", "-y", "-i", out] + tin + ["-i", outro,
+                 "-stream_loop", "-1", "-i", music, "-i", cta["wav"],
+                 "-filter_complex", fc2, "-map", "[v]", "-map", "[a]",
+                 *venc("18", "veryfast"),
+                 "-c:a", "aac", "-b:a", "192k", "-shortest", out2])
+            print(f">> OUTRO APPENDED + SPOKEN CTA ({T}s, {cta['note']})", out2)
+            out = out2
+        else:
+            fst = round(max(odur - 1.2, 0.0), 3) if odur else 2.6
+            fc2 = outro_fc(pre, fst)
+            run(["ffmpeg", "-y", "-i", out] + tin + ["-i", outro,
+                 "-stream_loop", "-1", "-i", music,
+                 "-filter_complex", fc2, "-map", "[v]", "-map", "[a]",
+                 *venc("18", "veryfast"),
+                 "-c:a", "aac", "-b:a", "192k", "-shortest", out2])
+            print(f">> OUTRO APPENDED{f' (trimmed to {odur}s)' if odur else ''}", out2)
+            out = out2
 
     if ec and ec.get("src") and ec.get("over_outro"):
         card = os.path.join(CH, "assets", ec["src"])
@@ -1785,5 +1841,9 @@ if __name__ == "__main__":
     ap.add_argument("--tag", default="v2",
                     help="render stem: ep<NN>_<tag>.mp4 (use v3 for a re-cut so "
                          "the shipped v2 file survives for comparison)")
+    ap.add_argument("--calendar-id",
+                    help="this episode's factory_calendar row id — only used to "
+                         "EXCLUDE it from the outro_cta next-episode tease lookup "
+                         "(finalize_episode.py passes it through)")
     a = ap.parse_args()
-    build(a.ep, dry=a.dry, tag=a.tag, preview=a.preview)
+    build(a.ep, dry=a.dry, tag=a.tag, preview=a.preview, calendar_id=a.calendar_id)
