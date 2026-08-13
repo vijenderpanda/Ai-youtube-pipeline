@@ -46,6 +46,30 @@ free tools. Everything shown is the real stack this channel's own factory runs o
 (Claude Code → Netlify → Supabase → scheduled automation) — the authenticity moat,
 per BRAND-BIBLE §1.
 
+## 2a. 🔒 TEMPLATE v1 — LOCKED (VJ 2026-08-13, after Ch.1 v4 ship)
+**This beat-mix style belongs to Build Club ONLY. The daily cadence runs the
+existing locked v16.4 template, untouched — none of these components ever
+appear in a daily.** Locked means locked against per-episode improvisation;
+system-level corrections follow the StatBars precedent (fix once in the
+component, every chapter inherits).
+
+The locked chapter flow, exactly as Ch.1 shipped:
+1. **Windowed talking hook** — hook art (grid canvas + phone + chips) with an
+   alpha window over the FramedHost card: Sol TALKS from frame 0; headline
+   baked for the frame-zero thumbnail (`hook.baked + seeThrough + headTop`).
+2. **ChapterCard** — blueprint-grid chapter-book opener, bloom + season dots.
+3. **Sol thesis beat** — framed host run carrying the chapter's one idea.
+4. **Pinned-comment b-roll** — where the prompt lives + COPY affordance.
+5. **Real device footage in the PhoneFrame casing** (`rec:...|phone`) — the
+   REAL app journey on a drawn high-end Android bezel, captions in the low
+   strip; pip mix-engine beats (splitWide/recFull) carry Sol beside the
+   payoff moments.
+6. **RecipeCard** — ticked steps + homework panel + tease + season dots.
+7. **Ch.N+1 tease outro** — next-chapter illustration card + Sol's spoken
+   CTA (homework, gift when active, "next Friday we unlock…").
+Persistent layer: the PROMPT→FILE→LIVE **BuildRail** across the teaching
+window; GlobalHeader carries `BUILD CLUB · CH N/6`; header_scrim on.
+
 ## 2. Chapter grammar (the locked format)
 - **Length:** 55–75s (vs the daily 25–40s). Pacing rules still apply — 0.4s sentence
   breaks, style 0.4, followable not frantic (playbook §7).
