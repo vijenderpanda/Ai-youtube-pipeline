@@ -317,6 +317,63 @@ build that shipped it, which remains in §4). External flip: pending — will pr
 
 ---
 
+## bc01 v5 — REDO attempt, 2026-08-15 — BLOCKED, no gates run, nothing shipped
+
+**Status: incomplete, honestly.** VJ directed a v5 redo of Ch.1 (new cold open + season-map
+beat, `_status` field in `episodes/bc01.v2.json` already carries the directive and supersedes
+v4 `youtu.be/bWoa98zMWjA`). This session did the two pieces of work that were genuinely
+possible and then hit a hard, unresolved blocker before any of the 5 §7 audition gates could be
+run. **No gate numbers below are real measurements of a finished v5 master, because no v5 master
+exists.** Per BUILD-CLUB.md §7, a gate not run is written `NOT RUN`, never invented.
+
+**Done for real this session:**
+- **New Playwright tape, genuinely recorded, genuine live deploy.** `channels/claude-tricks/rec_bc01_v5_demo.py`
+  serves the `tapes/bc01_v5_demo_site/index.html` prop locally, browses it, then drives a real
+  `app.netlify.com/drop` session — `set_input_files` on the real dropzone input, no synthetic
+  DragEvent. Result: **live URL `https://sensational-frangollo-38b588.netlify.app`, verified
+  `HTTP/2 200`**, captured to `channels/claude-tricks/assets/epbc01/bc01_v5_netlify_drop.mp4`
+  (35.4s, 1080×1350, real footage, not staged/mocked). Timing marks in
+  `assets/epbc01/v5_demo_marks.json`.
+- **Fixed one real gap:** `assets/epbc01/hook_art/stop_paying.png` didn't exist, which crashed
+  the Remotion render with a 404 on the hook beat. Regenerated via the existing
+  `gen_bc01_hook.py` (a legitimate, deterministic asset generator — not fabricated content).
+
+**The blocker (genuine, not resolved, not worked around):** `build_ep_v2.py --ep bc01` (real
+render, no `--dry`) fails at frame 645/1992 with:
+```
+Error: Received a status code of 404 while downloading file
+http://localhost:3000/public/assets/epbc01/pinned_broll.mp4
+```
+Checked and confirmed **four** source clips the v5 `beats` array still points at do not exist
+anywhere on this machine: `assets/epbc01/pinned_broll.mp4`, `assets/bc01/appA1.mp4`,
+`assets/bc01/appA4.mp4`, `assets/bc01/appB2.mp4`. Per this repo's own memory
+(`media-offloaded-to-t5-ssd`), all ~9GB of channel media was moved to
+`/Volumes/Samsung_T5/Ai-youtube-pipeline-media-backup/` on 2026-08-13 and deleted locally, to be
+restored via `rsync` before rendering. **`/Volumes/Samsung_T5` is not mounted in this
+environment** (`diskutil list` shows no such volume) — there is no drive to rsync from here, and
+no way to regenerate real filmed phone/app-demo footage without one. This is a hard stop, not a
+timeout or a flaky step: reran `--dry` (succeeds, spec-only) and the real render twice, same class
+of failure both times once the fixable PNG gap was cleared.
+
+**Consequently NOT done, and not faked:**
+1. Audio spine (LUFS) — **NOT RUN**, no master file exists.
+2. Lip-sync — **NOT RUN** on the v5 cut. (Note: the `--dry` spec pass DID call HeyGen for real and
+   measured `lag=+23ms corr=0.995` on both new pip clips — that number is real, but it is not a
+   measurement of the finished, delivered file, so it does not satisfy gate 2.)
+3. Caption/chip placement (`probe_frames.py corner`) — **NOT RUN**, requires a shipped clip.
+4. Standalone-first (first 3s) — **NOT RUN**, no delivered file to watch.
+5. Homework CTA survives (last 3s) — **NOT RUN**, no delivered file to watch.
+
+**Nothing staged in `renders_out/`. Nothing armed. No YouTube touched, per the DO-NOT-ARM
+instruction (moot here — there is no file to arm).**
+
+**Next step for whoever picks this up:** mount `/Volumes/Samsung_T5`, `rsync` back
+`assets/epbc01/pinned_broll.mp4` and `assets/bc01/appA1.mp4`/`appA4.mp4`/`appB2.mp4` (or record
+fresh replacements for all four, not just the Netlify-drop beat), then re-run
+`build_ep_v2.py --ep bc01` and the full §7 gate chain for real.
+
+---
+
 ## Build Club bc01 — "Stop Paying For Websites" (Ch. 1) · PUBLISHED 2026-08-14 16:00 IST · youtu.be/bWoa98zMWjA
 
 **First Build Club episode (Friday serialized builder slot; series bible BUILD-CLUB.md).** 53.7s body + 5.1s spoken-CTA outro. Delivered `epbc01_v2_outro.mp4` **−14.20 LUFS** (finalize gate −14.0±0.5 PASS, first try at `music_gain_db 1.0`). Title suffix "— Build Club Ch. 1" applied by the new series-aware `apply_series_suffix` (chapter from spec, Day/30 counter untouched — bc keys are non-numeric so dailies never see Fridays).

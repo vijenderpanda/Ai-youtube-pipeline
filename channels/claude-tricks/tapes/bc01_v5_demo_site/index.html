@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vij Codes — Freelance Web Builder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{--ink:#0b0b12;--mag:#E0218A;--yellow:#FFD400;--paper:#faf8f5}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,Segoe UI,sans-serif;background:var(--paper);color:var(--ink)}
+  header{padding:64px 24px;text-align:center;background:var(--ink);color:#fff}
+  header h1{font-size:2.4rem;letter-spacing:-0.02em}
+  header span{color:var(--yellow)}
+  header p{margin-top:12px;color:#ccc;font-size:1.05rem}
+  .cta{display:inline-block;margin-top:24px;padding:14px 28px;background:var(--mag);color:#fff;
+       border-radius:999px;font-weight:700;text-decoration:none}
+  section{max-width:760px;margin:0 auto;padding:48px 24px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+  .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.06)}
+  .card h3{color:var(--mag);margin-bottom:8px}
+  footer{text-align:center;padding:32px;color:#888;font-size:.9rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>I build sites for small businesses — <span>fast</span>.</h1>
+  <p>One page. One evening. Zero code. Zero card.</p>
+  <a class="cta" href="#work">See recent work</a>
+</header>
+<section id="work">
+  <div class="grid">
+    <div class="card"><h3>Landing pages</h3><p>Clean, mobile-first, live same day.</p></div>
+    <div class="card"><h3>Portfolios</h3><p>Show your work, not your code.</p></div>
+    <div class="card"><h3>Small biz sites</h3><p>Menu, hours, contact — done.</p></div>
+  </div>
+</section>
+<footer>Built with one prompt · shipped free on Netlify Drop</footer>
+</body>
+</html>
