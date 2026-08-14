@@ -317,7 +317,7 @@ build that shipped it, which remains in §4). External flip: pending — will pr
 
 ---
 
-## Build Club bc01 — "Stop Paying For Websites" (Ch. 1) · ARMED 2026-08-14 16:00 IST · youtu.be/_ebCZEGFu74
+## Build Club bc01 — "Stop Paying For Websites" (Ch. 1) · PUBLISHED 2026-08-14 16:00 IST · youtu.be/bWoa98zMWjA
 
 **First Build Club episode (Friday serialized builder slot; series bible BUILD-CLUB.md).** 53.7s body + 5.1s spoken-CTA outro. Delivered `epbc01_v2_outro.mp4` **−14.20 LUFS** (finalize gate −14.0±0.5 PASS, first try at `music_gain_db 1.0`). Title suffix "— Build Club Ch. 1" applied by the new series-aware `apply_series_suffix` (chapter from spec, Day/30 counter untouched — bc keys are non-numeric so dailies never see Fridays).
 
@@ -326,3 +326,26 @@ build that shipped it, which remains in §4). External flip: pending — will pr
 - **Drop automation lesson:** Netlify Drop's React dropzone ignores synthetic DragEvents AND a failed CDP drag re-renders the page (killing the file inputs) — the reliable path is `set_input_files` on the `accept=".zip,.html,.htm"` input, FIRST, immediately after load. Unclaimed drop sites are password-gated (401) + expire in 1h — never film tape B against them.
 - **Host:** pinned outfit_11 (wide f55806a4 / pip dc9533a1), 4 clips, lipsync +23ms corr 0.99 — no cuts needed. Sol appears: hook wide band (baked art `gen_bc01_hook.py` — art carries visuals only, HookCard owns all words), splitWide beside the live site, spoken outro CTA (+17.9dB to −14 spine).
 - **KPI to watch:** `yt_engage --count-keyword SHIPPED` + `--count-keyword netlify` unique authors; Ch.2 return rate; subs/100 vs daily baseline. Pinned comment = `assets/bc01/SHARE-PROMPT.txt` verbatim (post-publish + one Studio pin click). Playlist `PLIuiep7RRSGE`.
+
+### AUDITION BLOCK (retro-filled 2026-08-14, per the new BUILD-CLUB.md §7 gate)
+
+Filled after the fact, so it says what was actually measured and nothing more. **This is the
+record bc01 shipped without** — the gate exists from Ch.2 onward, pre-arm.
+
+| # | Gate | Result |
+|---|---|---|
+| 1 | Audio spine (−14.0 ±0.5 LUFS) | **PASS** — −14.20 LUFS on `epbc01_v2_outro.mp4`, first try at `music_gain_db 1.0` |
+| 2 | Lip-sync (corr > 0.9) | **PASS** — +23 ms, corr 0.99, 4 clips, no cuts needed |
+| 3 | Caption/chip placement (`probe_frames.py corner`) | **NOT RUN** — the highest-risk gate on this template and the one that was skipped: TEMPLATE v1 puts captions in a low strip over real phone footage inside the PhoneFrame casing, which is exactly the "chip over taught content" class the tool exists to decide. Unmeasured on the shipped cut |
+| 4 | Standalone-first (≤2s series stamp) | **NOT MEASURED** — designed for (STANDALONE-FIRST is a locked TEMPLATE v1 rule) but never verified against the delivered file |
+| 5 | Homework CTA survives the tail | **NOT MEASURED** — spoken outro CTA rendered and levelled (+17.9 dB to the −14 spine); readability duration on the final frames not checked |
+
+**Record integrity defect (the reason §7 is now mechanical):** this heading carried
+`youtu.be/_ebCZEGFu74` — the **retired v1 cut** — while `bWoa98zMWjA` (the v4 Android-app cut) is
+what actually published at 16:00 IST. Corrected 2026-08-14. An audition record that names a file
+other than the shipped one is void by definition, and nothing in the pipeline caught it.
+
+**Ch.2 (bc02, 2026-08-21) is auditioned against this block**, not against the dailies — gates 3, 4
+and 5 are open ratchet targets, and the Ch.1 retention curve (`yt_retention.py --video bWoa98zMWjA`)
+is the input for where the hook needs work. See `docs/stats/AI-UNPACKED-READ-2026-08-14.md` §4 for
+the pre-committed d0 thresholds that decide whether Friday stays Build Club.

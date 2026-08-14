@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 """
-Daily network stats check (runs 07:00 IST via launchd).
+Daily network stats check (runs 07:00 IST via launchd on the Mac).
 
 Pulls live stats for every channel in the network (Data API) + traffic-source
 breakdown (Analytics API), appends a per-video snapshot to docs/stats/history.csv,
-and rewrites docs/stats/DAILY-STATS.md with day-over-day deltas. Sends a macOS
-notification with the headline movers.
+and rewrites docs/stats/DAILY-STATS.md with day-over-day deltas. Headline movers
+go to a macOS notification on the Mac, stdout everywhere else.
 
 Run manually any time:  python3 scripts/network_stats.py
+
+Runs on the Windows worker too (analytics_sync shells it out). Requires
+secrets/token_<key>.json for each channel — with no token file, get_creds()
+falls through to an interactive browser consent that will HANG a headless job,
+so auth each channel once on the box before scheduling a sync there.
 """
 import csv, os, subprocess, sys
 from datetime import datetime, timedelta, timezone
@@ -31,8 +36,19 @@ FIELDS = ["date", "channel", "video_id", "title", "privacy", "publish_at",
 
 
 def notify(msg):
-    subprocess.run(["osascript", "-e",
-                    f'display notification "{msg}" with title "YT Network — Daily Stats" sound name "Glass"'])
+    """Headline line for the human. macOS gets a real notification; every other
+    host just prints it.
+
+    🔴 osascript is macOS-only. Calling it unguarded raises FileNotFoundError on
+    the Windows worker — and notify() is the LAST thing main() does, so the
+    traceback lands AFTER history.csv + DAILY-STATS.md are already written: the
+    data is fine, but the process exits non-zero and analytics_sync logs
+    "WARNING: network_stats.py exited 1" on every single Windows run, which
+    masks the real fetch errors this warning exists to surface."""
+    print(f"[stats] {msg}")
+    if sys.platform == "darwin":
+        subprocess.run(["osascript", "-e",
+                        f'display notification "{msg}" with title "YT Network — Daily Stats" sound name "Glass"'])
 
 
 def fetch_channel(key, cid):

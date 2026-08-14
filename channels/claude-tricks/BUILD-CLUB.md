@@ -156,7 +156,8 @@ window; GlobalHeader carries `BUILD CLUB · CH N/6`; header_scrim on.
 1. Brief finalized + free-tier reality check (day before).
 2. Footage: Playwright/VHS of the REAL run — the deploy/job must genuinely happen.
 3. Spec: `episodes/bcNN.v2.json` with `series`/`chapter`/`homework` fields.
-4. Render via `build_ep_v2.py` (v16.4 engine, all locked QC gates apply).
+4. Render via `build_ep_v2.py` (v16.4 engine, all locked QC gates apply — **enumerated in §7,
+   because "all locked QC gates apply" is what both Fridays skipped**).
 5. **ARM SWITCH (VJ directive 2026-08-13): NEVER arm without VJ's explicit go.**
    Production stops at the master: `finalize_episode.py --ep bcNN --skip-arm`
    (master + QC only). Present frames + the master to VJ; only after a written
@@ -164,3 +165,45 @@ window; GlobalHeader carries `BUILD CLUB · CH N/6`; header_scrim on.
    (bc01 v1 was armed pre-directive and retired the same day — the rule exists
    because a produced chapter is a proposal, not a release.)
 6. Post-publish: pin the prompt comment; Monday `--count-keyword SHIPPED` reading.
+
+---
+
+## 7. 🔒 THE AUDITION GATE — LOCKED (VJ 2026-08-14, after two unauditioned Fridays)
+
+**Why this section exists.** Fridays have shipped outside the measured gate twice running, and
+the channel's own ledger says so:
+
+- **2026-08-07** (`xZirrXHzM4Q`, the Friday daily): ledger §4 records it verbatim as
+  *"Not instrumented — this build did not run `probe_frames.py`, `lipsync_align.py`, or a LUFS
+  check on the master; verification was frame-level visual spot-checks."*
+- **2026-08-14** (bc01): LUFS and lipsync **were** measured (−14.20 LUFS PASS, +23 ms corr 0.99),
+  but there is **no §2 A–J scorecard row, no ratchet verdict, and no chip-corner measurement** for
+  a chapter whose captions sit in a low strip over real phone footage — the exact placement
+  `probe_frames.py` exists to decide. And the ledger entry named the **retired** cut
+  (`_ebCZEGFu74`) while `bWoa98zMWjA` is what actually went out.
+
+That last one is the real failure mode: **an audition record that doesn't describe the shipped
+file is not an audition.** A daily gets caught by the §4 ratchet table; a Friday had nothing
+holding it, because Build Club is exempt from the daily ledger by design (different template).
+
+**The gate. All five, written down, BEFORE the arm — no chapter is armed on a spot-check.**
+
+| # | Gate | Command | Pass condition |
+|---|---|---|---|
+| 1 | **Audio spine** | `finalize_episode.py --ep bcNN --skip-arm` | integrated **−14.0 ±0.5 LUFS** on the delivered `*_outro` file |
+| 2 | **Lip-sync** | `python scripts/lipsync_align.py` on every host clip | sharp peak **corr > 0.9**; offset applied, not eyeballed |
+| 3 | **Caption/chip placement** | `python scripts/probe_frames.py corner CLIP.mp4 --window <in> <out> --label "<chip text>"` — off the **shipped** cut, over the **exact** beat window | nothing taught sits under the chip or the low caption strip. Score 0.00 is the only fully clean answer; anything above it gets written down as a trade |
+| 4 | **Standalone-first** | watch the first 3s of the delivered file | series stamp ≤2s; a viewer who has never seen Ch.1 is not lost at frame 0 |
+| 5 | **Homework CTA survives** | watch the last 3s | the outro CTA is readable ≥1.5s and the final frame does not contradict it |
+
+**Then, and only then**, present frames + master to VJ for the written go (§6 step 5).
+
+**The record (this is the part that keeps failing, so it is now mechanical):**
+- Every chapter appends a **Build Club audition block** to `QUALITY-LEDGER.md` carrying all five
+  gate results **as numbers**, not adjectives — a gate that was skipped is written
+  `NOT RUN`, never omitted and never softened to "visually confirmed."
+- The block records the video ID **after arming**, and it must be the ID of the file that
+  actually shipped. A retired or superseded cut in that field makes the whole block void.
+- Ch.N is auditioned against **Ch.N−1**, not against the dailies. Build Club runs its own
+  ratchet — same rule as §2 of the ledger (≥ on every gate, strictly better on ≥1), because
+  TEMPLATE v1 is not comparable to the daily v16.4 template.
