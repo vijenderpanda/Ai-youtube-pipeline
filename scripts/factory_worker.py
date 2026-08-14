@@ -550,11 +550,14 @@ def usage_rollup(supa):
            "cost_usd": 0.0, "input_tokens": 0, "output_tokens": 0,
            "rate_limited": False, "at": now_iso()}
     try:
+        # factory_jobs carries the claimer in assigned_worker (there is no
+        # worker_id column on jobs — that name lives on factory_workers).
         rows = supa.select(
             "factory_jobs",
-            f"worker_id=eq.{WORKER_ID}&finished_at=gte.{since}"
+            f"assigned_worker=eq.{WORKER_ID}&finished_at=gte.{since}"
             "&select=status,error,result")
-    except (RuntimeError, requests.RequestException):
+    except (RuntimeError, requests.RequestException) as e:
+        log(f"usage rollup query failed (keeping last value): {e}", level="warn")
         return _usage_cache["val"]  # keep last good value; retry next heartbeat
     for r in rows or []:
         u = (r.get("result") or {}).get("usage") or {}

@@ -1,0 +1,9 @@
+{
+  "type": "custom",
+  "channel_key": "claude-tricks",
+  "model": "sonnet",
+  "effort": "low",
+  "target_worker": "Vijenders-MacBook-Pro.local",
+  "title": "Mac: pull + restart (usage rollup column fix: assigned_worker)",
+  "prompt": "Nothing else is running (phase-2 produce finished 22:11 UTC). Two steps in order: (1) repo root: git pull --ff-only origin claude/ai-unpacked-vj-analytics-9lhetq (brings the usage_rollup fix — it was querying a nonexistent worker_id column on factory_jobs; now assigned_worker). If dirty, git stash --include-untracked first and say so. (2) launchctl kickstart -k gui/$(id -u)/com.factory.worker — restarts the worker so factory_workers.meta.usage finally populates. This job gets orphaned by its own restart — EXPECTED, work is done once kickstart fires. Pull FIRST, restart LAST, nothing after."
+}
