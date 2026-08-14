@@ -36,7 +36,7 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
           python3 - <<'PY'
-          import glob, json, os, sys, urllib.request
+          import glob, json, os, sys, urllib.parse, urllib.request
 
           key = os.environ.get("SUPABASE_SERVICE_KEY", "").strip()
           if not key:
@@ -46,13 +46,46 @@ jobs:
           url = os.environ["SUPABASE_URL"].rstrip("/") + "/rest/v1/factory_jobs"
 
           ALLOWED = {"type", "channel_key", "title", "prompt", "status",
-                     "model", "effort", "meta"}
+                     "model", "effort", "meta", "target_worker"}
+          # Patch files (*.patch.json): update existing rows instead of inserting.
+          # {"table": "factory_jobs"|"factory_workers", "match": {...}, "set": {...}}
+          PATCH_TABLES = {
+              "factory_jobs":    {"match": {"id", "status", "type", "channel_key", "title"},
+                                  "set": {"target_worker", "model", "effort", "control"}},
+              "factory_workers": {"match": {"worker_id"},
+                                  "set": {"paused", "accept_types"}},
+          }
+          base = os.environ["SUPABASE_URL"].rstrip("/") + "/rest/v1/"
+          H = {"apikey": key, "Authorization": f"Bearer {key}",
+               "Content-Type": "application/json", "Prefer": "return=representation"}
+
+          def rest(method, path_, payload=None):
+              req = urllib.request.Request(base + path_, method=method,
+                  data=json.dumps(payload).encode() if payload is not None else None, headers=H)
+              with urllib.request.urlopen(req, timeout=30) as r:
+                  body = r.read()
+                  return json.loads(body) if body else []
+
           pending = sorted(glob.glob("queue/pending/*.json"))
-          if not pending:
-              print("nothing pending"); sys.exit(0)
 
           os.makedirs("queue/done", exist_ok=True)
           failures = []
+          for path in [p for p in pending if p.endswith(".patch.json")]:
+              try:
+                  spec = json.load(open(path))
+                  rules = PATCH_TABLES[spec["table"]]
+                  match, setv = spec["match"], spec["set"]
+                  assert match and set(match) <= rules["match"], f"bad match fields {sorted(match)}"
+                  assert setv and set(setv) <= rules["set"], f"bad set fields {sorted(setv)}"
+                  q = "&".join(f"{k}=eq.{urllib.parse.quote(str(v))}" for k, v in match.items())
+                  rows = rest("PATCH", f"{spec['table']}?{q}", setv)
+                  print(f"patched {len(rows)} row(s) in {spec['table']} from {path}: "
+                        + ", ".join(str(r.get("id") or r.get("worker_id"))[:8] for r in rows))
+                  os.rename(path, path.replace("queue/pending/", "queue/done/"))
+              except Exception as e:  # noqa: BLE001
+                  failures.append(f"{path}: {e}")
+          pending = [p for p in sorted(glob.glob("queue/pending/*.json"))
+                     if not p.endswith(".patch.json")]
           for path in pending:
               try:
                   raw = json.load(open(path))
@@ -83,6 +116,26 @@ jobs:
               ids = ", ".join(c.get("id", "?")[:8] for c in created)
               print(f"inserted {len(created)} job(s) from {path}: {ids}")
               os.rename(path, path.replace("queue/pending/", "queue/done/"))
+
+          # Always snapshot queue + worker state back into the repo, so cloud
+          # sessions (which cannot reach Supabase) can read live factory state
+          # from the branch.
+          try:
+              jobs = rest("GET", "factory_jobs?select=id,type,channel_key,title,status,"
+                          "model,effort,assigned_worker,target_worker,created_at,"
+                          "finished_at,error&order=created_at.desc&limit=20")
+              for j in jobs:
+                  if j.get("error"):
+                      j["error"] = j["error"][:300]
+              workers = rest("GET", "factory_workers?select=worker_id,hostname,os,"
+                             "paused,accept_types,last_seen,max_parallel,meta")
+              snap = {"taken_at": __import__("datetime").datetime.utcnow().isoformat() + "Z",
+                      "jobs": jobs, "workers": workers}
+              with open("queue/state.json", "w") as f:
+                  json.dump(snap, f, indent=1, default=str)
+              print(f"state snapshot: {len(jobs)} jobs, {len(workers)} workers")
+          except Exception as e:  # noqa: BLE001
+              print(f"state snapshot failed (non-fatal): {e}")
 
           if failures:
               sys.exit("some inserts failed (files left in pending/):\n" +

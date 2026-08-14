@@ -1,0 +1,9 @@
+{
+  "type": "custom",
+  "channel_key": "claude-tricks",
+  "model": "sonnet",
+  "effort": "low",
+  "target_worker": "Vijenders-MacBook-Pro.local",
+  "title": "BC01 retention read (bWoa98zMWjA) — Mac re-run after Windows cred block",
+  "prompt": "The earlier retention pull ran on DESKTOP-DEIR7RS and failed on missing OAuth creds (see docs/stats/RETENTION.md note from 2026-08-15). You are on the Mac, which HAS secrets/token_claude-tricks.json. Run: python3 scripts/yt_retention.py --channel claude-tricks --video bWoa98zMWjA --summary --md docs/stats/RETENTION.md — then python3 scripts/yt_engage.py --channel claude-tricks --video bWoa98zMWjA --count-keyword SHIPPED --days 7. Read the result against the pre-committed d0 thresholds in docs/stats/AI-UNPACKED-READ-2026-08-14.md section 4 (>=90 keep / 20-90 hold+fix hook / <20 format question); note the latest snapshot showed only 4 views ~9.5h after publish, so confirm where d0 actually lands. Replace the Windows blocked-note in RETENTION.md with the real curve. Commit docs/stats/RETENTION.md to branch claude/ai-unpacked-vj-analytics-9lhetq and push (git push -u origin claude/ai-unpacked-vj-analytics-9lhetq). Report: d0 views, curve drop point, threshold band, SHIPPED count."
+}

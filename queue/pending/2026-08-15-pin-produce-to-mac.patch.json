@@ -1,0 +1,5 @@
+{
+  "table": "factory_jobs",
+  "match": {"status": "queued", "type": "produce_short", "channel_key": "claude-tricks"},
+  "set": {"target_worker": "Vijenders-MacBook-Pro.local"}
+}

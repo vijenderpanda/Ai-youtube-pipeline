@@ -1,0 +1,5 @@
+{
+  "table": "factory_workers",
+  "match": {"worker_id": "DESKTOP-DEIR7RS"},
+  "set": {"accept_types": ["shell_script"]}
+}
