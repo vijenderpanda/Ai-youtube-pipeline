@@ -1,15 +1,15 @@
 {
- "taken_at": "2026-08-14T20:59:33.003632Z",
+ "taken_at": "2026-08-14T21:00:37.202522Z",
  "jobs": [
   {
    "id": "cb9f2e24-a402-472d-8c00-1518923aa9c2",
    "type": "produce_short",
    "channel_key": "claude-tricks",
    "title": "Stop Paying For Websites \u2014 Yours Goes LIVE Tonight (FREE) \ud83d\ude80 [Ch.1 v5]",
-   "status": "queued",
+   "status": "running",
    "model": "sonnet",
    "effort": "low",
-   "assigned_worker": null,
+   "assigned_worker": "Vijenders-MacBook-Pro.local",
    "target_worker": "Vijenders-MacBook-Pro.local",
    "created_at": "2026-08-14T20:59:31.673581+00:00",
    "finished_at": null,
@@ -284,6 +284,19 @@
  ],
  "workers": [
   {
+   "worker_id": "Vijenders-MacBook-Pro.local",
+   "hostname": "Vijenders-MacBook-Pro.local",
+   "os": "Darwin",
+   "paused": false,
+   "accept_types": [],
+   "last_seen": "2026-08-14T21:00:19.382854+00:00",
+   "max_parallel": 2,
+   "meta": {
+    "python": "3.12.4",
+    "platform": "macOS-26.4.1-arm64-arm-64bit"
+   }
+  },
+  {
    "worker_id": "DESKTOP-DEIR7RS",
    "hostname": "DESKTOP-DEIR7RS",
    "os": "Windows",
@@ -291,24 +304,11 @@
    "accept_types": [
     "shell_script"
    ],
-   "last_seen": "2026-08-14T20:59:11.750284+00:00",
+   "last_seen": "2026-08-14T21:00:23.740797+00:00",
    "max_parallel": 2,
    "meta": {
     "python": "3.12.10",
     "platform": "Windows-11-10.0.26200-SP0"
-   }
-  },
-  {
-   "worker_id": "Vijenders-MacBook-Pro.local",
-   "hostname": "Vijenders-MacBook-Pro.local",
-   "os": "Darwin",
-   "paused": false,
-   "accept_types": [],
-   "last_seen": "2026-08-14T20:59:28.167231+00:00",
-   "max_parallel": 2,
-   "meta": {
-    "python": "3.12.4",
-    "platform": "macOS-26.4.1-arm64-arm-64bit"
    }
   }
  ]
