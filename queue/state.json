@@ -1,6 +1,21 @@
 {
- "taken_at": "2026-08-14T21:56:37.732482Z",
+ "taken_at": "2026-08-14T21:58:27.657433Z",
  "jobs": [
+  {
+   "id": "85931a93-95b7-4b64-a9d9-91719fb269f1",
+   "type": "produce_short",
+   "channel_key": "claude-tricks",
+   "title": "bc01 v5 PHASE 2 \u2014 record tape, render, gate, stage for Mon (no arm)",
+   "status": "queued",
+   "model": "sonnet",
+   "effort": "low",
+   "assigned_worker": null,
+   "target_worker": "Vijenders-MacBook-Pro.local",
+   "created_at": "2026-08-14T21:58:25.698933+00:00",
+   "finished_at": null,
+   "error": null,
+   "result": null
+  },
   {
    "id": "267d6e6a-0dee-4c42-bf27-626a4ff30e52",
    "type": "custom",
@@ -285,37 +300,9 @@
    "finished_at": "2026-08-13T10:26:42.71832+00:00",
    "error": null,
    "result": "{\"video_rows\": 87, \"reauth_needed\": [], \"rows_upserted\": 55, \"video_sources\": {\"lulla\": \"analytics_api\", \"calm-ai\": \"error\", \"vehicles\": \"analytics_api\", \"aashiqana\": \"analytics_api\", \"language-abc\": \"analytics_api\", \"claude-tricks\": \"analytics_api\", \"already-happening\": \"analytics_api\"}, \"follow_up_job_id\": \"fbfc465d-a8bc-4078-8b07-124a46260ae9\"}"
-  },
-  {
-   "id": "f0f3fb11-f5e2-4028-84a8-867682e47d1f",
-   "type": "produce_preview",
-   "channel_key": "claude-tricks",
-   "title": "Preview \u2014 The FDA Just Let AI Diagnose You \u2014 No Doctor in the Room (Here's Your Rule)",
-   "status": "done",
-   "model": "opus",
-   "effort": "medium",
-   "assigned_worker": "Vijenders-MacBook-Pro.local",
-   "target_worker": null,
-   "created_at": "2026-08-13T05:30:58.06304+00:00",
-   "finished_at": "2026-08-13T05:44:40.591708+00:00",
-   "error": null,
-   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"At finalize: re-render so the corrected scan mock (disclosure anchored under the card) lands, and add a 'Not medical advice' lower-third on the payoff host frame \\u2014 the brief requires it on-frame and only the description and mock carry it today.\", \"Re-run the day-of freshness pass on Aug 15 before arming; if a fresher health/consumer AI story leads, it takes the cold open and this becomes beat 2.\"], \"steps\": [\"Read the locked masters 11/12/13.v2.json and the playbook sections on StatBars, caption safety and in-house mock grammar.\", \"Ran the freshness pass: scripts/news_radar.py (0 new hits, one dead Anthropic RSS feed) plus four WebSearch passes on the FDA/melanoma/Aug-2026 claims.\", \"Established the real facts: IDx-DR De Novo DEN180001 April 2018, 87.2%/90.7% over 900 patients at 10 primary-care sites; AEYE-DS handheld 2024; DermaSensor 17 Jan 2024.\", \"Wrote gen_ep14_mock.py on the make_doc_mock house grammar (2 states: scan result, scope of clearance) and gen_ep14_hook.py for the hook illustration.\", \"Fixed two mock defects caught on first render: vessel tree escaping the frame (S-scaling bug) and a fixed-width pill clipping 'REFER TO A DOCTOR"
   }
  ],
  "workers": [
-  {
-   "worker_id": "Vijenders-MacBook-Pro.local",
-   "hostname": "Vijenders-MacBook-Pro.local",
-   "os": "Darwin",
-   "paused": false,
-   "accept_types": [],
-   "last_seen": "2026-08-14T21:56:22.306847+00:00",
-   "max_parallel": 2,
-   "meta": {
-    "python": "3.12.4",
-    "platform": "macOS-26.4.1-arm64-arm-64bit"
-   }
-  },
   {
    "worker_id": "DESKTOP-DEIR7RS",
    "hostname": "DESKTOP-DEIR7RS",
@@ -324,12 +311,53 @@
    "accept_types": [
     "shell_script"
    ],
-   "last_seen": "2026-08-14T21:56:35.345+00:00",
+   "last_seen": "2026-08-14T21:58:12.21729+00:00",
    "max_parallel": 2,
    "meta": {
     "python": "3.12.10",
     "platform": "Windows-11-10.0.26200-SP0"
-   }
+   },
+   "recent_logs": [
+    "21:57:13 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "21:52:12 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "21:47:11 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "21:42:10 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "21:37:09 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "21:32:08 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "21:27:07 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "21:22:06 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "21:17:05 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "21:12:04 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "21:07:03 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "21:02:01 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping"
+   ]
+  },
+  {
+   "worker_id": "Vijenders-MacBook-Pro.local",
+   "hostname": "Vijenders-MacBook-Pro.local",
+   "os": "Darwin",
+   "paused": false,
+   "accept_types": [],
+   "last_seen": "2026-08-14T21:58:22.814586+00:00",
+   "max_parallel": 2,
+   "meta": {
+    "python": "3.12.4",
+    "platform": "macOS-26.4.1-arm64-arm-64bit"
+   },
+   "recent_logs": [
+    "21:54:45 [info] worker ready -- polling for jobs (parallel x2, heavy serial)",
+    "21:54:45 [info] registered worker 'Vijenders-MacBook-Pro.local' (Vijenders-MacBook-Pro.local) os=Darwin gpu=none",
+    "21:54:28 [info] reaping orphaned job 267d6e6a-0dee-4c42-bf27-626a4ff30e52: orphaned: worker restarted mid-job",
+    "21:54:27 [info] seeded factory_settings auto_sync defaults (ignore-duplicates)",
+    "21:54:27 [info] seeded factory_generators (102 rows, merge-duplicates)",
+    "21:54:26 [info] seeded factory_channels (6 rows, ignore-duplicates)",
+    "21:54:08 [info] worker ready -- polling for jobs (parallel x2, heavy serial)",
+    "21:54:08 [info] registered worker 'Vijenders-MacBook-Pro.local' (Vijenders-MacBook-Pro.local) os=Darwin gpu=none",
+    "21:54:07 [info]   auto-retried as job 267d6e6a-0dee-4c42-bf27-626a4ff30e52 (retry 1/1)",
+    "21:53:48 [info] reaping orphaned job bd616a7b-a7bb-40a0-9061-6adfc2a543d6: orphaned: worker restarted mid-job",
+    "21:53:47 [info] seeded factory_settings auto_sync defaults (ignore-duplicates)",
+    "21:53:46 [info] seeded factory_generators (102 rows, merge-duplicates)"
+   ]
   }
  ]
 }
