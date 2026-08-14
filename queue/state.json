@@ -1,18 +1,32 @@
 {
- "taken_at": "2026-08-14T20:57:36.666752Z",
+ "taken_at": "2026-08-14T20:59:33.003632Z",
  "jobs": [
   {
-   "id": "2e36c06e-d485-4e04-a8d9-784ff713e2a5",
-   "type": "custom",
+   "id": "cb9f2e24-a402-472d-8c00-1518923aa9c2",
+   "type": "produce_short",
    "channel_key": "claude-tricks",
-   "title": "BC01 retention read (bWoa98zMWjA) \u2014 Mac re-run after Windows cred block",
+   "title": "Stop Paying For Websites \u2014 Yours Goes LIVE Tonight (FREE) \ud83d\ude80 [Ch.1 v5]",
    "status": "queued",
    "model": "sonnet",
    "effort": "low",
    "assigned_worker": null,
    "target_worker": "Vijenders-MacBook-Pro.local",
-   "created_at": "2026-08-14T20:57:34.860461+00:00",
+   "created_at": "2026-08-14T20:59:31.673581+00:00",
    "finished_at": null,
+   "error": null
+  },
+  {
+   "id": "2e36c06e-d485-4e04-a8d9-784ff713e2a5",
+   "type": "custom",
+   "channel_key": "claude-tricks",
+   "title": "BC01 retention read (bWoa98zMWjA) \u2014 Mac re-run after Windows cred block",
+   "status": "done",
+   "model": "sonnet",
+   "effort": "low",
+   "assigned_worker": "Vijenders-MacBook-Pro.local",
+   "target_worker": "Vijenders-MacBook-Pro.local",
+   "created_at": "2026-08-14T20:57:34.860461+00:00",
+   "finished_at": "2026-08-14T20:59:14.186161+00:00",
    "error": null
   },
   {
@@ -266,36 +280,9 @@
    "created_at": "2026-08-13T03:16:25.241286+00:00",
    "finished_at": "2026-08-13T03:35:31.537337+00:00",
    "error": null
-  },
-  {
-   "id": "660a1a09-5c06-43c6-a3d1-a2e0655e5afb",
-   "type": "analyze_and_suggest",
-   "channel_key": "_network",
-   "title": "AI content analysis",
-   "status": "done",
-   "model": "sonnet",
-   "effort": "low",
-   "assigned_worker": "Vijenders-MacBook-Pro.local",
-   "target_worker": null,
-   "created_at": "2026-08-13T02:01:18.409588+00:00",
-   "finished_at": "2026-08-13T02:07:11.149482+00:00",
-   "error": null
   }
  ],
  "workers": [
-  {
-   "worker_id": "Vijenders-MacBook-Pro.local",
-   "hostname": "Vijenders-MacBook-Pro.local",
-   "os": "Darwin",
-   "paused": false,
-   "accept_types": [],
-   "last_seen": "2026-08-14T20:57:24.453858+00:00",
-   "max_parallel": 2,
-   "meta": {
-    "python": "3.12.4",
-    "platform": "macOS-26.4.1-arm64-arm-64bit"
-   }
-  },
   {
    "worker_id": "DESKTOP-DEIR7RS",
    "hostname": "DESKTOP-DEIR7RS",
@@ -304,11 +291,24 @@
    "accept_types": [
     "shell_script"
    ],
-   "last_seen": "2026-08-14T20:57:35.136584+00:00",
+   "last_seen": "2026-08-14T20:59:11.750284+00:00",
    "max_parallel": 2,
    "meta": {
     "python": "3.12.10",
     "platform": "Windows-11-10.0.26200-SP0"
+   }
+  },
+  {
+   "worker_id": "Vijenders-MacBook-Pro.local",
+   "hostname": "Vijenders-MacBook-Pro.local",
+   "os": "Darwin",
+   "paused": false,
+   "accept_types": [],
+   "last_seen": "2026-08-14T20:59:28.167231+00:00",
+   "max_parallel": 2,
+   "meta": {
+    "python": "3.12.4",
+    "platform": "macOS-26.4.1-arm64-arm-64bit"
    }
   }
  ]
