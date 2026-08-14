@@ -144,3 +144,36 @@ Create scripts/retention_cliff_gate.py: reads the per-episode timing sidecar (VO
 
 - [ ] open
 
+## Wire render_short.py Remotion caption_engine flag into claude-tricks default pipeline
+_source: analyze_and_suggest 2097a695-a555-4f02-91db-41fdd85fac70 · 2026-08-14_
+
+**Why:** The caption_engine flag exists in the codebase (render_short.py, a9cc42e) but is unused on the channel where the retention data most rewards punchy front-loaded text — closing this gap turns an already-shipped capability into an actual retention lever.
+
+**Interface / acceptance:**
+
+The Remotion kinetic-caption bridge landed in render_short.py (commit a9cc42e, opt-in via caption_engine flag) but nothing in the claude-tricks produce_short path sets it yet. Update the channel's produce_preview/finalize call sites so caption_engine defaults ON for claude-tricks (kinetic word-pop captions matching the Vaibhav-DNA pipCallout style already locked for this channel), while leaving other channels' default caption path untouched. Verify against the two videos with 'ok' retention status (Claude Code Forgets EVERYTHING, Claude Burns Your Tokens) to confirm the new caption engine doesn't regress their strong early-hold numbers before rolling to all new episodes.
+
+- [ ] open
+
+## Wire an automated early-cliff gate into yt_retention.py + daily_check.py
+_source: analyze_and_suggest d036bc41-bb94-449d-b8af-a2752f362ca2 · 2026-08-15_
+
+**Why:** This session hand-ran yt_retention.py --summary across 6 channels and manually eyeballed drop_points to catch the already-happening 8.4-8.8s cliff and the claude-tricks Effort Dial cliff -- both were only found because a human happened to look. Automating the same threshold check into daily_check.py (which already runs on a schedule per docs/FACTORY.md) turns this from a periodic strategist task into a standing safety net that catches the next cliff before the next 2-week cycle.
+
+**Interface / acceptance:**
+
+Update scripts/yt_retention.py: add a `--gate` flag that, in addition to the existing --summary output, exits non-zero if any analyzed video has a 15s hold below 30% OR any single drop_point steeper than -6pp within the first 15 seconds (the exact thresholds this session's manual review applied by hand across claude-tricks/aashiqana/already-happening). Wire `python scripts/yt_retention.py --channel <key> --days 30 --gate` into scripts/daily_check.py for every LIVE channel so an early-cliff video surfaces on the daily report automatically instead of requiring a manual --summary read every strategist cycle. Keep --summary's human-readable output unchanged; --gate only adds the exit-code + a one-line 'CLIFF: <video> -Npp at Ts' flag list to stdout.
+
+- [ ] open
+
+## Cap the TODAY-anchor beat duration in scripts/finalize_already_happening.py
+_source: analyze_and_suggest d036bc41-bb94-449d-b8af-a2752f362ca2 · 2026-08-15_
+
+**Why:** already-happening's first measurable retention curve shows a -23pp/-15pp double cliff at 8.4-8.8s, landing on the anchor->extrapolation handoff the blueprint's spine always produces at roughly that mark. A one-off content fix (the replaces_ref suggestion above) addresses Ep03; a finalize-time assert prevents every future episode from silently reproducing the same structural cliff without a human re-deriving the timing rule from scratch each time.
+
+**Interface / acceptance:**
+
+scripts/finalize_already_happening.py currently has no beat-duration assertion on the TODAY-anchor segment before the +5yr extrapolation cut. Add a hard assert (fail the finalize step, not a warning) that the anchor beat's measured VO/segment duration does not exceed ~7s, sourced from the episode's own sidecar timing JSON (same class of check as the existing §4 caption-band and §5 cover-dissolve QC gates in PRODUCTION-PLAYBOOK.md). If a beat exceeds the cap, finalize should refuse and print the offending timestamp so the human either trims the anchor script or explicitly overrides with a documented reason.
+
+- [ ] open
+

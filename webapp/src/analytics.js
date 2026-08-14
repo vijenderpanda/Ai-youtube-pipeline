@@ -83,6 +83,22 @@ export const RETENTION_TIER_LABEL = {
   unknown: 'Retention n/a',
 }
 
+/** The ~15s sustained-distribution gate. `hold15s` is audienceWatchRatio near 15s
+ *  (1.0 = every opener still watching; >1 = looping). ≥0.5 = cleared the gate. */
+export const HOLD_GATE_15 = 0.5
+export function holdPct(ratio) {
+  if (ratio == null || !Number.isFinite(Number(ratio))) return null
+  return Math.round(Number(ratio) * 100)
+}
+/** Trust the 15s hold as a "clone this" signal only with enough sample and a sane
+ *  (non-loop-inflated) value — a 6× loop ratio on 40 views is noise, not a win. */
+export function gateTrust(v) {
+  return v && v.hold15s != null && (v.totalViews || 0) >= 50 && v.hold15s <= 2
+}
+export function clearedGate15(v) {
+  return gateTrust(v) && v.hold15s >= HOLD_GATE_15
+}
+
 /**
  * Enrich a video_summary list with derived metrics + a 0–100 viral score +
  * a recommendation. `windowDays` is the selected window (7/30/90). Returns a new
@@ -108,6 +124,15 @@ export function enrichVideos(videos, windowDays = 30) {
     const sharesPer1k = v.shares == null ? null : (Number(v.shares) / Math.max(totalViews, 1)) * 1000
     const accel = acceleration(trend, !isFallback)
 
+    // window signals (v17): traffic-source mix + retention-curve holds.
+    // shortsPct = % of reach from the Shorts feed (the algorithm's growth engine).
+    // hold15s = audienceWatchRatio near the 15s sustained-distribution gate
+    // (1.0 = 100% of openers still watching; >1 = looping). NULL on fallback and
+    // for videos YouTube withholds below its retention privacy-sample threshold.
+    const shortsPct = v.shorts_pct == null ? null : Number(v.shorts_pct)
+    const hold15s = v.hold_15s == null ? null : Number(v.hold_15s)
+    const hold3s = v.hold_3s == null ? null : Number(v.hold_3s)
+
     return {
       ...v,
       totalViews,
@@ -120,6 +145,10 @@ export function enrichVideos(videos, windowDays = 30) {
       accel,
       retentionTier: retentionTier(retentionPct),
       ageDays: daysSince(v.first_date),
+      shortsPct,
+      hold15s,
+      hold3s,
+      trafficMix: v.traffic_mix || null,
     }
   })
 

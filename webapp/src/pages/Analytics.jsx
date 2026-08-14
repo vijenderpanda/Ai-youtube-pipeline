@@ -14,7 +14,7 @@ import {
   fmtNum,
   fmtPct,
 } from '../components/VideoPerf'
-import { enrichVideos, deltaIndex, networkRollup, daysSince } from '../analytics'
+import { enrichVideos, deltaIndex, networkRollup, daysSince, gateTrust, holdPct } from '../analytics'
 
 /**
  * Insights — replacement for the 544-number analytics wall (UX declutter).
@@ -34,6 +34,7 @@ const WINDOW_OPTIONS = [
 
 function nowTiles(videos) {
   let views = 0, likes = 0, comments = 0, subs = 0, wpct = 0, wv = 0
+  let spNum = 0, spV = 0  // views-weighted Shorts-feed reach %
   for (const v of videos) {
     views += v.totalViews || 0
     likes += Number(v.likes) || 0
@@ -43,8 +44,16 @@ function nowTiles(videos) {
       wpct += v.retentionPct * (v.totalViews || 0)
       wv += v.totalViews || 0
     }
+    if (v.shortsPct != null) {
+      spNum += v.shortsPct * (v.totalViews || 0)
+      spV += v.totalViews || 0
+    }
   }
-  return { views, avgRet: wv > 0 ? wpct / wv : null, eng: views > 0 ? ((likes + comments) / views) * 100 : null, subs }
+  return {
+    views, avgRet: wv > 0 ? wpct / wv : null,
+    eng: views > 0 ? ((likes + comments) / views) * 100 : null, subs,
+    shortsPct: spV > 0 ? spNum / spV : null,
+  }
 }
 
 /** New Job prefills for do-next actions (kept from the old Recommendations flow). */
@@ -107,6 +116,34 @@ function buildInsights({ videos, channels, rollup, isFirst }) {
         doNext: { label: 'Give it a new title + cover', action: 'plan', prefill: prefillFor(v, 'repackage') },
       })
     }
+  }
+
+  // Retention champ: the video that best clears the ~15s sustained-distribution
+  // gate — the format worth cloning, which is NOT always the view champ. Trusted
+  // holds only (enough sample, no loop-inflation). Contrast with the view leader
+  // when they differ, so "most views" never gets mistaken for "best format".
+  const trusted = videos.filter((v) => gateTrust(v))
+  if (trusted.length) {
+    const champ = trusted.reduce((a, b) => (b.hold15s > a.hold15s ? b : a))
+    // view leader within the champ's OWN channel, so the contrast compares like
+    // with like (never "clone this song, not that Short" across channels).
+    const sameChan = videos.filter((v) => v.channel_key === champ.channel_key)
+    const viewLeader = sameChan.reduce((a, b) => ((b.totalViews || 0) > (a.totalViews || 0) ? b : a), sameChan[0])
+    const contrast =
+      viewLeader && viewLeader.video_id !== champ.video_id && gateTrust(viewLeader) && viewLeader.hold15s < champ.hold15s
+    cands.push({
+      kind: 'retention_champ', score: 95, tone: 'success', video: champ,
+      text: contrast ? (
+        <>
+          <b>{champ.title}</b> holds <b>{holdPct(champ.hold15s)}%</b> of viewers to 15 seconds — your best. Clone this format, not <b>{viewLeader.title}</b> (more views, but only {holdPct(viewLeader.hold15s)}% stay).
+        </>
+      ) : (
+        <>
+          <b>{champ.title}</b> holds <b>{holdPct(champ.hold15s)}%</b> of viewers past 15 seconds — your best-retaining format. Make more like it.
+        </>
+      ),
+      doNext: { label: 'Plan one like it', action: 'plan', prefill: prefillFor(champ, 'series') },
+    })
   }
 
   // Fastest mover since the last check.
@@ -266,6 +303,10 @@ export default function Analytics() {
     {
       label: 'Watch-through', value: now.avgRet == null ? '—' : fmtPct(now.avgRet),
       bench: 'Above 45% is strong. Under 35% means openings are losing people.',
+    },
+    {
+      label: 'Reach from Shorts feed', value: now.shortsPct == null ? '—' : fmtPct(now.shortsPct),
+      bench: 'The Shorts feed is where the algorithm tests you. 80%+ means it is actively pushing your videos.',
     },
     {
       label: 'Reactions per view', value: now.eng == null ? '—' : fmtPct(now.eng),

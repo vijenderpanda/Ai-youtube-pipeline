@@ -346,6 +346,16 @@ const COLS = [
   { key: 'total_views', label: 'Views', sortVal: (v) => num(v.total_views), render: (v) => fmtNum(v.total_views) },
   { key: 'avg_view_pct', label: 'Avg view %', cellClass: 'dim', sortVal: (v) => num(v.avg_view_pct), render: (v) => fmtPct(v.avg_view_pct) },
   {
+    key: 'hold15s', label: '15s hold', enriched: true, cellClass: 'dim',
+    sortVal: (v) => num(v.hold15s),
+    render: (v) => (v.hold15s == null ? '—' : Math.round(Number(v.hold15s) * 100) + '%'),
+  },
+  {
+    key: 'shortsPct', label: 'Shorts feed', enriched: true, cellClass: 'dim',
+    sortVal: (v) => num(v.shortsPct),
+    render: (v) => (v.shortsPct == null ? '—' : fmtPct(v.shortsPct)),
+  },
+  {
     key: 'retentionTier', label: 'Retention', str: true, enriched: true, cellClass: 'dim',
     sortVal: (v) => v.retentionTier || '',
     render: (v) => (v.retentionTier ? <span className={'ret-' + v.retentionTier}>{TIER_SHORT[v.retentionTier]}</span> : '—'),

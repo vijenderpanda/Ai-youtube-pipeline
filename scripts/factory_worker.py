@@ -1904,18 +1904,33 @@ def channel_video_ids(yt):
     return ids
 
 
+def _iso_dur_to_s(iso):
+    """ISO-8601 PT#H#M#S (YouTube contentDetails.duration) -> seconds, or None."""
+    if not iso:
+        return None
+    m = re.match(r"P(?:(\d+)D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?$", iso)
+    if not m:
+        return None
+    d, h, mi, s = (float(x) if x else 0.0 for x in m.groups())
+    return int(d * 86400 + h * 3600 + mi * 60 + s)
+
+
 def video_meta(yt, ids):
-    """Data API videos.list -> {video_id: {title, views, likes, comments}}
-    (titles for both paths, lifetime totals for the fallback path)."""
+    """Data API videos.list -> {video_id: {title, views, likes, comments, duration_s}}
+    (titles for both paths, lifetime totals for the fallback path; duration_s maps
+    the ~3s/~15s retention gates onto the elapsed-time-ratio curve)."""
     meta = {}
     for i in range(0, len(ids), 50):
-        vr = yt.videos().list(part="snippet,statistics", id=",".join(ids[i:i + 50])).execute()
+        vr = yt.videos().list(part="snippet,statistics,contentDetails",
+                              id=",".join(ids[i:i + 50])).execute()
         for v in vr.get("items", []):
             st = v.get("statistics", {})
             meta[v["id"]] = {"title": v["snippet"]["title"],
                              "views": int(st.get("viewCount", 0) or 0),
                              "likes": int(st.get("likeCount", 0) or 0),
-                             "comments": int(st.get("commentCount", 0) or 0)}
+                             "comments": int(st.get("commentCount", 0) or 0),
+                             "duration_s": _iso_dur_to_s(
+                                 (v.get("contentDetails") or {}).get("duration"))}
     return meta
 
 
@@ -1953,8 +1968,95 @@ def analytics_to_rows(key, arows, meta, titles_hist):
             "comments": int(r[8] or 0),
             "shares": int(r[9] or 0),
             "source": "analytics_api",
+            # window signals: NULL on every row; attach_window_signals() overwrites
+            # the latest daily row per video. Kept on ALL rows so the bulk insert
+            # payload stays homogeneous (PostgREST needs consistent columns).
+            "shorts_pct": None, "traffic_mix": None,
+            "hold_3s": None, "hold_15s": None,
         })
     return rows
+
+
+def fetch_video_traffic(yta, video_ids, start, end):
+    """Analytics API: per-video window views split by insightTrafficSourceType.
+    -> {video_id: {SOURCE: views}}. Chunked by VIDEO_FILTER_CHUNK. Best-effort:
+    a failed chunk is skipped (traffic mix is a nice-to-have, never fails a sync)."""
+    out = {}
+    for i in range(0, len(video_ids), VIDEO_FILTER_CHUNK):
+        chunk = video_ids[i:i + VIDEO_FILTER_CHUNK]
+        try:
+            r = yta.reports().query(
+                ids="channel==MINE", startDate=str(start), endDate=str(end),
+                metrics="views", dimensions="video,insightTrafficSourceType",
+                filters="video==" + ",".join(chunk), maxResults=500).execute()
+        except Exception:  # noqa: BLE001 -- best-effort
+            continue
+        for row in r.get("rows") or []:
+            if not isinstance(row, list) or len(row) < 3:
+                continue
+            vid, src, views = row[0], row[1], int(row[2] or 0)
+            out.setdefault(vid, {})[src] = out.setdefault(vid, {}).get(src, 0) + views
+    return out
+
+
+def _hold_at(rows, sec, dur):
+    """rows = [[elapsed_ratio, watch_ratio], ...]; nearest watch_ratio to sec/dur."""
+    if not rows or not dur:
+        return None
+    tgt = sec / dur
+    p = min(rows, key=lambda x: abs(x[0] - tgt))
+    return round(p[1], 4)
+
+
+def fetch_video_holds(yta, video_ids, meta, start, end):
+    """Analytics API: per-video audience-retention curve (elapsedVideoTimeRatio)
+    -> {video_id: {hold_3s, hold_15s}}, the watch ratio nearest the 3s hook gate
+    and the 15s sustained-distribution gate. One query per video (the only reliable
+    shape for elapsedVideoTimeRatio). Best-effort per video: YouTube withholds
+    low-sample curves and 400s some videos -> that video simply gets no holds."""
+    out = {}
+    for vid in video_ids:
+        dur = (meta.get(vid) or {}).get("duration_s")
+        if not dur:
+            continue
+        try:
+            r = yta.reports().query(
+                ids="channel==MINE", startDate=str(start), endDate=str(end),
+                metrics="audienceWatchRatio", dimensions="elapsedVideoTimeRatio",
+                filters=f"video=={vid}", sort="elapsedVideoTimeRatio").execute()
+        except Exception:  # noqa: BLE001 -- best-effort per video
+            continue
+        rows = [[float(x[0]), float(x[1])] for x in (r.get("rows") or [])
+                if isinstance(x, list) and len(x) >= 2]
+        if not rows:
+            continue
+        out[vid] = {"hold_3s": _hold_at(rows, 3, dur),
+                    "hold_15s": _hold_at(rows, 15, dur)}
+    return out
+
+
+def attach_window_signals(rows, traffic, holds):
+    """Stamp per-video window signals (shorts_pct, traffic_mix, hold_3s, hold_15s)
+    onto the LATEST daily row per video, so the video_summary edge query picks them
+    up via array_agg(order by date desc). Mutates `rows` in place."""
+    latest = {}  # video_id -> the row with the max date
+    for r in rows:
+        vid = r.get("video_id")
+        if not vid:
+            continue
+        cur = latest.get(vid)
+        if cur is None or str(r.get("date") or "") > str(cur.get("date") or ""):
+            latest[vid] = r
+    for vid, r in latest.items():
+        mix = traffic.get(vid)
+        if mix:
+            total = sum(mix.values())
+            r["traffic_mix"] = mix
+            r["shorts_pct"] = round(mix.get("SHORTS", 0) / total * 100, 1) if total else None
+        h = holds.get(vid)
+        if h:
+            r["hold_3s"] = h.get("hold_3s")
+            r["hold_15s"] = h.get("hold_15s")
 
 
 def fallback_rows(supa, key, meta, hist_prev, today):
@@ -2085,6 +2187,17 @@ def sync_video_stats(supa, buf, sync_at):
             yta = build("youtubeAnalytics", "v2", credentials=creds)
             rows = analytics_to_rows(key, fetch_video_analytics(yta, ids, start, today),
                                      meta, titles_hist)
+            # window signals: traffic-source mix + 3s/15s retention holds, stamped
+            # onto each video's latest daily row (best-effort; bounded to videos
+            # with activity in the window so per-video hold queries stay cheap).
+            active = list({r["video_id"] for r in rows if r.get("video_id")})
+            if active:
+                try:
+                    traffic = fetch_video_traffic(yta, active, start, today)
+                    holds = fetch_video_holds(yta, active, meta, start, today)
+                    attach_window_signals(rows, traffic, holds)
+                except Exception as e:  # noqa: BLE001 -- never fail the sync on this
+                    buf.add(f"[worker] {key}: window signals (traffic/holds) skipped: {e}")
         except HttpError as e:
             status = getattr(getattr(e, "resp", None), "status", None)
             if status == 403:

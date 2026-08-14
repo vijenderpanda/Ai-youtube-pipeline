@@ -192,3 +192,17 @@
 - [ ] Some Claude users are mad that Anthropic&#8217;s new watermarks will catch them using it at their jobs, classes
   https://techcrunch.com/2026/08/12/some-claude-users-are-mad-that-anthropics-new-watermarks-will-catch-them-cheating-at-their-jobs-classes/
 - PEG-CHECK 2026-08-13 08:47 | peg="Anthropic 50% weekly Claude Code usage boost through Aug 19 2026" | air=2026-08-13 | first_seen=? | age=?d | limit=4d | UNVERIFIED
+
+## Radar 2026-08-13 23:24
+- [ ] OpenAI hires new CRO as executive shake-up continues
+  https://techcrunch.com/2026/08/13/openai-hires-new-cro-as-executive-shake-up-continues/
+
+## Radar 2026-08-14 02:24
+- [ ] OpenAI introduces &#8216;Ultrafast,&#8217; a new mode that makes GPT-5.6 Sol work at 14x the speed
+  https://techcrunch.com/2026/08/13/openai-introduces-ultrafast-a-new-mode-that-makes-gpt-5-6-sol-work-at-14x-the-speed/
+- [ ] IBM partners with OpenAI to bolster enterprise AI push
+  https://techcrunch.com/2026/08/13/ibm-partners-with-openai-to-bolster-enterprise-ai-push/
+- [ ] Anthropic set AI agents loose on the same task. They started a turf war.
+  https://techcrunch.com/2026/08/13/anthropic-set-ai-agents-loose-on-the-same-task-they-started-a-turf-war/
+- [ ] OpenAI is losing its second executive this week
+  https://www.theverge.com/ai-artificial-intelligence/979815/openai-denise-dresser-leaving-executive-departure

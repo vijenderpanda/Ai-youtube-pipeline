@@ -95,6 +95,12 @@ with s as (
     sum(likes)::bigint as likes,
     sum(comments)::bigint as comments,
     sum(shares)::bigint as shares,
+    -- window signals (traffic mix + retention holds): stamped on the latest daily
+    -- row per video, so take the most-recent non-null.
+    (array_agg(shorts_pct  order by date desc) filter (where shorts_pct  is not null))[1] as shorts_pct,
+    (array_agg(hold_3s     order by date desc) filter (where hold_3s     is not null))[1] as hold_3s,
+    (array_agg(hold_15s    order by date desc) filter (where hold_15s    is not null))[1] as hold_15s,
+    (array_agg(traffic_mix order by date desc) filter (where traffic_mix is not null))[1] as traffic_mix,
     min(date) as first_date,
     max(date) as last_date,
     array_agg(coalesce(views, 0) order by date asc) as trend
