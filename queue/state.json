@@ -1,20 +1,35 @@
 {
- "taken_at": "2026-08-14T22:51:38.940522Z",
+ "taken_at": "2026-08-14T23:38:06.750273Z",
  "jobs": [
+  {
+   "id": "7a1b8720-287d-4be0-8b82-0034697ca225",
+   "type": "custom",
+   "channel_key": "claude-tricks",
+   "title": "Mac: pull + restart (usage rollup column fix: assigned_worker)",
+   "status": "failed",
+   "model": "sonnet",
+   "effort": "low",
+   "assigned_worker": "Vijenders-MacBook-Pro.local",
+   "target_worker": null,
+   "created_at": "2026-08-14T22:52:14.103848+00:00",
+   "finished_at": "2026-08-14T22:52:30.913727+00:00",
+   "error": "orphaned: worker restarted mid-job",
+   "result": "{\"recap\": {\"next\": [\"Restart worker and retry git pull\", \"Investigate if pull was interrupted or if worker crash pattern exists\"], \"steps\": [\"Started job 7a1b8720-287d-4be0-8b82-0034697ca225 with claude-sonnet-5\", \"Ran git status --porcelain (repo clean)\", \"Initiated git pull --ff-only origin claude/ai-unpacked-vj-analytics-9lhetq\", \"Worker restarted before pull completed\"], \"issues\": [\"Worker restarted mid-job during git pull \\u2014termination left branch fetch incomplete\"], \"outputs\": [], \"headline\": \"Worker restarted mid-job during git pull, preventing branch sync\", \"decisions\": [\"Checked repo status before pulling to ensure clean state\"]}}"
+  },
   {
    "id": "a44afa69-155e-4cf4-a852-06e048b29ca8",
    "type": "custom",
    "channel_key": "claude-tricks",
    "title": "Mac: pull + restart (usage rollup column fix: assigned_worker)",
-   "status": "queued",
+   "status": "failed",
    "model": "sonnet",
    "effort": "low",
-   "assigned_worker": null,
+   "assigned_worker": "Vijenders-MacBook-Pro.local",
    "target_worker": "Vijenders-MacBook-Pro.local",
    "created_at": "2026-08-14T22:51:36.856709+00:00",
-   "finished_at": null,
-   "error": null,
-   "result": null
+   "finished_at": "2026-08-14T22:51:58.084932+00:00",
+   "error": "orphaned: worker restarted mid-job",
+   "result": "{\"recap\": {\"next\": [\"Defer or avoid mid-job worker restarts; queue restart request to execute after current job finishes\", \"Verify whether pull actually requires worker restart or if it can apply changes on next job cycle\"], \"steps\": [\"Detected dirty repo state (retention.json + engagement_log.json)\", \"Stashed untracked changes with auto-generated timestamp message\", \"Pulled from origin branch (fast-forward merge, 3 files changed)\", \"Initiated worker restart to apply new code\", \"Worker restarted, orphaning the running job\"], \"issues\": [\"Worker restarted while job a44afa69 was still executing \\u2014 restart should be deferred until job completes or skipped entirely if pull can run without restart\"], \"outputs\": [], \"headline\": \"Worker restarted mid-job after pulling branch changes, orphaning the analytics job (a44afa69) before completion.\", \"decisions\": [\"Stash before pull to enable clean fast-forward merge without losing local work\"]}}"
   },
   {
    "id": "85931a93-95b7-4b64-a9d9-91719fb269f1",
@@ -285,24 +300,46 @@
    "finished_at": "2026-08-13T16:29:47.487812+00:00",
    "error": null,
    "result": "{\"video_rows\": 87, \"reauth_needed\": [], \"rows_upserted\": 55, \"video_sources\": {\"lulla\": \"analytics_api\", \"calm-ai\": \"error\", \"vehicles\": \"analytics_api\", \"aashiqana\": \"analytics_api\", \"language-abc\": \"analytics_api\", \"claude-tricks\": \"analytics_api\", \"already-happening\": \"analytics_api\"}, \"follow_up_job_id\": \"2097a695-a555-4f02-91db-41fdd85fac70\"}"
-  },
-  {
-   "id": "fbfc465d-a8bc-4078-8b07-124a46260ae9",
-   "type": "analyze_and_suggest",
-   "channel_key": "_network",
-   "title": "AI content analysis",
-   "status": "done",
-   "model": "sonnet",
-   "effort": "low",
-   "assigned_worker": "Vijenders-MacBook-Pro.local",
-   "target_worker": null,
-   "created_at": "2026-08-13T10:26:42.528001+00:00",
-   "finished_at": "2026-08-13T10:32:19.765007+00:00",
-   "error": null,
-   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Re-run yt_retention.py next cycle once more videos clear the 48h lag + sample threshold to confirm whether the PROOF-AT-4s fixes actually moved the 15s-hold numbers.\", \"Build and wire scripts/retention_cliff_gate.py into build_ep_v2.py --assert-pacing so the cliff-fix is enforced automatically rather than re-derived per brief.\"], \"steps\": [\"Read PRODUCTION-PLAYBOOK.md sections 0-9 and the channel-lock table for craft rules and locked params.\", \"Parsed analysis_ctx JSON for channel list, video_summary top/bottom videos, and the 72-item calendar window Aug 13-27.\", \"Ran scripts/yt_retention.py --channel claude-tricks --days 30 --summary: found 6 of 7 measurable videos share a 10-15pp drop in the 4.7-6.7s window.\", \"Ran scripts/yt_retention.py --channel aashiqana --days 30 --summary: found the long-form 'Aaja Ve' loses -21pp/-32pp at 4.3s (instrumental before vocal) vs its cold-open Short at 51% avg-view.\", \"Confirmed calendar item 987377be already queues the correct fix for that aashiqana defect \\u2014 no challenge needed there.\", \"WebSearch on 2026 YouTube Shorts retention/hook trends and Bollywood Suno hook-cut trends to source concrete reasons for "
   }
  ],
  "workers": [
+  {
+   "worker_id": "Vijenders-MacBook-Pro.local",
+   "hostname": "Vijenders-MacBook-Pro.local",
+   "os": "Darwin",
+   "paused": false,
+   "accept_types": [],
+   "last_seen": "2026-08-14T23:37:43.206714+00:00",
+   "max_parallel": 2,
+   "meta": {
+    "usage": {
+     "at": "2026-08-14T23:36:55.076609+00:00",
+     "jobs": 12,
+     "since": "2026-08-14T18:36:55Z",
+     "cost_usd": 5.08,
+     "window_h": 5,
+     "input_tokens": 68,
+     "rate_limited": false,
+     "output_tokens": 11823
+    },
+    "python": "3.12.4",
+    "platform": "macOS-26.4.1-arm64-arm-64bit"
+   },
+   "recent_logs": [
+    "22:52:42 [info] worker ready -- polling for jobs (parallel x2, heavy serial)",
+    "22:52:42 [info] registered worker 'Vijenders-MacBook-Pro.local' (Vijenders-MacBook-Pro.local) os=Darwin gpu=none",
+    "22:52:30 [info] reaping orphaned job 7a1b8720-287d-4be0-8b82-0034697ca225: orphaned: worker restarted mid-job",
+    "22:52:30 [info] seeded factory_settings auto_sync defaults (ignore-duplicates)",
+    "22:52:29 [info] seeded factory_generators (102 rows, merge-duplicates)",
+    "22:52:29 [info] seeded factory_channels (6 rows, ignore-duplicates)",
+    "22:52:16 [info] worker ready -- polling for jobs (parallel x2, heavy serial)",
+    "22:52:16 [info] registered worker 'Vijenders-MacBook-Pro.local' (Vijenders-MacBook-Pro.local) os=Darwin gpu=none",
+    "22:52:14 [info]   auto-retried as job 7a1b8720-287d-4be0-8b82-0034697ca225 (retry 1/1)",
+    "22:51:58 [info] reaping orphaned job a44afa69-155e-4cf4-a852-06e048b29ca8: orphaned: worker restarted mid-job",
+    "22:51:57 [info] seeded factory_settings auto_sync defaults (ignore-duplicates)",
+    "22:51:56 [info] seeded factory_generators (102 rows, merge-duplicates)"
+   ]
+  },
   {
    "worker_id": "DESKTOP-DEIR7RS",
    "hostname": "DESKTOP-DEIR7RS",
@@ -311,52 +348,25 @@
    "accept_types": [
     "shell_script"
    ],
-   "last_seen": "2026-08-14T22:51:35.013873+00:00",
+   "last_seen": "2026-08-14T23:37:49.754323+00:00",
    "max_parallel": 2,
    "meta": {
     "python": "3.12.10",
     "platform": "Windows-11-10.0.26200-SP0"
    },
    "recent_logs": [
+    "23:37:39 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "23:32:38 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "23:27:34 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "23:22:33 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "23:17:31 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "23:12:30 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "23:07:29 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "23:02:28 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "22:57:26 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "22:52:25 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
     "22:47:24 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "22:42:23 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "22:37:21 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "22:32:21 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "22:27:19 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "22:22:19 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "22:17:17 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "22:12:16 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "22:07:15 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "22:02:14 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "21:57:13 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "21:52:12 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping"
-   ]
-  },
-  {
-   "worker_id": "Vijenders-MacBook-Pro.local",
-   "hostname": "Vijenders-MacBook-Pro.local",
-   "os": "Darwin",
-   "paused": false,
-   "accept_types": [],
-   "last_seen": "2026-08-14T22:51:17.895911+00:00",
-   "max_parallel": 2,
-   "meta": {
-    "python": "3.12.4",
-    "platform": "macOS-26.4.1-arm64-arm-64bit"
-   },
-   "recent_logs": [
-    "22:11:55 [info] job 85931a93-95b7-4b64-a9d9-91719fb269f1 done, uploaded=0",
-    "21:58:35 [info] started job thread (1/2 slots, type=produce_short)",
-    "21:58:35 [info] claimed job 85931a93-95b7-4b64-a9d9-91719fb269f1 type=produce_short channel=claude-tricks title='bc01 v5 PHASE 2 \u2014 record tape, render, gate, stage for Mon (no ",
-    "21:54:45 [info] worker ready -- polling for jobs (parallel x2, heavy serial)",
-    "21:54:45 [info] registered worker 'Vijenders-MacBook-Pro.local' (Vijenders-MacBook-Pro.local) os=Darwin gpu=none",
-    "21:54:28 [info] reaping orphaned job 267d6e6a-0dee-4c42-bf27-626a4ff30e52: orphaned: worker restarted mid-job",
-    "21:54:27 [info] seeded factory_settings auto_sync defaults (ignore-duplicates)",
-    "21:54:27 [info] seeded factory_generators (102 rows, merge-duplicates)",
-    "21:54:26 [info] seeded factory_channels (6 rows, ignore-duplicates)",
-    "21:54:08 [info] worker ready -- polling for jobs (parallel x2, heavy serial)",
-    "21:54:08 [info] registered worker 'Vijenders-MacBook-Pro.local' (Vijenders-MacBook-Pro.local) os=Darwin gpu=none",
-    "21:54:07 [info]   auto-retried as job 267d6e6a-0dee-4c42-bf27-626a4ff30e52 (retry 1/1)"
+    "22:42:23 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping"
    ]
   }
  ]
