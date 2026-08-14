@@ -128,17 +128,28 @@ window; GlobalHeader carries `BUILD CLUB · CH N/6`; header_scrim on.
 > Friday is the finale/showcase. Slot fixed at 16:00 IST — the only tested time.
 > The promise: **start Monday, LISTED by Thursday evening, Friday you watch it compound.**
 
+> **Revised again 2026-08-15 (VJ): the season OPENER moves to Monday.** The Fri
+> Aug-14 Ch.1 cut (`bWoa98zMWjA`) published into the weekend against the read and
+> skipped audition gates 3/4/5 — it gets a proper v5 REDO (new cold open, new
+> season-map beat, re-recorded tape; never a re-upload) as the Monday opener, and
+> the v4 cut is UNLISTED when v5 arms (owner confirms). The channel's power is
+> the educator register: hook lands in **audio + VO together** inside 2s, calm
+> precise delivery, zero filler — every sentence earns the next second, so the
+> viewer stays locked to the last frame. Sloppy is the one thing this series is
+> never allowed to look like — hence all 5 audition gates, every chapter, no
+> exceptions.
+
 | Ch | Day | One move | Homework |
 |----|-----|----------|----------|
-| bc01 | Fri Aug 14 (shipped — season opener) | Idea → live website (Claude one-file page + Netlify Drop) | Ship yours, comment SHIPPED |
-| bc02 | **Mon Aug 17** | Add one AI feature to the live site (+ ep19's "What am I missing?" move on-camera) | Add one to yours |
-| bc03 | **Tue Aug 18** | Give it memory (Supabase free tier) | Store one real thing |
+| bc01 v5 | **Mon Aug 17** | SEASON OPENER (redo) — idea → live website tonight (Claude one-file page + Netlify Drop) + the week map: Mon LIVE · Tue SMART · Thu LISTED · Fri finale | Ship yours, comment SHIPPED |
+| bc02 | **Tue Aug 18** | Add one AI feature to last night's site (+ ep19's "What am I missing?" move on-camera) | Add one to yours |
 | — | Wed Aug 19 | **DARK** — protects Tuesday's 24–48h sample window | catch-up day |
-| bc06 | **Thu Aug 20** | LAUNCH DAY — polish + list yourself publicly (+ ep21's "AI interviews you first" move for the launch copy) | Post your link + SHIPPED |
-| bcs1f | **Fri Aug 21** | Finale + SHIPPED showcase — real viewer builds on screen, Season 2 tease | Not shipped? Start Monday |
+| bc06 | **Thu Aug 20** | Ch.3 LAUNCH DAY — polish + list yourself publicly (+ ep21's "AI interviews you first" move for the launch copy) | Post your link + SHIPPED |
+| bcs1f | **Fri Aug 21** | Early finale of the quick learning series + SHIPPED showcase — real viewer builds on screen, Season 2 tease | Not shipped? Start Monday |
 
-- bc04 (works while you sleep) and bc05 (alerts) move to the **Season 2 backlog** —
-  S2 = "your app runs without you," same one-week shape if S1's read supports it.
+- bc03 (memory), bc04 (works while you sleep) and bc05 (alerts) move to the
+  **Season 2 backlog** — S2 = "give it a memory + it runs without you," same
+  one-week shape if S1's read supports it.
 - Chapters get full briefs the day before they produce (calendar rows hold the
   skeleton + locked produce specs). Each build move must be verified against the
   CURRENT free tier at production time (playbook §1.5 — verify reality).
