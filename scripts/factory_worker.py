@@ -172,6 +172,14 @@ WORKER_ID = (os.environ.get("FACTORY_WORKER_ID") or socket.gethostname() or "wor
 WORKER_NAME = (os.environ.get("FACTORY_WORKER_NAME") or socket.gethostname() or WORKER_ID).strip()
 WORKER_HEARTBEAT_S = 20  # how often to bump factory_workers.last_seen + reload routing
 LOG_PUSH_MAX = 30  # max log lines to push per heartbeat (newest first)
+# v17: usage rollup surfaced in factory_workers.meta.usage (dashboard Workers page).
+# The Claude subscription's rolling-limit % is NOT exposed by the CLI in any
+# non-interactive form (/usage is interactive-only; there's no `claude usage`
+# subcommand/flag/cache), so "usage limit" here is the actionable proxy: real
+# spend + token totals the CLI reports per run (factory_jobs.result.usage),
+# summed over the subscription's rolling window, plus a rate_limited tripwire.
+USAGE_WINDOW_H = 5  # Claude subscription rolling window; report spend/tokens within it
+USAGE_REFRESH_S = 120  # throttle the factory_jobs rollup query (meta still writes every HB)
 STOP_GRACE_S = 5  # v7: SIGTERM -> this many seconds -> SIGKILL (whole process group)
 LOG_CAP_BYTES = 200_000
 JOB_TIMEOUT_S = 45 * 60
@@ -503,6 +511,66 @@ def detect_gpu():
         return None
 
 
+def _worker_meta(usage=None):
+    """The factory_workers.meta JSONB payload. Static host facts always; the v17
+    usage rollup folded in when present. Rebuilt whole on every write so a
+    heartbeat that adds meta.usage never clobbers python/platform (patch replaces
+    the JSONB column, not deep-merges it)."""
+    m = {"python": platform.python_version(), "platform": platform.platform()}
+    if usage is not None:
+        m["usage"] = usage
+    return m
+
+
+# v17: cache the rolling usage rollup so writing meta.usage on every ~20s
+# heartbeat costs at most one factory_jobs query per USAGE_REFRESH_S.
+_usage_cache = {"at": 0.0, "val": None}
+
+
+def usage_rollup(supa):
+    """Near-real-time usage snapshot for this worker's status row.
+
+    There is no non-interactive way to read the Claude subscription's rolling-limit
+    percentage (the `/usage` slash command shows it interactively; the CLI exposes
+    no `claude usage` subcommand, flag, or local cache). What IS live and real is
+    the per-run cost + token usage the CLI emits on its `result` event, which
+    run_job stores in factory_jobs.result.usage. This sums that across THIS
+    worker's jobs finished inside the subscription's rolling window, plus a
+    rate_limited tripwire (any recent job that failed on a usage/rate cap). Result
+    goes into factory_workers.meta.usage. Throttled + cached; best-effort, never
+    raises (returns the last good value, or None if never computed)."""
+    now = time.time()
+    if _usage_cache["val"] is not None and now - _usage_cache["at"] < USAGE_REFRESH_S:
+        return _usage_cache["val"]
+    since = (datetime.now(timezone.utc) - timedelta(hours=USAGE_WINDOW_H)).isoformat()
+    out = {"window_h": USAGE_WINDOW_H, "since": since, "jobs": 0,
+           "cost_usd": 0.0, "input_tokens": 0, "output_tokens": 0,
+           "rate_limited": False, "at": now_iso()}
+    try:
+        rows = supa.select(
+            "factory_jobs",
+            f"worker_id=eq.{WORKER_ID}&finished_at=gte.{since}"
+            "&select=status,error,result")
+    except (RuntimeError, requests.RequestException):
+        return _usage_cache["val"]  # keep last good value; retry next heartbeat
+    for r in rows or []:
+        u = (r.get("result") or {}).get("usage") or {}
+        try:
+            out["cost_usd"] += float(u.get("cost_usd") or 0)
+            out["input_tokens"] += int(u.get("input_tokens") or 0)
+            out["output_tokens"] += int(u.get("output_tokens") or 0)
+        except (TypeError, ValueError):
+            pass
+        out["jobs"] += 1
+        err = (r.get("error") or "").lower()
+        if r.get("status") == "failed" and any(s in err for s in
+                                                ("rate limit", "usage limit", "429")):
+            out["rate_limited"] = True
+    out["cost_usd"] = round(out["cost_usd"], 4)
+    _usage_cache.update(at=now, val=out)
+    return out
+
+
 def register_worker(supa, max_parallel):
     """Upsert this machine's row in factory_workers. Preserves dashboard-owned
     fields (paused, accept_types, name) on re-registration by NOT overwriting them
@@ -514,7 +582,7 @@ def register_worker(supa, max_parallel):
         "gpu": detect_gpu(),
         "max_parallel": max_parallel,
         "last_seen": now_iso(),
-        "meta": {"python": platform.python_version(), "platform": platform.platform()},
+        "meta": _worker_meta(),
     }
     # First insert seeds name (friendly default); later upserts leave name/paused/
     # accept_types alone so dashboard edits stick.
@@ -530,13 +598,16 @@ def register_worker(supa, max_parallel):
 
 
 def worker_heartbeat(supa):
-    """Bump last_seen and read this worker's live routing config back in one
-    round-trip. Returns (paused: bool, accept_types: list|None). On ANY error
-    returns (False, None) so a heartbeat hiccup never stalls claiming."""
+    """Bump last_seen (+ v17 meta.usage rollup) and read this worker's live routing
+    config back in one round-trip. Returns (paused: bool, accept_types: list|None).
+    On ANY error returns (False, None) so a heartbeat hiccup never stalls claiming."""
+    patch = {"last_seen": now_iso()}
+    usage = usage_rollup(supa)  # v17: near-real-time spend/token rollup (throttled)
+    if usage is not None:
+        patch["meta"] = _worker_meta(usage)
     try:
         rows = supa.patch_returning("factory_workers", f"worker_id=eq.{WORKER_ID}",
-                                    {"last_seen": now_iso()},
-                                    select="paused,accept_types")
+                                    patch, select="paused,accept_types")
         if rows:
             r = rows[0]
             acc = r.get("accept_types")
