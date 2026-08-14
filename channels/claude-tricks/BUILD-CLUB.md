@@ -1,13 +1,15 @@
-# Build Club — Friday Series Bible (LOCKED 2026-08-13, VJ)
+# Build Club — Season Series Bible (LOCKED 2026-08-13; season shape revised 2026-08-14, VJ)
 
-> **Fridays on AI Unpacked belong to Build Club.** A serialized weekly build for people
-> who want to make things easy and fast: one real move per chapter, homework for the
-> week, next chapter next Friday. Activates the BRAND-BIBLE §5 "Built With Claude" +
-> "Steal This Workflow" lanes as one serialized format.
+> **A Build Club season is ONE WEEK on AI Unpacked.** A serialized build for people
+> who want to make things easy and fast: one real move per chapter, chapters on the
+> proven days (Mon/Tue/Thu), Wednesday dark, Friday finale + showcase — start Monday,
+> LISTED by Thursday evening. Activates the BRAND-BIBLE §5 "Built With Claude" +
+> "Steal This Workflow" lanes as one serialized format. (Original 2026-08-13 shape was
+> weekly Fridays; revised on the 12-day read — see §4.)
 >
-> The daily template-locked flow is UNTOUCHED — Build Club replaces the Friday daily
-> slot only. Everything else about the channel (host, look, captions, compliance,
-> mix engine) is inherited from BRAND-BIBLE.md + PRODUCTION-PLAYBOOK.md.
+> The daily template-locked flow is UNTOUCHED outside a season week. Everything else
+> about the channel (host, look, captions, compliance, mix engine) is inherited from
+> BRAND-BIBLE.md + PRODUCTION-PLAYBOOK.md.
 
 ---
 
@@ -116,21 +118,35 @@ window; GlobalHeader carries `BUILD CLUB · CH N/6`; header_scrim on.
   or post-arm via `--video-id <id> --playlist PLIuiep7RRSGE` recovery mode).
 - **Slot:** Friday 16:00 IST, same as the daily slot it replaces.
 
-## 4. Season 1 — "Your idea → a live app" (Aug 14 – Sep 18, 2026)
-| Ch | Friday | One move | Homework |
-|----|--------|----------|----------|
-| bc01 | Aug 14 | Idea → live website (Claude one-file page + Netlify Drop) | Ship yours, comment SHIPPED |
-| bc02 | Aug 21 | Add one AI feature to the live site | Add one to yours |
-| bc03 | Aug 28 | Give it memory (Supabase free tier) | Store one real thing |
-| bc04 | Sep 4 | Runs while you sleep (free scheduled job) | Automate one task |
-| bc05 | Sep 11 | It talks to you (notification hook) | Wire one alert |
-| bc06 | Sep 18 | Launch day — domain, polish, season finale | Post your link |
+## 4. Season 1 — "Your idea → a live app" (RESTRUCTURED 2026-08-14: ONE WEEK, Aug 14 – Aug 21)
 
-- Chapters bc02–bc06 get full briefs the week they produce (calendar rows hold the
-  skeleton). Each build move must be verified against the CURRENT free tier at
-  production time (playbook §1.5 — verify reality).
-- **After bc06:** compile all six chapters into ONE long-form video — this fulfils
+> **VJ directive 2026-08-14 — the season is a WEEK, not six Fridays.** The 12-day read
+> showed every video's life is decided in 24–48h with no long tail: weekly chapters
+> restarted from zero every time. Chapters now land on the three proven days
+> (Mon d0 147/91 · Tue 165/132 · Thu 129), **Wednesday stays dark** (Aug-12 measured
+> the day-after crash: 25/5 — back-to-back uploads cannibalize the feed sample), and
+> Friday is the finale/showcase. Slot fixed at 16:00 IST — the only tested time.
+> The promise: **start Monday, LISTED by Thursday evening, Friday you watch it compound.**
+
+| Ch | Day | One move | Homework |
+|----|-----|----------|----------|
+| bc01 | Fri Aug 14 (shipped — season opener) | Idea → live website (Claude one-file page + Netlify Drop) | Ship yours, comment SHIPPED |
+| bc02 | **Mon Aug 17** | Add one AI feature to the live site (+ ep19's "What am I missing?" move on-camera) | Add one to yours |
+| bc03 | **Tue Aug 18** | Give it memory (Supabase free tier) | Store one real thing |
+| — | Wed Aug 19 | **DARK** — protects Tuesday's 24–48h sample window | catch-up day |
+| bc06 | **Thu Aug 20** | LAUNCH DAY — polish + list yourself publicly (+ ep21's "AI interviews you first" move for the launch copy) | Post your link + SHIPPED |
+| bcs1f | **Fri Aug 21** | Finale + SHIPPED showcase — real viewer builds on screen, Season 2 tease | Not shipped? Start Monday |
+
+- bc04 (works while you sleep) and bc05 (alerts) move to the **Season 2 backlog** —
+  S2 = "your app runs without you," same one-week shape if S1's read supports it.
+- Chapters get full briefs the day before they produce (calendar rows hold the
+  skeleton + locked produce specs). Each build move must be verified against the
+  CURRENT free tier at production time (playbook §1.5 — verify reality).
+- **After bcs1f:** compile the season into ONE long-form video — this fulfils
   the curriculum-shorts→long-form plan already on file for the channel.
+- **Season verdict data:** bc01's d0 + retention (thresholds pre-committed in
+  docs/stats/AI-UNPACKED-READ-2026-08-14.md §4) + the week's SHIPPED count decide
+  whether S2 runs the same shape.
 - **Season 2 candidate (VJ-approved direction):** the meta build — "I'm building a
   YouTube channel run entirely by AI" — using this channel's own factory as the
   story. Save it until Build Club has an audience.
