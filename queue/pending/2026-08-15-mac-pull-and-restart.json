@@ -1,0 +1,9 @@
+{
+  "type": "custom",
+  "channel_key": "claude-tricks",
+  "model": "sonnet",
+  "effort": "low",
+  "target_worker": "Vijenders-MacBook-Pro.local",
+  "title": "Mac: pull branch + restart worker (usage rollup timestamp fix)",
+  "prompt": "Nothing else is running on this worker — the v5 produce finished at 21:06 UTC. Two steps, in order: (1) In the repo root run: git pull --ff-only origin claude/ai-unpacked-vj-analytics-9lhetq — this brings in commit a2e40da (usage_rollup URL-safe timestamp fix) and later commits. If the tree is dirty, git stash --include-untracked first and say so. (2) Then run: launchctl kickstart -k gui/$(id -u)/com.factory.worker — this restarts the factory worker so it reloads the fixed code and starts reporting meta.usage (the dashboard usage strip). NOTE: the restart kills this very job's process tree; this job will be reaped as 'orphaned' afterwards — that is EXPECTED and fine, the work is done once the kickstart fires. Do the pull FIRST, restart LAST, nothing after."
+}

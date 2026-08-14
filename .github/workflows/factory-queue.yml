@@ -123,10 +123,13 @@ jobs:
           try:
               jobs = rest("GET", "factory_jobs?select=id,type,channel_key,title,status,"
                           "model,effort,assigned_worker,target_worker,created_at,"
-                          "finished_at,error&order=created_at.desc&limit=20")
+                          "finished_at,error,result&order=created_at.desc&limit=20")
               for j in jobs:
                   if j.get("error"):
                       j["error"] = j["error"][:300]
+                  if j.get("result") is not None:
+                      # keep snapshots small: result as a truncated string
+                      j["result"] = json.dumps(j["result"], default=str)[:1200]
               workers = rest("GET", "factory_workers?select=worker_id,hostname,os,"
                              "paused,accept_types,last_seen,max_parallel,meta")
               snap = {"taken_at": __import__("datetime").datetime.utcnow().isoformat() + "Z",
