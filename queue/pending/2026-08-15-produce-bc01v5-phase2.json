@@ -1,0 +1,9 @@
+{
+  "type": "produce_short",
+  "channel_key": "claude-tricks",
+  "model": "sonnet",
+  "effort": "low",
+  "target_worker": "Vijenders-MacBook-Pro.local",
+  "title": "bc01 v5 PHASE 2 — record tape, render, gate, stage for Mon (no arm)",
+  "prompt": "CONTINUATION of the 21:06 UTC prep job — do not redo its work, finish it. Already done: episodes/bc01.v2.json rewritten for v5 (new cold open, season-map beat), demo-site prop at channels/claude-tricks/tapes/bc01_v5_demo_site/index.html. Blockers last time and how to get past them: (1) The tape — Playwright IS installed and has recorded this channel's tapes before (bc01 v4 and scripts/record_factory_queue.py both use sync_playwright on this Mac); record the fresh Netlify Drop tape with a Playwright script: serve/open the demo site index.html, then app.netlify.com/drop real drag-deploy, live URL visible on screen. If Playwright genuinely cannot launch, STOP and report exactly what failed — do not fake footage. (2) The build — build_ep_v2.py ran past a foreground 120s timeout: run it as a LONG call (Bash timeout parameter 1800000 ms or run_in_background and poll) — never the default timeout. Then: full render, finalize_episode.py --skip-arm (LUFS gate), probe_frames.py chip/caption placement, lipsync check — log ALL 5 audition gate results with real numbers to channels/claude-tricks/QUALITY-LEDGER.md under a bc01 v5 heading. Commit the ledger + episode spec updates to branch claude/ai-unpacked-vj-analytics-9lhetq and push. DO NOT ARM: stage the finished mp4 in renders_out/ and report its path + all gate numbers + the reminder that VJ must confirm (a) the Mon 2026-08-17 10:30 UTC arm and (b) unlisting v4 bWoa98zMWjA. Educator bar: hook lands in audio+VO inside 2s, calm precise VO, zero filler."
+}

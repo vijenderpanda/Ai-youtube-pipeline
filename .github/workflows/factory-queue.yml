@@ -132,6 +132,15 @@ jobs:
                       j["result"] = json.dumps(j["result"], default=str)[:1200]
               workers = rest("GET", "factory_workers?select=worker_id,hostname,os,"
                              "paused,accept_types,last_seen,max_parallel,meta")
+              for w in workers:
+                  try:
+                      logs = rest("GET", "factory_worker_logs?select=ts,level,message"
+                                  f"&worker_id=eq.{urllib.parse.quote(w['worker_id'])}"
+                                  "&order=ts.desc&limit=12")
+                      w["recent_logs"] = [f"{l['ts'][11:19]} [{l['level']}] {l['message'][:160]}"
+                                          for l in logs]
+                  except Exception:
+                      w["recent_logs"] = []
               snap = {"taken_at": __import__("datetime").datetime.utcnow().isoformat() + "Z",
                       "jobs": jobs, "workers": workers}
               with open("queue/state.json", "w") as f:
@@ -152,7 +161,11 @@ jobs:
             git config user.email "factory-queue@users.noreply.github.com"
             git add queue/
             git commit -m "queue: mark inserted jobs done [skip ci]"
-            git push
+            # rebase before push: if this push is lost to a concurrent branch
+            # update, the pending->done move never lands and the NEXT run
+            # re-inserts the same job (observed: duplicate pull+restart 21:53/21:54)
+            git pull --rebase origin "${GITHUB_REF_NAME}" || true
+            git push || (git pull --rebase origin "${GITHUB_REF_NAME}" && git push)
           else
             echo "no queue changes to commit"
           fi
