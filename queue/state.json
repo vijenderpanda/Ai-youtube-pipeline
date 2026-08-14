@@ -1,20 +1,35 @@
 {
- "taken_at": "2026-08-14T21:53:20.190600Z",
+ "taken_at": "2026-08-14T21:56:37.732482Z",
  "jobs": [
+  {
+   "id": "267d6e6a-0dee-4c42-bf27-626a4ff30e52",
+   "type": "custom",
+   "channel_key": "claude-tricks",
+   "title": "Mac: pull branch + restart worker (usage rollup timestamp fix)",
+   "status": "failed",
+   "model": "sonnet",
+   "effort": "low",
+   "assigned_worker": "Vijenders-MacBook-Pro.local",
+   "target_worker": null,
+   "created_at": "2026-08-14T21:54:07.321472+00:00",
+   "finished_at": "2026-08-14T21:54:28.384648+00:00",
+   "error": "orphaned: worker restarted mid-job",
+   "result": "{\"recap\": {\"next\": [\"Check git stash list to see if stash still exists and whether working tree still has dirty files\", \"Investigate worker restart cause and retry the pull+stash-pop sequence\"], \"steps\": [\"Detected dirty working tree and stashed untracked changes with message 'auto-stash before pull a2e40da'\", \"Executed git pull --ff-only from origin/claude/ai-unpacked-vj-analytics-9lhetq\", \"Verified commit a2e40da was present in git log\", \"Initiated git stash pop to restore stashed files\", \"Worker restarted unexpectedly, orphaning the job\"], \"issues\": [\"Worker restarted mid-job during git stash pop execution, leaving stash state uncertain (may have restored partially or not at all)\"], \"outputs\": [], \"headline\": \"Worker restarted mid-job during git stash pop, interrupting restoration of stashed changes after branch pull.\", \"decisions\": [\"Stashed dirty files before pull per automated instructions to preserve local changes\", \"Used git log verification step to confirm pulled commit a2e40da existed\"]}}"
+  },
   {
    "id": "bd616a7b-a7bb-40a0-9061-6adfc2a543d6",
    "type": "custom",
    "channel_key": "claude-tricks",
    "title": "Mac: pull branch + restart worker (usage rollup timestamp fix)",
-   "status": "queued",
+   "status": "failed",
    "model": "sonnet",
    "effort": "low",
-   "assigned_worker": null,
+   "assigned_worker": "Vijenders-MacBook-Pro.local",
    "target_worker": "Vijenders-MacBook-Pro.local",
    "created_at": "2026-08-14T21:53:18.723053+00:00",
-   "finished_at": null,
-   "error": null,
-   "result": null
+   "finished_at": "2026-08-14T21:53:48.218732+00:00",
+   "error": "orphaned: worker restarted mid-job",
+   "result": "{\"recap\": {\"next\": [\"Wait for worker to restart and reconnect to factory queue\", \"Verify pull+restart cycle completes cleanly and subsequent jobs process normally\"], \"steps\": [\"Stashed dirty tree with message 'wip before pull a2e40da'\", \"Pulled from origin/claude/ai-unpacked-vj-analytics-9lhetq (pull succeeded)\", \"Restored stashed changes via git stash pop\", \"Checked git log and status to verify state\", \"Verified commit a2e40da was now in history\", \"Initiated worker restart to apply pulled changes\", \"Worker process tree killed during restart\"], \"issues\": [\"Worker restart killed active job mid-execution; restart was intentional to apply changes, but resulted in orphaned job with no error recovery\"], \"outputs\": [], \"headline\": \"Worker restarted mid-job after pulling changes, causing orphaned job failure.\", \"decisions\": [\"Stashed changes before pull to preserve work and avoid merge conflicts\", \"Restarted worker after pull to apply newly fetched changes to running service\"]}}"
   },
   {
    "id": "cb9f2e24-a402-472d-8c00-1518923aa9c2",
@@ -285,21 +300,6 @@
    "finished_at": "2026-08-13T05:44:40.591708+00:00",
    "error": null,
    "result": "{\"posts\": 0, \"recap\": {\"next\": [\"At finalize: re-render so the corrected scan mock (disclosure anchored under the card) lands, and add a 'Not medical advice' lower-third on the payoff host frame \\u2014 the brief requires it on-frame and only the description and mock carry it today.\", \"Re-run the day-of freshness pass on Aug 15 before arming; if a fresher health/consumer AI story leads, it takes the cold open and this becomes beat 2.\"], \"steps\": [\"Read the locked masters 11/12/13.v2.json and the playbook sections on StatBars, caption safety and in-house mock grammar.\", \"Ran the freshness pass: scripts/news_radar.py (0 new hits, one dead Anthropic RSS feed) plus four WebSearch passes on the FDA/melanoma/Aug-2026 claims.\", \"Established the real facts: IDx-DR De Novo DEN180001 April 2018, 87.2%/90.7% over 900 patients at 10 primary-care sites; AEYE-DS handheld 2024; DermaSensor 17 Jan 2024.\", \"Wrote gen_ep14_mock.py on the make_doc_mock house grammar (2 states: scan result, scope of clearance) and gen_ep14_hook.py for the hook illustration.\", \"Fixed two mock defects caught on first render: vessel tree escaping the frame (S-scaling bug) and a fixed-width pill clipping 'REFER TO A DOCTOR"
-  },
-  {
-   "id": "a2992869-c4e6-457b-84ab-2d8b16b92dfa",
-   "type": "custom",
-   "channel_key": "_network",
-   "title": "Ops \u2014 git pull to d3300c3 (series-numbering deploy)",
-   "status": "done",
-   "model": "sonnet",
-   "effort": "low",
-   "assigned_worker": null,
-   "target_worker": "DESKTOP-DEIR7RS",
-   "created_at": "2026-08-13T03:21:16.79532+00:00",
-   "finished_at": "2026-08-14T07:43:27.564124+00:00",
-   "error": null,
-   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Verify whether d3300c3 exists on a different branch/remote or hasn't been pushed yet\"], \"steps\": [\"Recorded old HEAD via git rev-parse --short HEAD: a9cc42e\", \"Ran git pull --ff-only in repo root\", \"Pull reported 'Already up to date.'\", \"Recorded new HEAD via git rev-parse --short HEAD: a9cc42e (unchanged)\"], \"issues\": [\"Task expected new HEAD to be d3300c3 or newer, but pull found no new commits and HEAD stayed at a9cc42e \\u2014 local main is already even with (or ahead of) origin, so the expected commit is not present on the tracked remote branch\"], \"outputs\": [], \"headline\": \"Ran git pull --ff-only on the factory repo checkout; repo was already current, no files changed.\", \"decisions\": [\"No script edits or restarts performed, per RUN + REPORT only scope\"]}, \"usage\": {\"subtype\": \"success\", \"cost_usd\": 0.31810620000000006, \"num_turns\": 4, \"duration_ms\": 137888, \"input_tokens\": 8, \"output_tokens\": 1126, \"cache_read_input_tokens\": 112074, \"cache_creation_input_tokens\": 44396}, \"summary\": \"Repo already up to date at a9cc42e; git pull --ff-only made no changes. HEAD did not reach expected d3300c3 (remote has no such commit ahead of local).\", \"uploaded\""
   }
  ],
  "workers": [
@@ -309,7 +309,7 @@
    "os": "Darwin",
    "paused": false,
    "accept_types": [],
-   "last_seen": "2026-08-14T21:52:55.194122+00:00",
+   "last_seen": "2026-08-14T21:56:22.306847+00:00",
    "max_parallel": 2,
    "meta": {
     "python": "3.12.4",
@@ -324,7 +324,7 @@
    "accept_types": [
     "shell_script"
    ],
-   "last_seen": "2026-08-14T21:52:59.341354+00:00",
+   "last_seen": "2026-08-14T21:56:35.345+00:00",
    "max_parallel": 2,
    "meta": {
     "python": "3.12.10",
