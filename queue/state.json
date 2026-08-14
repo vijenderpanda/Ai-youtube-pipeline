@@ -1,20 +1,20 @@
 {
- "taken_at": "2026-08-14T21:58:27.657433Z",
+ "taken_at": "2026-08-14T22:50:32.707267Z",
  "jobs": [
   {
    "id": "85931a93-95b7-4b64-a9d9-91719fb269f1",
    "type": "produce_short",
    "channel_key": "claude-tricks",
    "title": "bc01 v5 PHASE 2 \u2014 record tape, render, gate, stage for Mon (no arm)",
-   "status": "queued",
+   "status": "done",
    "model": "sonnet",
    "effort": "low",
-   "assigned_worker": null,
+   "assigned_worker": "Vijenders-MacBook-Pro.local",
    "target_worker": "Vijenders-MacBook-Pro.local",
    "created_at": "2026-08-14T21:58:25.698933+00:00",
-   "finished_at": null,
+   "finished_at": "2026-08-14T22:11:54.235974+00:00",
    "error": null,
-   "result": null
+   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Mount Samsung T5 SSD and rsync 4 missing clips back to local storage\", \"Re-run full render and audition gate chain once clips are available\"], \"steps\": [\"Recorded Netlify Drop tape of v5 demo site (35.4s, HTTP 200 verified) via Playwright automation\", \"Regenerated missing hook art (stop_paying.png) to fill asset gap\", \"Ran build_ep_v2.py --dry with real HeyGen calls (lipsync +23ms, corr 0.995)\", \"Discovered 4 required source clips (pinned_broll.mp4, appA1.mp4, appA4.mp4, appB2.mp4) archived to unmounted Samsung T5 SSD on 2026-08-13\", \"Logged blocker honestly in QUALITY-LEDGER.md as NOT RUN (refused to fabricate gates or manifest)\", \"Committed work to claude/ai-unpacked-vj-analytics-9lhetq as d0c13a4\", \"Stashed and restored pre-existing unrelated changes (retention.json, engagement_log.json)\"], \"issues\": [\"4 source clips (pinned_broll.mp4, appA1.mp4, appA4.mp4, appB2.mp4) archived to Samsung T5 SSD 2026-08-13; drive not mounted; hard blocker for full render\"], \"outputs\": [{\"kind\": \"script\", \"note\": \"Playwright tape of Netlify Drop deploy\", \"filename\": \"channels/claude-tricks/rec_bc01_v5_demo.py\"}, {\"kind\": \"video\", \"note\": \"35.4s Netlify Drop recordi"
   },
   {
    "id": "267d6e6a-0dee-4c42-bf27-626a4ff30e52",
@@ -311,25 +311,25 @@
    "accept_types": [
     "shell_script"
    ],
-   "last_seen": "2026-08-14T21:58:12.21729+00:00",
+   "last_seen": "2026-08-14T22:50:23.026906+00:00",
    "max_parallel": 2,
    "meta": {
     "python": "3.12.10",
     "platform": "Windows-11-10.0.26200-SP0"
    },
    "recent_logs": [
+    "22:47:24 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "22:42:23 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "22:37:21 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "22:32:21 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "22:27:19 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "22:22:19 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "22:17:17 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "22:12:16 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "22:07:15 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "22:02:14 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
     "21:57:13 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "21:52:12 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "21:47:11 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "21:42:10 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "21:37:09 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "21:32:08 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "21:27:07 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "21:22:06 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "21:17:05 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "21:12:04 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "21:07:03 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "21:02:01 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping"
+    "21:52:12 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping"
    ]
   },
   {
@@ -338,13 +338,16 @@
    "os": "Darwin",
    "paused": false,
    "accept_types": [],
-   "last_seen": "2026-08-14T21:58:22.814586+00:00",
+   "last_seen": "2026-08-14T22:50:29.401977+00:00",
    "max_parallel": 2,
    "meta": {
     "python": "3.12.4",
     "platform": "macOS-26.4.1-arm64-arm-64bit"
    },
    "recent_logs": [
+    "22:11:55 [info] job 85931a93-95b7-4b64-a9d9-91719fb269f1 done, uploaded=0",
+    "21:58:35 [info] started job thread (1/2 slots, type=produce_short)",
+    "21:58:35 [info] claimed job 85931a93-95b7-4b64-a9d9-91719fb269f1 type=produce_short channel=claude-tricks title='bc01 v5 PHASE 2 \u2014 record tape, render, gate, stage for Mon (no ",
     "21:54:45 [info] worker ready -- polling for jobs (parallel x2, heavy serial)",
     "21:54:45 [info] registered worker 'Vijenders-MacBook-Pro.local' (Vijenders-MacBook-Pro.local) os=Darwin gpu=none",
     "21:54:28 [info] reaping orphaned job 267d6e6a-0dee-4c42-bf27-626a4ff30e52: orphaned: worker restarted mid-job",
@@ -353,10 +356,7 @@
     "21:54:26 [info] seeded factory_channels (6 rows, ignore-duplicates)",
     "21:54:08 [info] worker ready -- polling for jobs (parallel x2, heavy serial)",
     "21:54:08 [info] registered worker 'Vijenders-MacBook-Pro.local' (Vijenders-MacBook-Pro.local) os=Darwin gpu=none",
-    "21:54:07 [info]   auto-retried as job 267d6e6a-0dee-4c42-bf27-626a4ff30e52 (retry 1/1)",
-    "21:53:48 [info] reaping orphaned job bd616a7b-a7bb-40a0-9061-6adfc2a543d6: orphaned: worker restarted mid-job",
-    "21:53:47 [info] seeded factory_settings auto_sync defaults (ignore-duplicates)",
-    "21:53:46 [info] seeded factory_generators (102 rows, merge-duplicates)"
+    "21:54:07 [info]   auto-retried as job 267d6e6a-0dee-4c42-bf27-626a4ff30e52 (retry 1/1)"
    ]
   }
  ]
