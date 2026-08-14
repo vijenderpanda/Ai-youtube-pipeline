@@ -1,0 +1,102 @@
+name: factory-queue
+
+# The bridge between Claude Code cloud sessions and the Mac factory worker.
+# Cloud sessions cannot reach Supabase (egress-blocked), but GitHub runners can:
+# a cloud session commits job JSONs under queue/pending/ and pushes; this
+# workflow inserts each into factory_jobs (status=queued) and moves the file to
+# queue/done/. The live Mac worker claims inserted jobs within ~10s.
+#
+# ONE-TIME SETUP (repo owner, in the GitHub UI):
+#   Settings -> Secrets and variables -> Actions -> New repository secret
+#   Name:  SUPABASE_SERVICE_KEY
+#   Value: the service-role key from secrets/factory.env on a worker machine
+# Until the secret exists, runs fail fast with a clear message and insert nothing.
+
+on:
+  push:
+    paths: ["queue/pending/**.json"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: factory-queue-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  enqueue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Insert pending jobs into factory_jobs
+        env:
+          SUPABASE_URL: https://xfqyovimnqdghiekicqr.supabase.co
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          python3 - <<'PY'
+          import glob, json, os, sys, urllib.request
+
+          key = os.environ.get("SUPABASE_SERVICE_KEY", "").strip()
+          if not key:
+              sys.exit("SUPABASE_SERVICE_KEY secret is not set. Add it once in "
+                       "Settings -> Secrets and variables -> Actions (value = the "
+                       "service-role key from secrets/factory.env on a worker).")
+          url = os.environ["SUPABASE_URL"].rstrip("/") + "/rest/v1/factory_jobs"
+
+          ALLOWED = {"type", "channel_key", "title", "prompt", "status",
+                     "model", "effort", "meta"}
+          pending = sorted(glob.glob("queue/pending/*.json"))
+          if not pending:
+              print("nothing pending"); sys.exit(0)
+
+          os.makedirs("queue/done", exist_ok=True)
+          failures = []
+          for path in pending:
+              try:
+                  raw = json.load(open(path))
+              except ValueError as e:
+                  failures.append(f"{path}: bad JSON ({e})"); continue
+              jobs = raw if isinstance(raw, list) else [raw]
+              rows = []
+              for j in jobs:
+                  extra = set(j) - ALLOWED
+                  if extra:
+                      failures.append(f"{path}: unknown fields {sorted(extra)}"); rows = []; break
+                  if not j.get("type") or not j.get("prompt"):
+                      failures.append(f"{path}: 'type' and 'prompt' are required"); rows = []; break
+                  j.setdefault("status", "queued")
+                  rows.append(j)
+              if not rows:
+                  continue
+              req = urllib.request.Request(
+                  url, data=json.dumps(rows).encode(),
+                  headers={"apikey": key, "Authorization": f"Bearer {key}",
+                           "Content-Type": "application/json",
+                           "Prefer": "return=representation"})
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as r:
+                      created = json.load(r)
+              except urllib.error.HTTPError as e:
+                  failures.append(f"{path}: HTTP {e.code} {e.read().decode()[:300]}"); continue
+              ids = ", ".join(c.get("id", "?")[:8] for c in created)
+              print(f"inserted {len(created)} job(s) from {path}: {ids}")
+              os.rename(path, path.replace("queue/pending/", "queue/done/"))
+
+          if failures:
+              sys.exit("some inserts failed (files left in pending/):\n" +
+                       "\n".join(failures))
+          PY
+
+      - name: Commit moved queue files back
+        run: |
+          if git status --porcelain queue/ | grep -q .; then
+            git config user.name "factory-queue[bot]"
+            git config user.email "factory-queue@users.noreply.github.com"
+            git add queue/
+            git commit -m "queue: mark inserted jobs done [skip ci]"
+            git push
+          else
+            echo "no queue changes to commit"
+          fi

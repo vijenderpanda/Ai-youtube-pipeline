@@ -61,6 +61,8 @@ def main():
     ap.add_argument("--title", default="", help="job title (dashboard label)")
     ap.add_argument("--model", default="", help="fable|opus|sonnet|haiku (blank = queue default)")
     ap.add_argument("--effort", default="", help="low|medium|high|xhigh|max (blank = worker default)")
+    ap.add_argument("--meta", default="",
+                    help='extra meta JSON, e.g. \'{"script_path": "deploy/restart_worker.sh"}\'')
     ap.add_argument("--calendar-id", default="", help="factory_calendar UUID (meta.calendar_id)")
     ap.add_argument("--calendar-date", default="",
                     help="resolve meta.calendar_id from this planned_date instead of pasting a UUID")
@@ -95,8 +97,18 @@ def main():
         job["model"] = a.model
     if a.effort:
         job["effort"] = a.effort
+    meta = {}
+    if a.meta:
+        import json as _json
+        try:
+            meta = _json.loads(a.meta)
+            assert isinstance(meta, dict)
+        except (ValueError, AssertionError):
+            sys.exit(f"--meta must be a JSON object, got: {a.meta!r}")
     if cal_id:
-        job["meta"] = {"calendar_id": cal_id}
+        meta["calendar_id"] = cal_id
+    if meta:
+        job["meta"] = meta
 
     if a.dry_run:
         import json
