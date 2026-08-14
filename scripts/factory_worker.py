@@ -542,7 +542,10 @@ def usage_rollup(supa):
     now = time.time()
     if _usage_cache["val"] is not None and now - _usage_cache["at"] < USAGE_REFRESH_S:
         return _usage_cache["val"]
-    since = (datetime.now(timezone.utc) - timedelta(hours=USAGE_WINDOW_H)).isoformat()
+    # 'Z' suffix, never '+00:00': this value goes into a PostgREST URL query,
+    # where an unencoded '+' decodes to a space and silently breaks the filter.
+    since = (datetime.now(timezone.utc) - timedelta(hours=USAGE_WINDOW_H)
+             ).strftime("%Y-%m-%dT%H:%M:%SZ")
     out = {"window_h": USAGE_WINDOW_H, "since": since, "jobs": 0,
            "cost_usd": 0.0, "input_tokens": 0, "output_tokens": 0,
            "rate_limited": False, "at": now_iso()}

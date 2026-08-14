@@ -1,0 +1,9 @@
+{
+  "type": "produce_short",
+  "channel_key": "claude-tricks",
+  "model": "sonnet",
+  "effort": "low",
+  "target_worker": "Vijenders-MacBook-Pro.local",
+  "title": "Stop Paying For Websites — Yours Goes LIVE Tonight (FREE) 🚀 [Ch.1 v5]",
+  "prompt": "SEASON 1 OPENER, Monday chapter (calendar row bc01 v5, season bible BUILD-CLUB.md section 4). RE-QUEUE: the two earlier attempts were killed mid-run by a worker restart (orphaned) — nothing was produced; start clean. This is a REDO of the Fri Aug-14 cut (youtu.be/bWoa98zMWjA) — NEVER a re-upload or duplicate: (1) NEW cold open where the hook lands in AUDIO and VO together inside 2s; (2) NEW season-map beat ~3s: THIS WEEK — Mon it goes LIVE, Tue it gets SMART, Thu YOU GET LISTED, Fri the finale — a quick learning series, one week not someday; (3) RE-RECORD the tape in a fresh session: Claude writes single-file index.html, drag onto Netlify Drop, live URL visible on screen — same locked beat spine, genuinely new footage; (4) educator register throughout: calm, precise, zero filler — every sentence earns the next second; (5) verify Netlify Drop still free + no-card. Homework outro via outro_cta: ship yours + comment SHIPPED. ALL 5 AUDITION GATES (BUILD-CLUB.md section 7) MANDATORY before arm — gates 3/4/5 were skipped on v4, which is why this redo exists. DO NOT touch the published v4 video: flag in your result that VJ must confirm unlisting bWoa98zMWjA when v5 arms. Slot 2026-08-17 16:00 IST = 10:30 UTC."
+}
