@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { api } from '../api'
 import { usePoll } from '../hooks'
-import { typeLabel, MODEL_OPTIONS, EFFORTS } from '../jobMeta'
+import { typeLabel, isAiType, MODEL_OPTIONS, EFFORTS } from '../jobMeta'
 
 function OverridePanel({ override, globalPaused, onChanged }) {
   const [busy, setBusy] = useState(false)
@@ -80,6 +80,55 @@ function timeAgo(iso) {
 }
 
 const LEVEL_COLOR = { error: '#ef4444', warn: '#f59e0b', info: 'var(--dim, #888)' }
+
+function fmtTokens(n) {
+  if (n == null) return '—'
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M'
+  if (n >= 1e3) return (n / 1e3).toFixed(1) + 'k'
+  return String(n)
+}
+
+/**
+ * v17: the worker-side usage rollup (factory_workers.meta.usage) — real Claude
+ * spend + token totals summed over this worker's jobs inside the subscription's
+ * rolling window, plus a rate_limited tripwire. This is what separates "the
+ * factory is broken" from "the Claude budget ran out": AI jobs stall on the
+ * cap, native jobs (analytics_sync / shell_script) never do.
+ */
+function UsageStrip({ meta }) {
+  const u = meta && meta.usage
+  if (!u) {
+    return (
+      <div style={{ fontSize: 12, color: 'var(--dim, #888)' }}>
+        🧠 Claude usage: <em>no data yet — starts reporting after the worker picks up the v17 code</em>
+      </div>
+    )
+  }
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', fontSize: 12,
+      background: 'var(--bg-inset, #1113)', borderRadius: 6, padding: '6px 10px',
+    }}>
+      <span title={`AI spend reported by the Claude CLI across this worker's jobs finished in the last ${u.window_h}h`}>
+        🧠 <strong>Claude ({u.window_h}h):</strong>{' '}
+        <strong>${(u.cost_usd ?? 0).toFixed(2)}</strong>
+      </span>
+      <span className="dim">{u.jobs ?? 0} job{u.jobs === 1 ? '' : 's'}</span>
+      <span className="dim" title="input / output tokens in the window">
+        {fmtTokens(u.input_tokens)} in / {fmtTokens(u.output_tokens)} out
+      </span>
+      {u.rate_limited ? (
+        <span className="chip" title="A recent job failed on a Claude usage/rate cap — AI jobs will stall until the window rolls; native jobs (stats, scripts) keep running"
+          style={{ background: '#ef444422', color: '#ef4444', fontWeight: 700 }}>
+          RATE LIMITED
+        </span>
+      ) : (
+        <span className="chip" style={{ background: '#22c55e18', color: '#22c55e' }}>ok</span>
+      )}
+      {u.at && <span className="dim" style={{ marginLeft: 'auto' }}>as of {timeAgo(u.at)}</span>}
+    </div>
+  )
+}
 
 function WorkerLogs({ workerId }) {
   // v16: default OPEN so a fresh Workers page shows live streaming logs
@@ -210,6 +259,8 @@ function WorkerCard({ worker, jobTypes, onChanged }) {
         <span>id: {worker.worker_id}</span>
       </div>
 
+      <UsageStrip meta={worker.meta} />
+
       <div>
         <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 6 }}>
           Handles {acceptsAll ? 'all job types' : `${accepts.length} of ${jobTypes.length} types`}
@@ -223,13 +274,17 @@ function WorkerCard({ worker, jobTypes, onChanged }) {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
           {jobTypes.map((t) => {
             const on = acceptsAll || accepts.includes(t)
+            const ai = isAiType(t)
             return (
               <button
                 key={t}
                 className="chip"
                 disabled={busy}
                 onClick={() => toggleType(t)}
-                title={on ? 'click to stop pulling this type' : 'click to pull this type'}
+                title={(ai
+                  ? 'runs a Claude session — counts against the subscription limit. '
+                  : 'native — no AI usage, keeps working even when the Claude cap is hit. ')
+                  + (on ? 'Click to stop pulling this type.' : 'Click to pull this type.')}
                 style={{
                   cursor: 'pointer',
                   opacity: on ? 1 : 0.4,
@@ -237,6 +292,7 @@ function WorkerCard({ worker, jobTypes, onChanged }) {
                   background: on ? '#6366f122' : '#8881',
                 }}
               >
+                {ai && <span style={{ opacity: 0.75, marginRight: 3 }}>🧠</span>}
                 {typeLabel(t)}
               </button>
             )
@@ -304,6 +360,10 @@ export default function Workers() {
         Pausing a worker stops it claiming new jobs (running jobs finish). Type toggles route work:
         e.g. let the GPU box pull <em>assemble / preview</em> and the Mac pull the rest. Changes
         apply live — no restart. A job can also be pinned to one machine from its job drawer.
+        Types marked 🧠 run a Claude session and count against the subscription's rolling limit;
+        unmarked types are native and keep working even when the AI budget is exhausted — if the
+        usage strip shows <strong>RATE LIMITED</strong>, that's why AI jobs are stalling while
+        stats keep updating.
       </p>
     </div>
   )

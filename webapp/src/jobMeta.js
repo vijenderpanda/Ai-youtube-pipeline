@@ -31,6 +31,14 @@ export function typeLabel(t) {
   return TYPE_LABELS[t] || t
 }
 
+// Which job types run a Claude session (consume the subscription's rolling
+// limit) vs run natively (pure CPU — analytics_sync shells out network_stats,
+// shell_script executes a committed script; neither can be rate-limited).
+// The distinction matters when the factory slows down: AI jobs stall when the
+// Claude cap is hit, native jobs keep working — the dashboard should show which.
+export const NATIVE_TYPES = new Set(['analytics_sync', 'shell_script'])
+export const isAiType = (t) => !NATIVE_TYPES.has(t)
+
 /**
  * Plain-creator-language phrase for a job, used as the Activity card eyebrow.
  * tense: 'now' (present continuous) | 'past'. Never shows the raw type.
