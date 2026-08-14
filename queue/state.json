@@ -1,6 +1,21 @@
 {
- "taken_at": "2026-08-14T21:52:08.534664Z",
+ "taken_at": "2026-08-14T21:53:20.190600Z",
  "jobs": [
+  {
+   "id": "bd616a7b-a7bb-40a0-9061-6adfc2a543d6",
+   "type": "custom",
+   "channel_key": "claude-tricks",
+   "title": "Mac: pull branch + restart worker (usage rollup timestamp fix)",
+   "status": "queued",
+   "model": "sonnet",
+   "effort": "low",
+   "assigned_worker": null,
+   "target_worker": "Vijenders-MacBook-Pro.local",
+   "created_at": "2026-08-14T21:53:18.723053+00:00",
+   "finished_at": null,
+   "error": null,
+   "result": null
+  },
   {
    "id": "cb9f2e24-a402-472d-8c00-1518923aa9c2",
    "type": "produce_short",
@@ -13,7 +28,8 @@
    "target_worker": "Vijenders-MacBook-Pro.local",
    "created_at": "2026-08-14T20:59:31.673581+00:00",
    "finished_at": "2026-08-14T21:06:25.237631+00:00",
-   "error": null
+   "error": null,
+   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Get a connected claude-in-chrome session (or a working local Playwright install) to actually record the fresh Netlify Drop deploy of the new index.html and capture the real live URL on screen\", \"Re-run build_ep_v2.py --dry as a background/long-running job (not a foreground 120s call) once the tape exists, then run the real render, finalize_episode.py --skip-arm, and log real audition-gate numbers to QUALITY-LEDGER.md before asking VJ for the arm go\"], \"steps\": [\"Read BUILD-CLUB.md season map, CONTENT-CALENDAR.csv bc01 row, and v4 bc01.v2.json spec for traceability\", \"Confirmed ElevenLabs/HeyGen API keys ARE present in .env, so credentials are not the blocker\", \"Rewrote episodes/bc01.v2.json: new cold-open line (hook lands in audio+VO together), new ~3s season-map beat (Mon LIVE/Tue SMART/Thu LISTED/Fri finale), refreshed title/hook text/_status field documenting v4-vs-v5 diff\", \"Wrote a new single-file demo site channels/claude-tricks/tapes/bc01_v5_demo_site/index.html (freelance-builder landing page prop) for the re-recorded Netlify Drop tape\", \"Attempted build_ep_v2.py --ep bc01 --tag v5 --dry: process ran past the 120s timeout with no output (rea"
   },
   {
    "id": "2e36c06e-d485-4e04-a8d9-784ff713e2a5",
@@ -27,7 +43,8 @@
    "target_worker": "Vijenders-MacBook-Pro.local",
    "created_at": "2026-08-14T20:57:34.860461+00:00",
    "finished_at": "2026-08-14T20:59:14.186161+00:00",
-   "error": null
+   "error": null,
+   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Re-run yt_retention.py on bc01 in another 24-48h once YouTube accrues enough sample to stop returning insufficient_data \\u2014 that's what will actually diagnose the hook\", \"Given d0=4 falls in the <20 band, the format itself (not the Friday slot) is the open question per \\u00a74 \\u2014 flag for VJ before committing more Build Club chapters\"], \"steps\": [\"Verified secrets/token_claude-tricks.json exists on this Mac session\", \"Ran yt_retention.py --channel claude-tricks --video bWoa98zMWjA --summary --md docs/stats/RETENTION.md \\u2014 returned insufficient_data (YouTube withholds the curve until more sample accrues)\", \"Ran yt_engage.py --channel claude-tricks --video bWoa98zMWjA --count-keyword SHIPPED --days 7 \\u2014 0 matching comments\", \"Cross-checked docs/stats/history.csv: bc01 sits at 4 views as of the 2026-08-15 snapshot (~9.5h post-publish)\", \"Read the pre-committed d0 thresholds in AI-UNPACKED-READ-2026-08-14.md \\u00a74 (>=90 keep / 20-90 hold+fix hook / <20 format question) and placed bc01 in the <20 band\", \"Committed docs/stats/RETENTION.md, hit a push rejection because the remote had a newer commit (fa29018, the Windows-blocked note)\", \"Fe"
   },
   {
    "id": "432edf8a-92e8-423c-a367-3e729cb35806",
@@ -41,7 +58,8 @@
    "target_worker": null,
    "created_at": "2026-08-14T20:12:15.359006+00:00",
    "finished_at": "2026-08-14T20:12:43.19311+00:00",
-   "error": "orphaned: worker restarted mid-job"
+   "error": "orphaned: worker restarted mid-job",
+   "result": null
   },
   {
    "id": "daba7482-a8e4-4d4c-b861-a63fc1076983",
@@ -55,7 +73,8 @@
    "target_worker": null,
    "created_at": "2026-08-14T20:12:06.77548+00:00",
    "finished_at": "2026-08-14T20:16:07.503601+00:00",
-   "error": "orphaned: worker restarted mid-job"
+   "error": "orphaned: worker restarted mid-job",
+   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Auth claude-tricks channel on DESKTOP-DEIR7RS via yt_upload.py to create secrets/token_claude-tricks.json, then re-run yt_retention.py and yt_engage.py for bc01\", \"Once real d0 numbers land, place bc01 in the pre-committed band (>=90 keep / 20-90 hold+fix hook / <20 format question) per AI-UNPACKED-READ-2026-08-14.md section 4\"], \"steps\": [\"Ran python scripts/yt_retention.py --channel claude-tricks --video bWoa98zMWjA --summary --md docs/stats/RETENTION.md\", \"Hit FileNotFoundError on secrets/client_secret.json inside yt_upload.py's get_creds()\", \"Confirmed secrets/ on this box (DESKTOP-DEIR7RS) only contains factory.env, no client_secret*.json or token_claude-tricks.json\", \"Ran python scripts/yt_engage.py --channel claude-tricks --video bWoa98zMWjA --count-keyword SHIPPED --days 7 \\u2014 same auth failure\", \"Read docs/stats/AI-UNPACKED-READ-2026-08-14.md section 4/5, which already flags this exact gap: this channel has never been authed on this worker\", \"Stashed unrelated pre-existing uncommitted changes on main (DAILY-STATS.md, history.csv, make_couplefirst_short.py) before switching branches, then restored them after pushing\", \"Appended a dated 'b"
   },
   {
    "id": "085698e4-1b61-4468-8bb2-cd12b267b300",
@@ -69,7 +88,8 @@
    "target_worker": null,
    "created_at": "2026-08-14T20:11:51.758093+00:00",
    "finished_at": "2026-08-14T20:12:23.250629+00:00",
-   "error": "orphaned: worker restarted mid-job"
+   "error": "orphaned: worker restarted mid-job",
+   "result": "{\"recap\": {\"next\": [\"Investigate worker restart cause (logs, signal, timeout, resource exhaustion)\", \"Re-queue job after confirming worker stability\"], \"steps\": [\"Job queued and began execution on worker\", \"Worker process restarted during job execution\", \"Job orphaned with no completion state\"], \"issues\": [\"Worker restarted mid-job \\u2014 orphaned task with incomplete state and no recovery path\"], \"outputs\": [], \"headline\": \"Job failed when worker restarted mid-execution, orphaning the task.\", \"decisions\": []}}"
   },
   {
    "id": "4e0a79f8-6836-4108-851f-b550a8b05a15",
@@ -83,7 +103,8 @@
    "target_worker": null,
    "created_at": "2026-08-14T20:10:50.913034+00:00",
    "finished_at": "2026-08-14T20:12:07.457548+00:00",
-   "error": "orphaned: worker restarted mid-job"
+   "error": "orphaned: worker restarted mid-job",
+   "result": null
   },
   {
    "id": "24ec5e0d-54ad-452b-af79-2b0e3c0c66ae",
@@ -97,7 +118,8 @@
    "target_worker": null,
    "created_at": "2026-08-14T20:10:24.672847+00:00",
    "finished_at": "2026-08-14T20:14:19.747579+00:00",
-   "error": "orphaned: worker restarted mid-job"
+   "error": "orphaned: worker restarted mid-job",
+   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Owner needs to run `python scripts/yt_upload.py --channel claude-tricks --auth` interactively on this machine (or copy an existing secrets/client_secret.json + secrets/token_claude-tricks.json from the Mac) before this job can be retried\", \"Once auth is in place, rerun the original two commands and redo the RETENTION.md commit + push to claude/ai-unpacked-vj-analytics-9lhetq\"], \"steps\": [\"Found the referenced threshold doc docs/stats/AI-UNPACKED-READ-2026-08-14.md only exists on origin/claude/ai-unpacked-vj-analytics-9lhetq, not on main -- checked out that branch locally to work from it\", \"Stashed unrelated pre-existing uncommitted edits on main (DAILY-STATS.md, history.csv, make_couplefirst_short.py) before switching branches\", \"Read AI-UNPACKED-READ-2026-08-14.md section 4 for the pre-committed d0 bands: >=90 keep, 20-90 hold+fix hook, <20 format question\", \"Ran python scripts/yt_retention.py --channel claude-tricks --video bWoa98zMWjA --summary --md docs/stats/RETENTION.md -- failed with FileNotFoundError on secrets/client_secret.json\", \"Ran python scripts/yt_engage.py --channel claude-tricks --video bWoa98zMWjA --count-keyword SHIPPED --days 7 -"
   },
   {
    "id": "f06481f4-c2b9-4fff-adeb-b34059f3b771",
@@ -111,7 +133,8 @@
    "target_worker": null,
    "created_at": "2026-08-14T20:10:17.406122+00:00",
    "finished_at": "2026-08-14T20:11:33.92438+00:00",
-   "error": "orphaned: worker restarted mid-job"
+   "error": "orphaned: worker restarted mid-job",
+   "result": "{\"recap\": {\"next\": [\"Populate .env with ELEVENLABS_API_KEY, HEYGEN_API_KEY, LEONARDO_API_KEY before re-attempting\", \"Re-launch bc01 v5 production pipeline once credentials are available\"], \"steps\": [\"Located BUILD-CLUB.md and confirmed full existing v4 production pipeline (rec/gen scripts, build_ep_v2.py, finalize_episode.py)\", \"Delegated production run to background agent to handle multi-hour pipeline autonomously (Netlify Drop recording, HeyGen/ElevenLabs renders, audition gates)\", \"Verified episode spec in bc01.v2.json and inspected scripts structure\", \"Checked .env file for API credentials\", \"Discovered all API keys are blank (ELEVENLABS_API_KEY=, HEYGEN_API_KEY=, LEONARDO_API_KEY= empty)\", \"Identified missing credentials as hard blocker for TTS voice generation and HeyGen avatar rendering\", \"Began verification of blocker before resolution strategy\", \"Worker restarted mid-job, orphaning execution\"], \"issues\": [\"Missing API credentials: ELEVENLABS_API_KEY, HEYGEN_API_KEY, LEONARDO_API_KEY all empty in .env \\u2014 hard blocker for voice and avatar generation\", \"Worker restarted mid-execution: Job orphaned before credential resolution could be attempted or workaround planned\"], \"o"
   },
   {
    "id": "409fda72-12f8-4c76-a24f-130c2b189926",
@@ -125,7 +148,8 @@
    "target_worker": null,
    "created_at": "2026-08-14T20:09:52.472889+00:00",
    "finished_at": "2026-08-14T20:11:19.438563+00:00",
-   "error": null
+   "error": null,
+   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"VJ: confirm/execute unlisting youtu.be/bWoa98zMWjA once bc01 v5 arms for 2026-08-17\", \"Verify factory_calendar row b7d4f6fb-1bb8-4010-9dba-4915164a6142 is actually the intended 2026-08-17 16:00 IST slot for bc01 v5, or correct the linkage before arm\"], \"steps\": [\"Found the working tree dirty (channels/claude-tricks news cache/seen/radar, docs/stats files, retention.json, untracked engagement_log.json); ran git stash --include-untracked before switching branches\", \"Fetched, checked out, and fast-forward pulled origin/claude/ai-unpacked-vj-analytics-9lhetq \\u2014 brought in BUILD-CLUB.md section 4, scripts/enqueue_job.py, deploy/restart_worker.sh\", \"Confirmed scripts/enqueue_job.py and deploy/restart_worker.sh exist post-pull\", \"Queued produce_short job id f06481f4-c2b9-4fff-adeb-b34059f3b771 for bc01 v5 REDO with --calendar-date 2026-08-17 (exit 0, no need to retry without the flag)\", \"Queued custom job id 24ec5e0d-54ad-452b-af79-2b0e3c0c66ae for the bc01 retention read against d0 thresholds\", \"Ran python3 scripts/network_stats.py \\u2014 AI Unpacked +9 views today, Aashiqana +12; history.csv now 436 rows\", \"Committed and pushed docs/stats/history.csv"
   },
   {
    "id": "e517c9e5-ded2-41a4-87a7-31defc0b162f",
@@ -139,7 +163,8 @@
    "target_worker": null,
    "created_at": "2026-08-14T10:12:53.302199+00:00",
    "finished_at": "2026-08-14T10:18:19.059246+00:00",
-   "error": null
+   "error": null,
+   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Once secrets/client_secret.json is available on the machine that runs this job, re-run yt_retention.py live for all 6 channels to confirm the last_insights figures are still current before the next planning cycle.\", \"Re-check already-happening's anchor-timing fix and claude-tricks' proof-at-4s default against fresh retention curves once the revised 08-17/08-18/08-21 episodes clear YouTube's ~48h analytics lag.\"], \"steps\": [\"Read the analysis context JSON (channels, stats, video_summary, 171-item calendar, generator_catalog, and prior last_insights) and the full Production Playbook.\", \"Attempted a live yt_retention.py pull for all 6 channels; it failed everywhere on missing secrets/client_secret.json (this sandbox has no YouTube OAuth credentials), so retention evidence was taken from the context file's already-computed last_insights (explicitly attributed to yt_retention.py runs today) instead of fabricated.\", \"Ran 4 web searches covering AI-tips-Shorts hooks, faceless/AI-narrated Shorts growth, baby-sleep/rain-sound lullaby demand, and Hindi-romantic/Bollywood-hook trends, all scoped to August 2026.\", \"Cross-referenced the video_summary top/bottom "
   },
   {
    "id": "35f4d282-322d-4c03-aa1f-3142077b8c2c",
@@ -153,7 +178,8 @@
    "target_worker": null,
    "created_at": "2026-08-14T10:11:28.650802+00:00",
    "finished_at": "2026-08-14T10:12:53.538379+00:00",
-   "error": null
+   "error": null,
+   "result": "{\"video_rows\": 102, \"reauth_needed\": [], \"rows_upserted\": 60, \"video_sources\": {\"lulla\": \"analytics_api\", \"calm-ai\": \"error\", \"vehicles\": \"analytics_api\", \"aashiqana\": \"analytics_api\", \"language-abc\": \"analytics_api\", \"claude-tricks\": \"analytics_api\", \"already-happening\": \"analytics_api\"}, \"follow_up_job_id\": \"e517c9e5-ded2-41a4-87a7-31defc0b162f\"}"
   },
   {
    "id": "d036bc41-bb94-449d-b8af-a2752f362ca2",
@@ -167,7 +193,8 @@
    "target_worker": null,
    "created_at": "2026-08-14T02:04:33.868746+00:00",
    "finished_at": "2026-08-14T02:10:34.263242+00:00",
-   "error": null
+   "error": null,
+   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Re-run yt_retention.py for already-happening and aashiqana once the new/revised episodes clear the ~48h analytics lag\", \"Consider a data-hygiene pass linking claude-tricks' duplicate same-day calendar titles via replaces_id\"], \"steps\": [\"Read analysis_ctx_d036bc41 (channels, calendar, video_summary, generator_catalog) and PRODUCTION-PLAYBOOK.md\", \"Ran yt_retention.py --summary for claude-tricks, aashiqana, already-happening, lulla, language-abc, vehicles\", \"Researched 2026 AI-tips Shorts hooks, Bollywood/Hindi Shorts music-hook trends, and faceless-Shorts retention best practice via WebSearch\", \"Compared claude-tricks' proof-at-4s winners vs slow-build losers using measured drop_points\", \"Compared aashiqana's verse-first full cut vs chorus-first Short cut cliffs\", \"Found already-happening's first-ever measurable retention curve shows a -23pp/-15pp cliff at the TODAY-anchor-to-extrapolation handoff\", \"Cross-checked the +14d calendar window for existing challengers via replaces_id before writing the challenge pass\", \"Wrote suggestions JSON (4 content, 1 challenge with replaces_ref, 2 factory) and per-channel insights\"], \"issues\": [\"lulla, language-abc"
   },
   {
    "id": "5f68d353-1213-4199-93ea-96aab2864b0c",
@@ -181,7 +208,8 @@
    "target_worker": null,
    "created_at": "2026-08-14T02:03:05.789762+00:00",
    "finished_at": "2026-08-14T02:04:34.054579+00:00",
-   "error": null
+   "error": null,
+   "result": "{\"video_rows\": 102, \"reauth_needed\": [], \"rows_upserted\": 60, \"video_sources\": {\"lulla\": \"analytics_api\", \"calm-ai\": \"error\", \"vehicles\": \"analytics_api\", \"aashiqana\": \"analytics_api\", \"language-abc\": \"analytics_api\", \"claude-tricks\": \"analytics_api\", \"already-happening\": \"analytics_api\"}, \"follow_up_job_id\": \"d036bc41-bb94-449d-b8af-a2752f362ca2\"}"
   },
   {
    "id": "2097a695-a555-4f02-91db-41fdd85fac70",
@@ -195,7 +223,8 @@
    "target_worker": null,
    "created_at": "2026-08-13T16:29:47.315113+00:00",
    "finished_at": "2026-08-13T16:34:47.907857+00:00",
-   "error": null
+   "error": null,
+   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Re-run yt_retention.py next cycle once already-happening and lulla clear the analytics view threshold\", \"Confirm the caption_engine factory task lands before the next claude-tricks produce_short batch so its effect can be measured\"], \"steps\": [\"Read analysis_ctx JSON (channels, stats, video_summary, calendar, generator_catalog, last_insights)\", \"Ran scripts/yt_retention.py --summary for claude-tricks, aashiqana, already-happening, lulla\", \"Found claude-tricks: fast-payoff cuts hold 74% at 15s vs slow-build cuts holding only 39-44%\", \"Found aashiqana: full-song cut takes a -32pp cliff at 4.3s; short vertical cut holds comparatively better\", \"Confirmed already-happening + lulla have insufficient_data on every video \\u2014 judged by cadence/trend only\", \"Web-searched 2026 AI-Shorts hook trends, faceless-Shorts growth stats, and music-Shorts chorus-first best practice\", \"Wrote 3 new content suggestions (claude-tricks, aashiqana, already-happening) + 1 factory task (wire caption_engine flag)\", \"Challenge-audited planned/suggested items Aug 13-27, added 3 replaces_ref revisions with why_not citing retention data or format-risk\"], \"issues\": [], \"outputs\": "
   },
   {
    "id": "94547b76-ac36-435e-8f1f-80b415e5e0d6",
@@ -209,7 +238,8 @@
    "target_worker": null,
    "created_at": "2026-08-13T16:28:57.661969+00:00",
    "finished_at": "2026-08-13T16:29:47.487812+00:00",
-   "error": null
+   "error": null,
+   "result": "{\"video_rows\": 87, \"reauth_needed\": [], \"rows_upserted\": 55, \"video_sources\": {\"lulla\": \"analytics_api\", \"calm-ai\": \"error\", \"vehicles\": \"analytics_api\", \"aashiqana\": \"analytics_api\", \"language-abc\": \"analytics_api\", \"claude-tricks\": \"analytics_api\", \"already-happening\": \"analytics_api\"}, \"follow_up_job_id\": \"2097a695-a555-4f02-91db-41fdd85fac70\"}"
   },
   {
    "id": "fbfc465d-a8bc-4078-8b07-124a46260ae9",
@@ -223,7 +253,8 @@
    "target_worker": null,
    "created_at": "2026-08-13T10:26:42.528001+00:00",
    "finished_at": "2026-08-13T10:32:19.765007+00:00",
-   "error": null
+   "error": null,
+   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Re-run yt_retention.py next cycle once more videos clear the 48h lag + sample threshold to confirm whether the PROOF-AT-4s fixes actually moved the 15s-hold numbers.\", \"Build and wire scripts/retention_cliff_gate.py into build_ep_v2.py --assert-pacing so the cliff-fix is enforced automatically rather than re-derived per brief.\"], \"steps\": [\"Read PRODUCTION-PLAYBOOK.md sections 0-9 and the channel-lock table for craft rules and locked params.\", \"Parsed analysis_ctx JSON for channel list, video_summary top/bottom videos, and the 72-item calendar window Aug 13-27.\", \"Ran scripts/yt_retention.py --channel claude-tricks --days 30 --summary: found 6 of 7 measurable videos share a 10-15pp drop in the 4.7-6.7s window.\", \"Ran scripts/yt_retention.py --channel aashiqana --days 30 --summary: found the long-form 'Aaja Ve' loses -21pp/-32pp at 4.3s (instrumental before vocal) vs its cold-open Short at 51% avg-view.\", \"Confirmed calendar item 987377be already queues the correct fix for that aashiqana defect \\u2014 no challenge needed there.\", \"WebSearch on 2026 YouTube Shorts retention/hook trends and Bollywood Suno hook-cut trends to source concrete reasons for "
   },
   {
    "id": "406983eb-0e99-4903-a6c0-1fddffff13e5",
@@ -237,7 +268,8 @@
    "target_worker": null,
    "created_at": "2026-08-13T10:25:55.859048+00:00",
    "finished_at": "2026-08-13T10:26:42.71832+00:00",
-   "error": null
+   "error": null,
+   "result": "{\"video_rows\": 87, \"reauth_needed\": [], \"rows_upserted\": 55, \"video_sources\": {\"lulla\": \"analytics_api\", \"calm-ai\": \"error\", \"vehicles\": \"analytics_api\", \"aashiqana\": \"analytics_api\", \"language-abc\": \"analytics_api\", \"claude-tricks\": \"analytics_api\", \"already-happening\": \"analytics_api\"}, \"follow_up_job_id\": \"fbfc465d-a8bc-4078-8b07-124a46260ae9\"}"
   },
   {
    "id": "f0f3fb11-f5e2-4028-84a8-867682e47d1f",
@@ -251,7 +283,8 @@
    "target_worker": null,
    "created_at": "2026-08-13T05:30:58.06304+00:00",
    "finished_at": "2026-08-13T05:44:40.591708+00:00",
-   "error": null
+   "error": null,
+   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"At finalize: re-render so the corrected scan mock (disclosure anchored under the card) lands, and add a 'Not medical advice' lower-third on the payoff host frame \\u2014 the brief requires it on-frame and only the description and mock carry it today.\", \"Re-run the day-of freshness pass on Aug 15 before arming; if a fresher health/consumer AI story leads, it takes the cold open and this becomes beat 2.\"], \"steps\": [\"Read the locked masters 11/12/13.v2.json and the playbook sections on StatBars, caption safety and in-house mock grammar.\", \"Ran the freshness pass: scripts/news_radar.py (0 new hits, one dead Anthropic RSS feed) plus four WebSearch passes on the FDA/melanoma/Aug-2026 claims.\", \"Established the real facts: IDx-DR De Novo DEN180001 April 2018, 87.2%/90.7% over 900 patients at 10 primary-care sites; AEYE-DS handheld 2024; DermaSensor 17 Jan 2024.\", \"Wrote gen_ep14_mock.py on the make_doc_mock house grammar (2 states: scan result, scope of clearance) and gen_ep14_hook.py for the hook illustration.\", \"Fixed two mock defects caught on first render: vessel tree escaping the frame (S-scaling bug) and a fixed-width pill clipping 'REFER TO A DOCTOR"
   },
   {
    "id": "a2992869-c4e6-457b-84ab-2d8b16b92dfa",
@@ -265,24 +298,24 @@
    "target_worker": "DESKTOP-DEIR7RS",
    "created_at": "2026-08-13T03:21:16.79532+00:00",
    "finished_at": "2026-08-14T07:43:27.564124+00:00",
-   "error": null
-  },
-  {
-   "id": "dc4b3773-1afa-40bc-991c-a89ea3c6022e",
-   "type": "produce_preview",
-   "channel_key": "claude-tricks",
-   "title": "Preview \u2014 Your Claude Code Usage Boost Disappears Aug 19 -- Use It Now",
-   "status": "done",
-   "model": "opus",
-   "effort": "medium",
-   "assigned_worker": "Vijenders-MacBook-Pro.local",
-   "target_worker": null,
-   "created_at": "2026-08-13T03:16:25.241286+00:00",
-   "finished_at": "2026-08-13T03:35:31.537337+00:00",
-   "error": null
+   "error": null,
+   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Verify whether d3300c3 exists on a different branch/remote or hasn't been pushed yet\"], \"steps\": [\"Recorded old HEAD via git rev-parse --short HEAD: a9cc42e\", \"Ran git pull --ff-only in repo root\", \"Pull reported 'Already up to date.'\", \"Recorded new HEAD via git rev-parse --short HEAD: a9cc42e (unchanged)\"], \"issues\": [\"Task expected new HEAD to be d3300c3 or newer, but pull found no new commits and HEAD stayed at a9cc42e \\u2014 local main is already even with (or ahead of) origin, so the expected commit is not present on the tracked remote branch\"], \"outputs\": [], \"headline\": \"Ran git pull --ff-only on the factory repo checkout; repo was already current, no files changed.\", \"decisions\": [\"No script edits or restarts performed, per RUN + REPORT only scope\"]}, \"usage\": {\"subtype\": \"success\", \"cost_usd\": 0.31810620000000006, \"num_turns\": 4, \"duration_ms\": 137888, \"input_tokens\": 8, \"output_tokens\": 1126, \"cache_read_input_tokens\": 112074, \"cache_creation_input_tokens\": 44396}, \"summary\": \"Repo already up to date at a9cc42e; git pull --ff-only made no changes. HEAD did not reach expected d3300c3 (remote has no such commit ahead of local).\", \"uploaded\""
   }
  ],
  "workers": [
+  {
+   "worker_id": "Vijenders-MacBook-Pro.local",
+   "hostname": "Vijenders-MacBook-Pro.local",
+   "os": "Darwin",
+   "paused": false,
+   "accept_types": [],
+   "last_seen": "2026-08-14T21:52:55.194122+00:00",
+   "max_parallel": 2,
+   "meta": {
+    "python": "3.12.4",
+    "platform": "macOS-26.4.1-arm64-arm-64bit"
+   }
+  },
   {
    "worker_id": "DESKTOP-DEIR7RS",
    "hostname": "DESKTOP-DEIR7RS",
@@ -291,24 +324,11 @@
    "accept_types": [
     "shell_script"
    ],
-   "last_seen": "2026-08-14T21:51:46.316909+00:00",
+   "last_seen": "2026-08-14T21:52:59.341354+00:00",
    "max_parallel": 2,
    "meta": {
     "python": "3.12.10",
     "platform": "Windows-11-10.0.26200-SP0"
-   }
-  },
-  {
-   "worker_id": "Vijenders-MacBook-Pro.local",
-   "hostname": "Vijenders-MacBook-Pro.local",
-   "os": "Darwin",
-   "paused": false,
-   "accept_types": [],
-   "last_seen": "2026-08-14T21:52:06.694572+00:00",
-   "max_parallel": 2,
-   "meta": {
-    "python": "3.12.4",
-    "platform": "macOS-26.4.1-arm64-arm-64bit"
    }
   }
  ]
