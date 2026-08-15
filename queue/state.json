@@ -1,6 +1,51 @@
 {
- "taken_at": "2026-08-14T23:38:06.750273Z",
+ "taken_at": "2026-08-15T03:58:22.092347Z",
  "jobs": [
+  {
+   "id": "f75e08b0-fe89-4f52-bd5c-519d0305ded5",
+   "type": "produce_short",
+   "channel_key": "claude-tricks",
+   "title": "bc01 v5 PHASE 3 \u2014 clips restored, full render + all 5 gates, stage (no arm)",
+   "status": "queued",
+   "model": "sonnet",
+   "effort": "low",
+   "assigned_worker": null,
+   "target_worker": "Vijenders-MacBook-Pro.local",
+   "created_at": "2026-08-15T03:58:19.117708+00:00",
+   "finished_at": null,
+   "error": null,
+   "result": null
+  },
+  {
+   "id": "0aba33e2-b68b-4bf2-8c18-d2493d169222",
+   "type": "analyze_and_suggest",
+   "channel_key": "_network",
+   "title": "AI content analysis",
+   "status": "done",
+   "model": "sonnet",
+   "effort": "low",
+   "assigned_worker": "Vijenders-MacBook-Pro.local",
+   "target_worker": null,
+   "created_at": "2026-08-15T02:05:06.819309+00:00",
+   "finished_at": "2026-08-15T02:09:53.011223+00:00",
+   "error": null,
+   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Re-run yt_retention.py for lulla in 1-2 weeks once view counts clear YouTube's sampling floor\", \"Once the Aug-17 claude-tricks proof-at-4s test episode has a measured curve, compare it against Ep2 to confirm the fix generalizes before locking it as the template default\"], \"steps\": [\"Read analysis_ctx_0aba33e2.json (177 calendar rows, video_summary, 108-script generator catalog)\", \"Read docs/PRODUCTION-PLAYBOOK.md sections on automation, monetization, cost ledger, and content strategy patterns\", \"Ran python scripts/yt_retention.py --channel <key> --days 30 --summary for claude-tricks, aashiqana, already-happening, lulla\", \"Web-researched 2026 Shorts retention hook tactics and Suno Hindi-romantic-song trends\", \"Confirmed three existing challenger rows (4b009e95, 5aefd9b9, f4786789) already cover the calendar's weakest Aug14-15 items, so no duplicate challenges were added\", \"Identified a real cadence gap for already-happening (no Tue/Wed/Thu slot Aug15-21) and for aashiqana (no Aadhi Raat chapter since Ch.2 despite it being the channel's best-retention format)\", \"Drafted 3 content suggestions (already-happening Aug20, aashiqana Aug20, claude-tricks Aug"
+  },
+  {
+   "id": "da0858da-a0ac-486d-9fd2-a22fec0be2a9",
+   "type": "analytics_sync",
+   "channel_key": "_network",
+   "title": "Daily auto analytics sync (07:30 Asia/Kolkata)",
+   "status": "done",
+   "model": "sonnet",
+   "effort": "low",
+   "assigned_worker": "Vijenders-MacBook-Pro.local",
+   "target_worker": null,
+   "created_at": "2026-08-15T02:03:33.835242+00:00",
+   "finished_at": "2026-08-15T02:05:07.006607+00:00",
+   "error": null,
+   "result": "{\"video_rows\": 115, \"reauth_needed\": [], \"rows_upserted\": 65, \"video_sources\": {\"lulla\": \"analytics_api\", \"calm-ai\": \"error\", \"vehicles\": \"analytics_api\", \"aashiqana\": \"analytics_api\", \"language-abc\": \"analytics_api\", \"claude-tricks\": \"analytics_api\", \"already-happening\": \"analytics_api\"}, \"follow_up_job_id\": \"0aba33e2-b68b-4bf2-8c18-d2493d169222\"}"
+  },
   {
    "id": "7a1b8720-287d-4be0-8b82-0034697ca225",
    "type": "custom",
@@ -255,51 +300,6 @@
    "finished_at": "2026-08-14T02:10:34.263242+00:00",
    "error": null,
    "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Re-run yt_retention.py for already-happening and aashiqana once the new/revised episodes clear the ~48h analytics lag\", \"Consider a data-hygiene pass linking claude-tricks' duplicate same-day calendar titles via replaces_id\"], \"steps\": [\"Read analysis_ctx_d036bc41 (channels, calendar, video_summary, generator_catalog) and PRODUCTION-PLAYBOOK.md\", \"Ran yt_retention.py --summary for claude-tricks, aashiqana, already-happening, lulla, language-abc, vehicles\", \"Researched 2026 AI-tips Shorts hooks, Bollywood/Hindi Shorts music-hook trends, and faceless-Shorts retention best practice via WebSearch\", \"Compared claude-tricks' proof-at-4s winners vs slow-build losers using measured drop_points\", \"Compared aashiqana's verse-first full cut vs chorus-first Short cut cliffs\", \"Found already-happening's first-ever measurable retention curve shows a -23pp/-15pp cliff at the TODAY-anchor-to-extrapolation handoff\", \"Cross-checked the +14d calendar window for existing challengers via replaces_id before writing the challenge pass\", \"Wrote suggestions JSON (4 content, 1 challenge with replaces_ref, 2 factory) and per-channel insights\"], \"issues\": [\"lulla, language-abc"
-  },
-  {
-   "id": "5f68d353-1213-4199-93ea-96aab2864b0c",
-   "type": "analytics_sync",
-   "channel_key": "_network",
-   "title": "Daily auto analytics sync (07:30 Asia/Kolkata)",
-   "status": "done",
-   "model": "sonnet",
-   "effort": "low",
-   "assigned_worker": "Vijenders-MacBook-Pro.local",
-   "target_worker": null,
-   "created_at": "2026-08-14T02:03:05.789762+00:00",
-   "finished_at": "2026-08-14T02:04:34.054579+00:00",
-   "error": null,
-   "result": "{\"video_rows\": 102, \"reauth_needed\": [], \"rows_upserted\": 60, \"video_sources\": {\"lulla\": \"analytics_api\", \"calm-ai\": \"error\", \"vehicles\": \"analytics_api\", \"aashiqana\": \"analytics_api\", \"language-abc\": \"analytics_api\", \"claude-tricks\": \"analytics_api\", \"already-happening\": \"analytics_api\"}, \"follow_up_job_id\": \"d036bc41-bb94-449d-b8af-a2752f362ca2\"}"
-  },
-  {
-   "id": "2097a695-a555-4f02-91db-41fdd85fac70",
-   "type": "analyze_and_suggest",
-   "channel_key": "_network",
-   "title": "AI content analysis",
-   "status": "done",
-   "model": "sonnet",
-   "effort": "low",
-   "assigned_worker": "Vijenders-MacBook-Pro.local",
-   "target_worker": null,
-   "created_at": "2026-08-13T16:29:47.315113+00:00",
-   "finished_at": "2026-08-13T16:34:47.907857+00:00",
-   "error": null,
-   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"Re-run yt_retention.py next cycle once already-happening and lulla clear the analytics view threshold\", \"Confirm the caption_engine factory task lands before the next claude-tricks produce_short batch so its effect can be measured\"], \"steps\": [\"Read analysis_ctx JSON (channels, stats, video_summary, calendar, generator_catalog, last_insights)\", \"Ran scripts/yt_retention.py --summary for claude-tricks, aashiqana, already-happening, lulla\", \"Found claude-tricks: fast-payoff cuts hold 74% at 15s vs slow-build cuts holding only 39-44%\", \"Found aashiqana: full-song cut takes a -32pp cliff at 4.3s; short vertical cut holds comparatively better\", \"Confirmed already-happening + lulla have insufficient_data on every video \\u2014 judged by cadence/trend only\", \"Web-searched 2026 AI-Shorts hook trends, faceless-Shorts growth stats, and music-Shorts chorus-first best practice\", \"Wrote 3 new content suggestions (claude-tricks, aashiqana, already-happening) + 1 factory task (wire caption_engine flag)\", \"Challenge-audited planned/suggested items Aug 13-27, added 3 replaces_ref revisions with why_not citing retention data or format-risk\"], \"issues\": [], \"outputs\": "
-  },
-  {
-   "id": "94547b76-ac36-435e-8f1f-80b415e5e0d6",
-   "type": "analytics_sync",
-   "channel_key": "_network",
-   "title": "Analytics sync + AI suggestions",
-   "status": "done",
-   "model": "sonnet",
-   "effort": "low",
-   "assigned_worker": "Vijenders-MacBook-Pro.local",
-   "target_worker": null,
-   "created_at": "2026-08-13T16:28:57.661969+00:00",
-   "finished_at": "2026-08-13T16:29:47.487812+00:00",
-   "error": null,
-   "result": "{\"video_rows\": 87, \"reauth_needed\": [], \"rows_upserted\": 55, \"video_sources\": {\"lulla\": \"analytics_api\", \"calm-ai\": \"error\", \"vehicles\": \"analytics_api\", \"aashiqana\": \"analytics_api\", \"language-abc\": \"analytics_api\", \"claude-tricks\": \"analytics_api\", \"already-happening\": \"analytics_api\"}, \"follow_up_job_id\": \"2097a695-a555-4f02-91db-41fdd85fac70\"}"
   }
  ],
  "workers": [
@@ -309,35 +309,35 @@
    "os": "Darwin",
    "paused": false,
    "accept_types": [],
-   "last_seen": "2026-08-14T23:37:43.206714+00:00",
+   "last_seen": "2026-08-15T03:57:59.492066+00:00",
    "max_parallel": 2,
    "meta": {
     "usage": {
-     "at": "2026-08-14T23:36:55.076609+00:00",
-     "jobs": 12,
-     "since": "2026-08-14T18:36:55Z",
-     "cost_usd": 5.08,
+     "at": "2026-08-15T03:56:47.430912+00:00",
+     "jobs": 2,
+     "since": "2026-08-14T22:56:47Z",
+     "cost_usd": 1.3896,
      "window_h": 5,
-     "input_tokens": 68,
+     "input_tokens": 2,
      "rate_limited": false,
-     "output_tokens": 11823
+     "output_tokens": 276
     },
     "python": "3.12.4",
     "platform": "macOS-26.4.1-arm64-arm-64bit"
    },
    "recent_logs": [
+    "02:09:54 [info] job 0aba33e2-b68b-4bf2-8c18-d2493d169222 done, uploaded=0",
+    "02:05:16 [info]   wrote analysis context /Users/vijenderpanda/Ai-youtube-pipeline/renders_out/analysis_ctx_0aba33e2-b68b-4bf2-8c18-d2493d169222.json",
+    "02:05:12 [info] started job thread (1/2 slots, type=analyze_and_suggest)",
+    "02:05:12 [info] claimed job 0aba33e2-b68b-4bf2-8c18-d2493d169222 type=analyze_and_suggest channel=_network title='AI content analysis'",
+    "02:05:08 [info] analytics_sync da0858da-a0ac-486d-9fd2-a22fec0be2a9 done rows=65 video_rows=115 follow_up=0aba33e2-b68b-4bf2-8c18-d2493d169222",
+    "02:03:46 [info] started job thread (1/2 slots, type=analytics_sync)",
+    "02:03:46 [info] claimed analytics_sync job da0858da-a0ac-486d-9fd2-a22fec0be2a9",
+    "02:03:34 [info] auto-sync: queued daily analytics_sync job da0858da-a0ac-486d-9fd2-a22fec0be2a9",
     "22:52:42 [info] worker ready -- polling for jobs (parallel x2, heavy serial)",
     "22:52:42 [info] registered worker 'Vijenders-MacBook-Pro.local' (Vijenders-MacBook-Pro.local) os=Darwin gpu=none",
     "22:52:30 [info] reaping orphaned job 7a1b8720-287d-4be0-8b82-0034697ca225: orphaned: worker restarted mid-job",
-    "22:52:30 [info] seeded factory_settings auto_sync defaults (ignore-duplicates)",
-    "22:52:29 [info] seeded factory_generators (102 rows, merge-duplicates)",
-    "22:52:29 [info] seeded factory_channels (6 rows, ignore-duplicates)",
-    "22:52:16 [info] worker ready -- polling for jobs (parallel x2, heavy serial)",
-    "22:52:16 [info] registered worker 'Vijenders-MacBook-Pro.local' (Vijenders-MacBook-Pro.local) os=Darwin gpu=none",
-    "22:52:14 [info]   auto-retried as job 7a1b8720-287d-4be0-8b82-0034697ca225 (retry 1/1)",
-    "22:51:58 [info] reaping orphaned job a44afa69-155e-4cf4-a852-06e048b29ca8: orphaned: worker restarted mid-job",
-    "22:51:57 [info] seeded factory_settings auto_sync defaults (ignore-duplicates)",
-    "22:51:56 [info] seeded factory_generators (102 rows, merge-duplicates)"
+    "22:52:30 [info] seeded factory_settings auto_sync defaults (ignore-duplicates)"
    ]
   },
   {
@@ -348,25 +348,25 @@
    "accept_types": [
     "shell_script"
    ],
-   "last_seen": "2026-08-14T23:37:49.754323+00:00",
+   "last_seen": "2026-08-15T03:58:13.803215+00:00",
    "max_parallel": 2,
    "meta": {
     "python": "3.12.10",
     "platform": "Windows-11-10.0.26200-SP0"
    },
    "recent_logs": [
-    "23:37:39 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "23:32:38 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "23:27:34 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "23:22:33 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "23:17:31 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "23:12:30 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "23:07:29 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "23:02:28 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "22:57:26 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "22:52:25 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "22:47:24 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "22:42:23 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping"
+    "03:53:51 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "03:48:50 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "03:43:50 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "03:38:48 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "03:33:48 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "03:28:47 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "03:23:45 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "03:18:43 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "03:13:41 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "03:08:39 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "03:03:38 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "02:58:34 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping"
    ]
   }
  ]
