@@ -1,0 +1,9 @@
+{
+  "type": "produce_short",
+  "channel_key": "claude-tricks",
+  "model": "sonnet",
+  "effort": "low",
+  "target_worker": "Vijenders-MacBook-Pro.local",
+  "title": "bc01 v5 PHASE 3 — clips restored, full render + all 5 gates, stage (no arm)",
+  "prompt": "FINAL PHASE — VJ just mounted the Samsung T5. Continue from phase 2 (commit d0c13a4): the v5 tape is recorded, hook art regenerated, spec pass measured lipsync +23ms corr 0.995. Steps in order: (1) Verify /Volumes/Samsung_T5 is mounted, then rsync the 4 archived clips back from /Volumes/Samsung_T5/Ai-youtube-pipeline-media-backup/ to their original local paths: pinned_broll.mp4, appA1.mp4, appA4.mp4, appB2.mp4 (QUALITY-LEDGER's v5 entry documents the exact destinations). If the volume is NOT actually mounted, stop and report — do not improvise substitutes. (2) Full render: build_ep_v2.py --ep bc01 (v5) with a LONG Bash timeout (1800000 ms) — never the default 120s. (3) finalize_episode.py --skip-arm (LUFS -14.0 ±0.5 gate). (4) Run ALL 5 audition gates with real measured numbers: audio spine LUFS, lip-sync corr on the final cut, probe_frames.py chip/caption placement, standalone-first ≤2s legibility, homework CTA survives the tail — log every number to channels/claude-tricks/QUALITY-LEDGER.md under the bc01 v5 heading, replacing the NOT RUN entries. A gate that fails is reported as FAILED with its number, never massaged. (5) Commit the ledger + any spec updates to claude/ai-unpacked-vj-analytics-9lhetq and push. (6) Result must contain: staged mp4 absolute path, duration, all 5 gate numbers with pass/fail, and the two pending VJ confirmations — arm for Mon 2026-08-17 10:30 UTC, and unlist v4 bWoa98zMWjA at arm time. DO NOT ARM and do not touch the v4 video. Educator bar throughout: hook lands in audio+VO inside 2s, calm precise VO, zero filler."
+}
