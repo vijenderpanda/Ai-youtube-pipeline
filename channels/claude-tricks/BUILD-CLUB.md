@@ -141,7 +141,7 @@ window; GlobalHeader carries `BUILD CLUB · CH N/6`; header_scrim on.
 
 | Ch | Day | One move | Homework |
 |----|-----|----------|----------|
-| bc01 v5 | **Mon Aug 17** | SEASON OPENER (redo) — idea → live website tonight (Claude one-file page + Netlify Drop) + the week map: Mon LIVE · Tue SMART · Thu LISTED · Fri finale | Ship yours, comment SHIPPED |
+| bc01 v5 | **Mon Aug 17** | SEASON OPENER (redo) — "I Shipped a Website in 4 Minutes — Your Turn ⏱️": proof-first cold open ON the live URL ("Four minutes ago, this didn't exist"), then the build (Claude one-file page + Netlify Drop) + the week map: Mon LIVE · Tue SMART · Thu LISTED · Fri finale. Packaging chosen on the title-pattern read: "Stop…" imperatives measured 7/5/4 views; second-person/curiosity 165/147/129/109; proof-first "I Built…" is lifetime best (223) | Ship yours, comment SHIPPED |
 | bc02 | **Tue Aug 18** | Add one AI feature to last night's site (+ ep19's "What am I missing?" move on-camera) | Add one to yours |
 | — | Wed Aug 19 | **DARK** — protects Tuesday's 24–48h sample window | catch-up day |
 | bc06 | **Thu Aug 20** | Ch.3 LAUNCH DAY — polish + list yourself publicly (+ ep21's "AI interviews you first" move for the launch copy) | Post your link + SHIPPED |
