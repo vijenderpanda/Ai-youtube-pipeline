@@ -124,7 +124,7 @@ def main():
     # ---- middle-right: CHAPTER TWO stack --------------------------------
     rx = 600
     f = font("display", 40)
-    tracked(d, (rx * S, 600 * S), "NEXT FRIDAY", f, DIM, 8.0)
+    tracked(d, (rx * S, 600 * S), "TOMORROW", f, DIM, 8.0)
     d.text((rx * S, 664 * S), "CHAPTER", font=font("display", 96), fill=TXT)
     d.text((rx * S, 790 * S), "TWO", font=font("display", 210), fill=MAGENTA)
     # chip
@@ -157,7 +157,7 @@ def main():
     d.rounded_rectangle([x0, 1560 * S, x0 + wpx, 1642 * S], radius=41 * S,
                         fill=MAGENTA)
     d.text((x0 + 32 * S, 1578 * S), t, font=fs, fill=TXT)
-    t2 = "one practical step, every friday — build club"
+    t2 = "one practical step, all week — build club season 1"
     fu2 = font("ui", 30)
     d.text(((W * S - int(tw(d, t2, fu2))) // 2, 1682 * S), t2, font=fu2,
            fill=DIM)

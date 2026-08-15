@@ -139,13 +139,17 @@ window; GlobalHeader carries `BUILD CLUB · CH N/6`; header_scrim on.
 > never allowed to look like — hence all 5 audition gates, every chapter, no
 > exceptions.
 
+> **Revised 2026-08-15 (VJ, bc01 v5 review): cadence is Mon→Tue→Wed→Thu, NO dark
+> Wednesday.** Four consecutive days; the finale lands Thursday. VO speaks full day
+> names ("Monday", never "Mon" — abbreviations sound wrong spoken aloud); on-screen
+> pills keep the short forms.
+
 | Ch | Day | One move | Homework |
 |----|-----|----------|----------|
-| bc01 v5 | **Mon Aug 17** | SEASON OPENER (redo) — "I Shipped a Website in 4 Minutes — Your Turn ⏱️": proof-first cold open ON the live URL ("Four minutes ago, this didn't exist"), then the build (Claude one-file page + Netlify Drop) + the week map: Mon LIVE · Tue SMART · Thu LISTED · Fri finale. Packaging chosen on the title-pattern read: "Stop…" imperatives measured 7/5/4 views; second-person/curiosity 165/147/129/109; proof-first "I Built…" is lifetime best (223) | Ship yours, comment SHIPPED |
+| bc01 v5 | **Mon Aug 17** | SEASON OPENER (redo) — "I Shipped a Website in 4 Minutes — Your Turn ⏱️": proof-first cold open ON the live URL ("Four minutes ago, this didn't exist"), then the build (Claude one-file page + Netlify Drop) + the week map: Mon LIVE · Tue SMART · Wed LISTED · Thu finale. Packaging chosen on the title-pattern read: "Stop…" imperatives measured 7/5/4 views; second-person/curiosity 165/147/129/109; proof-first "I Built…" is lifetime best (223) | Ship yours, comment SHIPPED |
 | bc02 | **Tue Aug 18** | Add one AI feature to last night's site (+ ep19's "What am I missing?" move on-camera) | Add one to yours |
-| — | Wed Aug 19 | **DARK** — protects Tuesday's 24–48h sample window | catch-up day |
-| bc06 | **Thu Aug 20** | Ch.3 LAUNCH DAY — polish + list yourself publicly (+ ep21's "AI interviews you first" move for the launch copy) | Post your link + SHIPPED |
-| bcs1f | **Fri Aug 21** | Early finale of the quick learning series + SHIPPED showcase — real viewer builds on screen, Season 2 tease | Not shipped? Start Monday |
+| bc06 | **Wed Aug 19** | Ch.3 LAUNCH DAY — polish + list yourself publicly (+ ep21's "AI interviews you first" move for the launch copy) | Post your link + SHIPPED |
+| bcs1f | **Thu Aug 20** | Finale of the quick learning series + SHIPPED showcase — real viewer builds on screen, Season 2 tease | Not shipped? Start Monday |
 
 - bc03 (memory), bc04 (works while you sleep) and bc05 (alerts) move to the
   **Season 2 backlog** — S2 = "give it a memory + it runs without you," same
@@ -218,7 +222,7 @@ holding it, because Build Club is exempt from the daily ledger by design (differ
 | # | Gate | Command | Pass condition |
 |---|---|---|---|
 | 1 | **Audio spine** | `finalize_episode.py --ep bcNN --skip-arm` | integrated **−14.0 ±0.5 LUFS** on the delivered `*_outro` file |
-| 2 | **Lip-sync** | `python scripts/lipsync_align.py` on every host clip | sharp peak **corr > 0.9**; offset applied, not eyeballed |
+| 2 | **Lip-sync** | `python scripts/lipsync_align.py` (audio-vs-VO) **AND** `python scripts/lipsync_visual.py` (lips-vs-audio, MediaPipe mouth-aperture cross-correlation) on every host clip | audio: sharp peak **corr > 0.9**. Visual: **\|lag\| ≤ 80 ms** (WARN to 120 ms, written as a trade). ⚠️ The audio check alone shipped bc01 v5's first cut with lips 320–400 ms EARLY (2026-08-15) — HeyGen offsets the *video* against its own audio and audio-only correlation is structurally blind to it. On low visual corr (<0.2 — smiley/gesture-heavy clips confound the aperture signal) fall back to a frame-strip onset check at a silence→speech boundary. Fix direction: lips early → prepend first-frame freeze (concat, NOT tpad — tpad clone opened on black); lips late → in-point cut (`lipsync_align.py cut`). Heavier option researched 2026-08-15 and parked: SyncNet/Wav2Lip LSE scorer (PyTorch + pretrained model) — revisit for real-footage channels |
 | 3 | **Caption/chip placement** | `python scripts/probe_frames.py corner CLIP.mp4 --window <in> <out> --label "<chip text>"` — off the **shipped** cut, over the **exact** beat window | nothing taught sits under the chip or the low caption strip. Score 0.00 is the only fully clean answer; anything above it gets written down as a trade |
 | 4 | **Standalone-first** | watch the first 3s of the delivered file | series stamp ≤2s; a viewer who has never seen Ch.1 is not lost at frame 0 |
 | 5 | **Homework CTA survives** | watch the last 3s | the outro CTA is readable ≥1.5s and the final frame does not contradict it |

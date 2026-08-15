@@ -41,6 +41,10 @@ export type ChapterPayload = {
   chip: string;        // "YOUR IDEA GOES LIVE"
   sub: string;         // "one move, every friday"
   season: [number, number]; // [1, 6]
+  // optional season-map strip (bc01 v5): pills revealed one-by-one while the
+  // VO reads the week map — kills the 8s static-card dead zone. Each pill may
+  // carry `at` (seconds into the beat) to sync its pop to the spoken day.
+  week?: {d: string; t: string; at?: number}[];
 };
 export type PausePayload = {
   title: string;                          // "PAUSE — COPY THIS PROMPT"
@@ -114,12 +118,17 @@ export const ChapterCard: React.FC<{chapter: ChapterPayload; fps: number}> = ({
   fps,
 }) => {
   const f = useCurrentFrame();
+  const t = f / fps;
   const up = (delay: number) =>
     spring({frame: f - delay, fps, config: {damping: 16, stiffness: 120}});
   const s1 = up(2);
   const s2 = up(7);
   const s3 = up(13);
   const s4 = up(19);
+  // ambient life for the long VO hold: slow breathing on bloom + number so the
+  // card never fully freezes (bc01 v5 note: 8s of static card reads as a stall)
+  const breathe = 1 + 0.018 * Math.sin(t * Math.PI * 2 * 0.22);
+  const bloomPulse = 0.34 + 0.07 * Math.sin(t * Math.PI * 2 * 0.16);
   return (
     <div style={{position: "absolute", inset: 0, ...GRID_BG}}>
       {gridLines}
@@ -132,7 +141,7 @@ export const ChapterCard: React.FC<{chapter: ChapterPayload; fps: number}> = ({
           right: -200,
           height: 1100,
           background:
-            "radial-gradient(ellipse 52% 44% at 50% 52%, rgba(224,33,138,0.34) 0%, rgba(224,33,138,0.10) 55%, transparent 75%)",
+            `radial-gradient(ellipse 52% 44% at 50% 52%, rgba(224,33,138,${bloomPulse.toFixed(3)}) 0%, rgba(224,33,138,0.10) 55%, transparent 75%)`,
         }}
       />
       <div
@@ -177,7 +186,7 @@ export const ChapterCard: React.FC<{chapter: ChapterPayload; fps: number}> = ({
           letterSpacing: 8,
           color: MAG,
           opacity: s3,
-          transform: `scale(${0.7 + 0.3 * s3})`,
+          transform: `scale(${(0.7 + 0.3 * s3) * breathe})`,
           textShadow: "0 0 90px rgba(224,33,138,0.55)",
         }}
       >
@@ -222,6 +231,47 @@ export const ChapterCard: React.FC<{chapter: ChapterPayload; fps: number}> = ({
         {chapter.sub}
       </div>
       <SeasonDots season={chapter.season} y={1352} />
+      {chapter.week && (
+        <div
+          style={{
+            position: "absolute",
+            top: 1600,
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            gap: 22,
+          }}
+        >
+          {chapter.week.map((w, i) => {
+            const at = w.at ?? 1.6 + i * 1.5; // fallback: even stagger
+            const pop = spring({
+              frame: f - Math.round(at * fps),
+              fps,
+              config: {damping: 13, stiffness: 150},
+            });
+            return (
+              <div
+                key={w.d}
+                style={{
+                  opacity: pop,
+                  transform: `translateY(${(1 - pop) * 26}px) scale(${0.85 + 0.15 * pop})`,
+                  background: "rgba(255,255,255,0.06)",
+                  border: `2px solid ${i === 0 ? MAG : FAINT}`,
+                  borderRadius: 18,
+                  padding: "16px 22px",
+                  textAlign: "center",
+                  fontFamily: "Anton",
+                }}
+              >
+                <div style={{fontSize: 30, letterSpacing: 4, color: DIM}}>{w.d}</div>
+                <div style={{fontSize: 40, letterSpacing: 2, color: i === 0 ? MAG : TXT, marginTop: 6}}>
+                  {w.t}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

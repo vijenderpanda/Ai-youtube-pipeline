@@ -2,13 +2,13 @@
  "_status": "REDO v5 2026-08-15 (VJ directive) — supersedes v4 (youtu.be/bWoa98zMWjA, published off-schedule, skipped gates 3/4/5). NOT a re-upload: new cold open, new season-map beat, re-recorded tape planned. v4 spec was single-beat 'stick with me' cold open + no season-map; v5 replaces with audio+VO-together hook at 0s and an explicit THIS WEEK map beat at ~3s. Tapes (rec:bc01/appA1.mp4 etc) still point at v4 footage — RE-RECORD IS OUTSTANDING, see QUALITY-LEDGER v5 audition block.",
  "series": "build-club",
  "chapter": 1,
- "title": "Stop Paying For Websites — Yours Goes LIVE Tonight (FREE) 🚀 [Ch.1 v5 SEASON OPENER]",
+ "title": "I Shipped a Website in 4 Minutes — Your Turn ⏱️ [Ch.1 v5 SEASON OPENER]",
  "tags": "build a website with ai,no code website,free website,make a website from your phone,start your business online,claude ai,claude app,netlify,ai for beginners,side hustle ideas,small business website,build club,ai tips",
  "epTag": "BUILD CLUB · CH 1/6",
  "homework": "Ship your site free and drop your LIVE LINK in the comments — add the word SHIPPED so I can find you (links can take a while to appear while YouTube reviews them). This week I'm gifting one month of Claude Pro to my favourite shipped site — my personal gift, not affiliated with Anthropic.",
  "lines": [
-  "Stop paying for websites — yours goes live tonight, free.",
-  "This week: Mon it goes LIVE, Tue it gets SMART, Thu you get LISTED, Fri the finale — one week, not someday.",
+  "Four minutes ago, this didn't exist.",
+  "This week: Monday it goes LIVE, Tuesday it gets SMART, Wednesday you get LISTED, Thursday the finale — one week, not someday.",
   "And you can do this live, with me, right now — just your phone. Nothing else.",
   "One trick makes it work: give the A-I your full context, and it steers the build to your needs.",
   "The full prompt is waiting in the pinned comment. Tap. Copy.",
@@ -18,10 +18,11 @@
   "Same prompt for everyone — the polish is on you. How good can yours look?",
   "Now netlify dot app in your browser — a free account, one minute — and choose that file. No card ever.",
   "And that U-R-L? Real. Your idea — live, from your phone, tonight.",
-  "Drop your link in the comments — I'm reading every one. Next Friday, chapter two: we unlock the next step."
+  "Drop your link in the comments — I'm reading every one. Tomorrow, chapter two: we unlock the next step."
  ],
  "hot_words": [
   "STICK", "END", "BUSINESS", "LIVE", "TONIGHT", "FREE", "BUILD", "CLUB",
+  "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FINALE",
   "FRIDAY", "PRACTICAL", "HOMEWORK", "SPEED", "ANYONE", "FULL", "CONTEXT",
   "PROMPT", "PINNED", "SIX", "QUESTIONS", "PRICES", "VIBE", "HONEST",
   "TEXTING", "STEERS", "YOUR", "NEEDS", "ONE", "FILE", "INDEX", "HTML",
@@ -57,7 +58,7 @@
  ],
  "hook": {
   "image": "epbc01/hook_art/stop_paying.png",
-  "lines": ["STOP PAYING", "GO LIVE TONIGHT — FREE"],
+  "lines": ["4 MINUTES", "YOUR TURN"],
   "hot": "FREE",
   "kicker": "BUILD CLUB · CHAPTER 1/6",
   "until": 2.0,
@@ -70,8 +71,14 @@
   "word": "CHAPTER",
   "num": "ONE",
   "chip": "YOUR IDEA GOES LIVE",
-  "sub": "one move, every friday",
-  "season": [1, 6]
+  "sub": "one move a day, all week",
+  "season": [1, 6],
+  "week": [
+   {"d": "MON", "t": "LIVE", "at": 0.79},
+   {"d": "TUE", "t": "SMART", "at": 2.13},
+   {"d": "WED", "t": "LISTED", "at": 3.56},
+   {"d": "THU", "t": "FINALE", "at": 4.75}
+  ]
  },
  "pause": {
   "title": "PAUSE — COPY THIS PROMPT",
@@ -97,7 +104,7 @@
   "hwTitle": "HOMEWORK",
   "hwLine": "Ship yours this week.",
   "hwChip": "DROP YOUR LIVE LINK 👇",
-  "tease": "NEXT FRIDAY · CH 2 — YOUR SITE GETS SMART",
+  "tease": "TOMORROW · CH 2 — YOUR SITE GETS SMART",
   "season": [1, 6]
  },
  "rail": {
@@ -125,7 +132,7 @@
  "outro": true,
  "outro_src": "epbc01/outro_card.mp4",
  "outro_dur": 0,
- "outro_cta": "I'm reading every single comment this weekend — show me what you built. My Claude gift is in the description — first three builders get a free month. And next Friday? Your site learns to talk.",
+ "outro_cta": "I'm reading every single comment all week — show me what you built. My Claude gift is in the description — first three builders get a free month. And tomorrow? Your site learns to talk.",
  "seo_line": "Build a real website with AI — no code, no laptop, completely free. In this chapter you use the Claude app on your phone + Netlify to take your business idea live in one evening: perfect for small businesses, side hustles, students, and anyone stuck at 'someday'.",
  "gift_line": "🎁 My Claude gift — the first 3 builders who use this link get a free month of Claude Pro: https://claude.ai/referral/fIQUSk0Uig?s=android (personal referral link, not sponsored)",
  "_production_notes": {

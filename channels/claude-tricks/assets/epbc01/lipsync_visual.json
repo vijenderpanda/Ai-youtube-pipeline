@@ -1,0 +1,47 @@
+[
+ {
+  "clip": "v2_hook.mp4",
+  "status": "ok",
+  "visual_lag_ms": 480.0,
+  "corr": -0.259,
+  "face_frames_pct": 100.0,
+  "frames": 52,
+  "verdict": "FAIL"
+ },
+ {
+  "clip": "v2_host_01.mp4",
+  "status": "ok",
+  "visual_lag_ms": -480.0,
+  "corr": 0.19,
+  "face_frames_pct": 100.0,
+  "frames": 260,
+  "verdict": "FAIL"
+ },
+ {
+  "clip": "v2_wpip_live.mp4",
+  "status": "ok",
+  "visual_lag_ms": 0.0,
+  "corr": 0.246,
+  "face_frames_pct": 100.0,
+  "frames": 145,
+  "verdict": "WARN"
+ },
+ {
+  "clip": "v2_pip_live.mp4",
+  "status": "ok",
+  "visual_lag_ms": -40.0,
+  "corr": 0.226,
+  "face_frames_pct": 100.0,
+  "frames": 145,
+  "verdict": "WARN"
+ },
+ {
+  "clip": "v2_pip_answers.mp4",
+  "status": "ok",
+  "visual_lag_ms": 240.0,
+  "corr": 0.175,
+  "face_frames_pct": 100.0,
+  "frames": 86,
+  "verdict": "FAIL"
+ }
+]

@@ -406,3 +406,124 @@ other than the shipped one is void by definition, and nothing in the pipeline ca
 and 5 are open ratchet targets, and the Ch.1 retention curve (`yt_retention.py --video bWoa98zMWjA`)
 is the input for where the hook needs work. See `docs/stats/AI-UNPACKED-READ-2026-08-14.md` §4 for
 the pre-committed d0 thresholds that decide whether Friday stays Build Club.
+
+---
+
+## Build Club bc01 v5 — "I Shipped a Website in 4 Minutes — Your Turn ⏱️" · RENDERED 2026-08-15 12:4x IST (local Mac session) · NOT ARMED, awaiting VJ written go
+
+Unblocked from the 2026-08-15 03:41 cloud session's hard stop: T5 mounted locally, `assets/bc01/appA1|appA4|appB2.mp4` + `assets/epbc01/pinned_broll.mp4` present. `build_ep_v2.py --ep bc01` rendered 65.5s body + 11.0s spoken-CTA outro → `renders/epbc01_v2_outro.mp4` (76.5s total).
+
+### AUDITION BLOCK (pre-arm, per §7 — video ID field to be filled AFTER arming with the shipped ID)
+
+| # | Gate | Result |
+|---|---|---|
+| 1 | Audio spine (−14.0 ±0.5 LUFS) | **PASS** — integrated **−13.9 LUFS**, TP −0.1 dBTP, LRA 2.3 LU on `epbc01_v2_outro.mp4` (measured via ffmpeg loudnorm summary, not finalize_episode.py) |
+| 2 | Lip-sync (corr > 0.9) | **PASS** — all 5 host clips (`v2_hook`, `v2_host_01`, `v2_wpip_live`, `v2_pip_live`, `v2_pip_answers`): lag **+23.0 ms**, corr **0.9945–0.9976** (`lipsync_align.py measure`, offset is the known engine-applied constant) |
+| 3 | Caption/chip placement (`probe_frames.py corner`, shipped cut `epbc01_v2.mp4`) | **MEASURED, trades recorded** — no window fully clean at 0.00 except phone-B/phone-C bottom corners: pip:answers 32.26–37.35 best br **0.0891**; pip:live 54.52–59.73 best br **0.0375**; phone-A 22.73–32.26 best br **0.0155**; phone-B 37.35–47.74 bl/br **0.0001 (clean)**; phone-C 47.74–54.52 bl/br **0.0001 (clean)** |
+| 4 | Standalone-first (first 3s) | **PASS** — frame 0 = baked proof-first hook (live anitas-tiffin site + "4 MINUTES / YOUR TURN"), series stamp "BUILD CLUB · CH 1/6" visible at 0.0s; chapter card at 2.28s; VO "Four minutes ago, this didn't exist" at 0s |
+| 5 | Homework CTA survives (last 3s) | **PASS with a flagged defect** — "SHIP IT · DROP YOUR LINK↓" card readable ~11s through the final frame, no contradiction of the homework CTA. **DEFECT: outro card + spoken CTA + VO line 12 all say "NEXT FRIDAY / next Friday, chapter two" — the restructured season ships Ch.2 TUESDAY Aug 18.** Blocks arm until VJ decides: re-cut tease audio/card, or accept |
+
+**Not done:** arm, v4 unlist (both explicitly VJ-gated). Nothing staged to YouTube.
+
+### RECUT 2026-08-15 ~12:50 IST (VJ directive: fix the "next Friday" tease)
+
+Ch.2 ships **Tuesday Aug 18** (one-week season), so every "next Friday" reference became
+"tomorrow" relative to the Monday publish: VO line 12 (surgically re-synthed and spliced at the
+59.73s boundary — head audio and all 5 HeyGen host clips untouched, so gate-2 lip-sync results
+carry), recipe tease chip → "TOMORROW · CH 2", outro card → "TOMORROW / CHAPTER TWO"
+(`gen_bc01_outro.py` regenerated; bottom tagline → "one practical step, all week — build club
+season 1"), spoken outro CTA re-synthed ("all week" + "And tomorrow? Your site learns to talk.",
+10.50s, −34.5 LUFS → +20.5 dB). Backups: `vo_v2.v4tail.bak.wav` + `vo_v2.words.v4tail.bak.json`.
+
+Re-measured on the recut `epbc01_v2_outro.mp4` (77.13s):
+- Gate 1 audio spine: **−13.7 LUFS** integrated — PASS (−14.0 ±0.5).
+- Gate 2 lip-sync: head audio bit-identical, host clips unchanged — prior +23 ms / corr 0.994–0.998 stands.
+- Gate 4: head untouched by the recut — prior PASS stands.
+- Gate 5: **PASS, defect cleared** — tail frames verified: "SHIP IT · DROP YOUR LINK↓" + TOMORROW
+  card through the final frame; no schedule contradiction remains.
+- Gate 3: phone/pip beat windows unchanged by the tail recut — prior measurements stand.
+
+Chapter-card sub "one move, every friday" left as-is (series-level line; VJ scope was the
+Friday tease). Still NOT armed — awaiting VJ written go + arm-time v4 unlist confirm.
+
+### CUT 3 — 2026-08-15 ~13:15 IST (VJ review fixes: lip-sync + static chapter card) · QC ENGINE LEVELED UP
+
+**VJ caught what the gate missed.** Gate 2 (audio-vs-VO, +23 ms corr 0.99) was structurally blind
+to HeyGen offsetting the VIDEO against its own audio. New tool `scripts/lipsync_visual.py`
+(MediaPipe FaceMesh mouth-aperture vs audio-RMS cross-correlation; sign convention validated with
+a controlled +200 ms audio shift) measured lips **320–400 ms EARLY** on 3 of 5 host clips.
+SyncNet/Wav2Lip LSE researched, parked (PyTorch+model; overkill for fixed-framing synthetic host).
+BUILD-CLUB §7 gate 2 now requires BOTH tools (visual gate |lag| ≤ 80 ms, WARN to 120).
+
+Fixes in this cut (originals kept as `*.presync.bak.mp4`):
+- `v2_pip_answers`: +0.32 s first-frame freeze → **−40 ms PASS**.
+- `v2_host_01`: +0.32 s freeze → verified in-sync at the 4.67 s silence→speech onset via frame
+  strip (full-clip visual corr 0.11–0.16 is unreliable on this smiley clip — recorded as the
+  tool's known limitation, onset check is the fallback per the updated gate).
+- `v2_hook`: +0.52 s freeze → **−80 ms WARN (trade)** — a longer freeze would eat more of the
+  2.28 s hook window. Method note: ffmpeg first-frame freeze + concat, NOT tpad (tpad clone
+  produced a black lead-in).
+- `v2_wpip_live` +40 ms, `v2_pip_live` +40 ms — already in tolerance, untouched.
+- **ChapterCard un-frozen** (remotion `BuildClub.tsx`): breathing bloom + number scale, and a new
+  season-map pill strip (MON LIVE / TUE SMART / THU LISTED / FRI FINALE) — each pill pops at the
+  VO word timestamp (0.87/2.59/4.25/5.56 s into the beat, from vo_v2.words.json). First render
+  collided with the caption line; strip moved 1470→1600, verified clear.
+
+Re-gate on this cut (`epbc01_v2_outro.mp4`, 77.1 s):
+| # | Gate | Result |
+|---|---|---|
+| 1 | Audio spine | **PASS** −13.7 LUFS |
+| 2 | Lip-sync (audio) | PASS +23 ms corr 0.99 (unchanged) · **(visual)** pip_answers −40 PASS · hook −80 WARN-trade · host_01 onset-verified · wpip/pip_live +40 PASS |
+| 3 | Chip placement | probe re-run on this cut: pip windows best br 0.076/0.069; phone windows best 0.037/tr 0.263/tl 0.351 — elevated top-corner scores are the progress rail itself (intended UI); frame checks at 42 s and 50 s confirm captions in the dead zone below the PhoneFrame, nothing taught covered |
+| 4 | Standalone-first | **PASS** — baked hook frame 0 unchanged; hook video now opens on Sol (freeze verified, no black lead-in) |
+| 5 | Homework CTA | **PASS** — tail unchanged from the TOMORROW recut |
+
+NOT armed. Synced to the factory app card 63e04892 for VJ approval (StudioBoard).
+
+### CUT 4 — 2026-08-15 ~14:0x IST (VJ directives: fresh HeyGen after VO change · full day names · Mon–Thu cadence, no dark Wed)
+
+- **VO fully re-synthed** (62.0s body): line 2 now speaks FULL day names — "Monday it goes LIVE,
+  Tuesday it gets SMART, Wednesday you get LISTED, Thursday the finale". Line 12 "Tomorrow,
+  chapter two" retained. Series rule added to BUILD-CLUB §4: VO speaks full day names, pills
+  keep short forms.
+- **CADENCE RESTRUCTURED (VJ): Mon 17 → Tue 18 → Wed 19 (bc06 LAUNCH, was Thu 20) → Thu 20
+  (bcs1f finale, was Fri 21). NO dark Wednesday.** Calendar rows + BUILD-CLUB §4 table updated.
+- **All 5 host clips are FRESH HeyGen generations** (FACTORY_REBUILD_HOSTS=1) — VJ rejected
+  patched freezes on stale generations. New batch measured with lipsync_visual: offsets were
+  AGAIN random and large (+400/+440/+440 late on wpip/pip_live/pip_answers; hook & host_01
+  early, low-corr → frame-strip ground-truthed). Confirms: **HeyGen video offset is random per
+  render; every generation must pass the visual gate before mastering.**
+- Per-clip corrections applied (freeze-prepend for early, in-point trim + tail clone for late),
+  final state: hook ≈−80 ms (strip-verified at "Four minutes" onset) · host_01 ≈+100 ms
+  (strip-verified at 1.3s onset) · wpip_live 0 ms · pip_live −40 ms · pip_answers +120 ms
+  (WARN trade, small pip box; measurement corr 0.15 unreliable, strip ambiguous).
+- Week pills re-timed to the NEW VO word starts: MON 0.79 / TUE 2.13 / WED 3.56 / THU 4.75
+  (a first render went out with stale estimates — killed and re-rendered).
+
+Gates on `epbc01_v2_outro.mp4` (73.7s):
+| # | Gate | Result |
+|---|---|---|
+| 1 | Audio spine | **PASS** −14.1 LUFS |
+| 2 | Lip-sync | audio +23 ms corr 0.996 (engine auto-check) · visual per-clip above — PASS/WARN-trades recorded |
+| 3 | Chip placement | new windows probed: pips best br 0.077/0.069; phone A tr 0.037; phone B/C 0.263/0.351 = progress rail (intended UI), frame-checked clean |
+| 4 | Standalone-first | **PASS** — baked hook frame 0, Sol mid-speech, stamp at 0s; chapter card 2.11s |
+| 5 | Homework CTA | **PASS** — SHIP IT card + TOMORROW·CHAPTER TWO tail to final frame |
+
+NOT armed. Cut 4 pushed to app card 63e04892.
+
+### CUT 5 — 2026-08-15 (final polish): chapter-card sub "one move, every friday" → "one move a day, all week" (cadence-correct). Only the card text changed; VO/clips untouched. −14.1 LUFS re-verified. Length decision (VJ): ship 73.7s for the season opener; pre-committed check — d0+48h retention pull, if avg-%-viewed <35% or 15s hold <40%, Ch.2 body tightens to ~45s. Pushed to app card 63e04892 as master_cut_v5.
+
+### ARMED 2026-08-15 ~14:3x IST (VJ written go: "ok finalize and arm it")
+
+**Shipped video ID: `38qTA1IZg9w` (youtu.be/38qTA1IZg9w) — scheduled Mon 2026-08-17 16:00 IST
+(10:30Z), private until then.** This ID is the file every gate above (CUT 5 chain) measured.
+finalize_episode QC: **−14.00 LUFS, drift +0.00 LU, QC gate PASSED.** Title as armed carried the
+internal spec marker "[Ch.1 v5 SEASON OPENER]" — fixed post-arm via videos.update to
+**"I Shipped a Website in 4 Minutes — Your Turn ⏱️ — Build Club Ch. 1"** (spec title field should
+drop internal markers before finalize next time — series suffix comes from apply_series_suffix).
+- v4 cut `bWoa98zMWjA` **UNLISTED** (not deleted) — v5 is the season canonical.
+- Added to playlist "Build Club — Season 1" (PLIuiep7RRSGE).
+- factory DB: scheduled factory_posts row + calendar 63e04892 → produced.
+- Post-publish human steps (Mon after 16:00 IST): pin SHARE-PROMPT.txt comment (+ Studio pin
+  click), approve held link-comments daily, weekend `yt_engage --count-keyword SHIPPED` + gift picks.
+- d0+48h retention check pre-committed: avg-%-viewed <35% or 15s hold <40% → Ch.2 body ~45s.
