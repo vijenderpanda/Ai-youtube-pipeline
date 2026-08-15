@@ -1,0 +1,9 @@
+{
+  "type": "custom",
+  "channel_key": "claude-tricks",
+  "model": "sonnet",
+  "effort": "low",
+  "target_worker": "Vijenders-MacBook-Pro.local",
+  "title": "Mac: pull + restart under new Full Disk Access grant",
+  "prompt": "VJ just granted Full Disk Access to /Users/vijenderpanda/miniconda3/bin/python3 — the grant only applies to NEWLY launched processes, so the worker must restart to gain T5 read access. Two steps in order: (1) repo root: git pull --ff-only origin claude/ai-unpacked-vj-analytics-9lhetq (brings the new bc01 v5 packaging — '4 Minutes — Your Turn' — into the calendar and season bible). If dirty, git stash --include-untracked first and say so. (2) launchctl kickstart -k gui/$(id -u)/com.factory.worker. This job gets orphaned by its own restart — EXPECTED. Pull FIRST, restart LAST, nothing after. Do NOT attempt the T5 read yourself — this pre-restart process still lacks the grant; the render job that follows will do it."
+}
