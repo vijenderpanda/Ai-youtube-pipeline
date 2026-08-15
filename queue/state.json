@@ -1,20 +1,20 @@
 {
- "taken_at": "2026-08-15T03:58:22.092347Z",
+ "taken_at": "2026-08-15T04:52:50.275857Z",
  "jobs": [
   {
    "id": "f75e08b0-fe89-4f52-bd5c-519d0305ded5",
    "type": "produce_short",
    "channel_key": "claude-tricks",
    "title": "bc01 v5 PHASE 3 \u2014 clips restored, full render + all 5 gates, stage (no arm)",
-   "status": "queued",
+   "status": "done",
    "model": "sonnet",
    "effort": "low",
-   "assigned_worker": null,
+   "assigned_worker": "Vijenders-MacBook-Pro.local",
    "target_worker": "Vijenders-MacBook-Pro.local",
    "created_at": "2026-08-15T03:58:19.117708+00:00",
-   "finished_at": null,
+   "finished_at": "2026-08-15T04:01:25.974247+00:00",
    "error": null,
-   "result": null
+   "result": "{\"posts\": 0, \"recap\": {\"next\": [\"VJ: grant Full Disk Access to the terminal app running Claude Code (System Settings -> Privacy & Security -> Full Disk Access), then re-run this job -- steps 1-6 are otherwise unblocked and QUALITY-LEDGER.md's bc01 v5 section already documents the exact 4 destination paths\", \"Once T5 is readable, re-run in one session: rsync the 4 clips, build_ep_v2.py --ep bc01 with a 1800000ms Bash timeout, finalize_episode.py --skip-arm, all 5 \\u00a77 gates with real numbers, commit+push, then report back for the arm/unlist confirmations -- do not arm or touch v4 until VJ confirms\"], \"steps\": [\"Checked /Volumes/Samsung_T5 via plain ls -> 'Operation not permitted'\", \"Confirmed with dangerouslyDisableSandbox: ls /Volumes/ shows Samsung_T5 present; stat on it succeeds with a fresh mtime (Aug 15 09:13), consistent with VJ mounting it this session\", \"ls into /Volumes/Samsung_T5/ and into the media-backup subfolder both fail with 'Operation not permitted' even outside the sandbox\", \"Ran /usr/sbin/diskutil list directly: disk4 shows GUID partition scheme, 1.0 TB external, partition 2 = Apple_HFS 'Samsung_T5' -- the drive is physically attached and mounted, not absent\", "
   },
   {
    "id": "0aba33e2-b68b-4bf2-8c18-d2493d169222",
@@ -304,43 +304,6 @@
  ],
  "workers": [
   {
-   "worker_id": "Vijenders-MacBook-Pro.local",
-   "hostname": "Vijenders-MacBook-Pro.local",
-   "os": "Darwin",
-   "paused": false,
-   "accept_types": [],
-   "last_seen": "2026-08-15T03:57:59.492066+00:00",
-   "max_parallel": 2,
-   "meta": {
-    "usage": {
-     "at": "2026-08-15T03:56:47.430912+00:00",
-     "jobs": 2,
-     "since": "2026-08-14T22:56:47Z",
-     "cost_usd": 1.3896,
-     "window_h": 5,
-     "input_tokens": 2,
-     "rate_limited": false,
-     "output_tokens": 276
-    },
-    "python": "3.12.4",
-    "platform": "macOS-26.4.1-arm64-arm-64bit"
-   },
-   "recent_logs": [
-    "02:09:54 [info] job 0aba33e2-b68b-4bf2-8c18-d2493d169222 done, uploaded=0",
-    "02:05:16 [info]   wrote analysis context /Users/vijenderpanda/Ai-youtube-pipeline/renders_out/analysis_ctx_0aba33e2-b68b-4bf2-8c18-d2493d169222.json",
-    "02:05:12 [info] started job thread (1/2 slots, type=analyze_and_suggest)",
-    "02:05:12 [info] claimed job 0aba33e2-b68b-4bf2-8c18-d2493d169222 type=analyze_and_suggest channel=_network title='AI content analysis'",
-    "02:05:08 [info] analytics_sync da0858da-a0ac-486d-9fd2-a22fec0be2a9 done rows=65 video_rows=115 follow_up=0aba33e2-b68b-4bf2-8c18-d2493d169222",
-    "02:03:46 [info] started job thread (1/2 slots, type=analytics_sync)",
-    "02:03:46 [info] claimed analytics_sync job da0858da-a0ac-486d-9fd2-a22fec0be2a9",
-    "02:03:34 [info] auto-sync: queued daily analytics_sync job da0858da-a0ac-486d-9fd2-a22fec0be2a9",
-    "22:52:42 [info] worker ready -- polling for jobs (parallel x2, heavy serial)",
-    "22:52:42 [info] registered worker 'Vijenders-MacBook-Pro.local' (Vijenders-MacBook-Pro.local) os=Darwin gpu=none",
-    "22:52:30 [info] reaping orphaned job 7a1b8720-287d-4be0-8b82-0034697ca225: orphaned: worker restarted mid-job",
-    "22:52:30 [info] seeded factory_settings auto_sync defaults (ignore-duplicates)"
-   ]
-  },
-  {
    "worker_id": "DESKTOP-DEIR7RS",
    "hostname": "DESKTOP-DEIR7RS",
    "os": "Windows",
@@ -348,25 +311,62 @@
    "accept_types": [
     "shell_script"
    ],
-   "last_seen": "2026-08-15T03:58:13.803215+00:00",
+   "last_seen": "2026-08-15T04:52:47.162173+00:00",
    "max_parallel": 2,
    "meta": {
     "python": "3.12.10",
     "platform": "Windows-11-10.0.26200-SP0"
    },
    "recent_logs": [
-    "03:53:51 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "03:48:50 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "03:43:50 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "03:38:48 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "03:33:48 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "03:28:47 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "03:23:45 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "03:18:43 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "03:13:41 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "03:08:39 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "03:03:38 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
-    "02:58:34 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping"
+    "04:49:00 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "04:43:59 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "04:38:57 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "04:33:57 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "04:28:56 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "04:23:55 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "04:18:54 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "04:13:53 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "04:08:52 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "04:03:52 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "03:58:51 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping",
+    "03:53:51 [info] auto-sync: unknown auto_sync_tz 'Asia/Kolkata', skipping"
+   ]
+  },
+  {
+   "worker_id": "Vijenders-MacBook-Pro.local",
+   "hostname": "Vijenders-MacBook-Pro.local",
+   "os": "Darwin",
+   "paused": false,
+   "accept_types": [],
+   "last_seen": "2026-08-15T04:45:11.058166+00:00",
+   "max_parallel": 2,
+   "meta": {
+    "usage": {
+     "at": "2026-08-15T04:44:45.988237+00:00",
+     "jobs": 3,
+     "since": "2026-08-14T23:44:45Z",
+     "cost_usd": 1.8715,
+     "window_h": 5,
+     "input_tokens": 22,
+     "rate_limited": false,
+     "output_tokens": 4570
+    },
+    "python": "3.12.4",
+    "platform": "macOS-26.4.1-arm64-arm-64bit"
+   },
+   "recent_logs": [
+    "04:44:35 [info] stale-heartbeat reap poll failed: HTTPSConnectionPool(host='xfqyovimnqdghiekicqr.supabase.co', port=443): Max retries exceeded with url: /rest/v1/factory_jobs?s",
+    "04:44:35 [info] posts poll failed: HTTPSConnectionPool(host='xfqyovimnqdghiekicqr.supabase.co', port=443): Max retries exceeded with url: /rest/v1/factory_posts?status=eq.armed",
+    "04:44:35 [info] claim failed: HTTPSConnectionPool(host='xfqyovimnqdghiekicqr.supabase.co', port=443): Max retries exceeded with url: /rest/v1/rpc/factory_claim_job (Caused by N",
+    "04:01:27 [info] job f75e08b0-fe89-4f52-bd5c-519d0305ded5 done, uploaded=0",
+    "03:58:24 [info] started job thread (1/2 slots, type=produce_short)",
+    "03:58:24 [info] claimed job f75e08b0-fe89-4f52-bd5c-519d0305ded5 type=produce_short channel=claude-tricks title='bc01 v5 PHASE 3 \u2014 clips restored, full render + all 5 gates, st",
+    "02:09:54 [info] job 0aba33e2-b68b-4bf2-8c18-d2493d169222 done, uploaded=0",
+    "02:05:16 [info]   wrote analysis context /Users/vijenderpanda/Ai-youtube-pipeline/renders_out/analysis_ctx_0aba33e2-b68b-4bf2-8c18-d2493d169222.json",
+    "02:05:12 [info] started job thread (1/2 slots, type=analyze_and_suggest)",
+    "02:05:12 [info] claimed job 0aba33e2-b68b-4bf2-8c18-d2493d169222 type=analyze_and_suggest channel=_network title='AI content analysis'",
+    "02:05:08 [info] analytics_sync da0858da-a0ac-486d-9fd2-a22fec0be2a9 done rows=65 video_rows=115 follow_up=0aba33e2-b68b-4bf2-8c18-d2493d169222",
+    "02:03:46 [info] started job thread (1/2 slots, type=analytics_sync)"
    ]
   }
  ]
