@@ -1,0 +1,516 @@
+{
+  "summary": "Design a flop-proof standalone AI Unpacked (claude-tricks) tip Short: learn from own data, ideate, adversarially judge, craft hook+script+buildable spec, critique",
+  "agentCount": 14,
+  "logs": [
+    "Ideate produced 12 candidate tips",
+    "WINNER: \"Ask Claude For A Tool — It BUILDS It On Screen 🤯\" (total 77) — skeptic: none",
+    "Hook chosen: D_outcome_first_reverse — D is the only hook whose first frame is unambiguously a working, useful thing — "
+  ],
+  "result": {
+    "winner": {
+      "title": "Ask Claude For A Tool — It BUILDS It On Screen 🤯",
+      "format": "60-Second Claude",
+      "the_tip": "In Claude.ai, ask for a small tool ('build me a tip-splitter calculator') and Claude renders a real, working, clickable app live in the side panel (Artifacts) — you use it right there, no coding, no copy-paste into another site.",
+      "hook_seed": "First frame: a plain chat box with the typed line 'build me a tip calculator' and an arrow pointing at an EMPTY side panel. First spoken line: 'You ask AI for code, then go paste it somewhere to actually run it. You don't have to.'",
+      "onscreen_proof": "Real screen recording: type the one-line request in Claude.ai, hit enter, and the Artifacts panel builds a live interactive calculator on the right; host taps the buttons and it computes — the working app appearing is the entire proof, fully legible with sound off.",
+      "why_winning_lane": "Standalone power-feature tip, demoable on one clean tape, hidden-lever accusation hook ('you're pasting code you never needed to'), payoff visible by ~5s when the app renders. Structurally identical to proven 'painful habit -> one move -> visible payoff' winners; rides the vibe-coding wave with an evergreen mechanism.",
+      "demoable_on_screen": true,
+      "freshness": "evergreen (Artifacts is a stable, always-on Claude.ai feature)",
+      "flop_risks": [
+        "Hook could read as 'AI writes code' (crowded) instead of 'the app appears and runs here' — must make the empty-vs-filled panel the whole visual story",
+        "If the demo tool is boring, the render moment underwhelms; pick an instantly-useful everyday tool (tip splitter / unit converter) not an abstract widget",
+        "Over-promise risk: keep it to a small tool that renders in seconds, don't show a heavy build that drags past 15s"
+      ],
+      "not_a_dupe": "No shipped title touches Artifacts or the 'app renders live in-panel' capability; closest shipped items are model-picker/effort/token/memory tips, all unrelated.",
+      "angle": "Evergreen Claude/AI power-features beginners own but never turn on. Each hook is a hidden-lever accusation (\"you're leaving this switch off\") that pays off with a single visible on-screen move by ~5s — the proven 60-Second Claude shape. Ranked by muted-legibility and dupe-distance: Artifacts (a live app literally appears on screen = maximum muted proof) is the top pick; Projects (persistent memory for non-coders) is distinct from the shipped Claude Code CLAUDE.md short; MCP is included for breadth but carries real beginner-comprehension risk and is flagged honestly."
+    },
+    "judge": {
+      "title": "Ask Claude For A Tool — It BUILDS It On Screen (Artifacts)",
+      "lane_fit": 9,
+      "demand": 9,
+      "hookability": 9,
+      "sustainability_3to15s": 8,
+      "demoability": 10,
+      "readability_ease": 8,
+      "evergreen": 9,
+      "rpm_affiliate": 6,
+      "dupe_safe": 9,
+      "total": 77,
+      "verdict": "TOP PICK. A working app literally materializing on screen is the single most muted-legible payoff in the whole slate — you don't need words, the empty-then-full side panel IS the story, which is exactly what beat the 'Forgets EVERYTHING' sustain test (one sharp visual, resolved fast). Rides the vibe-coding wave for genuine demand, zero dupe overlap. Only real risk: the hook mis-reading as crowded 'AI writes code' — mitigate by making the render the whole visual and picking an instantly-useful tool (tip splitter), not an abstract widget. Cut the render to seconds so it doesn't drag past 15s like Table did."
+    },
+    "hook": {
+      "id": "D_outcome_first_reverse",
+      "first_frame_visual": "Real screen: a finished, clean tip-splitter calculator fills the side panel; a cursor/finger is tapping a button and the total is updating to a real number (e.g. bill split 3 ways = $27.33). The one-line chat request 'build me a tip splitter' sits faint at the left edge as the origin. The working app is doing its job in frame 1.",
+      "onscreen_text": "I BUILT THIS WORKING APP BY TYPING ONE LINE",
+      "spoken_line": "This calculator actually works. I didn't write a single line of code — I asked for it in one sentence.",
+      "thumbnail_test": "Outcome-first thumbnail 'I Typed 1 Line → Got A Working App' with a live app and a computed number is high-credibility and high-desire; the visible real result ('it actually computes') makes the claim feel provable, not hype.",
+      "muted_test": "Very strong muted: a working calculator showing a real computed total + the burned line 'built by typing ONE line' tells the whole story soundless. A non-English viewer sees a functioning app and a one-sentence origin — the before/after is inside one frame.",
+      "readability_grade": "Grade 3. 'This calculator works. I didn't write any code. I asked for it in one sentence.' — short, plain, jargon-free.",
+      "rationale": "Reverse-reveal: shows the payoff (a working app you can use) first, then the twist that it took one sentence — a loop-friendly, rewatch-inviting shape. Distinct mechanism from A (which opens on the empty before-state); pairs well as the A/B contrast test. Picks an instantly-useful tool (tip splitter) per the judge note to avoid the abstract-widget failure mode."
+    },
+    "hookPick": {
+      "winner_id": "D_outcome_first_reverse",
+      "why": "D is the only hook whose first frame is unambiguously a working, useful thing — a finished tip-splitter showing a real computed total (bill split 3 ways = $27.33) plus the burned claim \"I BUILT THIS WORKING APP BY TYPING ONE LINE.\" That makes it the strongest on the two filters this cold, 100%-Shorts-feed channel is actually decided by: (1) the muted first-second swipe — a functioning app plus a real number reads instantly with sound off and to a non-English viewer, no text-parsing required; and (2) thumbnail-grade — it works as a static title+thumbnail, which A cannot (its frame 1 is a blank grey panel that reads as \"nothing here\" muted) and B cannot reliably (a frozen half-drawn calculator risks reading as a broken/loading UI, a flop-mode rather than a hook). Readability is grade 3, fully jargon-free (\"This calculator works. I didn't write any code. I asked for it in one sentence\"), honoring the ≤5th-grade rule. The usual objection — outcome-first \"spends the reveal\" — does not apply here because the frame gives away only that an app EXISTS while withholding the how; the pull-to-end mechanism becomes a clean curiosity loop (\"a working app from ONE typed sentence — how?\"), and the empty→full build still runs as the mid-video payoff, so the proven \"Forgets EVERYTHING\" one-sharp-visual-resolved-fast shape is preserved. It is also the most loop/rewatch-friendly: the one-line→working-app compression rewards a second watch. Net: D over-delivers on a concrete promise and is the safest strong swipe-stopper, where A/B carry a real \"dead or ambiguous first frame\" risk.",
+      "refinements": "Keep D's frame but inject one beat of motion in the very first second so it is not a dead-static shot: a finger/cursor taps a button and the total visibly ticks to $27.33 as the video opens — motion plus a changing number is a stronger muted swipe-stopper than a still. Anchor the origin so it never reads as a generic calculator app: keep the faint chat line \"build me a tip splitter\" pinned at the left edge as the visible cause, and burn a tiny \"0 code\" or \"1 sentence\" tag near the claim so the compression is legible even if the main line is skipped. Tighten the burned title to the shortest kept-promise form — \"I BUILT THIS BY TYPING ONE LINE\" — and make the number relatable and clean (a real restaurant bill split among friends, not an abstract figure). Sequence the body so the reveal is not fully spent: open on the working app (thumbnail), then hard-cut back to the empty panel and let it build live — the empty→full transformation is the payoff the frame withheld. Trim the dead last second and end abruptly on the final tap computing the total.",
+      "runner_up_id": "B_watch_it_build_itself"
+    },
+    "script": {
+      "title": "I Built A Working App By Typing ONE Line 🤯",
+      "lines": [
+        "This calculator actually works — and I wrote zero code to build it.",
+        "Watch: I type one sentence, you get a real app you can tap.",
+        "Here's the empty side panel. Nothing built yet.",
+        "In Claude, I type: build me a tip splitter.",
+        "Hit enter — it builds the app right there, live.",
+        "Split an eighty-two dollar dinner three ways. Twenty-seven thirty-three each.",
+        "No copy-paste, no other site. It runs right where you asked.",
+        "Follow for one AI trick a day. I built this by typing one line."
+      ],
+      "est_seconds": 34,
+      "readability_grade": "~4th grade (Flesch-Kincaid). Jargon swapped for plain words: 'Artifacts' -> 'the side panel / the app right there'; 'no-code' -> 'wrote zero code'; avoided 'render', 'interactive', 'UI', 'generate'. All numbers spelled out ('eighty-two dollar', 'twenty-seven thirty-three') so the line reads and speaks cleanly. Sentences are short (7-14 words), one clause each — no stacked details in the 3-15s window.",
+      "structure_map": "L1 = HOOK (host, matches burned title 'I BUILT THIS BY TYPING ONE LINE'; states the app WORKS + ZERO code). L2 = SPOKEN FORESHADOW (host; 'I do X = type one sentence -> at the end you get Y = a real app you can tap'). L3 = TRANSITION / pacing-break-without-breaking-pace (rec; in-story line 'Here's the empty side panel. Nothing built yet.' — resets to the empty state the hook withheld, no 'let's get started'). L4 = BUT/THEREFORE body beat 1 (rec; the single move — type one line). L5 = body beat 2 (rec; therefore it builds live). L6 = PAYOFF (rec; real bill computes to a real number on screen). L7 = WHY IT WORKS (host2; no copy-paste, runs where you asked). L8 = SOFT CTA + LOOPBACK (host2; 'Follow...' then echoes the opening hook for rewatch).",
+      "demo_steps": [
+        "FRAME 1 (hook/thumbnail, motion in first second): Claude.ai open with a FINISHED tip-splitter app already filling the side panel; a finger/cursor taps a button and the total visibly ticks to $27.33. Keep the faint chat line 'build me a tip splitter' pinned at the far-left edge as the visible cause; burn a tiny '0 code' tag near the claim.",
+        "HARD CUT to a fresh Claude.ai chat: empty message box on the left, EMPTY side panel on the right (this is the state the hook withheld).",
+        "Click into the message box and type the single line: build me a tip splitter",
+        "Press Enter — record the Artifacts side panel building the live app in real time (empty -> full is the payoff transformation; keep this to a few seconds, do not let it drag past ~15s).",
+        "In the built app, enter bill $82, set split to 3 people, tap the compute/split button; the per-person total updates to $27.33.",
+        "End abruptly on the final tap as $27.33 lands — trim the dead last second, no lingering."
+      ],
+      "why_it_works_line": "A real working app materializing from one typed sentence is 100% muted-legible — the empty-then-full side panel IS the proof, so the viewer gets the whole payoff with sound off, exactly the single-sharp-visual shape that beat the retention 'sustain' test.",
+      "loopback_note": "The closing line 'I built this by typing one line' repeats the burned opening title 'I BUILT THIS BY TYPING ONE LINE' word-for-word, so the last frame drops the viewer right back into the hook claim — the loop tempts a rewatch to re-check that the app really came from one sentence.",
+      "caption_hotwords": [
+        "WORKS",
+        "ZERO",
+        "ONE",
+        "SENTENCE",
+        "TAP",
+        "LIVE",
+        "LINE",
+        "FOLLOW"
+      ]
+    },
+    "spec": {
+      "spec_json": "{\n \"title\": \"I Built A Working App By Typing One Line 🤯\",\n \"tags\": \"claude artifacts,claude ai tips,ai for beginners,ai productivity,build an app,no code,vibe coding,claude ai,ai app,ai tools,ai tips\",\n \"epTag\": \"ARTIFACTS · BUILD IT LIVE\",\n \"header_scrim\": true,\n \"cap_low_rec\": true,\n \"host_panels\": [\n  {\n   \"lines\": [\"I WROTE\", \"ZERO CODE — I\", \"JUST ASKED\"],\n   \"hot\": \"ZERO\"\n  },\n  {\n   \"lines\": [\"EMPTY BOX\", \"TO A WORKING\", \"APP — WATCH\"],\n   \"hot\": \"WORKING\"\n  }\n ],\n \"lines\": [\n  \"This calculator works — and I wrote zero code. I just asked for it in one sentence.\",\n  \"Watch me build it from an empty box. By the end: one line, no code. Watch.\",\n  \"In Claude, I type one thing — build me a tip splitter.\",\n  \"A real app builds itself in the side panel. No copy-paste, no other website.\",\n  \"Split the bill three ways — tap — twenty-seven thirty-three. It just works.\",\n  \"That's Artifacts. Ask for a tool, and Claude builds the working thing right there.\",\n  \"Follow. I unpack one AI skill every single day.\"\n ],\n \"hot_words\": [\n  \"WORKS\", \"ZERO\", \"CODE\", \"ONE\", \"SENTENCE\", \"EMPTY\", \"WATCH\", \"BUILD\",\n  \"SPLITTER\", \"REAL\", \"APP\", \"PANEL\", \"TAP\", \"ARTIFACTS\", \"TOOL\", \"FOLLOW\", \"DAY\"\n ],\n \"beats\": [\n  \"host\",\n  \"host\",\n  \"rec:epNEW/hold_type.mp4@0.0\",\n  \"rec:epNEW/hold_build.mp4@0.0\",\n  \"rec:epNEW/hold_total.mp4@0.0\",\n  \"host2\",\n  \"host2\"\n ],\n \"steps\": [\n  [\"STEP 1/3 · TYPE ONE LINE\", 2, 2, \"tr\"],\n  [\"STEP 2/3 · IT BUILDS LIVE\", 3, 3, \"tl\"],\n  [\"STEP 3/3 · TAP THE TOTAL\", 4, 4, \"tl\"]\n ],\n \"emphasis\": [\n  [\"no code · one sentence\", 5, 5]\n ],\n \"hook\": {\n  \"image\": \"epNEW/hook_art/calc_working.jpg\",\n  \"lines\": [\"I BUILT THIS BY\", \"TYPING ONE LINE\"],\n  \"hot\": \"ONE\",\n  \"kicker\": \"0 code · 1 sentence · tip splitter\",\n  \"until\": 1.6\n },\n \"cover\": {\n  \"title1\": \"I BUILT THIS\",\n  \"title2\": \"BY TYPING ONE LINE\",\n  \"sub\": \"0 code · 1 sentence\",\n  \"emojis\": \"🤯\",\n  \"until\": 1.6\n },\n \"music\": \"music/bed_active.mp3\",\n \"outro\": true,\n \"outro_src\": \"epNEW/outro_card.mp4\",\n \"outro_dur\": 0,\n \"outro_cta\": \"auto\",\n \"endcard\": {\n  \"src\": \"epNEW/endcard_comment.png\",\n  \"in_s\": 33.5,\n  \"out_s\": 38.0,\n  \"over_outro\": true\n }\n}",
+      "beat_rationale": "Shape = the proven host-bookended 12/24/26 demo (host, host, rec, rec, rec, host2, host2) that produced the channel's winning tips (Table 169, Effort 171), NOT a chaptered series. Seven beats, len(beats)==len(lines)==7 (hard engine invariant).\n\n3-15s SUSTAIN protection (playbook §13): the hook block renders the FINISHED working calculator still (muted-legible thumbnail + burned title 'I BUILT THIS BY TYPING ONE LINE') for the first ~1.6s, so proof is on screen in second one with sound off. Beats 0-1 are bright framed-Sol talking-heads carrying a 'THE IDEA' host_panel each ('ZERO CODE — I JUST ASKED' / 'EMPTY BOX TO A WORKING APP'); beat 2 (the first demo rec) also lands inside the death zone and is a clean, bright claude.ai screen — no dark/dense beat anywhere in 3-15s.\n\nJenny Hoyos structure honored: line 0 = HOOK that works as a muted title+thumbnail ('This calculator works — and I wrote zero code'); line 1 = SPOKEN foreshadow, one loop-opening promise <3s ('Watch me build it from an empty box. By the end: one line, no code. Watch.') — the in-story 'Watch' is a pacing break that doesn't break pace, never 'let's get started'. Body is but/therefore: type one line → app builds itself → tap and it computes. The reveal is deliberately NOT spent by the hook: the hook shows the finished app (outcome-first reverse), then the body hard-cuts back to the EMPTY panel and rebuilds it live, so the empty→full transformation is the payoff, and beat 4's tap→$27.33 rhymes with the hook frame (rewatch/loop mechanic). Readability is ~5th grade: no unexplained jargon — 'Artifacts' is named only once, on the payoff (line 5), after the plain-language definition ('a real app builds itself in the side panel') has already been shown. Abrupt end on the payoff+CTA; outro_dur:0 trims the dead last second.\n\nMECHANISM pulling to the end = the STEP 1/3 → 2/3 → 3/3 chip ladder over the three demo beats plus the closing loop back to the opening frame. Chips sit in dead space per playbook §10c/Ep31 rule: STEP 1 is 'tr' (the composer being taught sits bottom-left, so top-right never covers it — mirrors Ep31 rejecting 'br' on the composer beat); STEPs 2-3 are 'tl' over the panel's header strip, above the taught app body.",
+      "buildable_checks": [
+        "len(beats)==len(lines)==7 — satisfies the hard engine invariant (beat i plays under line i, inherits its VO slice).",
+        "beats use ONLY engine-understood types: 'host' (build_ep_v2.py:1413 framed hook run), 'host2' (payoff run), and three 'rec:<path>@<in>' slices parsed exactly like ep20/ep22/ep31 (e.g. build_ep_v2.py:46-50). No retired chapter/pause/recipe beats.",
+        "rec paths are literal assets/<path>: rec:epNEW/hold_type.mp4@0.0 etc. — same 'hold_*.mp4 @0.0' still-hold pattern ep31 ships (episodes/31.v2.json:61-64).",
+        "host beats = indices 0,1,5,6 → 4 framed segments; host_panels has 2 entries, zip(framed_segs, host_panels) (build_ep_v2.py:1660) attaches panels to the first two (hook+foreshadow) exactly as ep12 (episodes/12.v2.json:5-22, beats host,host,...,host2,host2 with 2 panels).",
+        "hook block present → engine line 1645 emits 'hook' and DROPS 'cover'; hook has required keys image/lines(<=2)/hot/kicker/until, image path gets 'assets/' prefixed at 1647-1648. cover is included as a documented poster fallback and is harmlessly ignored while hook is set.",
+        "steps entries are [label, line_a, line_b, pos] with 0-based LINE indices (not beats); windows resolve via line_starts[a]..line_starts[b]+dur[b], pos in {tl,tr}. Matches ep31 steps shape (episodes/31.v2.json:70-89).",
+        "emphasis is [text, line_a, line_b] with 0-based line indices → converted to absolute times at build_ep_v2.py:1678-1682. Mirrors ep31 emphasis (31.v2.json:90-96).",
+        "hot_words are UPPERCASE and every one appears as an alnum word inside lines (WORKS, ZERO, CODE, ONE, SENTENCE, EMPTY, WATCH, BUILD, SPLITTER, REAL, APP, PANEL, TAP, ARTIFACTS, TOOL, FOLLOW, DAY) so per-word caption highlighting fires.",
+        "endcard is {src, in_s, out_s, over_outro} exactly as ep25 (build_ep_v2.py:556-557); over_outro:true routes to the gte(t,in_s) branch (1852-1861) holding the comment-keyword card to the last frame over the sting. Guard at 1778/1852 requires ec.get('src') — present.",
+        "outro:true + outro_src + outro_dur:0 + outro_cta:'auto' matches ep12 (episodes/12.v2.json:65-68); outro_cta consumed at build_ep_v2.py:1813 (Sol speaks the CTA over the card).",
+        "epTag/header_scrim/cap_low_rec read via cfg.get at 1635/1639/1535 — all optional, valid types (str/bool/bool).",
+        "music 'music/bed_active.mp3' is the default active bed (ep12/ep31 both use it)."
+      ],
+      "assets_needed": [
+        "epNEW/hook_art/calc_working.jpg — hook poster still (thumbnail + first muted frame): a clean FINISHED tip-splitter calculator filling the claude.ai Artifacts side panel, cursor/finger mid-tap, total reading $27.33 (bill split 3 ways), the faint origin line 'build me a tip splitter' pinned at the left edge. Engine burns the title lines over it, so capture the raw screenshot only. header_scrim handles the light UI.",
+        "epNEW/hold_type.mp4 — real logged-in claude.ai screen recording, beat 2: EMPTY Artifacts side panel with the one line 'build me a tip splitter' typed in the composer (pre-submit). Redact any recents sidebar / account name per playbook §10b (the Ep31 fallback lesson). Still-hold via make_still_hold.py acceptable.",
+        "epNEW/hold_build.mp4 — beat 3: the app visibly building itself in the side panel (the empty→full transformation). Capture the live render; keep it to a couple of seconds so it does not drag past 15s.",
+        "epNEW/hold_total.mp4 — beat 4 payoff: finger/cursor taps a button and the total ticks to twenty-seven thirty-three ($27.33), rhyming with the hook frame. Motion + a changing number is the muted swipe-stopper.",
+        "epNEW/outro_card.mp4 — per-episode question/CTA outro card generated by gen_outro_card.py; outro_cta:'auto' has Sol speak the CTA over it (audition via audition_outro_cta.py, target -14 LUFS).",
+        "epNEW/endcard_comment.png — comment-keyword CTA card inside the caption-safe band, e.g. 'Comment BUILD — I'll send you the exact prompt.' Its in_s/out_s window must be re-probed at render from the card's own endcard.json (placeholder 33.5/38.0 in spec; over_outro:true holds it to the last frame regardless of out_s).",
+        "music/bed_active.mp3 — already in repo (shared active bed); no capture needed.",
+        "NOTE on rec @in offsets: three separate hold_*.mp4 stills are used (all @0.0) exactly like Ep31, so no frame-offset guessing is required; if a single continuous demo.mp4 is captured instead, re-slice the @in points with probe_frames.py before render."
+      ]
+    },
+    "critic": {
+      "go_no_go": "GO_WITH_FIXES",
+      "confidence": "medium",
+      "metric_scorecard": "LANE: PASS — standalone new-capability/tip, real-screen demoable, not news/not chaptered. HOOK: WEAK-MIXED — thumbnail \"I BUILT THIS BY TYPING ONE LINE\" is the channel's best pattern (proof-first \"I Built\" = 223 lifetime) but the YouTube title \"Ask Claude For A Tool — It BUILDS It\" is a weaker capability-reveal AND mismatched to the thumbnail; unify. 3-15s SUSTAIN: FAIL as speced — real screen doesn't appear until ~7.6s, payoff resolves ~18s, live-build spinner lands at 12-15s; this structurally repeats the Table short's measured 4.8/5.2/7.4s bleed (ret_ct.json ueTa4OnVNk8: 0.256@15s). Highest-leverage fix. READABILITY: PASS — ~4th grade, short single-clause lines, numbers spelled out, \"Artifacts\" named once after plain-language def. DEMO/PROOF: PASS but conditional — real claude.ai tape strong; 9:16 legibility of a wide desktop two-column UI is at risk and Artifacts-current preflight owed. LOOPBACK: PASS — finished→empty→rebuild→final tap rhymes to the opening frame; minor reverse-continuity read muted. MUTED-LEGIBILITY: MIXED — a calculator is a generic low-arrest still; wow lives in the invisible cause, so the frame rests entirely on burned copy; must be bright/opaque/high-contrast at 240px (§5). DUPE-SAFETY: PASS on title (no shipped Artifacts short) but ADJACENT-RISK — \"AI builds a real working thing, no code\" is the exact promise of the JUST-KILLED Build Club bc01 (8-9 views). COMPLIANCE: PASS-with-checks — nominative fair use covers recording claude.ai (§2), but set containsSyntheticMedia=true, add \"Not affiliated with Anthropic\" line, and put NO Anthropic logo on our own cards/overlays. RPM: PASS — high-RPM AI/productivity niche; no affiliate pull this episode (neutral, not a flop factor).",
+      "required_fixes": [
+        "KILL THE FRONT-LOAD (highest flop-impact). As speced the first real, changing claude.ai screen appears ~7.6s and the $27.33 payoff resolves ~18s, after ~6s of Sol talking-head. This is the exact shape that bled the Table short at 4.8/5.2/7.4s to 0.256@15s (ret_ct.json ueTa4OnVNk8). Merge L1+L2 into ONE host beat, get a real changing screen on frame by ~4.5s, and land the payoff by ~13-14s — or option: keep Sol as a corner PIP over the live screen during foreshadow so the proof pane is present the whole death zone.",
+        "RECONCILE beats==lines. The engine invariant is len(beats)==len(lines) but the script has 8 lines while the rationale claims 'Seven beats, ==7'. Ship the proven ep12 7/7 shape (host, rec, rec, rec, host2 — with L1+L2 merged and L7+L8 merged) so it is exactly 7/7 and lands ~34s. Do NOT feed 8 lines into a 7-beat skeleton.",
+        "FIX the 'tip splitter' vs 'bill splitter' incoherence. The demo computes $82 / 3 = $27.33 with no gratuity, but the app + hook + line 4 call it a 'tip splitter' — a muted viewer reading the app label catches that a Tip Splitter produced a tip-free number. Rename to 'bill splitter' throughout (cleanest, keeps the clean number) OR add a real tip to the math. Also note 27.33 x 3 = 81.99 != 82.00; have the on-screen app resolve the penny so it sums correctly.",
+        "UNIFY the two hooks onto the winning pattern. Burned thumbnail uses proof-first 'I BUILT THIS BY TYPING ONE LINE' (channel's best-performing frame, 223) but the YouTube title uses the weaker capability-reveal 'Ask Claude For A Tool — It BUILDS It On Screen'. Make the YT title the same proof-first/second-person line (e.g. 'I Built A Working App By Typing One Line') so title=thumbnail and both use the proven pattern, not the mid-tier Desktop-App/ Skills reveal pattern (107-119).",
+        "RESOLVE the hook-motion vs static-image conflict. The engine `hook` block renders a STATIC image (hook.image, rel to assets/) — it cannot do the 'finger taps and the total ticks to $27.33 in second one' motion the package specifies. Either drop the motion claim and ship a static bright thumbnail still, or make beat 0 a `rec:` clip of the working app with L1 VO over it. Don't spec motion the opener can't deliver.",
+        "CUT the 'building live' dead-air. The Artifacts stream/spinner is low-information motion that would land at ~12-15s, the exact collapse point. Timelapse or hard-cut empty->built to <2s; never show slow streaming code in the death zone (this is what 'demo dragged' cost the Table short).",
+        "TRIM the tail to match the claimed abrupt end. The package says 'end abruptly on the final tap as $27.33 lands' but the beats put TWO host2 recap beats + an outro_cta spoken CTA AFTER the payoff (~7s draggy tail). Fuse why-it-works + CTA + loopback into ONE host2 (~3-4s) that rhymes back to the hook; keep outro_dur:0. Also avoid double-CTA (L8 'Follow' + outro_cta both speaking a CTA).",
+        "FRAME for 9:16. Desktop claude.ai is a wide chat-left / panel-right layout that shrinks illegibly in portrait. Use §10c pro-framing (never center-crop) and QC that the typed line and the app buttons are legible at 240px feed size (§5 first-frame-is-the-thumbnail rule); QC frame-0 fully opaque and bright.",
+        "PRODUCTION PREFLIGHT before shooting: verify current claude.ai still renders an interactive Artifact from a one-line prompt in a LOGGED-IN recorder profile (record_demo.py --preflight). A LOGGED_OUT / changed-UI return kills the tape — the same trap that killed the Ep27 and Ep20 demos. Confirm the claim 'wrote zero code / runs right where you asked' is accurate in the shipped build.",
+        "RE-PROBE step-chip corners on the SHIPPED clip, not the plan (§4 Ep24 lesson). The app builds in the RIGHT panel, so a chip window that was safe 'tr'/'tl' on the composer beat can cover the app on the build/payoff beats. Re-score each chip corner against the actual capture and its measured VO window."
+      ],
+      "residual_risks": [
+        "CONCEPT ADJACENCY TO A JUST-KILLED LANE: 'AI builds you a real working thing, no code' is the exact emotional promise of Build Club bc01 ('Four minutes ago this didn't exist... no code no card', 8-9 views). Standalone single-tape framing helps, but the Shorts feed may read this as the same build-a-thing lane that just flopped. This is the biggest un-fixable risk.",
+        "A calculator is a generic, low-arrest muted still — the wow lives in the invisible cause (one line typed), so the opening frame leans entirely on burned copy. That is a weaker muted swipe-stopper than the top winners' second-person accusation or visible before/after (169/171).",
+        "Even fully fixed, this is a capability-reveal ('look what it can do'), which historically sits MID on this channel (Skills 119, Best AI Got Cheaper 107, Desktop App) below the top accusation/before-after tips (169/171). Realistic ceiling ~100-140, not a 170 — set expectations accordingly.",
+        "The reverse hook (show finished app, then hard-cut to empty and rebuild) can read as a continuity glitch with sound off, costing a slice of cold-feed swipers before the rebuild pays it off.",
+        "Artifacts UX churns; a shipped tape can go stale fast if Anthropic changes the side panel — evergreen premise but fragile capture, unlike a pure prompt-text tip."
+      ]
+    },
+    "all_candidates": [
+      {
+        "title": "Ask Claude For A Tool — It BUILDS It On Screen 🤯",
+        "angle": "Evergreen Claude/AI power-features beginners own but never turn on. Each hook is a hidden-lever accusation (\"you're leaving this switch off\") that pays off with a single visible on-screen move by ~5s — the proven 60-Second Claude shape. Ranked by muted-legibility and dupe-distance: Artifacts (a live app literally appears on screen = maximum muted proof) is the top pick; Projects (persistent memory for non-coders) is distinct from the shipped Claude Code CLAUDE.md short; MCP is included for breadth but carries real beginner-comprehension risk and is flagged honestly."
+      },
+      {
+        "title": "You Re-Explain Your Job To AI Every Chat. Do This ONCE",
+        "angle": "Evergreen Claude/AI power-features beginners own but never turn on. Each hook is a hidden-lever accusation (\"you're leaving this switch off\") that pays off with a single visible on-screen move by ~5s — the proven 60-Second Claude shape. Ranked by muted-legibility and dupe-distance: Artifacts (a live app literally appears on screen = maximum muted proof) is the top pick; Projects (persistent memory for non-coders) is distinct from the shipped Claude Code CLAUDE.md short; MCP is included for breadth but carries real beginner-comprehension risk and is flagged honestly."
+      },
+      {
+        "title": "Claude Can Reach Your REAL Apps — Not Just Chat",
+        "angle": "Evergreen Claude/AI power-features beginners own but never turn on. Each hook is a hidden-lever accusation (\"you're leaving this switch off\") that pays off with a single visible on-screen move by ~5s — the proven 60-Second Claude shape. Ranked by muted-legibility and dupe-distance: Artifacts (a live app literally appears on screen = maximum muted proof) is the top pick; Projects (persistent memory for non-coders) is distinct from the shipped Claude Code CLAUDE.md short; MCP is included for breadth but carries real beginner-comprehension risk and is flagged honestly."
+      },
+      {
+        "title": "Claude Writes You An ESSAY — You Pay Per Word 💸",
+        "angle": "A cost/speed \"before-after\" tip in the proven 147-149 lane: the viewer is bleeding money or time on a costly habit RIGHT NOW, and one visible on-screen move fixes it. I deliberately avoid every shipped token/model title (Burns Your Tokens, Prompt Caching, Best AI Got Cheaper, Fast vs Deep, Effort Dial, WRONG Model, Ask For a Table) by hitting three DIFFERENT mechanisms: (1) a bloated chat that re-bills its whole history every message, (2) paying per word for an essay you never wanted, (3) firing prompts one at a time so the model re-reads the thread every turn. Each has a muted-legible before-state and a payoff that resolves fast, on a real Claude screen."
+      },
+      {
+        "title": "One Long Chat Is DOUBLING Your AI Bill 💸",
+        "angle": "A cost/speed \"before-after\" tip in the proven 147-149 lane: the viewer is bleeding money or time on a costly habit RIGHT NOW, and one visible on-screen move fixes it. I deliberately avoid every shipped token/model title (Burns Your Tokens, Prompt Caching, Best AI Got Cheaper, Fast vs Deep, Effort Dial, WRONG Model, Ask For a Table) by hitting three DIFFERENT mechanisms: (1) a bloated chat that re-bills its whole history every message, (2) paying per word for an essay you never wanted, (3) firing prompts one at a time so the model re-reads the thread every turn. Each has a muted-legible before-state and a payoff that resolves fast, on a real Claude screen."
+      },
+      {
+        "title": "You Send 5 Prompts. Send 1 (Half The Time) ⚡",
+        "angle": "A cost/speed \"before-after\" tip in the proven 147-149 lane: the viewer is bleeding money or time on a costly habit RIGHT NOW, and one visible on-screen move fixes it. I deliberately avoid every shipped token/model title (Burns Your Tokens, Prompt Caching, Best AI Got Cheaper, Fast vs Deep, Effort Dial, WRONG Model, Ask For a Table) by hitting three DIFFERENT mechanisms: (1) a bloated chat that re-bills its whole history every message, (2) paying per word for an essay you never wanted, (3) firing prompts one at a time so the model re-reads the thread every turn. Each has a muted-legible before-state and a payoff that resolves fast, on a real Claude screen."
+      },
+      {
+        "title": "Your Prompt Forgot WHO You Are 🫥 (Add 1 Line)",
+        "angle": "Prompt Teardown — weak prompt rebuilt live into a visibly better output. Each idea is one screen-recordable weak-vs-strong pair with a muted-legible before/after and a single hidden-lever \"you're doing this dumb thing\" accusation hook. All three add ONE line to a prompt and the output visibly transforms — the winning \"painful problem → one-move fix by ~5s\" shape."
+      },
+      {
+        "title": "Stop DESCRIBING The Style — Paste 1 Example 🎯",
+        "angle": "Prompt Teardown — weak prompt rebuilt live into a visibly better output. Each idea is one screen-recordable weak-vs-strong pair with a muted-legible before/after and a single hidden-lever \"you're doing this dumb thing\" accusation hook. All three add ONE line to a prompt and the output visibly transforms — the winning \"painful problem → one-move fix by ~5s\" shape."
+      },
+      {
+        "title": "Make AI Grade Its OWN Answer 📉 (Then Fix It)",
+        "angle": "Prompt Teardown — weak prompt rebuilt live into a visibly better output. Each idea is one screen-recordable weak-vs-strong pair with a muted-legible before/after and a single hidden-lever \"you're doing this dumb thing\" accusation hook. All three add ONE line to a prompt and the output visibly transforms — the winning \"painful problem → one-move fix by ~5s\" shape."
+      },
+      {
+        "title": "STOP Explaining Your Bug To Claude — Paste The Red Error",
+        "angle": "Contrarian \"you're doing the slow/wrong thing right now\" corrections — each names a concrete beginner habit with an instantly visible, muted-legible BEFORE state on screen, then a one-move fix. Deliberately NOT abstract \"Stop X\" (those flopped: \"Stop Describing Your Document\" 8, \"Stop Copy-Pasting Between AIs\" 5); the fix is always a real on-screen action the viewer can watch land by ~6s."
+      },
+      {
+        "title": "STOP Pasting Code Into Claude — Drag The Whole Folder In",
+        "angle": "Contrarian \"you're doing the slow/wrong thing right now\" corrections — each names a concrete beginner habit with an instantly visible, muted-legible BEFORE state on screen, then a one-move fix. Deliberately NOT abstract \"Stop X\" (those flopped: \"Stop Describing Your Document\" 8, \"Stop Copy-Pasting Between AIs\" 5); the fix is always a real on-screen action the viewer can watch land by ~6s."
+      },
+      {
+        "title": "STOP Trusting Claude's First Answer — Make It Grade Itself",
+        "angle": "Contrarian \"you're doing the slow/wrong thing right now\" corrections — each names a concrete beginner habit with an instantly visible, muted-legible BEFORE state on screen, then a one-move fix. Deliberately NOT abstract \"Stop X\" (those flopped: \"Stop Describing Your Document\" 8, \"Stop Copy-Pasting Between AIs\" 5); the fix is always a real on-screen action the viewer can watch land by ~6s."
+      }
+    ]
+  },
+  "workflowProgress": [
+    {
+      "type": "workflow_phase",
+      "index": 1,
+      "title": "Learn"
+    },
+    {
+      "type": "workflow_phase",
+      "index": 2,
+      "title": "Ideate"
+    },
+    {
+      "type": "workflow_phase",
+      "index": 3,
+      "title": "Judge"
+    },
+    {
+      "type": "workflow_phase",
+      "index": 4,
+      "title": "Craft"
+    },
+    {
+      "type": "workflow_phase",
+      "index": 5,
+      "title": "Critique"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 1,
+      "label": "learn:patterns",
+      "phaseIndex": 1,
+      "phaseTitle": "Learn",
+      "agentId": "a942b63ba5aa497d8",
+      "model": "claude-opus-4-8",
+      "state": "done",
+      "startedAt": 1787022639759,
+      "queuedAt": 1787022639758,
+      "attempt": 1,
+      "lastToolName": "Bash",
+      "lastToolSummary": "cd /Users/vijenderpanda/Ai-youtube-pipeline; for f in 11 31…",
+      "promptPreview": "CHANNEL: \"AI Unpacked\" (uploader key claude-tricks). Synthetic host \"Sol\", ElevenLabs Hrithik voice (style 0.4, 0.4s sentence breaks), electric magenta accent, Anton caps karaoke captions, real-screen proof pane. NOT made-for-kids.\nGOAL: produce ONE standalone TIP Short (25–40s, target 34s) engineered to NOT FLOP. This replaces the just-killed serialized \"Build Club\" chapters.\n\nHARD DATA (this cha…",
+      "lastProgressAt": 1787022717646,
+      "tokens": 54154,
+      "toolCalls": 9,
+      "durationMs": 77885,
+      "resultPreview": "PATTERN-MINER BRIEF — what wins on AI Unpacked (grounded in the numbers)\n\nTHE ONE FACT: same-day, same-feed experiment (Aug 11) put a tip at 165 and a news short at 10 — a 13–16× gap, confound-controlled. Tips median ≈134, news median ≈14. The lane, not the weekday, decides everything, and the feed decides in 24–48h.\n\nWHAT THE WINNERS SHARE (171/169/149/148/147/119/117):\n- Second-person ACCUSATION…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 2,
+      "label": "learn:template",
+      "phaseIndex": 1,
+      "phaseTitle": "Learn",
+      "agentId": "aa5f65357b68fde82",
+      "model": "claude-opus-4-8",
+      "state": "done",
+      "startedAt": 1787022639760,
+      "queuedAt": 1787022639758,
+      "attempt": 1,
+      "lastToolName": "Read",
+      "lastToolSummary": "/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tr…",
+      "promptPreview": "CHANNEL: \"AI Unpacked\" (uploader key claude-tricks). Synthetic host \"Sol\", ElevenLabs Hrithik voice (style 0.4, 0.4s sentence breaks), electric magenta accent, Anton caps karaoke captions, real-screen proof pane. NOT made-for-kids.\nGOAL: produce ONE standalone TIP Short (25–40s, target 34s) engineered to NOT FLOP. This replaces the just-killed serialized \"Build Club\" chapters.\n\nHARD DATA (this cha…",
+      "lastProgressAt": 1787022728658,
+      "tokens": 91609,
+      "toolCalls": 7,
+      "durationMs": 87446,
+      "resultPreview": "Reference specs and engine fully traced. Here is the exact, buildable schema.\n\n## Episode `.v2.json` schema (consumed by `build_ep_v2.py` → `build()` when `ep` is not in `EPISODES_V2`; loaded verbatim as `cfg` at line 1264)\n\n**Hard invariant:** `len(beats) == len(lines)`. Beat *i* plays under line *i* and inherits line *i*'s VO duration. Lines are synthesized as one ElevenLabs take joined by locke…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 3,
+      "label": "learn:recency",
+      "phaseIndex": 1,
+      "phaseTitle": "Learn",
+      "agentId": "a777675f547ee517a",
+      "model": "claude-opus-4-8",
+      "state": "done",
+      "startedAt": 1787022639760,
+      "queuedAt": 1787022639758,
+      "attempt": 1,
+      "lastToolName": "Bash",
+      "lastToolSummary": "head -60 /Users/vijenderpanda/Ai-youtube-pipeline/channels/…",
+      "promptPreview": "CHANNEL: \"AI Unpacked\" (uploader key claude-tricks). Synthetic host \"Sol\", ElevenLabs Hrithik voice (style 0.4, 0.4s sentence breaks), electric magenta accent, Anton caps karaoke captions, real-screen proof pane. NOT made-for-kids.\nGOAL: produce ONE standalone TIP Short (25–40s, target 34s) engineered to NOT FLOP. This replaces the just-killed serialized \"Build Club\" chapters.\n\nHARD DATA (this cha…",
+      "lastProgressAt": 1787022689879,
+      "tokens": 56637,
+      "toolCalls": 5,
+      "durationMs": 48667,
+      "resultPreview": "## (a) ALREADY-SHIPPED tip topics — DO NOT duplicate\n\n- **Model picker** — \"WRONG Claude Model,\" \"Fast vs Deep\" (2x — this lane is exhausted)\n- **Effort/thinking dial** — \"Effort Dial Nobody Uses\"\n- **Token saving** — \"Burns Your Tokens\" (/compact, concise), \"Cut Your AI Bill In Half,\" \"Best AI Got Cheaper,\" prompt caching\n- **CLAUDE.md memory file** — \"Claude Code Forgets EVERYTHING\"\n- **Custom s…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 4,
+      "label": "ideate:power-feature",
+      "phaseIndex": 2,
+      "phaseTitle": "Ideate",
+      "agentId": "abd0fa2b816960fd6",
+      "model": "claude-opus-4-8",
+      "state": "done",
+      "startedAt": 1787022728684,
+      "queuedAt": 1787022728662,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "Evergreen Claude/AI power-features beginners own but never …",
+      "promptPreview": "CHANNEL: \"AI Unpacked\" (uploader key claude-tricks). Synthetic host \"Sol\", ElevenLabs Hrithik voice (style 0.4, 0.4s sentence breaks), electric magenta accent, Anton caps karaoke captions, real-screen proof pane. NOT made-for-kids.\nGOAL: produce ONE standalone TIP Short (25–40s, target 34s) engineered to NOT FLOP. This replaces the just-killed serialized \"Build Club\" chapters.\n\nHARD DATA (this cha…",
+      "lastProgressAt": 1787022835899,
+      "tokens": 53181,
+      "toolCalls": 2,
+      "durationMs": 107214,
+      "resultPreview": "{\"angle\":\"Evergreen Claude/AI power-features beginners own but never turn on. Each hook is a hidden-lever accusation (\\\"you're leaving this switch off\\\") that pays off with a single visible on-screen move by ~5s — the proven 60-Second Claude shape. Ranked by muted-legibility and dupe-distance: Artifacts (a live app literally appears on screen = maximum muted proof) is the top pick; Projects (persi…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 5,
+      "label": "ideate:cost-speed",
+      "phaseIndex": 2,
+      "phaseTitle": "Ideate",
+      "agentId": "a4a5d309182e867cb",
+      "model": "claude-opus-4-8",
+      "state": "done",
+      "startedAt": 1787022728684,
+      "queuedAt": 1787022728662,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "A cost/speed \"before-after\" tip in the proven 147-149 lane:…",
+      "promptPreview": "CHANNEL: \"AI Unpacked\" (uploader key claude-tricks). Synthetic host \"Sol\", ElevenLabs Hrithik voice (style 0.4, 0.4s sentence breaks), electric magenta accent, Anton caps karaoke captions, real-screen proof pane. NOT made-for-kids.\nGOAL: produce ONE standalone TIP Short (25–40s, target 34s) engineered to NOT FLOP. This replaces the just-killed serialized \"Build Club\" chapters.\n\nHARD DATA (this cha…",
+      "lastProgressAt": 1787022845856,
+      "tokens": 58129,
+      "toolCalls": 3,
+      "durationMs": 115648,
+      "resultPreview": "{\"angle\":\"A cost/speed \\\"before-after\\\" tip in the proven 147-149 lane: the viewer is bleeding money or time on a costly habit RIGHT NOW, and one visible on-screen move fixes it. I deliberately avoid every shipped token/model title (Burns Your Tokens, Prompt Caching, Best AI Got Cheaper, Fast vs Deep, Effort Dial, WRONG Model, Ask For a Table) by hitting three DIFFERENT mechanisms: (1) a bloated c…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 6,
+      "label": "ideate:prompt-teardown",
+      "phaseIndex": 2,
+      "phaseTitle": "Ideate",
+      "agentId": "a40e342b35f18250c",
+      "model": "claude-opus-4-8",
+      "state": "done",
+      "startedAt": 1787022728685,
+      "queuedAt": 1787022728663,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "Prompt Teardown — weak prompt rebuilt live into a visibly b…",
+      "promptPreview": "CHANNEL: \"AI Unpacked\" (uploader key claude-tricks). Synthetic host \"Sol\", ElevenLabs Hrithik voice (style 0.4, 0.4s sentence breaks), electric magenta accent, Anton caps karaoke captions, real-screen proof pane. NOT made-for-kids.\nGOAL: produce ONE standalone TIP Short (25–40s, target 34s) engineered to NOT FLOP. This replaces the just-killed serialized \"Build Club\" chapters.\n\nHARD DATA (this cha…",
+      "lastProgressAt": 1787022797732,
+      "tokens": 52625,
+      "toolCalls": 2,
+      "durationMs": 67523,
+      "resultPreview": "{\"angle\":\"Prompt Teardown — weak prompt rebuilt live into a visibly better output. Each idea is one screen-recordable weak-vs-strong pair with a muted-legible before/after and a single hidden-lever \\\"you're doing this dumb thing\\\" accusation hook. All three add ONE line to a prompt and the output visibly transforms — the winning \\\"painful problem → one-move fix by ~5s\\\" shape.\",\"ideas\":[{\"title\":\"…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 7,
+      "label": "ideate:contrarian",
+      "phaseIndex": 2,
+      "phaseTitle": "Ideate",
+      "agentId": "af2451d36ec62b6d9",
+      "model": "claude-opus-4-8",
+      "state": "done",
+      "startedAt": 1787022728685,
+      "queuedAt": 1787022728663,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "Contrarian \"you're doing the slow/wrong thing right now\" co…",
+      "promptPreview": "CHANNEL: \"AI Unpacked\" (uploader key claude-tricks). Synthetic host \"Sol\", ElevenLabs Hrithik voice (style 0.4, 0.4s sentence breaks), electric magenta accent, Anton caps karaoke captions, real-screen proof pane. NOT made-for-kids.\nGOAL: produce ONE standalone TIP Short (25–40s, target 34s) engineered to NOT FLOP. This replaces the just-killed serialized \"Build Club\" chapters.\n\nHARD DATA (this cha…",
+      "lastProgressAt": 1787022801200,
+      "tokens": 45484,
+      "toolCalls": 1,
+      "durationMs": 70991,
+      "resultPreview": "{\"angle\":\"Contrarian \\\"you're doing the slow/wrong thing right now\\\" corrections — each names a concrete beginner habit with an instantly visible, muted-legible BEFORE state on screen, then a one-move fix. Deliberately NOT abstract \\\"Stop X\\\" (those flopped: \\\"Stop Describing Your Document\\\" 8, \\\"Stop Copy-Pasting Between AIs\\\" 5); the fix is always a real on-screen action the viewer can watch lan…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 8,
+      "label": "judge:score",
+      "phaseIndex": 3,
+      "phaseTitle": "Judge",
+      "agentId": "a351d3ee36bbf50f1",
+      "model": "claude-opus-4-8",
+      "state": "done",
+      "startedAt": 1787022845874,
+      "queuedAt": 1787022845859,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "promptPreview": "CHANNEL: \"AI Unpacked\" (uploader key claude-tricks). Synthetic host \"Sol\", ElevenLabs Hrithik voice (style 0.4, 0.4s sentence breaks), electric magenta accent, Anton caps karaoke captions, real-screen proof pane. NOT made-for-kids.\nGOAL: produce ONE standalone TIP Short (25–40s, target 34s) engineered to NOT FLOP. This replaces the just-killed serialized \"Build Club\" chapters.\n\nHARD DATA (this cha…",
+      "lastProgressAt": 1787022945395,
+      "tokens": 86786,
+      "toolCalls": 3,
+      "durationMs": 99513,
+      "resultPreview": "{\"ranked\":[{\"title\":\"Ask Claude For A Tool — It BUILDS It On Screen (Artifacts)\",\"lane_fit\":9,\"demand\":9,\"hookability\":9,\"sustainability_3to15s\":8,\"demoability\":10,\"readability_ease\":8,\"evergreen\":9,\"rpm_affiliate\":6,\"dupe_safe\":9,\"total\":77,\"verdict\":\"TOP PICK. A working app literally materializing on screen is the single most muted-legible payoff in the whole slate — you don't need words, the em…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 9,
+      "label": "judge:skeptic",
+      "phaseIndex": 3,
+      "phaseTitle": "Judge",
+      "agentId": "a658708d6ab315478",
+      "model": "claude-opus-4-8",
+      "state": "done",
+      "startedAt": 1787022845882,
+      "queuedAt": 1787022845859,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "promptPreview": "CHANNEL: \"AI Unpacked\" (uploader key claude-tricks). Synthetic host \"Sol\", ElevenLabs Hrithik voice (style 0.4, 0.4s sentence breaks), electric magenta accent, Anton caps karaoke captions, real-screen proof pane. NOT made-for-kids.\nGOAL: produce ONE standalone TIP Short (25–40s, target 34s) engineered to NOT FLOP. This replaces the just-killed serialized \"Build Club\" chapters.\n\nHARD DATA (this cha…",
+      "lastProgressAt": 1787023008472,
+      "tokens": 58687,
+      "toolCalls": 2,
+      "durationMs": 162590,
+      "resultPreview": "{\"kills\":[{\"title\":\"#1 Artifacts — 'Ask Claude For A Tool — It BUILDS It On Screen'\",\"most_likely_flop_mode\":\"Dies in the 3-15s sustain, OR the hook reads as 'AI writes code' (crowded/dev lane) and beginners self-select out ('not for me'). Biggest risk: the app doesn't visibly appear FAST enough — if the render crawls past ~8s the muted viewer sees a loading panel, not a payoff, and the channel's …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 10,
+      "label": "craft:hooks",
+      "phaseIndex": 4,
+      "phaseTitle": "Craft",
+      "agentId": "a700b123a1855ad3e",
+      "model": "claude-opus-4-8",
+      "state": "done",
+      "startedAt": 1787023008489,
+      "queuedAt": 1787023008475,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "promptPreview": "CHANNEL: \"AI Unpacked\" (uploader key claude-tricks). Synthetic host \"Sol\", ElevenLabs Hrithik voice (style 0.4, 0.4s sentence breaks), electric magenta accent, Anton caps karaoke captions, real-screen proof pane. NOT made-for-kids.\nGOAL: produce ONE standalone TIP Short (25–40s, target 34s) engineered to NOT FLOP. This replaces the just-killed serialized \"Build Club\" chapters.\n\nHARD DATA (this cha…",
+      "lastProgressAt": 1787023079015,
+      "tokens": 46199,
+      "toolCalls": 1,
+      "durationMs": 70526,
+      "resultPreview": "{\"variants\":[{\"id\":\"A_empty_panel_accusation\",\"first_frame_visual\":\"Real Claude.ai screen, unmistakably a chat app. Left half: the chat box with the sentence \\\"build me a tip calculator\\\" already typed, cursor blinking, Send button lit magenta. Right half of the screen is a blank grey side panel — visibly EMPTY. A fat magenta arrow runs from the typed line and lands on the empty panel. No host in …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 11,
+      "label": "craft:hookjudge",
+      "phaseIndex": 4,
+      "phaseTitle": "Craft",
+      "agentId": "ac6f54643e9daf51a",
+      "model": "claude-opus-4-8",
+      "state": "done",
+      "startedAt": 1787023079031,
+      "queuedAt": 1787023079017,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "D_outcome_first_reverse",
+      "promptPreview": "CHANNEL: \"AI Unpacked\" (uploader key claude-tricks). Synthetic host \"Sol\", ElevenLabs Hrithik voice (style 0.4, 0.4s sentence breaks), electric magenta accent, Anton caps karaoke captions, real-screen proof pane. NOT made-for-kids.\nGOAL: produce ONE standalone TIP Short (25–40s, target 34s) engineered to NOT FLOP. This replaces the just-killed serialized \"Build Club\" chapters.\n\nHARD DATA (this cha…",
+      "lastProgressAt": 1787023164762,
+      "tokens": 42294,
+      "toolCalls": 1,
+      "durationMs": 85730,
+      "resultPreview": "{\"winner_id\":\"D_outcome_first_reverse\",\"why\":\"D is the only hook whose first frame is unambiguously a working, useful thing — a finished tip-splitter showing a real computed total (bill split 3 ways = $27.33) plus the burned claim \\\"I BUILT THIS WORKING APP BY TYPING ONE LINE.\\\" That makes it the strongest on the two filters this cold, 100%-Shorts-feed channel is actually decided by: (1) the muted…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 12,
+      "label": "craft:script",
+      "phaseIndex": 4,
+      "phaseTitle": "Craft",
+      "agentId": "ab84cf6ca55dd7d04",
+      "model": "claude-opus-4-8",
+      "state": "done",
+      "startedAt": 1787023164778,
+      "queuedAt": 1787023164765,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "I Built A Working App By Typing ONE Line 🤯",
+      "promptPreview": "CHANNEL: \"AI Unpacked\" (uploader key claude-tricks). Synthetic host \"Sol\", ElevenLabs Hrithik voice (style 0.4, 0.4s sentence breaks), electric magenta accent, Anton caps karaoke captions, real-screen proof pane. NOT made-for-kids.\nGOAL: produce ONE standalone TIP Short (25–40s, target 34s) engineered to NOT FLOP. This replaces the just-killed serialized \"Build Club\" chapters.\n\nHARD DATA (this cha…",
+      "lastProgressAt": 1787023229235,
+      "tokens": 46992,
+      "toolCalls": 1,
+      "durationMs": 64450,
+      "resultPreview": "{\"title\":\"I Built A Working App By Typing ONE Line 🤯\",\"lines\":[\"This calculator actually works — and I wrote zero code to build it.\",\"Watch: I type one sentence, you get a real app you can tap.\",\"Here's the empty side panel. Nothing built yet.\",\"In Claude, I type: build me a tip splitter.\",\"Hit enter — it builds the app right there, live.\",\"Split an eighty-two dollar dinner three ways. Twenty-sev…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 13,
+      "label": "craft:spec",
+      "phaseIndex": 4,
+      "phaseTitle": "Craft",
+      "agentId": "ae3f3105beb07c037",
+      "model": "claude-opus-4-8",
+      "state": "done",
+      "startedAt": 1787023164785,
+      "queuedAt": 1787023164766,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "{ \"title\": \"I Built A Working App By Typing One Line 🤯\", \"…",
+      "promptPreview": "CHANNEL: \"AI Unpacked\" (uploader key claude-tricks). Synthetic host \"Sol\", ElevenLabs Hrithik voice (style 0.4, 0.4s sentence breaks), electric magenta accent, Anton caps karaoke captions, real-screen proof pane. NOT made-for-kids.\nGOAL: produce ONE standalone TIP Short (25–40s, target 34s) engineered to NOT FLOP. This replaces the just-killed serialized \"Build Club\" chapters.\n\nHARD DATA (this cha…",
+      "lastProgressAt": 1787023437779,
+      "tokens": 72438,
+      "toolCalls": 12,
+      "durationMs": 272994,
+      "resultPreview": "{\"spec_json\":\"{\\n \\\"title\\\": \\\"I Built A Working App By Typing One Line 🤯\\\",\\n \\\"tags\\\": \\\"claude artifacts,claude ai tips,ai for beginners,ai productivity,build an app,no code,vibe coding,claude ai,ai app,ai tools,ai tips\\\",\\n \\\"epTag\\\": \\\"ARTIFACTS · BUILD IT LIVE\\\",\\n \\\"header_scrim\\\": true,\\n \\\"cap_low_rec\\\": true,\\n \\\"host_panels\\\": [\\n  {\\n   \\\"lines\\\": [\\\"I WROTE\\\", \\\"ZERO CODE — I\\\", \\\"JU…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 14,
+      "label": "critique",
+      "phaseIndex": 5,
+      "phaseTitle": "Critique",
+      "agentId": "ae9dde9438d5b3f07",
+      "model": "claude-opus-4-8",
+      "state": "done",
+      "startedAt": 1787023437795,
+      "queuedAt": 1787023437781,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "GO_WITH_FIXES",
+      "promptPreview": "CHANNEL: \"AI Unpacked\" (uploader key claude-tricks). Synthetic host \"Sol\", ElevenLabs Hrithik voice (style 0.4, 0.4s sentence breaks), electric magenta accent, Anton caps karaoke captions, real-screen proof pane. NOT made-for-kids.\nGOAL: produce ONE standalone TIP Short (25–40s, target 34s) engineered to NOT FLOP. This replaces the just-killed serialized \"Build Club\" chapters.\n\nHARD DATA (this cha…",
+      "lastProgressAt": 1787023758211,
+      "tokens": 79771,
+      "toolCalls": 10,
+      "durationMs": 320416,
+      "resultPreview": "{\"go_no_go\":\"GO_WITH_FIXES\",\"confidence\":\"medium\",\"metric_scorecard\":\"LANE: PASS — standalone new-capability/tip, real-screen demoable, not news/not chaptered. HOOK: WEAK-MIXED — thumbnail \\\"I BUILT THIS BY TYPING ONE LINE\\\" is the channel's best pattern (proof-first \\\"I Built\\\" = 223 lifetime) but the YouTube title \\\"Ask Claude For A Tool — It BUILDS It\\\" is a weaker capability-reveal AND mismatc…"
+    }
+  ],
+  "totalTokens": 844986,
+  "totalToolCalls": 59
+}
