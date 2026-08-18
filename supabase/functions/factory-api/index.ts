@@ -51,6 +51,10 @@ const RENDER_ORIGINS = ["job", "historical"];
 const CALENDAR_KINDS = ["content", "factory"];
 // v6: cheap uuid shape check so bad ids get a 400 instead of a pg error
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+// v19: ?r=suggestions reads this many candidate rows before the evidence guard
+// runs, so `limit` counts suggestions that actually SHIP, not rows dropped for
+// having no citations. Comfortably above the live standalone-suggestion count.
+const SUGGESTION_POOL = 200;
 // v4: post fields patchable via update_post
 const POST_PATCH_FIELDS = [
   "yt_title",
@@ -206,6 +210,52 @@ function clampLimit(raw: string | null, def: number, max: number): number {
   const n = raw === null ? def : parseInt(raw, 10);
   if (!Number.isFinite(n) || n < 1) return def;
   return Math.min(n, max);
+}
+
+// v8: THE staged-production entry point — lifted verbatim out of
+// `case "stage_calendar_item"` so `case "accept_suggestion"` (v19) can reuse it
+// instead of forking it. Guards, job shape, status transition and the
+// { item, job } response body are unchanged; the caller validates `id` first.
+async function stageCalendarItem(id: string): Promise<Response> {
+  const { data: item, error: itemErr } = await db.from("factory_calendar")
+    .select("*").eq("id", id).maybeSingle();
+  if (itemErr) return json({ error: itemErr.message }, 500);
+  if (!item) return json({ error: "calendar item not found" }, 404);
+  if (item.status !== "planned" && item.status !== "suggested") {
+    return json({
+      error: "calendar item must be planned or suggested to stage (status: " + item.status + ")",
+    }, 409);
+  }
+  const { count: assetCount, error: countErr } = await db.from("factory_assets")
+    .select("id", { count: "exact", head: true }).eq("calendar_id", id);
+  if (countErr) return json({ error: countErr.message }, 500);
+  if ((assetCount ?? 0) > 0) {
+    return json({ error: "calendar item already has staged assets — open its Studio board instead" }, 409);
+  }
+  const { data: job, error: jobErr } = await db.from("factory_jobs")
+    .insert({
+      channel_key: item.channel_key,
+      type: "plan_assets",
+      title: "Plan assets — " + item.title,
+      prompt: item.brief,
+      model: item.model,
+      effort: item.effort,
+      ultracode: item.ultracode,
+      status: "queued",
+      meta: { calendar_id: item.id },
+    })
+    .select().single();
+  if (jobErr) return json({ error: jobErr.message }, 500);
+  const { data: updated, error: updErr } = await db.from("factory_calendar")
+    .update({ status: "queued", production_mode: "staged", job_id: job.id })
+    .eq("id", id).select().single();
+  if (updErr) return json({ error: updErr.message }, 500);
+  await logEvent(
+    "assets_staged",
+    `Staged production queued for '${item.title}' (${item.channel_key})`,
+    { item_id: id, job_id: job.id, channel_key: item.channel_key },
+  );
+  return json({ item: updated, job });
 }
 
 // v8: asset actions only apply to the LATEST version of an asset_key
@@ -595,6 +645,44 @@ async function handleGet(url: URL): Promise<Response> {
       const { data, error } = await q;
       if (error) return json({ error: error.message }, 500);
       return json({ items: data });
+    }
+
+    // v19: the Studio suggestion shelf — research-backed "what to make next".
+    //
+    // Deliberately does NOT inherit ?r=calendar's now-7d … now+30d window: a
+    // suggestion parked a cadence out (chore/blocker cards) would be silently
+    // dropped by it, and "silently dropped" is the one thing this shelf may
+    // never do. Ordering is planned_date asc so the nearest slot leads.
+    //
+    // `replaces_id is null` is the server-side twin of Calendar.jsx's
+    // challengerByTarget/hiddenChallengerIds logic: a challenger row attaches
+    // to an original and must NEVER render standalone in the launcher.
+    case "suggestions": {
+      const limit = clampLimit(url.searchParams.get("limit"), 6, 24);
+      // Over-fetch, THEN guard, THEN slice. The black-box guard below is not
+      // expressible as a PostgREST filter, and there are ~10x more evidence-less
+      // pre-022 'suggested' rows than real ones — applying `limit` in SQL would
+      // spend the whole budget on rows the guard then drops and hand back an
+      // empty shelf. SUGGESTION_POOL is the read cap; `limit` is what ships.
+      let q = db.from("factory_calendar").select("*")
+        .eq("status", "suggested")
+        .eq("kind", "content")
+        .is("replaces_id", null)
+        .order("planned_date", { ascending: true })
+        .limit(SUGGESTION_POOL);
+      const channel = url.searchParams.get("channel");
+      if (channel) q = q.eq("channel_key", channel);
+      const { data, error } = await q;
+      if (error) return json({ error: error.message }, 500);
+      // Black-box guard, read side. scripts/suggest_next.py asserts non-empty
+      // cites[] on the write side; this is the belt to that pair of braces, and
+      // it also hides the pre-022 legacy rows that never carried evidence. An
+      // ai_suggestion that cannot show its work does not get shown.
+      const items = (data ?? []).filter((r) =>
+        r.origin !== "ai_suggestion" ||
+        (r.evidence && Array.isArray(r.evidence.cites) && r.evidence.cites.length > 0)
+      ).slice(0, limit);
+      return json({ items });
     }
 
     // v4: publish pipeline posts
@@ -1469,45 +1557,27 @@ async function handlePost(body: any): Promise<Response> {
     case "stage_calendar_item": {
       const { id } = body;
       if (!id || !UUID_RE.test(String(id))) return json({ error: "id (uuid) required" }, 400);
-      const { data: item, error: itemErr } = await db.from("factory_calendar")
-        .select("*").eq("id", id).maybeSingle();
-      if (itemErr) return json({ error: itemErr.message }, 500);
-      if (!item) return json({ error: "calendar item not found" }, 404);
-      if (item.status !== "planned" && item.status !== "suggested") {
-        return json({
-          error: "calendar item must be planned or suggested to stage (status: " + item.status + ")",
-        }, 409);
+      return await stageCalendarItem(String(id));
+    }
+
+    // v19: accept a research-backed suggestion from the Studio shelf.
+    //
+    // stage_calendar_item already accepts `suggested`, but it stages the row AS
+    // STORED. The shelf lets the owner edit the prefilled title/brief first, so
+    // this patches then delegates to the EXACT same stage path — same guards
+    // (planned|suggested → else 409; 0 assets → else 409), same plan_assets job
+    // with meta.calendar_id, same {item, job} response. No fork.
+    case "accept_suggestion": {
+      const { id, title, brief } = body;
+      if (!id || !UUID_RE.test(String(id))) return json({ error: "id (uuid) required" }, 400);
+      const patch: Record<string, unknown> = {};
+      if (typeof title === "string" && title.trim()) patch.title = title.trim();
+      if (typeof brief === "string") patch.brief = brief;
+      if (Object.keys(patch).length) {
+        const { error } = await db.from("factory_calendar").update(patch).eq("id", String(id));
+        if (error) return json({ error: error.message }, 500);
       }
-      const { count: assetCount, error: countErr } = await db.from("factory_assets")
-        .select("id", { count: "exact", head: true }).eq("calendar_id", id);
-      if (countErr) return json({ error: countErr.message }, 500);
-      if ((assetCount ?? 0) > 0) {
-        return json({ error: "calendar item already has staged assets — open its Studio board instead" }, 409);
-      }
-      const { data: job, error: jobErr } = await db.from("factory_jobs")
-        .insert({
-          channel_key: item.channel_key,
-          type: "plan_assets",
-          title: "Plan assets — " + item.title,
-          prompt: item.brief,
-          model: item.model,
-          effort: item.effort,
-          ultracode: item.ultracode,
-          status: "queued",
-          meta: { calendar_id: item.id },
-        })
-        .select().single();
-      if (jobErr) return json({ error: jobErr.message }, 500);
-      const { data: updated, error: updErr } = await db.from("factory_calendar")
-        .update({ status: "queued", production_mode: "staged", job_id: job.id })
-        .eq("id", id).select().single();
-      if (updErr) return json({ error: updErr.message }, 500);
-      await logEvent(
-        "assets_staged",
-        `Staged production queued for '${item.title}' (${item.channel_key})`,
-        { item_id: id, job_id: job.id, channel_key: item.channel_key },
-      );
-      return json({ item: updated, job });
+      return await stageCalendarItem(String(id));
     }
 
     // v16: add_asset — used by scripts/push_asset.py in a produce_preview

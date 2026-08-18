@@ -3940,6 +3940,332 @@ a.out-chip:hover {
   justify-content: flex-end;
 }
 
+/* ── Suggestion shelf: research-backed "what to make next" (v19) ──────
+   Reskin of .urgent-strip — same compact, evidence-carrying, two-action row.
+   Channel hue arrives ONLY through inline --ch; everything else is a token. */
+.sugg-shelf {
+  padding: 12px 14px 14px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.015);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sugg-shelf-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.sugg-shelf-title {
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.sugg-shelf-sub {
+  margin-left: auto;
+}
+.sugg-shelf-subhead {
+  margin-top: 4px;
+}
+.sugg-empty {
+  margin: 0;
+}
+.sugg-shelf-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sugg-row {
+  display: grid;
+  grid-template-columns: 104px 1fr auto;
+  gap: 12px;
+  align-items: start;
+  padding: 9px 11px;
+  border-radius: 8px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--ch, var(--neutral));
+}
+/* Chores are not ideas: neutral, quieter, dashed edge. */
+.sugg-row.sugg-chore {
+  background: rgba(255, 255, 255, 0.02);
+  border-left-style: dashed;
+  border-left-color: var(--dim);
+}
+/* Blockers are not ideas either: warn tone, and there is nothing to start. */
+.sugg-row.sugg-blocked {
+  background: var(--warn-soft);
+  border-color: rgba(224, 177, 94, 0.35);
+  border-left-color: var(--warn);
+}
+.sugg-row-when {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding-top: 1px;
+}
+.sugg-row-date {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-2);
+}
+.sugg-row-date-soft {
+  font-weight: 600;
+  color: var(--faint);
+  font-style: italic;
+}
+.sugg-row-chan {
+  font-size: 10.5px;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sugg-row-body {
+  min-width: 0;
+}
+.sugg-row-title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.sugg-row-kind {
+  color: var(--dim);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+}
+.sugg-blocked .sugg-row-kind {
+  color: var(--warn);
+}
+.sugg-row-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.sugg-row-chips .chip {
+  padding: 2px 9px;
+  font-size: 10px;
+}
+.sugg-chip-idea {
+  color: var(--info);
+  border-color: rgba(121, 192, 232, 0.32);
+}
+.sugg-chip-chore {
+  color: var(--dim);
+}
+.sugg-chip-blocked {
+  color: var(--warn);
+  border-color: rgba(224, 177, 94, 0.4);
+}
+.sugg-conf-ok {
+  color: var(--green);
+  border-color: rgba(76, 199, 154, 0.3);
+}
+.sugg-conf-warn {
+  color: var(--warn);
+  border-color: rgba(224, 177, 94, 0.4);
+}
+.sugg-chip-src {
+  color: var(--faint);
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--mono);
+}
+.sugg-caveat {
+  margin-top: 5px;
+  color: var(--warn);
+}
+.sugg-blockers {
+  margin-top: 7px;
+  padding: 7px 9px;
+  border-radius: var(--r-xs);
+  background: var(--warn-soft);
+  border: 1px solid rgba(224, 177, 94, 0.28);
+}
+.sugg-blockers-head {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--warn);
+  margin-bottom: 4px;
+}
+.sugg-blockers ul {
+  margin: 0;
+  padding-left: 16px;
+  font-size: 12px;
+  color: var(--text-2);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+/* ── the anti-black-box disclosure ── */
+.sugg-evidence {
+  margin-top: 7px;
+}
+/* Keep the native list-item marker: it is the whole affordance. Do NOT set
+   display:flex here — Chrome/Safari drop the disclosure triangle if you do. */
+.sugg-evidence > summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--dim);
+  width: fit-content;
+  padding: 1px 2px;
+}
+.sugg-evidence > summary:hover .sugg-evidence-q {
+  color: var(--accent);
+}
+.sugg-evidence > summary:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--r-xs);
+}
+.sugg-evidence-q {
+  font-weight: 600;
+  color: var(--text-2);
+  margin-right: 6px;
+}
+.sugg-evidence-body {
+  margin-top: 8px;
+  padding: 9px 11px;
+  border-radius: var(--r-xs);
+  background: var(--input-bg);
+  border: 1px solid var(--border-soft);
+}
+.sugg-evidence-head {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--faint);
+  margin: 10px 0 4px;
+}
+.sugg-evidence-body > .sugg-evidence-head:first-child {
+  margin-top: 0;
+}
+.sugg-peg {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.sugg-cites,
+.sugg-constraints {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.sugg-constraints {
+  gap: 4px;
+  padding-left: 14px;
+  list-style: disc;
+  font-size: 12px;
+  color: var(--text-2);
+}
+.sugg-cite-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.sugg-cite-ref {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+.sugg-cite-ref code {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim);
+  word-break: break-all;
+}
+.sugg-cite-link {
+  font-size: 11px;
+}
+.sugg-cite-quote {
+  margin: 4px 0 0;
+  padding-left: 9px;
+  border-left: 2px solid var(--border-strong);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--dim);
+}
+.sugg-cite-note {
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: var(--warn);
+}
+.sugg-evidence-foot {
+  margin-top: 10px;
+  padding-top: 7px;
+  border-top: 1px solid var(--border-soft);
+}
+.sugg-row-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: none;
+  align-items: stretch;
+}
+.btn-xs {
+  padding: 4px 10px;
+  font-size: 11.5px;
+  border-radius: 8px;
+}
+.sugg-source-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 11px;
+  border-radius: var(--r-xs);
+  background: var(--accent-soft);
+  border: 1px solid rgba(228, 197, 107, 0.28);
+  font-size: 12px;
+  color: var(--text-2);
+}
+.sugg-source-note button {
+  margin-left: auto;
+}
+@media (max-width: 640px) {
+  .sugg-row {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "when"
+      "body"
+      "actions";
+  }
+  .sugg-row-when {
+    grid-area: when;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .sugg-row-body {
+    grid-area: body;
+  }
+  .sugg-row-actions {
+    grid-area: actions;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+  .sugg-shelf-sub {
+    margin-left: 0;
+  }
+}
+
 /* Demoted "Pieces in progress" section heading below the launcher. */
 .studio-section-head {
   font-size: 12px;
