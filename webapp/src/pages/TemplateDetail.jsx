@@ -62,6 +62,100 @@ const WIRING_LABEL = {
    meta.settings; locking freezes them into composition._settings, which is what
    build_ep_v2.resolve_setting() reads. */
 
+/* ── "Generate a new one from this" ────────────────────────────────────────
+   The swap drawer is where you notice a pick is close but the wording is
+   wrong — so it is where the NEXT revision gets made, instead of sending you
+   to a terminal. Mirrors scripts/regen_asset.py's GENERATORS table (and the
+   edge action's own copy of it): a slot that is not listed here shows no
+   control at all, because a button that could only ever fail is worse than no
+   button. */
+const GEN_SLOTS = {
+  outro_card_gen: {
+    what: 'question card',
+    fields: [
+      {
+        name: 'q',
+        label: 'Question — use | to split lines',
+        placeholder: 'Which one will you try first?|Tell me below',
+      },
+      { name: 'pill', label: 'Button label', placeholder: 'Comment it below' },
+    ],
+  },
+}
+
+/** The generator behind a picker tile, or undefined — tiles can come from a
+ *  sibling slot (outro_card_gen inside the outro_sting drawer), so the tile's
+ *  OWN asset_type decides, not the row it is displayed under. */
+const genSlotFor = (opt, rowType) => GEN_SLOTS[(opt && opt._fromSlot) || rowType]
+
+/**
+ * The inline "new revision from this one" form.
+ *
+ * Prefilled from the source revision's own meta.gen_params, because the reason
+ * you opened it is almost always “this one, but the question should be
+ * different”. regen_asset.py inherits anything you leave blank from the
+ * parent, so an empty box never silently erases a value.
+ */
+function RegenForm({ slot, from, pending, onGenerate, onCancel }) {
+  const seed = (from.meta && from.meta.gen_params) || {}
+  const seedOf = (name) => (seed[name] == null ? '' : String(seed[name]))
+  const [vals, setVals] = useState(() => {
+    const o = {}
+    for (const f of slot.fields) o[f.name] = seedOf(f.name)
+    return o
+  })
+  const ready = slot.fields.every((f) => vals[f.name].trim())
+  const changed = slot.fields.some((f) => vals[f.name].trim() !== seedOf(f.name).trim())
+
+  return (
+    <form
+      className="cast-regen"
+      onSubmit={(e) => {
+        e.preventDefault()
+        if (ready && changed && !pending) onGenerate(vals)
+      }}
+    >
+      <div className="cast-regen-head">
+        New {slot.what} from <b>v{from.version}</b> — change one thing
+      </div>
+      {slot.fields.map((f) => {
+        const id = 'cast-regen-' + f.name + '-' + from.id
+        return (
+          <div key={f.name} className="cast-regen-field">
+            <label className="cast-setting-lbl" htmlFor={id}>
+              {f.label}
+            </label>
+            <input
+              id={id}
+              type="text"
+              maxLength={200}
+              value={vals[f.name]}
+              placeholder={f.placeholder}
+              disabled={pending}
+              onChange={(e) => setVals((v) => ({ ...v, [f.name]: e.target.value }))}
+            />
+          </div>
+        )
+      })}
+      <div className="cast-regen-actions">
+        <button type="submit" className="btn-primary" disabled={pending || !ready || !changed}>
+          {pending ? 'Generating…' : 'Generate'}
+        </button>
+        <button type="button" className="btn-ghost" disabled={pending} onClick={onCancel}>
+          Cancel
+        </button>
+        <span className="dim small">
+          {!ready
+            ? 'Both fields are needed to draw the card.'
+            : !changed
+              ? 'Change a field — generating an identical copy would only add clutter.'
+              : 'It lands here as a new candidate. Nothing is swapped for you.'}
+        </span>
+      </div>
+    </form>
+  )
+}
+
 const CTA_MODES = [
   { id: 'auto', label: 'Auto', hint: 'The host composes a fresh call-to-action for every episode' },
   { id: 'off', label: 'Off', hint: 'This cast adds no spoken call-to-action' },
@@ -201,6 +295,7 @@ export default function TemplateDetail() {
   const { toast, show } = useToast()
   const [selId, setSelId] = useState(null)   // version the composer is showing
   const [swapFor, setSwapFor] = useState(null) // asset_type whose picker is open
+  const [regenFor, setRegenFor] = useState(null) // revision id the "new from this" form is open on
   const [showAllSlots, setShowAllSlots] = useState(false)
   const [busy, setBusy] = useState(null)
 
@@ -369,6 +464,30 @@ export default function TemplateDetail() {
       'swap:' + asset_type,
       () => setSwapFor(null),
     )
+
+  // "Generate a new one from this" — the drawer's own generator. Queues
+  // scripts/regen_asset.py on the existing shell_script job type; the worker
+  // registers the result as a CANDIDATE derived from `src`, so it appears in
+  // this same drawer (assetsQ) and is still chosen deliberately.
+  const regenerate = (src, asset_type, params) => {
+    const firstLine = String(params.q || '').split('|')[0].trim()
+    post(
+      {
+        action: 'regenerate_asset',
+        channel_key: channelKey,
+        asset_type,
+        from_version_id: src.id,
+        params,
+        label: firstLine ? firstLine.slice(0, 60) : '',
+      },
+      'regen:' + src.id,
+      () => {
+        setRegenFor(null)
+        assetsQ.refresh()
+        show('Generating — the new revision appears here when the worker finishes.')
+      },
+    )
+  }
 
   // A cast setting is behaviour, not a slot — same post()/refresh path as a
   // swap. `value: null` deletes the key (the API's own contract for "unset").
@@ -579,6 +698,7 @@ export default function TemplateDetail() {
                   onClick={() => {
                     setSelId(v.id)
                     setSwapFor(null)
+                    setRegenFor(null)
                   }}
                   title={(v.label || 'no label') + ' · ' + v.status}
                 >
@@ -655,6 +775,11 @@ export default function TemplateDetail() {
                   ),
                 )
                 const open = swapFor === type
+                // Which tiles in this drawer can seed a new revision, and which
+                // one has its form open right now.
+                const anyGen = opts.some((o) => genSlotFor(o, type))
+                const regenSrc =
+                  opts.find((o) => o.id === regenFor && genSlotFor(o, type)) || null
                 const sampleNote = sampleNoteOf(rev)
                 return (
                   <div key={type} className={'cast-slot' + (open ? ' cast-slot-open' : '')}>
@@ -710,7 +835,10 @@ export default function TemplateDetail() {
                         <button
                           type="button"
                           className="btn-ghost cast-swap-btn"
-                          onClick={() => setSwapFor(open ? null : type)}
+                          onClick={() => {
+                            setSwapFor(open ? null : type)
+                            setRegenFor(null)
+                          }}
                           disabled={busy === 'swap:' + type}
                         >
                           {busy === 'swap:' + type ? '…' : open ? 'Close' : 'Swap'}
@@ -750,6 +878,8 @@ export default function TemplateDetail() {
                           // role="button" instead, and MediaPreview swallows
                           // click/keydown so auditioning never selects.
                           const selectable = !blocked && !isPick && busy !== 'swap:' + type
+                          const gen = genSlotFor(o, type)
+                          const regenOpen = regenFor === o.id
                           return (
                             <div
                               key={o.id}
@@ -802,10 +932,55 @@ export default function TemplateDetail() {
                                 <span className="dim small">{o.label || assetLabel(type)}</span>
                                 {blocked && <span className="cast-opt-why">{why}</span>}
                                 {isPick && !blocked && <span className="cast-opt-why">current pick</span>}
+                                {/* Some slots have a real generator behind them,
+                                    so the drawer does not have to end at "pick
+                                    one of these". Stops the click from reaching
+                                    the tile — opening the form must never be a
+                                    selection, same rule the players follow. */}
+                                {gen && (
+                                  <button
+                                    type="button"
+                                    className="btn-ghost cast-regen-btn"
+                                    aria-label={
+                                      'Generate a new ' + assetLabel(o._fromSlot || type) +
+                                      ' from v' + o.version
+                                    }
+                                    title={
+                                      'Start from this ' + gen.what +
+                                      ', change a word, and a new candidate appears here'
+                                    }
+                                    disabled={!!busy}
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      setRegenFor(regenOpen ? null : o.id)
+                                    }}
+                                    onKeyDown={(e) => e.stopPropagation()}
+                                  >
+                                    {regenOpen ? 'Cancel' : '⟳ New from this'}
+                                  </button>
+                                )}
                               </span>
                             </div>
                           )
                         })}
+                        {regenSrc && (
+                          <RegenForm
+                            key={regenSrc.id}
+                            slot={genSlotFor(regenSrc, type)}
+                            from={regenSrc}
+                            pending={busy === 'regen:' + regenSrc.id}
+                            onCancel={() => setRegenFor(null)}
+                            onGenerate={(params) =>
+                              regenerate(regenSrc, regenSrc._fromSlot || type, params)
+                            }
+                          />
+                        )}
+                        {opts.length > 0 && !anyGen && (
+                          <span className="dim small cast-regen-none">
+                            No generator wired for this slot yet — new revisions are registered
+                            by the pipeline that builds them.
+                          </span>
+                        )}
                       </div>
                     )}
                   </div>

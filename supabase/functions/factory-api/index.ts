@@ -2489,6 +2489,80 @@ async function handlePost(body: any): Promise<Response> {
       return json({ ok: true, assets: slots ?? [] });
     }
 
+    // regenerate_asset {channel_key, asset_type, from_version_id, params, label?}
+    // "Generate a new one from this." The swap drawer is where you notice a pick
+    // is close but the wording is wrong, so that is where the next revision gets
+    // made. Queues scripts/regen_asset.py on the EXISTING shell_script job type
+    // (no new worker job type, no restart): it re-runs the slot's real generator
+    // with the PARENT's params plus your overrides, uploads the result and
+    // registers a CANDIDATE whose parent_version_id is the revision you started
+    // from. Nothing is locked and nothing is swapped — the candidate simply
+    // appears in the same drawer, to be chosen deliberately.
+    //
+    // GENERATABLE mirrors regen_asset.py's GENERATORS table. A slot with no
+    // wired generator is refused HERE with the honest reason, rather than
+    // queueing a job that would exit 2 on the worker minutes later.
+    case "regenerate_asset": {
+      const GENERATABLE: Record<string, string[]> = { outro_card_gen: ["q", "pill"] };
+      const channel_key = String(body.channel_key ?? "").trim();
+      const asset_type = String(body.asset_type ?? "").trim();
+      const from_version_id = String(body.from_version_id ?? "").trim();
+      if (!channel_key) return json({ error: "channel_key required" }, 400);
+      if (!asset_type) return json({ error: "asset_type required" }, 400);
+      if (!from_version_id || !UUID_RE.test(from_version_id)) {
+        return json({ error: "from_version_id (uuid) required" }, 400);
+      }
+      const genParams = GENERATABLE[asset_type];
+      if (!genParams) {
+        return json({
+          error: `no generator is wired for '${asset_type}' yet — generatable slots today: ` +
+            (Object.keys(GENERATABLE).join(", ") || "none"),
+        }, 400);
+      }
+      const { data: src, error: srcErr } = await db.from("factory_asset_versions")
+        .select("id, version, label, meta").eq("id", from_version_id)
+        .eq("channel_key", channel_key).eq("asset_type", asset_type).maybeSingle();
+      if (srcErr) return json({ error: srcErr.message }, 500);
+      if (!src) return json({ error: "revision not found for this channel/asset_type" }, 404);
+      // Only this generator's own params travel. regen_asset.py inherits the
+      // rest from the parent, so an untouched/empty field means "keep what the
+      // parent had" instead of blanking it.
+      const rawParams = (body.params ?? {}) as Record<string, unknown>;
+      const params: Record<string, string> = {};
+      for (const p of genParams) {
+        const v = rawParams[p];
+        if (v !== undefined && v !== null && String(v).trim() !== "") params[p] = String(v).trim();
+      }
+      const label = String(body.label ?? "").trim();
+      const { data: job, error: jobErr } = await db.from("factory_jobs")
+        .insert({
+          channel_key,
+          type: "shell_script",
+          title: "New " + asset_type + " from v" + src.version,
+          status: "queued",
+          meta: {
+            asset_type,
+            from_version_id,
+            script_path: "scripts/regen_asset.py",
+            script_args: [
+              "--channel", channel_key,
+              "--asset-type", asset_type,
+              "--from-version", from_version_id,
+              "--params", JSON.stringify(params),
+              "--label", label,
+            ],
+          },
+        })
+        .select().single();
+      if (jobErr) return json({ error: jobErr.message }, 500);
+      await logEvent(
+        "asset_regen_queued",
+        `New ${asset_type} revision queued from v${src.version} (${channel_key})`,
+        { job_id: job.id, channel_key, asset_type, from_version_id, params },
+      );
+      return json({ ok: true, job_id: job.id, job });
+    }
+
     // lock_template_version {template_version_id, make_active?=true}
     // The materialize-and-freeze step, and the ONLY place `composition` is
     // written. Copies build_ref/label/storage_path/thumb_path/version out of

@@ -6517,6 +6517,26 @@ a.out-chip:hover {
 .cast-opt-dead .cast-opt-cover { filter: grayscale(1); }
 .cast-show-all { align-self: flex-start; cursor: pointer; }
 
+/* "Generate a new one from this" — the drawer's own generator. A tiny ghost on
+   the tile it derives from, and a full-row inline form (never a modal, so the
+   candidate you are copying stays on screen while you retype its question). */
+.cast-regen-btn {
+  align-self: flex-start; margin-top: 4px;
+  padding: 2px 7px; font-size: 10.5px; line-height: 1.5; border-radius: 6px;
+}
+.cast-regen {
+  flex: 1 0 100%; display: flex; flex-direction: column; gap: 8px;
+  margin-top: 2px; padding: 11px 12px; border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--ch, #E91E63) 32%, var(--border, #2A2A36));
+  background: var(--panel-2, #14141C);
+}
+.cast-regen-head { font-size: 12px; }
+.cast-regen-field { display: flex; flex-direction: column; gap: 4px; }
+.cast-regen-field input { width: 100%; min-width: 0; }
+.cast-regen-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.cast-regen-actions .dim { flex: 1 1 220px; }
+.cast-regen-none { flex: 1 0 100%; }
+
 .chip.cast-warn-dead {
   color: var(--danger, #E5484D);
   border-color: color-mix(in srgb, var(--danger, #E5484D) 45%, var(--border));
