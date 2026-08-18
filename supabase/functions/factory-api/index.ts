@@ -267,6 +267,24 @@ async function handleGet(url: URL): Promise<Response> {
       return json({ templates: data });
     }
 
+    // Phase 1 — Studio "Assets" board: brand-asset versions + their locks.
+    // versions ordered asset_type asc, version desc; optional ?channel= filter.
+    // Mirrors the "templates" single-table read + the "jobs" channel filter.
+    case "assets": {
+      let vq = db.from("factory_asset_versions").select("*")
+        .order("asset_type", { ascending: true })
+        .order("version", { ascending: false });
+      const channel = url.searchParams.get("channel");
+      if (channel) vq = vq.eq("channel_key", channel);
+      const [versions, locks] = await Promise.all([
+        vq,
+        db.from("factory_asset_locks").select("*"),
+      ]);
+      if (versions.error) return json({ error: versions.error.message }, 500);
+      if (locks.error) return json({ error: locks.error.message }, 500);
+      return json({ versions: versions.data, locks: locks.data });
+    }
+
     case "jobs": {
       const limit = clampLimit(url.searchParams.get("limit"), 50, 200);
       let q = db.from("factory_jobs").select(JOB_LIST_COLS)
@@ -1999,6 +2017,53 @@ async function handlePost(body: any): Promise<Response> {
         { channel_key, item_id: calendar_id, ep, freeze_job: freezeJob.id },
       );
       return json({ channel: updated, freeze_job: freezeJob, ep });
+    }
+
+    // Phase 1/2 — Studio "Assets" board: lock (or unlock) the production-default
+    // version for a (channel, asset_type). Demotes the current lock to 'candidate',
+    // promotes the chosen version to 'locked', and upserts factory_asset_locks.
+    // Body: {channel_key, asset_type, version_id} — version_id null = unlock.
+    // Mirrors "lock_baseline" (guarded validation + settings upsert shape).
+    case "lock_asset": {
+      const { channel_key, asset_type, version_id } = body;
+      if (!channel_key) return json({ error: "channel_key required" }, 400);
+      if (!asset_type) return json({ error: "asset_type required" }, 400);
+      const now = new Date().toISOString();
+      // Guard: when promoting, the target version must exist for this
+      // (channel, asset_type) — so we never demote the current lock and end up
+      // with nothing locked.
+      if (version_id) {
+        const { data: target, error: tErr } = await db.from("factory_asset_versions")
+          .select("id").eq("id", version_id)
+          .eq("channel_key", channel_key).eq("asset_type", asset_type).maybeSingle();
+        if (tErr) return json({ error: tErr.message }, 500);
+        if (!target) return json({ error: "version not found for this channel/asset_type" }, 404);
+      }
+      // 1) demote the currently-locked version → candidate
+      const { error: demoteErr } = await db.from("factory_asset_versions")
+        .update({ status: "candidate" })
+        .eq("channel_key", channel_key).eq("asset_type", asset_type).eq("status", "locked");
+      if (demoteErr) return json({ error: demoteErr.message }, 500);
+      // 2) promote the chosen version → locked (if any)
+      if (version_id) {
+        const { error: promoteErr } = await db.from("factory_asset_versions")
+          .update({ status: "locked" }).eq("id", version_id);
+        if (promoteErr) return json({ error: promoteErr.message }, 500);
+      }
+      // 3) record the lock (one row per channel/asset_type); null = unlocked
+      const { error: lockErr } = await db.from("factory_asset_locks")
+        .upsert(
+          {
+            channel_key,
+            asset_type,
+            locked_version_id: version_id ?? null,
+            locked_at: version_id ? now : null,
+            updated_at: now,
+          },
+          { onConflict: "channel_key,asset_type" },
+        );
+      if (lockErr) return json({ error: lockErr.message }, 500);
+      return json({ ok: true });
     }
 
     // v17: channel-page idea engine. Queues a plan_content job; the client polls

@@ -18,6 +18,7 @@ import Generators from './pages/Generators'
 import Workers from './pages/Workers'
 import Studio from './pages/Studio'
 import StudioBoard from './pages/StudioBoard'
+import Assets from './pages/Assets'
 
 export default function App() {
   const [authed, setAuthed] = useState(() => !!getToken())
@@ -78,6 +79,7 @@ export default function App() {
           <Route path="/posts" element={<Posts />} />
           <Route path="/generators" element={<Generators />} />
           <Route path="/workers" element={<Workers />} />
+          <Route path="/assets" element={<Assets />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

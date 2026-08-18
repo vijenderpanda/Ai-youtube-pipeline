@@ -42,3 +42,7 @@ alter table public.factory_asset_versions enable row level security;
 alter table public.factory_asset_locks    enable row level security;
 revoke all on table public.factory_asset_versions from anon, authenticated;
 revoke all on table public.factory_asset_locks    from anon, authenticated;
+-- new tables in this project do not auto-grant to service_role; the factory-api
+-- edge fn runs as service_role (bypasses RLS) so grant it explicitly.
+grant all on table public.factory_asset_versions to service_role;
+grant all on table public.factory_asset_locks    to service_role;
