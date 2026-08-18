@@ -7,8 +7,14 @@ import Toast, { useToast } from './Toast'
 import { JOB_TYPES, MODEL_OPTIONS, EFFORTS } from '../jobMeta'
 import { toISODate } from '../format'
 
-export default function PlanContentModal({ channels = [], onClose, onCreated }) {
-  const [form, setForm] = useState({
+/**
+ * Default "plan content" form payload. Shared with StudioLauncher so both the
+ * modal and the inline Studio launcher POST the exact same shape to
+ * `create_calendar_item` (channel + title + brief up front; the produce
+ * type/model/effort defaults ride along invisibly).
+ */
+export function planContentDefaults(channels = []) {
+  return {
     channel_key: channels[0] ? channels[0].key : '',
     planned_date: toISODate(new Date()),
     title: '',
@@ -17,7 +23,17 @@ export default function PlanContentModal({ channels = [], onClose, onCreated }) 
     model: 'opus',
     effort: 'high',
     ultracode: false,
-  })
+  }
+}
+
+/** Fire the create action the modal uses and return the fresh calendar item. */
+export async function createCalendarItem(form) {
+  const res = await api.post({ action: 'create_calendar_item', ...form })
+  return res.item
+}
+
+export default function PlanContentModal({ channels = [], onClose, onCreated }) {
+  const [form, setForm] = useState(() => planContentDefaults(channels))
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const { toast, show } = useToast()
@@ -36,8 +52,8 @@ export default function PlanContentModal({ channels = [], onClose, onCreated }) 
     setBusy(true)
     setError('')
     try {
-      const res = await api.post({ action: 'create_calendar_item', ...form })
-      onCreated(res.item)
+      const item = await createCalendarItem(form)
+      onCreated(item)
     } catch (err) {
       setError(err.message)
       setBusy(false)

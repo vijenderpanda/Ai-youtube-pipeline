@@ -11,8 +11,7 @@ import {
 } from '../channelColor'
 import CalendarStatusChip from '../components/CalendarStatusChip'
 import EmptyState from '../components/EmptyState'
-import PlanContentModal from '../components/PlanContentModal'
-import Toast, { useToast } from '../components/Toast'
+import StudioLauncher from '../components/StudioLauncher'
 import { fmtDayHeading } from '../format'
 
 /**
@@ -43,15 +42,21 @@ const STATUS_TABS = [
   { key: 'attention', label: 'Needs attention' },
 ]
 
+const FORMAT_TABS = [
+  { key: 'all', label: 'All formats' },
+  { key: 'short', label: 'Shorts' },
+  { key: 'longform', label: 'Long-form' },
+]
+const formatOf = (it) => it.format || 'short' // pre-migration rows are Shorts
+
 export default function Studio() {
   const stagedQ = usePoll(() => api.get('?r=staged'), 15000)
   const chansQ = usePoll(() => api.get('?r=channels'), 0)
   const navigate = useNavigate()
-  const [modalOpen, setModalOpen] = useState(false)
   const [q, setQ] = useState('')
   const [chanFilter, setChanFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
-  const { toast, show } = useToast()
+  const [formatFilter, setFormatFilter] = useState('all')
 
   const items = (stagedQ.data && stagedQ.data.items) || []
   const counts = (stagedQ.data && stagedQ.data.counts) || {}
@@ -80,32 +85,14 @@ export default function Studio() {
       .filter(({ it, lane }) => {
         if (chanFilter !== 'all' && it.channel_key !== chanFilter) return false
         if (statusFilter !== 'all' && lane !== statusFilter) return false
+        if (formatFilter !== 'all' && formatOf(it) !== formatFilter) return false
         if (needle) {
           const hay = `${it.title || ''} ${it.channel_key} ${chanName[it.channel_key] || ''}`.toLowerCase()
           if (!hay.includes(needle)) return false
         }
         return true
       })
-  }, [items, counts, q, chanFilter, statusFilter, chanName])
-
-  // Plan modal returns the fresh calendar item; we stage it immediately so the
-  // user lands on the Studio board with plan_assets already queued.
-  const onCreated = async (item) => {
-    if (!item || !item.id) {
-      show('Created but no id returned — open the calendar to stage manually.', 'error')
-      setModalOpen(false)
-      return
-    }
-    try {
-      await api.post({ action: 'stage_calendar_item', id: item.id })
-    } catch (err) {
-      show('Created but staging failed: ' + err.message + ' — open on the calendar and try again.', 'error')
-      setModalOpen(false)
-      return
-    }
-    setModalOpen(false)
-    navigate('/studio/' + item.id)
-  }
+  }, [items, counts, q, chanFilter, statusFilter, formatFilter, chanName])
 
   const nothingStaged = !stagedQ.loading && items.length === 0
   const noMatches = items.length > 0 && filtered.length === 0
@@ -115,22 +102,20 @@ export default function Studio() {
       <header className="page-head">
         <div>
           <h1>Studio</h1>
-          <p className="sub">Watch drafts, ask for changes, and approve what’s ready.</p>
+          <p className="sub">Start a piece, watch drafts, and approve what’s ready.</p>
         </div>
         <div className="head-actions">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => setModalOpen(true)}
-            disabled={channels.length === 0}
-            title={channels.length === 0 ? 'Loading channels…' : 'Create a new Studio project'}
-          >
-            + New project
-          </button>
+          <Link className="studio-templates-link" to="/studio/templates">
+            Templates ↗
+          </Link>
         </div>
       </header>
 
       {stagedQ.error && <div className="error-bar">{stagedQ.error.message}</div>}
+
+      <StudioLauncher channels={channels} onCreated={(id) => navigate('/studio/' + id)} />
+
+      <h2 className="studio-section-head">Pieces in progress</h2>
 
       {items.length > 0 && (
         <div className="studio-toolbar">
@@ -186,6 +171,25 @@ export default function Studio() {
               </button>
             ))}
           </div>
+
+          <div className="studio-status-tabs" role="tablist" aria-label="Filter by format">
+            {FORMAT_TABS.map((t) => {
+              const n =
+                t.key === 'all'
+                  ? items.length
+                  : items.filter((it) => formatOf(it) === t.key).length
+              return (
+                <button
+                  key={t.key}
+                  className={'status-tab' + (formatFilter === t.key ? ' on' : '')}
+                  onClick={() => setFormatFilter(t.key)}
+                >
+                  {t.label}
+                  <span className="chan-filter-n">{n}</span>
+                </button>
+              )
+            })}
+          </div>
         </div>
       )}
 
@@ -234,6 +238,11 @@ export default function Studio() {
                   {(c.generating || 0) > 0 && (
                     <span className="studio-cover-live">
                       <span className="live-dot" /> live
+                    </span>
+                  )}
+                  {formatOf(it) === 'longform' && (
+                    <span className="studio-cover-format" title="Long-form (16:9)">
+                      ▭ long-form
                     </span>
                   )}
                 </div>
@@ -292,15 +301,6 @@ export default function Studio() {
           })}
         </div>
       )}
-
-      {modalOpen && (
-        <PlanContentModal
-          channels={channels}
-          onClose={() => setModalOpen(false)}
-          onCreated={onCreated}
-        />
-      )}
-      <Toast toast={toast} />
     </div>
   )
 }
