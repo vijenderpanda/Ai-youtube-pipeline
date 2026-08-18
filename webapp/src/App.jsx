@@ -18,6 +18,8 @@ import Generators from './pages/Generators'
 import Workers from './pages/Workers'
 import Studio from './pages/Studio'
 import StudioBoard from './pages/StudioBoard'
+import TemplateLibrary from './pages/TemplateLibrary'
+import TemplateDetail from './pages/TemplateDetail'
 import Assets from './pages/Assets'
 
 export default function App() {
@@ -69,6 +71,10 @@ export default function App() {
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/studio" element={<Studio />} />
+          {/* Template Library routes MUST precede /studio/:calendarId so the
+              literal "templates" segment isn't captured as a calendarId. */}
+          <Route path="/studio/templates" element={<TemplateLibrary />} />
+          <Route path="/studio/templates/:key" element={<TemplateDetail />} />
           <Route path="/studio/:calendarId" element={<StudioBoard />} />
           <Route path="/channels" element={<Channels />} />
           <Route path="/channels/new" element={<ChannelWizard />} />

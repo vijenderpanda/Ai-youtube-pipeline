@@ -122,7 +122,7 @@ const NAV_GROUPS = [
     items: [
       { to: '/jobs', label: 'Activity', icon: 'jobs', badge: 'failed' },
       { to: '/renders', label: 'Library', icon: 'renders' },
-      { to: '/assets', label: 'Assets', icon: 'renders' },
+      { to: '/studio/templates', label: 'Templates', icon: 'renders' },
       { to: '/generators', label: 'Formats', icon: 'generators' },
       { to: '/workers', label: 'Machines', icon: 'workers' },
     ],
