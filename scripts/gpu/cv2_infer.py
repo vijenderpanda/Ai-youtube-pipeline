@@ -27,13 +27,13 @@ def main():
     import torch
     import torchaudio
     from cosyvoice.cli.cosyvoice import CosyVoice2
-    from cosyvoice.utils.file_utils import load_wav
 
     cv = CosyVoice2(a.model_dir, load_jit=False, load_trt=False,
                     fp16=(a.fp16 == "1"))
-    prompt = load_wav(a.ref, 16000)
+    # current inference_zero_shot loads the reference internally (load_wav @ 24k),
+    # so pass the PATH string, not a pre-loaded tensor.
     chunks = [o["tts_speech"] for o in
-              cv.inference_zero_shot(a.text, a.ref_text, prompt, stream=False)]
+              cv.inference_zero_shot(a.text, a.ref_text, a.ref, stream=False)]
     if not chunks:
         print("CV2_INFER_FAIL no audio produced")
         sys.exit(1)
