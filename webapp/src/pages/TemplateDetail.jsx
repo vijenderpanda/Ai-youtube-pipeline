@@ -10,6 +10,7 @@ import {
 } from '../channelColor'
 import { templateForChannel, armable } from '../templates'
 import {
+  SLOTS,
   assetLabel,
   wiringOf,
   kindOf,
@@ -52,6 +53,131 @@ const WIRING_LABEL = {
 }
 
 // Walk parent_version_id → "v3 ← v2 ← v1" (guards against cycles / missing parents).
+
+/* ── Cast SETTINGS ──────────────────────────────────────────────────────────
+   Some of what ships is BEHAVIOUR, not a file. `outro_cta` makes the host speak
+   a call-to-action over whatever card sits in the outro slot — there is nothing
+   to pick from the library, so a composer that only listed frames did not
+   describe the thing we actually publish. Drafts hold settings on
+   meta.settings; locking freezes them into composition._settings, which is what
+   build_ep_v2.resolve_setting() reads. */
+
+const CTA_MODES = [
+  { id: 'auto', label: 'Auto', hint: 'The host composes a fresh call-to-action for every episode' },
+  { id: 'off', label: 'Off', hint: 'This cast adds no spoken call-to-action' },
+  { id: 'custom', label: 'Custom line', hint: 'The host speaks the line you type, word for word' },
+]
+
+/** '' / null / undefined = the setting is not set → the build speaks nothing. */
+const ctaModeOf = (value) =>
+  value === 'auto' ? 'auto' : typeof value === 'string' && value.trim() ? 'custom' : 'off'
+
+const ctaSummary = (value) => {
+  const mode = ctaModeOf(value)
+  if (mode === 'auto') return 'Auto — a fresh line composed per episode'
+  if (mode === 'custom') return 'Custom line — spoken word for word'
+  return 'Off — this cast adds no spoken call-to-action'
+}
+
+/**
+ * The outro_cta control: Auto / Off / Custom line.
+ *
+ * Mounted with a key that includes the saved value, so the local radio + text
+ * state can never drift from what the server last confirmed. A LOCKED version
+ * renders read-only — the API returns 409 on a non-draft, and an editable
+ * control that always failed would be a lie about what the page can do.
+ */
+function OutroCtaSetting({ value, isDraft, busy, onSet }) {
+  const saved = ctaModeOf(value)
+  const [mode, setMode] = useState(saved)
+  const [line, setLine] = useState(saved === 'custom' ? value : '')
+  const pending = busy === 'setting:outro_cta'
+  const inputId = 'cast-setting-outro-cta-line'
+  const trimmed = line.trim()
+
+  if (!isDraft) {
+    return (
+      <div className="cast-setting-read">
+        <span className={'chip cast-setting-val cast-setting-' + saved}>
+          {CTA_MODES.find((m) => m.id === saved).label}
+        </span>
+        <span className="dim small">{ctaSummary(value)}</span>
+        {saved === 'custom' && <span className="cast-setting-line">“{value}”</span>}
+        <span className="dim small cast-frozen-tag">frozen</span>
+      </div>
+    )
+  }
+
+  const pick = (id) => {
+    setMode(id)
+    // "Custom line" only reveals the field — nothing is spoken until a line is
+    // saved, so posting an empty value here would silently mean "off".
+    if (id === 'auto') onSet('auto')
+    else if (id === 'off') onSet(null)
+  }
+
+  return (
+    <>
+      <fieldset className="cast-setting-modes" disabled={pending}>
+        <legend className="cast-setting-legend">Spoken outro call-to-action</legend>
+        {CTA_MODES.map((m) => (
+          <label
+            key={m.id}
+            className={'chip cast-setting-opt' + (mode === m.id ? ' cast-setting-opt-on' : '')}
+            title={m.hint}
+          >
+            <input
+              type="radio"
+              name="cast-setting-outro-cta"
+              value={m.id}
+              checked={mode === m.id}
+              onChange={() => pick(m.id)}
+            />
+            {m.label}
+          </label>
+        ))}
+      </fieldset>
+
+      {mode === 'custom' && (
+        <div className="cast-setting-custom">
+          <label className="cast-setting-lbl" htmlFor={inputId}>
+            Line the host speaks, word for word
+          </label>
+          <div className="cast-setting-row">
+            <input
+              id={inputId}
+              type="text"
+              maxLength={240}
+              value={line}
+              disabled={pending}
+              placeholder="Follow — I build one of these every day."
+              onChange={(e) => setLine(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && trimmed && trimmed !== value) {
+                  e.preventDefault()
+                  onSet(trimmed)
+                }
+              }}
+            />
+            <button
+              type="button"
+              className="btn-ghost"
+              disabled={pending || !trimmed || trimmed === value}
+              onClick={() => onSet(trimmed)}
+            >
+              {pending ? 'Saving…' : 'Save line'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="cast-setting-now">
+        <span className="dim small">Now:</span>
+        <span className={'chip cast-setting-val cast-setting-' + saved}>{ctaSummary(value)}</span>
+      </div>
+    </>
+  )
+}
 
 export default function TemplateDetail() {
   const { key } = useParams()
@@ -168,6 +294,19 @@ export default function TemplateDetail() {
   const isDraft = !!selected && selected.status === 'draft'
   const isActive = !!(tpl && selected && tpl.active_version_id === selected.id)
 
+  // Cast SETTINGS live in two places by design: a DRAFT keeps them editable on
+  // meta.settings, and locking copies them into composition._settings so the
+  // frozen snapshot reproduces the behaviour as well as the frames.
+  const settings = useMemo(() => {
+    if (!selected) return {}
+    const src = isDraft
+      ? selected.meta && selected.meta.settings
+      : selected.composition && selected.composition._settings
+    return src || {}
+  }, [selected, isDraft])
+  const outroCta = settings.outro_cta
+  const ctaOn = ctaModeOf(outroCta) !== 'off'
+
   // Position-0 picks, in row order — the side-by-side strip AND the lock guard.
   const chosen = useMemo(() => {
     const out = []
@@ -229,6 +368,19 @@ export default function TemplateDetail() {
       },
       'swap:' + asset_type,
       () => setSwapFor(null),
+    )
+
+  // A cast setting is behaviour, not a slot — same post()/refresh path as a
+  // swap. `value: null` deletes the key (the API's own contract for "unset").
+  const setSetting = (name, value) =>
+    post(
+      {
+        action: 'set_template_version_setting',
+        template_version_id: selected.id,
+        name,
+        value,
+      },
+      'setting:' + name,
     )
 
   const lockCast = () =>
@@ -473,6 +625,13 @@ export default function TemplateDetail() {
                     <div className="dim small">
                       {rev ? 'v' + rev.version : 'missing revision'}
                     </div>
+                    {/* The outro ships with more than its frames when
+                        outro_cta is set — say so on the tile. */}
+                    {ctaOn && (SLOTS[type] || {}).buildKey === 'outro_src' && (
+                      <span className="chip cast-strip-add" title={ctaSummary(outroCta)}>
+                        ＋ spoken CTA
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -598,13 +757,13 @@ export default function TemplateDetail() {
                               tabIndex={selectable ? 0 : -1}
                               aria-disabled={!selectable}
                               aria-label={'Use ' + assetLabel(o._fromSlot || type) + ' v' + o.version}
-                              title={o._fromSlot ? assetLabel(o._fromSlot) + ' — same outro slot' : undefined}
                               className={
                                 'cast-opt' +
                                 (isPick ? ' cast-opt-current' : '') +
                                 (blocked ? ' cast-opt-dead' : '')
                               }
-                              title={why + (uTitle ? '\n\n' + uTitle : '')}
+                              title={[o._fromSlot && assetLabel(o._fromSlot) + ' — same outro slot',
+                                      why, uTitle].filter(Boolean).join('\n\n')}
                               onClick={() => {
                                 if (selectable) swapTo(type, o.id)
                               }}
@@ -664,6 +823,42 @@ export default function TemplateDetail() {
                 </button>
               ) : null}
             </div>
+
+            {/* ── Cast settings: the parts of the cast that are not frames ──── */}
+            <section className="cast-settings" aria-labelledby="cast-settings-title">
+              <div>
+                <div className="cast-settings-title" id="cast-settings-title">
+                  Cast settings — behaviour that ships with the frames
+                </div>
+                <p className="dim small cast-settings-sub">
+                  {isDraft
+                    ? 'Things the build DOES with the frames above. There is no file to choose here.'
+                    : 'Frozen with this locked version, so it reproduces the behaviour as well as the frames.'}
+                </p>
+              </div>
+
+              <div className="cast-setting">
+                <div className="cast-setting-copy">
+                  <div className="cast-setting-name">
+                    Spoken outro call-to-action
+                    <span className="dim small mono">outro_cta</span>
+                  </div>
+                  <p className="dim small cast-setting-what">
+                    The host speaks a call-to-action over the outro card. Auto composes a fresh
+                    line per episode. An episode can still override this in its own spec.
+                  </p>
+                </div>
+                <div className="cast-setting-ctl">
+                  <OutroCtaSetting
+                    key={selected.id + '|' + String(outroCta)}
+                    value={outroCta}
+                    isDraft={isDraft}
+                    busy={busy}
+                    onSet={(v) => setSetting('outro_cta', v)}
+                  />
+                </div>
+              </div>
+            </section>
 
             <div className="cast-foot">
               <div className="cast-foot-copy">

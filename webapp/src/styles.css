@@ -6700,6 +6700,83 @@ a.out-chip:hover {
    stretch to match and float their text in dead space. */
 .cast-picker { align-items: flex-start; }
 
+/* ---- Cast SETTINGS: behaviour that ships with the frames -------------------
+   A setting is not a frame — outro_cta makes the host SPEAK a call-to-action
+   over the outro card, and there is no file to pick. So the block is
+   deliberately unlike a slot row: dashed edge, no thumbnail column, controls
+   instead of a Swap drawer. */
+.cast-settings {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 12px 14px; border-radius: 10px;
+  border: 1px dashed var(--border, #2A2A36);
+  background: color-mix(in srgb, var(--panel-2, #14141C) 60%, transparent);
+}
+.cast-settings-title { font-size: 13px; font-weight: 700; }
+.cast-settings-sub { margin: 3px 0 0; max-width: 68ch; }
+
+.cast-setting {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  padding-top: 11px; border-top: 1px dashed var(--border, #2A2A36);
+}
+.cast-setting-copy { flex: 1 1 300px; min-width: 240px; }
+.cast-setting-name {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: 13px; font-weight: 600;
+}
+.cast-setting-what { margin: 3px 0 0; max-width: 58ch; }
+.cast-setting-ctl { flex: 1 1 300px; min-width: 260px; display: flex; flex-direction: column; gap: 8px; }
+
+.cast-setting-modes {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  margin: 0; padding: 0; border: 0; min-width: 0;
+}
+.cast-setting-legend {
+  padding: 0; margin: 0 0 7px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--faint, #6B7280);
+}
+.cast-setting-opt { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.cast-setting-opt input[type='radio'] {
+  width: auto; margin: 0; padding: 0; accent-color: var(--ch, #E91E63);
+}
+.cast-setting-opt:hover { border-color: var(--champagne, #D8C08A); }
+.chip.cast-setting-opt-on {
+  color: var(--ch, #E91E63);
+  border-color: color-mix(in srgb, var(--ch, #E91E63) 45%, var(--border));
+  background: color-mix(in srgb, var(--ch, #E91E63) 12%, transparent);
+}
+.cast-setting-modes:disabled .cast-setting-opt { opacity: .55; cursor: progress; }
+
+.cast-setting-custom { display: flex; flex-direction: column; gap: 5px; }
+.cast-setting-lbl {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--faint, #6B7280);
+}
+.cast-setting-row { display: flex; align-items: center; gap: 8px; }
+.cast-setting-row input { flex: 1 1 auto; min-width: 0; }
+.cast-setting-row .btn-ghost { flex: none; }
+
+.cast-setting-now,
+.cast-setting-read { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.cast-setting-line { font-size: 12px; font-style: italic; max-width: 46ch; }
+.chip.cast-setting-auto {
+  color: var(--ch, #E91E63);
+  border-color: color-mix(in srgb, var(--ch, #E91E63) 45%, var(--border));
+}
+.chip.cast-setting-custom {
+  color: var(--champagne, #D8C08A);
+  border-color: color-mix(in srgb, var(--champagne, #D8C08A) 40%, var(--border));
+}
+.chip.cast-setting-off { color: var(--faint, #6B7280); }
+/* "this tile ships with something extra" — on the outro tile in the strip */
+.chip.cast-strip-add {
+  display: inline-flex; margin-top: 5px; padding: 1px 6px; font-size: 9.5px;
+  color: var(--ch, #E91E63);
+  border-color: color-mix(in srgb, var(--ch, #E91E63) 40%, transparent);
+  background: color-mix(in srgb, var(--ch, #E91E63) 10%, transparent);
+}
+
 /* a picker option borrowed from a sibling slot that feeds the same build key */
 .chip.cast-alt-slot {
   font-size: 9.5px; margin-left: 6px; padding: 1px 6px;
