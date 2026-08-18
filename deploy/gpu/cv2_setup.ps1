@@ -55,10 +55,19 @@ if (-not (CudaOK)) {
 if (-not (CudaOK)) { Die "torch CUDA not available" }
 Write-Host "CV2_STEP3_OK"
 
+# openai-whisper's setup.py does `import pkg_resources`, which setuptools>=81 drops.
+# Pin setuptools<81 in the venv AND (via PIP_CONSTRAINT) in the isolated build envs
+# so the sdist builds on a box without a compiler.
+& $VenvPy -m pip install "setuptools<81" wheel 2>&1 | Out-Host
+$constraints = Join-Path $Root "constraints.txt"
+"setuptools<81" | Set-Content -Encoding ASCII $constraints
+$env:PIP_CONSTRAINT = $constraints
 Say "installing requirements (compiler-free: wetext + kaldifst wheel)..."
 & $VenvPy -m pip install -r (Join-Path $Repo "requirements.txt") 2>&1 | Out-Host
-if ($LASTEXITCODE -ne 0) { Die "pip install -r requirements failed" }
+$rc = $LASTEXITCODE
 & $VenvPy -m pip install "wetext==0.0.4" 2>&1 | Out-Host
+Remove-Item Env:\PIP_CONSTRAINT -ErrorAction SilentlyContinue
+if ($rc -ne 0) { Die "pip install -r requirements failed (exit $rc)" }
 Write-Host "CV2_STEP4_OK"
 
 # verify the cosyvoice package imports (class only, no weights yet)
