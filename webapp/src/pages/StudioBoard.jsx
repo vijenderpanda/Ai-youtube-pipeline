@@ -157,6 +157,53 @@ export default function StudioBoard() {
   const channel = item ? channels.find((c) => c.key === item.channel_key) : null
   const incubating = !!channel && channel.lifecycle === 'incubating'
 
+  // ── The CAST this piece produces with ("Confirm the format" step) ──
+  // factory_calendar.template_version_id is the durable per-piece binding that
+  // build_ep_v2._bind_template_version() reads; when it is NULL the build falls
+  // through to factory_templates.active_version_id — NOT to the raw channel
+  // locks. The spine needs the whole cast list to say which one is in force and
+  // to offer the others, so it is fetched here (same prop-down pattern as
+  // `templates` / `assets`) rather than inside the presentational component.
+  // include_retired=1 so a piece pinned to a since-retired cast still resolves
+  // and can be shown honestly instead of silently vanishing from the picker.
+  const boardTemplateKey = (channel && channel.template) || ''
+  const castQ = usePoll(
+    () =>
+      boardTemplateKey
+        ? api.get('?r=template_versions&template_key=' + encodeURIComponent(boardTemplateKey) + '&include_retired=1')
+        : Promise.resolve({ versions: [] }),
+    0,
+    [boardTemplateKey]
+  )
+  const castVersions = (castQ.data && castQ.data.versions) || []
+  const [castBusy, setCastBusy] = useState(false)
+
+  // Bind (or unbind, with null) this piece to a locked cast. The API refuses a
+  // draft/retired cast (409) and a cast from another channel (409) — those
+  // messages go straight to the toast. A success re-reads the board so the
+  // panel repaints from the stored row, never from optimistic local state.
+  const setCast = async (versionId) => {
+    if (castBusy || !!busy) return
+    setCastBusy(true)
+    try {
+      await api.post({
+        action: 'set_calendar_template_version',
+        calendar_id: calendarId,
+        template_version_id: versionId || null,
+      })
+      show(
+        versionId
+          ? 'Cast switched — this piece produces with it'
+          : "Cast cleared — this piece follows the channel's active cast",
+        'ok'
+      )
+      await boardQ.refresh()
+    } catch (e) {
+      show(e.message, 'error')
+    }
+    setCastBusy(false)
+  }
+
   // Latest version per asset_key — the only rows whose status matters.
   const latestByKey = useMemo(() => {
     const m = new Map()
@@ -893,6 +940,9 @@ export default function StudioBoard() {
             channel={channel}
             templates={templates}
             assets={brandAssets}
+            castVersions={castVersions}
+            castBusy={castBusy}
+            onSetCast={setCast}
             accent={accent}
             isDirect={isDirect}
             incubating={incubating}

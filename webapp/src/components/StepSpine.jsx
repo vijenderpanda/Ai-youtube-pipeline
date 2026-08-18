@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { RENDERS_BASE } from '../config'
+import { assetLabel, isImagePath, kindOf } from '../assetCatalog'
 import { resolveStage } from '../pipeline'
-import { assetLabel } from '../templates'
 import PipelineRail from './PipelineRail'
 import { fmtDayHeading } from '../format'
 
@@ -41,6 +41,33 @@ const STEP_TAG = {
 // The three locked brand frames the recipe bakes into every episode.
 const FRAME_TYPES = ['host_outfit', 'outro_sting', 'music_bed']
 
+/**
+ * A cast's human name. `label` is optional and often empty, so fall back to
+ * something that still distinguishes one cast from another (the host frame it
+ * freezes) rather than rendering a bare blank next to the version number.
+ */
+function castName(v) {
+  if (!v) return ''
+  const base = `v${v.version}`
+  const label = String(v.label || '').trim()
+  if (label) return `${base} · ${label}`
+  const host = (v.composition && v.composition.host_outfit) || null
+  const ref = host && host.build_ref
+  if (ref) {
+    const leaf = String(ref).split('/').filter(Boolean).pop()
+    if (leaf) return `${base} · ${leaf}`
+  }
+  return base
+}
+
+/** Why a cast cannot be produced with — mirrors the API's own 409 wording. */
+function castBlockReason(v) {
+  if (!v) return ''
+  if (v.status === 'draft') return 'draft — lock it first'
+  if (v.status === 'retired') return 'retired — branch a new cast instead'
+  return `${v.status} — only a locked cast can be produced with`
+}
+
 /** Resolve each locked frame's thumb for a channel from ?r=assets ({versions, locks}). */
 function lockedFrames(assets, channelKey) {
   const versions = (assets && assets.versions) || []
@@ -61,12 +88,45 @@ function lockedFrames(assets, channelKey) {
       (lock && lock.locked_version_id && byId[lock.locked_version_id]) ||
       vers.find((v) => v.status === 'locked') ||
       null
-    const coverPath = locked && (locked.thumb_path || locked.storage_path)
+    const imgPath =
+      (isImagePath(locked && locked.thumb_path) && locked.thumb_path) ||
+      (isImagePath(locked && locked.storage_path) && locked.storage_path) ||
+      null
     return {
       type,
       label: assetLabel(type),
-      coverUrl: coverPath ? RENDERS_BASE + coverPath : null,
+      coverUrl: imgPath ? RENDERS_BASE + imgPath : null,
+      kind: locked ? kindOf(type, locked) : null,
       version: locked ? locked.version : null,
+      from: 'lock',
+    }
+  })
+}
+
+/**
+ * The frames a BOUND cast will actually render with.
+ *
+ * build_ep_v2.resolve_locked() is per-slot: the cast's frozen `composition`
+ * wins, and any slot the cast does not compose still falls through to the
+ * channel lock. So this overlays the composition onto the lock frames rather
+ * than replacing them wholesale — the strip then matches the build slot by slot.
+ */
+function castFrames(cast, lockFrames) {
+  const comp = (cast && cast.composition) || {}
+  return lockFrames.map((f) => {
+    const slot = comp[f.type]
+    if (!slot || !slot.build_ref) return f // not in this cast → the lock still runs
+    const imgPath =
+      (isImagePath(slot.thumb_path) && slot.thumb_path) ||
+      (isImagePath(slot.storage_path) && slot.storage_path) ||
+      null
+    return {
+      type: f.type,
+      label: f.label,
+      coverUrl: imgPath ? RENDERS_BASE + imgPath : null,
+      kind: kindOf(f.type, slot),
+      version: slot.version || null,
+      from: 'cast',
     }
   })
 }
@@ -77,6 +137,9 @@ export default function StepSpine({
   channel,
   templates = [],
   assets,
+  castVersions = [],
+  castBusy = false,
+  onSetCast,
   accent,
   isDirect = false,
   incubating = false,
@@ -130,8 +193,40 @@ export default function StepSpine({
   const templateKey = channel && channel.template
   const tpl = templateKey ? templates.find((t) => t.key === templateKey) : null
   const channelKey = (channel && channel.key) || (item && item.channel_key) || null
-  const frames = lockedFrames(assets, channelKey)
+
+  // ── Which CAST produces this piece ─────────────────────────────────
+  // build_ep_v2._bind_template_version() precedence (the part this board can
+  // see): factory_calendar.template_version_id → factory_templates.
+  // active_version_id → nothing. An unbound piece therefore does NOT render off
+  // the raw channel locks; it renders off the template's ACTIVE cast. And
+  // _tpl_lookup() ignores any cast that is not `locked`, falling back to the
+  // channel locks — so only a locked cast is ever "in force" here.
+  const boundId = (item && item.template_version_id) || null
+  const activeId = (tpl && tpl.active_version_id) || null
+  const castById = {}
+  for (const v of castVersions) castById[v.id] = v
+  const boundCast = boundId ? castById[boundId] || null : null
+  const activeCast = activeId ? castById[activeId] || null : null
+  const pickedCast = boundId ? boundCast : activeCast
+  const effCast = pickedCast && pickedCast.status === 'locked' ? pickedCast : null
+  // A pinned cast the build will refuse (draft/retired/vanished) — the panel
+  // must say so instead of showing frames that will not render.
+  const deadPin = boundId && !effCast ? boundCast : null
+
+  const lockFrames = lockedFrames(assets, channelKey)
+  const frames = effCast ? castFrames(effCast, lockFrames) : lockFrames
   const hasFrames = frames.some((f) => f.coverUrl)
+
+  // Only locked casts are offered. Drafts stay visible but disabled (you can
+  // see the work in progress; you cannot ship it). Retired casts are noise
+  // unless this piece is pinned to one, in which case it must be listed so the
+  // <select> can show the real current value.
+  const castOptions = castVersions.filter(
+    (v) => v.status === 'locked' || v.status === 'draft' || v.id === boundId
+  )
+  const defaultCastLabel = activeCast
+    ? `Use the channel's active cast (${castName(activeCast)})`
+    : 'Channel default (asset locks)'
 
   const previewSrc = item && item.preview_path ? RENDERS_BASE + item.preview_path : null
 
@@ -156,14 +251,24 @@ export default function StepSpine({
           </div>
           {tpl && tpl.description && <p className="dim small format-card-desc">{tpl.description}</p>}
           {hasFrames && (
-            <div className="frames-strip" aria-label="Locked frames">
+            <div className="frames-strip" aria-label="Frames this piece will render with">
               {frames.map((f) => (
-                <div key={f.type} className="frame-cell" title={f.label}>
+                <div
+                  key={f.type}
+                  className="frame-cell"
+                  title={
+                    f.from === 'cast'
+                      ? `${f.label} — from ${castName(effCast)}`
+                      : effCast
+                        ? `${f.label} — not in this cast, so the channel lock still runs`
+                        : f.label
+                  }
+                >
                   <span className={'frame-cell-thumb' + (f.coverUrl ? '' : ' is-empty')}>
                     {f.coverUrl ? (
                       <img src={f.coverUrl} alt="" loading="lazy" />
                     ) : (
-                      <span className="fs-glyph">{f.label.slice(0, 1)}</span>
+                      <span className="fs-glyph">{f.kind === 'audio' ? '♪' : f.kind === 'video' ? '▶' : f.label.slice(0, 1)}</span>
                     )}
                   </span>
                   <span className="frame-cell-label">
@@ -174,8 +279,70 @@ export default function StepSpine({
               ))}
             </div>
           )}
+
+          {/* CAST switcher — the one thing this step could show but not change. */}
+          <div className="cast-row">
+            <label className="cast-row-label" htmlFor="plan-cast-select">
+              Cast
+            </label>
+            <select
+              id="plan-cast-select"
+              className="cast-select"
+              value={boundId || ''}
+              disabled={castBusy || !!busy || !onSetCast}
+              onChange={(e) => onSetCast && onSetCast(e.target.value || null)}
+              title="Which locked cast this piece produces with"
+            >
+              <option value="">{defaultCastLabel}</option>
+              {castOptions.map((v) => {
+                const blocked = v.status !== 'locked'
+                const why = castBlockReason(v)
+                return (
+                  <option
+                    key={v.id}
+                    value={v.id}
+                    disabled={blocked}
+                    title={blocked ? why : `Produce this piece with ${castName(v)}`}
+                  >
+                    {`${castName(v)}${v.id === activeId ? ' · ACTIVE' : ''}${blocked ? ` — ${why}` : ''}`}
+                  </option>
+                )
+              })}
+            </select>
+            {castBusy && <span className="dim small">Switching…</span>}
+            {tpl && (
+              <Link className="link small cast-row-compose" to={`/studio/templates/${tpl.key}`}>
+                Compose a new cast →
+              </Link>
+            )}
+          </div>
+
+          {deadPin ? (
+            <p className="error-text small format-card-note">
+              Pinned to {castName(deadPin)} — {castBlockReason(deadPin)}. The build ignores it and
+              falls back to the channel&apos;s asset locks, shown above.
+            </p>
+          ) : boundId && !boundCast ? (
+            <p className="error-text small format-card-note">
+              Pinned to a cast that no longer exists. The build falls back to the channel&apos;s
+              asset locks, shown above.
+            </p>
+          ) : null}
+
           <p className="dim small format-card-note">
-            This is the locked recipe. Preview generates with these exact frames.
+            {effCast ? (
+              <>
+                Producing with <b>{castName(effCast)}</b>
+                {effCast.id === activeId ? " — the template's active cast" : ''}
+                {boundId ? ' — pinned to this piece.' : '.'} Preview generates with these exact
+                frames.
+              </>
+            ) : (
+              <>
+                No locked cast is in force — this produces with the channel&apos;s asset locks,
+                shown above.
+              </>
+            )}
           </p>
           {planFailed ? (
             <p className="error-text small">Planning failed — check the Jobs page, then stage again.</p>

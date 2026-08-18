@@ -1567,6 +1567,40 @@ async function handlePost(body: any): Promise<Response> {
     // this patches then delegates to the EXACT same stage path — same guards
     // (planned|suggested → else 409; 0 assets → else 409), same plan_assets job
     // with meta.calendar_id, same {item, job} response. No fork.
+    // Bind a piece to a specific locked CAST before producing. The board's
+    // "Confirm the format" step could show the template but not change it, so an
+    // accepted suggestion was stuck with the channel default. build_ep_v2 already
+    // binds via factory_calendar.template_version_id — this just exposes it.
+    case "set_calendar_template_version": {
+      const { calendar_id: cvCal, template_version_id: cvVer } = body;
+      if (!cvCal || !UUID_RE.test(String(cvCal))) return json({ error: "calendar_id (uuid) required" }, 400);
+      if (cvVer !== null && !UUID_RE.test(String(cvVer ?? ""))) {
+        return json({ error: "template_version_id must be a uuid or null" }, 400);
+      }
+      const { data: cvItem, error: cvItemErr } = await db.from("factory_calendar")
+        .select("id, channel_key").eq("id", String(cvCal)).maybeSingle();
+      if (cvItemErr) return json({ error: cvItemErr.message }, 500);
+      if (!cvItem) return json({ error: "calendar item not found" }, 404);
+      if (cvVer) {
+        // only a LOCKED cast of the SAME channel may be bound — a draft is still
+        // being edited and must never drive a render (same rule as _tpl_lookup).
+        const { data: cvTv, error: cvTvErr } = await db.from("factory_template_versions")
+          .select("id, status, channel_key, version, label").eq("id", String(cvVer)).maybeSingle();
+        if (cvTvErr) return json({ error: cvTvErr.message }, 500);
+        if (!cvTv) return json({ error: "template version not found" }, 404);
+        if (cvTv.status !== "locked") {
+          return json({ error: "only a locked cast can be produced with — lock it first" }, 409);
+        }
+        if (cvTv.channel_key !== cvItem.channel_key) {
+          return json({ error: "that cast belongs to another channel" }, 409);
+        }
+      }
+      const { data: cvUpd, error: cvUpdErr } = await db.from("factory_calendar")
+        .update({ template_version_id: cvVer ?? null }).eq("id", String(cvCal)).select().single();
+      if (cvUpdErr) return json({ error: cvUpdErr.message }, 500);
+      return json({ ok: true, item: cvUpd });
+    }
+
     case "accept_suggestion": {
       const { id, title, brief } = body;
       if (!id || !UUID_RE.test(String(id))) return json({ error: "id (uuid) required" }, 400);

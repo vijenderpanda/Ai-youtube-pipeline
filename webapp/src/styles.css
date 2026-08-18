@@ -6180,6 +6180,38 @@ a.out-chip:hover {
 .format-card-title { font-size: var(--fs-md); font-weight: 700; }
 .format-card-desc { margin: var(--s-2) 0 0; }
 .format-card-note { margin: var(--s-2) 0 0; }
+/* PLAN step — cast switcher: which locked cast this piece produces with */
+.cast-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-3);
+  margin-top: var(--s-3);
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--border-soft);
+}
+.cast-row-label {
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.cast-select {
+  flex: 1 1 260px;
+  min-width: 0;
+  max-width: 460px;
+  padding: 7px 10px;
+  font: inherit;
+  font-size: var(--fs-sm);
+  color: var(--text);
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
+.cast-select:disabled { opacity: 0.55; cursor: not-allowed; }
+.cast-select option:disabled { color: var(--faint); }
+.cast-row-compose { margin-left: auto; white-space: nowrap; }
 /* ARM step — compact confirm card */
 .arm-card { display: flex; flex-direction: column; gap: var(--s-3); }
 .arm-card-title { font-size: var(--fs-md); font-weight: 700; }
