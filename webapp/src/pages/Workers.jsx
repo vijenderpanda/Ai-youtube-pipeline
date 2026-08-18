@@ -172,6 +172,126 @@ function UsageStrip({ meta }) {
   )
 }
 
+// Shared thin meter: indigo track fill, red when the metric is running hot
+// (>90%). Same bar grammar as the usage-window bar in fmtWindow above.
+function MeterBar({ pct, high }) {
+  const p = Math.min(100, Math.max(0, pct || 0))
+  return (
+    <div style={{ height: 6, background: '#8882', borderRadius: 3, overflow: 'hidden' }}>
+      <div style={{
+        width: `${p}%`, height: '100%', borderRadius: 3,
+        background: high ? '#ef4444' : '#6366f1', transition: 'width .3s',
+      }} />
+    </div>
+  )
+}
+
+// A labeled figure with an optional bar underneath. pct null -> figure only, no bar.
+function MeterRow({ label, value, pct, sub }) {
+  const high = pct != null && pct > 90
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, marginBottom: pct != null ? 3 : 0 }}>
+        <span className="dim" style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</span>
+        <span style={{ color: high ? '#ef4444' : 'var(--dim, #888)', fontWeight: high ? 600 : 400, flex: '0 0 auto' }}>{value}</span>
+      </div>
+      {pct != null && <MeterBar pct={pct} high={high} />}
+      {sub && <div className="dim" style={{ marginTop: 2, fontSize: 11 }}>{sub}</div>}
+    </div>
+  )
+}
+
+function fmtGb(v) {
+  if (v == null) return '—'
+  return (v >= 100 ? Math.round(v) : v.toFixed(1)) + ' GB'
+}
+
+function pctOf(used, total) {
+  if (used == null || !total) return null
+  return Math.round((used / total) * 100)
+}
+
+/**
+ * v18: worker resource-health (factory_workers.meta.resources) — a live GPU / CPU
+ * / RAM / disk snapshot the worker folds into its heartbeat. Every section is
+ * independently optional and hides when its data is absent: no NVIDIA GPU -> no
+ * GPU rows; the worker has no psutil installed -> no CPU% / RAM rows (GPU, disk
+ * and CPU cores still show). Returns null when there's nothing to show at all.
+ */
+function ResourceStrip({ meta }) {
+  const r = meta && meta.resources
+  if (!r) return null
+  const gpu = r.gpu || null
+  const cpu = r.cpu || null
+  const ram = r.ram || null
+  const disk = r.disk || null
+  const hasCpuPct = cpu && cpu.pct != null
+  const hasCpuCores = cpu && cpu.cores != null
+  if (!gpu && !ram && !disk && !hasCpuPct && !hasCpuCores) return null
+
+  const gpuExtras = []
+  if (gpu) {
+    if (gpu.temp_c != null) gpuExtras.push(`${gpu.temp_c}°C`)
+    if (gpu.power_w != null) gpuExtras.push(`${Math.round(gpu.power_w)}W`)
+  }
+  const vramPct = gpu ? pctOf(gpu.mem_used_mb, gpu.mem_total_mb) : null
+
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', gap: 8, fontSize: 12,
+      background: 'var(--bg-inset, #1113)', borderRadius: 6, padding: '8px 10px',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <span style={{ fontWeight: 600 }}>🩺 Machine health</span>
+        {r.at && <span className="dim" style={{ marginLeft: 'auto' }}>as of {timeAgo(r.at)}</span>}
+      </div>
+
+      {gpu && (
+        <MeterRow
+          label={<>GPU{gpu.name ? <span className="dim"> · {gpu.name}</span> : ''}</>}
+          value={gpu.util_pct != null ? `${gpu.util_pct}%` : '—'}
+          pct={gpu.util_pct}
+        />
+      )}
+      {gpu && gpu.mem_total_mb != null && (
+        <MeterRow
+          label="VRAM"
+          value={`${fmtGb(gpu.mem_used_mb != null ? gpu.mem_used_mb / 1024 : null)} / ${fmtGb(gpu.mem_total_mb / 1024)}`}
+          pct={vramPct}
+          sub={gpuExtras.length ? gpuExtras.join(' · ') : null}
+        />
+      )}
+
+      {hasCpuPct && (
+        <MeterRow
+          label={<>CPU{hasCpuCores ? <span className="dim"> · {cpu.cores} cores</span> : ''}</>}
+          value={`${cpu.pct}%`}
+          pct={cpu.pct}
+        />
+      )}
+      {!hasCpuPct && hasCpuCores && (
+        <MeterRow label="CPU" value={`${cpu.cores} cores`} pct={null} />
+      )}
+
+      {ram && ram.total_gb != null && (
+        <MeterRow
+          label="RAM"
+          value={`${fmtGb(ram.used_gb)} / ${fmtGb(ram.total_gb)}`}
+          pct={pctOf(ram.used_gb, ram.total_gb)}
+        />
+      )}
+
+      {disk && disk.total_gb != null && (
+        <MeterRow
+          label="Disk"
+          value={`${fmtGb(disk.used_gb)} / ${fmtGb(disk.total_gb)}`}
+          pct={pctOf(disk.used_gb, disk.total_gb)}
+        />
+      )}
+    </div>
+  )
+}
+
 function WorkerLogs({ workerId }) {
   // v16: default OPEN so a fresh Workers page shows live streaming logs
   // without an extra click. Users can still collapse per-card.
@@ -309,6 +429,8 @@ function WorkerCard({ worker, jobTypes, onChanged }) {
       </div>
 
       <UsageStrip meta={worker.meta} />
+
+      <ResourceStrip meta={worker.meta} />
 
       <div>
         <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 6 }}>
