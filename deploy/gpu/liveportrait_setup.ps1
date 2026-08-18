@@ -51,16 +51,20 @@ if (-not (CudaOK)) {
 if (-not (CudaOK)) { Die "torch CUDA not available" }
 Write-Host "LP_STEP3_OK"
 
-# insightface via PREBUILT wheel (NEVER pip-build it -> needs MSVC), then the rest
+# requirements FIRST (pins numpy 1.26.4 etc.), THEN insightface via the prebuilt
+# wheel with --no-deps -- letting pip resolve insightface's deps against the LP
+# stack sends it into a long silent backtrack (the hang). Its runtime deps come
+# from requirements + the small extras below.
 function IFaceOK { try { return ((& $VenvPy -c "import insightface;print(1)" 2>$null).Trim() -eq "1") } catch { return $false } }
 if (-not (IFaceOK)) {
-  Say "installing insightface (prebuilt cp310 wheel)..."
-  & $VenvPy -m pip install $IF_WHEEL 2>&1 | Out-Host
+  Say "installing LivePortrait requirements..."
+  & $VenvPy -m pip install -r (Join-Path $Repo "requirements.txt") 2>&1 | Out-Host
+  if ($LASTEXITCODE -ne 0) { Die "requirements install failed" }
+  Say "installing insightface (prebuilt wheel, --no-deps)..."
+  & $VenvPy -m pip install --no-deps $IF_WHEEL 2>&1 | Out-Host
+  & $VenvPy -m pip install onnxruntime easydict prettytable 2>&1 | Out-Host
 }
-if (-not (IFaceOK)) { Die "insightface import failed (prebuilt wheel)" }
-Say "installing LivePortrait requirements..."
-& $VenvPy -m pip install -r (Join-Path $Repo "requirements.txt") 2>&1 | Out-Host
-if ($LASTEXITCODE -ne 0) { Die "requirements install failed" }
+if (-not (IFaceOK)) { Die "insightface import failed" }
 Write-Host "LP_STEP4_OK"
 
 # weights -> pretrained_weights/

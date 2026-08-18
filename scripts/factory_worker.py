@@ -4146,21 +4146,43 @@ def run_shell_script_job(supa, job):
     # Long GPU installs/inference stream silently for many minutes; this handler
     # stamped heartbeat_at only once at claim, so the cross-worker stale reaper
     # (STALE_REAP_S=180) on ANY other worker would orphan a job that runs >3 min.
-    # Keep it alive with a background heartbeat until the child exits.
+    # The background heartbeat bumps heartbeat_at AND reads control back every 30s,
+    # so a wedged shell_script is now killable: control='stop' or a wall-clock cap
+    # (a silently-hung pip resolver has no timeout of its own) tears down the child.
     hb_stop = threading.Event()
+    proc_box = {"p": None}
+    started = time.time()
+    SHJOB_MAX_S = 5400  # 90-min hard cap; a GPU install/inference past this is wedged
 
     def _shjob_heartbeat():
         while not hb_stop.wait(30):
-            try:
-                supa.patch("factory_jobs", f"id=eq.{job_id}", {"heartbeat_at": now_iso()})
-            except Exception:  # noqa: BLE001 -- a heartbeat blip must never kill the job
-                pass
+            p = proc_box["p"]
+            if p is None or p.poll() is not None:
+                continue
+            reason = None
+            if heartbeat_and_control(supa, job_id) == "stop":
+                reason = "stopped by user"
+            elif time.time() - started > SHJOB_MAX_S:
+                reason = f"exceeded {SHJOB_MAX_S // 60}min cap"
+            if reason:
+                log(f"  [shell_script] killing child ({reason})")
+                buf.add(f"[shell] killing child ({reason})")
+                proc_box["reason"] = reason
+                try:
+                    kill_proc_group(p)
+                except Exception:  # noqa: BLE001 -- teardown must never raise here
+                    pass
+                hb_stop.set()
+                return
     threading.Thread(target=_shjob_heartbeat, daemon=True,
                      name=f"shjob-hb-{job_id[:8]}").start()
 
     try:
+        # own process group so kill_proc_group can take the whole ps1/python tree
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                text=True, encoding="utf-8", errors="replace")
+                                text=True, encoding="utf-8", errors="replace",
+                                **_POPEN_GROUP_KW)
+        proc_box["p"] = proc
         output_lines = []
         for line in proc.stdout:
             line = line.rstrip()
@@ -4192,11 +4214,17 @@ def run_shell_script_job(supa, job):
         },
         "script_output": output_text,
     }
-    status = "done" if rc == 0 else "failed"
+    # a heartbeat-initiated teardown (control='stop' or the wall-clock cap) is not a
+    # script failure: report it as cancelled and clear control so it isn't re-stopped
+    kill_reason = proc_box.get("reason")
+    if kill_reason:
+        status, patch = "cancelled", {"control": None, "error": kill_reason}
+    else:
+        status, patch = ("done" if rc == 0 else "failed"), {}
     try:
         supa.patch("factory_jobs", f"id=eq.{job_id}",
                    {"status": status, "finished_at": now_iso(),
-                    "result": result, "logs": buf.text()})
+                    "result": result, "logs": buf.text(), **patch})
     except Exception as e:
         log(f"  could not finalize shell_script job: {e}")
 
