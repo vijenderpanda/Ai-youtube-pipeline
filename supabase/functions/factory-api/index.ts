@@ -1573,11 +1573,24 @@ async function handlePost(body: any): Promise<Response> {
       const patch: Record<string, unknown> = {};
       if (typeof title === "string" && title.trim()) patch.title = title.trim();
       if (typeof brief === "string") patch.brief = brief;
-      if (Object.keys(patch).length) {
-        const { error } = await db.from("factory_calendar").update(patch).eq("id", String(id));
-        if (error) return json({ error: error.message }, 500);
-      }
-      return await stageCalendarItem(String(id));
+      // Accepting a suggestion approves the IDEA onto the calendar. It must not
+      // also choose the production path: staging here forced production_mode
+      // 'staged', which skips the board's "Confirm the format" step — the only
+      // place the template/cast is chosen — so an accepted suggestion could not
+      // switch templates. Promote suggested -> planned and let the board decide
+      // (produce_preview for direct channels, stage for staged ones), exactly as
+      // it does for any other planned row.
+      patch.status = "planned";
+      const { data: accepted, error: accErr } = await db.from("factory_calendar")
+        .update(patch).eq("id", String(id)).select().single();
+      if (accErr) return json({ error: accErr.message }, 500);
+      if (!accepted) return json({ error: "calendar item not found" }, 404);
+      await logEvent(
+        "suggestion_accepted",
+        `Accepted '${accepted.title}' (${accepted.channel_key}) onto the calendar`,
+        { calendar_id: accepted.id },
+      );
+      return json({ item: accepted, job: null });
     }
 
     // v16: add_asset — used by scripts/push_asset.py in a produce_preview
