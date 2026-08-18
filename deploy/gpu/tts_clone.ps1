@@ -14,7 +14,12 @@ param(
   [string]$Text,
   [string]$Tag = "clone",
   [string]$SovitsWeights = "",   # optional repo-relative fine-tuned SoVITS .pth
-  [string]$GptWeights = ""       # optional repo-relative fine-tuned GPT .ckpt
+  [string]$GptWeights = "",      # optional repo-relative fine-tuned GPT .ckpt
+  [int]$TopK = 15,               # AR sampling: lower = more deterministic (kills stutter)
+  [double]$TopP = 1.0,
+  [double]$Temperature = 1.0,    # lower = steadier
+  [double]$RepetitionPenalty = 1.35,  # higher = fewer repeated tokens (the "free free" loop)
+  [string]$TextSplit = "cut5"
 )
 $ErrorActionPreference = "Continue"
 $ProgressPreference = "SilentlyContinue"
@@ -86,6 +91,8 @@ try {
     ref_audio_path = ($RefWav -replace '\\', '/')
     prompt_text = $RefText; prompt_lang = "en"
     media_type = "wav"; streaming_mode = $false
+    top_k = $TopK; top_p = $TopP; temperature = $Temperature
+    repetition_penalty = $RepetitionPenalty; text_split_method = $TextSplit
   } | ConvertTo-Json
   try {
     Invoke-WebRequest -UseBasicParsing -Uri "http://127.0.0.1:9880/tts" -Method Post -ContentType "application/json" `
