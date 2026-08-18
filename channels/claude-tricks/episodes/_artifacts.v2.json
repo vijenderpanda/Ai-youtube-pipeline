@@ -1,0 +1,14 @@
+{
+ "_note": "Metadata mirror for finalize_episode.py (title/tags/lines only). The FULL render config lives in EPISODES_V2['_artifacts'] in build_ep_v2.py, which shadows this JSON (build_ep_v2 checks the dict first). Post-pivot standalone tip #1 — the Artifacts short.",
+ "title": "I Built A Working App By Typing One Line 🤯",
+ "tags": "claude artifacts,build app with ai,no code,claude ai,ai for beginners,vibe coding,ai tools,ai tips",
+ "lines": [
+  "I typed one line — and Claude built me this working app. No code.",
+  "Empty chat, one sentence, a real app you can use. Watch.",
+  "In Claude, I type one line: build me a bill splitter.",
+  "A few seconds later, it's built — a real, working app.",
+  "Twelve hundred, split three ways — four hundred each. It just works.",
+  "That's Artifacts. Ask for a tool, and Claude builds the working thing, right there.",
+  "One line of plain English — and you've got a real, working app."
+ ]
+}
