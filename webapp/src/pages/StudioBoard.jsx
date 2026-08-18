@@ -389,8 +389,23 @@ export default function StudioBoard() {
     if (busy) return
     setBusy('preview')
     try {
-      await api.post({ action: 'queue_preview', calendar_id: calendarId })
-      show('Draft preview queued — a low-res stitch will render', 'ok')
+      // Two different pipelines wear the word "preview".
+      //   queue_preview   = STAGED draft stitch — needs assets plan_assets already
+      //                     made, and 409s "no assets staged for this calendar item
+      //                     yet" when there are none.
+      //   produce_preview = DIRECT monolithic build — the one that CREATES the
+      //                     assets, so it is the only valid move from the
+      //                     "Confirm the format" step, where total assets is 0.
+      // Picking by asset count (not by mode alone) keeps the staged draft-preview
+      // behaviour intact once a staged item has assets to stitch.
+      const fresh = (counts.total || 0) === 0
+      if (fresh) {
+        await api.post({ action: 'produce_preview', calendar_id: calendarId })
+        show('Producing — the draft renders with this cast', 'ok')
+      } else {
+        await api.post({ action: 'queue_preview', calendar_id: calendarId })
+        show('Draft preview queued — a low-res stitch will render', 'ok')
+      }
       boardQ.refresh()
     } catch (e) {
       show(e.message, 'error')
