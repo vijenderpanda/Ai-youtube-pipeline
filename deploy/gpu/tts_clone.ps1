@@ -12,7 +12,9 @@ param(
   [string]$RefUrl,
   [string]$RefText,
   [string]$Text,
-  [string]$Tag = "clone"
+  [string]$Tag = "clone",
+  [string]$SovitsWeights = "",   # optional repo-relative fine-tuned SoVITS .pth
+  [string]$GptWeights = ""       # optional repo-relative fine-tuned GPT .ckpt
 )
 $ErrorActionPreference = "Continue"
 $ProgressPreference = "SilentlyContinue"
@@ -64,7 +66,20 @@ try {
   }
   if ($srv.HasExited) { Die ("api_v2.py exited early (code " + $srv.ExitCode + "). stderr tail:`n" + (ErrTail)) }
   if (-not $ready) { Die ("api server did not open port 9880 within ~180s. stderr tail:`n" + (ErrTail)) }
-  Say "server up; cloning..."
+  Say "server up."
+
+  # hot-swap fine-tuned weights (SoVITS FIRST -- it re-inits the pipeline version)
+  if ($SovitsWeights) {
+    Say "loading fine-tuned SoVITS: $SovitsWeights"
+    try { Invoke-WebRequest -Uri ("http://127.0.0.1:9880/set_sovits_weights?weights_path=" + [uri]::EscapeDataString($SovitsWeights)) -TimeoutSec 120 | Out-Null }
+    catch { Die ("set_sovits_weights failed: " + $_.Exception.Message + "`nstderr tail:`n" + (ErrTail)) }
+  }
+  if ($GptWeights) {
+    Say "loading fine-tuned GPT: $GptWeights"
+    try { Invoke-WebRequest -Uri ("http://127.0.0.1:9880/set_gpt_weights?weights_path=" + [uri]::EscapeDataString($GptWeights)) -TimeoutSec 120 | Out-Null }
+    catch { Die ("set_gpt_weights failed: " + $_.Exception.Message + "`nstderr tail:`n" + (ErrTail)) }
+  }
+  Say "cloning..."
 
   $body = @{
     text = $Text; text_lang = "en"
