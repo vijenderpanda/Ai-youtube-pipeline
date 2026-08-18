@@ -88,6 +88,18 @@ function fmtTokens(n) {
   return String(n)
 }
 
+// When the Claude cap resets (from meta.usage.reset_at). Returns null if there's
+// no reset time or it's already in the past (worker is healthy again).
+function fmtResetAt(iso) {
+  if (!iso) return null
+  const ms = new Date(iso).getTime() - Date.now()
+  if (!(ms > 0)) return null
+  const mins = Math.round(ms / 60000)
+  const rel = mins < 60 ? `~${mins}m` : `~${Math.floor(mins / 60)}h ${mins % 60}m`
+  const clock = new Date(iso).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+  return { rel, clock }
+}
+
 /**
  * v17: the worker-side usage rollup (factory_workers.meta.usage) — real Claude
  * spend + token totals summed over this worker's jobs inside the subscription's
@@ -118,10 +130,23 @@ function UsageStrip({ meta }) {
         {fmtTokens(u.input_tokens)} in / {fmtTokens(u.output_tokens)} out
       </span>
       {u.rate_limited ? (
-        <span className="chip" title="A recent job failed on a Claude usage/rate cap — AI jobs will stall until the window rolls; native jobs (stats, scripts) keep running"
-          style={{ background: '#ef444422', color: '#ef4444', fontWeight: 700 }}>
-          RATE LIMITED
-        </span>
+        (() => {
+          const r = fmtResetAt(u.reset_at)
+          return (
+            <>
+              <span className="chip" title="A recent job failed on a Claude usage/rate cap — AI jobs will stall until the cap resets; native jobs (stats, scripts) keep running"
+                style={{ background: '#ef444422', color: '#ef4444', fontWeight: 700 }}>
+                RATE LIMITED
+              </span>
+              <span style={{ color: '#f59e0b', fontWeight: 600 }}
+                title={u.reset_at ? `AI jobs resume at ${new Date(u.reset_at).toLocaleString()}` : undefined}>
+                {r
+                  ? <>🟠 AI jobs resume in <strong>{r.rel}</strong> (~{r.clock})</>
+                  : <>🟠 AI jobs resume when the {u.window_h}h cap resets</>}
+              </span>
+            </>
+          )
+        })()
       ) : (
         <span className="chip" style={{ background: '#22c55e18', color: '#22c55e' }}>ok</span>
       )}

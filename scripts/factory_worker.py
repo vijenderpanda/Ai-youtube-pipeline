@@ -526,6 +526,22 @@ def _worker_meta(usage=None):
 # heartbeat costs at most one factory_jobs query per USAGE_REFRESH_S.
 _usage_cache = {"at": 0.0, "val": None}
 
+# Claude Code prints "Claude AI usage limit reached|<unix_epoch>" when the
+# subscription's rolling cap is hit; the number is WHEN it resets. Pull it out of
+# the stored job error so the dashboard can say "healthy again <time>" instead of
+# an open-ended "RATE LIMITED".
+_RATE_RESET_RE = re.compile(r"limit reached\s*\|\s*(\d{9,13})", re.I)
+
+
+def parse_rate_reset(text):
+    """Reset time (unix epoch SECONDS) embedded in a Claude usage-limit error, or
+    None. Tolerates the epoch being reported in seconds or milliseconds."""
+    m = _RATE_RESET_RE.search(text or "")
+    if not m:
+        return None
+    val = int(m.group(1))
+    return val // 1000 if val > 1_000_000_000_000 else val
+
 
 def usage_rollup(supa):
     """Near-real-time usage snapshot for this worker's status row.
@@ -548,7 +564,7 @@ def usage_rollup(supa):
              ).strftime("%Y-%m-%dT%H:%M:%SZ")
     out = {"window_h": USAGE_WINDOW_H, "since": since, "jobs": 0,
            "cost_usd": 0.0, "input_tokens": 0, "output_tokens": 0,
-           "rate_limited": False, "at": now_iso()}
+           "rate_limited": False, "reset_at": None, "at": now_iso()}
     try:
         # factory_jobs carries the claimer in assigned_worker (there is no
         # worker_id column on jobs — that name lives on factory_workers).
@@ -559,6 +575,8 @@ def usage_rollup(supa):
     except (RuntimeError, requests.RequestException) as e:
         log(f"usage rollup query failed (keeping last value): {e}", level="warn")
         return _usage_cache["val"]  # keep last good value; retry next heartbeat
+    matched_limit = False
+    reset_epoch = 0
     for r in rows or []:
         u = (r.get("result") or {}).get("usage") or {}
         try:
@@ -568,11 +586,26 @@ def usage_rollup(supa):
         except (TypeError, ValueError):
             pass
         out["jobs"] += 1
-        err = (r.get("error") or "").lower()
+        err_raw = r.get("error") or ""
+        err = err_raw.lower()
         if r.get("status") == "failed" and any(s in err for s in
                                                 ("rate limit", "usage limit", "429")):
-            out["rate_limited"] = True
+            matched_limit = True
+            ep = parse_rate_reset(err_raw)
+            if ep and ep > reset_epoch:
+                reset_epoch = ep
     out["cost_usd"] = round(out["cost_usd"], 4)
+    if matched_limit:
+        if reset_epoch:
+            out["reset_at"] = datetime.fromtimestamp(
+                reset_epoch, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            # Self-clearing: a reset time already in the past means the rolling
+            # window rolled and AI jobs work again -- even though the failed row
+            # is still inside the reporting window and would otherwise keep the
+            # tripwire stuck on for USAGE_WINDOW_H.
+            out["rate_limited"] = reset_epoch > now
+        else:
+            out["rate_limited"] = True  # capped, but the CLI gave no reset epoch
     _usage_cache.update(at=now, val=out)
     return out
 
