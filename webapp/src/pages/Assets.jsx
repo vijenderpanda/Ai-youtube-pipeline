@@ -65,6 +65,7 @@ export default function Assets() {
   const q = usePoll(() => api.get('?r=assets&channel=' + CHANNEL_KEY), 15000)
   const { toast, show } = useToast()
   const [busy, setBusy] = useState(null)
+  const [expanded, setExpanded] = useState({}) // asset_type -> show full history
 
   const versions = (q.data && q.data.versions) || []
   const locks = (q.data && q.data.locks) || []
@@ -169,13 +170,14 @@ export default function Assets() {
                 <div className="studio-card-body">
                   <div className="studio-card-title">{assetLabel(type)}</div>
                   <div className="studio-card-sub">
-                    {locked && lock && lock.locked_at ? (
+                    {locked && lock && lock.locked_at && (
                       <span className="dim small">locked since {fmtDate(lock.locked_at)}</span>
-                    ) : (
-                      <span className="dim small">Reference only — not resolved at build</span>
                     )}
                     <span className={'chip frame-wiring frame-wiring-' + wiring}>
                       {WIRING_NOTE[wiring]}
+                    </span>
+                    <span className="dim small">
+                      {vers.length} revision{vers.length > 1 ? 's' : ''}
                     </span>
                   </div>
                   {!hasCover(kind) && buildRef && (
@@ -183,44 +185,49 @@ export default function Assets() {
                   )}
                   {head && head.label && <div className="dim small">{head.label}</div>}
 
-                  {/* Version rail — one chip per revision of this slot */}
+                  {/* Version rail — the chip IS the control: click a revision to
+                      make it the locked one. Long histories collapse behind a
+                      "+N older" toggle so an 18-revision slot stays readable. */}
                   <div className="asset-rail">
-                    {vers.map((v) => {
+                    {(expanded[type] ? vers : vers.slice(0, 6)).map((v) => {
                       const isLocked = locked && v.id === locked.id
                       const ref = v.meta && v.meta.build_ref
                       const working = busy === v.id
-                      const unlocking = busy === 'unlock:' + type
+                      const retired = v.status === 'retired'
                       return (
-                        <span key={v.id} className="asset-ver">
-                          <span
-                            className={'chip' + (isLocked ? ' asset-locked' : '')}
-                            title={ref ? 'build ' + ref : v.status}
-                          >
-                            v{v.version}
-                            {isLocked && <span className="asset-locked-tag">LOCKED</span>}
-                          </span>
-                          {isLocked ? (
-                            <button
-                              type="button"
-                              className="btn btn-ghost btn-xs"
-                              disabled={unlocking}
-                              onClick={() => setLock(type, null)}
-                            >
-                              {unlocking ? '…' : 'Unlock'}
-                            </button>
-                          ) : (
-                            <button
-                              type="button"
-                              className="btn btn-ghost btn-xs"
-                              disabled={working}
-                              onClick={() => setLock(type, v.id)}
-                            >
-                              {working ? '…' : 'Lock'}
-                            </button>
-                          )}
-                        </span>
+                        <button
+                          key={v.id}
+                          type="button"
+                          className={
+                            'chip asset-ver-chip' +
+                            (isLocked ? ' asset-locked' : '') +
+                            (retired ? ' asset-retired' : '')
+                          }
+                          disabled={working}
+                          title={
+                            isLocked
+                              ? 'Locked — click to unlock' + (ref ? ' · build ' + ref : '')
+                              : 'Make v' + v.version + ' the locked revision' +
+                                (ref ? ' · build ' + ref : '')
+                          }
+                          onClick={() => setLock(type, isLocked ? null : v.id)}
+                        >
+                          {working ? '…' : 'v' + v.version}
+                          {isLocked && <span className="asset-locked-tag">LOCKED</span>}
+                        </button>
                       )
                     })}
+                    {vers.length > 6 && (
+                      <button
+                        type="button"
+                        className="chip asset-more"
+                        onClick={() =>
+                          setExpanded((e) => ({ ...e, [type]: !e[type] }))
+                        }
+                      >
+                        {expanded[type] ? 'show less' : `+${vers.length - 6} older`}
+                      </button>
+                    )}
                   </div>
                   {lineage && <div className="asset-lineage">{lineage}</div>}
                 </div>

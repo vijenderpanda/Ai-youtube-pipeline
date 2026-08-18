@@ -6351,3 +6351,16 @@ a.out-chip:hover {
   border: 1px solid color-mix(in srgb, var(--champagne, #D8C08A) 25%, transparent);
   padding: 3px 8px; border-radius: 6px;
 }
+
+/* ---- Asset rail: the chip IS the lock control (no twin buttons) ----------- */
+.asset-ver-chip { cursor: pointer; border-color: var(--border, #2A2A36); }
+.asset-ver-chip:hover:not(:disabled) {
+  border-color: var(--champagne, #D8C08A);
+  color: var(--champagne, #D8C08A);
+}
+.asset-ver-chip:disabled { opacity: .5; cursor: default; }
+.asset-ver-chip.asset-retired { opacity: .45; text-decoration: line-through; }
+.asset-more { cursor: pointer; color: var(--faint, #6B7280); }
+.asset-more:hover { color: var(--champagne, #D8C08A); }
+/* wide brand art (banners/wordmarks) should fit, not crop to a slice */
+.studio-cover img { object-fit: cover; object-position: center; }
