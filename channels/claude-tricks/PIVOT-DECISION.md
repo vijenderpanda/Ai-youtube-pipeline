@@ -191,6 +191,12 @@ The critic's 5 residual risks (judgment calls that survive the fixes):
 2. **Is HeyGen funded?** (wallet balance for the Sol render.)
 
 > **Status at session end:** both preflights were **about to run — not found completed in transcript** (last event 2026-08-18 ~03:39 UTC / ~09:09 IST, right after the pipeline was understood). Render *readiness* was confirmed earlier: **T5 SSD mounted** (9.2G media + host library), ElevenLabs + HeyGen keys in `.env`, `token_claude-tricks.json` present, Remotion `node_modules` + Anton font local. The only open unknowns were the two spend/login-gated preflights above.
+>
+> **Preflight update (2026-08-18, recovery session — both now CLEARED):**
+> 1. **Artifacts recordable — ✅ AVAILABLE.** `python3 scripts/record_demo.py --site claude --preflight` (headless, read-only, no prompt sent) returned `state: AVAILABLE`, `logged_in: true`, exit 0; the claude.ai left-nav body includes the **Artifacts** entry, so the feature is reachable in the recorder profile. ⚠️ The probe body + screenshot exposed real chat titles and account context → **redact recents / account name on the actual tape** (critic fix #9 / Playbook §10b).
+> 2. **HeyGen funded — ✅.** `/v2/user/remaining_quota` = **811 api credits** + free-tier credits; per `heygen-account-constraints` memory auto_reload was ON (Aug 5) — eyeball the dashboard before the Sol render so a failed reload can't kill it mid-run.
+>
+> → **Clear to capture the three `rec:` clips.** The next step (`record_demo.py --site claude --prompt …`) SENDS the one-line prompt to the live logged-in account and starts the production/spend chain → awaiting VJ go (ARM SWITCH still applies).
 
 **Serialized Build Club hold state (executed this session):**
 - **bc02** "…CHEAPEST Model — Build Club Ch. 2" (`sM6I7bsKHu8`) was **silently auto-scheduled to publish Aug 18 16:00 IST** (`publishAt 2026-08-18T10:30:00Z`). **HELD private** via the new **`scripts/yt_unschedule.py`** (reversible; publishAt cleared; verified with a fresh read after a read-after-write cache scare). It will **not** auto-publish.
