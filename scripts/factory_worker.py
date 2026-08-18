@@ -515,12 +515,33 @@ def detect_gpu():
         return None
 
 
+# v19: surface the worker's checked-out commit in its status row, so operators
+# (and a re-enqueue gate) can see exactly which code a worker runs and confirm an
+# auto-update landed before dispatching version-sensitive jobs. Cached ~60s.
+_git_sha_cache = {"at": 0.0, "val": None}
+
+
+def _worker_git_sha():
+    """Short HEAD sha of the worker's checkout (cached), '' on any git error."""
+    now = time.time()
+    if _git_sha_cache["val"] is not None and now - _git_sha_cache["at"] < 60:
+        return _git_sha_cache["val"]
+    try:
+        rc, out, _ = _git(["rev-parse", "--short", "HEAD"], timeout=15)
+        val = out if rc == 0 else ""
+    except (OSError, subprocess.SubprocessError):
+        val = ""
+    _git_sha_cache.update(at=now, val=val)
+    return val
+
+
 def _worker_meta(usage=None, resources=None):
     """The factory_workers.meta JSONB payload. Static host facts always; the v17
     usage rollup and v18 resource-health snapshot folded in when present. Rebuilt
     whole on every write so a heartbeat that adds meta.usage/meta.resources never
     clobbers python/platform (patch replaces the JSONB column, not deep-merges it)."""
-    m = {"python": platform.python_version(), "platform": platform.platform()}
+    m = {"python": platform.python_version(), "platform": platform.platform(),
+         "git": _worker_git_sha()}
     if usage is not None:
         m["usage"] = usage
     if resources is not None:
