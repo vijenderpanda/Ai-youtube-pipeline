@@ -1282,6 +1282,57 @@ def outro_fc(pre, fst, ratio=None, gain_db=None):
             "alimiter=limit=0.95,apad[oa];"
             "[0:v][0:a][ov][oa]concat=n=2:v=1:a=1[v][a]")
 
+# --- Studio asset-lock resolution (docs/STUDIO-ASSET-VERSIONING.md Phase 2) ---------
+# Root-cause fix for the 2026-08-18 stale-outro bug: resolve a reusable asset from its
+# LOCKED version instead of a silent hardcoded fallback. None-safe by design — any failure
+# (no env, table absent, offline) returns None so today's literal default is used unchanged.
+_LOCK_CFG_KEY = {"music_bed": "music", "outro_sting": "outro_src",
+                 "hook_image": None, "host_outfit": None, "remotion_comp": None}
+_LOCK_CACHE = None
+
+
+def _lock_lookup(ch, asset_type):
+    """meta.build_ref of the LOCKED version for (ch, asset_type), else None. One batched
+    read, cached per process. Never raises."""
+    global _LOCK_CACHE
+    if _LOCK_CACHE is None:
+        _LOCK_CACHE = {}
+        try:
+            _scripts = os.path.join(REPO, "scripts")
+            if _scripts not in sys.path:
+                sys.path.insert(0, _scripts)
+            import factory_worker as fw
+            env = fw.load_env()
+            supa = fw.Supa(env["SUPABASE_URL"], env["SUPABASE_SERVICE_KEY"])
+            locks = supa.select("factory_asset_locks",
+                                f"channel_key=eq.{ch}&select=asset_type,locked_version_id")
+            ids = [l["locked_version_id"] for l in locks if l.get("locked_version_id")]
+            if ids:
+                vers = supa.select("factory_asset_versions",
+                                   f"id=in.({','.join(ids)})&select=id,asset_type,meta")
+                bref = {v["id"]: (v.get("meta") or {}).get("build_ref") for v in vers}
+                for l in locks:
+                    ref = bref.get(l.get("locked_version_id"))
+                    if ref:
+                        _LOCK_CACHE[l["asset_type"]] = ref
+            print(f">> asset locks resolved: {_LOCK_CACHE}")
+        except Exception as e:
+            print(f"!! asset-lock lookup unavailable ({e}); using built-in defaults")
+    return _LOCK_CACHE.get(asset_type)
+
+
+def resolve_locked(asset_type, default, ch="claude-tricks", cfg=None):
+    """Precedence: per-episode cfg override > channel lock row > built-in default.
+    Returns a value in the SAME namespace as `default` (assets-relative path or bare id)."""
+    key = _LOCK_CFG_KEY.get(asset_type)
+    if cfg is not None and key:
+        ov = cfg.get(key)
+        if ov is not None:
+            return ov
+    locked = _lock_lookup(ch, asset_type)
+    return locked if locked is not None else default
+
+
 def build(ep, dry=False, tag="v2", preview=False, calendar_id=None):
     """tag = the render stem (ep<NN>_<tag>{,_raw,_outro}.mp4). Defaults to the
     historical "v2"; pass another (e.g. "v3") to cut a REVISION without
@@ -1372,7 +1423,8 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None):
     # is ONLY for the small pipCallout box; feeding it to the host letterboxes +
     # over-crops the face (the Ep32 regression this fixes). `framed_tid` = the
     # wide avatar for host beats; `tid` stays the pip for the small box.
-    _o11 = os.path.join(CH, "assets", "character", "host_library", "outfit_11_sol_magenta")
+    _o11 = os.path.join(CH, "assets",
+                        resolve_locked("host_outfit", "character/host_library/outfit_11_sol_magenta"))
     _o11_pip = os.path.join(_o11, ".heygen_photo_id_pip")
     _o11_wide = os.path.join(_o11, ".heygen_photo_id_wide")
     framed_tid = open(_o11_wide).read().strip() if os.path.exists(_o11_wide) else None
@@ -1523,8 +1575,7 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None):
     # is cut from the master-VO slice AND lipsync-corrected (same path as the
     # full-frame host clips). This fixes the desync from the earlier hand-rolled
     # wide clips. Uses the WIDE photo-avatar (16:9 via generate(aspect=...)).
-    _wide_id = os.path.join(CH, "assets", "character", "host_library",
-                            "outfit_11_sol_magenta", ".heygen_photo_id_wide")
+    _wide_id = _o11_wide  # reuse the lock-resolved outfit so splitWide beats track the same host lock
     WIDE_TID = open(_wide_id).read().strip() if os.path.exists(_wide_id) else None
     wpip_by_pid = {}
     if not news_split and WIDE_TID:
@@ -1833,7 +1884,8 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None):
         # v16.2: per-episode outro override (cfg["outro_src"], relative to assets/)
         # so premium episodes can use a stronger question-CTA card instead of the
         # shared subscribe/comment sting.
-        outro = os.path.join(CH, "assets", cfg.get("outro_src", "outro/outro_sub_comment.mp4"))
+        outro = os.path.join(CH, "assets",
+                             resolve_locked("outro_sting", "outro/outro_sub_comment.mp4", cfg=cfg))
         out2 = os.path.join(R, f"ep{ep}_{tag}_outro.mp4")
         # `outro_dur` trims the sting (the asset itself is never re-rendered —
         # §15 bookends hygiene keeps it a shared branding asset). Needed when the
