@@ -180,6 +180,10 @@ LOG_PUSH_MAX = 30  # max log lines to push per heartbeat (newest first)
 # summed over the subscription's rolling window, plus a rate_limited tripwire.
 USAGE_WINDOW_H = 5  # Claude subscription rolling window; report spend/tokens within it
 USAGE_REFRESH_S = 120  # throttle the factory_jobs rollup query (meta still writes every HB)
+# v18: machine resource-health (GPU/CPU/RAM/disk) surfaced in factory_workers.meta
+# .resources (dashboard Machines page). Best-effort + throttled: nvidia-smi is
+# spawned at most once per RESOURCES_REFRESH_S even though meta writes every HB.
+RESOURCES_REFRESH_S = 15  # throttle the resource-health snapshot (esp. nvidia-smi)
 STOP_GRACE_S = 5  # v7: SIGTERM -> this many seconds -> SIGKILL (whole process group)
 LOG_CAP_BYTES = 200_000
 JOB_TIMEOUT_S = 45 * 60
@@ -511,14 +515,16 @@ def detect_gpu():
         return None
 
 
-def _worker_meta(usage=None):
+def _worker_meta(usage=None, resources=None):
     """The factory_workers.meta JSONB payload. Static host facts always; the v17
-    usage rollup folded in when present. Rebuilt whole on every write so a
-    heartbeat that adds meta.usage never clobbers python/platform (patch replaces
-    the JSONB column, not deep-merges it)."""
+    usage rollup and v18 resource-health snapshot folded in when present. Rebuilt
+    whole on every write so a heartbeat that adds meta.usage/meta.resources never
+    clobbers python/platform (patch replaces the JSONB column, not deep-merges it)."""
     m = {"python": platform.python_version(), "platform": platform.platform()}
     if usage is not None:
         m["usage"] = usage
+    if resources is not None:
+        m["resources"] = resources
     return m
 
 
@@ -646,6 +652,116 @@ def usage_rollup(supa):
     return out
 
 
+# v18: cache the resource-health snapshot so writing meta.resources on every ~20s
+# heartbeat spawns nvidia-smi at most once per RESOURCES_REFRESH_S.
+_resources_cache = {"at": 0.0, "val": None}
+
+
+def _gpu_snapshot():
+    """NVIDIA GPU health via nvidia-smi -> {name, util_pct, mem_used_mb,
+    mem_total_mb, temp_c, power_w}, or None when there's no nvidia-smi / no GPU.
+    Same shell-out approach as detect_gpu; never raises (returns None on any error).
+    Individual fields are None when nvidia-smi reports them as [N/A] (common for
+    temp/power on laptop or virtualised GPUs)."""
+    try:
+        exe = shutil.which("nvidia-smi")
+        if not exe:
+            return None
+        out = subprocess.run(
+            [exe, "--query-gpu=name,utilization.gpu,memory.used,memory.total,"
+             "temperature.gpu,power.draw", "--format=csv,noheader,nounits"],
+            capture_output=True, text=True, timeout=10)
+        lines = [ln for ln in (out.stdout or "").strip().splitlines() if ln.strip()]
+        if not lines:
+            return None
+        parts = [p.strip() for p in lines[0].split(",")]
+
+        def _num(i, cast):
+            try:
+                v = parts[i]
+            except IndexError:
+                return None
+            if v in ("", "[N/A]", "N/A", "[Not Supported]", "[Unknown Error]"):
+                return None
+            try:
+                return cast(v)
+            except (TypeError, ValueError):
+                return None
+
+        name = parts[0] if parts and parts[0] else None
+        return {
+            "name": name,
+            "util_pct": _num(1, int),
+            "mem_used_mb": _num(2, int),
+            "mem_total_mb": _num(3, int),
+            "temp_c": _num(4, int),
+            "power_w": _num(5, float),
+        }
+    except (OSError, subprocess.SubprocessError):
+        return None
+
+
+def resources_snapshot():
+    """Best-effort machine resource-health snapshot for factory_workers.meta
+    .resources (dashboard Machines page). Every field is independently optional and
+    NOTHING here ever raises -- any probe that fails is simply omitted:
+
+      gpu   {name, util_pct, mem_used_mb, mem_total_mb, temp_c, power_w} | None
+      disk  {used_gb, total_gb}          (repo volume, via shutil.disk_usage)
+      cpu   {cores, pct?}                (cores always; pct only if psutil present)
+      ram   {used_gb, total_gb}          (only if psutil present)
+      at    ISO timestamp
+
+    psutil is optional on purpose: workers do not re-pip on auto-upgrade, so CPU%
+    and RAM gracefully drop out while GPU + disk + cores still populate. Throttled +
+    cached so the ~20s heartbeat spawns nvidia-smi at most once per
+    RESOURCES_REFRESH_S; returns the last good value between refreshes."""
+    now = time.time()
+    cached = _resources_cache["val"]
+    if cached is not None and now - _resources_cache["at"] < RESOURCES_REFRESH_S:
+        return cached
+    out = {"at": now_iso()}
+    try:
+        # GPU: the key is written even when None so the UI can hide the row.
+        out["gpu"] = _gpu_snapshot()
+        # Disk usage of the repo's volume (round to 1 decimal GiB).
+        try:
+            du = shutil.disk_usage(str(REPO))
+            out["disk"] = {"used_gb": round(du.used / (1024 ** 3), 1),
+                           "total_gb": round(du.total / (1024 ** 3), 1)}
+        except OSError:
+            pass
+        # CPU cores always (stdlib); percent + RAM only when psutil imports.
+        cpu = {}
+        cores = os.cpu_count()
+        if cores:
+            cpu["cores"] = int(cores)
+        try:
+            import psutil  # optional -- absent on auto-upgraded workers
+        except ImportError:
+            psutil = None
+        if psutil is not None:
+            try:
+                cpu["pct"] = round(float(psutil.cpu_percent()), 1)
+            except Exception:
+                pass
+            try:
+                vm = psutil.virtual_memory()
+                out["ram"] = {"used_gb": round(vm.used / (1024 ** 3), 1),
+                              "total_gb": round(vm.total / (1024 ** 3), 1)}
+            except Exception:
+                pass
+        if cpu:
+            out["cpu"] = cpu
+    except Exception:
+        # Truly best-effort: on any unexpected failure keep the last good value if
+        # we have one, else return whatever partial dict we built.
+        if cached is not None:
+            return cached
+    _resources_cache.update(at=now, val=out)
+    return out
+
+
 def register_worker(supa, max_parallel):
     """Upsert this machine's row in factory_workers. Preserves dashboard-owned
     fields (paused, accept_types, name) on re-registration by NOT overwriting them
@@ -678,8 +794,9 @@ def worker_heartbeat(supa):
     On ANY error returns (False, None) so a heartbeat hiccup never stalls claiming."""
     patch = {"last_seen": now_iso()}
     usage = usage_rollup(supa)  # v17: near-real-time spend/token rollup (throttled)
-    if usage is not None:
-        patch["meta"] = _worker_meta(usage)
+    resources = resources_snapshot()  # v18: GPU/CPU/RAM/disk health (throttled)
+    if usage is not None or resources is not None:
+        patch["meta"] = _worker_meta(usage, resources)
     try:
         rows = supa.patch_returning("factory_workers", f"worker_id=eq.{WORKER_ID}",
                                     patch, select="paused,accept_types")

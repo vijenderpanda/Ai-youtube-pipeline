@@ -6,3 +6,8 @@ google-auth-oauthlib
 # Image pipeline (thumbnails / channel art)
 Pillow
 requests
+
+# Worker resource-health snapshot (factory_workers.meta.resources -> Machines page).
+# OPTIONAL: the worker fully populates GPU/disk/CPU-cores without it; psutil only
+# adds live CPU% and RAM. Workers do not re-pip on auto-upgrade, so absence is safe.
+psutil
