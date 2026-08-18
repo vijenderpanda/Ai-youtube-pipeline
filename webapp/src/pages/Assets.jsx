@@ -2,76 +2,90 @@ import { useMemo, useState } from 'react'
 import { api } from '../api'
 import { RENDERS_BASE } from '../config'
 import { usePoll } from '../hooks'
-import { accentFor, resolveAccents, channelEmoji, channelMonogram } from '../channelColor'
+import { accentFor, resolveAccents } from '../channelColor'
+import {
+  assetLabel,
+  wiringOf,
+  kindOf,
+  hasCover,
+  isImagePath,
+  lineageOf,
+} from '../assetCatalog'
 import EmptyState from '../components/EmptyState'
 import Toast, { useToast } from '../components/Toast'
 import { fmtDate } from '../format'
 
 /**
- * Assets — Studio brand-asset board (docs/STUDIO-ASSET-VERSIONING.md, Phase 1).
- * One card per asset_type: the LOCKED version shown large (cover + label +
- * "locked since"), with a version rail + lineage beneath. Lock/unlock a version
- * straight from the board (writes factory_asset_locks via the lock_asset action).
+ * Assets — Studio brand-asset board (docs/STUDIO-ASSET-VERSIONING.md).
+ * One card per SLOT (asset_type); its versions are the interchangeable
+ * revisions. factory_asset_locks is the ONLY authority on what is locked —
+ * it is what build_ep_v2._lock_lookup() actually reads, so the board cannot
+ * claim a lock the renderer would not honour.
  *
- * Mirrors Studio.jsx's scaffold (page shell, studio-grid, card/studio-card,
- * cover + fallback glyph, EmptyState, loading). Scoped to claude-tricks — the
- * only channel with registered assets today.
+ * Visual treatment is per kind: image/video/audio get a cover band (an <img>
+ * only when the path is genuinely decodable — an .mp3 is not), while
+ * code/id/style render body-only with a mono build_ref chip.
  */
 
 const CHANNEL_KEY = 'claude-tricks'
 
-// Human labels for known asset types (see the versioning spec §1); unknown
-// types fall back to a titleized key so new asset kinds still read cleanly.
-const ASSET_LABELS = {
-  outro_sting: 'Outro sting',
-  outro_card_gen: 'Outro card (per-episode)',
-  host_outfit: 'Host — Sol',
-  music_bed: 'Music bed',
-  remotion_comp: 'Remotion composition',
-  step_chip_style: 'Step chips',
-  hook_image: 'Hook image',
-  component_statbars: 'Component — StatBars',
-  component_outrocard: 'Component — OutroCard',
-  component_buildclub: 'Component — BuildClub',
+const WIRING_NOTE = {
+  live: 'Live in render',
+  locked: 'Locked · wiring next',
+  reference: 'Reference',
 }
-const titleize = (s) =>
-  String(s || '').replace(/[_-]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
-const assetLabel = (t) => ASSET_LABELS[t] || titleize(t)
 
-// Walk parent_version_id → "v3 ← v2 ← v1" (guards against cycles / missing parents).
-function lineageOf(v, byId) {
-  const chain = []
-  const seen = new Set()
-  let cur = v
-  while (cur && !seen.has(cur.id)) {
-    seen.add(cur.id)
-    chain.push('v' + cur.version)
-    cur = cur.parent_version_id ? byId[cur.parent_version_id] : null
+/** Cover content for a version, by kind. Never returns an <img> for audio. */
+function CoverInner({ type, v, kind }) {
+  const imgPath =
+    (isImagePath(v && v.thumb_path) && v.thumb_path) ||
+    (isImagePath(v && v.storage_path) && v.storage_path) ||
+    null
+  if (imgPath) {
+    return <img src={RENDERS_BASE + imgPath} alt="" loading="lazy" />
   }
-  return chain.join(' ← ')
+  if (kind === 'audio') {
+    // No artwork for a bed — draw its shape instead of breaking an <img>.
+    return (
+      <span className="asset-wave" aria-hidden="true">
+        {[9, 17, 25, 13, 22, 8, 19, 27, 12, 7, 20, 15].map((h, i) => (
+          <i key={i} style={{ height: h }} />
+        ))}
+      </span>
+    )
+  }
+  return (
+    <span className="studio-cover-glyph" aria-hidden="true">
+      {kind === 'video' ? '▶' : '🖼'}
+    </span>
+  )
 }
 
 export default function Assets() {
-  const q = usePoll(() => api.get('?r=assets'), 15000)
+  const q = usePoll(() => api.get('?r=assets&channel=' + CHANNEL_KEY), 15000)
   const { toast, show } = useToast()
-  const [busy, setBusy] = useState(null) // version_id currently being (un)locked
+  const [busy, setBusy] = useState(null)
 
   const versions = (q.data && q.data.versions) || []
   const locks = (q.data && q.data.locks) || []
-  const accent = useMemo(() => accentFor(CHANNEL_KEY, resolveAccents([])), [])
+  const chQ = usePoll(() => api.get('?r=channels'), 0)
+  const accents = useMemo(
+    () => resolveAccents((chQ.data && chQ.data.channels) || []),
+    [chQ.data],
+  )
+  const accent = accentFor(CHANNEL_KEY, accents)
 
-  // Lock row per asset_type (this channel only).
+  // locks is not channel-filtered server-side — keep the client filter.
   const lockByType = useMemo(() => {
     const m = {}
     for (const l of locks) if (l.channel_key === CHANNEL_KEY) m[l.asset_type] = l
     return m
   }, [locks])
 
-  // Group this channel's versions by asset_type (API already orders version desc).
   const groups = useMemo(() => {
-    const mine = versions.filter((v) => v.channel_key === CHANNEL_KEY)
     const byType = new Map()
-    for (const v of mine) {
+    for (const v of versions) {
+      if (v.channel_key !== CHANNEL_KEY) continue
       if (!byType.has(v.asset_type)) byType.set(v.asset_type, [])
       byType.get(v.asset_type).push(v)
     }
@@ -83,20 +97,24 @@ export default function Assets() {
   const setLock = async (asset_type, version_id) => {
     setBusy(version_id ?? 'unlock:' + asset_type)
     try {
-      await api.post({ action: 'lock_asset', channel_key: CHANNEL_KEY, asset_type, version_id })
+      await api.post({
+        action: 'lock_asset',
+        channel_key: CHANNEL_KEY,
+        asset_type,
+        version_id,
+      })
       await q.refresh()
-    } catch (err) {
-      show('Could not update lock: ' + err.message, 'error')
+    } catch (e) {
+      show(e.message || 'Could not change the lock')
     } finally {
       setBusy(null)
     }
   }
 
-  const emoji = channelEmoji(CHANNEL_KEY)
   const nothing = !q.loading && groups.length === 0
 
   return (
-    <div className="page">
+    <div className="page" style={{ '--ch': accent }}>
       <header className="page-head">
         <div>
           <h1>Assets</h1>
@@ -119,34 +137,34 @@ export default function Assets() {
             const byId = {}
             for (const v of vers) byId[v.id] = v
             const lock = lockByType[type]
+            // The lock table is the ONLY authority (matches build_ep_v2).
             const locked =
-              (lock && lock.locked_version_id && byId[lock.locked_version_id]) ||
-              vers.find((v) => v.status === 'locked') ||
-              null
+              (lock && lock.locked_version_id && byId[lock.locked_version_id]) || null
             const head = locked || vers[0]
-            const coverPath = locked && (locked.thumb_path || locked.storage_path)
-            const coverUrl = coverPath ? RENDERS_BASE + coverPath : null
+            const kind = kindOf(type, head)
+            const wiring = wiringOf(type)
+            const lineage = head ? lineageOf(head, byId) : ''
+            const buildRef = head && head.meta && head.meta.build_ref
 
             return (
               <div key={type} className="card studio-card" style={{ '--ch': accent }}>
-                <div className={'studio-cover' + (coverUrl ? '' : ' studio-cover-fallback')}>
-                  {coverUrl ? (
-                    <img src={coverUrl} alt="" loading="lazy" />
-                  ) : (
-                    <span className="studio-cover-glyph" aria-hidden="true">
-                      {emoji || channelMonogram(CHANNEL_KEY)}
+                {hasCover(kind) && (
+                  <div className="studio-cover">
+                    <CoverInner type={type} v={head} kind={kind} />
+                    <span className="studio-cover-chan">
+                      <span className="studio-cover-dot" />
+                      {assetLabel(type)}
                     </span>
-                  )}
-                  <span className="studio-cover-chan">
-                    <span className="studio-cover-dot" />
-                    {assetLabel(type)}
-                  </span>
-                  {locked ? (
-                    <span className="studio-cover-live">🔒 v{locked.version}</span>
-                  ) : (
-                    <span className="studio-cover-live">unlocked</span>
-                  )}
-                </div>
+                    {locked ? (
+                      <span className="studio-cover-live">
+                        🔒 v{locked.version}
+                        {wiring === 'live' && <b className="asset-live-tag">LIVE</b>}
+                      </span>
+                    ) : (
+                      <span className="studio-cover-live asset-ref">Reference only</span>
+                    )}
+                  </div>
+                )}
 
                 <div className="studio-card-body">
                   <div className="studio-card-title">{assetLabel(type)}</div>
@@ -154,29 +172,43 @@ export default function Assets() {
                     {locked && lock && lock.locked_at ? (
                       <span className="dim small">locked since {fmtDate(lock.locked_at)}</span>
                     ) : (
-                      <span className="dim small">no version locked</span>
+                      <span className="dim small">Reference only — not resolved at build</span>
                     )}
-                    {locked && locked.label && (
-                      <span className="dim small">· {locked.label}</span>
-                    )}
+                    <span className={'chip frame-wiring frame-wiring-' + wiring}>
+                      {WIRING_NOTE[wiring]}
+                    </span>
                   </div>
+                  {!hasCover(kind) && buildRef && (
+                    <div className="asset-buildref mono">{buildRef}</div>
+                  )}
+                  {head && head.label && <div className="dim small">{head.label}</div>}
 
-                  {/* Version rail — one chip per version; lineage caption beneath */}
+                  {/* Version rail — one chip per revision of this slot */}
                   <div className="asset-rail">
                     {vers.map((v) => {
                       const isLocked = locked && v.id === locked.id
-                      const buildRef = v.meta && v.meta.build_ref
+                      const ref = v.meta && v.meta.build_ref
                       const working = busy === v.id
+                      const unlocking = busy === 'unlock:' + type
                       return (
                         <span key={v.id} className="asset-ver">
                           <span
                             className={'chip' + (isLocked ? ' asset-locked' : '')}
-                            title={buildRef ? 'build ' + buildRef : v.status}
+                            title={ref ? 'build ' + ref : v.status}
                           >
                             v{v.version}
                             {isLocked && <span className="asset-locked-tag">LOCKED</span>}
                           </span>
-                          {!isLocked && (
+                          {isLocked ? (
+                            <button
+                              type="button"
+                              className="btn btn-ghost btn-xs"
+                              disabled={unlocking}
+                              onClick={() => setLock(type, null)}
+                            >
+                              {unlocking ? '…' : 'Unlock'}
+                            </button>
+                          ) : (
                             <button
                               type="button"
                               className="btn btn-ghost btn-xs"
@@ -190,9 +222,7 @@ export default function Assets() {
                       )
                     })}
                   </div>
-                  {head && (
-                    <div className="asset-lineage">{lineageOf(head, byId)}</div>
-                  )}
+                  {lineage && <div className="asset-lineage">{lineage}</div>}
                 </div>
               </div>
             )

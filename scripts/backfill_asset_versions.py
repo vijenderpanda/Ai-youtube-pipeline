@@ -54,7 +54,9 @@ def main():
             m["build_ref"] = bref
         rows.append({
             "channel_key": CH, "asset_type": atype, "version": 1, "label": label,
-            "storage_path": sp, "thumb_path": tp, "status": "locked", "source": "import",
+            "storage_path": sp, "thumb_path": tp, "source": "import",
+            # only the build-resolvable slots get a lock row, so only they are "locked"
+            "status": "locked" if atype in LOCKED_TYPES else "candidate",
             "meta": m,
         })
     supa.insert("factory_asset_versions", rows,

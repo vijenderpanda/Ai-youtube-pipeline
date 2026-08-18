@@ -6332,3 +6332,22 @@ a.out-chip:hover {
   font-size: 11.5px; font-weight: 600; color: var(--tone);
 }
 .sc-count { font-weight: 500; color: var(--faint, #6B7280); }
+
+/* ---- Asset board: per-kind treatment (Phase 0 fixes) ---------------------- */
+.asset-wave { display: flex; align-items: center; gap: 3px; height: 30px; }
+.asset-wave i {
+  display: block; width: 3px; border-radius: 2px;
+  background: var(--champagne, #D8C08A); opacity: .75;
+}
+.asset-live-tag {
+  margin-left: 5px; font-size: 8.5px; font-weight: 800; letter-spacing: .06em;
+  color: var(--green, #46D18A);
+}
+.studio-cover-live.asset-ref { color: var(--faint, #6B7280); font-weight: 600; }
+.asset-buildref {
+  display: inline-block; margin: 6px 0 2px; font-size: 11px;
+  color: var(--champagne, #D8C08A);
+  background: color-mix(in srgb, var(--champagne, #D8C08A) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--champagne, #D8C08A) 25%, transparent);
+  padding: 3px 8px; border-radius: 6px;
+}
