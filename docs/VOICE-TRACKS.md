@@ -41,8 +41,25 @@ python scripts/vo_render.py --channel claude-tricks --text "..." --out vo.wav [-
 3. Coordinate the flip (this is the "when we try the free track" moment): confirm the
    worker is up, do one test render, compare, then flip.
 
+## Image track (same pattern) — `image_track`
+Per-channel `factory_channels.meta.image_track` (template-overridable):
+
+| value | backend | cost | where |
+|---|---|---|---|
+| `leonardo` (default) | Leonardo (existing `leo_chrome.py` / generation MCP) | paid | Mac/Chrome |
+| `flux_local` | **FLUX.1-schnell** (GGUF) in ComfyUI on the RTX 3060 worker | **free** | `DESKTOP-DEIR7RS` |
+
+Entrypoint: `scripts/img_render.py --channel X --prompt "..." --out img.png [--track flux_local]`.
+`flux_local` dispatches a pinned `deploy/gpu/flux_gen.ps1` job (ComfyUI already installed
+at `%LOCALAPPDATA%\comfy`) and downloads the PNG. Caveat: FLUX-schnell can't render
+legible **text-in-image** — for text-heavy thumbnails keep `leonardo` or (future) add a
+Qwen-Image track. Everything else (hooks, b-roll, character stills) is thumbnail-grade.
+
 ## For the factory-app / template session
-Surface `voice_track` as a per-channel (and per-template) selector: **ElevenLabs
-(paid) · CosyVoice 2 (free · local)**. It only needs to write
-`factory_channels.meta.voice_track`; the pipeline side (`vo_render`) is already wired.
-Don't call ElevenLabs/CosyVoice directly from the app — go through the field.
+Surface **two** per-channel (and per-template) selectors:
+- `voice_track`: **ElevenLabs (paid) · CosyVoice 2 (free · local)**
+- `image_track`: **Leonardo (paid) · FLUX-schnell (free · local)**
+
+Each only writes `factory_channels.meta.{voice_track,image_track}`; the pipeline
+(`vo_render` / `img_render`) is already wired to honor them. Don't call the providers
+directly from the app — go through the fields so all sessions stay in sync.
