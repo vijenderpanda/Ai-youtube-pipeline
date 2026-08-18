@@ -6270,7 +6270,9 @@ a.out-chip:hover {
 
 /* ── Templates panel (Formats page) ── */
 .tpl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--s-3); }
-.tpl-card { padding: var(--s-4); display: flex; flex-direction: column; gap: 6px; }
+/* Flush cover band + padded body, mirroring .studio-card (the inner padding
+   lives on .studio-card-body). Was padded as a whole before covers landed. */
+.tpl-card { padding: 0; display: flex; flex-direction: column; }
 .tpl-card-top { display: flex; align-items: center; gap: 8px; }
 .tpl-badge { font-size: 15px; }
 .tpl-name { font-size: var(--fs-base); font-weight: 750; line-height: 1.3; }
