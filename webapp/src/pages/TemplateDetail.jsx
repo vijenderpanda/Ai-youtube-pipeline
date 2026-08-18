@@ -14,7 +14,9 @@ import {
   assetLabel,
   wiringOf,
   kindOf,
+  hasCover,
   isImagePath,
+  lineageOf,
   heygenHealth,
 } from '../assetCatalog'
 import EmptyState from '../components/EmptyState'
@@ -44,17 +46,6 @@ const WIRING_LABEL = {
 }
 
 // Walk parent_version_id → "v3 ← v2 ← v1" (guards against cycles / missing parents).
-function lineageOf(v, byId) {
-  const chain = []
-  const seen = new Set()
-  let cur = v
-  while (cur && !seen.has(cur.id)) {
-    seen.add(cur.id)
-    chain.push('v' + cur.version)
-    cur = cur.parent_version_id ? byId[cur.parent_version_id] : null
-  }
-  return chain.join(' ← ')
-}
 
 /** Thumb for one revision — an <img> only for a path an <img> can decode. */
 function SlotThumb({ type, v }) {
