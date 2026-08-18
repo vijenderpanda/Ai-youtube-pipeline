@@ -33,16 +33,17 @@ EPISODES_V2 = {
     "hook": {"image": "ep_artifacts/still_hero_rs400.png", "until": 2.2,
              "lines": ["I BUILT THIS", "BY TYPING ONE LINE"], "hot": "ONE"},
     "outro": True,
+    "outro_cta": "auto",   # Sol speaks the CTA over the card (approved treatment); line 7 is a loopback, not a CTA
     "lines": [
-      "This bill splitter actually works — and I wrote zero code. I just asked for it, in one line.",
+      "I typed one line — and Claude built me this working app. No code.",
       "Empty chat, one sentence, a real app you can use. Watch.",
       "In Claude, I type one line: build me a bill splitter.",
       "A few seconds later, it's built — a real, working app.",
       "Twelve hundred, split three ways — four hundred each. It just works.",
       "That's Artifacts. Ask for a tool, and Claude builds the working thing, right there.",
-      "Follow. I unpack one AI skill, every single day.",
+      "One line of plain English — and you've got a real, working app.",
     ],
-    "hot_words": ["WORKS", "ZERO", "CODE", "ASKED", "ONE", "LINE", "EMPTY",
+    "hot_words": ["TYPED", "CLAUDE", "BUILT", "ENGLISH", "WORKS", "ZERO", "CODE", "ASKED", "ONE", "LINE", "EMPTY",
                   "SENTENCE", "REAL", "APP", "WATCH", "TYPE", "BUILD", "SPLITTER",
                   "SECONDS", "BUILT", "WORKING", "TWELVE", "HUNDRED", "THREE",
                   "FOUR", "ARTIFACTS", "TOOL", "THING", "FOLLOW", "SKILL", "DAY"],
@@ -52,7 +53,7 @@ EPISODES_V2 = {
               "rec:ep_artifacts/hold_app.mp4@0.0",        # the working app — Rs400 (payoff)
               "host2", "host2"],
     "host_panels": [
-      {"lines": ["I WROTE", "ZERO CODE", "I JUST ASKED"]},
+      {"lines": ["I TYPED", "ONE LINE", "NO CODE"]},
       {"lines": ["EMPTY CHAT", "TO A WORKING", "APP — WATCH"]},
     ],
     "steps": [
