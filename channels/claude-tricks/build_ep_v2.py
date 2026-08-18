@@ -1291,6 +1291,19 @@ _LOCK_CFG_KEY = {"music_bed": "music", "outro_sting": "outro_src",
 _LOCK_CACHE = None
 
 
+def _supa():
+    """factory_worker.Supa client from the repo env. Callers ALWAYS wrap this in the
+    try that owns their never-raise contract — it is the exact statement sequence
+    _lock_lookup ran inline before Phase 4, lifted verbatim so the template layer
+    can reuse it without touching the lock path's behavior."""
+    _scripts = os.path.join(REPO, "scripts")
+    if _scripts not in sys.path:
+        sys.path.insert(0, _scripts)
+    import factory_worker as fw
+    env = fw.load_env()
+    return fw.Supa(env["SUPABASE_URL"], env["SUPABASE_SERVICE_KEY"])
+
+
 def _lock_lookup(ch, asset_type):
     """meta.build_ref of the LOCKED version for (ch, asset_type), else None. One batched
     read, cached per process. Never raises."""
@@ -1298,12 +1311,7 @@ def _lock_lookup(ch, asset_type):
     if _LOCK_CACHE is None:
         _LOCK_CACHE = {}
         try:
-            _scripts = os.path.join(REPO, "scripts")
-            if _scripts not in sys.path:
-                sys.path.insert(0, _scripts)
-            import factory_worker as fw
-            env = fw.load_env()
-            supa = fw.Supa(env["SUPABASE_URL"], env["SUPABASE_SERVICE_KEY"])
+            supa = _supa()
             locks = supa.select("factory_asset_locks",
                                 f"channel_key=eq.{ch}&select=asset_type,locked_version_id")
             ids = [l["locked_version_id"] for l in locks if l.get("locked_version_id")]
@@ -1321,19 +1329,99 @@ def _lock_lookup(ch, asset_type):
     return _LOCK_CACHE.get(asset_type)
 
 
+# --- Studio template-version composition (Phase 4) ---------------------------
+# Layered ABOVE the channel lock, BELOW the per-episode cfg override. Same
+# never-raise contract as _lock_lookup: any failure returns None and the older
+# layer wins, so no wiring / no env / no table == today's behavior exactly.
+_TPL_VERSION_ID = None   # bound once by build(); None = layer disabled
+_TPL_CACHE = None        # {asset_type: build_ref} from the frozen composition
+_TPL_INFO = {}
+
+
+def _bind_template_version(ch, explicit=None, cfg=None, calendar_id=None):
+    """Resolve WHICH template version this build runs with, first hit wins:
+      1. --template-version <uuid>            (explicit, an operator re-cut)
+      2. cfg["template_version"]              (a spec pins its own cast)
+      3. FACTORY_TEMPLATE_VERSION env         (worker/job override)
+      4. factory_calendar.template_version_id (the durable record, --calendar-id)
+      5. factory_channels.template -> factory_templates.active_version_id
+      6. None -> layer disabled, resolution is byte-for-byte today's.
+    Never raises."""
+    global _TPL_VERSION_ID
+    _TPL_VERSION_ID = explicit or (cfg or {}).get("template_version") \
+        or os.environ.get("FACTORY_TEMPLATE_VERSION") or None
+    if _TPL_VERSION_ID:
+        return _TPL_VERSION_ID
+    try:
+        supa = _supa()
+        if calendar_id:
+            rows = supa.select("factory_calendar",
+                               f"id=eq.{calendar_id}&select=template_version_id")
+            _TPL_VERSION_ID = (rows[0].get("template_version_id") if rows else None)
+        if not _TPL_VERSION_ID:
+            crow = supa.select("factory_channels", f"key=eq.{ch}&select=template")
+            tkey = crow[0].get("template") if crow else None
+            if tkey:
+                trow = supa.select("factory_templates",
+                                   f"key=eq.{tkey}&select=active_version_id")
+                _TPL_VERSION_ID = (trow[0].get("active_version_id") if trow else None)
+    except Exception as e:
+        print(f"!! template-version bind unavailable ({e}); using channel locks")
+        _TPL_VERSION_ID = None
+    return _TPL_VERSION_ID
+
+
+def _tpl_lookup(ch, asset_type):
+    """build_ref from the bound version's FROZEN composition, else None. One read,
+    cached per process. Never raises."""
+    global _TPL_CACHE
+    if _TPL_CACHE is None:
+        _TPL_CACHE = {}
+        if _TPL_VERSION_ID:
+            try:
+                rows = _supa().select(
+                    "factory_template_versions",
+                    f"id=eq.{_TPL_VERSION_ID}"
+                    "&select=template_key,channel_key,version,status,composition")
+                row = rows[0] if rows else None
+                # only a LOCKED version of THIS channel may drive a build — a draft cast
+                # is still being edited and must never leak into a render.
+                if row and row.get("status") == "locked" and row.get("channel_key") == ch:
+                    for atype, slot in (row.get("composition") or {}).items():
+                        ref = (slot or {}).get("build_ref")
+                        if ref:
+                            _TPL_CACHE[atype] = ref
+                    _TPL_INFO.update(template_key=row.get("template_key"),
+                                     version=row.get("version"), id=_TPL_VERSION_ID)
+                    print(f">> template version: {row.get('template_key')} "
+                          f"v{row.get('version')} -> {sorted(_TPL_CACHE)}")
+                elif row:
+                    print(f"!! template version {_TPL_VERSION_ID} is {row.get('status')} / "
+                          f"channel {row.get('channel_key')}; ignoring, using channel locks")
+                else:
+                    print(f"!! template version {_TPL_VERSION_ID} not found; using channel locks")
+            except Exception as e:
+                print(f"!! template composition unavailable ({e}); using channel locks")
+    return _TPL_CACHE.get(asset_type)
+
+
 def resolve_locked(asset_type, default, ch="claude-tricks", cfg=None):
-    """Precedence: per-episode cfg override > channel lock row > built-in default.
+    """Precedence: per-episode cfg override > bound template version's frozen
+    composition > channel lock row > built-in default.
     Returns a value in the SAME namespace as `default` (assets-relative path or bare id)."""
     key = _LOCK_CFG_KEY.get(asset_type)
     if cfg is not None and key:
         ov = cfg.get(key)
         if ov is not None:
             return ov
+    composed = _tpl_lookup(ch, asset_type)          # NEW layer (no-op when unbound)
+    if composed is not None:
+        return composed
     locked = _lock_lookup(ch, asset_type)
     return locked if locked is not None else default
 
 
-def build(ep, dry=False, tag="v2", preview=False, calendar_id=None):
+def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_version=None):
     """tag = the render stem (ep<NN>_<tag>{,_raw,_outro}.mp4). Defaults to the
     historical "v2"; pass another (e.g. "v3") to cut a REVISION without
     overwriting the shipped file, so old and new can be compared side by side.
@@ -1355,6 +1443,10 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None):
             raise KeyError(f"ep {ep!r} not in EPISODES_V2 and no fallback at {cfg_path}")
         with open(cfg_path) as f:
             cfg = json.load(f)
+    # Phase 4: bind the composed cast BEFORE the first resolve_locked() call.
+    # Never raises; None = layer disabled = today's channel-lock resolution.
+    _bind_template_version("claude-tricks", explicit=template_version,
+                           cfg=cfg, calendar_id=calendar_id)
     A = os.path.join(CH, "assets", f"ep{ep}"); os.makedirs(A, exist_ok=True)
     R = os.path.join(CH, "renders"); os.makedirs(R, exist_ok=True)
 
@@ -1450,6 +1542,14 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None):
         tid = tid_3q = open(CACHE).read().strip()
     if not framed_tid:
         framed_tid = tid   # fallback if the wide-avatar id file is missing
+    # Phase 4 provenance: WHICH composed cast produced this episode, on disk beside
+    # host_outfit.txt. "- v- (none)" means no template version drove the build.
+    try:
+        open(os.path.join(A, "template_version.txt"), "w").write(
+            f"{_TPL_INFO.get('template_key','-')} v{_TPL_INFO.get('version','-')} "
+            f"({_TPL_INFO.get('id','none')})\n")
+    except Exception as e:
+        print(f"!! could not write template_version.txt ({e})")
     def host_clip(name, t0, t1, photo=None, aspect="9:16"):
         wav = os.path.join(A, f"{name}.wav"); mp4 = os.path.join(A, f"{name}.mp4")
         # v16: also skip cache when FACTORY_REBUILD_HOSTS is set — lets a shell
@@ -1972,5 +2072,11 @@ if __name__ == "__main__":
                     help="this episode's factory_calendar row id — only used to "
                          "EXCLUDE it from the outro_cta next-episode tease lookup "
                          "(finalize_episode.py passes it through)")
+    ap.add_argument("--template-version",
+                    help="Phase 4: factory_template_versions.id of the composed CAST "
+                         "to render with. Only a status='locked' version of this "
+                         "channel is honoured; anything else (or omitted) falls "
+                         "through to the channel's factory_asset_locks")
     a = ap.parse_args()
-    build(a.ep, dry=a.dry, tag=a.tag, preview=a.preview, calendar_id=a.calendar_id)
+    build(a.ep, dry=a.dry, tag=a.tag, preview=a.preview, calendar_id=a.calendar_id,
+          template_version=a.template_version)

@@ -59,6 +59,52 @@ export const hasCover = (k) => k === 'image' || k === 'video' || k === 'audio'
 /** True only for a path an <img> can actually decode (an .mp3 cannot). */
 export const isImagePath = (p) => !!p && mediaKind('', p) === 'image'
 
+/**
+ * HeyGen liveness of a revision (host_outfit today).
+ *
+ * A photo-avatar id can be FREED server-side — the account caps the pool at 3,
+ * so registering a new face evicts an old one. The row keeps the id string, but
+ * a render against it fails. meta.heygen records this as, e.g.
+ *   { pip, wide, pip_state: "freed", pool_live: [<ids still registered>] }        // v11
+ *   { rest, closeup, rest_state: "not_in_pool", closeup_state: "not_in_pool",     // v12
+ *     pool_live: [<someone else's id>] }
+ * So: every non-`_state`, non-`pool_live` string value is an avatar id, its
+ * health is `<key>_state` (plus membership of a declared, non-empty pool_live),
+ * and a revision is DEAD only when *every* id it declares is dead — v11 renders
+ * fine off its wide avatar even though its pip id was freed.
+ *
+ * Returns { dead, reason, warn }. dead ⇒ never offer it as a pick.
+ */
+const DEAD_HEYGEN_STATES = new Set(['freed', 'not_in_pool', 'deleted', 'expired'])
+
+export function heygenHealth(v) {
+  const h = v && v.meta && v.meta.heygen
+  if (!h || typeof h !== 'object') return { dead: false, reason: '', warn: '' }
+  const idKeys = Object.keys(h).filter(
+    (k) => k !== 'pool_live' && !k.endsWith('_state') && typeof h[k] === 'string',
+  )
+  if (idKeys.length === 0) return { dead: false, reason: '', warn: '' }
+  const pool = Array.isArray(h.pool_live) && h.pool_live.length ? h.pool_live : null
+  const deadKeys = idKeys.filter((k) => {
+    const st = h[k + '_state']
+    if (typeof st === 'string' && DEAD_HEYGEN_STATES.has(st)) return true
+    return !!(pool && !pool.includes(h[k]))
+  })
+  if (deadKeys.length === 0) return { dead: false, reason: '', warn: '' }
+  if (deadKeys.length === idKeys.length) {
+    return {
+      dead: true,
+      reason: 'HeyGen id freed — won’t render',
+      warn: '',
+    }
+  }
+  return {
+    dead: false,
+    reason: '',
+    warn: `${deadKeys.join(' + ')} face freed — the rest still render`,
+  }
+}
+
 /** "v3 ← v2 ← v1"; '' for a single-version chain (nothing worth showing). */
 export function lineageOf(v, byId) {
   const chain = []

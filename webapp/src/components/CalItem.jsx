@@ -93,6 +93,11 @@ export default function CalItem({
               ⚠ challenged
             </span>
           )}
+          {item.format === 'longform' && (
+            <span className="tag longform-tag" title="Long-form (16:9) — not a Short">
+              ▭ long-form
+            </span>
+          )}
           <span className="tag chan-tag">
             <span className="chan-tag-dot" style={{ background: accent }} />
             {item.channel_key}

@@ -276,6 +276,10 @@ async function handleGet(url: URL): Promise<Response> {
         .order("version", { ascending: false });
       const channel = url.searchParams.get("channel");
       if (channel) vq = vq.eq("channel_key", channel);
+      // Phase 4: retired revisions ship by DEFAULT (the Assets board renders them
+      // struck-through, and the composer needs them to explain a disabled pick).
+      // `?include_retired=0` is the opt-OUT for callers that want a clean list.
+      if (url.searchParams.get("include_retired") === "0") vq = vq.neq("status", "retired");
       const [versions, locks] = await Promise.all([
         vq,
         db.from("factory_asset_locks").select("*"),
@@ -283,6 +287,51 @@ async function handleGet(url: URL): Promise<Response> {
       if (versions.error) return json({ error: versions.error.message }, 500);
       if (locks.error) return json({ error: locks.error.message }, 500);
       return json({ versions: versions.data, locks: locks.data });
+    }
+
+    // Phase 4 — the Template Composer. factory_templates names the PIPELINE;
+    // a template VERSION names the CAST it runs with. Returns three flat arrays
+    // the client joins (same shape as the ?r=assets versions+locks pair):
+    //   versions       — factory_template_versions, template_key asc / version desc
+    //   assets         — factory_template_assets rows of those versions (the
+    //                    EDITABLE composition of a draft)
+    //   asset_versions — the factory_asset_versions rows those slots point at,
+    //                    so the composer can draw a thumb + label + v# without a
+    //                    second round trip.
+    // Filters: ?template_key= · ?channel= · ?include_retired=1 (retired versions
+    // are hidden by default so the composer's version rail stays readable).
+    case "template_versions": {
+      let tvq = db.from("factory_template_versions").select("*")
+        .order("template_key", { ascending: true })
+        .order("version", { ascending: false });
+      const tKey = url.searchParams.get("template_key");
+      if (tKey) tvq = tvq.eq("template_key", tKey);
+      const tChan = url.searchParams.get("channel");
+      if (tChan) tvq = tvq.eq("channel_key", tChan);
+      if (url.searchParams.get("include_retired") !== "1") tvq = tvq.neq("status", "retired");
+      const { data: tVersions, error: tvErr } = await tvq;
+      if (tvErr) return json({ error: tvErr.message }, 500);
+      const tvIds = (tVersions ?? []).map((v) => v.id);
+      if (tvIds.length === 0) {
+        return json({ versions: tVersions ?? [], assets: [], asset_versions: [] });
+      }
+      const { data: tAssets, error: taErr } = await db.from("factory_template_assets")
+        .select("*").in("template_version_id", tvIds)
+        .order("asset_type", { ascending: true })
+        .order("position", { ascending: true });
+      if (taErr) return json({ error: taErr.message }, 500);
+      const avIds = [
+        ...new Set((tAssets ?? []).map((a) => a.asset_version_id)),
+      ];
+      let avRows: unknown[] = [];
+      if (avIds.length > 0) {
+        const { data: avData, error: avErr } = await db.from("factory_asset_versions")
+          .select("id, channel_key, asset_type, version, label, status, storage_path, thumb_path, meta")
+          .in("id", avIds);
+        if (avErr) return json({ error: avErr.message }, 500);
+        avRows = avData ?? [];
+      }
+      return json({ versions: tVersions, assets: tAssets ?? [], asset_versions: avRows });
     }
 
     case "jobs": {
@@ -1854,13 +1903,27 @@ async function handlePost(body: any): Promise<Response> {
       const model = body.model ?? "opus";
       const effort = body.effort ?? "medium";
       const today = new Date().toISOString().slice(0, 10);
+      // Phase 4: stamp the composed CAST this episode is produced with, at queue
+      // time, so a later lock swap never rewrites history and a re-cut reproduces
+      // the render. null throughout = "no composed cast" = today's behavior.
+      let activeVersionId: string | null = null;
+      {
+        const { data: tplChan } = await db.from("factory_channels")
+          .select("template").eq("key", channel_key).maybeSingle();
+        const tplKey = tplChan?.template ?? null;
+        if (tplKey) {
+          const { data: tplActive } = await db.from("factory_templates")
+            .select("active_version_id").eq("key", tplKey).maybeSingle();
+          activeVersionId = tplActive?.active_version_id ?? null;
+        }
+      }
       // internal calendar row (origin manual so it's a normal item; the user
       // manages it from the channel page + Studio, not the calendar)
       const { data: item, error: iErr } = await db.from("factory_calendar")
         .insert({
           channel_key, planned_date: today, title, brief,
           status: "queued", origin: "manual", production_mode: "direct",
-          model, effort,
+          model, effort, template_version_id: activeVersionId,
         }).select().single();
       if (iErr) return json({ error: iErr.message }, 500);
       const { data: job, error: jErr } = await db.from("factory_jobs")
@@ -1870,6 +1933,7 @@ async function handlePost(body: any): Promise<Response> {
           model, effort, status: "queued",
           meta: {
             calendar_id: item.id, ep: nextEp, source: "channel_planner",
+            template_version_id: activeVersionId,
             ...(incubation ? { incubation: true, iteration: 1 } : {}),
           },
         }).select().single();
@@ -2064,6 +2128,298 @@ async function handlePost(body: any): Promise<Response> {
         );
       if (lockErr) return json({ error: lockErr.message }, 500);
       return json({ ok: true });
+    }
+
+    // ── Phase 4: the Template Composer ───────────────────────────────
+    // factory_templates names the PIPELINE; a template VERSION names the CAST.
+    // A version is edited as join rows while `draft`, then FROZEN into its
+    // `composition` jsonb at lock (build_refs COPIED, never joined) — that is
+    // what makes a locked cast reproducible after the underlying rows move on.
+    //
+    // create_template_version {template_key, channel_key?, label?, notes?,
+    //                          from_version_id?, seed_from_locks?=true}
+    // Forks a new DRAFT. Seeded from `from_version_id`'s slots (verbatim copy +
+    // parent_version_id), else from the channel's factory_asset_locks — so a new
+    // draft starts as EXACTLY what production runs today and the owner only
+    // swaps what they want to change.
+    case "create_template_version": {
+      const template_key = String(body.template_key ?? "").trim();
+      if (!template_key) return json({ error: "template_key required" }, 400);
+      const { data: tplRow, error: tplErr } = await db.from("factory_templates")
+        .select("key").eq("key", template_key).maybeSingle();
+      if (tplErr) return json({ error: tplErr.message }, 500);
+      if (!tplRow) return json({ error: "template not found" }, 404);
+
+      // channel: explicit, else the channel that produces with this template.
+      let channel_key = String(body.channel_key ?? "").trim();
+      if (!channel_key) {
+        const { data: chRows, error: chErr } = await db.from("factory_channels")
+          .select("key").eq("template", template_key).limit(1);
+        if (chErr) return json({ error: chErr.message }, 500);
+        channel_key = chRows && chRows.length > 0 ? chRows[0].key : "";
+      }
+      if (!channel_key) {
+        return json({ error: "channel_key required — no channel produces with this template yet" }, 400);
+      }
+
+      // Seed source: another version's slots, or the channel's live locks.
+      const from_version_id = body.from_version_id ? String(body.from_version_id) : null;
+      if (from_version_id && !UUID_RE.test(from_version_id)) {
+        return json({ error: "from_version_id must be a uuid" }, 400);
+      }
+      let seedRows: { asset_type: string; asset_version_id: string; position: number; note?: string }[] = [];
+      if (from_version_id) {
+        const { data: base, error: bErr } = await db.from("factory_template_versions")
+          .select("id, channel_key").eq("id", from_version_id).maybeSingle();
+        if (bErr) return json({ error: bErr.message }, 500);
+        if (!base) return json({ error: "from_version_id not found" }, 404);
+        if (base.channel_key !== channel_key) {
+          return json({ error: "that version belongs to a different channel" }, 400);
+        }
+        const { data: baseSlots, error: bsErr } = await db.from("factory_template_assets")
+          .select("asset_type, asset_version_id, position, note")
+          .eq("template_version_id", from_version_id);
+        if (bsErr) return json({ error: bsErr.message }, 500);
+        seedRows = baseSlots ?? [];
+      } else if (body.seed_from_locks !== false) {
+        const { data: lockRows, error: lkErr } = await db.from("factory_asset_locks")
+          .select("asset_type, locked_version_id").eq("channel_key", channel_key);
+        if (lkErr) return json({ error: lkErr.message }, 500);
+        seedRows = (lockRows ?? [])
+          .filter((l) => !!l.locked_version_id)
+          .map((l) => ({
+            asset_type: l.asset_type, asset_version_id: l.locked_version_id,
+            position: 0, note: "seeded from the channel lock",
+          }));
+      }
+
+      // version = max + 1 for this template_key. The unique(template_key, version)
+      // constraint is the real arbiter — retry once on 23505 (a concurrent fork).
+      let created: { id: string; version: number } | null = null;
+      let lastErr = "";
+      for (let attempt = 0; attempt < 2 && !created; attempt++) {
+        const { data: maxRow, error: mErr } = await db.from("factory_template_versions")
+          .select("version").eq("template_key", template_key)
+          .order("version", { ascending: false }).limit(1);
+        if (mErr) return json({ error: mErr.message }, 500);
+        const nextVersion = (maxRow && maxRow.length > 0 ? maxRow[0].version : 0) + 1;
+        const { data: ins, error: insErr } = await db.from("factory_template_versions")
+          .insert({
+            template_key, channel_key, version: nextVersion,
+            label: String(body.label ?? "").trim(),
+            notes: String(body.notes ?? "").trim(),
+            status: "draft", composition: {},
+            parent_version_id: from_version_id,
+          }).select().single();
+        if (insErr) {
+          lastErr = insErr.message;
+          if (!String(insErr.code ?? "").includes("23505")) return json({ error: insErr.message }, 500);
+          continue;
+        }
+        created = ins;
+      }
+      if (!created) return json({ error: "could not allocate a version number: " + lastErr }, 409);
+
+      if (seedRows.length > 0) {
+        const { error: seedErr } = await db.from("factory_template_assets").insert(
+          seedRows.map((s) => ({
+            template_version_id: created!.id,
+            asset_type: s.asset_type,
+            asset_version_id: s.asset_version_id,
+            position: s.position ?? 0,
+            note: s.note ?? "",
+          })),
+        );
+        if (seedErr) return json({ error: seedErr.message }, 500);
+      }
+      const { data: slots } = await db.from("factory_template_assets")
+        .select("*").eq("template_version_id", created.id)
+        .order("asset_type", { ascending: true }).order("position", { ascending: true });
+      await logEvent("template_version_created",
+        `${template_key} v${created.version} forked as a draft (${seedRows.length} slots)`,
+        {
+          template_key, channel_key, template_version_id: created.id,
+          version: created.version, from_version_id, seeded: seedRows.length,
+        });
+      return json({ version: created, assets: slots ?? [] });
+    }
+
+    // set_template_version_asset {template_version_id, asset_type,
+    //                             asset_version_id, position?=0, note?}
+    // One slot pick on a DRAFT. asset_version_id:null clears the slot.
+    // Returns the version's FULL slot list so the composer re-renders from one
+    // response. Locked versions are immutable — that is what makes a locked cast
+    // reproducible, so this refuses rather than mutating history.
+    case "set_template_version_asset": {
+      const tvId = String(body.template_version_id ?? "");
+      const asset_type = String(body.asset_type ?? "").trim();
+      if (!tvId || !UUID_RE.test(tvId)) return json({ error: "template_version_id (uuid) required" }, 400);
+      if (!asset_type) return json({ error: "asset_type required" }, 400);
+      const position = Number.isFinite(Number(body.position)) ? Math.max(0, parseInt(String(body.position), 10)) : 0;
+      const avId = body.asset_version_id === null || body.asset_version_id === undefined
+        ? null : String(body.asset_version_id);
+      if (avId !== null && !UUID_RE.test(avId)) return json({ error: "asset_version_id must be a uuid or null" }, 400);
+
+      const { data: tv, error: tvErr } = await db.from("factory_template_versions")
+        .select("id, channel_key, status").eq("id", tvId).maybeSingle();
+      if (tvErr) return json({ error: tvErr.message }, 500);
+      if (!tv) return json({ error: "template version not found" }, 404);
+      if (tv.status !== "draft") {
+        return json({ error: "locked template versions are immutable — branch a new version" }, 409);
+      }
+
+      if (avId) {
+        const { data: target, error: tErr } = await db.from("factory_asset_versions")
+          .select("id, status, channel_key, asset_type").eq("id", avId).maybeSingle();
+        if (tErr) return json({ error: tErr.message }, 500);
+        if (!target) return json({ error: "revision not found" }, 404);
+        if (target.channel_key !== tv.channel_key || target.asset_type !== asset_type) {
+          return json({ error: "revision not found for this channel/asset_type" }, 404);
+        }
+        if (target.status === "retired") {
+          return json({ error: "that revision is retired — un-retire it or pick another" }, 409);
+        }
+        const { error: upErr } = await db.from("factory_template_assets").upsert(
+          {
+            template_version_id: tvId, asset_type, asset_version_id: avId, position,
+            note: String(body.note ?? "").trim(),
+          },
+          { onConflict: "template_version_id,asset_type,position" },
+        );
+        if (upErr) return json({ error: upErr.message }, 500);
+      } else {
+        const { error: delErr } = await db.from("factory_template_assets").delete()
+          .eq("template_version_id", tvId).eq("asset_type", asset_type).eq("position", position);
+        if (delErr) return json({ error: delErr.message }, 500);
+      }
+      const { data: slots, error: sErr } = await db.from("factory_template_assets")
+        .select("*").eq("template_version_id", tvId)
+        .order("asset_type", { ascending: true }).order("position", { ascending: true });
+      if (sErr) return json({ error: sErr.message }, 500);
+      return json({ ok: true, assets: slots ?? [] });
+    }
+
+    // lock_template_version {template_version_id, make_active?=true}
+    // The materialize-and-freeze step, and the ONLY place `composition` is
+    // written. Copies build_ref/label/storage_path/thumb_path/version out of
+    // each factory_asset_versions row so the render is reproducible even after
+    // those rows are retired. `make_active` is a POINTER SWAP on
+    // factory_templates.active_version_id — deliberately NOT the demote cycle
+    // lock_asset runs: older locked versions stay locked and reproducible
+    // forever, which is the entire point of the frozen snapshot.
+    case "lock_template_version": {
+      const lvId = String(body.template_version_id ?? "");
+      if (!lvId || !UUID_RE.test(lvId)) return json({ error: "template_version_id (uuid) required" }, 400);
+      const { data: lv, error: lvErr } = await db.from("factory_template_versions")
+        .select("*").eq("id", lvId).maybeSingle();
+      if (lvErr) return json({ error: lvErr.message }, 500);
+      if (!lv) return json({ error: "template version not found" }, 404);
+      if (lv.status === "locked") return json({ error: "already locked — branch a new version to change the cast" }, 409);
+      if (lv.status === "retired") return json({ error: "this version is retired — branch a new version" }, 409);
+
+      const { data: slots, error: slErr } = await db.from("factory_template_assets")
+        .select("*").eq("template_version_id", lvId)
+        .order("asset_type", { ascending: true }).order("position", { ascending: true });
+      if (slErr) return json({ error: slErr.message }, 500);
+      if (!slots || slots.length === 0) {
+        return json({ error: "compose at least one asset before locking" }, 409);
+      }
+      const slotIds = [...new Set(slots.map((s) => s.asset_version_id))];
+      const { data: avRows, error: avErr } = await db.from("factory_asset_versions")
+        .select("id, channel_key, asset_type, version, label, status, storage_path, thumb_path, meta")
+        .in("id", slotIds);
+      if (avErr) return json({ error: avErr.message }, 500);
+      // deno-lint-ignore no-explicit-any
+      const avById: Record<string, any> = {};
+      for (const r of avRows ?? []) avById[r.id] = r;
+
+      // deno-lint-ignore no-explicit-any
+      const composition: Record<string, any> = {};
+      for (const s of slots) {
+        const av = avById[s.asset_version_id];
+        if (!av) return json({ error: `${s.asset_type}: a picked revision no longer exists — re-pick it` }, 409);
+        if (av.channel_key !== lv.channel_key) {
+          return json({ error: `${s.asset_type} v${av.version} belongs to a different channel` }, 409);
+        }
+        if (av.status === "retired") {
+          return json({ error: `${s.asset_type} v${av.version} is retired` }, 409);
+        }
+        const build_ref = (av.meta ?? {}).build_ref ?? null;
+        if (s.position === 0 && !build_ref) {
+          return json({ error: `${s.asset_type} v${av.version} has no meta.build_ref — the build cannot resolve it` }, 409);
+        }
+        const frozen = {
+          version_id: av.id, version: av.version, build_ref,
+          label: av.label ?? "", storage_path: av.storage_path ?? null,
+          thumb_path: av.thumb_path ?? null,
+        };
+        if (s.position === 0) {
+          composition[s.asset_type] = { ...composition[s.asset_type], ...frozen };
+        } else {
+          const slot = composition[s.asset_type] ?? {};
+          composition[s.asset_type] = { ...slot, alts: [...(slot.alts ?? []), frozen] };
+        }
+      }
+      const nowIso = new Date().toISOString();
+      const { data: lockedRow, error: lockErr2 } = await db.from("factory_template_versions")
+        .update({ status: "locked", locked_at: nowIso, composition })
+        .eq("id", lvId).select().single();
+      if (lockErr2) return json({ error: lockErr2.message }, 500);
+
+      const makeActive = body.make_active !== false;
+      let previous_active_version_id: string | null = null;
+      if (makeActive) {
+        const { data: tplBefore } = await db.from("factory_templates")
+          .select("active_version_id").eq("key", lv.template_key).maybeSingle();
+        previous_active_version_id = tplBefore?.active_version_id ?? null;
+        const { error: actErr } = await db.from("factory_templates")
+          .update({ active_version_id: lvId }).eq("key", lv.template_key);
+        if (actErr) return json({ error: actErr.message }, 500);
+      }
+      await logEvent("template_version_locked",
+        `${lv.template_key} v${lv.version} locked` + (makeActive ? " and made active" : "") +
+          ` — ${Object.keys(composition).length} slots frozen`,
+        {
+          template_key: lv.template_key, channel_key: lv.channel_key,
+          template_version_id: lvId, version: lv.version,
+          make_active: makeActive, previous_active_version_id,
+          slots: Object.keys(composition),
+        });
+      return json({ version: lockedRow, active: makeActive, previous_active_version_id });
+    }
+
+    // retire_template_version {template_version_id, undo?:bool}
+    // Shelves a cast nobody should pick up again. Refuses while it is the
+    // template's ACTIVE version — silently retiring the live cast is the
+    // stale-asset failure in a new costume; lock/activate another one first.
+    // undo restores it to 'locked' if it was ever locked, else 'draft'.
+    case "retire_template_version": {
+      const rvId = String(body.template_version_id ?? "");
+      if (!rvId || !UUID_RE.test(rvId)) return json({ error: "template_version_id (uuid) required" }, 400);
+      const { data: rv, error: rvErr } = await db.from("factory_template_versions")
+        .select("*").eq("id", rvId).maybeSingle();
+      if (rvErr) return json({ error: rvErr.message }, 500);
+      if (!rv) return json({ error: "template version not found" }, 404);
+      const undo = body.undo === true;
+      if (!undo) {
+        const { data: tplActive, error: taErr } = await db.from("factory_templates")
+          .select("key, active_version_id").eq("key", rv.template_key).maybeSingle();
+        if (taErr) return json({ error: taErr.message }, 500);
+        if (tplActive && tplActive.active_version_id === rvId) {
+          return json({ error: "this version is the template's active cast — lock or activate another one first" }, 409);
+        }
+      }
+      const { data: updated, error: uErr } = await db.from("factory_template_versions")
+        .update(
+          undo
+            ? { status: rv.locked_at ? "locked" : "draft", retired_at: null }
+            : { status: "retired", retired_at: new Date().toISOString() },
+        ).eq("id", rvId).select().single();
+      if (uErr) return json({ error: uErr.message }, 500);
+      await logEvent(undo ? "template_version_unretired" : "template_version_retired",
+        `${rv.template_key} v${rv.version} ${undo ? "restored" : "retired"}`,
+        { template_key: rv.template_key, template_version_id: rvId, version: rv.version });
+      return json({ version: updated });
     }
 
     // v17: channel-page idea engine. Queues a plan_content job; the client polls

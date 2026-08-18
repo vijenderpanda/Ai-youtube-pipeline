@@ -21,6 +21,7 @@ export default function Calendar() {
   const navigate = useNavigate()
   const [channel, setChannel] = useState('')
   const [kind, setKind] = useState('')
+  const [format, setFormat] = useState('') // '' | 'short' | 'longform'
   const [view, setView] = useState('month') // 'month' | 'agenda'
   const [cursor, setCursor] = useState(() => {
     const t = new Date()
@@ -135,11 +136,13 @@ export default function Calendar() {
   }
 
   const itemKind = (it) => it.kind || 'content'
+  const itemFormat = (it) => it.format || 'short' // pre-migration rows are Shorts
   const items = allItems.filter(
     (it) =>
       !hiddenChallengerIds.has(it.id) &&
       (!channel || it.channel_key === channel) &&
-      (!kind || itemKind(it) === kind)
+      (!kind || itemKind(it) === kind) &&
+      (!format || itemFormat(it) === format)
   )
 
   const suggestedCount = allItems.filter((it) => it.status === 'suggested').length
@@ -167,6 +170,20 @@ export default function Calendar() {
       icon: WrenchIcon,
       className: 'fchip-factory',
       count: allItems.filter((it) => itemKind(it) === 'factory').length,
+    },
+  ]
+
+  const formatOptions = [
+    { value: '', label: 'All', count: allItems.length },
+    {
+      value: 'short',
+      label: 'Shorts',
+      count: allItems.filter((it) => itemFormat(it) === 'short').length,
+    },
+    {
+      value: 'longform',
+      label: 'Long-form',
+      count: allItems.filter((it) => itemFormat(it) === 'longform').length,
     },
   ]
 
@@ -368,6 +385,9 @@ export default function Calendar() {
       <div className="chips-bar">
         <ChipsGroup label="Kind">
           <Chips options={kindOptions} value={kind} onChange={setKind} ariaLabel="Kind" />
+        </ChipsGroup>
+        <ChipsGroup label="Format">
+          <Chips options={formatOptions} value={format} onChange={setFormat} ariaLabel="Format" />
         </ChipsGroup>
         <ChipsGroup label="Channel">
           <Chips
