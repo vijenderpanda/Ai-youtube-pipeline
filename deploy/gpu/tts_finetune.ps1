@@ -65,6 +65,15 @@ $patched = $src -replace 'num_workers\s*=\s*\d+', 'num_workers=0' `
                 -replace 'persistent_workers\s*=\s*True', 'persistent_workers=False' `
                 -replace 'prefetch_factor\s*=\s*\d+', 'prefetch_factor=None'
 if ($patched -ne $src) { Set-Content -Encoding UTF8 $s2py $patched; Say "patched s2_train.py DataLoader -> num_workers=0" }
+# s1 (GPT) DataLoader hardcodes persistent_workers=True + prefetch_factor=16, both
+# illegal with the num_workers=0 we set in the s1 config -> patch them too.
+$s1dm = Join-Path $Repo "GPT_SoVITS\AR\data\data_module.py"
+if (Test-Path $s1dm) {
+  $s1src = Get-Content $s1dm -Raw
+  $s1p = $s1src -replace 'persistent_workers\s*=\s*True', 'persistent_workers=False' `
+                -replace 'prefetch_factor\s*=\s*\d+', 'prefetch_factor=None'
+  if ($s1p -ne $s1src) { Set-Content -Encoding UTF8 $s1dm $s1p; Say "patched s1 data_module.py DataLoader" }
+}
 
 # --- headless import path + CWD (the scripts do bare `from text...`/`import utils`) ---
 $env:PYTHONPATH = "$Repo;$Repo\GPT_SoVITS;$Repo\GPT_SoVITS\BigVGAN;$Repo\tools;$Repo\tools\asr;$Repo\tools\uvr5"
