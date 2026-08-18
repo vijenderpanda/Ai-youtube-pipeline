@@ -2909,7 +2909,10 @@ def suggestion_row(channel_key, planned_date, title, *, brief="", kind="content"
         "kind": kind,
         # factory items are concrete generator create/update tasks -> always custom
         "type": ("custom" if kind == "factory" else (type_ or "produce_short")),
-        "model": model or "fable",
+        # opus is what this network actually produces with (every shipped
+        # claude-tricks episode; fable was a default nobody chose and it
+        # silently became the model for auto-suggested pieces -- VJ 2026-08-18)
+        "model": model or "opus",
         "effort": effort or "high",
         "ultracode": bool(ultracode),
         "status": "suggested",
