@@ -69,7 +69,7 @@ jobs = [
  ('city96/FLUX.1-schnell-gguf',      'flux1-schnell-Q5_K_S.gguf',      r'$Models\unet'),
  ('comfyanonymous/flux_text_encoders','t5xxl_fp8_e4m3fn.safetensors',  r'$Models\text_encoders'),
  ('comfyanonymous/flux_text_encoders','clip_l.safetensors',            r'$Models\text_encoders'),
- ('black-forest-labs/FLUX.1-schnell', 'ae.safetensors',                r'$Models\vae'),
+ ('ffxvs/vae-flux',                   'ae.safetensors',                r'$Models\vae'),
 ]
 for repo, fn, dst in jobs:
     if os.path.exists(os.path.join(dst, fn)):
