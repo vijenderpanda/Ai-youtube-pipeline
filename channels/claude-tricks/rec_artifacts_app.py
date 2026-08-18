@@ -20,10 +20,7 @@ PROFILE = ROOT / ".browser-profiles" / "claude"
 VIEW = {"width": 540, "height": 960}
 UA = ("Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) "
       "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1")
-PROMPT = ("Build me a simple bill splitter app in a single HTML file: a total-bill input "
-          "and a number-of-people input with plus/minus steppers, showing the amount each "
-          "person pays in big readable numbers. Use the Indian Rupee (Rs). Pre-fill it with "
-          "a total of 1200 and 3 people, so it opens already showing 400 each. One clean screen.")
+PROMPT = "Build me a bill splitter app - Rs 1200 split 3 ways, big clear numbers."
 # stepper coords in CSS px (from probe: 1080x1920 screenshot / dsf2)
 PLUS, MINUS = (403, 516), (136, 516)
 
@@ -35,6 +32,9 @@ def main():
     args = ap.parse_args()
     out = Path(args.out); out.parent.mkdir(parents=True, exist_ok=True)
     tmp = out.parent / f".rec_{out.stem}"; tmp.mkdir(exist_ok=True)
+    for old in tmp.glob("*.webm"):                        # clear stale takes so the
+        try: old.unlink()                                # newest-by-mtime pick is unambiguous
+        except Exception: pass
 
     with sync_playwright() as p:
         ctx = p.chromium.launch_persistent_context(
@@ -94,26 +94,19 @@ def main():
                 try: sb.click()
                 except Exception: pass
 
-        # --- BEAT: it builds (hold_build) ---
+        # --- BEAT: it builds, then the artifact CARD appears (hold_build) ---
+        # Poll for the card title (reliable; the Download button renders late and
+        # mobile's tap-to-open is flaky). The opened-app payoff is a baked still-hold
+        # (ep27 pattern), so we deliberately do NOT fight tap-to-open here.
         ready = False
         for _ in range(args.build_timeout // 2):
             time.sleep(2)
             try:
-                if pg.get_by_role("button", name="Download").first.is_visible(timeout=400):
+                if pg.get_by_text("Bill splitter", exact=True).first.is_visible(timeout=400):
                     ready = True; break
             except Exception: pass
         print(f"artifact_ready={ready}")
-        time.sleep(1.5)                                  # hold on the finished card
-
-        # --- BEAT: TAP to open the app ---
-        opened = False
-        try:
-            el = pg.get_by_text("Bill splitter", exact=True).first
-            if el.is_visible(timeout=1500): el.click(); opened = True
-        except Exception: pass
-        if not opened:
-            pg.mouse.click(180, 527)                     # card title area fallback
-        time.sleep(4.5)                                  # app renders
+        time.sleep(3.0)                                  # hold on the finished card
 
         # --- BEAT: the working app + live compute (hold_total) ---
         time.sleep(2.5)                                  # hero hold on Rs400
@@ -122,10 +115,10 @@ def main():
 
         ctx.close()                                      # finalizes the video
 
-    vids = sorted(tmp.glob("*.webm"))
+    vids = sorted(tmp.glob("*.webm"), key=lambda p: p.stat().st_mtime)
     if not vids:
         print("NO VIDEO CAPTURED"); return
-    src = vids[-1]
+    src = vids[-1]                                        # newest by mtime, not by name-hash
     # transcode webm -> mp4 (h264) at the tape size
     import subprocess
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src),

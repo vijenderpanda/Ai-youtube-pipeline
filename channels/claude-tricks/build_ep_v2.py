@@ -23,6 +23,44 @@ BREAK = '<break time="0.4s" />'
 MUSIC = "assets/music/bed_active.mp3"   # relative to remotion public/
 
 EPISODES_V2 = {
+  # First fill for the post-pivot standalone-tips slot (PIVOT-DECISION.md, 2026-08-18):
+  # the Artifacts short. Reverse hook = the finished Rs400 app in frame 0 (hook_art.png),
+  # then rebuild it live. Footage: rec_artifacts_app.py capture (type->build->card) +
+  # a baked still-hold of the opened app (hold_app.mp4). 7-beat shape (critic fix #2).
+  "_artifacts": {
+    "title": "I Built A Working App By Typing One Line 🤯",
+    "tags": "claude artifacts,build app with ai,no code,claude ai,ai for beginners,vibe coding,ai tools,ai tips",
+    "hook": {"image": "ep_artifacts/still_hero_rs400.png", "until": 2.2,
+             "lines": ["I BUILT THIS", "BY TYPING ONE LINE"], "hot": "ONE"},
+    "outro": True,
+    "lines": [
+      "This bill splitter actually works — and I wrote zero code. I just asked for it, in one line.",
+      "Empty chat, one sentence, a real app you can use. Watch.",
+      "In Claude, I type one line: build me a bill splitter.",
+      "A few seconds later, it's built — a real, working app.",
+      "Twelve hundred, split three ways — four hundred each. It just works.",
+      "That's Artifacts. Ask for a tool, and Claude builds the working thing, right there.",
+      "Follow. I unpack one AI skill, every single day.",
+    ],
+    "hot_words": ["WORKS", "ZERO", "CODE", "ASKED", "ONE", "LINE", "EMPTY",
+                  "SENTENCE", "REAL", "APP", "WATCH", "TYPE", "BUILD", "SPLITTER",
+                  "SECONDS", "BUILT", "WORKING", "TWELVE", "HUNDRED", "THREE",
+                  "FOUR", "ARTIFACTS", "TOOL", "THING", "FOLLOW", "SKILL", "DAY"],
+    "beats": ["host", "host",
+              "rec:ep_artifacts/raw_capture_v2.mp4@12",   # type one line
+              "rec:ep_artifacts/raw_capture_v2.mp4@46",   # seconds later: the app card (clean window, before a stray feedback modal at ~52s)
+              "rec:ep_artifacts/hold_app.mp4@0.0",        # the working app — Rs400 (payoff)
+              "host2", "host2"],
+    "host_panels": [
+      {"lines": ["I WROTE", "ZERO CODE", "I JUST ASKED"]},
+      {"lines": ["EMPTY CHAT", "TO A WORKING", "APP — WATCH"]},
+    ],
+    "steps": [
+      ("STEP 1/3 — TYPE ONE LINE", 2, 2),
+      ("STEP 2/3 — CLAUDE BUILDS IT", 3, 3),
+      ("STEP 3/3 — IT JUST WORKS", 4, 4),
+    ],
+  },
   "20": {
     "title": "The Effort Dial Nobody Uses (Deeper Answers, Free) 🧠",
     "tags": "claude effort,extended thinking,claude models,claude ai tips,ai for beginners,ai productivity,ai tips",
