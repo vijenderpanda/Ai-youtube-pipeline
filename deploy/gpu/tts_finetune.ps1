@@ -157,6 +157,12 @@ $tmpS2 = Join-Path $Logs "tmp_s2.json"; $tmpS1 = Join-Path $Logs "tmp_s1.yaml"
 if (-not (Test-Path $tmpS2) -or -not (Test-Path $tmpS1)) { Die "config patch failed" }
 Write-Host "PREP_CONFIG_OK"
 
+# checkpoint + weight output dirs — the WebUI pre-creates these; headless my_save()
+# does a bare shutil.move into them and errors if they don't exist.
+New-Item -ItemType Directory -Force -Path `
+  (Join-Path $Logs "logs_s2_v2"), (Join-Path $Logs "logs_s1_v2"), `
+  (Join-Path $Repo "SoVITS_weights_v2"), (Join-Path $Repo "GPT_weights_v2") | Out-Null
+
 # --- train SoVITS (s2) ---
 Say "training SoVITS (s2): batch=$Batch epochs=$S2Epochs ..."
 & $VenvPy -s "GPT_SoVITS/s2_train.py" --config "$tmpS2" 2>&1 | Out-Host
