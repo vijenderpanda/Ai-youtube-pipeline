@@ -1341,6 +1341,7 @@ def _lock_lookup(ch, asset_type):
 # layer wins, so no wiring / no env / no table == today's behavior exactly.
 _TPL_VERSION_ID = None   # bound once by build(); None = layer disabled
 _TPL_CACHE = None        # {asset_type: build_ref} from the frozen composition
+_TPL_SETTINGS = None     # {name: value} cast SETTINGS frozen with the composition
 _TPL_INFO = {}
 
 
@@ -1398,6 +1399,7 @@ def _tpl_lookup(ch, asset_type):
                         if ref:
                             _TPL_CACHE[atype] = ref
                             _VERSION_ID_BY[("template", atype)] = (slot or {}).get("version_id")
+                    globals()["_TPL_SETTINGS"] = dict((row.get("composition") or {}).get("_settings") or {})
                     _TPL_INFO.update(template_key=row.get("template_key"),
                                      version=row.get("version"), id=_TPL_VERSION_ID)
                     print(f">> template version: {row.get('template_key')} "
@@ -1439,6 +1441,23 @@ def resolve_locked(asset_type, default, ch="claude-tricks", cfg=None):
     if locked is not None:
         return _note(locked, "lock")
     return _note(default, "default")
+
+
+def resolve_setting(name, default=None, ch="claude-tricks", cfg=None):
+    """A cast SETTING (not a file): per-episode cfg > locked template version >
+    built-in default.
+
+    Some of what ships is behaviour, not an asset. `outro_cta:"auto"` makes Sol
+    SPEAK a freshly-composed CTA over whatever card is in the outro slot — there
+    is no file to pick, but it is absolutely part of the cast, and a cast that
+    only described frames did not describe what we actually publish.
+    Never raises: an unbound/unavailable version leaves today's behaviour."""
+    if cfg is not None and name in cfg:
+        return cfg.get(name)
+    _tpl_lookup(ch, "__settings_probe__")      # ensures the version is loaded
+    if _TPL_SETTINGS and name in _TPL_SETTINGS:
+        return _TPL_SETTINGS.get(name)
+    return default
 
 
 def _flush_provenance(ch, ep, tag, calendar_id):
@@ -2058,12 +2077,17 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         # VJ approval of the test render — do not add outro_cta to the locked
         # templates until then. See channels/claude-tricks/outro_cta.py.
         cta = None
-        if cfg.get("outro_cta"):
+        _cta_mode = resolve_setting("outro_cta", None, cfg=cfg)
+        if _cta_mode:
             if CH not in sys.path:
                 sys.path.insert(0, CH)
             from outro_cta import prepare_cta, probe_dur
-            cta = prepare_cta(cfg, A, ELEVEN_VOICE, style=STYLE,
-                              calendar_id=calendar_id)
+            # prepare_cta reads the mode from cfg["outro_cta"], so a mode that
+            # came from the CAST (not the episode spec) has to be handed over
+            # explicitly — otherwise a cast-set CTA would resolve here and then
+            # be dropped one call later.
+            cta = prepare_cta({**cfg, "outro_cta": _cta_mode}, A, ELEVEN_VOICE,
+                              style=STYLE, calendar_id=calendar_id)
         if cta:
             # The card must HOLD until the spoken line lands: retime the card
             # (slower Ken-Burns push, same frames) instead of re-rendering the

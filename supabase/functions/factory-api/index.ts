@@ -2497,6 +2497,31 @@ async function handlePost(body: any): Promise<Response> {
     // factory_templates.active_version_id — deliberately NOT the demote cycle
     // lock_asset runs: older locked versions stay locked and reproducible
     // forever, which is the entire point of the frozen snapshot.
+    // Cast SETTINGS: behaviour that ships with the frames but is not a file.
+    // outro_cta:"auto" makes Sol speak a freshly-composed CTA over the outro
+    // card; a cast describing only frames did not describe what we publish.
+    case "set_template_version_setting": {
+      const { template_version_id: svId, name: sName, value: sValue } = body;
+      if (!svId) return json({ error: "template_version_id required" }, 400);
+      if (!sName) return json({ error: "name required" }, 400);
+      const { data: sv, error: svErr } = await db.from("factory_template_versions")
+        .select("*").eq("id", svId).maybeSingle();
+      if (svErr) return json({ error: svErr.message }, 500);
+      if (!sv) return json({ error: "template version not found" }, 404);
+      if (sv.status !== "draft") {
+        return json({ error: "locked template versions are immutable — branch a new version" }, 409);
+      }
+      const meta = { ...(sv.meta ?? {}) };
+      const settings = { ...(meta.settings ?? {}) };
+      if (sValue === null || sValue === undefined) delete settings[sName];
+      else settings[sName] = sValue;
+      meta.settings = settings;
+      const { error: sUpErr } = await db.from("factory_template_versions")
+        .update({ meta }).eq("id", svId);
+      if (sUpErr) return json({ error: sUpErr.message }, 500);
+      return json({ ok: true, settings });
+    }
+
     case "lock_template_version": {
       const lvId = String(body.template_version_id ?? "");
       if (!lvId || !UUID_RE.test(lvId)) return json({ error: "template_version_id (uuid) required" }, 400);
@@ -2552,7 +2577,15 @@ async function handlePost(body: any): Promise<Response> {
       }
       const nowIso = new Date().toISOString();
       const { data: lockedRow, error: lockErr2 } = await db.from("factory_template_versions")
-        .update({ status: "locked", locked_at: nowIso, composition })
+        // Freeze the cast SETTINGS alongside the frames. Some of what ships is
+        // behaviour, not a file — outro_cta:"auto" makes Sol speak a fresh CTA
+        // over the outro card. A snapshot that captured only frames would not
+        // reproduce the episode. build_ep_v2.resolve_setting() reads _settings.
+        .update({
+          status: "locked",
+          locked_at: nowIso,
+          composition: { ...composition, _settings: (lv.meta ?? {}).settings ?? {} },
+        })
         .eq("id", lvId).select().single();
       if (lockErr2) return json({ error: lockErr2.message }, 500);
 
