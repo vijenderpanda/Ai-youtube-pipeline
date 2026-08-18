@@ -1289,6 +1289,11 @@ def outro_fc(pre, fst, ratio=None, gain_db=None):
 _LOCK_CFG_KEY = {"music_bed": "music", "outro_sting": "outro_src",
                  "hook_image": None, "host_outfit": None, "remotion_comp": None}
 _LOCK_CACHE = None
+CHANNEL_KEY_FOR_PROV = "claude-tricks"
+# Phase 3 provenance: what THIS build actually resolved, and the
+# factory_asset_versions.id behind each pick (keyed by (source, asset_type)).
+_RESOLVED = []
+_VERSION_ID_BY = {}
 
 
 def _supa():
@@ -1323,6 +1328,7 @@ def _lock_lookup(ch, asset_type):
                     ref = bref.get(l.get("locked_version_id"))
                     if ref:
                         _LOCK_CACHE[l["asset_type"]] = ref
+                        _VERSION_ID_BY[("lock", l["asset_type"])] = l.get("locked_version_id")
             print(f">> asset locks resolved: {_LOCK_CACHE}")
         except Exception as e:
             print(f"!! asset-lock lookup unavailable ({e}); using built-in defaults")
@@ -1391,6 +1397,7 @@ def _tpl_lookup(ch, asset_type):
                         ref = (slot or {}).get("build_ref")
                         if ref:
                             _TPL_CACHE[atype] = ref
+                            _VERSION_ID_BY[("template", atype)] = (slot or {}).get("version_id")
                     _TPL_INFO.update(template_key=row.get("template_key"),
                                      version=row.get("version"), id=_TPL_VERSION_ID)
                     print(f">> template version: {row.get('template_key')} "
@@ -1408,17 +1415,60 @@ def _tpl_lookup(ch, asset_type):
 def resolve_locked(asset_type, default, ch="claude-tricks", cfg=None):
     """Precedence: per-episode cfg override > bound template version's frozen
     composition > channel lock row > built-in default.
-    Returns a value in the SAME namespace as `default` (assets-relative path or bare id)."""
+    Returns a value in the SAME namespace as `default` (assets-relative path or bare id).
+
+    Every resolution is recorded in _RESOLVED so build() can write the episode's
+    real cast to factory_episode_assets_used (Phase 3). Without that record a
+    later lock move would make every PAST episode look like it used the new
+    revision — history must not be rewritten by a lock change."""
+    def _note(ref, src):
+        _RESOLVED.append({"asset_type": asset_type, "build_ref": ref,
+                          "resolved_from": src,
+                          "version_id": _VERSION_ID_BY.get((src, asset_type))})
+        return ref
+
     key = _LOCK_CFG_KEY.get(asset_type)
     if cfg is not None and key:
         ov = cfg.get(key)
         if ov is not None:
-            return ov
+            return _note(ov, "cfg")
     composed = _tpl_lookup(ch, asset_type)          # NEW layer (no-op when unbound)
     if composed is not None:
-        return composed
+        return _note(composed, "template")
     locked = _lock_lookup(ch, asset_type)
-    return locked if locked is not None else default
+    if locked is not None:
+        return _note(locked, "lock")
+    return _note(default, "default")
+
+
+def _flush_provenance(ch, ep, tag, calendar_id):
+    """Record what this build ACTUALLY resolved (Phase 3 backlinks).
+
+    Never raises: provenance is bookkeeping, and a bookkeeping failure must never
+    fail a render that already succeeded. A re-cut of the same (calendar, tag)
+    replaces its own rows, so re-running a build does not double-count."""
+    if not _RESOLVED:
+        return
+    try:
+        by_type = {r["asset_type"]: r for r in _RESOLVED}   # last pick per slot wins
+        rows = [{"calendar_id": calendar_id, "channel_key": ch, "ep": str(ep),
+                 "build_tag": tag, "asset_type": atype,
+                 "version_id": r.get("version_id"), "build_ref": r["build_ref"],
+                 "resolved_from": r["resolved_from"]}
+                for atype, r in sorted(by_type.items())]
+        sp = _supa()
+        if calendar_id:
+            # Supa has no delete(); go straight at PostgREST with its own headers.
+            import requests
+            requests.delete(
+                f"{sp.url}/rest/v1/factory_episode_assets_used"
+                f"?calendar_id=eq.{calendar_id}&build_tag=eq.{tag}",
+                headers=sp.headers, timeout=30)
+        sp.insert("factory_episode_assets_used", rows)
+        srcs = sorted({r["resolved_from"] for r in rows})
+        print(f">> provenance: {len(rows)} slot(s) recorded ({', '.join(srcs)})")
+    except Exception as e:
+        print(f"!! provenance not recorded ({e}) — render is unaffected")
 
 
 def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_version=None):
@@ -1899,7 +1949,8 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         rflags.append(f"--concurrency={os.environ['FACTORY_REMOTION_CONCURRENCY']}")
     if os.environ.get("FACTORY_REMOTION_HWACCEL"):
         rflags.append(f"--hardware-acceleration={os.environ['FACTORY_REMOTION_HWACCEL']}")
-    run(["npx", "remotion", "render", "Short", raw, f"--props={sp}", *rflags],
+    run(["npx", "remotion", "render", resolve_locked("remotion_comp", "Short"), raw,
+         f"--props={sp}", *rflags],
         cwd=os.path.join(REPO, "remotion-studio"))
 
     if preview:
@@ -1908,13 +1959,17 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         # Human review happens on this file; scripted finalize_episode.py picks
         # up the SAME cfg later and runs mastering + endcard + outro to publish.
         print(f">> PREVIEW mode — stopped after raw: {raw}")
+        _flush_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
         return raw
 
     # 5) master: sidechain-ducked music + limiter
     out = os.path.join(R, f"ep{ep}_{tag}.mp4")
     # per-episode bed override (cfg["music"], relative to assets/); defaults to
     # the channel's locked active bed
-    music = os.path.join(CH, "assets", cfg.get("music", "music/bed_active.mp3"))
+    # _LOCK_CFG_KEY["music_bed"] == "music", so a per-episode cfg["music"]
+    # override still wins — this only adds the lock/template layers beneath it.
+    music = os.path.join(CH, "assets",
+                         resolve_locked("music_bed", "music/bed_active.mp3", cfg=cfg))
     assert os.path.exists(music), f"music bed missing: {music}"
     # The locked 0.35 mix ratio (playbook §3) was calibrated against the channel's
     # standing bed at -8.3 LUFS. A per-episode bed at a different programme level
@@ -2053,6 +2108,7 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
              "-pix_fmt", "yuv420p", outc])
         print(f">> ENDCARD {ec['in_s']}s -> last frame (over the sting)", outc)
         out = outc
+    _flush_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
     return out
 
 if __name__ == "__main__":

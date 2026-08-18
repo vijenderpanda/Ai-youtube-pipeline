@@ -290,6 +290,10 @@ def sync_factory_db(calendar_id, video_id, schedule_iso, spec, final_path, desc_
         "publish_at": schedule_iso,
         "video_id": video_id,
         "status": "scheduled",       # already live on YouTube's schedule
+        # Phase 3 backlink: without this, calendar_id -> post -> video_id is
+        # unwalkable in SQL, which breaks the asset -> "shipped in N episodes"
+        # chain (and the retention payoff that rides on it).
+        "calendar_id": calendar_id,
     }
     ok = True
     try:
