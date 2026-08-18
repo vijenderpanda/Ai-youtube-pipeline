@@ -85,10 +85,37 @@ if (-not (Test-Path $reqSrc)) { Die "requirements.txt missing in clone" }
 (Get-Content $reqSrc) |
   Where-Object { $_.Trim() -ne "" -and $_ -notmatch 'pyopenjtalk|jieba_fast|opencc|--no-binary' } |
   Set-Content -Encoding UTF8 $reqEng
-Say "installing filtered requirements (this is the long step)..."
-& $VenvPy -m pip install -r $reqEng 2>&1 | Out-Host
-if ($LASTEXITCODE -ne 0) { Die "pip install -r requirements.english.txt failed (exit $LASTEXITCODE)" }
+$depsOK = $false
+try { $depsOK = ((& $VenvPy -c "import transformers, fastapi, g2p_en, nltk, jieba, torchaudio; print('ok')" 2>$null).Trim() -eq "ok") } catch {}
+if (-not $depsOK) {
+  Say "installing filtered requirements (this is the long step)..."
+  & $VenvPy -m pip install -r $reqEng 2>&1 | Out-Host
+  if ($LASTEXITCODE -ne 0) { Die "pip install -r requirements.english.txt failed (exit $LASTEXITCODE)" }
+} else { Say "requirements already satisfied -- skipping" }
 Write-Host "STEP4_DEPS_OK"
+
+# --- Step 4b: jieba_fast shim -> plain jieba ---
+# chinese.py imports `jieba_fast` (+ jieba_fast.posseg) at MODULE LOAD even on the
+# English path (TextPreprocessor -> text.chinese -> tone_sandhi). jieba_fast has no
+# Windows/py3.10 wheel and needs a C compiler; plain jieba (installed) is a drop-in
+# with the same API, so shim it. Verified against the repo's eager-import chain.
+$sp = Join-Path $Venv "Lib\site-packages\jieba_fast"
+New-Item -ItemType Directory -Force -Path $sp | Out-Null
+@'
+import jieba as _jieba
+for _n in dir(_jieba):
+    if not _n.startswith("_"):
+        globals()[_n] = getattr(_jieba, _n)
+'@ | Set-Content -Encoding UTF8 (Join-Path $sp "__init__.py")
+@'
+import jieba.posseg as _psg
+for _n in dir(_psg):
+    if not _n.startswith("_"):
+        globals()[_n] = getattr(_psg, _n)
+'@ | Set-Content -Encoding UTF8 (Join-Path $sp "posseg.py")
+$imp = (& $VenvPy -c "import jieba_fast, jieba_fast.posseg; print('shimok')" 2>&1)
+if ("$imp" -notmatch "shimok") { Die "jieba_fast shim failed: $imp" }
+Write-Host "STEP4B_JIEBA_SHIM_OK"
 
 # --- Step 5: NLTK data (g2p_en needs both tagger names + cmudict for headless EN) ---
 Say "downloading NLTK data..."
