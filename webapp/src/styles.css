@@ -6285,3 +6285,50 @@ a.out-chip:hover {
 .tpl-used { color: var(--success); font-weight: 650; }
 
 .tpl-refs { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+
+/* ---- Studio card: stage badge + mini pipeline rail (v18) -------------------
+   The grid card now carries the same PLAN→PRODUCE→QC→ARM→LIVE spine as the
+   board, so "where is this piece?" is answerable without opening it. Tone is
+   set per stage; every colour comes from an existing token. */
+.sc-tone-plan    { --tone: var(--faint, #6B7280); }
+.sc-tone-produce { --tone: var(--ch, #E91E63); }
+.sc-tone-qc      { --tone: var(--warn, #F2B84B); }
+.sc-tone-arm     { --tone: var(--champagne, #D8C08A); }
+.sc-tone-live    { --tone: var(--green, #46D18A); }
+
+.studio-cover-stage {
+  position: absolute; top: 8px; right: 8px;
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 700; letter-spacing: .06em;
+  padding: 2px 8px; border-radius: 6px;
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 16%, rgba(10,10,16,.82));
+  border: 1px solid color-mix(in srgb, var(--tone) 45%, transparent);
+}
+
+.sc-rail { display: flex; align-items: center; gap: 0; margin: 10px 0 7px; }
+.sc-node {
+  flex: 0 0 auto; width: 17px; height: 17px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8.5px; font-weight: 700;
+  background: var(--panel-2, #1C1C26);
+  border: 1.5px solid var(--border, #2A2A36);
+  color: var(--faint, #6B7280);
+}
+.sc-node.done {
+  color: var(--green, #46D18A);
+  border-color: var(--green, #46D18A);
+  background: color-mix(in srgb, var(--green, #46D18A) 16%, transparent);
+}
+.sc-node.at {
+  color: #fff; border-color: var(--tone); background: var(--tone);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tone) 22%, transparent);
+}
+.sc-seg { flex: 1 1 auto; height: 2px; background: var(--border, #2A2A36); }
+.sc-seg.done { background: var(--green, #46D18A); }
+
+.sc-status {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  font-size: 11.5px; font-weight: 600; color: var(--tone);
+}
+.sc-count { font-weight: 500; color: var(--faint, #6B7280); }

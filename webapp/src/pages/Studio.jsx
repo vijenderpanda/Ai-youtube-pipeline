@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import { RENDERS_BASE } from '../config'
@@ -13,6 +13,16 @@ import CalendarStatusChip from '../components/CalendarStatusChip'
 import EmptyState from '../components/EmptyState'
 import StudioLauncher from '../components/StudioLauncher'
 import { fmtDayHeading } from '../format'
+import { STAGES, stageIndex, resolveStage } from '../pipeline'
+
+// Card stage badge: one word for "where is this piece?", coloured per stage.
+const STAGE_BADGE = {
+  plan: { label: 'PLANNING', tone: 'plan' },
+  produce: { label: 'PRODUCING', tone: 'produce' },
+  qc: { label: 'REVIEW', tone: 'qc' },
+  arm: { label: 'READY', tone: 'arm' },
+  live: { label: 'SCHEDULED', tone: 'live' },
+}
 
 /**
  * Studio — staged fragment production (see docs/STAGED-PIPELINE.md §5).
@@ -216,6 +226,10 @@ export default function Studio() {
             const coverUrl = coverPath ? RENDERS_BASE + coverPath : null
             const emoji = channelEmoji(it.channel_key)
             const name = chanName[it.channel_key] || it.channel_key
+            // Same state machine the board + rail use, so a card can never disagree.
+            const pipe = resolveStage(it, c)
+            const stageAt = stageIndex(pipe.stage)
+            const badge = STAGE_BADGE[pipe.stage] || STAGE_BADGE.plan
             return (
               <Link
                 key={it.id}
@@ -235,11 +249,10 @@ export default function Studio() {
                     <span className="studio-cover-dot" />
                     {name}
                   </span>
-                  {(c.generating || 0) > 0 && (
-                    <span className="studio-cover-live">
-                      <span className="live-dot" /> live
-                    </span>
-                  )}
+                  <span className={'studio-cover-stage sc-tone-' + badge.tone}>
+                    {(c.generating || 0) > 0 && <span className="live-dot" />}
+                    {badge.label}
+                  </span>
                   {formatOf(it) === 'longform' && (
                     <span className="studio-cover-format" title="Long-form (16:9)">
                       ▭ long-form
@@ -258,43 +271,33 @@ export default function Studio() {
                     {it.status === 'produced' && <CalendarStatusChip status="produced" />}
                   </div>
 
-                  {total === 0 ? (
-                    <div className="studio-card-planning">
-                      <span className="asset-pulse" />
-                      Planning assets…
-                    </div>
-                  ) : (
-                    <>
-                      <div className="progress studio-card-progress">
-                        <div className="progress-track">
-                          <div className="progress-fill" style={{ width: `${pct}%` }} />
-                        </div>
-                        <span className="progress-label">
-                          {done}/{total} ready
+                  {/* Mini pipeline rail — the same PLAN→PRODUCE→QC→ARM→LIVE spine
+                      the board shows, so the grid reads at a glance. */}
+                  <div className={'sc-rail sc-tone-' + badge.tone}>
+                    {STAGES.map((s, i) => (
+                      <Fragment key={s.key}>
+                        {i > 0 && <span className={'sc-seg' + (i <= stageAt ? ' done' : '')} />}
+                        <span
+                          className={
+                            'sc-node' +
+                            (i < stageAt ? ' done' : '') +
+                            (i === stageAt ? ' at' : '')
+                          }
+                          title={s.label}
+                        >
+                          {i < stageAt ? '✓' : i + 1}
                         </span>
-                      </div>
-                      <div className="studio-card-chips">
-                        {(c.generating || 0) > 0 && (
-                          <span className="chip chip-running">
-                            <span className="chip-dot" />
-                            {c.generating} generating
-                          </span>
-                        )}
-                        {(c.review || 0) > 0 && (
-                          <span className="chip asset-review">
-                            <span className="chip-dot" />
-                            {c.review} in review
-                          </span>
-                        )}
-                        {(c.failed || 0) > 0 && (
-                          <span className="chip chip-failed">
-                            <span className="chip-dot" />
-                            {c.failed} failed
-                          </span>
-                        )}
-                      </div>
-                    </>
-                  )}
+                      </Fragment>
+                    ))}
+                  </div>
+                  <div className={'sc-status sc-tone-' + badge.tone}>
+                    {pipe.label}
+                    {total > 0 && pipe.stage !== 'live' && (
+                      <span className="sc-count">
+                        {done}/{total}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </Link>
             )
