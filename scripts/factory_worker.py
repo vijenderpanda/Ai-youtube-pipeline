@@ -3998,6 +3998,21 @@ def run_shell_script_job(supa, job):
     else:
         cmd = ["bash", full, *[str(a) for a in extra_args]]
 
+    # Long GPU installs/inference stream silently for many minutes; this handler
+    # stamped heartbeat_at only once at claim, so the cross-worker stale reaper
+    # (STALE_REAP_S=180) on ANY other worker would orphan a job that runs >3 min.
+    # Keep it alive with a background heartbeat until the child exits.
+    hb_stop = threading.Event()
+
+    def _shjob_heartbeat():
+        while not hb_stop.wait(30):
+            try:
+                supa.patch("factory_jobs", f"id=eq.{job_id}", {"heartbeat_at": now_iso()})
+            except Exception:  # noqa: BLE001 -- a heartbeat blip must never kill the job
+                pass
+    threading.Thread(target=_shjob_heartbeat, daemon=True,
+                     name=f"shjob-hb-{job_id[:8]}").start()
+
     try:
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                 text=True, encoding="utf-8", errors="replace")
@@ -4012,10 +4027,13 @@ def run_shell_script_job(supa, job):
     except Exception as e:
         fail(supa, job_id, f"failed to launch {script}: {e}", buf, job=job)
         return
+    finally:
+        hb_stop.set()
 
     output_text = "\n".join(output_lines)
-    # Extract RDP_CONNECT line if present for prominence in recap
-    rdp_line = next((l for l in output_lines if "RDP_CONNECT" in l or "TUNNEL_URL" in l), "")
+    # Surface a headline marker line in the recap (sysadmin tunnels + GPU outputs)
+    rdp_line = next((l for l in output_lines if any(
+        m in l for m in ("RDP_CONNECT", "TUNNEL_URL", "RENDER_PATH", "SMOKE_OK"))), "")
 
     result = {
         "uploaded": 0,
