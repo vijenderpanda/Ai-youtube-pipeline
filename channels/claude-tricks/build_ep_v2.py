@@ -33,6 +33,8 @@ EPISODES_V2 = {
     "hook": {"image": "ep_artifacts/still_hero_rs400.png", "until": 2.2,
              "lines": ["I BUILT THIS", "BY TYPING ONE LINE"], "hot": "ONE"},
     "outro": True,
+    "outro_dur": 0,
+    "outro_src": "ep_artifacts/outro_card.mp4",   # LOCKED Ep11-style question-CTA card (gen_outro_card.py), not the old generic sting
     "outro_cta": "auto",   # Sol speaks the CTA over the card (approved treatment); line 7 is a loopback, not a CTA
     "lines": [
       "I typed one line — and Claude built me this working app. No code.",
@@ -56,10 +58,10 @@ EPISODES_V2 = {
       {"lines": ["I TYPED", "ONE LINE", "NO CODE"]},
       {"lines": ["EMPTY CHAT", "TO A WORKING", "APP — WATCH"]},
     ],
-    "steps": [
-      ("STEP 1/3 — TYPE ONE LINE", 2, 2),
-      ("STEP 2/3 — CLAUDE BUILDS IT", 3, 3),
-      ("STEP 3/3 — IT JUST WORKS", 4, 4),
+    "steps": [   # 4th = corner in DEAD SPACE (prompt bubble is top; empty chat is bottom)
+      ("STEP 1/3 — TYPE ONE LINE", 2, 2, "bl"),
+      ("STEP 2/3 — CLAUDE BUILDS IT", 3, 3, "bl"),
+      ("STEP 3/3 — IT JUST WORKS", 4, 4, "tl"),
     ],
   },
   "20": {
