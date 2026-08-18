@@ -4020,7 +4020,7 @@ def run_shell_script_job(supa, job):
         for line in proc.stdout:
             line = line.rstrip()
             log(f"  {line}")
-            buf.write(f"[shell] {line}\n")
+            buf.add(f"[shell] {line}")
             output_lines.append(line)
         proc.wait()
         rc = proc.returncode
@@ -4051,7 +4051,7 @@ def run_shell_script_job(supa, job):
     try:
         supa.patch("factory_jobs", f"id=eq.{job_id}",
                    {"status": status, "finished_at": now_iso(),
-                    "result": result, "logs": buf.getvalue()})
+                    "result": result, "logs": buf.text()})
     except Exception as e:
         log(f"  could not finalize shell_script job: {e}")
 
