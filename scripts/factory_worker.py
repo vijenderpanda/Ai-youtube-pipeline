@@ -2869,6 +2869,44 @@ def append_factory_backlog(rows, job_id, buf):
         return 0
 
 
+def suggestion_row(channel_key, planned_date, title, *, brief="", kind="content",
+                   type_=None, model=None, effort=None, ultracode=False, reason="",
+                   evidence=None, suggestion_source=None, suggestion_confidence="scored"):
+    """THE canonical factory_calendar 'suggested' row shape. Every producer of
+    suggestions (analyze_and_suggest via ingest_suggestions(), and the deterministic
+    scripts/suggest_next.py) must build rows through here so the two stay in sync.
+
+    PostgREST bulk insert demands identical keys on EVERY row of the batch (PGRST102),
+    so challenger-only columns (replaces_id / why_not) must exist on plain suggestions
+    too -- do not "optimise" them away. Same goes for the 022 provenance columns.
+    """
+    return {
+        "channel_key": channel_key,
+        "planned_date": planned_date,
+        "title": title,
+        "brief": brief or "",
+        "kind": kind,
+        # factory items are concrete generator create/update tasks -> always custom
+        "type": ("custom" if kind == "factory" else (type_ or "produce_short")),
+        "model": model or "fable",
+        "effort": effort or "high",
+        "ultracode": bool(ultracode),
+        "status": "suggested",
+        "origin": "ai_suggestion",
+        "suggestion_reason": reason or "",
+        # PostgREST bulk insert demands identical keys on every row (PGRST102),
+        # so challenger-only columns must exist on plain suggestions too
+        "replaces_id": None,
+        "why_not": None,
+        # --- migration 022_suggestion_provenance ---------------------------------
+        # evidence is NEVER null and NEVER {"cites": []} for an ai_suggestion row;
+        # the write-side guard lives in scripts/suggest_next.py::assert_evidence().
+        "evidence": evidence,
+        "suggestion_source": suggestion_source,
+        "suggestion_confidence": suggestion_confidence or "scored",
+    }
+
+
 def ingest_suggestions(supa, job, buf):
     """Parse suggestions_<JOBID>.json written by the analyze_and_suggest run.
     v16: content suggestions land as factory_calendar rows (status 'suggested', origin
@@ -2898,25 +2936,15 @@ def ingest_suggestions(supa, job, buf):
             buf.add(f"[worker] skipped malformed suggestion: {json.dumps(s)[:200]}")
             continue
         kind = "factory" if s.get("kind") == "factory" else "content"
-        row = {
-            "channel_key": s["channel_key"],
-            "planned_date": s["planned_date"],
-            "title": s["title"],
-            "brief": s.get("brief") or "",
-            "kind": kind,
-            # factory items are concrete generator create/update tasks -> always custom
-            "type": "custom" if kind == "factory" else (s.get("type") or "produce_short"),
-            "model": s.get("model") or "fable",
-            "effort": s.get("effort") or "high",
-            "ultracode": bool(s.get("ultracode")),
-            "status": "suggested",
-            "origin": "ai_suggestion",
-            "suggestion_reason": s.get("reason") or "",
-            # PostgREST bulk insert demands identical keys on every row (PGRST102),
-            # so challenger-only columns must exist on plain suggestions too
-            "replaces_id": None,
-            "why_not": None,
-        }
+        row = suggestion_row(
+            s["channel_key"], s["planned_date"], s["title"],
+            brief=s.get("brief"), kind=kind, type_=s.get("type"),
+            model=s.get("model"), effort=s.get("effort"),
+            ultracode=s.get("ultracode"), reason=s.get("reason"),
+            # analyze_and_suggest is model-authored and carries no file-level trail
+            evidence=None, suggestion_source="analyze_and_suggest",
+            suggestion_confidence="generated",
+        )
         ref = str(s.get("replaces_ref") or "").strip()
         if ref:
             if ref in challenged:
