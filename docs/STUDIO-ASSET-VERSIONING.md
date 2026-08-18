@@ -1,7 +1,10 @@
 # Studio Asset Versioning & Regeneration — Design
 
-> **Status: DESIGN (VJ request 2026-08-18).** Not built yet. Captures the full spec + a
-> phased plan so we build it deliberately, not all at once.
+> **Status: PHASE 1+2 SHIPPED (2026-08-18).** Migration `018_asset_versions.sql` applied to
+> `artha`; 9 assets registered as v1=locked + 4 build locks (`scripts/backfill_asset_versions.py`);
+> `build_ep_v2.resolve_locked()` reads the lock (per-ep > lock > default, None-safe); `?r=assets`
+> GET + `lock_asset` POST on factory-api (deployed); Studio **Assets** board live (`/assets`).
+> Phases 3–5 (HeyGen face pool, mix-&-match preview, regenerate-via-worker) remain. Full spec below.
 >
 > **Why:** the 2026-08-18 Artifacts-short production hit avoidable confusion — the build
 > silently fell back to the OLD generic outro sting (the locked Ep11-style card wasn't
