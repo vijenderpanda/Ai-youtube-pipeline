@@ -4569,6 +4569,76 @@ def dry_run():
     print("--- END DRY RUN ---")
 
 
+# ---------------------------------------------------------------- self-upgrade
+# The supervisors already auto-HEAL: launchd (KeepAlive), run-worker.ps1 (a
+# while-loop), and systemd (Restart=always) all relaunch the process on ANY exit.
+# So auto-UPGRADE is simply: when idle, fast-forward the checkout to
+# origin/<current-branch> and exit(0) -- the supervisor relaunches us on the new
+# code within seconds. Push to the branch a worker tracks (main, in production)
+# and every idle worker upgrades itself within SELF_UPDATE_S. Disable per-host
+# with FACTORY_AUTO_UPDATE=0.
+SELF_UPDATE_S = 300  # how often an idle worker checks origin for new commits
+_self_update_state = {"at": 0.0}
+
+
+def _git(args, timeout=120):
+    """Run one git command inside the repo -> (returncode, stdout, stderr)."""
+    p = subprocess.run(["git", *args], cwd=str(REPO), capture_output=True,
+                       text=True, timeout=timeout)
+    return p.returncode, (p.stdout or "").strip(), (p.stderr or "").strip()
+
+
+def maybe_self_update(supa, active):
+    """When idle, fast-forward to origin/<current-branch> and restart onto it.
+
+    Fast-forward ONLY -- never clobbers local commits or a dirty tree; a diverged
+    or FF-blocked checkout logs a warning and is left for a human. A py_compile
+    gate rolls the update back if the new worker code wouldn't even parse, so a
+    bad commit can't put the fleet in a crash-restart loop. No-op when busy,
+    disabled (FACTORY_AUTO_UPDATE=0), throttled, offline, or already current."""
+    if os.environ.get("FACTORY_AUTO_UPDATE", "1") == "0" or active:
+        return
+    now = time.time()
+    if now - _self_update_state["at"] < SELF_UPDATE_S:
+        return
+    _self_update_state["at"] = now
+    try:
+        rc, branch, _ = _git(["rev-parse", "--abbrev-ref", "HEAD"], timeout=30)
+        if rc != 0 or not branch or branch == "HEAD":
+            return  # git error or detached HEAD -- don't touch it
+        if _git(["fetch", "--quiet", "origin", branch], timeout=120)[0] != 0:
+            return  # offline / transient -- retry next window
+        _, local, _ = _git(["rev-parse", "HEAD"], timeout=30)
+        _, remote, _ = _git(["rev-parse", f"origin/{branch}"], timeout=30)
+        if not local or not remote or local == remote:
+            return  # already up to date
+        # advance only if our HEAD is an ancestor of the remote (a clean FF)
+        if _git(["merge-base", "--is-ancestor", "HEAD", f"origin/{branch}"])[0] != 0:
+            log(f"auto-update: local diverged from origin/{branch}; skipping "
+                "(manual reconcile needed)", level="warn")
+            return
+        rc, _, err = _git(["merge", "--ff-only", f"origin/{branch}"], timeout=120)
+        if rc != 0:
+            log("auto-update: fast-forward blocked -- likely local changes to "
+                f"tracked files: {err[:180]}", level="warn")
+            return
+        # safety gate: never restart into a worker that won't even parse
+        chk = subprocess.run([sys.executable, "-m", "py_compile",
+                              str(SCRIPTS_DIR / "factory_worker.py")],
+                             capture_output=True, text=True, timeout=60)
+        if chk.returncode != 0:
+            _git(["reset", "--hard", local], timeout=60)
+            log(f"auto-update: new code fails py_compile; rolled back to {local[:7]} "
+                f"({(chk.stderr or '').strip()[:180]})", level="error")
+            return
+        log(f"auto-update: {branch} {local[:7]} -> {remote[:7]}; restarting to load "
+            "new code")
+        _push_logs(supa, _drain_log_ring())  # surface the restart on the dashboard
+        sys.exit(0)  # supervisor relaunches us on the fresh checkout
+    except (OSError, subprocess.SubprocessError) as e:
+        log(f"auto-update check failed (will retry): {e}", level="warn")
+
+
 def ensure_utf8_mode():
     """Windows defaults open()/Path.read_text() to the locale codec (cp1252),
     which chokes on UTF-8 repo files (PRODUCTION-PLAYBOOK.md, manifests, etc.).
@@ -4645,6 +4715,12 @@ def main():
     while True:
         for jid in [j for j, (t, _) in active.items() if not t.is_alive()]:
             active.pop(jid)
+
+        # v18: when idle, self-upgrade to origin/<branch> and restart on new code.
+        # Placed outside every try/except Exception below so its sys.exit(0) is not
+        # swallowed. Skipped for --once so a one-shot run never restarts itself.
+        if not args.once:
+            maybe_self_update(supa, active)
 
         # v14: heartbeat + reload this worker's routing config every ~20s. Cheap,
         # and lets the dashboard pause the worker / change its accepted job types

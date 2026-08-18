@@ -285,6 +285,26 @@ launchctl bootout gui/$(id -u)/com.factory.worker
 launchctl kickstart -k gui/$(id -u)/com.factory.worker
 ```
 
+## Auto-heal & auto-upgrade
+
+**Auto-heal (crash → relaunch):** every supervisor restarts the process on any
+exit — launchd `KeepAlive` (Mac), the `while($true)` loop in `deploy/run-worker.ps1`
+(Windows Scheduled Task), and `Restart=always` (systemd). Nothing to configure.
+
+**Auto-upgrade (push → self-update):** an **idle** worker checks `origin/<its branch>`
+every `SELF_UPDATE_S` (5 min); if the remote is ahead it **fast-forwards** the
+checkout and exits, and the supervisor relaunches it on the new code. So a push to
+the branch a worker tracks (**`main`** in production) rolls out to the whole fleet
+within minutes — no manual pull/restart.
+
+- Fast-forward **only** — never clobbers local commits or a dirty tree; a diverged
+  or FF-blocked checkout logs a warning and waits for a human.
+- A `py_compile` gate rolls the update back if the new `factory_worker.py` won't
+  parse, so a broken commit can't crash-loop the fleet.
+- Never interrupts a running job (idle-gated). Bootstrapping is one-time: a worker
+  must already be on code that has this to self-upgrade — pull+restart it once by hand.
+- Disable on a host with `FACTORY_AUTO_UPDATE=0`.
+
 ## DB objects (created separately)
 
 Tables `factory_channels/jobs/renders/generators/stats/events/settings/calendar`

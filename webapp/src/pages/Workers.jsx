@@ -161,7 +161,7 @@ function WorkerLogs({ workerId }) {
   const [open, setOpen] = useState(true)
   const [logs, setLogs] = useState(null)
   const [err, setErr] = useState('')
-  const bottomRef = useRef(null)
+  const logBoxRef = useRef(null)
   const intervalRef = useRef(null)
 
   useEffect(() => {
@@ -176,8 +176,16 @@ function WorkerLogs({ workerId }) {
     return () => clearInterval(intervalRef.current)
   }, [open, workerId])
 
+  // Keep the log tail in view by scrolling ONLY the log box — never the page.
+  // scrollIntoView() walks every scrollable ancestor (incl. the window), so each
+  // 6s refresh was yanking the whole Machines page down. Setting scrollTop on the
+  // box itself can't move the page. Guard on near-bottom so a user who scrolled up
+  // to read history isn't dragged back down mid-read.
   useEffect(() => {
-    if (open && bottomRef.current) bottomRef.current.scrollIntoView({ behavior: 'smooth' })
+    const el = logBoxRef.current
+    if (!open || !el) return
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 40
+    if (nearBottom) el.scrollTop = el.scrollHeight
   }, [logs, open])
 
   return (
@@ -187,7 +195,7 @@ function WorkerLogs({ workerId }) {
         {open ? '▾ hide logs' : '▸ logs'}
       </button>
       {open && (
-        <div style={{
+        <div ref={logBoxRef} style={{
           marginTop: 6, background: 'var(--bg-inset, #111)', borderRadius: 6,
           padding: '8px 10px', maxHeight: 260, overflowY: 'auto', fontSize: 11,
           fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
@@ -202,7 +210,6 @@ function WorkerLogs({ workerId }) {
               {l.message}
             </div>
           ))}
-          <div ref={bottomRef} />
         </div>
       )}
     </div>
