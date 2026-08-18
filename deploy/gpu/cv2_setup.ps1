@@ -59,15 +59,20 @@ Write-Host "CV2_STEP3_OK"
 # Pin setuptools<81 in the venv AND (via PIP_CONSTRAINT) in the isolated build envs
 # so the sdist builds on a box without a compiler.
 & $VenvPy -m pip install "setuptools<81" wheel 2>&1 | Out-Host
-$constraints = Join-Path $Root "constraints.txt"
-"setuptools<81" | Set-Content -Encoding ASCII $constraints
-$env:PIP_CONSTRAINT = $constraints
-Say "installing requirements (compiler-free: wetext + kaldifst wheel)..."
-& $VenvPy -m pip install -r (Join-Path $Repo "requirements.txt") 2>&1 | Out-Host
+# openai-whisper is an sdist whose setup.py `import pkg_resources` fails to build
+# here, and it is NOT used by zero-shot inference (ASR/data-prep only) -> drop it
+# from the main install; best-effort it afterward without build isolation.
+$reqFilt = Join-Path $Root "requirements.filtered.txt"
+(Get-Content (Join-Path $Repo "requirements.txt")) |
+  Where-Object { $_ -notmatch 'openai-whisper' -and $_ -notmatch '^\s*whisper\b' } |
+  Set-Content -Encoding UTF8 $reqFilt
+Say "installing filtered requirements (dropped openai-whisper)..."
+& $VenvPy -m pip install -r $reqFilt 2>&1 | Out-Host
 $rc = $LASTEXITCODE
 & $VenvPy -m pip install "wetext==0.0.4" 2>&1 | Out-Host
-Remove-Item Env:\PIP_CONSTRAINT -ErrorAction SilentlyContinue
 if ($rc -ne 0) { Die "pip install -r requirements failed (exit $rc)" }
+# best-effort whisper via the venv's setuptools (has pkg_resources); non-fatal
+& $VenvPy -m pip install --no-build-isolation "openai-whisper" 2>&1 | Out-Host
 Write-Host "CV2_STEP4_OK"
 
 # verify the cosyvoice package imports (class only, no weights yet)
