@@ -148,6 +148,7 @@ export default function StepSpine({
   onSchedule,
   planning = false,
   planFailed = false,
+  planFailReason = '',
   canAssemble = false,
   assembleTitle,
   assembleActive = false,
@@ -345,7 +346,19 @@ export default function StepSpine({
             )}
           </p>
           {planFailed ? (
-            <p className="error-text small">Planning failed — check the Jobs page, then stage again.</p>
+            <p className="error-text small">
+              {/* Show WHY, not just "failed". The common case is an account cap
+                  ("You've hit your session limit · resets …"), which is not a
+                  pipeline fault and needs no fix — only a retry later. The old
+                  copy said "Planning failed … stage again", which is neither the
+                  right phase nor the right verb for a direct-mode piece. */}
+              {planFailReason
+                ? <>Last run stopped: <b>{planFailReason}</b>{' '}
+                    {/rate|limit|quota|resets/i.test(planFailReason)
+                      ? '— nothing to fix here, just run it again after that.'
+                      : '— see the Jobs page for the full log.'}</>
+                : <>The last run failed — see the Jobs page for the log, then try again.</>}
+            </p>
           ) : planning ? (
             <p className="dim small format-card-note">
               <span className="asset-pulse" /> Writing the asset list…

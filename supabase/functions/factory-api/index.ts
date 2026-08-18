@@ -924,7 +924,10 @@ async function handleGet(url: URL): Promise<Response> {
         db.from("factory_calendar").select("*").eq("id", calendarId).maybeSingle(),
         db.from("factory_assets").select("*").eq("calendar_id", calendarId)
           .order("created_at", { ascending: false }),
-        db.from("factory_jobs").select("id, type, status, title, created_at")
+        // error + meta are load-bearing for the board: the format step shows WHY a
+        // run stopped (an account cap reads very differently from a real fault),
+        // and meta.iteration drives the incubation revision counter.
+        db.from("factory_jobs").select("id, type, status, title, created_at, error, meta, model")
           // v16: also surface the monolithic preview job + its finalize
           // (shell_script) job so the direct-mode board can show their status
           // and gate the Finalize & Arm button.

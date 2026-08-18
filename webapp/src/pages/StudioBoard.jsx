@@ -470,6 +470,20 @@ export default function StudioBoard() {
     ? !!(previewJobDirect && previewJobDirect.status === 'failed')
     : !!(planJob && planJob.status === 'failed')
 
+  // The one line of the failure that a human needs. Worker errors arrive as
+  // "claude exited 1. Log tail:\n[worker] starting…\n<the real reason>\n[result…]",
+  // so the useful sentence is buried; pull the first line that isn't scaffolding.
+  const planFailReason = (() => {
+    const job = isDirect ? previewJobDirect : planJob
+    const raw = (job && job.error) || ''
+    if (!raw) return ''
+    const line = raw
+      .split('\n')
+      .map((l) => l.trim())
+      .find((l) => l && !/^claude exited|^\[worker\]|^\[system:init\]|^\[result/.test(l))
+    return (line || raw.split('\n')[0] || '').slice(0, 160)
+  })()
+
   const doRevise = async () => {
     if (busy) return
     const note = feedback.trim()
@@ -966,6 +980,7 @@ export default function StudioBoard() {
             onSchedule={setSchedule}
             planning={planning}
             planFailed={planFailed}
+            planFailReason={planFailReason}
             canAssemble={canAssemble}
             assembleTitle={assembleTitle}
             assembleActive={assembleActive}
