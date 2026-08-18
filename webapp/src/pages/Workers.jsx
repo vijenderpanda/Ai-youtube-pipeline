@@ -88,16 +88,22 @@ function fmtTokens(n) {
   return String(n)
 }
 
-// When the Claude cap resets (from meta.usage.reset_at). Returns null if there's
-// no reset time or it's already in the past (worker is healthy again).
-function fmtResetAt(iso) {
-  if (!iso) return null
-  const ms = new Date(iso).getTime() - Date.now()
-  if (!(ms > 0)) return null
-  const mins = Math.round(ms / 60000)
-  const rel = mins < 60 ? `~${mins}m` : `~${Math.floor(mins / 60)}h ${mins % 60}m`
-  const clock = new Date(iso).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
-  return { rel, clock }
+// Progress through the current 5-hour window, from meta.usage. reset_at (from a
+// real cap-hit) is exact; reset_est (window_start + 5h) is the pre-cap estimate.
+// The subscription's true quota % is NOT machine-readable, so this bar shows
+// elapsed TIME through the window, not a fake used/total. Returns null when no
+// Claude activity is anchoring a window yet.
+function fmtWindow(u) {
+  const startMs = u.window_start ? new Date(u.window_start).getTime() : null
+  const resetIso = u.reset_at || u.reset_est
+  const resetMs = resetIso ? new Date(resetIso).getTime() : null
+  if (!startMs || !resetMs || resetMs <= startMs) return null
+  const now = Date.now()
+  const pct = Math.min(100, Math.max(0, Math.round(((now - startMs) / (resetMs - startMs)) * 100)))
+  const mins = Math.max(0, Math.round((resetMs - now) / 60000))
+  const rel = mins <= 0 ? 'now' : mins < 60 ? `${mins}m` : `${Math.floor(mins / 60)}h ${mins % 60}m`
+  const clock = new Date(resetMs).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+  return { pct, rel, clock, exact: !!u.reset_at, resetIso }
 }
 
 /**
@@ -112,45 +118,56 @@ function UsageStrip({ meta }) {
   if (!u) {
     return (
       <div style={{ fontSize: 12, color: 'var(--dim, #888)' }}>
-        🧠 Claude usage: <em>no data yet — starts reporting after the worker picks up the v17 code</em>
+        🧠 Claude usage: <em>no data yet — starts reporting after the worker runs a Claude job</em>
       </div>
     )
   }
+  const w = fmtWindow(u)
+  const limited = !!u.rate_limited
   return (
     <div style={{
-      display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', fontSize: 12,
-      background: 'var(--bg-inset, #1113)', borderRadius: 6, padding: '6px 10px',
+      display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12,
+      background: 'var(--bg-inset, #1113)', borderRadius: 6, padding: '8px 10px',
     }}>
-      <span title={`AI spend reported by the Claude CLI across this worker's jobs finished in the last ${u.window_h}h`}>
-        🧠 <strong>Claude ({u.window_h}h):</strong>{' '}
-        <strong>${(u.cost_usd ?? 0).toFixed(2)}</strong>
-      </span>
-      <span className="dim">{u.jobs ?? 0} job{u.jobs === 1 ? '' : 's'}</span>
-      <span className="dim" title="input / output tokens in the window">
-        {fmtTokens(u.input_tokens)} in / {fmtTokens(u.output_tokens)} out
-      </span>
-      {u.rate_limited ? (
-        (() => {
-          const r = fmtResetAt(u.reset_at)
-          return (
-            <>
-              <span className="chip" title="A recent job failed on a Claude usage/rate cap — AI jobs will stall until the cap resets; native jobs (stats, scripts) keep running"
-                style={{ background: '#ef444422', color: '#ef4444', fontWeight: 700 }}>
-                RATE LIMITED
-              </span>
-              <span style={{ color: '#f59e0b', fontWeight: 600 }}
-                title={u.reset_at ? `AI jobs resume at ${new Date(u.reset_at).toLocaleString()}` : undefined}>
-                {r
-                  ? <>🟠 AI jobs resume in <strong>{r.rel}</strong> (~{r.clock})</>
-                  : <>🟠 AI jobs resume when the {u.window_h}h cap resets</>}
-              </span>
-            </>
-          )
-        })()
+      {/* row 1 — used so far this window + health */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+        <span title={`Claude spend across this worker's jobs in the current ${u.window_h}h window`}>
+          🧠 <strong>used ({u.window_h}h):</strong> <strong>${(u.cost_usd ?? 0).toFixed(2)}</strong>
+        </span>
+        <span className="dim">{u.jobs ?? 0} job{u.jobs === 1 ? '' : 's'}</span>
+        <span className="dim" title="input / output tokens in the window">
+          {fmtTokens(u.input_tokens)} in / {fmtTokens(u.output_tokens)} out
+        </span>
+        {limited ? (
+          <span className="chip" title="A job hit the Claude usage cap — AI jobs stall until it resets; native jobs (stats, scripts) keep running"
+            style={{ background: '#ef444422', color: '#ef4444', fontWeight: 700 }}>RATE LIMITED</span>
+        ) : (
+          <span className="chip" style={{ background: '#22c55e18', color: '#22c55e' }}>ok</span>
+        )}
+        {u.at && <span className="dim" style={{ marginLeft: 'auto' }}>as of {timeAgo(u.at)}</span>}
+      </div>
+
+      {/* row 2 — time through the 5h window + reset countdown */}
+      {w ? (
+        <div title={`Resets ${new Date(w.resetIso).toLocaleString()}${w.exact ? '' : ' (estimated — the exact reset is only known once a cap is actually hit)'}`}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
+            <span className="dim">{limited ? 'AI jobs resume' : `${u.window_h}h window`}</span>
+            <span style={{ color: limited ? '#f59e0b' : 'var(--dim, #888)', fontWeight: limited ? 600 : 400 }}>
+              {limited
+                ? <>🟠 in ~{w.rel} (~{w.clock})</>
+                : <>resets in ~{w.rel} (~{w.clock}){w.exact ? '' : ' · est'}</>}
+            </span>
+          </div>
+          <div style={{ height: 6, background: '#8882', borderRadius: 3, overflow: 'hidden' }}>
+            <div style={{
+              width: `${w.pct}%`, height: '100%', borderRadius: 3,
+              background: limited ? '#ef4444' : '#6366f1', transition: 'width .3s',
+            }} />
+          </div>
+        </div>
       ) : (
-        <span className="chip" style={{ background: '#22c55e18', color: '#22c55e' }}>ok</span>
+        <span className="dim">no Claude usage in the last {u.window_h}h — nothing counting against the limit</span>
       )}
-      {u.at && <span className="dim" style={{ marginLeft: 'auto' }}>as of {timeAgo(u.at)}</span>}
     </div>
   )
 }

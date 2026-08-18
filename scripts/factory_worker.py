@@ -543,6 +543,17 @@ def parse_rate_reset(text):
     return val // 1000 if val > 1_000_000_000_000 else val
 
 
+def _parse_iso(s):
+    """PostgREST timestamptz string -> aware UTC datetime, or None."""
+    if not s:
+        return None
+    try:
+        dt = datetime.fromisoformat(str(s).replace("Z", "+00:00"))
+    except (TypeError, ValueError):
+        return None
+    return dt.astimezone(timezone.utc) if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+
+
 def usage_rollup(supa):
     """Near-real-time usage snapshot for this worker's status row.
 
@@ -562,27 +573,39 @@ def usage_rollup(supa):
     # where an unencoded '+' decodes to a space and silently breaks the filter.
     since = (datetime.now(timezone.utc) - timedelta(hours=USAGE_WINDOW_H)
              ).strftime("%Y-%m-%dT%H:%M:%SZ")
+    # window_start = when the current 5h window opened (earliest Claude activity in
+    # it); reset_at = the AUTHORITATIVE reset from a cap-hit error; reset_est = the
+    # estimate window_start + 5h used before any cap is hit. The dashboard draws a
+    # time-through-window bar from these (the true subscription quota % is not
+    # machine-readable, so we show elapsed-time, not a fake used/total).
     out = {"window_h": USAGE_WINDOW_H, "since": since, "jobs": 0,
            "cost_usd": 0.0, "input_tokens": 0, "output_tokens": 0,
-           "rate_limited": False, "reset_at": None, "at": now_iso()}
+           "rate_limited": False, "reset_at": None, "reset_est": None,
+           "window_start": None, "at": now_iso()}
     try:
         # factory_jobs carries the claimer in assigned_worker (there is no
         # worker_id column on jobs — that name lives on factory_workers).
         rows = supa.select(
             "factory_jobs",
             f"assigned_worker=eq.{WORKER_ID}&finished_at=gte.{since}"
-            "&select=status,error,result")
+            "&select=status,error,result,finished_at")
     except (RuntimeError, requests.RequestException) as e:
         log(f"usage rollup query failed (keeping last value): {e}", level="warn")
         return _usage_cache["val"]  # keep last good value; retry next heartbeat
     matched_limit = False
     reset_epoch = 0
+    earliest_ai = None  # earliest finished_at (dt) of a Claude-consuming job
     for r in rows or []:
         u = (r.get("result") or {}).get("usage") or {}
+        consumed = False
         try:
-            out["cost_usd"] += float(u.get("cost_usd") or 0)
-            out["input_tokens"] += int(u.get("input_tokens") or 0)
-            out["output_tokens"] += int(u.get("output_tokens") or 0)
+            c = float(u.get("cost_usd") or 0)
+            it = int(u.get("input_tokens") or 0)
+            ot = int(u.get("output_tokens") or 0)
+            out["cost_usd"] += c
+            out["input_tokens"] += it
+            out["output_tokens"] += ot
+            consumed = bool(c or it or ot)
         except (TypeError, ValueError):
             pass
         out["jobs"] += 1
@@ -591,14 +614,27 @@ def usage_rollup(supa):
         if r.get("status") == "failed" and any(s in err for s in
                                                 ("rate limit", "usage limit", "429")):
             matched_limit = True
+            consumed = True  # a capped attempt still marks Claude activity
             ep = parse_rate_reset(err_raw)
             if ep and ep > reset_epoch:
                 reset_epoch = ep
+        if consumed:
+            ts = _parse_iso(r.get("finished_at"))
+            if ts and (earliest_ai is None or ts < earliest_ai):
+                earliest_ai = ts
     out["cost_usd"] = round(out["cost_usd"], 4)
+    # window anchor + estimated reset from observed Claude activity
+    if earliest_ai is not None:
+        out["window_start"] = earliest_ai.strftime("%Y-%m-%dT%H:%M:%SZ")
+        out["reset_est"] = (earliest_ai + timedelta(hours=USAGE_WINDOW_H)
+                            ).strftime("%Y-%m-%dT%H:%M:%SZ")
     if matched_limit:
         if reset_epoch:
-            out["reset_at"] = datetime.fromtimestamp(
-                reset_epoch, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            reset_dt = datetime.fromtimestamp(reset_epoch, timezone.utc)
+            out["reset_at"] = reset_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+            # a real cap gives the exact window: anchor it precisely
+            out["window_start"] = (reset_dt - timedelta(hours=USAGE_WINDOW_H)
+                                   ).strftime("%Y-%m-%dT%H:%M:%SZ")
             # Self-clearing: a reset time already in the past means the rolling
             # window rolled and AI jobs work again -- even though the failed row
             # is still inside the reporting window and would otherwise keep the
