@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { api } from '../api'
-import { RENDERS_BASE } from '../config'
 import { usePoll } from '../hooks'
 import { accentFor, resolveAccents } from '../channelColor'
 import {
@@ -8,7 +7,6 @@ import {
   wiringOf,
   kindOf,
   hasCover,
-  isImagePath,
   lineageOf,
   usageOf,
   usageBadge,
@@ -16,6 +14,7 @@ import {
   usageTitle,
 } from '../assetCatalog'
 import EmptyState from '../components/EmptyState'
+import MediaPreview, { hasPreview, sampleNoteOf } from '../components/MediaPreview'
 import Toast, { useToast } from '../components/Toast'
 import { fmtDate } from '../format'
 
@@ -29,6 +28,11 @@ import { fmtDate } from '../format'
  * Visual treatment is per kind: image/video/audio get a cover band (an <img>
  * only when the path is genuinely decodable — an .mp3 is not), while
  * code/id/style render body-only with a mono build_ref chip.
+ *
+ * Every card is AUDITIONABLE (MediaPreview): the cover band plays the locked
+ * revision, an "Audition" row plays each other revision, and a code/id/style
+ * slot plays the finished short its composition rendered (meta.sample_path) so
+ * a lock is chosen on the thing itself, not on a filename.
  *
  * Phase 3 adds USAGE backlinks (?r=asset_backlinks): which episodes each
  * revision was actually built into, and which casts compose it. Provenance
@@ -44,32 +48,6 @@ const WIRING_NOTE = {
   live: 'Live in render',
   locked: 'Locked · wiring next',
   reference: 'Reference',
-}
-
-/** Cover content for a version, by kind. Never returns an <img> for audio. */
-function CoverInner({ type, v, kind }) {
-  const imgPath =
-    (isImagePath(v && v.thumb_path) && v.thumb_path) ||
-    (isImagePath(v && v.storage_path) && v.storage_path) ||
-    null
-  if (imgPath) {
-    return <img src={RENDERS_BASE + imgPath} alt="" loading="lazy" />
-  }
-  if (kind === 'audio') {
-    // No artwork for a bed — draw its shape instead of breaking an <img>.
-    return (
-      <span className="asset-wave" aria-hidden="true">
-        {[9, 17, 25, 13, 22, 8, 19, 27, 12, 7, 20, 15].map((h, i) => (
-          <i key={i} style={{ height: h }} />
-        ))}
-      </span>
-    )
-  }
-  return (
-    <span className="studio-cover-glyph" aria-hidden="true">
-      {kind === 'video' ? '▶' : '🖼'}
-    </span>
-  )
 }
 
 /** Sub-header note — states exactly how far back attribution goes. */
@@ -193,7 +171,12 @@ export default function Assets() {
               <div key={type} className="card studio-card" style={{ '--ch': accent }}>
                 {hasCover(kind) && (
                   <div className="studio-cover">
-                    <CoverInner type={type} v={head} kind={kind} />
+                    <MediaPreview
+                      assetType={type}
+                      version={head}
+                      size="cover"
+                      name={assetLabel(type) + (head ? ' v' + head.version : '')}
+                    />
                     <span className="studio-cover-chan">
                       <span className="studio-cover-dot" />
                       {assetLabel(type)}
@@ -224,6 +207,21 @@ export default function Assets() {
                   </div>
                   {!hasCover(kind) && buildRef && (
                     <div className="asset-buildref mono">{buildRef}</div>
+                  )}
+                  {/* A composition/style has no file you can watch — but the
+                      short it rendered does. Badged SAMPLE so nobody reads the
+                      mp4 as being the component itself. */}
+                  {!hasCover(kind) && sampleNoteOf(head) && (
+                    <div className="asset-sample">
+                      <MediaPreview
+                        assetType={type}
+                        version={head}
+                        size="tile"
+                        className="asset-sample-prev"
+                        name={assetLabel(type) + ' v' + head.version}
+                      />
+                      <span className="dim small">{sampleNoteOf(head)}</span>
+                    </div>
                   )}
                   {head && head.label && <div className="dim small">{head.label}</div>}
 
@@ -342,6 +340,32 @@ export default function Assets() {
                       </button>
                     )}
                   </div>
+                  {/* Hear/see each revision BEFORE locking it. The rail chip is
+                      the lock control, so auditioning gets its own row rather
+                      than a second click target inside the chip. */}
+                  {(() => {
+                    const shown = (expanded[type] ? vers : vers.slice(0, 6)).filter((v) =>
+                      hasPreview(type, v),
+                    )
+                    if (vers.length < 2 || shown.length === 0) return null
+                    return (
+                      <div className="asset-audition">
+                        <span className="dim small asset-audition-lbl">Audition</span>
+                        {shown.map((v) => (
+                          <span key={v.id} className="asset-aud-item">
+                            <MediaPreview
+                              assetType={type}
+                              version={v}
+                              size="tile"
+                              className="asset-aud-prev"
+                              name={assetLabel(type) + ' v' + v.version}
+                            />
+                            <span className="dim small">v{v.version}</span>
+                          </span>
+                        ))}
+                      </div>
+                    )
+                  })()}
                   {lineage && <div className="asset-lineage">{lineage}</div>}
                 </div>
               </div>

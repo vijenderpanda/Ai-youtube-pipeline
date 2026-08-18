@@ -6535,3 +6535,167 @@ a.out-chip:hover {
 .cast-foot-copy p { margin: 0 0 4px; max-width: 66ch; }
 .cast-foot-actions { display: flex; align-items: center; gap: 10px; }
 .cast-block { font-size: 12px; color: var(--danger, #E5484D); }
+
+/* ── Playable media previews (components/MediaPreview.jsx) ──────────────────
+   The owner's rule: "I should be able to feel them before I choose them." So a
+   music bed is heard, an outro sting is watched, and a Remotion composition
+   plays the finished short it rendered — in the slot row, in the swap picker
+   and in the library, all from the files that already exist. Sizing lives on
+   the HOST class (.cast-slot-cover, .cast-opt-cover, …) which MediaPreview
+   wears itself, so a preview can grow when it goes live without any parent
+   needing to know. */
+.media-prev {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width .18s ease, height .18s ease;
+}
+.media-prev img { display: block; }
+.media-prev video {
+  width: 100%; height: 100%; display: block;
+  object-fit: contain; background: #000;
+}
+/* Fills a .studio-cover band; the chan/lock chips come later in the DOM and
+   so still paint on top. */
+.media-prev-cover { position: absolute; inset: 0; }
+
+.media-prev-thumb {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%;
+  padding: 0; margin: 0; border: 0; background: transparent;
+  color: inherit; font: inherit; cursor: pointer; overflow: hidden;
+}
+.media-prev-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.media-prev-badge {
+  position: absolute;
+  display: flex; align-items: center; justify-content: center;
+  width: 25px; height: 25px; padding-left: 2px;
+  border-radius: 50%; font-size: 10px; color: #fff;
+  background: rgba(8, 8, 12, .66);
+  border: 1px solid rgba(255, 255, 255, .28);
+  backdrop-filter: blur(4px);
+  transition: background .15s ease, transform .15s ease;
+}
+.media-prev-thumb:hover .media-prev-badge,
+.media-prev-thumb:focus-visible .media-prev-badge {
+  background: var(--ch, #E91E63); border-color: transparent; transform: scale(1.08);
+}
+.media-prev-cover .media-prev-badge { width: 44px; height: 44px; font-size: 16px; }
+.media-prev-thumb:focus-visible {
+  outline: 2px solid var(--champagne, #D8C08A); outline-offset: -2px;
+}
+
+.media-prev-stop {
+  position: absolute; top: 3px; right: 3px; z-index: 2;
+  width: 20px; height: 20px; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; font-size: 10px; line-height: 1; cursor: pointer;
+  color: #fff; background: rgba(8, 8, 12, .72);
+  border: 1px solid rgba(255, 255, 255, .24);
+}
+.media-prev-stop:hover { background: rgba(8, 8, 12, .9); }
+
+/* SAMPLE = "this mp4 is the OUTPUT, not the asset". Deliberately unlike a real
+   asset preview: dashed champagne edge + a hard-edged tag. */
+.media-prev-sample {
+  outline: 1px dashed color-mix(in srgb, var(--champagne, #D8C08A) 65%, transparent);
+  outline-offset: -1px;
+}
+.media-prev-tag {
+  position: absolute; top: 3px; left: 3px; z-index: 2;
+  font-size: 8px; font-weight: 800; letter-spacing: .09em;
+  padding: 1px 4px; border-radius: 3px;
+  color: #0b0b0f; background: var(--champagne, #D8C08A);
+}
+.media-prev-cover .media-prev-tag { top: 8px; left: 8px; font-size: 10px; padding: 2px 7px; }
+
+/* Audio transport — the bars were already the audio "cover"; they now move. */
+.media-prev-audio { gap: 7px; }
+.media-prev-play {
+  flex: none; width: 24px; height: 24px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border, #2A2A36); border-radius: 50%;
+  font-size: 9px; line-height: 1; cursor: pointer;
+}
+.media-prev-play:hover { border-color: var(--champagne, #D8C08A); }
+.media-prev-cover .media-prev-play { width: 40px; height: 40px; font-size: 14px; }
+.media-prev-time { font-size: 10px; color: var(--faint, #6B7280); white-space: nowrap; }
+.media-prev-row .media-prev-time,
+.media-prev-tile .media-prev-time { display: none; }
+.media-prev-row.media-prev-playing .media-prev-time,
+.media-prev-tile.media-prev-playing .media-prev-time { display: inline; }
+.asset-wave-live i { animation: mp-bar 820ms ease-in-out infinite alternate; }
+.asset-wave-live i:nth-child(2n) { animation-duration: 640ms; }
+.asset-wave-live i:nth-child(3n) { animation-duration: 980ms; }
+@keyframes mp-bar { from { transform: scaleY(.4); } to { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .asset-wave-live i { animation: none; }
+  .media-prev { transition: none; }
+}
+
+/* Audio needs width, not a 16:9 box — let it break the host tile's fixed size. */
+.cast-slot-cover.media-prev-audio,
+.cast-opt-cover.media-prev-audio,
+.cast-strip-cover.media-prev-audio,
+.asset-aud-prev.media-prev-audio,
+.asset-sample-prev.media-prev-audio { width: auto; min-width: 62px; padding: 0 8px; }
+
+/* Going live expands the box in place — most assets are 9:16, so grow tall. */
+.cast-slot-cover.media-prev-live { width: 126px; height: 194px; }
+.cast-opt-cover.media-prev-live { width: 122px; height: 190px; }
+.cast-strip-cover.media-prev-live { height: 196px; }
+.asset-aud-prev.media-prev-live { width: 118px; height: 184px; }
+.asset-sample-prev.media-prev-live { width: 126px; height: 194px; }
+
+/* Library: audition every revision before locking one. */
+.asset-audition {
+  display: flex; align-items: flex-start; flex-wrap: wrap; gap: 8px;
+  margin-top: 8px; padding-top: 8px;
+  border-top: 1px dashed var(--border, #2A2A36);
+}
+.asset-audition-lbl { align-self: center; letter-spacing: .04em; text-transform: uppercase; }
+.asset-aud-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.asset-aud-prev {
+  width: 54px; height: 38px; border-radius: 6px; overflow: hidden;
+  background: var(--panel-2, #14141C); border: 1px solid var(--border, #2A2A36);
+}
+.asset-sample {
+  display: flex; align-items: center; gap: 9px; margin: 8px 0 2px;
+}
+.asset-sample-prev {
+  flex: none; width: 54px; height: 38px; border-radius: 6px; overflow: hidden;
+  background: var(--panel-2, #14141C); border: 1px solid var(--border, #2A2A36);
+}
+.asset-sample .dim { min-width: 0; }
+
+/* Composer slot row: the sample caption sits in the copy column, where there is
+   room to read it (the thumb only carries the SAMPLE tag). */
+.cast-slot-note {
+  margin-top: 3px; max-width: 62ch;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* The swap tile is a role="button" now (it contains a player), so the states
+   that used :disabled move to [aria-disabled]. */
+.cast-opt[aria-disabled='true'] { cursor: not-allowed; }
+.cast-opt:hover:not([aria-disabled='true']) { border-color: var(--champagne, #D8C08A); }
+.cast-opt:focus-visible {
+  outline: 2px solid var(--champagne, #D8C08A); outline-offset: 2px;
+}
+
+/* Playable candidates in the swap picker need room for the ▶ affordance;
+   a 46×34 chip cannot hold a badge and still read as a picture. The .media-prev-live
+   pairs repeat here because they must out-rank the resting sizes above — same
+   specificity, so source order is the tie-break. */
+.cast-opt-cover.media-prev-video,
+.cast-opt-cover.media-prev-sample { width: 58px; height: 42px; }
+.cast-opt-cover.media-prev-video.media-prev-live,
+.cast-opt-cover.media-prev-sample.media-prev-live { width: 122px; height: 190px; }
+/* The 46px cover glyph is sized for a 16:9 band, not a 54px chip. */
+.media-prev-row .studio-cover-glyph,
+.media-prev-tile .studio-cover-glyph { font-size: 20px; }
+/* An expanded inline video makes its line tall; without this the sibling pills
+   stretch to match and float their text in dead space. */
+.cast-picker { align-items: flex-start; }

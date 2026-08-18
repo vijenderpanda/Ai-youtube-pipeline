@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { api } from '../api'
-import { RENDERS_BASE } from '../config'
 import { usePoll } from '../hooks'
 import {
   resolveAccents,
@@ -15,7 +14,6 @@ import {
   wiringOf,
   kindOf,
   hasCover,
-  isImagePath,
   lineageOf,
   heygenHealth,
   usageOf,
@@ -23,6 +21,7 @@ import {
   usageTitle,
 } from '../assetCatalog'
 import EmptyState from '../components/EmptyState'
+import MediaPreview, { sampleNoteOf } from '../components/MediaPreview'
 import Toast, { useToast } from '../components/Toast'
 
 /**
@@ -38,8 +37,11 @@ import Toast, { useToast } from '../components/Toast'
  *      pick's build_ref into the version, which is what the renderer resolves.
  *
  * There is deliberately no "generate preview" here: the preview is the chosen
- * revisions shown together. Rendering a sample would spend HeyGen/ElevenLabs
- * credits to tell you what the thumbnails already show.
+ * revisions shown together — and, since MediaPreview landed, PLAYED. Every slot
+ * row and every swap candidate can be heard/watched from its existing file, so
+ * a pick is made on the thing itself instead of on a poster frame. Rendering a
+ * fresh sample would spend HeyGen/ElevenLabs credits to show what the assets
+ * already are.
  */
 
 const WIRING_LABEL = {
@@ -49,30 +51,6 @@ const WIRING_LABEL = {
 }
 
 // Walk parent_version_id → "v3 ← v2 ← v1" (guards against cycles / missing parents).
-
-/** Thumb for one revision — an <img> only for a path an <img> can decode. */
-function SlotThumb({ type, v }) {
-  const kind = kindOf(type, v)
-  const path =
-    (isImagePath(v && v.thumb_path) && v.thumb_path) ||
-    (isImagePath(v && v.storage_path) && v.storage_path) ||
-    null
-  if (path) return <img src={RENDERS_BASE + path} alt="" loading="lazy" />
-  if (kind === 'audio') {
-    return (
-      <span className="asset-wave" aria-hidden="true">
-        {[9, 17, 25, 13, 22, 8, 19, 27].map((h, i) => (
-          <i key={i} style={{ height: h }} />
-        ))}
-      </span>
-    )
-  }
-  return (
-    <span className="studio-cover-glyph" aria-hidden="true">
-      {kind === 'video' ? '▶' : kind === 'image' ? '🖼' : '{ }'}
-    </span>
-  )
-}
 
 export default function TemplateDetail() {
   const { key } = useParams()
@@ -348,28 +326,16 @@ export default function TemplateDetail() {
             const wiring = wiringOf(type)
             const kind = kindOf(type, head)
             const lineage = head ? lineageOf(head, byId) : ''
-            // an <img> can't decode an .mp3 — only ever point it at a real image
-            const imgPath =
-              (isImagePath(head && head.thumb_path) && head.thumb_path) ||
-              (isImagePath(head && head.storage_path) && head.storage_path) ||
-              null
             return (
               <div key={type} className="card frame-tile" style={accent ? { '--ch': accent } : undefined}>
                 {hasCover(kind) && (
                   <div className="studio-cover">
-                    {imgPath ? (
-                      <img src={RENDERS_BASE + imgPath} alt="" loading="lazy" />
-                    ) : kind === 'audio' ? (
-                      <span className="asset-wave" aria-hidden="true">
-                        {[9, 17, 25, 13, 22, 8, 19, 27, 12, 7, 20, 15].map((h, i) => (
-                          <i key={i} style={{ height: h }} />
-                        ))}
-                      </span>
-                    ) : (
-                      <span className="studio-cover-glyph" aria-hidden="true">
-                        {kind === 'video' ? '▶' : '🖼'}
-                      </span>
-                    )}
+                    <MediaPreview
+                      assetType={type}
+                      version={head}
+                      size="cover"
+                      name={assetLabel(type) + (head ? ' v' + head.version : '')}
+                    />
                     <span className="studio-cover-chan">
                       <span className="studio-cover-dot" />
                       {assetLabel(type)}
@@ -495,9 +461,13 @@ export default function TemplateDetail() {
                     key={type}
                     className={'cast-strip-tile' + (health.dead ? ' cast-dead' : '')}
                   >
-                    <div className="cast-strip-cover">
-                      <SlotThumb type={type} v={rev} />
-                    </div>
+                    <MediaPreview
+                      assetType={type}
+                      version={rev}
+                      size="tile"
+                      className="cast-strip-cover"
+                      name={assetLabel(type) + (rev ? ' v' + rev.version : '')}
+                    />
                     <div className="cast-strip-label">{assetLabel(type)}</div>
                     <div className="dim small">
                       {rev ? 'v' + rev.version : 'missing revision'}
@@ -517,16 +487,23 @@ export default function TemplateDetail() {
                 const froz = frozen[type]
                 const opts = (groups.find((g) => g.type === type) || { vers: [] }).vers
                 const open = swapFor === type
+                const sampleNote = sampleNoteOf(rev)
                 return (
                   <div key={type} className={'cast-slot' + (open ? ' cast-slot-open' : '')}>
                     <div className="cast-slot-row">
-                      <div className="cast-slot-cover">
-                        {rev ? (
-                          <SlotThumb type={type} v={rev} />
-                        ) : (
+                      {rev ? (
+                        <MediaPreview
+                          assetType={type}
+                          version={rev}
+                          size="row"
+                          className="cast-slot-cover"
+                          name={assetLabel(type) + ' v' + rev.version}
+                        />
+                      ) : (
+                        <div className="cast-slot-cover">
                           <span className="studio-cover-glyph" aria-hidden="true">·</span>
-                        )}
-                      </div>
+                        </div>
+                      )}
                       <div className="cast-slot-copy">
                         <div className="cast-slot-title">
                           {assetLabel(type)}
@@ -552,6 +529,11 @@ export default function TemplateDetail() {
                             <span className="chip cast-warn">{health.warn}</span>
                           )}
                         </div>
+                        {sampleNote && (
+                          <div className="dim small cast-slot-note" title={sampleNote}>
+                            ▶ {sampleNote}
+                          </div>
+                        )}
                         {froz && froz.build_ref && (
                           <div className="asset-buildref mono">{froz.build_ref}</div>
                         )}
@@ -594,22 +576,43 @@ export default function TemplateDetail() {
                           const u = usageOf(usage, o.id)
                           const badge = usageBadge(u)
                           const uTitle = usageTitle(u)
+                          // The tile carries its own player, so it can no longer
+                          // BE a <button> (a button inside a button is invalid
+                          // and the inner one stops working). It is a
+                          // role="button" instead, and MediaPreview swallows
+                          // click/keydown so auditioning never selects.
+                          const selectable = !blocked && !isPick && busy !== 'swap:' + type
                           return (
-                            <button
+                            <div
                               key={o.id}
-                              type="button"
+                              role="button"
+                              tabIndex={selectable ? 0 : -1}
+                              aria-disabled={!selectable}
+                              aria-label={'Use ' + assetLabel(type) + ' v' + o.version}
                               className={
                                 'cast-opt' +
                                 (isPick ? ' cast-opt-current' : '') +
                                 (blocked ? ' cast-opt-dead' : '')
                               }
-                              disabled={blocked || isPick || busy === 'swap:' + type}
                               title={why + (uTitle ? '\n\n' + uTitle : '')}
-                              onClick={() => swapTo(type, o.id)}
+                              onClick={() => {
+                                if (selectable) swapTo(type, o.id)
+                              }}
+                              onKeyDown={(e) => {
+                                if (!selectable) return
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault()
+                                  swapTo(type, o.id)
+                                }
+                              }}
                             >
-                              <span className="cast-opt-cover">
-                                <SlotThumb type={type} v={o} />
-                              </span>
+                              <MediaPreview
+                                assetType={type}
+                                version={o}
+                                size="tile"
+                                className="cast-opt-cover"
+                                name={assetLabel(type) + ' v' + o.version}
+                              />
                               <span className="cast-opt-meta">
                                 <span className="cast-opt-head">
                                   <b>v{o.version}</b>
@@ -628,7 +631,7 @@ export default function TemplateDetail() {
                                 {blocked && <span className="cast-opt-why">{why}</span>}
                                 {isPick && !blocked && <span className="cast-opt-why">current pick</span>}
                               </span>
-                            </button>
+                            </div>
                           )
                         })}
                       </div>
