@@ -29,6 +29,7 @@ export const SLOTS = {
   brand_sol_badge:     { label: 'Sol badge',            kind: 'image', wiring: 'reference', group: 'Brand marks' },
   channel_avatar:      { label: 'Channel avatar',       kind: 'image', wiring: 'reference', group: 'Channel art' },
   channel_banner:      { label: 'Channel banner',       kind: 'image', wiring: 'reference', group: 'Channel art' },
+  demo_clip:           { label: 'Demo footage',          kind: 'video', wiring: 'reference', group: 'Footage', multi: true },
   broll_clip:          { label: 'B-roll bank',          kind: 'video', wiring: 'reference', group: 'Footage', multi: true },
   remotion_comp:       { label: 'Remotion composition', kind: 'id',    wiring: 'locked',    group: 'Code' },
   step_chip_style:     { label: 'Step chips',           kind: 'style', wiring: 'reference', group: 'Code' },

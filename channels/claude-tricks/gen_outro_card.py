@@ -77,9 +77,22 @@ def main():
 
     # ---- big Playfair-italic question ----
     qlines = a.q.split("|")
-    qf = f(PLAYFAIR, 108); ly = 690
+    # Auto-fit: the size was hard-coded at 108, so any question longer than the
+    # ones it was designed with ran off both edges of the card (caught when the
+    # composer regenerated "Which one will you try first?"). Shrink until the
+    # widest line fits the safe width, then scale the line height with it.
+    SAFE_W = W - 2 * 70
+    size = 108
+    while size > 48:
+        qf = f(PLAYFAIR, size)
+        if max(d.textlength(ln, font=qf) for ln in qlines) <= SAFE_W:
+            break
+        size -= 4
+    qf = f(PLAYFAIR, size)
+    ly = 690 + (108 - size) // 2          # keep the block vertically centred
+    step = int(128 * size / 108)
     for ln in qlines:
-        center(d, ln, qf, ly, WHITE); ly += 128
+        center(d, ln, qf, ly, WHITE); ly += step
 
     # ---- cyan comment pill + magenta SUBSCRIBE pill ----
     pill(d, ly + 90, a.pill, f(HELV, 52), (12, 20, 26, 255), CYAN, outline=CYAN)
