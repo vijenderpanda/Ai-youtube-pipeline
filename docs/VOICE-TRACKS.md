@@ -55,11 +55,26 @@ at `%LOCALAPPDATA%\comfy`) and downloads the PNG. Caveat: FLUX-schnell can't ren
 legible **text-in-image** — for text-heavy thumbnails keep `leonardo` or (future) add a
 Qwen-Image track. Everything else (hooks, b-roll, character stills) is thumbnail-grade.
 
+## Avatar track (same pattern) — `avatar_track`
+Per-channel `factory_channels.meta.avatar_track`:
+
+| value | backend | cost | where |
+|---|---|---|---|
+| `heygen` (default) | HeyGen (existing `heygen_avatar.py`) | paid | cloud |
+| `musetalk_local` | **MuseTalk 1.5** lip-sync on the RTX 3060 worker | **free** | `DESKTOP-DEIR7RS` |
+
+`musetalk_local` combines the other free tracks: a **face** (FLUX via `img_render`, or any
+portrait/base video) + **audio** (CosyVoice 2 via `vo_render`) → `deploy/gpu/musetalk_gen.ps1`
+(`-FaceUrl -AudioUrl`) → talking-head mp4. A still image gives a HeyGen-photo-avatar look;
+a real base video gives natural head motion. So the fully-local talking head is
+FLUX face → MuseTalk lips → CosyVoice 2 voice, all on the worker.
+
 ## For the factory-app / template session
-Surface **two** per-channel (and per-template) selectors:
+Surface **three** per-channel (and per-template) selectors:
 - `voice_track`: **ElevenLabs (paid) · CosyVoice 2 (free · local)**
 - `image_track`: **Leonardo (paid) · FLUX-schnell (free · local)**
+- `avatar_track`: **HeyGen (paid) · MuseTalk (free · local)**
 
-Each only writes `factory_channels.meta.{voice_track,image_track}`; the pipeline
+Each only writes `factory_channels.meta.{voice_track,image_track,avatar_track}`; the pipeline
 (`vo_render` / `img_render`) is already wired to honor them. Don't call the providers
 directly from the app — go through the fields so all sessions stay in sync.
