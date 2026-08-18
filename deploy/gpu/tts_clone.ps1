@@ -71,12 +71,12 @@ try {
   # hot-swap fine-tuned weights (SoVITS FIRST -- it re-inits the pipeline version)
   if ($SovitsWeights) {
     Say "loading fine-tuned SoVITS: $SovitsWeights"
-    try { Invoke-WebRequest -Uri ("http://127.0.0.1:9880/set_sovits_weights?weights_path=" + [uri]::EscapeDataString($SovitsWeights)) -TimeoutSec 120 | Out-Null }
+    try { Invoke-WebRequest -UseBasicParsing -Uri ("http://127.0.0.1:9880/set_sovits_weights?weights_path=" + [uri]::EscapeDataString($SovitsWeights)) -TimeoutSec 120 | Out-Null }
     catch { Die ("set_sovits_weights failed: " + $_.Exception.Message + "`nstderr tail:`n" + (ErrTail)) }
   }
   if ($GptWeights) {
     Say "loading fine-tuned GPT: $GptWeights"
-    try { Invoke-WebRequest -Uri ("http://127.0.0.1:9880/set_gpt_weights?weights_path=" + [uri]::EscapeDataString($GptWeights)) -TimeoutSec 120 | Out-Null }
+    try { Invoke-WebRequest -UseBasicParsing -Uri ("http://127.0.0.1:9880/set_gpt_weights?weights_path=" + [uri]::EscapeDataString($GptWeights)) -TimeoutSec 120 | Out-Null }
     catch { Die ("set_gpt_weights failed: " + $_.Exception.Message + "`nstderr tail:`n" + (ErrTail)) }
   }
   Say "cloning..."
@@ -88,7 +88,7 @@ try {
     media_type = "wav"; streaming_mode = $false
   } | ConvertTo-Json
   try {
-    Invoke-WebRequest -Uri "http://127.0.0.1:9880/tts" -Method Post -ContentType "application/json" `
+    Invoke-WebRequest -UseBasicParsing -Uri "http://127.0.0.1:9880/tts" -Method Post -ContentType "application/json" `
       -Body $body -OutFile $OutWav -TimeoutSec 180 | Out-Null
   } catch { Die ("POST /tts failed: " + $_.Exception.Message + "`nstderr tail:`n" + (ErrTail)) }
 }
