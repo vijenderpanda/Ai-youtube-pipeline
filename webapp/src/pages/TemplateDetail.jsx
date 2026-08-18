@@ -19,6 +19,7 @@ import {
   usageOf,
   usageBadge,
   usageTitle,
+  interchangeableWith,
 } from '../assetCatalog'
 import EmptyState from '../components/EmptyState'
 import MediaPreview, { sampleNoteOf } from '../components/MediaPreview'
@@ -485,7 +486,15 @@ export default function TemplateDetail() {
                 const health = heygenHealth(rev)
                 const wiring = wiringOf(type)
                 const froz = frozen[type]
-                const opts = (groups.find((g) => g.type === type) || { vers: [] }).vers
+                // Offer every revision that feeds this slot's build key, not just
+                // the ones filed under this exact asset_type — the outro slot must
+                // include the per-episode question-CTA cards (what we actually
+                // shipped), alongside the shared sting.
+                const opts = interchangeableWith(type).flatMap((t) =>
+                  ((groups.find((g) => g.type === t) || { vers: [] }).vers || []).map(
+                    (v) => (t === type ? v : { ...v, _fromSlot: t }),
+                  ),
+                )
                 const open = swapFor === type
                 const sampleNote = sampleNoteOf(rev)
                 return (
@@ -588,7 +597,8 @@ export default function TemplateDetail() {
                               role="button"
                               tabIndex={selectable ? 0 : -1}
                               aria-disabled={!selectable}
-                              aria-label={'Use ' + assetLabel(type) + ' v' + o.version}
+                              aria-label={'Use ' + assetLabel(o._fromSlot || type) + ' v' + o.version}
+                              title={o._fromSlot ? assetLabel(o._fromSlot) + ' — same outro slot' : undefined}
                               className={
                                 'cast-opt' +
                                 (isPick ? ' cast-opt-current' : '') +
@@ -616,6 +626,9 @@ export default function TemplateDetail() {
                               <span className="cast-opt-meta">
                                 <span className="cast-opt-head">
                                   <b>v{o.version}</b>
+                              {o._fromSlot && (
+                                <span className="chip cast-alt-slot">{assetLabel(o._fromSlot)}</span>
+                              )}
                                   {badge && (
                                     <span
                                       className={

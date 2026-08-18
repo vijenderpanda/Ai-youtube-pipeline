@@ -18,8 +18,8 @@ import { mediaKind } from './mediaKind'
 //   live = build_ep_v2 resolves it · locked = lock exists, not yet wired · reference = catalogue only
 export const SLOTS = {
   host_outfit:         { label: 'Host — Sol',           kind: 'image', wiring: 'live',      group: 'Host' },
-  outro_sting:         { label: 'Outro sting',          kind: 'video', wiring: 'live',      group: 'Bookends' },
-  outro_card_gen:      { label: 'Outro card',           kind: 'video', wiring: 'reference', group: 'Bookends', perEpisode: true },
+  outro_sting:         { label: 'Outro sting',          kind: 'video', wiring: 'live',      group: 'Bookends', buildKey: 'outro_src' },
+  outro_card_gen:      { label: 'Outro card',           kind: 'video', wiring: 'reference', group: 'Bookends', perEpisode: true, buildKey: 'outro_src' },
   intro_sting:         { label: 'Intro sting (legacy)', kind: 'video', wiring: 'reference', group: 'Bookends' },
   hook_image:          { label: 'Hook art',             kind: 'image', wiring: 'reference', group: 'Opener', perEpisode: true },
   music_bed:           { label: 'Music bed',            kind: 'audio', wiring: 'locked',    group: 'Sound' },
@@ -155,6 +155,20 @@ export function usageTitle(u) {
     lines.push('• cast ' + t.template_key + ' v' + t.version + (t.label ? ' — ' + t.label : ''))
   }
   return lines.join('\n')
+}
+
+/**
+ * Slots feeding the SAME build key are interchangeable picks in a cast.
+ *
+ * outro_sting (shared subscribe/comment sting) and outro_card_gen (per-episode
+ * question-CTA card) are both substituted into `outro_src` — the Artifacts short
+ * shipped with the CARD, not the sting. Modelling them as separate, un-swappable
+ * slots made the thing we actually published unchoosable in the composer.
+ */
+export function interchangeableWith(assetType) {
+  const key = SLOTS[assetType] && SLOTS[assetType].buildKey
+  if (!key) return [assetType]
+  return Object.keys(SLOTS).filter((t) => (SLOTS[t] || {}).buildKey === key)
 }
 
 /** "v3 ← v2 ← v1"; '' for a single-version chain (nothing worth showing). */

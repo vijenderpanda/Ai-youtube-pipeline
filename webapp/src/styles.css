@@ -6699,3 +6699,11 @@ a.out-chip:hover {
 /* An expanded inline video makes its line tall; without this the sibling pills
    stretch to match and float their text in dead space. */
 .cast-picker { align-items: flex-start; }
+
+/* a picker option borrowed from a sibling slot that feeds the same build key */
+.chip.cast-alt-slot {
+  font-size: 9.5px; margin-left: 6px; padding: 1px 6px;
+  color: var(--champagne, #D8C08A);
+  border-color: color-mix(in srgb, var(--champagne, #D8C08A) 40%, transparent);
+  background: color-mix(in srgb, var(--champagne, #D8C08A) 10%, transparent);
+}

@@ -2452,7 +2452,18 @@ async function handlePost(body: any): Promise<Response> {
           .select("id, status, channel_key, asset_type").eq("id", avId).maybeSingle();
         if (tErr) return json({ error: tErr.message }, 500);
         if (!target) return json({ error: "revision not found" }, 404);
-        if (target.channel_key !== tv.channel_key || target.asset_type !== asset_type) {
+        // A slot accepts any revision that feeds the SAME build key: outro_sting
+        // (shared sting) and outro_card_gen (per-episode question-CTA card) are
+        // both substituted into `outro_src`, and the last published short used
+        // the CARD. The row is still stored under the SLOT's asset_type, which is
+        // what build_ep_v2 asks for — only the build_ref travels.
+        const SLOT_BUILD_KEY: Record<string, string> = {
+          outro_sting: "outro_src", outro_card_gen: "outro_src",
+        };
+        const sameSlot = target.asset_type === asset_type;
+        const sameKey = !!SLOT_BUILD_KEY[asset_type] &&
+          SLOT_BUILD_KEY[asset_type] === SLOT_BUILD_KEY[target.asset_type];
+        if (target.channel_key !== tv.channel_key || !(sameSlot || sameKey)) {
           return json({ error: "revision not found for this channel/asset_type" }, 404);
         }
         if (target.status === "retired") {
