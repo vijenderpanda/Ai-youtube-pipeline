@@ -4,7 +4,7 @@ import { api } from '../api'
 import { usePoll } from '../hooks'
 import { resolveAccents, accentFor } from '../channelColor'
 import { resolveStage, countsFromAssets } from '../pipeline'
-import PipelineRail from '../components/PipelineRail'
+import StepSpine, { stepForStage } from '../components/StepSpine'
 import { RENDERS_BASE } from '../config'
 import { mediaKind, fileExt } from '../mediaKind'
 import AssetInspector, {
@@ -119,6 +119,19 @@ export default function StudioBoard() {
   const assets = (boardQ.data && boardQ.data.assets) || []
   const jobs = (boardQ.data && boardQ.data.jobs) || []
 
+  // Phase B — the step-spine PLAN panel shows the channel's resolved template
+  // card + its locked brand frames. Templates are the whole registry; brand
+  // assets are re-fetched once we learn this item's channel.
+  const channelKey = item ? item.channel_key : ''
+  const tplQ = usePoll(() => api.get('?r=templates'), 0)
+  const brandAssetsQ = usePoll(
+    () => api.get(`?r=assets${channelKey ? `&channel=${encodeURIComponent(channelKey)}` : ''}`),
+    0,
+    [channelKey]
+  )
+  const templates = (tplQ.data && tplQ.data.templates) || []
+  const brandAssets = brandAssetsQ.data || { versions: [], locks: [] }
+
   // Pre-fill a sensible publish time so the creator confirms one, never invents
   // one from a blank field: the planned date at 09:00 local, or tomorrow 09:00
   // if that's already past. They can still change it before scheduling.
@@ -209,6 +222,13 @@ export default function StudioBoard() {
   const done = ordered.filter((a) => a.status === 'approved' || a.status === 'skipped').length
   const approvedCount = ordered.filter((a) => a.status === 'approved').length
   const pct = total ? Math.round((done / total) * 100) : 0
+
+  // Single stage machine (unchanged) drives both the rail and which step panel
+  // the spine shows. resolveStage never emits 'plan'; stepForStage splits the
+  // pre-production total===0 case back out into the "confirm the format" step.
+  const counts = useMemo(() => countsFromAssets(assets), [assets])
+  const pipeStage = item ? resolveStage(item, counts).stage : 'plan'
+  const step = stepForStage(pipeStage, counts.total || 0)
 
   // First load: land on what needs the human — a pending revision, then a
   // failure, then the first visual step. Never reset later (poll refreshes
@@ -377,6 +397,16 @@ export default function StudioBoard() {
     !!previewJobDirect &&
     (previewJobDirect.status === 'queued' || previewJobDirect.status === 'running')
   const canRefine = incubating && !!item?.preview_path && !previewBusy
+
+  // Plan-step ("confirm the format") status note: direct items are "planning"
+  // while their monolithic produce_preview runs; staged items while plan_assets
+  // writes the fragment list.
+  const planning = isDirect
+    ? previewBusy
+    : !!(planJob && (planJob.status === 'queued' || planJob.status === 'running'))
+  const planFailed = isDirect
+    ? !!(previewJobDirect && previewJobDirect.status === 'failed')
+    : !!(planJob && planJob.status === 'failed')
 
   const doRevise = async () => {
     if (busy) return
@@ -559,6 +589,208 @@ export default function StudioBoard() {
   const selKind = selected ? mediaKind(selected.kind, assetFilename(selected)) : null
   const inspectorNote = selected && selKind !== 'other' ? selected.review_note : null
 
+  // ── Board body pieces (unchanged markup) — composed per step into the spine
+  // panel. The draft monitor, progress, filmstrip, review stage, bin and docs
+  // rail all keep their exact JSX + refs; only WHEN they render changes.
+  const previewMonitorEl = (
+    <div className="preview-monitor">
+      <div className="pm-head">
+        <span className="pm-label">Draft preview</span>
+        {item && item.preview_path && item.preview_at && (
+          <span className="pm-time" title={fmtDate(item.preview_at)}>
+            {timeAgo(item.preview_at)}
+          </span>
+        )}
+        {previewActive && (
+          <span className="pm-status">
+            <StatusChip status={previewJob.status} />
+            <span className="dim small">Draft rendering…</span>
+          </span>
+        )}
+        <button
+          className="btn btn-ghost btn-sm pm-btn"
+          onClick={doPreview}
+          disabled={previewDisabled}
+          title={previewTitle}
+        >
+          {busy === 'preview'
+            ? 'Queuing…'
+            : item && item.preview_path
+              ? 'Rebuild draft'
+              : 'Build draft preview'}
+        </button>
+      </div>
+      {item && item.preview_path && (
+        <video
+          key={`${item.preview_path}|${item.preview_at || ''}`}
+          className="pm-video"
+          controls
+          preload="metadata"
+          src={RENDERS_BASE + item.preview_path}
+        />
+      )}
+      <div className="pm-caption">
+        Low-res draft — judge beats, overlays and timing before assembling.
+      </div>
+    </div>
+  )
+
+  const progressBarEl = total > 0 && (
+    <div className="board-bar">
+      <div className="progress">
+        <div className="progress-track">
+          <div className="progress-fill" style={{ width: `${pct}%` }} />
+        </div>
+        <span className="progress-label">
+          {done}/{total} approved or skipped
+        </span>
+      </div>
+      {genActive > 0 && (
+        <span className="chip queue-hint">
+          {genActive} part{genActive === 1 ? '' : 's'} still being produced
+        </span>
+      )}
+    </div>
+  )
+
+  const filmstripEl = visuals.length > 0 && (
+    <div className="filmstrip" ref={stripRef} role="listbox" aria-label="Production steps">
+      {visuals.map((a) => {
+        const st = statusOf(a)
+        const isSel = a.asset_key === selectedKey
+        const num = stepNum(stepNoByKey.get(a.asset_key))
+        return (
+          <button
+            key={a.asset_key}
+            type="button"
+            data-key={a.asset_key}
+            role="option"
+            aria-selected={isSel}
+            className={`fs-chip fs-${st}` + (isSel ? ' selected' : '')}
+            onClick={() => setSelectedKey(a.asset_key)}
+            title={`${num} · ${a.title || a.asset_key} — ${st}`}
+          >
+            <Thumb a={a} className="fs-thumb" />
+            <span className="fs-meta">
+              <span className="fs-num">{num}</span>
+              <span className="fs-title">{a.title || a.asset_key}</span>
+            </span>
+          </button>
+        )
+      })}
+    </div>
+  )
+
+  const stageRowEl = (
+    <div className="stage-row" ref={stageRef}>
+      {stage}
+      {selected && (
+        <AssetInspector
+          key={selected.asset_key}
+          asset={selected}
+          history={history}
+          displayed={displayed}
+          onShowVersion={showVersion}
+          reviewNote={inspectorNote}
+          onToast={show}
+          refresh={boardQ.refresh}
+        />
+      )}
+    </div>
+  )
+
+  const binEl = visuals.length > 0 && (
+    <section className="bin-section">
+      <div className="asset-section-head">
+        Bin <span className="asset-section-count">{visuals.length}</span>
+      </div>
+      <div className="bin">
+        {visuals.map((a) => {
+          const st = statusOf(a)
+          const isSel = a.asset_key === selectedKey
+          return (
+            <button
+              key={a.asset_key}
+              type="button"
+              className={`bin-tile fs-${st}` + (isSel ? ' selected' : '')}
+              onClick={() => pickAndShow(a.asset_key)}
+              title={`${a.title || a.asset_key} — ${st}`}
+            >
+              <span className="bin-num">{stepNum(stepNoByKey.get(a.asset_key))}</span>
+              <Thumb a={a} className="bin-thumb" />
+              <span className="bin-name">{a.title || a.asset_key}</span>
+              {a.group_key && <span className="bin-group">{a.group_key}</span>}
+              <span className="bin-dot" />
+            </button>
+          )
+        })}
+      </div>
+    </section>
+  )
+
+  const docsEl = docs.length > 0 && (
+    <section className="docs-rail">
+      <button
+        type="button"
+        className="docs-toggle"
+        onClick={() => setDocsOpen((v) => !v)}
+        aria-expanded={docsOpen}
+      >
+        <span className={'docs-caret' + (docsOpen ? ' open' : '')}>▸</span>
+        Factory docs ({docs.length})
+        <span className="docs-hint">QC&apos;d internals — plans, scripts, prompts</span>
+      </button>
+      {docsOpen && (
+        <div className="docs-list">
+          {docs.map((a) => {
+            const isSel = a.asset_key === selectedKey
+            return (
+              <button
+                key={a.asset_key}
+                type="button"
+                className={'doc-row' + (isSel ? ' selected' : '')}
+                onClick={() => pickAndShow(a.asset_key)}
+                title={a.asset_key}
+              >
+                <span className="doc-title">{a.title || a.asset_key}</span>
+                <AssetStatusChip status={a.status} />
+                {isAutoApproved(a) && <AutoApprovedBadge />}
+                <span className="doc-time" title={fmtDate(a.created_at)}>
+                  {timeAgo(a.created_at)}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </section>
+  )
+
+  // PRODUCE shows the monitor + progress + live filmstrip; QC (and incubation,
+  // which keeps its full body so nothing is lost) adds the review stage, bin
+  // and docs. PLAN/ARM/LIVE render their own panels inside the spine.
+  const producingBody = (
+    <>
+      {previewMonitorEl}
+      {progressBarEl}
+      {filmstripEl}
+    </>
+  )
+  const reviewBody = (
+    <>
+      {previewMonitorEl}
+      {progressBarEl}
+      {filmstripEl}
+      {stageRowEl}
+      {binEl}
+      {docsEl}
+    </>
+  )
+  let spineBody = null
+  if (incubating) spineBody = reviewBody
+  else if (step === 'produce') spineBody = producingBody
+  else if (step === 'qc') spineBody = reviewBody
+
   return (
     <div className="page studio-board" style={{ '--ch': accent }}>
       <header className="page-head">
@@ -583,77 +815,6 @@ export default function StudioBoard() {
                 </span>
               )}
             </div>
-          )}
-        </div>
-        <div className="head-actions">
-          {isDirect && incubating ? (
-            <>
-              <span className="tag incubating-pill" title="This channel is incubating — refine Episode 1, then lock the baseline">
-                ● incubating · Rev {iteration}
-              </span>
-              {previewJobDirect && (
-                <span className="assemble-status" title={previewJobDirect.title || 'Preview job'}>
-                  <span className="tag dim-tag">Ep01 temp</span>
-                  <StatusChip status={previewJobDirect.status} />
-                </span>
-              )}
-              <button
-                className="btn btn-primary"
-                onClick={() => setConfirmLock(true)}
-                disabled={!canRefine || !!busy}
-                title={
-                  !item?.preview_path
-                    ? 'Produce Episode 1 first — you review it before locking'
-                    : previewBusy
-                      ? 'A revision is still producing…'
-                      : 'Freeze this as the baseline recipe — the channel goes active'
-                }
-              >
-                🔒 Lock as baseline
-              </button>
-            </>
-          ) : isDirect ? (
-            <>
-              {finalizeJob && (
-                <span className="assemble-status" title={finalizeJob.title || 'Finalize job'}>
-                  <span className="tag dim-tag">finalize</span>
-                  <StatusChip status={finalizeJob.status} />
-                </span>
-              )}
-              <input
-                type="datetime-local"
-                className="finalize-when"
-                value={schedule}
-                onChange={(e) => setSchedule(e.target.value)}
-                title="Local publish time — YouTube flips public at this moment"
-                style={{ marginRight: '.4rem' }}
-              />
-              <button
-                className="btn btn-primary"
-                onClick={doFinalize}
-                disabled={!canFinalize || !!busy || !schedule}
-                title={finalizeTitle}
-              >
-                {busy === 'finalize' ? 'Scheduling…' : 'Approve & schedule ▶'}
-              </button>
-            </>
-          ) : (
-            <>
-              {assembleJob && (
-                <span className="assemble-status" title={assembleJob.title || 'Assembly job'}>
-                  <span className="tag dim-tag">assembly</span>
-                  <StatusChip status={assembleJob.status} />
-                </span>
-              )}
-              <button
-                className="btn btn-primary"
-                onClick={() => setConfirmAssemble(true)}
-                disabled={!canAssemble || !!busy}
-                title={assembleTitle}
-              >
-                Assemble ▶
-              </button>
-            </>
           )}
         </div>
       </header>
@@ -715,27 +876,7 @@ export default function StudioBoard() {
         </section>
       )}
 
-      {item && <PipelineRail current={resolveStage(item, countsFromAssets(assets)).stage} accent={accent} />}
-
       {boardQ.error && <div className="error-bar">{boardQ.error.message}</div>}
-
-      {total > 0 && (
-        <div className="board-bar">
-          <div className="progress">
-            <div className="progress-track">
-              <div className="progress-fill" style={{ width: `${pct}%` }} />
-            </div>
-            <span className="progress-label">
-              {done}/{total} approved or skipped
-            </span>
-          </div>
-          {genActive > 0 && (
-            <span className="chip queue-hint">
-              {genActive} part{genActive === 1 ? '' : 's'} still being produced
-            </span>
-          )}
-        </div>
-      )}
 
       {boardQ.loading && boardQ.data == null ? (
         <p className="dim">Loading…</p>
@@ -744,170 +885,37 @@ export default function StudioBoard() {
           message="Not a staged episode"
           hint="This item hasn’t been produced yet. Open it on the Calendar and hit “Produce”."
         />
-      ) : total === 0 ? (
-        <EmptyState
-          message={
-            planJob && planJob.status === 'failed' ? 'Asset planning failed' : 'Planning assets…'
-          }
-          hint={
-            planJob && planJob.status === 'failed'
-              ? 'The plan_assets job failed — check it on the Jobs page, then stage the item again from the Calendar.'
-              : 'The factory is writing the asset list for this episode. Fragments appear here as soon as the plan lands.'
-          }
-        />
       ) : (
         <>
-          <div className="preview-monitor">
-            <div className="pm-head">
-              <span className="pm-label">Draft preview</span>
-              {item.preview_path && item.preview_at && (
-                <span className="pm-time" title={fmtDate(item.preview_at)}>
-                  {timeAgo(item.preview_at)}
-                </span>
-              )}
-              {previewActive && (
-                <span className="pm-status">
-                  <StatusChip status={previewJob.status} />
-                  <span className="dim small">Draft rendering…</span>
-                </span>
-              )}
-              <button
-                className="btn btn-ghost btn-sm pm-btn"
-                onClick={doPreview}
-                disabled={previewDisabled}
-                title={previewTitle}
-              >
-                {busy === 'preview'
-                  ? 'Queuing…'
-                  : item.preview_path
-                    ? 'Rebuild draft'
-                    : 'Build draft preview'}
-              </button>
-            </div>
-            {item.preview_path && (
-              <video
-                key={`${item.preview_path}|${item.preview_at || ''}`}
-                className="pm-video"
-                controls
-                preload="metadata"
-                src={RENDERS_BASE + item.preview_path}
-              />
-            )}
-            <div className="pm-caption">
-              Low-res draft — judge beats, overlays and timing before assembling.
-            </div>
-          </div>
-
-          {visuals.length > 0 && (
-            <div className="filmstrip" ref={stripRef} role="listbox" aria-label="Production steps">
-              {visuals.map((a) => {
-                const st = statusOf(a)
-                const isSel = a.asset_key === selectedKey
-                const num = stepNum(stepNoByKey.get(a.asset_key))
-                return (
-                  <button
-                    key={a.asset_key}
-                    type="button"
-                    data-key={a.asset_key}
-                    role="option"
-                    aria-selected={isSel}
-                    className={`fs-chip fs-${st}` + (isSel ? ' selected' : '')}
-                    onClick={() => setSelectedKey(a.asset_key)}
-                    title={`${num} · ${a.title || a.asset_key} — ${st}`}
-                  >
-                    <Thumb a={a} className="fs-thumb" />
-                    <span className="fs-meta">
-                      <span className="fs-num">{num}</span>
-                      <span className="fs-title">{a.title || a.asset_key}</span>
-                    </span>
-                  </button>
-                )
-              })}
-            </div>
-          )}
-
-          <div className="stage-row" ref={stageRef}>
-            {stage}
-            {selected && (
-              <AssetInspector
-                key={selected.asset_key}
-                asset={selected}
-                history={history}
-                displayed={displayed}
-                onShowVersion={showVersion}
-                reviewNote={inspectorNote}
-                onToast={show}
-                refresh={boardQ.refresh}
-              />
-            )}
-          </div>
-
-          {visuals.length > 0 && (
-            <section className="bin-section">
-              <div className="asset-section-head">
-                Bin <span className="asset-section-count">{visuals.length}</span>
-              </div>
-              <div className="bin">
-                {visuals.map((a) => {
-                  const st = statusOf(a)
-                  const isSel = a.asset_key === selectedKey
-                  return (
-                    <button
-                      key={a.asset_key}
-                      type="button"
-                      className={`bin-tile fs-${st}` + (isSel ? ' selected' : '')}
-                      onClick={() => pickAndShow(a.asset_key)}
-                      title={`${a.title || a.asset_key} — ${st}`}
-                    >
-                      <span className="bin-num">{stepNum(stepNoByKey.get(a.asset_key))}</span>
-                      <Thumb a={a} className="bin-thumb" />
-                      <span className="bin-name">{a.title || a.asset_key}</span>
-                      {a.group_key && <span className="bin-group">{a.group_key}</span>}
-                      <span className="bin-dot" />
-                    </button>
-                  )
-                })}
-              </div>
-            </section>
-          )}
-
-          {docs.length > 0 && (
-            <section className="docs-rail">
-              <button
-                type="button"
-                className="docs-toggle"
-                onClick={() => setDocsOpen((v) => !v)}
-                aria-expanded={docsOpen}
-              >
-                <span className={'docs-caret' + (docsOpen ? ' open' : '')}>▸</span>
-                Factory docs ({docs.length})
-                <span className="docs-hint">QC&apos;d internals — plans, scripts, prompts</span>
-              </button>
-              {docsOpen && (
-                <div className="docs-list">
-                  {docs.map((a) => {
-                    const isSel = a.asset_key === selectedKey
-                    return (
-                      <button
-                        key={a.asset_key}
-                        type="button"
-                        className={'doc-row' + (isSel ? ' selected' : '')}
-                        onClick={() => pickAndShow(a.asset_key)}
-                        title={a.asset_key}
-                      >
-                        <span className="doc-title">{a.title || a.asset_key}</span>
-                        <AssetStatusChip status={a.status} />
-                        {isAutoApproved(a) && <AutoApprovedBadge />}
-                        <span className="doc-time" title={fmtDate(a.created_at)}>
-                          {timeAgo(a.created_at)}
-                        </span>
-                      </button>
-                    )
-                  })}
-                </div>
-              )}
-            </section>
-          )}
+          <StepSpine
+            item={item}
+            counts={counts}
+            channel={channel}
+            templates={templates}
+            assets={brandAssets}
+            accent={accent}
+            isDirect={isDirect}
+            incubating={incubating}
+            busy={busy}
+            schedule={schedule}
+            onSchedule={setSchedule}
+            planning={planning}
+            planFailed={planFailed}
+            canAssemble={canAssemble}
+            assembleTitle={assembleTitle}
+            assembleActive={assembleActive}
+            canFinalize={canFinalize}
+            finalizeTitle={finalizeTitle}
+            finalizeActive={finalizeActive}
+            previewDisabled={previewDisabled}
+            previewTitle={previewTitle}
+            onProduce={doPreview}
+            onRebuildDraft={doPreview}
+            onFinalize={doFinalize}
+            onAssemble={() => setConfirmAssemble(true)}
+          >
+            {spineBody}
+          </StepSpine>
         </>
       )}
 

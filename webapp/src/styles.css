@@ -5729,6 +5729,73 @@ a.out-chip:hover {
 }
 .rail-step.is-now .rail-label { color: var(--text); font-weight: 700; }
 
+/* ── StepSpine: the "conductor" over the Studio board (Phase B) ──────
+   A persistent rail + one step's panel + a footer carrying the single
+   primary. Reuses .card / .btn-primary / .rail; --ch tints per channel. */
+.step-spine { margin-bottom: var(--s-5); }
+.step-panel { margin-top: var(--s-3); }
+.step-tag {
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: var(--s-3);
+}
+.step-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--border);
+}
+/* the recipe's locked brand frames, shown in the "confirm the format" step */
+.frames-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin: var(--s-3) 0;
+}
+.frame-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  width: 92px;
+}
+.frame-cell-thumb {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+}
+.frame-cell-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.frame-cell-thumb.is-empty { color: var(--faint); }
+.frame-cell-label {
+  font-size: var(--fs-xs);
+  color: var(--dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* PLAN step — the resolved template card */
+.format-card { border-left: 3px solid color-mix(in srgb, var(--ch, var(--accent)) 60%, transparent); }
+.format-card-head { display: flex; align-items: baseline; gap: var(--s-3); flex-wrap: wrap; }
+.format-card-title { font-size: var(--fs-md); font-weight: 700; }
+.format-card-desc { margin: var(--s-2) 0 0; }
+.format-card-note { margin: var(--s-2) 0 0; }
+/* ARM step — compact confirm card */
+.arm-card { display: flex; flex-direction: column; gap: var(--s-3); }
+.arm-card-title { font-size: var(--fs-md); font-weight: 700; }
+.arm-card-media { max-width: 320px; }
+.arm-card-media .pm-video { width: 100%; border-radius: var(--r-sm); display: block; }
+.arm-card-note { margin: 0; }
+.arm-when-field { display: flex; flex-direction: column; gap: var(--s-1); }
+
 /* ── DoNext: guided execution queue ── */
 .donext-panel { margin-bottom: var(--s-5); }
 .donext-list { list-style: none; display: flex; flex-direction: column; }
