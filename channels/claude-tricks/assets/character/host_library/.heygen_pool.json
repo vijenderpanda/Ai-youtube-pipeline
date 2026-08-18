@@ -1,20 +1,20 @@
 [
-  {
-    "heygen_id": "dc9533a1e07944a1ad32e6dcb19b678f",
-    "outfit": "_untracked",
-    "role": "center",
-    "ts": 1786434837
-  },
-  {
-    "heygen_id": "184a41d13f5645eb900d1d7dd88edce7",
-    "outfit": "outfit_06_cream_turtleneck",
-    "role": "center",
-    "ts": 1786449367
-  },
-  {
-    "heygen_id": "f55806a47753494fac94b0b3cc60e8b6",
-    "outfit": "outfit_11_sol_magenta",
-    "role": "wide",
-    "ts": 0
-  }
+ {
+  "heygen_id": "f55806a47753494fac94b0b3cc60e8b6",
+  "outfit": "outfit_11_sol_magenta",
+  "role": "wide",
+  "ts": 0
+ },
+ {
+  "heygen_id": "2a21eaa3a10441cba7c7db58877a7b97",
+  "outfit": "outfit_12_longform_olive",
+  "role": "closeup",
+  "ts": 0
+ },
+ {
+  "heygen_id": "0446ec9e6f2140d49b886bfdca92dff0",
+  "outfit": "outfit_12_longform_olive",
+  "role": "rest_medium",
+  "ts": 0
+ }
 ]

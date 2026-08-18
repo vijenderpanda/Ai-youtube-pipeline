@@ -6365,6 +6365,43 @@ a.out-chip:hover {
 /* wide brand art (banners/wordmarks) should fit, not crop to a slice */
 .studio-cover img { object-fit: cover; object-position: center; }
 
+/* ---- Usage backlinks (Phase 3) -------------------------------------------
+   Where a revision has ACTUALLY been used. Absence is deliberately silent (an
+   em-dash on the card, no badge on the chip) because provenance recording only
+   started recently — a blank must never read as "never used". The sub-header
+   note carries that caveat once for the whole page. */
+.assets-usage-note { margin-top: 4px; color: var(--faint, #6B7280); max-width: 70ch; }
+.asset-ver-use {
+  margin-left: 6px; font-size: 9.5px; font-weight: 700; letter-spacing: .03em;
+  padding: 1px 5px; border-radius: 5px;
+  color: var(--faint, #6B7280);
+  background: color-mix(in srgb, var(--faint, #6B7280) 14%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+.asset-ver-use.asset-ver-use-shipped {
+  color: var(--green, #46D18A);
+  background: color-mix(in srgb, var(--green, #46D18A) 14%, transparent);
+}
+.asset-usage {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px;
+}
+.asset-usage-txt { color: var(--dim); }
+.asset-usage-btn {
+  display: inline-flex; align-items: center; gap: 4px; cursor: pointer;
+  padding: 0; border: 0; background: none; font: inherit; font-size: 12px;
+  color: var(--dim); border-bottom: 1px dotted var(--border, #2A2A36);
+}
+.asset-usage-btn:hover { color: var(--champagne, #D8C08A); }
+.asset-usage-caret { font-size: 9px; opacity: .7; }
+.asset-usage-list {
+  list-style: none; margin: 7px 0 0; padding: 7px 0 0;
+  border-top: 1px dashed var(--border, #2A2A36);
+  font-size: 11.5px; line-height: 1.5;
+}
+.asset-usage-list li { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* picker candidate: v-number and its track record on one line */
+.cast-opt-head { display: flex; align-items: center; gap: 2px; }
+
 /* ---- Template composer: the CAST (Phase 4) -------------------------------
    A template names the pipeline; a VERSION names the cast it renders with.
    Fork → swap → eyeball side by side → lock. No render button lives here: the

@@ -10,6 +10,10 @@ import {
   hasCover,
   isImagePath,
   lineageOf,
+  usageOf,
+  usageBadge,
+  usageSummary,
+  usageTitle,
 } from '../assetCatalog'
 import EmptyState from '../components/EmptyState'
 import Toast, { useToast } from '../components/Toast'
@@ -25,6 +29,13 @@ import { fmtDate } from '../format'
  * Visual treatment is per kind: image/video/audio get a cover band (an <img>
  * only when the path is genuinely decodable — an .mp3 is not), while
  * code/id/style render body-only with a mono build_ref chip.
+ *
+ * Phase 3 adds USAGE backlinks (?r=asset_backlinks): which episodes each
+ * revision was actually built into, and which casts compose it. Provenance
+ * recording only began with migration 021, so a revision with no entry may
+ * still have shipped many times before then — absence is rendered as an em-dash
+ * or nothing, NEVER as "0" or "never used", and the sub-header states the date
+ * attribution starts from.
  */
 
 const CHANNEL_KEY = 'claude-tricks'
@@ -61,14 +72,33 @@ function CoverInner({ type, v, kind }) {
   )
 }
 
+/** Sub-header note — states exactly how far back attribution goes. */
+function recordedFromNote(since) {
+  if (!since) {
+    // Nothing recorded yet at all — say so plainly rather than leaving the
+    // blanks below to be read as "never used".
+    return 'No episode usage recorded yet — attribution starts with the next build; earlier episodes aren’t attributed.'
+  }
+  const d = new Date(since)
+  const day = isNaN(d.getTime())
+    ? String(since).slice(0, 10)
+    : d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+  return `Usage is recorded from ${day} onward — older episodes aren’t attributed.`
+}
+
 export default function Assets() {
   const q = usePoll(() => api.get('?r=assets&channel=' + CHANNEL_KEY), 15000)
+  // Phase 3: where each revision has actually been used (observed, not inferred).
+  const useQ = usePoll(() => api.get('?r=asset_backlinks&channel=' + CHANNEL_KEY), 60000)
   const { toast, show } = useToast()
   const [busy, setBusy] = useState(null)
   const [expanded, setExpanded] = useState({}) // asset_type -> show full history
+  const [openUse, setOpenUse] = useState({})   // asset_type -> show episode list
 
   const versions = (q.data && q.data.versions) || []
   const locks = (q.data && q.data.locks) || []
+  const usage = (useQ.data && useQ.data.usage) || {}
+  const recordedSince = (useQ.data && useQ.data.recorded_since) || null
   const chQ = usePoll(() => api.get('?r=channels'), 0)
   const accents = useMemo(
     () => resolveAccents((chQ.data && chQ.data.channels) || []),
@@ -120,6 +150,14 @@ export default function Assets() {
         <div>
           <h1>Assets</h1>
           <p className="sub">Locked brand assets + version history.</p>
+          {/* HONESTY NOTE — the one place the page explains what a blank usage
+              cell means. Without it, "no badge" reads as "never used". */}
+          <p className="sub small assets-usage-note">
+            {useQ.error
+              ? 'Usage data could not be loaded (' + useQ.error.message +
+                ') — the blanks below mean “unknown”, not “unused”.'
+              : recordedFromNote(recordedSince)}
+          </p>
         </div>
       </header>
 
@@ -146,6 +184,10 @@ export default function Assets() {
             const wiring = wiringOf(type)
             const lineage = head ? lineageOf(head, byId) : ''
             const buildRef = head && head.meta && head.meta.build_ref
+            // Usage of the revision this card is fronting (the locked one).
+            const headUse = usageOf(usage, head && head.id)
+            const headSummary = usageSummary(headUse)
+            const headVideos = (headUse && headUse.videos) || []
 
             return (
               <div key={type} className="card studio-card" style={{ '--ch': accent }}>
@@ -185,6 +227,62 @@ export default function Assets() {
                   )}
                   {head && head.label && <div className="dim small">{head.label}</div>}
 
+                  {/* Where this revision has actually been used. A blank cell is
+                      an em-dash, never "0" — see the note in the sub-header. */}
+                  {head && (
+                    <div className="asset-usage">
+                      <span className="dim small">v{head.version}</span>
+                      <span className="dim small">·</span>
+                      {headSummary ? (
+                        headVideos.length > 0 ? (
+                          <button
+                            type="button"
+                            className="asset-usage-btn small"
+                            title={usageTitle(headUse)}
+                            onClick={() =>
+                              setOpenUse((o) => ({ ...o, [type]: !o[type] }))
+                            }
+                          >
+                            {headSummary}
+                            <span className="asset-usage-caret">
+                              {openUse[type] ? '▴' : '▾'}
+                            </span>
+                          </button>
+                        ) : (
+                          <span className="small asset-usage-txt" title={usageTitle(headUse)}>
+                            {headSummary}
+                          </span>
+                        )
+                      ) : (
+                        <span
+                          className="dim small"
+                          title="No usage recorded for this revision — see the note at the top of the page."
+                        >
+                          —
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  {openUse[type] && headVideos.length > 0 && (
+                    <ul className="asset-usage-list">
+                      {headVideos.map((v) => (
+                        <li key={v.video_id}>
+                          <a
+                            className="link"
+                            href={'https://youtu.be/' + v.video_id}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {v.yt_title || v.video_id}
+                          </a>
+                          {v.publish_at && (
+                            <span className="dim"> · {String(v.publish_at).slice(0, 10)}</span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
                   {/* Version rail — the chip IS the control: click a revision to
                       make it the locked one. Long histories collapse behind a
                       "+N older" toggle so an 18-revision slot stays readable. */}
@@ -194,6 +292,9 @@ export default function Assets() {
                       const ref = v.meta && v.meta.build_ref
                       const working = busy === v.id
                       const retired = v.status === 'retired'
+                      const u = usageOf(usage, v.id)
+                      const badge = usageBadge(u)
+                      const uTitle = usageTitle(u)
                       return (
                         <button
                           key={v.id}
@@ -205,15 +306,27 @@ export default function Assets() {
                           }
                           disabled={working}
                           title={
-                            isLocked
+                            (isLocked
                               ? 'Locked — click to unlock' + (ref ? ' · build ' + ref : '')
                               : 'Make v' + v.version + ' the locked revision' +
-                                (ref ? ' · build ' + ref : '')
+                                (ref ? ' · build ' + ref : '')) +
+                            (uTitle ? '\n\n' + uTitle : '')
                           }
                           onClick={() => setLock(type, isLocked ? null : v.id)}
                         >
                           {working ? '…' : 'v' + v.version}
                           {isLocked && <span className="asset-locked-tag">LOCKED</span>}
+                          {/* nothing at all when no usage is recorded */}
+                          {badge && (
+                            <span
+                              className={
+                                'asset-ver-use' +
+                                (u.shipped > 0 ? ' asset-ver-use-shipped' : '')
+                              }
+                            >
+                              {badge}
+                            </span>
+                          )}
                         </button>
                       )
                     })}

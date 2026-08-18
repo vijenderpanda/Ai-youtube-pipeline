@@ -60,6 +60,11 @@ const POST_PATCH_FIELDS = [
   "audience",
   "synthetic",
 ];
+// Phase 3: hard ceiling on the provenance scan behind ?r=asset_backlinks. One
+// build writes ~18 rows, so this covers hundreds of episodes; the endpoint is a
+// usage HINT, and `recorded_since` is asked for separately so truncating the
+// scan can never move the "attribution starts here" date.
+const PROVENANCE_SCAN_MAX = 5000;
 // v7: + control, heartbeat_at (job-control: stop requests + worker liveness)
 const JOB_LIST_COLS =
   "id, channel_key, type, title, prompt, model, effort, status, result, meta, error, created_at, started_at, finished_at, control, heartbeat_at, assigned_worker, target_worker";
@@ -332,6 +337,180 @@ async function handleGet(url: URL): Promise<Response> {
         avRows = avData ?? [];
       }
       return json({ versions: tVersions, assets: tAssets ?? [], asset_versions: avRows });
+    }
+
+    // Phase 3 — asset BACKLINKS: "where has this revision actually been used?"
+    //
+    // factory_episode_assets_used is written by build_ep_v2._flush_provenance()
+    // on every build, so this is OBSERVED history — never inferred from today's
+    // locks (moving a lock must not rewrite the past).
+    //
+    // HONESTY CONTRACT: provenance recording only began when migration 021
+    // shipped. A missing entry means NOT RECORDED, not "never used" — a revision
+    // that shipped twenty times before that day has no rows here. Clients MUST
+    // render absence as blank/—, never as 0. `recorded_since` is the oldest row
+    // we hold, so the UI can state exactly how far back attribution goes.
+    //
+    // Response (the client indexes usage[version_id] directly):
+    //   { usage: { "<asset_version_id>": {
+    //       episodes: 3,          // DISTINCT calendar_ids that built with it
+    //       shipped: 2,           // …of those, ones whose post has a video_id
+    //       casts: 1,             // template versions currently composing it
+    //       last_used_at: "2026-08-18T…" | null,
+    //       videos: [{ calendar_id, video_id, yt_title, publish_at }],  // ≤5, newest first
+    //       template_versions: [{ id, template_key, label, version, status }]
+    //     }, … },
+    //     recorded_since: "2026-08-18T…" | null,
+    //     totals: { rows, versions, episodes, unattributed } }
+    // A version_id absent from `usage` has NO recorded use — that is all it means.
+    // Filters: ?channel= · ?include_retired=1 (retired casts are excluded by
+    // default, mirroring ?r=template_versions).
+    case "asset_backlinks": {
+      const channel = url.searchParams.get("channel");
+
+      let uq = db.from("factory_episode_assets_used")
+        .select("version_id, calendar_id, created_at")
+        .not("version_id", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(PROVENANCE_SCAN_MAX);
+      if (channel) uq = uq.eq("channel_key", channel);
+
+      // oldest row = the honest "attribution starts here" date, asked for
+      // separately so the answer stays right even if the scan above truncates.
+      let sq = db.from("factory_episode_assets_used")
+        .select("created_at").order("created_at", { ascending: true }).limit(1);
+      if (channel) sq = sq.eq("channel_key", channel);
+
+      let tvq = db.from("factory_template_versions")
+        .select("id, template_key, label, version, status");
+      if (channel) tvq = tvq.eq("channel_key", channel);
+      if (url.searchParams.get("include_retired") !== "1") tvq = tvq.neq("status", "retired");
+
+      const [used, since, tVersions] = await Promise.all([uq, sq, tvq]);
+      if (used.error) return json({ error: used.error.message }, 500);
+      if (since.error) return json({ error: since.error.message }, 500);
+      if (tVersions.error) return json({ error: tVersions.error.message }, 500);
+
+      type Shipped = {
+        calendar_id: string;
+        video_id: string;
+        yt_title: string | null;
+        publish_at: string | null;
+      };
+      type CastRef = {
+        id: string;
+        template_key: string;
+        label: string | null;
+        version: number;
+        status: string;
+      };
+      type Entry = {
+        episodes: number;
+        shipped: number;
+        casts: number;
+        last_used_at: string | null;
+        videos: Shipped[];
+        template_versions: CastRef[];
+      };
+      const usage: Record<string, Entry> = {};
+      const entryFor = (id: string): Entry =>
+        usage[id] ?? (usage[id] = {
+          episodes: 0,
+          shipped: 0,
+          casts: 0,
+          last_used_at: null,
+          videos: [],
+          template_versions: [],
+        });
+
+      // One build writes one row per resolved slot, and a re-cut writes them
+      // again — DISTINCT calendar_id is what makes "3 eps" true rather than
+      // "3 rows". Rows with no calendar_id can't be attributed to an episode,
+      // so they are counted in totals only.
+      const calsByVersion: Record<string, Set<string>> = {};
+      const allCals = new Set<string>();
+      let unattributed = 0;
+      for (const row of used.data ?? []) {
+        const vid = row.version_id as string;
+        if (!row.calendar_id) {
+          unattributed += 1;
+          continue;
+        }
+        const e = entryFor(vid);
+        // rows arrive created_at desc, so the first one we see is the newest
+        if (!e.last_used_at) e.last_used_at = row.created_at;
+        (calsByVersion[vid] ?? (calsByVersion[vid] = new Set())).add(row.calendar_id);
+        allCals.add(row.calendar_id);
+      }
+
+      // shipped = that calendar item has a post carrying a real video_id.
+      // A re-arm can leave a superseded post behind, so newest publish_at wins.
+      const postByCal: Record<string, Shipped> = {};
+      const calIds = [...allCals];
+      if (calIds.length > 0) {
+        const { data: posts, error: pErr } = await db.from("factory_posts")
+          .select("calendar_id, video_id, yt_title, publish_at")
+          .in("calendar_id", calIds)
+          .not("video_id", "is", null)
+          .order("publish_at", { ascending: false, nullsFirst: false });
+        if (pErr) return json({ error: pErr.message }, 500);
+        for (const p of posts ?? []) {
+          if (postByCal[p.calendar_id]) continue;
+          postByCal[p.calendar_id] = {
+            calendar_id: p.calendar_id,
+            video_id: p.video_id,
+            yt_title: p.yt_title ?? null,
+            publish_at: p.publish_at ?? null,
+          };
+        }
+      }
+
+      for (const [vid, cals] of Object.entries(calsByVersion)) {
+        const e = entryFor(vid);
+        e.episodes = cals.size;
+        const vids: Shipped[] = [];
+        for (const c of cals) if (postByCal[c]) vids.push(postByCal[c]);
+        vids.sort((a, b) =>
+          String(b.publish_at ?? "").localeCompare(String(a.publish_at ?? ""))
+        );
+        e.shipped = vids.length;
+        e.videos = vids.slice(0, 5);
+      }
+
+      // …and which composed casts point at it today (factory_template_assets).
+      const tvById: Record<string, CastRef> = {};
+      for (const v of tVersions.data ?? []) tvById[v.id] = v;
+      const tvIds = Object.keys(tvById);
+      if (tvIds.length > 0) {
+        const { data: tAssets, error: taErr } = await db.from("factory_template_assets")
+          .select("asset_version_id, template_version_id")
+          .in("template_version_id", tvIds);
+        if (taErr) return json({ error: taErr.message }, 500);
+        // a cast can hold the same revision at position 0 AND as an alt — count
+        // the CAST once, not the slot rows.
+        const seen = new Set<string>();
+        for (const a of tAssets ?? []) {
+          const k = a.asset_version_id + ":" + a.template_version_id;
+          if (seen.has(k)) continue;
+          seen.add(k);
+          const tv = tvById[a.template_version_id];
+          if (!tv) continue;
+          const e = entryFor(a.asset_version_id);
+          e.casts += 1;
+          e.template_versions.push(tv);
+        }
+      }
+
+      return json({
+        usage,
+        recorded_since: since.data?.[0]?.created_at ?? null,
+        totals: {
+          rows: (used.data ?? []).length,
+          versions: Object.keys(usage).length,
+          episodes: allCals.size,
+          unattributed,
+        },
+      });
     }
 
     case "jobs": {

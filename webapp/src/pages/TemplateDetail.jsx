@@ -18,6 +18,9 @@ import {
   isImagePath,
   lineageOf,
   heygenHealth,
+  usageOf,
+  usageBadge,
+  usageTitle,
 } from '../assetCatalog'
 import EmptyState from '../components/EmptyState'
 import Toast, { useToast } from '../components/Toast'
@@ -84,6 +87,12 @@ export default function TemplateDetail() {
     () => api.get('?r=template_versions&template_key=' + encodeURIComponent(key)),
     0,
   )
+  // Phase 3: usage backlinks, so the swap picker can tell a battle-tested
+  // revision from an untried one. Fetched unfiltered for the same reason
+  // assetsQ is — the channel is only known after load. Recording started with
+  // migration 021, so a candidate with NO entry gets no hint at all; it is not
+  // claimed to be unused.
+  const useQ = usePoll(() => api.get('?r=asset_backlinks'), 60000)
   const { toast, show } = useToast()
   const [selId, setSelId] = useState(null)   // version the composer is showing
   const [swapFor, setSwapFor] = useState(null) // asset_type whose picker is open
@@ -97,6 +106,7 @@ export default function TemplateDetail() {
   const castVersions = (tvQ.data && tvQ.data.versions) || []
   const castSlots = (tvQ.data && tvQ.data.assets) || []
   const castJoined = (tvQ.data && tvQ.data.asset_versions) || []
+  const usage = (useQ.data && useQ.data.usage) || {}
 
   const tpl = templates.find((t) => t.key === key) || null
   const chan = tpl ? templateForChannel(channels, tpl.key) : null
@@ -578,6 +588,12 @@ export default function TemplateDetail() {
                               : noRef
                                 ? 'No build_ref — the build cannot resolve it'
                                 : h.warn || 'Use this revision'
+                          // Track record. Absent = not recorded, so we render
+                          // nothing rather than a "0 eps" that would read as
+                          // "never used".
+                          const u = usageOf(usage, o.id)
+                          const badge = usageBadge(u)
+                          const uTitle = usageTitle(u)
                           return (
                             <button
                               key={o.id}
@@ -588,14 +604,26 @@ export default function TemplateDetail() {
                                 (blocked ? ' cast-opt-dead' : '')
                               }
                               disabled={blocked || isPick || busy === 'swap:' + type}
-                              title={why}
+                              title={why + (uTitle ? '\n\n' + uTitle : '')}
                               onClick={() => swapTo(type, o.id)}
                             >
                               <span className="cast-opt-cover">
                                 <SlotThumb type={type} v={o} />
                               </span>
                               <span className="cast-opt-meta">
-                                <b>v{o.version}</b>
+                                <span className="cast-opt-head">
+                                  <b>v{o.version}</b>
+                                  {badge && (
+                                    <span
+                                      className={
+                                        'asset-ver-use' +
+                                        (u.shipped > 0 ? ' asset-ver-use-shipped' : '')
+                                      }
+                                    >
+                                      {badge}
+                                    </span>
+                                  )}
+                                </span>
                                 <span className="dim small">{o.label || assetLabel(type)}</span>
                                 {blocked && <span className="cast-opt-why">{why}</span>}
                                 {isPick && !blocked && <span className="cast-opt-why">current pick</span>}

@@ -105,6 +105,58 @@ export function heygenHealth(v) {
   }
 }
 
+/* ── Usage backlinks (Phase 3) ────────────────────────────────────────────
+ * `?r=asset_backlinks` returns usage keyed by factory_asset_versions.id, built
+ * from factory_episode_assets_used — what a build ACTUALLY resolved, not what
+ * the locks say today.
+ *
+ * HONESTY RULE: provenance recording only began with migration 021. A revision
+ * with no entry may still have shipped many times before that day, so absence
+ * means NOT RECORDED — never "never used". Every helper below therefore returns
+ * '' for absence, so no caller can accidentally render a "0".
+ */
+
+/** The usage entry for a revision, or null when nothing is recorded. */
+export const usageOf = (usage, id) => (id && usage && usage[id]) || null
+
+/** Rail badge: "3 eps" · '' when nothing is recorded (render nothing, not 0). */
+export function usageBadge(u) {
+  if (!u || !u.episodes) return ''
+  return u.episodes + (u.episodes > 1 ? ' eps' : ' ep')
+}
+
+/** Card line: "shipped in 3 · in 1 cast" · '' when nothing is recorded. */
+export function usageSummary(u) {
+  if (!u) return ''
+  const bits = []
+  if (u.shipped > 0) bits.push('shipped in ' + u.shipped)
+  else if (u.episodes > 0) bits.push('built into ' + u.episodes)
+  if (u.casts > 0) bits.push('in ' + u.casts + (u.casts > 1 ? ' casts' : ' cast'))
+  return bits.join(' · ')
+}
+
+/** Hover detail — names the episodes/casts. '' when nothing is recorded. */
+export function usageTitle(u) {
+  if (!u) return ''
+  const lines = []
+  if (u.episodes > 0) {
+    lines.push(
+      'Recorded in ' + u.episodes + (u.episodes > 1 ? ' episode builds' : ' episode build') +
+        (u.shipped > 0 ? ' · ' + u.shipped + ' shipped' : ''),
+    )
+  }
+  for (const v of u.videos || []) {
+    lines.push(
+      '• ' + (v.yt_title || v.video_id) +
+        (v.publish_at ? ' — ' + String(v.publish_at).slice(0, 10) : ''),
+    )
+  }
+  for (const t of u.template_versions || []) {
+    lines.push('• cast ' + t.template_key + ' v' + t.version + (t.label ? ' — ' + t.label : ''))
+  }
+  return lines.join('\n')
+}
+
 /** "v3 ← v2 ← v1"; '' for a single-version chain (nothing worth showing). */
 export function lineageOf(v, byId) {
   const chain = []
