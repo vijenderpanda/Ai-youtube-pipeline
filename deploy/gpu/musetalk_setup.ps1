@@ -53,17 +53,26 @@ if (-not (CudaOK)) {
 if (-not (CudaOK)) { Die "torch CUDA not available" }
 Write-Host "MT_STEP3_OK"
 
-# mmlab stack (compiler-free): mmengine, mmcv from the prebuilt wheel index, mmdet, mmpose
-function MmcvOK { try { return ((& $VenvPy -c "import mmcv;print(1)" 2>$null).Trim() -eq "1") } catch { return $false } }
-if (-not (MmcvOK)) {
-  Say "installing mmengine + mmcv (prebuilt wheel) + mmdet + mmpose..."
+# mmlab stack (compiler-free): mmengine, mmcv from the prebuilt wheel index, mmdet, mmpose.
+# Verify the ACTUAL import MuseTalk needs (mmpose.apis) — mmcv alone isn't enough.
+function MmposeOK { try { return ((& $VenvPy -c "from mmpose.apis import init_model;print(1)" 2>$null).Trim() -eq "1") } catch { return $false } }
+if (-not (MmposeOK)) {
+  Say "installing mmlab stack (numpy 1.23.5 pinned; chumpy via --no-build-isolation)..."
+  & $VenvPy -m pip install "numpy==1.23.5" 2>&1 | Out-Host   # MuseTalk needs numpy 1.x; hold it before mmdet/mmpose pull 2.x
+  $npc = Join-Path $Root "np_constraints.txt"; "numpy==1.23.5" | Set-Content -Encoding ASCII $npc
+  $env:PIP_CONSTRAINT = $npc
   & $VenvPy -m pip install -U openmim 2>&1 | Out-Host
   & $VenvPy -m mim install mmengine 2>&1 | Out-Host
   & $VenvPy -m pip install "mmcv==2.0.1" -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.0.0/index.html 2>&1 | Out-Host
   & $VenvPy -m mim install "mmdet==3.1.0" 2>&1 | Out-Host
+  # chumpy (mmpose dep) sdist build fails under isolation (its setup.py `import pip`);
+  # build with the venv's own pip instead. xtcocotools pre-fetched for its wheel.
+  & $VenvPy -m pip install --no-build-isolation --no-cache-dir chumpy 2>&1 | Out-Host
+  & $VenvPy -m pip install xtcocotools 2>&1 | Out-Host
   & $VenvPy -m mim install "mmpose==1.1.0" 2>&1 | Out-Host
+  Remove-Item Env:\PIP_CONSTRAINT -ErrorAction SilentlyContinue
 }
-if (-not (MmcvOK)) { Die "mmcv import failed after install" }
+if (-not (MmposeOK)) { Die "mmpose (from mmpose.apis import init_model) failed after install" }
 Write-Host "MT_STEP4_OK"
 
 # rest of requirements LAST (so numpy==1.23.5 wins)
