@@ -2737,6 +2737,66 @@ async function handlePost(body: any): Promise<Response> {
       return json({ ok: true, job_id: job.id, job });
     }
 
+    // capture_demo {channel_key, view, theme, url?, site?, prompt?, selector?, label?}
+    // "Add a real recording asset." Films a genuine screen recording of a live
+    // web app in the chosen VIEW (mobile 9:16 / desktop 16:9) and THEME
+    // (light / dark), then registers it as a CANDIDATE demo_clip revision — the
+    // same lineage/versioning as every other asset. Queues scripts/capture_demo.py
+    // on the EXISTING shell_script job type (no new worker job type, no restart),
+    // which drives scripts/record_demo.py, uploads the mp4 + poster, and inserts
+    // the row. Insert shape MIRRORS regenerate_asset above (columns/status/title/
+    // meta convention) so the direct-mode board tracks it the same way.
+    case "capture_demo": {
+      const channel_key = String(body.channel_key ?? "").trim();
+      const url = String(body.url ?? "").trim();
+      const site = String(body.site ?? "").trim();
+      const prompt = String(body.prompt ?? "").trim();
+      const selector = String(body.selector ?? "").trim();
+      const label = String(body.label ?? "").trim();
+      const view = String(body.view ?? "mobile").trim() || "mobile";
+      const theme = String(body.theme ?? "light").trim() || "light";
+      if (!channel_key) return json({ error: "channel_key required" }, 400);
+      if (!url && !site) return json({ error: "one of url / site is required" }, 400);
+      if (view !== "mobile" && view !== "desktop") {
+        return json({ error: "view must be 'mobile' or 'desktop'" }, 400);
+      }
+      if (theme !== "light" && theme !== "dark") {
+        return json({ error: "theme must be 'light' or 'dark'" }, 400);
+      }
+      // exactly one target flag reaches the script (prefer url when both are set)
+      const target = url ? ["--url", url] : ["--site", site];
+      const selArgs = selector ? ["--selector", selector] : [];
+      const { data: job, error: jobErr } = await db.from("factory_jobs")
+        .insert({
+          channel_key,
+          type: "shell_script",
+          title: "Record demo (" + view + " · " + theme + ")",
+          status: "queued",
+          meta: {
+            asset_type: "demo_clip",
+            script_path: "scripts/capture_demo.py",
+            capture: { view, theme, url: url || null, site: site || null },
+            script_args: [
+              "--channel", channel_key,
+              "--view", view,
+              "--theme", theme,
+              ...target,
+              "--prompt", prompt || "",
+              ...selArgs,
+              "--label", label || "",
+            ],
+          },
+        })
+        .select().single();
+      if (jobErr) return json({ error: jobErr.message }, 500);
+      await logEvent(
+        "demo_capture_queued",
+        `Screen recording queued (${view} · ${theme}) for ${channel_key}`,
+        { job_id: job.id, channel_key, view, theme, url: url || null, site: site || null },
+      );
+      return json({ ok: true, job_id: job.id, job });
+    }
+
     // lock_template_version {template_version_id, make_active?=true}
     // The materialize-and-freeze step, and the ONLY place `composition` is
     // written. Copies build_ref/label/storage_path/thumb_path/version out of

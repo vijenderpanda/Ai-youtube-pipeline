@@ -45,6 +45,12 @@ import { fmtDate } from '../format'
 
 const CHANNEL_KEY = 'claude-tricks'
 
+// record_demo.py's pre-wired sites (their composer selector is known, so no
+// --selector is needed). Anything else is treated as a custom URL.
+const KNOWN_SITES = ['duckai', 'perplexity', 'chatgpt', 'claude', 'gemini']
+
+const REC_BLANK = { target: '', view: 'mobile', theme: 'light', prompt: '', selector: '' }
+
 const WIRING_NOTE = {
   live: 'Live in render',
   locked: 'Locked · wiring next',
@@ -73,6 +79,9 @@ export default function Assets() {
   const [busy, setBusy] = useState(null)
   const [expanded, setExpanded] = useState({}) // asset_type -> show full history
   const [openUse, setOpenUse] = useState({})   // asset_type -> show episode list
+  const [recOpen, setRecOpen] = useState(false) // "Add recording" inline form
+  const [rec, setRec] = useState(REC_BLANK)
+  const [recBusy, setRecBusy] = useState(false)
 
   const versions = (q.data && q.data.versions) || []
   const locks = (q.data && q.data.locks) || []
@@ -140,6 +149,54 @@ export default function Assets() {
     }
   }
 
+  // Add recording — queue a REAL screen recording (record_demo via the
+  // capture_demo shell_script job) in the chosen view + theme. It lands as a
+  // candidate demo_clip revision when the worker finishes.
+  const submitRecording = async (e) => {
+    e.preventDefault()
+    const target = rec.target.trim()
+    const prompt = rec.prompt.trim()
+    const selector = rec.selector.trim()
+    if (!target) {
+      show('Enter a site (duckai, perplexity, chatgpt, claude, gemini) or a full URL')
+      return
+    }
+    if (!prompt) {
+      show('Add a prompt — what should the recording type or do?')
+      return
+    }
+    const isSite = KNOWN_SITES.includes(target.toLowerCase())
+    const asUrl = !isSite && (/^https?:\/\//i.test(target) || target.includes('.'))
+    if (!isSite && !asUrl) {
+      show('Use a known site (duckai, perplexity, chatgpt, claude, gemini) or a full https:// URL')
+      return
+    }
+    if (asUrl && !selector) {
+      show('A custom URL needs a selector — the element the recording types into')
+      return
+    }
+    setRecBusy(true)
+    try {
+      await api.post({
+        action: 'capture_demo',
+        channel_key: CHANNEL_KEY,
+        view: rec.view,
+        theme: rec.theme,
+        ...(asUrl ? { url: target } : { site: target.toLowerCase() }),
+        prompt,
+        ...(selector ? { selector } : {}),
+      })
+      show('Recording queued — it appears in Demo footage when the worker finishes')
+      setRec(REC_BLANK)
+      setRecOpen(false)
+      await q.refresh()
+    } catch (err) {
+      show(err.message || 'Could not queue the recording')
+    } finally {
+      setRecBusy(false)
+    }
+  }
+
   const nothing = !q.loading && groups.length === 0
 
   return (
@@ -157,7 +214,125 @@ export default function Assets() {
               : recordedFromNote(recordedSince)}
           </p>
         </div>
+        <button
+          type="button"
+          className={'btn ' + (recOpen ? 'btn-ghost' : 'btn-primary')}
+          onClick={() => setRecOpen((v) => !v)}
+          aria-expanded={recOpen}
+          aria-controls="add-recording-form"
+        >
+          {recOpen ? 'Close' : '⏺ Add recording'}
+        </button>
       </header>
+
+      {recOpen && (
+        <form
+          id="add-recording-form"
+          className="card rec-form"
+          onSubmit={submitRecording}
+        >
+          <div className="rec-form-head">
+            <h2>Record a real demo</h2>
+            <p className="sub small">
+              Films a genuine screen recording of a live app in the view and theme you
+              pick, then registers it as a candidate under Demo footage.
+            </p>
+          </div>
+
+          <div className="form-row">
+            <label className="field">
+              <span className="field-label">URL or site</span>
+              <input
+                type="text"
+                value={rec.target}
+                onChange={(e) => setRec((r) => ({ ...r, target: e.target.value }))}
+                placeholder="duckai · perplexity · or https://…"
+                autoComplete="off"
+              />
+            </label>
+            <label className="field">
+              <span className="field-label">
+                Selector <span className="dim">(custom URL only)</span>
+              </span>
+              <input
+                type="text"
+                value={rec.selector}
+                onChange={(e) => setRec((r) => ({ ...r, selector: e.target.value }))}
+                placeholder="textarea, div[contenteditable=true]"
+                autoComplete="off"
+              />
+            </label>
+          </div>
+
+          <div className="form-row">
+            <div className="field">
+              <span className="field-label" id="rec-view-label">View</span>
+              <div className="rec-seg" role="radiogroup" aria-labelledby="rec-view-label">
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={rec.view === 'mobile'}
+                  className={'rec-seg-opt' + (rec.view === 'mobile' ? ' active' : '')}
+                  onClick={() => setRec((r) => ({ ...r, view: 'mobile' }))}
+                >
+                  📱 Mobile 9:16
+                </button>
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={rec.view === 'desktop'}
+                  className={'rec-seg-opt' + (rec.view === 'desktop' ? ' active' : '')}
+                  onClick={() => setRec((r) => ({ ...r, view: 'desktop' }))}
+                >
+                  🖥 Fullscreen 16:9
+                </button>
+              </div>
+            </div>
+            <div className="field">
+              <span className="field-label" id="rec-theme-label">Theme</span>
+              <div className="rec-seg" role="radiogroup" aria-labelledby="rec-theme-label">
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={rec.theme === 'light'}
+                  className={'rec-seg-opt' + (rec.theme === 'light' ? ' active' : '')}
+                  onClick={() => setRec((r) => ({ ...r, theme: 'light' }))}
+                >
+                  ☀ Light
+                </button>
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={rec.theme === 'dark'}
+                  className={'rec-seg-opt' + (rec.theme === 'dark' ? ' active' : '')}
+                  onClick={() => setRec((r) => ({ ...r, theme: 'dark' }))}
+                >
+                  🌙 Dark
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <label className="field">
+            <span className="field-label">Prompt — what to type or do</span>
+            <textarea
+              rows={2}
+              value={rec.prompt}
+              onChange={(e) => setRec((r) => ({ ...r, prompt: e.target.value }))}
+              placeholder="Explain RAG in one line"
+            />
+          </label>
+
+          <div className="rec-form-actions">
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => setRecOpen(false)}>
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-primary btn-sm" disabled={recBusy}>
+              {recBusy ? 'Queuing…' : 'Queue recording'}
+            </button>
+          </div>
+        </form>
+      )}
 
       {q.error && <div className="error-bar">{q.error.message}</div>}
 
