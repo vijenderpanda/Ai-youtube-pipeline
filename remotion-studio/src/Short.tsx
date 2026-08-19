@@ -14,6 +14,7 @@ import {
 import { fitFont, splitHook } from "./components/fitText";
 import { StatBars, StatBarsProps } from "./components/StatBars";
 import { CookbookBlock } from "./cookbook/components";
+import { SlotScene, SlotBroll, SlotHost } from "./SlotScene";
 import {
   BuildRail,
   ChapterCard,
@@ -33,7 +34,7 @@ export type Seg = {
   src?: string;
   dur: number;
   kind?: "video" | "image" | "statBars" | "pipCallout" | "splitWide" | "recFull"
-    | "chapterCard" | "pauseCard" | "recipeCard" | "cookbook";
+    | "chapterCard" | "pauseCard" | "recipeCard" | "cookbook" | "slot";
   from?: number;
   /* per-beat pane mode (newsSplit only): "split" b-roll top + host bottom,
      "full" b-roll full-frame, "host" host full-frame */
@@ -48,6 +49,10 @@ export type Seg = {
      host/b-roll instead of its own backdrop. Rendered native in-comp via
      CookbookBlock, exactly like statBars — never pre-baked. */
   cookbook?: { id: string; props?: Record<string, unknown>; transparent?: boolean };
+  /* kind "slot": a scene composed from a named LAYOUT (layouts.ts) + its slot
+     fills — host clip + b-roll placed in the layout's regions. The second design
+     axis: geometry (layout) decoupled from content (what fills each slot). */
+  slot?: { layout: string; broll?: SlotBroll; host?: SlotHost; tag?: string };
   /* kind "pipCallout" (v16 Vaibhav-DNA): the flagship numbered-list layout.
      `src` = the b-roll top zone (product screencap, video or image, cover-fit).
      `pip` = the host talking-head clip shown as a rounded-square PIP bottom-left.
@@ -1238,6 +1243,8 @@ export const Short: React.FC<ShortProps> = (props) => {
                   props={seg.cookbook.props}
                   transparent={seg.cookbook.transparent}
                 />
+              ) : seg.kind === "slot" && seg.slot ? (
+                <SlotScene {...seg.slot} />
               ) : seg.kind === "image" ? (
                 <Img src={res(seg.src!)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               ) : seg.frame === "phone" ? (
