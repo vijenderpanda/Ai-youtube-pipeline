@@ -260,6 +260,11 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
                     {b.layout || '—'}
                   </div>
                   <div style={{ fontSize: 12, color: 'var(--text-2)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{blockSummary(b)}</div>
+                  {b.config && b.config.line && (
+                    <div style={{ fontSize: 12, color: 'var(--text-3)', fontStyle: 'italic', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: 1 }}>
+                      “{b.config.line}”
+                    </div>
+                  )}
                 </button>
                 {isDraft && (
                   <div style={{ display: 'flex', gap: 6 }}>
