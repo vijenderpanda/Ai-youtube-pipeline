@@ -6,7 +6,7 @@
 # Markers DISK_REPORT_OK / DISK_CLEAN_OK.
 #
 # worker: powershell.exe -NonInteractive -File <this> -RepoRoot <REPO> [-Clean]
-param([string]$RepoRoot, [switch]$Clean)
+param([string]$RepoRoot, [switch]$Clean, [string]$Purge = "")
 $ErrorActionPreference = "Continue"; $ProgressPreference = "SilentlyContinue"
 $LA = $env:LOCALAPPDATA
 $UP = $env:USERPROFILE
@@ -52,6 +52,29 @@ Write-Host ("HF_GLOBAL     {0}GB   {1}" -f (DirGB $hfGlobal), $hfGlobal)
 Write-Host ("TORCH_HUB     {0}GB   {1}" -f (DirGB $torchHub), $torchHub)
 Write-Host ("RENDERS_OUT   {0}GB   {1}  (uploaded to Supabase by *_gen.ps1)" -f (DirGB $rendersOut), $rendersOut)
 Write-Host ("WIN_TEMP      {0}GB   {1}" -f (DirGB $env:TEMP), $env:TEMP)
+
+# -Purge "tool,tool": remove entire installed stacks (venv + weights) for retired
+# tools. Guarded to known $TOOLS names so it can't nuke an arbitrary dir. The repo's
+# <tool>_setup.ps1 remains, so a purged stack is re-installable on demand.
+if ($Purge) {
+  $before = FreeGB
+  Write-Host "--- purging retired tool stacks ---"
+  foreach ($t in ($Purge -split '[,; ]+' | Where-Object { $_ })) {
+    if ($TOOLS -notcontains $t) { Write-Host ("  REFUSED (unknown tool, not in allow-list): {0}" -f $t); continue }
+    $d = Join-Path $LA $t
+    if (Test-Path $d) {
+      $g = DirGB $d
+      Remove-Item -LiteralPath $d -Recurse -Force -ErrorAction SilentlyContinue
+      if (Test-Path $d) { Write-Host ("  PARTIAL {0} (locked files remain): {1}" -f $t, $d) }
+      else { Write-Host ("  PURGED {0} (~{1}GB): {2}" -f $t, $g, $d) }
+    } else {
+      Write-Host ("  (not installed) {0}: {1}" -f $t, $d)
+    }
+  }
+  $after = FreeGB
+  Write-Host ("DISK_PURGE_OK freed={0}GB free_now={1}GB was={2}GB" -f [math]::Round(($after - $before), 2), $after, $before)
+  exit 0
+}
 
 if (-not $Clean) {
   Write-Host "DISK_REPORT_OK (dry run - pass -Clean to free the caches/renders/temp above)"
