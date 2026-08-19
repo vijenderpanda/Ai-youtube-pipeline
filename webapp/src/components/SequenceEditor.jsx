@@ -1,4 +1,4 @@
-import { Component, Suspense, lazy, useMemo, useState } from 'react'
+import { Component, Suspense, lazy, useEffect, useMemo, useState } from 'react'
 
 // S4 · deliverable #2 — client-side live preview. Lazy chunk: the preview pulls
 // in remotion + @remotion/player (heavy), so it loads only when the designer
@@ -102,6 +102,8 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
   const [autoOpen, setAutoOpen] = useState(false)
   const [autoScript, setAutoScript] = useState('')
   const [autoBusy, setAutoBusy] = useState('')
+  // D2: cookbook options RANKED for the open scene's line (mock's ranked picker).
+  const [ranked, setRanked] = useState([])
 
   const sorted = useMemo(() => [...(blocks || [])].sort((a, b) => a.position - b.position), [blocks])
 
@@ -208,6 +210,28 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
     }
   }
 
+  // D2: rank the cookbook for the open scene's line (reuses the auto-compose
+  // ranker, lazy-loaded). Empty when there's no line — the plain list shows then.
+  useEffect(() => {
+    const b = sorted.find((x) => x.position === openPos)
+    const line = b && b.config && b.config.line
+    if (!b || !line || (b.block_type !== 'broll' && b.block_type !== 'slot')) { setRanked([]); return }
+    let ok = true
+    import('@remotion-src/cookbook/registry')
+      .then(({ pickCookbook }) => {
+        if (!ok) return
+        setRanked(
+          pickCookbook({ keywords: kwOf(line) }, 6).map((s) => ({
+            id: s.entry.id, title: s.entry.title, role: s.entry.role, needs: s.entry.needs,
+            score: s.score, why: (s.why || []).slice(0, 3).join(' · '),
+          })),
+        )
+      })
+      .catch(() => setRanked([]))
+    return () => { ok = false }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openPos])
+
   return (
     <section className="card" aria-labelledby="seq-title" style={{ marginTop: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
@@ -255,9 +279,17 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
                 <span style={{ fontFamily: 'var(--mono, monospace)', fontSize: 12, color: 'var(--text-3)', textAlign: 'center' }}>{String(i).padStart(2, '0')}</span>
                 <LayoutFrame id={b.layout} />
                 <button type="button" onClick={() => (isOpen ? setOpenPos(null) : open(b))} style={{ textAlign: 'left', background: 'none', border: 0, color: 'inherit', cursor: 'pointer', minWidth: 0 }}>
-                  <div style={{ fontSize: 13.5, fontWeight: 700 }}>
-                    <span style={{ fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--accent-hi)', fontWeight: 700, marginRight: 8 }}>{b.block_type}</span>
-                    {b.layout || '—'}
+                  <div style={{ fontSize: 13.5, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--accent-hi)', fontWeight: 700 }}>{b.block_type}</span>
+                    <span>{b.layout || '—'}</span>
+                    {b.config && typeof b.config.confidence === 'number' && (
+                      <span
+                        title="Auto-compose fit for this scene"
+                        style={{ marginLeft: 'auto', fontSize: 10.5, fontFamily: 'var(--mono, monospace)', fontWeight: 600, letterSpacing: '.02em', padding: '2px 7px', borderRadius: 999, border: '1px solid var(--border-strong)', color: b.config.confidence < 0.5 ? '#e0a84a' : 'var(--ok, #5cc08a)' }}
+                      >
+                        {Math.round(b.config.confidence * 100)}% fit
+                      </span>
+                    )}
                   </div>
                   <div style={{ fontSize: 12, color: 'var(--text-2)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{blockSummary(b)}</div>
                   {b.config && b.config.line && (
@@ -299,11 +331,31 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
 
                   {(b.block_type === 'broll' || b.block_type === 'slot') && (
                     <div>
-                      <label style={LBL}>Cookbook component</label>
-                      <select className="input" disabled={!isDraft || !!busy} value={cookbookIdOfCfg(parseBuf(b.config)) || ''} onChange={(e) => pickCookbook(b, e.target.value)} style={{ marginTop: 6 }}>
-                        <option value="">— pick —</option>
-                        {cookbook.map((c) => <option key={c.id} value={c.id}>{c.id} — {c.label} ({c.needs})</option>)}
-                      </select>
+                      <label style={LBL}>Cookbook component{b.config && b.config.line ? ' · ranked for this line' : ''}</label>
+                      {ranked.length > 0 ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8, maxHeight: 280, overflowY: 'auto' }}>
+                          {ranked.map((r) => {
+                            const sel = cookbookIdOfCfg(parseBuf(b.config)) === r.id
+                            return (
+                              <button key={r.id} type="button" disabled={!isDraft || !!busy} onClick={() => pickCookbook(b, r.id)}
+                                style={{ textAlign: 'left', background: sel ? 'var(--accent-soft)' : 'var(--input, #101116)', border: sel ? '1px solid var(--accent)' : '1px solid var(--border)', borderRadius: 8, padding: '8px 10px', cursor: isDraft ? 'pointer' : 'default', display: 'flex', alignItems: 'center', gap: 10 }}>
+                                <div style={{ minWidth: 0, flex: 1 }}>
+                                  <div style={{ fontSize: 12.5, fontWeight: 700 }}>{r.id}<span style={{ color: 'var(--text-3)', fontWeight: 400, marginLeft: 7 }}>{r.title}</span></div>
+                                  <div style={{ fontSize: 10.5, color: 'var(--text-3)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                    <span style={{ color: 'var(--cyan, #5ec6d6)' }}>{r.role}</span> · needs {r.needs}{r.why ? ' · ' + r.why : ''}
+                                  </div>
+                                </div>
+                                <span style={{ fontFamily: 'var(--mono, monospace)', fontSize: 12, fontWeight: 700, color: sel ? 'var(--accent-hi)' : 'var(--text-2)' }}>{r.score}</span>
+                              </button>
+                            )
+                          })}
+                        </div>
+                      ) : (
+                        <select className="input" disabled={!isDraft || !!busy} value={cookbookIdOfCfg(parseBuf(b.config)) || ''} onChange={(e) => pickCookbook(b, e.target.value)} style={{ marginTop: 6 }}>
+                          <option value="">— pick —</option>
+                          {cookbook.map((c) => <option key={c.id} value={c.id}>{c.id} — {c.label} ({c.needs})</option>)}
+                        </select>
+                      )}
                     </div>
                   )}
 

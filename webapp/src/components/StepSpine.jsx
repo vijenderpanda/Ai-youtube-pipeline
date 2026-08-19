@@ -353,23 +353,36 @@ function ManifestPanel({ manifest }) {
           ⚠ {low.length} low-confidence scene{low.length === 1 ? '' : 's'} — review before producing
         </div>
       )}
-      <ul style={{ listStyle: 'none', padding: 0, margin: '8px 0 0', display: 'grid', gap: 4 }}>
+      <ul style={{ listStyle: 'none', padding: 0, margin: '8px 0 0' }}>
         {manifest.assets.map((a, i) => (
-          <li key={i} style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13 }}>
-            <span className="tag" style={{ minWidth: 78 }}>{a.type}</span>
-            {a.id && <span style={{ fontWeight: 600 }}>{a.id}</span>}
-            {a.scene != null && <span className="dim small">scene {a.scene}</span>}
-            {a.confidence != null && (
-              <span className="dim small" style={a.confidence < 0.5 ? { color: '#e0a84a' } : undefined}>
-                {Math.round(a.confidence * 100)}%
-              </span>
-            )}
-            <span
-              className="tag"
-              style={{ marginLeft: 'auto', color: a.cost === 'paid' ? 'var(--ch)' : 'var(--text-3)' }}
-            >
-              {a.cost}
-            </span>
+          <li
+            key={i}
+            style={{ display: 'grid', gridTemplateColumns: '116px 1fr auto', gap: 12, alignItems: 'center',
+              fontSize: 12.5, padding: '8px 2px', borderTop: i ? '1px solid var(--border-soft)' : 'none' }}
+          >
+            <div style={{ fontWeight: 700 }}>
+              {a.type}
+              {(a.engine || a.ref) && (
+                <span style={{ display: 'block', fontSize: 10, color: 'var(--text-3)', fontFamily: 'var(--mono, monospace)', fontWeight: 500 }}>
+                  {a.engine || a.ref}
+                </span>
+              )}
+            </div>
+            <div style={{ color: 'var(--text-2)', minWidth: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {a.id || a.detail || ''}
+              {a.confidence != null && (
+                <span style={{ marginLeft: 8, fontFamily: 'var(--mono, monospace)', color: a.confidence < 0.5 ? '#e0a84a' : 'var(--text-3)' }}>
+                  {Math.round(a.confidence * 100)}% fit
+                </span>
+              )}
+            </div>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              {a.scene != null && <span className="dim small" style={{ fontFamily: 'var(--mono, monospace)' }}>→ scene {a.scene}</span>}
+              {a.scene == null && Array.isArray(a.scenes) && a.scenes.length > 0 && (
+                <span className="dim small" style={{ fontFamily: 'var(--mono, monospace)' }}>→ {a.scenes.length} sc</span>
+              )}
+              <span className="tag" style={{ color: a.cost === 'paid' ? 'var(--ch)' : 'var(--text-3)' }}>{a.cost}</span>
+            </div>
           </li>
         ))}
       </ul>
