@@ -103,6 +103,30 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         defaultProps={props}
       />
+      {/* v17 STYLE PRESETS — the SAME composition + SAME episode props, rendered
+          with a different `style` token so the cast's remotion_comp slot offers a
+          real visual choice. build_ep_v2 renders `npx remotion render <comp>
+          --props=<beat spec>`; the beat spec has no top-level `style` key, so each
+          composition's defaultProps.style survives the merge. `Short` stays classic
+          (unchanged above); ShortBold/ShortMinimal only add the style override. */}
+      <Composition
+        id="ShortBold"
+        component={Short}
+        durationInFrames={frames}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ ...props, style: "bold" }}
+      />
+      <Composition
+        id="ShortMinimal"
+        component={Short}
+        durationInFrames={frames}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ ...props, style: "minimal" }}
+      />
       <Composition
         id="StatBarsDemo"
         component={StatBars}
