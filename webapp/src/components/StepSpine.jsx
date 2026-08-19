@@ -568,10 +568,10 @@ export default function StepSpine({
             </div>
           )}
 
-          {/* CAST switcher — the one thing this step could show but not change. */}
+          {/* Composition switcher — which locked composition this piece runs through. */}
           <div className="cast-row">
             <label className="cast-row-label" htmlFor="plan-cast-select">
-              Cast
+              Run through
             </label>
             <select
               id="plan-cast-select"
@@ -579,7 +579,7 @@ export default function StepSpine({
               value={boundId || ''}
               disabled={castBusy || !!busy || !onSetCast}
               onChange={(e) => onSetCast && onSetCast(e.target.value || null)}
-              title="Which locked cast this piece produces with"
+              title="Which locked composition this piece runs through"
             >
               <option value="">{defaultCastLabel}</option>
               {castOptions.map((v) => {

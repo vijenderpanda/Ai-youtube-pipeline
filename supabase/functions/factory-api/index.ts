@@ -1320,7 +1320,7 @@ async function handlePost(body: any): Promise<Response> {
       if (!id || !patch || typeof patch !== "object") {
         return json({ error: "id and patch required" }, 400);
       }
-      const allowed = ["planned_date", "title", "brief", "type", "model", "effort", "ultracode", "status"];
+      const allowed = ["planned_date", "title", "brief", "type", "model", "effort", "ultracode", "status", "auto_mode"];
       const clean: Record<string, unknown> = {};
       for (const k of allowed) if (k in patch) clean[k] = patch[k];
       if (Object.keys(clean).length === 0) {

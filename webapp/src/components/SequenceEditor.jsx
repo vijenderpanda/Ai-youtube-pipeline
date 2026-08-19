@@ -214,7 +214,7 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
         <div>
           <h2 id="seq-title" style={{ margin: 0, fontSize: 16 }}>Sequence</h2>
           <div style={{ fontSize: 12.5, color: 'var(--text-2)', marginTop: 2 }}>
-            The ordered blocks that play — each a layout + config. Frozen into the composition at lock.
+            The ordered scenes that play — each a layout + config. Frozen into the composition at lock.
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -228,7 +228,7 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
           >
             {preview ? '▣ Hide preview' : '▷ Preview'}
           </button>
-          <span className="chip">{sorted.length} block{sorted.length === 1 ? '' : 's'}</span>
+          <span className="chip">{sorted.length} scene{sorted.length === 1 ? '' : 's'}</span>
         </div>
       </div>
 
@@ -242,7 +242,7 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
 
       {!sorted.length && (
         <div style={{ color: 'var(--text-3)', fontSize: 13, padding: '10px 0' }}>
-          No blocks yet. {isDraft ? 'Add one to start designing the composition.' : 'This version has no sequence.'}
+          No scenes yet. {isDraft ? 'Add one to start designing the composition.' : 'This version has no sequence.'}
         </div>
       )}
 
@@ -327,7 +327,7 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
         <>
           <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
             <button type="button" className="btn-ghost" style={{ flex: 1, borderStyle: 'dashed' }} disabled={!!busy} onClick={addBlock}>
-              ＋ Add block
+              ＋ Add scene
             </button>
             <button
               type="button"

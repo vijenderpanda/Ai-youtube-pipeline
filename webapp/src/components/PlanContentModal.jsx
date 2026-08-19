@@ -37,31 +37,15 @@ export default function PlanContentModal({ channels = [], onClose, onCreated }) 
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const { toast, show } = useToast()
-  // S5: pick which locked composition this piece runs through, at plan time.
-  const [compPin, setCompPin] = useState('')
-  const [comps, setComps] = useState([])
-  const chan = channels.find((c) => c.key === form.channel_key)
-  const tplKey = chan && chan.template ? chan.template : null
+  // S7 (mockup): flip Autopilot at plan time — the piece then auto-produces with
+  // minimal review (still stops at the arm gate). Persisted on the calendar row.
+  const [autoMode, setAutoMode] = useState(false)
 
   useEffect(() => {
     if (!form.channel_key && channels.length > 0) {
       setForm((f) => (f.channel_key ? f : { ...f, channel_key: channels[0].key }))
     }
   }, [channels]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // load the selected channel's LOCKED composition library; reset when the
-  // channel changes (compositions are channel-specific).
-  useEffect(() => {
-    setCompPin('')
-    setComps([])
-    if (!tplKey) return
-    let ok = true
-    api
-      .get(`?r=template_versions&template_key=${encodeURIComponent(tplKey)}&include_retired=1`)
-      .then((d) => { if (ok) setComps((d.versions || []).filter((v) => v.status === 'locked')) })
-      .catch(() => {})
-    return () => { ok = false }
-  }, [tplKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
 
@@ -72,12 +56,11 @@ export default function PlanContentModal({ channels = [], onClose, onCreated }) 
     setError('')
     try {
       const item = await createCalendarItem(form)
-      // create_calendar_item doesn't take template_version_id; pin the chosen
-      // composition in a follow-up (same action the plan drawer uses). Non-fatal.
-      if (compPin && item && item.id) {
+      // create doesn't take auto_mode; set Autopilot on the row in a follow-up.
+      if (autoMode && item && item.id) {
         try {
-          await api.post({ action: 'set_calendar_template_version', calendar_id: item.id, template_version_id: compPin })
-        } catch { /* leave on channel default */ }
+          await api.post({ action: 'update_calendar_item', id: item.id, patch: { auto_mode: true } })
+        } catch { /* leave on manual */ }
       }
       onCreated(item)
     } catch (err) {
@@ -111,20 +94,6 @@ export default function PlanContentModal({ channels = [], onClose, onCreated }) 
             />
           </label>
         </div>
-        {tplKey && (
-          <label className="field">
-            <span className="field-label">Composition</span>
-            <select value={compPin} onChange={(e) => setCompPin(e.target.value)}>
-              <option value="">— channel default —</option>
-              {comps.map((v) => (
-                <option key={v.id} value={v.id}>
-                  v{v.version}
-                  {v.label ? ' · ' + v.label : ''}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
         <label className="field">
           <div className="field-label-row">
             <span className="field-label">Title</span>
@@ -198,6 +167,20 @@ export default function PlanContentModal({ channels = [], onClose, onCreated }) 
             />
           </div>
         </div>
+        <label className="field" style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+          <input
+            type="checkbox"
+            checked={autoMode}
+            onChange={(e) => setAutoMode(e.target.checked)}
+            style={{ marginTop: 3 }}
+          />
+          <span>
+            <span className="field-label" style={{ display: 'block' }}>Autopilot</span>
+            <span className="dim small">
+              Produce every beat with minimal review — still stops at the arm gate for your go.
+            </span>
+          </span>
+        </label>
         {error && <div className="form-error">{error}</div>}
         <div className="form-actions">
           <button type="button" className="btn btn-ghost" onClick={onClose}>
