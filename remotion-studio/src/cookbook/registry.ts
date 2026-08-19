@@ -158,6 +158,34 @@ export const COOKBOOK: CookbookEntry[] = [
     transparentCapable: true, wow: 4, density: "med",
     useWhen: "Show AI sifting a set of options and picking the best one.",
   },
+  {
+    id: "Fogline", demoId: "FoglineDemo", title: "Agent plan / lit road",
+    role: "app-ui", beats: ["process", "demo", "context"], needs: "steps",
+    keywords: ["agent", "plan", "roadmap", "pipeline", "autonomy", "foresight", "lookahead", "what happens next", "steps ahead", "orchestration", "workflow", "confidence"],
+    transparentCapable: true, wow: 5, density: "high",
+    useWhen: "Show an agent's whole PLAN executing with honest foresight — the near step sharp, the far ones fogged (blur = confidence). Sibling to DynamicIsland (present) — Fogline is the future.",
+  },
+  {
+    id: "HoloCard", demoId: "HoloCardDemo", title: "Holographic hero card",
+    role: "layout", beats: ["hook", "punchline", "cta", "context"], needs: "facts",
+    keywords: ["hero", "feature", "product", "reveal", "spotlight", "premium", "one thing", "flagship", "launch", "showcase", "3d card", "depth"],
+    transparentCapable: true, wow: 5, density: "low",
+    useWhen: "Spotlight ONE subject (feature/product/idea) as a floating, dimensional artifact with a few spec chips. The low-density hero counterpart to BentoGrid.",
+  },
+  {
+    id: "GlassPanel", demoId: "GlassPanelDemo", title: "Liquid-glass stat panel",
+    role: "device-ui", beats: ["stat", "context", "cta", "social-proof"], needs: "single-number",
+    keywords: ["glass", "frosted", "liquid glass", "premium", "ios", "translucent", "hud", "panel", "headline number", "dashboard", "refraction", "style"],
+    transparentCapable: true, wow: 5, density: "med",
+    useWhen: "Present ONE hero figure + a few supporting rows on a frosted, refractive glass panel — the premium-material way to land a number.",
+  },
+  {
+    id: "MorphField", demoId: "MorphFieldDemo", title: "Button → field → confirm",
+    role: "interaction", beats: ["cta", "demo", "hook"], needs: "steps",
+    keywords: ["signup", "capture", "cta", "form", "input", "field", "submit", "join", "subscribe", "one field", "morph", "enter email", "waitlist"],
+    transparentCapable: true, wow: 4, density: "low",
+    useWhen: "Show a one-field ask as a single object morphing: a button opens into an input, accepts a typed value, then confirms. For CTA / capture beats.",
+  },
 ];
 
 /* ------------------------------------------------------------------------- */

@@ -19,6 +19,10 @@ import { NotificationStack, notificationStackDemo } from "./cookbook/Notificatio
 import { DynamicIsland, dynamicIslandDemo } from "./cookbook/DynamicIsland";
 import { VoiceOrb, voiceOrbDemo } from "./cookbook/VoiceOrb";
 import { SwipeDeck, swipeDeckDemo } from "./cookbook/SwipeDeck";
+import { Fogline, foglineDemo } from "./cookbook/Fogline";
+import { HoloCard, holoCardDemo } from "./cookbook/HoloCard";
+import { GlassPanel, glassPanelDemo } from "./cookbook/GlassPanel";
+import { MorphField, morphFieldDemo } from "./cookbook/MorphField";
 
 const FPS = 30;
 
@@ -303,6 +307,42 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={swipeDeckDemo}
+      />
+      <Composition
+        id="FoglineDemo"
+        component={Fogline}
+        durationInFrames={10 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={foglineDemo}
+      />
+      <Composition
+        id="HoloCardDemo"
+        component={HoloCard}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={holoCardDemo}
+      />
+      <Composition
+        id="GlassPanelDemo"
+        component={GlassPanel}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={glassPanelDemo}
+      />
+      <Composition
+        id="MorphFieldDemo"
+        component={MorphField}
+        durationInFrames={5 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={morphFieldDemo}
       />
     </>
   );
