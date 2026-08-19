@@ -515,6 +515,7 @@ export default function Calendar() {
         <CalendarDrawer
           key={selectedItem.id}
           item={selectedItem}
+          channels={channels}
           challenger={challengerByTarget.get(selectedItem.id) || null}
           onRunImproved={runImproved}
           onKeepOriginal={keepOriginal}
