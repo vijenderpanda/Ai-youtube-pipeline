@@ -6809,6 +6809,24 @@ a.out-chip:hover {
 }
 .asset-ver-chip:disabled { opacity: .5; cursor: default; }
 .asset-ver-chip.asset-retired { opacity: .45; text-decoration: line-through; }
+/* Retire / Restore (FIX 4): a quiet square button beside each version chip. It
+   shelves a pivot-dead revision without deleting bytes — retire tints danger,
+   restore tints green. */
+.asset-retire-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; padding: 0; border-radius: 6px;
+  border: 1px solid var(--border, #2A2A36); background: transparent;
+  color: var(--faint, #6B7280); cursor: pointer; font-size: 12px; line-height: 1;
+}
+.asset-retire-btn:hover:not(:disabled) {
+  color: var(--danger, #E5484D);
+  border-color: color-mix(in srgb, var(--danger, #E5484D) 45%, transparent);
+}
+.asset-restore-btn:hover:not(:disabled) {
+  color: var(--green, #46D18A);
+  border-color: color-mix(in srgb, var(--green, #46D18A) 45%, transparent);
+}
+.asset-retire-btn:disabled { opacity: .5; cursor: default; }
 .asset-more { cursor: pointer; color: var(--faint, #6B7280); }
 .asset-more:hover { color: var(--champagne, #D8C08A); }
 /* wide brand art (banners/wordmarks) should fit, not crop to a slice */
@@ -6926,6 +6944,24 @@ a.out-chip:hover {
   background: var(--panel, #1C1C26); border: 1px solid var(--border, #2A2A36);
 }
 .cast-slot-cover img { width: 100%; height: 100%; object-fit: cover; }
+/* No-media cover fallback (FIX 2): a labelled mono chip of the build_ref/id,
+   never a bare pink dot. Fills the same cover box in the slot row + strip. */
+.cast-slot-cover-ref { padding: 3px; }
+.cast-ref-chip {
+  max-width: 100%;
+  font-size: 9px; line-height: 1.15; text-align: center;
+  color: var(--champagne, #D8C08A);
+  overflow: hidden; word-break: break-word;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+}
+/* The real HeyGen avatar id behind a host pick (FIX 3) — a quiet mono chip under
+   the face + shot-role chips, so "pick who is Sol" is made on the id + face. */
+.chip.cast-host-id {
+  margin-top: 5px; font-size: 10px; letter-spacing: .02em;
+  color: var(--faint, #6B7280);
+  background: color-mix(in srgb, var(--faint, #6B7280) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--faint, #6B7280) 24%, transparent);
+}
 .cast-slot-copy { flex: 1 1 auto; min-width: 0; }
 .cast-slot-title {
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap;

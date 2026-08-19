@@ -2439,6 +2439,50 @@ async function handlePost(body: any): Promise<Response> {
       return json({ ok: true });
     }
 
+    // retire_asset_version {version_id}
+    // Shelve a library revision that pivoted out of use (e.g. component_buildclub
+    // once Build Club was de-prioritised) WITHOUT deleting bytes: status='retired'
+    // + retired_at=now. The composer already refuses a retired pick and the Assets
+    // board renders it struck-through. Never deletes — unretire restores it. Only
+    // the owner clicks this; nothing auto-retires from code.
+    case "retire_asset_version": {
+      const vId = String(body.version_id ?? "");
+      if (!vId || !UUID_RE.test(vId)) return json({ error: "version_id (uuid) required" }, 400);
+      const { data: av, error: avErr } = await db.from("factory_asset_versions")
+        .select("id, channel_key, asset_type, version, status").eq("id", vId).maybeSingle();
+      if (avErr) return json({ error: avErr.message }, 500);
+      if (!av) return json({ error: "asset version not found" }, 404);
+      const { data: updated, error: uErr } = await db.from("factory_asset_versions")
+        .update({ status: "retired", retired_at: new Date().toISOString() })
+        .eq("id", vId).select().single();
+      if (uErr) return json({ error: uErr.message }, 500);
+      await logEvent("asset_version_retired",
+        `${av.asset_type} v${av.version} retired (${av.channel_key})`,
+        { channel_key: av.channel_key, asset_type: av.asset_type, version_id: vId, version: av.version });
+      return json({ version: updated });
+    }
+
+    // unretire_asset_version {version_id}
+    // Undo of the above — restores a retired revision to 'candidate' (never to
+    // 'locked'; re-locking is an explicit lock_asset). 404 if not found; never
+    // deletes.
+    case "unretire_asset_version": {
+      const vId = String(body.version_id ?? "");
+      if (!vId || !UUID_RE.test(vId)) return json({ error: "version_id (uuid) required" }, 400);
+      const { data: av, error: avErr } = await db.from("factory_asset_versions")
+        .select("id, channel_key, asset_type, version, status").eq("id", vId).maybeSingle();
+      if (avErr) return json({ error: avErr.message }, 500);
+      if (!av) return json({ error: "asset version not found" }, 404);
+      const { data: updated, error: uErr } = await db.from("factory_asset_versions")
+        .update({ status: "candidate", retired_at: null })
+        .eq("id", vId).select().single();
+      if (uErr) return json({ error: uErr.message }, 500);
+      await logEvent("asset_version_unretired",
+        `${av.asset_type} v${av.version} restored (${av.channel_key})`,
+        { channel_key: av.channel_key, asset_type: av.asset_type, version_id: vId, version: av.version });
+      return json({ version: updated });
+    }
+
     // ── Phase 4: the Template Composer ───────────────────────────────
     // factory_templates names the PIPELINE; a template VERSION names the CAST.
     // A version is edited as join rows while `draft`, then FROZEN into its

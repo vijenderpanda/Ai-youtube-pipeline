@@ -121,6 +121,25 @@ export default function Assets() {
     }
   }
 
+  // Retire / restore a revision: shelves a pivot-dead asset (e.g. BuildClub after
+  // the Build-Club pivot) out of active use WITHOUT deleting bytes. The edge sets
+  // status='retired' (+ retired_at) or restores it to 'candidate'. Retired
+  // revisions render struck-through and drop out of the composer's swap options.
+  const retire = async (version_id, currentlyRetired) => {
+    setBusy((currentlyRetired ? 'restore:' : 'retire:') + version_id)
+    try {
+      await api.post({
+        action: currentlyRetired ? 'unretire_asset_version' : 'retire_asset_version',
+        version_id,
+      })
+      await q.refresh()
+    } catch (e) {
+      show(e.message || 'Could not change the retire state')
+    } finally {
+      setBusy(null)
+    }
+  }
+
   const nothing = !q.loading && groups.length === 0
 
   return (
@@ -296,44 +315,75 @@ export default function Assets() {
                     {(expanded[type] ? vers : vers.slice(0, 6)).map((v) => {
                       const isLocked = locked && v.id === locked.id
                       const ref = v.meta && v.meta.build_ref
-                      const working = busy === v.id
                       const retired = v.status === 'retired'
+                      const retiring = busy === 'retire:' + v.id || busy === 'restore:' + v.id
+                      const working = busy === v.id || retiring
                       const u = usageOf(usage, v.id)
                       const badge = usageBadge(u)
                       const uTitle = usageTitle(u)
                       return (
-                        <button
-                          key={v.id}
-                          type="button"
-                          className={
-                            'chip asset-ver-chip' +
-                            (isLocked ? ' asset-locked' : '') +
-                            (retired ? ' asset-retired' : '')
-                          }
-                          disabled={working}
-                          title={
-                            (isLocked
-                              ? 'Locked — click to unlock' + (ref ? ' · build ' + ref : '')
-                              : 'Make v' + v.version + ' the locked revision' +
-                                (ref ? ' · build ' + ref : '')) +
-                            (uTitle ? '\n\n' + uTitle : '')
-                          }
-                          onClick={() => setLock(type, isLocked ? null : v.id)}
-                        >
-                          {working ? '…' : 'v' + v.version}
-                          {isLocked && <span className="asset-locked-tag">LOCKED</span>}
-                          {/* nothing at all when no usage is recorded */}
-                          {badge && (
-                            <span
-                              className={
-                                'asset-ver-use' +
-                                (u.shipped > 0 ? ' asset-ver-use-shipped' : '')
-                              }
+                        <span key={v.id} className="asset-ver">
+                          <button
+                            type="button"
+                            className={
+                              'chip asset-ver-chip' +
+                              (isLocked ? ' asset-locked' : '') +
+                              (retired ? ' asset-retired' : '')
+                            }
+                            disabled={working}
+                            title={
+                              (isLocked
+                                ? 'Locked — click to unlock' + (ref ? ' · build ' + ref : '')
+                                : 'Make v' + v.version + ' the locked revision' +
+                                  (ref ? ' · build ' + ref : '')) +
+                              (uTitle ? '\n\n' + uTitle : '')
+                            }
+                            onClick={() => setLock(type, isLocked ? null : v.id)}
+                          >
+                            {busy === v.id ? '…' : 'v' + v.version}
+                            {isLocked && <span className="asset-locked-tag">LOCKED</span>}
+                            {/* nothing at all when no usage is recorded */}
+                            {badge && (
+                              <span
+                                className={
+                                  'asset-ver-use' +
+                                  (u.shipped > 0 ? ' asset-ver-use-shipped' : '')
+                                }
+                              >
+                                {badge}
+                              </span>
+                            )}
+                          </button>
+                          {/* Retire / Restore — shelve a pivot-dead revision without
+                              deleting bytes. Hidden on the LOCKED revision (unlock it
+                              first) so the live lock can never point at a retired
+                              asset. */}
+                          {retired ? (
+                            <button
+                              type="button"
+                              className="asset-retire-btn asset-restore-btn"
+                              disabled={retiring}
+                              aria-label={'Restore revision v' + v.version + ' to the library'}
+                              title={'Restore v' + v.version + ' — return it to pickable candidates'}
+                              onClick={() => retire(v.id, true)}
                             >
-                              {badge}
-                            </span>
+                              {retiring ? '…' : '↺'}
+                            </button>
+                          ) : (
+                            !isLocked && (
+                              <button
+                                type="button"
+                                className="asset-retire-btn"
+                                disabled={retiring}
+                                aria-label={'Retire revision v' + v.version}
+                                title={'Retire v' + v.version + ' — hide from the composer, keep the bytes'}
+                                onClick={() => retire(v.id, false)}
+                              >
+                                {retiring ? '…' : '⊘'}
+                              </button>
+                            )
                           )}
-                        </button>
+                        </span>
                       )
                     })}
                     {vers.length > 6 && (
