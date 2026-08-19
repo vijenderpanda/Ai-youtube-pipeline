@@ -104,6 +104,48 @@ SITES = {
 
 MOBILE_UA = ("Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) "
              "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1")
+DESKTOP_UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+              "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36")
+
+# Capture VIEWS — the one knob the app's "add recording" flow turns. "mobile" is
+# the HISTORICAL default and MUST stay byte-for-byte identical to the pre-2026-08
+# recorder: 540x960 CSS viewport (its dict IS the VIEW global above, same object)
+# recorded small and upscaled 2x to 1080x1920, iPhone UA, is_mobile/has_touch on.
+# "desktop" is the new landscape 16:9 path — a real fullscreen web app, not a
+# phone column — 1280x720 recorded and upscaled 1.5x to 1920x1080, desktop UA,
+# is_mobile/has_touch OFF. Everything view-dependent (the context flags, the
+# ffmpeg output size, and — via the module-global VIEW that box_norm and the
+# scroll math read — the geometry) flows from this one table.
+VIEWS = {
+    "mobile": {
+        "viewport": VIEW,                 # the SAME object as the global default
+        "user_agent": MOBILE_UA,
+        "device_scale_factor": 2,
+        "is_mobile": True, "has_touch": True,
+        "scale": "1080:1920",             # ffmpeg upscale target (2x, 9:16)
+    },
+    "desktop": {
+        "viewport": {"width": 1280, "height": 720},
+        "user_agent": DESKTOP_UA,
+        "device_scale_factor": 2,
+        "is_mobile": False, "has_touch": False,
+        "scale": "1920:1080",             # ffmpeg upscale target (1.5x, 16:9)
+    },
+}
+
+
+def apply_view(name):
+    """Select a capture view and point the module-global VIEW at its viewport.
+
+    box_norm() and the scroll math read the module global VIEW directly, so
+    pointing it at the chosen viewport makes the whole recorder view-aware
+    without threading a size through every helper. 'mobile' re-points VIEW at
+    the exact dict it already held, so that path is unchanged.
+    """
+    global VIEW
+    cfg = VIEWS[name]
+    VIEW = cfg["viewport"]
+    return cfg
 
 # Assistant-answer containers, most specific first. The FIRST two are the
 # chatgpt.com *mobile web* app ("wm-app") markup, measured 5 Aug 2026 at
@@ -306,26 +348,41 @@ def read_answer(page):
     return None, ""
 
 
-def watch_answer(page, seconds, mark, seed_terms=(), forbid_terms=()):
+def watch_answer(page, seconds, mark, seed_terms=(), forbid_terms=(),
+                 settle=None):
     """Film the streaming answer, measuring when text actually appears.
 
     record_demo.py used to stamp answer_start immediately after submit and
     sleep, so answer_start == submit and no sidecar carried a real
     first-token time. This polls the answer container instead and returns the
     measured moments, without changing how long the answer is filmed.
+
+    `settle` (opt-in) ends the watch early once the answer text has stopped
+    growing for that many seconds — a long-essay take would otherwise hold a
+    finished, motionless answer for the rest of a generous --wait-after.
+    `samples` records (t, chars) each poll so quartile stream marks (a burned
+    word counter's keyframes) can be derived from the measured stream, not
+    interpolated between submit and answer_end.
     """
     out = {"first_token": None, "first_personalized": None,
            "matched_term": None, "selector": None, "answer_head": "",
-           "forbidden_term": None, "answer_chars": 0, "seen_terms": []}
+           "forbidden_term": None, "answer_chars": 0, "seen_terms": [],
+           "samples": []}
     end = time.monotonic() + seconds
+    last_growth = time.monotonic()
     while time.monotonic() < end:
         sel, txt = read_answer(page)
         if txt:
             if out["first_token"] is None:
                 out["first_token"] = mark()
                 out["selector"] = sel
+            if len(txt) != out["answer_chars"]:
+                last_growth = time.monotonic()
             out["answer_head"] = txt[:400]
             out["answer_chars"] = len(txt)
+            out["samples"].append((round(mark(), 3), len(txt)))
+            if settle and time.monotonic() - last_growth >= settle:
+                break
             # every seed/tell term that ever appears is recorded (the tells of a
             # "fail" take arrive throughout a long answer, not just in its head);
             # first_personalized still marks the FIRST one, for the delay gate
@@ -395,32 +452,50 @@ def record(url, input_sel, prompt, out, wait_after=14, pre_wait=4, profile=None,
            site=None, dark=False, forbid_terms=(), redact=False,
            followup=None, followup_wait=None, fail_terms=(),
            fix_forbid_terms=(), fix_seed_terms=(), followup_paste=None,
-           followup_scroll=False):
+           followup_scroll=False, scroll_full=False, settle_break=None,
+           answer_text_out=None, view="mobile"):
     out = Path(out)
     tmpdir = out.parent / f".rec_{out.stem}"
     tmpdir.mkdir(parents=True, exist_ok=True)
+    cfg = apply_view(view)   # points the module-global VIEW at this view's viewport
 
-    launch_args = dict(
-        headless=not headed,
-        channel="chromium",  # full build in new headless mode, far less bot-detectable than headless shell
-        args=["--disable-blink-features=AutomationControlled"],
-    )
     with sync_playwright() as p:
         common = dict(
             viewport=VIEW,
-            user_agent=MOBILE_UA,
-            device_scale_factor=2,
-            is_mobile=True, has_touch=True,
+            user_agent=cfg["user_agent"],
+            device_scale_factor=cfg["device_scale_factor"],
+            is_mobile=cfg["is_mobile"], has_touch=cfg["has_touch"],
             record_video_dir=str(tmpdir),
             record_video_size=VIEW,
         )
         if dark:
             common["color_scheme"] = "dark"  # episode look; account setting untouched
-        if profile:
-            ctx = p.chromium.launch_persistent_context(str(profile), **launch_args, **common)
-        else:
-            browser = p.chromium.launch(**launch_args)
-            ctx = browser.new_context(**common)
+        # channel="chromium" is the right default for recording (§10b: the full
+        # build is far less bot-detectable) but channel-pinned launches have
+        # been measured to hang on this machine until the timeout while the
+        # bundled launch comes up instantly — same fallback preflight() carries.
+        ctx = None
+        for chan in ("chromium", None):
+            launch_args = dict(
+                headless=not headed, timeout=45000,
+                args=["--disable-blink-features=AutomationControlled"],
+            )
+            if chan:
+                launch_args["channel"] = chan
+            try:
+                if profile:
+                    ctx = p.chromium.launch_persistent_context(str(profile), **launch_args, **common)
+                else:
+                    browser = p.chromium.launch(**launch_args)
+                    ctx = browser.new_context(**common)
+                if not chan:
+                    print("!! channel='chromium' launch failed; using bundled build", file=sys.stderr)
+                break
+            except Exception as e:
+                print(f"!! launch channel={chan or 'bundled'}: {type(e).__name__}: {e}"[:300],
+                      file=sys.stderr)
+        if ctx is None:
+            sys.exit("ABORT: no chromium build would launch (see failures above)")
         t0 = time.monotonic()  # context creation = video start
         mark = lambda: time.monotonic() - t0
         tl = {"scrolls": []}
@@ -526,7 +601,8 @@ def record(url, input_sel, prompt, out, wait_after=14, pre_wait=4, profile=None,
             assert_not_login_wall(page, "after submit")  # some sites gate on send
             dismiss_popups()
             # response streams in on camera, and we measure it while it does
-            w = watch_answer(page, film - 2, mark, seeds, forbids)
+            w = watch_answer(page, film - 2, mark, seeds, forbids,
+                             settle=settle_break)
             tl[pre + "answer_end"] = mark()
             if w["selector"]:
                 tl[pre + "answer_box"] = box_norm(page, w["selector"], last=True)
@@ -538,6 +614,18 @@ def record(url, input_sel, prompt, out, wait_after=14, pre_wait=4, profile=None,
         tl.update({k: watch[k] for k in
                    ("first_token", "first_personalized", "matched_term",
                     "selector", "answer_head", "forbidden_term", "answer_chars")})
+        tl["samples"] = watch["samples"]
+        if answer_text_out and tl.get("selector"):
+            # the EXACT final answer text, copied out of the DOM in the same
+            # session — a spoken/burned word count must never come from a
+            # transcription of compressed video
+            try:
+                full = page.locator(tl["selector"]).last.inner_text(timeout=5000)
+                Path(answer_text_out).write_text(full)
+                tl["answer_text_chars"] = len(full)
+                print(f"answer text -> {answer_text_out} ({len(full)} chars)")
+            except Exception as e:
+                print(f"!! answer-text-out failed: {e}", file=sys.stderr)
         if fail_terms:
             # every tell that actually made it on camera, not just the first
             # (measured on the full streamed text, not the 400-char head)
@@ -595,6 +683,32 @@ def record(url, input_sel, prompt, out, wait_after=14, pre_wait=4, profile=None,
             if redact:
                 tl["pii_blurred"] = tl.get("pii_blurred", 0) + redact_pii(page)
                 assert_no_visible_pii(page, "after the rewrite")
+        elif scroll_full:
+            # one smooth pass to the BOTTOM of the conversation, so the sheer
+            # length of a long answer is unmistakable on camera. Deterministic:
+            # poll the deepest scrollable container (claude.ai scrolls an inner
+            # div — document.scrollingElement never moves) and stop when it
+            # stops moving, never a guessed pixel count. Then hold STILL so the
+            # tape ends on a readable, motionless frame.
+            scroll_pos = lambda: page.evaluate("""() => {
+              let m = document.scrollingElement ? document.scrollingElement.scrollTop : 0;
+              for (const e of document.querySelectorAll('*'))
+                if (e.scrollHeight > e.clientHeight + 40 && e.scrollTop > m) m = e.scrollTop;
+              return m;
+            }""")
+            page.mouse.move(VIEW["width"] // 2, VIEW["height"] // 2)
+            tl["scroll_start"] = mark()
+            prev = -1
+            for _ in range(80):
+                top = scroll_pos()
+                if top == prev:
+                    break
+                prev = top
+                page.mouse.wheel(0, 240)
+                tl["scrolls"].append(mark())
+                time.sleep(0.55)
+            time.sleep(PROOF_HOLD)
+            tl["scroll_end"] = mark()
         else:
             # gentle scroll to show the full answer
             for _ in range(3):
@@ -606,10 +720,11 @@ def record(url, input_sel, prompt, out, wait_after=14, pre_wait=4, profile=None,
         ctx.close()
         raw = Path(video.path())
 
-    # webm -> 1080x1920 mp4, trim page-load dead time
+    # webm -> mp4 at the view's output size (mobile 1080x1920 / desktop 1920x1080),
+    # trim page-load dead time
     subprocess.run([
         "ffmpeg", "-y", "-i", str(raw), "-ss", str(pre_wait - 1),
-        "-vf", "scale=1080:1920:flags=lanczos",
+        "-vf", f"scale={cfg['scale']}:flags=lanczos",
         "-c:v", "libx264", "-preset", "medium", "-crf", "18",
         "-pix_fmt", "yuv420p", "-r", "30", "-an", str(out),
     ], check=True, capture_output=True)
@@ -641,6 +756,25 @@ def record(url, input_sel, prompt, out, wait_after=14, pre_wait=4, profile=None,
     # first_token is what beat-map in-points want; answer_start is not it.
     if tl.get("first_token") is not None:
         timeline["first_token"] = rel(tl["first_token"])
+    if tl.get("scroll_start") is not None:
+        timeline["scroll_start"] = rel(tl["scroll_start"])
+        timeline["scroll_end"] = rel(tl["scroll_end"])
+    # quartile stream marks off the measured (t, chars) samples — the keyframes
+    # a burned word counter needs, derived from the stream that was filmed
+    samples = tl.get("samples") or []
+    if samples and tl.get("answer_chars"):
+        final_chars = tl["answer_chars"]
+        for frac, key in ((0.25, "stream_25"), (0.50, "stream_50"),
+                          (0.75, "stream_75")):
+            for t, c in samples:
+                if c >= final_chars * frac:
+                    timeline[key] = rel(t)
+                    break
+    # measured DOM extents, so the style pass can set its punch center/zoom
+    # from real geometry instead of re-detecting it (§10c: the box is a floor)
+    for k in ("composer_box", "answer_box"):
+        if tl.get(k):
+            timeline[k] = tl[k]
     if tl.get("first_personalized") is not None:
         timeline["first_personalized"] = rel(tl["first_personalized"])
         timeline["matched_term"] = tl.get("matched_term")
@@ -747,7 +881,7 @@ def check_generic(timeline, forbid_terms):
 
 
 def preflight(url, profile, expect_terms, site=None, dark=False,
-              shot=None, settle=6.0):
+              shot=None, settle=6.0, view="mobile"):
     """Answer 'can this account film this feature?' WITHOUT filming anything.
 
     Playbook §10b's standing lesson is that a demo chain whose capability is
@@ -764,11 +898,13 @@ def preflight(url, profile, expect_terms, site=None, dark=False,
                        not rolled out to this account): take the fallback path
     Prints a JSON verdict on stdout so a build script can branch on it.
     """
-    verdict = {"url": url, "site": site, "logged_in": None,
+    cfg = apply_view(view)   # points the module-global VIEW at this view's viewport
+    verdict = {"url": url, "site": site, "logged_in": None, "view": view,
                "expect": list(expect_terms), "found": [], "missing": []}
     with sync_playwright() as p:
-        common = dict(viewport=VIEW, user_agent=MOBILE_UA, device_scale_factor=2,
-                      is_mobile=True, has_touch=True)
+        common = dict(viewport=VIEW, user_agent=cfg["user_agent"],
+                      device_scale_factor=cfg["device_scale_factor"],
+                      is_mobile=cfg["is_mobile"], has_touch=cfg["has_touch"])
         if dark:
             common["color_scheme"] = "dark"
         # channel="chromium" is the recorder's default (playbook §10b: the full
@@ -882,6 +1018,11 @@ def main():
     ap.add_argument("--dark", action="store_true",
                     help="record with prefers-color-scheme: dark (the account's "
                          "Appearance setting is untouched)")
+    ap.add_argument("--view", choices=("mobile", "desktop"), default="mobile",
+                    help="capture geometry: 'mobile' = 540x960 -> 1080x1920 9:16 "
+                         "with an iPhone UA + touch (the default, unchanged); "
+                         "'desktop' = 1280x720 -> 1920x1080 16:9 fullscreen with a "
+                         "desktop UA + no touch")
     ap.add_argument("--followup",
                     help="second prompt typed into the SAME chat after the "
                          "first answer settles (fail -> fix -> proof in one "
@@ -908,6 +1049,19 @@ def main():
                          "motion (a real paste) before --followup is typed — the "
                          "only way a logged-out session can hand over a document, "
                          "since the anonymous file inputs are image-only")
+    ap.add_argument("--scroll-full", action="store_true",
+                    help="after the answer settles, scroll to the BOTTOM of the "
+                         "conversation in one smooth pass (deterministic: polls "
+                         "the scroll container until it stops moving) and hold "
+                         "still — for takes where the answer's LENGTH is the "
+                         "argument. Stamps scroll_start/scroll_end.")
+    ap.add_argument("--settle-break", type=float,
+                    help="end the answer watch early once the text has stopped "
+                         "growing for this many secs (lets --wait-after be "
+                         "generous without filming a long dead hold)")
+    ap.add_argument("--answer-text-out",
+                    help="write the final answer's EXACT text (DOM inner_text) "
+                         "to this file — for word counts that get spoken/burned")
     ap.add_argument("--followup-scroll", action="store_true",
                     help="after the follow-up answer, scroll to the bottom of "
                          "the conversation and hold still — needed when the "
@@ -964,7 +1118,7 @@ def main():
     if args.preflight:
         expect = [t.strip() for t in (args.expect_terms or "").split(",") if t.strip()]
         sys.exit(preflight(args.url or url, profile, expect, site=args.site,
-                           dark=args.dark, shot=args.shot))
+                           dark=args.dark, shot=args.shot, view=args.view))
 
     if not args.prompt:
         sys.exit("--prompt required")
@@ -998,7 +1152,11 @@ def main():
                            followup_wait=args.followup_wait,
                            fail_terms=fail, fix_forbid_terms=fixforbid,
                            fix_seed_terms=fixseed, followup_paste=paste_text,
-                           followup_scroll=args.followup_scroll)
+                           followup_scroll=args.followup_scroll,
+                           scroll_full=args.scroll_full,
+                           settle_break=args.settle_break,
+                           answer_text_out=args.answer_text_out,
+                           view=args.view)
     if timeline.get("first_token") is not None:
         print(f"first_token {timeline['first_token']}s")
     if forbid:

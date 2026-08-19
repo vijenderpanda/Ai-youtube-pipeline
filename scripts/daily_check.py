@@ -47,7 +47,11 @@ DATE_RE = re.compile(r"(\d{4}-\d{2}-\d{2})")
 # so the bare date is the only thing still asking to be produced. A bare
 # "SCHEDULED <date>" with no link is deliberately NOT closed — the whole point of
 # the guard is that the API, not the spreadsheet, confirms a slot is armed.
-CLOSED_RE = re.compile(r"youtu\.be/|^\s*SHIPPED\b", re.I)
+# RETIRED/CANCELLED rows keep their old date for history ("RETIRED (was
+# 2026-08-19)") — without them here, DATE_RE below still reads that date and
+# the checker keeps guarding a slot the decision already freed (the 2026-08-18
+# Build Club pivot: bc06/bcs1f).
+CLOSED_RE = re.compile(r"youtu\.be/|^\s*(SHIPPED|RETIRED|CANCELLED|KILLED)\b", re.I)
 
 
 def notify(msg):

@@ -15,6 +15,7 @@ import {
 } from '../assetCatalog'
 import EmptyState from '../components/EmptyState'
 import MediaPreview, { hasPreview, sampleNoteOf } from '../components/MediaPreview'
+import ShotRoleChips from '../components/ShotRoleChips'
 import Toast, { useToast } from '../components/Toast'
 import { fmtDate } from '../format'
 
@@ -44,6 +45,12 @@ import { fmtDate } from '../format'
 
 const CHANNEL_KEY = 'claude-tricks'
 
+// record_demo.py's pre-wired sites (their composer selector is known, so no
+// --selector is needed). Anything else is treated as a custom URL.
+const KNOWN_SITES = ['duckai', 'perplexity', 'chatgpt', 'claude', 'gemini']
+
+const REC_BLANK = { target: '', view: 'mobile', theme: 'light', prompt: '', selector: '' }
+
 const WIRING_NOTE = {
   live: 'Live in render',
   locked: 'Locked · wiring next',
@@ -72,6 +79,9 @@ export default function Assets() {
   const [busy, setBusy] = useState(null)
   const [expanded, setExpanded] = useState({}) // asset_type -> show full history
   const [openUse, setOpenUse] = useState({})   // asset_type -> show episode list
+  const [recOpen, setRecOpen] = useState(false) // "Add recording" inline form
+  const [rec, setRec] = useState(REC_BLANK)
+  const [recBusy, setRecBusy] = useState(false)
 
   const versions = (q.data && q.data.versions) || []
   const locks = (q.data && q.data.locks) || []
@@ -120,6 +130,73 @@ export default function Assets() {
     }
   }
 
+  // Retire / restore a revision: shelves a pivot-dead asset (e.g. BuildClub after
+  // the Build-Club pivot) out of active use WITHOUT deleting bytes. The edge sets
+  // status='retired' (+ retired_at) or restores it to 'candidate'. Retired
+  // revisions render struck-through and drop out of the composer's swap options.
+  const retire = async (version_id, currentlyRetired) => {
+    setBusy((currentlyRetired ? 'restore:' : 'retire:') + version_id)
+    try {
+      await api.post({
+        action: currentlyRetired ? 'unretire_asset_version' : 'retire_asset_version',
+        version_id,
+      })
+      await q.refresh()
+    } catch (e) {
+      show(e.message || 'Could not change the retire state')
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  // Add recording — queue a REAL screen recording (record_demo via the
+  // capture_demo shell_script job) in the chosen view + theme. It lands as a
+  // candidate demo_clip revision when the worker finishes.
+  const submitRecording = async (e) => {
+    e.preventDefault()
+    const target = rec.target.trim()
+    const prompt = rec.prompt.trim()
+    const selector = rec.selector.trim()
+    if (!target) {
+      show('Enter a site (duckai, perplexity, chatgpt, claude, gemini) or a full URL')
+      return
+    }
+    if (!prompt) {
+      show('Add a prompt — what should the recording type or do?')
+      return
+    }
+    const isSite = KNOWN_SITES.includes(target.toLowerCase())
+    const asUrl = !isSite && (/^https?:\/\//i.test(target) || target.includes('.'))
+    if (!isSite && !asUrl) {
+      show('Use a known site (duckai, perplexity, chatgpt, claude, gemini) or a full https:// URL')
+      return
+    }
+    if (asUrl && !selector) {
+      show('A custom URL needs a selector — the element the recording types into')
+      return
+    }
+    setRecBusy(true)
+    try {
+      await api.post({
+        action: 'capture_demo',
+        channel_key: CHANNEL_KEY,
+        view: rec.view,
+        theme: rec.theme,
+        ...(asUrl ? { url: target } : { site: target.toLowerCase() }),
+        prompt,
+        ...(selector ? { selector } : {}),
+      })
+      show('Recording queued — it appears in Demo footage when the worker finishes')
+      setRec(REC_BLANK)
+      setRecOpen(false)
+      await q.refresh()
+    } catch (err) {
+      show(err.message || 'Could not queue the recording')
+    } finally {
+      setRecBusy(false)
+    }
+  }
+
   const nothing = !q.loading && groups.length === 0
 
   return (
@@ -137,7 +214,125 @@ export default function Assets() {
               : recordedFromNote(recordedSince)}
           </p>
         </div>
+        <button
+          type="button"
+          className={'btn ' + (recOpen ? 'btn-ghost' : 'btn-primary')}
+          onClick={() => setRecOpen((v) => !v)}
+          aria-expanded={recOpen}
+          aria-controls="add-recording-form"
+        >
+          {recOpen ? 'Close' : '⏺ Add recording'}
+        </button>
       </header>
+
+      {recOpen && (
+        <form
+          id="add-recording-form"
+          className="card rec-form"
+          onSubmit={submitRecording}
+        >
+          <div className="rec-form-head">
+            <h2>Record a real demo</h2>
+            <p className="sub small">
+              Films a genuine screen recording of a live app in the view and theme you
+              pick, then registers it as a candidate under Demo footage.
+            </p>
+          </div>
+
+          <div className="form-row">
+            <label className="field">
+              <span className="field-label">URL or site</span>
+              <input
+                type="text"
+                value={rec.target}
+                onChange={(e) => setRec((r) => ({ ...r, target: e.target.value }))}
+                placeholder="duckai · perplexity · or https://…"
+                autoComplete="off"
+              />
+            </label>
+            <label className="field">
+              <span className="field-label">
+                Selector <span className="dim">(custom URL only)</span>
+              </span>
+              <input
+                type="text"
+                value={rec.selector}
+                onChange={(e) => setRec((r) => ({ ...r, selector: e.target.value }))}
+                placeholder="textarea, div[contenteditable=true]"
+                autoComplete="off"
+              />
+            </label>
+          </div>
+
+          <div className="form-row">
+            <div className="field">
+              <span className="field-label" id="rec-view-label">View</span>
+              <div className="rec-seg" role="radiogroup" aria-labelledby="rec-view-label">
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={rec.view === 'mobile'}
+                  className={'rec-seg-opt' + (rec.view === 'mobile' ? ' active' : '')}
+                  onClick={() => setRec((r) => ({ ...r, view: 'mobile' }))}
+                >
+                  📱 Mobile 9:16
+                </button>
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={rec.view === 'desktop'}
+                  className={'rec-seg-opt' + (rec.view === 'desktop' ? ' active' : '')}
+                  onClick={() => setRec((r) => ({ ...r, view: 'desktop' }))}
+                >
+                  🖥 Fullscreen 16:9
+                </button>
+              </div>
+            </div>
+            <div className="field">
+              <span className="field-label" id="rec-theme-label">Theme</span>
+              <div className="rec-seg" role="radiogroup" aria-labelledby="rec-theme-label">
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={rec.theme === 'light'}
+                  className={'rec-seg-opt' + (rec.theme === 'light' ? ' active' : '')}
+                  onClick={() => setRec((r) => ({ ...r, theme: 'light' }))}
+                >
+                  ☀ Light
+                </button>
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={rec.theme === 'dark'}
+                  className={'rec-seg-opt' + (rec.theme === 'dark' ? ' active' : '')}
+                  onClick={() => setRec((r) => ({ ...r, theme: 'dark' }))}
+                >
+                  🌙 Dark
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <label className="field">
+            <span className="field-label">Prompt — what to type or do</span>
+            <textarea
+              rows={2}
+              value={rec.prompt}
+              onChange={(e) => setRec((r) => ({ ...r, prompt: e.target.value }))}
+              placeholder="Explain RAG in one line"
+            />
+          </label>
+
+          <div className="rec-form-actions">
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => setRecOpen(false)}>
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-primary btn-sm" disabled={recBusy}>
+              {recBusy ? 'Queuing…' : 'Queue recording'}
+            </button>
+          </div>
+        </form>
+      )}
 
       {q.error && <div className="error-bar">{q.error.message}</div>}
 
@@ -205,6 +400,13 @@ export default function Assets() {
                       {vers.length} revision{vers.length > 1 ? 's' : ''}
                     </span>
                   </div>
+                  {/* Shot roles + short/long-form fit for the fronted host —
+                      so a long-form host (no pip/wide) is legible from the
+                      board, not hidden behind one look-alike cover. Self-hidden
+                      for non-host slots. Default Short roles: this channel's
+                      hosts are all for Shorts. */}
+                  <ShotRoleChips version={head} />
+
                   {!hasCover(kind) && buildRef && (
                     <div className="asset-buildref mono">{buildRef}</div>
                   )}
@@ -288,44 +490,75 @@ export default function Assets() {
                     {(expanded[type] ? vers : vers.slice(0, 6)).map((v) => {
                       const isLocked = locked && v.id === locked.id
                       const ref = v.meta && v.meta.build_ref
-                      const working = busy === v.id
                       const retired = v.status === 'retired'
+                      const retiring = busy === 'retire:' + v.id || busy === 'restore:' + v.id
+                      const working = busy === v.id || retiring
                       const u = usageOf(usage, v.id)
                       const badge = usageBadge(u)
                       const uTitle = usageTitle(u)
                       return (
-                        <button
-                          key={v.id}
-                          type="button"
-                          className={
-                            'chip asset-ver-chip' +
-                            (isLocked ? ' asset-locked' : '') +
-                            (retired ? ' asset-retired' : '')
-                          }
-                          disabled={working}
-                          title={
-                            (isLocked
-                              ? 'Locked — click to unlock' + (ref ? ' · build ' + ref : '')
-                              : 'Make v' + v.version + ' the locked revision' +
-                                (ref ? ' · build ' + ref : '')) +
-                            (uTitle ? '\n\n' + uTitle : '')
-                          }
-                          onClick={() => setLock(type, isLocked ? null : v.id)}
-                        >
-                          {working ? '…' : 'v' + v.version}
-                          {isLocked && <span className="asset-locked-tag">LOCKED</span>}
-                          {/* nothing at all when no usage is recorded */}
-                          {badge && (
-                            <span
-                              className={
-                                'asset-ver-use' +
-                                (u.shipped > 0 ? ' asset-ver-use-shipped' : '')
-                              }
+                        <span key={v.id} className="asset-ver">
+                          <button
+                            type="button"
+                            className={
+                              'chip asset-ver-chip' +
+                              (isLocked ? ' asset-locked' : '') +
+                              (retired ? ' asset-retired' : '')
+                            }
+                            disabled={working}
+                            title={
+                              (isLocked
+                                ? 'Locked — click to unlock' + (ref ? ' · build ' + ref : '')
+                                : 'Make v' + v.version + ' the locked revision' +
+                                  (ref ? ' · build ' + ref : '')) +
+                              (uTitle ? '\n\n' + uTitle : '')
+                            }
+                            onClick={() => setLock(type, isLocked ? null : v.id)}
+                          >
+                            {busy === v.id ? '…' : 'v' + v.version}
+                            {isLocked && <span className="asset-locked-tag">LOCKED</span>}
+                            {/* nothing at all when no usage is recorded */}
+                            {badge && (
+                              <span
+                                className={
+                                  'asset-ver-use' +
+                                  (u.shipped > 0 ? ' asset-ver-use-shipped' : '')
+                                }
+                              >
+                                {badge}
+                              </span>
+                            )}
+                          </button>
+                          {/* Retire / Restore — shelve a pivot-dead revision without
+                              deleting bytes. Hidden on the LOCKED revision (unlock it
+                              first) so the live lock can never point at a retired
+                              asset. */}
+                          {retired ? (
+                            <button
+                              type="button"
+                              className="asset-retire-btn asset-restore-btn"
+                              disabled={retiring}
+                              aria-label={'Restore revision v' + v.version + ' to the library'}
+                              title={'Restore v' + v.version + ' — return it to pickable candidates'}
+                              onClick={() => retire(v.id, true)}
                             >
-                              {badge}
-                            </span>
+                              {retiring ? '…' : '↺'}
+                            </button>
+                          ) : (
+                            !isLocked && (
+                              <button
+                                type="button"
+                                className="asset-retire-btn"
+                                disabled={retiring}
+                                aria-label={'Retire revision v' + v.version}
+                                title={'Retire v' + v.version + ' — hide from the composer, keep the bytes'}
+                                onClick={() => retire(v.id, false)}
+                              >
+                                {retiring ? '…' : '⊘'}
+                              </button>
+                            )
                           )}
-                        </button>
+                        </span>
                       )
                     })}
                     {vers.length > 6 && (
@@ -361,6 +594,10 @@ export default function Assets() {
                               name={assetLabel(type) + ' v' + v.version}
                             />
                             <span className="dim small">v{v.version}</span>
+                            {/* fit-only badge per host revision (roles chip lives
+                                on the card head above) so each audition candidate
+                                still says whether it can render a short */}
+                            <ShotRoleChips version={v} className="shot-roles-aud" />
                           </span>
                         ))}
                       </div>

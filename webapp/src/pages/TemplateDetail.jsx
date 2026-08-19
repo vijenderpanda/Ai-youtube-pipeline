@@ -17,14 +17,19 @@ import {
   hasCover,
   lineageOf,
   heygenHealth,
+  shotCoverage,
+  requiredShotRoles,
   usageOf,
   usageBadge,
   usageTitle,
   interchangeableWith,
 } from '../assetCatalog'
 import EmptyState from '../components/EmptyState'
-import MediaPreview, { sampleNoteOf } from '../components/MediaPreview'
+import MediaPreview, { sampleNoteOf, previewSourceFor } from '../components/MediaPreview'
+import ShotRoleChips from '../components/ShotRoleChips'
 import Toast, { useToast } from '../components/Toast'
+import ConfirmDialog from '../components/ConfirmDialog'
+import SequenceEditor from '../components/SequenceEditor'
 
 /**
  * TemplateDetail — one factory_templates row.
@@ -273,6 +278,31 @@ function OutroCtaSetting({ value, isDraft, busy, onSet }) {
   )
 }
 
+/**
+ * The real HeyGen avatar id behind a host_outfit pick.
+ *
+ * host_outfit revisions now carry meta.heygen_face = {id, role, short_capable,
+ * face}. MediaPreview already shows the `face` image; this names the avatar
+ * (short, e.g. "HeyGen f55806a4") so "pick who is Sol" is made on the actual id,
+ * not a look-alike still. Renders nothing for a non-host row or a host row with
+ * no recorded face (older rows predate the field — absence is unknown).
+ */
+function HeygenIdChip({ version }) {
+  const f = version && version.meta && version.meta.heygen_face
+  const id = f && f.id
+  if (!id) return null
+  // short_capable arrives as a real or string boolean ("false" is truthy!).
+  const shortCapable = f.short_capable === true || f.short_capable === 'true'
+  const title =
+    'HeyGen avatar ' + id + (f.role ? ' · ' + f.role : '') +
+    (shortCapable ? ' · short-capable' : '')
+  return (
+    <span className="chip cast-host-id mono" title={title}>
+      HeyGen {String(id).slice(0, 8)}
+    </span>
+  )
+}
+
 export default function TemplateDetail() {
   const { key } = useParams()
   const tplQ = usePoll(() => api.get('?r=templates'), 20000)
@@ -292,11 +322,15 @@ export default function TemplateDetail() {
   // migration 021, so a candidate with NO entry gets no hint at all; it is not
   // claimed to be unused.
   const useQ = usePoll(() => api.get('?r=asset_backlinks'), 60000)
+  // Sprint 3: the composition-designer palette (cookbook comps + layouts +
+  // block types), served by ?r=cookbook as the one source the validator shares.
+  const cbQ = usePoll(() => api.get('?r=cookbook'), 0)
   const { toast, show } = useToast()
   const [selId, setSelId] = useState(null)   // version the composer is showing
   const [swapFor, setSwapFor] = useState(null) // asset_type whose picker is open
   const [regenFor, setRegenFor] = useState(null) // revision id the "new from this" form is open on
   const [showAllSlots, setShowAllSlots] = useState(false)
+  const [unlockConfirm, setUnlockConfirm] = useState(false) // active-cast unlock confirm dialog
   const [busy, setBusy] = useState(null)
 
   const templates = (tplQ.data && tplQ.data.templates) || []
@@ -307,10 +341,21 @@ export default function TemplateDetail() {
   const castSlots = (tvQ.data && tvQ.data.assets) || []
   const castJoined = (tvQ.data && tvQ.data.asset_versions) || []
   const usage = (useQ.data && useQ.data.usage) || {}
+  const castBlocks = (tvQ.data && tvQ.data.blocks) || []
+  const cookbookCat = (cbQ.data && cbQ.data.cookbook) || []
+  const layoutIds = (cbQ.data && cbQ.data.layouts) || []
+  const blockTypeIds = (cbQ.data && cbQ.data.block_types) || []
 
   const tpl = templates.find((t) => t.key === key) || null
   const chan = tpl ? templateForChannel(channels, tpl.key) : null
   const channelKey = chan ? chan.key : null
+
+  // The shot roles THIS template's format demands of its host. A Short needs
+  // pip+wide; unknown formats default to the Short roles (fail-safe). `isShort`
+  // gates the ✓/⚠ fit badge — a non-Short template has no Short requirement to
+  // assert, so the badge would be meaningless there.
+  const reqRoles = useMemo(() => requiredShotRoles(tpl), [tpl])
+  const isShort = reqRoles.length > 0
 
   const accents = useMemo(() => resolveAccents(channels), [channels])
   const accent = channelKey ? accentFor(channelKey, accents) : null
@@ -373,20 +418,39 @@ export default function TemplateDetail() {
     return m
   }, [castSlots, selected])
 
-  // Rows to show: everything the renderer consumes (live/locked wiring) plus
-  // anything this cast already composes. "Show every slot" reveals the rest.
+  // Rows to show by default (the "+N reference slots" toggle reveals the rest):
+  //   • LOCKED cast — ONLY the slots actually frozen into its composition. A
+  //     locked cast is 4-5 slots; listing every reference slot as "not in this
+  //     cast" was pure clutter, so the rest collapse behind the toggle.
+  //   • DRAFT — the slots you compose with (wired slots + whatever this cast
+  //     already composes); reference slots stay one toggle away so you can still
+  //     pull one in.
   const slotRows = useMemo(() => {
     const all = groups.map((g) => g.type)
     if (showAllSlots) return all
+    const locked = !!selected && selected.status === 'locked'
+    if (locked) {
+      const inCast = new Set(Object.keys(castByType))
+      const comp = (selected && selected.composition) || {}
+      for (const k of Object.keys(comp)) if (k !== '_settings') inCast.add(k)
+      return all.filter((t) => inCast.has(t))
+    }
     const keep = new Set(all.filter((t) => wiringOf(t) !== 'reference'))
     for (const t of Object.keys(castByType)) keep.add(t)
     return all.filter((t) => keep.has(t))
-  }, [groups, castByType, showAllSlots])
+  }, [groups, castByType, selected, showAllSlots])
 
   // The frozen composition of a locked version (build_refs copied at lock).
   const frozen = (selected && selected.composition) || {}
 
+  // Sprint 3: this version's ordered block sequence (draft rows; frozen at lock).
+  const blocksForSelected = useMemo(
+    () => castBlocks.filter((b) => b.template_version_id === (selected && selected.id)),
+    [castBlocks, selected],
+  )
+
   const isDraft = !!selected && selected.status === 'draft'
+  const isLocked = !!selected && selected.status === 'locked'
   const isActive = !!(tpl && selected && tpl.active_version_id === selected.id)
 
   // Cast SETTINGS live in two places by design: a DRAFT keeps them editable on
@@ -409,13 +473,16 @@ export default function TemplateDetail() {
       const slot = castByType[type]
       if (!slot || !slot.pick) continue
       const rev = revById[slot.pick.asset_version_id] || null
-      out.push({ type, rev, health: heygenHealth(rev) })
+      out.push({ type, rev, health: heygenHealth(rev), cov: shotCoverage(rev, reqRoles) })
     }
     return out
-  }, [slotRows, castByType, revById])
+  }, [slotRows, castByType, revById, reqRoles])
 
   const deadPicks = chosen.filter((c) => c.health.dead)
   const missingRev = chosen.filter((c) => !c.rev)
+  // A host that structurally cannot render this format (long-form host on a
+  // Short) — the EP15 cast. Blocks the lock exactly like a freed HeyGen id.
+  const unfitPicks = chosen.filter((c) => c.rev && !c.cov.fits)
 
   const post = async (bodyObj, tag, after) => {
     setBusy(tag)
@@ -507,6 +574,34 @@ export default function TemplateDetail() {
       { action: 'lock_template_version', template_version_id: selected.id, make_active: true },
       'lock',
     )
+
+  // "Edit this cast" — the counterpart to Fork. Unlock this exact version back to
+  // a draft so the existing swap/settings/Lock UI takes over and the owner edits
+  // in place, then re-locks. confirm_active is only sent for the ACTIVE cast,
+  // where re-opening it means production falls back until re-lock. The refresh
+  // (mirrors lockCast/swapTo) flips the whole panel to draft/editable.
+  const unlockCast = (confirmActive) =>
+    post(
+      {
+        action: 'unlock_template_version',
+        template_version_id: selected.id,
+        ...(confirmActive ? { confirm_active: true } : {}),
+      },
+      'unlock',
+      (res) => {
+        if (res && res.version) setSelId(res.version.id)
+        setUnlockConfirm(false)
+        setSwapFor(null)
+        setRegenFor(null)
+      },
+    )
+
+  // A non-active locked version unlocks with no ceremony. The active cast is the
+  // one production renders, so it gets the warning dialog first.
+  const editCast = () => {
+    if (isActive) setUnlockConfirm(true)
+    else unlockCast(false)
+  }
 
   const retireCast = (id) =>
     post({ action: 'retire_template_version', template_version_id: id }, 'retire:' + id, () =>
@@ -729,31 +824,73 @@ export default function TemplateDetail() {
                 eyeballable. Not a render — no credits are spent here. */}
             {chosen.length > 0 && (
               <div className="cast-strip">
-                {chosen.map(({ type, rev, health }) => (
-                  <div
-                    key={type}
-                    className={'cast-strip-tile' + (health.dead ? ' cast-dead' : '')}
-                  >
-                    <MediaPreview
-                      assetType={type}
-                      version={rev}
-                      size="tile"
-                      className="cast-strip-cover"
-                      name={assetLabel(type) + (rev ? ' v' + rev.version : '')}
-                    />
-                    <div className="cast-strip-label">{assetLabel(type)}</div>
-                    <div className="dim small">
-                      {rev ? 'v' + rev.version : 'missing revision'}
+                {chosen.map(({ type, rev, health, cov }) => {
+                  const isOutroSlot = (SLOTS[type] || {}).buildKey === 'outro_src'
+                  // The pick's OWN slot decides whether it is a per-episode
+                  // question card (it may sit in the outro_sting row) — an Auto
+                  // spoken CTA over a card that already asks a question is the
+                  // exact silent EP15 collision.
+                  const pickSlot = rev && SLOTS[rev.asset_type]
+                  const pickIsCard =
+                    !!(pickSlot && pickSlot.perEpisode && pickSlot.buildKey === 'outro_src')
+                  // A code/id slot (or a picked-but-missing revision) has no media
+                  // to watch — show a labelled mono chip of its build_ref/id, not a
+                  // bare glyph.
+                  const stripMode = previewSourceFor(type, rev).mode
+                  const stripRef =
+                    (frozen[type] && frozen[type].build_ref) ||
+                    (rev && rev.meta && rev.meta.build_ref) ||
+                    (rev && rev.meta && rev.meta.remotion_id) ||
+                    assetLabel(type)
+                  return (
+                    <div
+                      key={type}
+                      className={'cast-strip-tile' + (health.dead || !cov.fits ? ' cast-dead' : '')}
+                    >
+                      {rev && stripMode !== 'none' ? (
+                        <MediaPreview
+                          assetType={type}
+                          version={rev}
+                          size="tile"
+                          className="cast-strip-cover"
+                          name={assetLabel(type) + ' v' + rev.version}
+                        />
+                      ) : (
+                        <div className="cast-strip-cover cast-slot-cover-ref">
+                          <span className="cast-ref-chip mono" title={stripRef}>
+                            {stripRef}
+                          </span>
+                        </div>
+                      )}
+                      <div className="cast-strip-label">{assetLabel(type)}</div>
+                      <div className="dim small">
+                        {rev ? 'v' + rev.version : 'missing revision'}
+                      </div>
+                      {/* Shot roles + fit, so a long-form host in the cast is
+                          obvious at a glance rather than one look-alike cover.
+                          The HeyGen id names the actual avatar behind the face. */}
+                      <ShotRoleChips version={rev} required={reqRoles} showFit={isShort} />
+                      <HeygenIdChip version={rev} />
+                      {/* The outro ships with more than its frames when
+                          outro_cta is set. If the pick is a question card, a
+                          spoken CTA COLLIDES with it — warn instead of reassure. */}
+                      {ctaOn && isOutroSlot && (
+                        pickIsCard ? (
+                          <span
+                            className="chip cast-strip-conflict"
+                            title="This card already asks a question; an Auto spoken CTA talks over it. Pick one — set the outro CTA to Off, or choose a plain outro sting."
+                          >
+                            ⚠ CTA talks over this card
+                          </span>
+                        ) : (
+                          <span className="chip cast-strip-add" title={ctaSummary(outroCta)}>
+                            ＋ spoken CTA
+                          </span>
+                        )
+                      )}
                     </div>
-                    {/* The outro ships with more than its frames when
-                        outro_cta is set — say so on the tile. */}
-                    {ctaOn && (SLOTS[type] || {}).buildKey === 'outro_src' && (
-                      <span className="chip cast-strip-add" title={ctaSummary(outroCta)}>
-                        ＋ spoken CTA
-                      </span>
-                    )}
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
 
@@ -763,17 +900,35 @@ export default function TemplateDetail() {
                 const pick = slot && slot.pick
                 const rev = pick ? revById[pick.asset_version_id] : null
                 const health = heygenHealth(rev)
+                const cov = shotCoverage(rev, reqRoles)
                 const wiring = wiringOf(type)
                 const froz = frozen[type]
                 // Offer every revision that feeds this slot's build key, not just
                 // the ones filed under this exact asset_type — the outro slot must
                 // include the per-episode question-CTA cards (what we actually
-                // shipped), alongside the shared sting.
-                const opts = interchangeableWith(type).flatMap((t) =>
-                  ((groups.find((g) => g.type === t) || { vers: [] }).vers || []).map(
-                    (v) => (t === type ? v : { ...v, _fromSlot: t }),
-                  ),
-                )
+                // shipped), alongside the shared sting. Retired revisions drop out
+                // entirely (the edge also refuses one with a 409) — they are dead
+                // library assets, not pickable candidates.
+                const opts = interchangeableWith(type)
+                  .flatMap((t) =>
+                    ((groups.find((g) => g.type === t) || { vers: [] }).vers || []).map(
+                      (v) => (t === type ? v : { ...v, _fromSlot: t }),
+                    ),
+                  )
+                  .filter((v) => v.status !== 'retired')
+                // A reference row is "not in this cast" (no pick), but the slot is
+                // still a real registered asset — so preview its locked/newest
+                // revision instead of a bare pink dot. The label below still says
+                // "not in this cast", so nothing is misread as composed.
+                const slotVers = (groups.find((g) => g.type === type) || { vers: [] }).vers || []
+                const coverRev =
+                  rev || slotVers.find((v) => v.status === 'locked') || slotVers[0] || null
+                const coverMode = previewSourceFor(type, coverRev).mode
+                const coverRef =
+                  (froz && froz.build_ref) ||
+                  (coverRev && coverRev.meta && coverRev.meta.build_ref) ||
+                  (coverRev && coverRev.meta && coverRev.meta.remotion_id) ||
+                  assetLabel(type)
                 const open = swapFor === type
                 // Which tiles in this drawer can seed a new revision, and which
                 // one has its form open right now.
@@ -784,17 +939,25 @@ export default function TemplateDetail() {
                 return (
                   <div key={type} className={'cast-slot' + (open ? ' cast-slot-open' : '')}>
                     <div className="cast-slot-row">
-                      {rev ? (
+                      {coverRev && coverMode !== 'none' ? (
                         <MediaPreview
                           assetType={type}
-                          version={rev}
+                          version={coverRev}
                           size="row"
                           className="cast-slot-cover"
-                          name={assetLabel(type) + ' v' + rev.version}
+                          name={
+                            assetLabel(type) +
+                            (coverRev ? ' v' + coverRev.version : '')
+                          }
                         />
                       ) : (
-                        <div className="cast-slot-cover">
-                          <span className="studio-cover-glyph" aria-hidden="true">·</span>
+                        // No previewable media (a code/id slot with no sample, or
+                        // an empty slot): a labelled mono chip of the build_ref/id,
+                        // never a bare dot.
+                        <div className="cast-slot-cover cast-slot-cover-ref">
+                          <span className="cast-ref-chip mono" title={coverRef}>
+                            {coverRef}
+                          </span>
                         </div>
                       )}
                       <div className="cast-slot-copy">
@@ -821,7 +984,17 @@ export default function TemplateDetail() {
                           {!health.dead && health.warn && (
                             <span className="chip cast-warn">{health.warn}</span>
                           )}
+                          {rev && !cov.fits && (
+                            <span className="chip cast-warn-dead" title={cov.warn}>
+                              can’t render this short
+                            </span>
+                          )}
                         </div>
+                        {/* Shot roles the picked host provides (self-hidden for
+                            non-host slots) — the piece the library never showed.
+                            The HeyGen id names the actual avatar behind the face. */}
+                        <ShotRoleChips version={rev} required={reqRoles} showFit={isShort} />
+                        <HeygenIdChip version={rev} />
                         {sampleNote && (
                           <div className="dim small cast-slot-note" title={sampleNote}>
                             ▶ {sampleNote}
@@ -855,17 +1028,22 @@ export default function TemplateDetail() {
                         )}
                         {opts.map((o) => {
                           const h = heygenHealth(o)
+                          // Structural fit: a long-form host cannot render this
+                          // Short (no pip/wide). Blocks selection like a freed id.
+                          const cov = shotCoverage(o, reqRoles)
                           const retired = o.status === 'retired'
                           const noRef = !(o.meta && o.meta.build_ref)
                           const isPick = pick && pick.asset_version_id === o.id
-                          const blocked = h.dead || retired || noRef
+                          const blocked = h.dead || !cov.fits || retired || noRef
                           const why = h.dead
                             ? h.reason
-                            : retired
-                              ? 'Retired revision'
-                              : noRef
-                                ? 'No build_ref — the build cannot resolve it'
-                                : h.warn || 'Use this revision'
+                            : !cov.fits
+                              ? cov.warn
+                              : retired
+                                ? 'Retired revision'
+                                : noRef
+                                  ? 'No build_ref — the build cannot resolve it'
+                                  : h.warn || 'Use this revision'
                           // Track record. Absent = not recorded, so we render
                           // nothing rather than a "0 eps" that would read as
                           // "never used".
@@ -930,6 +1108,13 @@ export default function TemplateDetail() {
                                   )}
                                 </span>
                                 <span className="dim small">{o.label || assetLabel(type)}</span>
+                                {/* Shot roles + fit badge — one source of truth
+                                    with the block above (both use shotCoverage).
+                                    Self-hidden for non-host candidates. The HeyGen
+                                    id names the actual avatar behind the face, so
+                                    "pick who is Sol" is made on the id, not a still. */}
+                                <ShotRoleChips version={o} required={reqRoles} showFit={isShort} />
+                                <HeygenIdChip version={o} />
                                 {blocked && <span className="cast-opt-why">{why}</span>}
                                 {isPick && !blocked && <span className="cast-opt-why">current pick</span>}
                                 {/* Some slots have a real generator behind them,
@@ -993,7 +1178,9 @@ export default function TemplateDetail() {
                   onClick={() => setShowAllSlots((s) => !s)}
                 >
                   {showAllSlots
-                    ? 'show only slots the renderer uses'
+                    ? isLocked
+                      ? 'show only this cast’s slots'
+                      : 'show only slots the renderer uses'
                     : `+${groups.length - slotRows.length} reference slots`}
                 </button>
               ) : null}
@@ -1035,19 +1222,37 @@ export default function TemplateDetail() {
               </div>
             </section>
 
+            <SequenceEditor
+              versionId={selected.id}
+              isDraft={isDraft}
+              blocks={blocksForSelected}
+              cookbook={cookbookCat}
+              layouts={layoutIds}
+              blockTypes={blockTypeIds}
+              busy={busy}
+              onPost={post}
+            />
+
             <div className="cast-foot">
               <div className="cast-foot-copy">
                 {isDraft ? (
                   <p className="dim small">
                     Locking freezes each pick’s build reference into this version and makes it the
-                    cast production renders with. Locked versions never change — to alter the cast,
-                    fork again.
+                    cast production renders with. You can re-open a locked version to edit it in
+                    place, or fork a fresh copy.
                   </p>
                 ) : (
-                  <p className="dim small">
-                    Locked {selected.locked_at ? 'and frozen' : ''} — this is a permanent snapshot.
-                    Fork it to change a slot.
-                  </p>
+                  <>
+                    <p className="dim small">
+                      Locked {selected.locked_at ? 'and frozen' : ''} — production renders this cast
+                      as-is. Change it two ways: edit this version in place, or fork a fresh copy and
+                      leave this one frozen.
+                    </p>
+                    <p className="dim small cast-edit-reproduce">
+                      Editing changes what any episode pinned to this cast re-renders as. To keep
+                      this version frozen for past episodes, Fork instead.
+                    </p>
+                  </>
                 )}
                 {isDraft && deadPicks.length > 0 && (
                   <p className="cast-block">
@@ -1061,8 +1266,43 @@ export default function TemplateDetail() {
                     no longer exists — re-pick it.
                   </p>
                 )}
+                {isDraft && unfitPicks.length > 0 && (
+                  <p className="cast-block">
+                    {unfitPicks.map((d) => assetLabel(d.type)).join(', ')} is a long-form host with
+                    no pip/wide frames — a short can’t render it. Swap in a short-fit host before
+                    locking. (This is the EP15 trap: a cast that can’t build.)
+                  </p>
+                )}
               </div>
               <div className="cast-foot-actions">
+                {isLocked && (
+                  <div className="cast-edit-choice">
+                    <div className="cast-edit-opt">
+                      <button
+                        type="button"
+                        className="btn-primary"
+                        disabled={busy === 'unlock' || busy === 'fork'}
+                        onClick={editCast}
+                        title="Re-open this exact version as a draft so you can swap slots and re-lock it"
+                      >
+                        {busy === 'unlock' ? 'Opening…' : 'Edit this cast'}
+                      </button>
+                      <span className="dim small">Update this version in place</span>
+                    </div>
+                    <div className="cast-edit-opt">
+                      <button
+                        type="button"
+                        className="btn-ghost"
+                        disabled={busy === 'fork' || busy === 'unlock' || !channelKey}
+                        onClick={fork}
+                        title="Copy this cast into a new draft and leave this version frozen"
+                      >
+                        {busy === 'fork' ? 'Forking…' : 'Fork a new version'}
+                      </button>
+                      <span className="dim small">Leave this frozen, start a copy</span>
+                    </div>
+                  </div>
+                )}
                 {!isActive && (
                   <button
                     type="button"
@@ -1082,7 +1322,8 @@ export default function TemplateDetail() {
                       busy === 'lock' ||
                       chosen.length === 0 ||
                       deadPicks.length > 0 ||
-                      missingRev.length > 0
+                      missingRev.length > 0 ||
+                      unfitPicks.length > 0
                     }
                     onClick={lockCast}
                   >
@@ -1098,6 +1339,26 @@ export default function TemplateDetail() {
       <div className="tpl-manage">
         <Link className="link" to="/assets">Manage frames →</Link>
       </div>
+
+      {unlockConfirm && selected && (
+        <ConfirmDialog
+          title="Edit the active cast?"
+          confirmLabel="Edit this cast"
+          danger
+          busy={busy === 'unlock'}
+          onConfirm={() => unlockCast(true)}
+          onCancel={() => setUnlockConfirm(false)}
+        >
+          <p>
+            This is the <b>active cast</b> production renders with. Editing it re-opens it as a
+            draft, and production falls back until you re-lock it.
+          </p>
+          <p className="dim small">
+            Editing also changes what any episode pinned to this cast re-renders as. To keep this
+            version frozen, cancel and Fork a new version instead.
+          </p>
+        </ConfirmDialog>
+      )}
 
       <Toast toast={toast} />
     </div>

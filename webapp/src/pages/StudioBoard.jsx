@@ -118,6 +118,8 @@ export default function StudioBoard() {
   const item = (boardQ.data && boardQ.data.item) || null
   const assets = (boardQ.data && boardQ.data.assets) || []
   const jobs = (boardQ.data && boardQ.data.jobs) || []
+  // Phase 4: what the build ACTUALLY resolved per slot (cast reconciliation).
+  const builtRows = (boardQ.data && boardQ.data.provenance) || null
 
   // Phase B — the step-spine PLAN panel shows the channel's resolved template
   // card + its locked brand frames. Templates are the whole registry; brand
@@ -156,6 +158,53 @@ export default function StudioBoard() {
   // (Revise ⇄ Lock) instead of scheduling to YouTube.
   const channel = item ? channels.find((c) => c.key === item.channel_key) : null
   const incubating = !!channel && channel.lifecycle === 'incubating'
+
+  // ── The CAST this piece produces with ("Confirm the format" step) ──
+  // factory_calendar.template_version_id is the durable per-piece binding that
+  // build_ep_v2._bind_template_version() reads; when it is NULL the build falls
+  // through to factory_templates.active_version_id — NOT to the raw channel
+  // locks. The spine needs the whole cast list to say which one is in force and
+  // to offer the others, so it is fetched here (same prop-down pattern as
+  // `templates` / `assets`) rather than inside the presentational component.
+  // include_retired=1 so a piece pinned to a since-retired cast still resolves
+  // and can be shown honestly instead of silently vanishing from the picker.
+  const boardTemplateKey = (channel && channel.template) || ''
+  const castQ = usePoll(
+    () =>
+      boardTemplateKey
+        ? api.get('?r=template_versions&template_key=' + encodeURIComponent(boardTemplateKey) + '&include_retired=1')
+        : Promise.resolve({ versions: [] }),
+    0,
+    [boardTemplateKey]
+  )
+  const castVersions = (castQ.data && castQ.data.versions) || []
+  const [castBusy, setCastBusy] = useState(false)
+
+  // Bind (or unbind, with null) this piece to a locked cast. The API refuses a
+  // draft/retired cast (409) and a cast from another channel (409) — those
+  // messages go straight to the toast. A success re-reads the board so the
+  // panel repaints from the stored row, never from optimistic local state.
+  const setCast = async (versionId) => {
+    if (castBusy || !!busy) return
+    setCastBusy(true)
+    try {
+      await api.post({
+        action: 'set_calendar_template_version',
+        calendar_id: calendarId,
+        template_version_id: versionId || null,
+      })
+      show(
+        versionId
+          ? 'Cast switched — this piece produces with it'
+          : "Cast cleared — this piece follows the channel's active cast",
+        'ok'
+      )
+      await boardQ.refresh()
+    } catch (e) {
+      show(e.message, 'error')
+    }
+    setCastBusy(false)
+  }
 
   // Latest version per asset_key — the only rows whose status matters.
   const latestByKey = useMemo(() => {
@@ -226,9 +275,9 @@ export default function StudioBoard() {
   // Single stage machine (unchanged) drives both the rail and which step panel
   // the spine shows. resolveStage never emits 'plan'; stepForStage splits the
   // pre-production total===0 case back out into the "confirm the format" step.
+  // NB: pipeStage/step are computed further down — they need the direct-produce
+  // liveness signal (`producing`), which depends on the jobs list below.
   const counts = useMemo(() => countsFromAssets(assets), [assets])
-  const pipeStage = item ? resolveStage(item, counts).stage : 'plan'
-  const step = stepForStage(pipeStage, counts.total || 0)
 
   // First load: land on what needs the human — a pending revision, then a
   // failure, then the first visual step. Never reset later (poll refreshes
@@ -342,8 +391,23 @@ export default function StudioBoard() {
     if (busy) return
     setBusy('preview')
     try {
-      await api.post({ action: 'queue_preview', calendar_id: calendarId })
-      show('Draft preview queued — a low-res stitch will render', 'ok')
+      // Two different pipelines wear the word "preview".
+      //   queue_preview   = STAGED draft stitch — needs assets plan_assets already
+      //                     made, and 409s "no assets staged for this calendar item
+      //                     yet" when there are none.
+      //   produce_preview = DIRECT monolithic build — the one that CREATES the
+      //                     assets, so it is the only valid move from the
+      //                     "Confirm the format" step, where total assets is 0.
+      // Picking by asset count (not by mode alone) keeps the staged draft-preview
+      // behaviour intact once a staged item has assets to stitch.
+      const fresh = (counts.total || 0) === 0
+      if (fresh) {
+        await api.post({ action: 'produce_preview', calendar_id: calendarId })
+        show('Producing — the draft renders with this cast', 'ok')
+      } else {
+        await api.post({ action: 'queue_preview', calendar_id: calendarId })
+        show('Draft preview queued — a low-res stitch will render', 'ok')
+      }
       boardQ.refresh()
     } catch (e) {
       show(e.message, 'error')
@@ -407,6 +471,33 @@ export default function StudioBoard() {
   const planFailed = isDirect
     ? !!(previewJobDirect && previewJobDirect.status === 'failed')
     : !!(planJob && planJob.status === 'failed')
+
+  // ── The direct-produce liveness signal the stage machine needs ─────
+  // A direct monolithic produce_preview pushes its assets already-approved and
+  // incrementally, so "all approved" mid-run is NOT done. While that job is live
+  // we hold the rail at 'produce' (resolveStage's opts.producing) so it can never
+  // jump to Arm / offer scheduling before the final cut actually exists. Computed
+  // here — after previewBusy — then fed to BOTH the local stage math and the spine.
+  const producing = isDirect && previewBusy
+  const pipeStage = item ? resolveStage(item, counts, { producing }).stage : 'plan'
+  const step = stepForStage(pipeStage, counts.total || 0)
+
+  // The one line of the failure that a human needs. Worker errors arrive as
+  // "claude exited 1. Log tail:\n[worker] starting…\n<the real reason>\n[result…]",
+  // so the useful sentence is buried; pull the first line that isn't scaffolding.
+  const planFailReason = (() => {
+    const job = isDirect ? previewJobDirect : planJob
+    const raw = (job && job.error) || ''
+    if (!raw) return ''
+    const line = raw
+      .split('\n')
+      .map((l) => l.trim())
+      // skip ALL [system:*] noise, not just init — a run that retried ten times
+      // then failed shows '[system:api_retry]' first, which tells you nothing;
+      // the line that matters is the 'API Error: 529 Overloaded' after it.
+      .find((l) => l && !/^claude exited|^\[worker\]|^\[system:|^\[result/.test(l))
+    return (line || raw.split('\n')[0] || '').slice(0, 160)
+  })()
 
   const doRevise = async () => {
     if (busy) return
@@ -893,14 +984,22 @@ export default function StudioBoard() {
             channel={channel}
             templates={templates}
             assets={brandAssets}
+            castVersions={castVersions}
+            castBusy={castBusy}
+            onSetCast={setCast}
             accent={accent}
             isDirect={isDirect}
             incubating={incubating}
             busy={busy}
             schedule={schedule}
             onSchedule={setSchedule}
+            producing={producing}
+            produceJob={previewJobDirect}
+            producedAssets={ordered}
+            builtRows={builtRows}
             planning={planning}
             planFailed={planFailed}
+            planFailReason={planFailReason}
             canAssemble={canAssemble}
             assembleTitle={assembleTitle}
             assembleActive={assembleActive}

@@ -123,7 +123,8 @@ const NAV_GROUPS = [
       { to: '/jobs', label: 'Activity', icon: 'jobs', badge: 'failed' },
       { to: '/renders', label: 'Library', icon: 'renders' },
       { to: '/studio/templates', label: 'Templates', icon: 'renders' },
-      { to: '/generators', label: 'Formats', icon: 'generators' },
+      // 'Formats' (/generators) archived 2026-08-19 — the composition/format now lives in
+      // Templates (sequence × layout × theme). Route redirects; page kept for history.
       { to: '/workers', label: 'Machines', icon: 'workers' },
     ],
   },

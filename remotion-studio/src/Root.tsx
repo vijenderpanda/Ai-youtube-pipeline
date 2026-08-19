@@ -4,6 +4,21 @@ import { Short, ShortProps, totalDuration, Cover, Watermark } from "./Short";
 import { StatBars, StatBarsProps } from "./components/StatBars";
 import { CodeDemo, CodeDemoProps } from "./components/CodeDemo";
 import { OutroCard, OutroCardProps } from "./components/OutroCard";
+// visual cookbook (docs/COOKBOOK.md) — graphical b-roll components, each with a
+// self-contained demo payload registered as a "<Name>Demo" composition below.
+import { ChatApp, chatAppDemo } from "./cookbook/ChatApp";
+import { LineReveal, lineRevealDemo } from "./cookbook/LineReveal";
+import { CommandPalette, commandPaletteDemo } from "./cookbook/CommandPalette";
+import { BentoGrid, bentoGridDemo } from "./cookbook/BentoGrid";
+import { DiffReveal, diffRevealDemo } from "./cookbook/DiffReveal";
+import { RingGauge, ringGaugeDemo } from "./cookbook/RingGauge";
+import { Odometer, odometerDemo } from "./cookbook/Odometer";
+import { OrbitNodes, orbitNodesDemo } from "./cookbook/OrbitNodes";
+import { KineticQuote, kineticQuoteDemo } from "./cookbook/KineticQuote";
+import { NotificationStack, notificationStackDemo } from "./cookbook/NotificationStack";
+import { DynamicIsland, dynamicIslandDemo } from "./cookbook/DynamicIsland";
+import { VoiceOrb, voiceOrbDemo } from "./cookbook/VoiceOrb";
+import { SwipeDeck, swipeDeckDemo } from "./cookbook/SwipeDeck";
 
 const FPS = 30;
 
@@ -103,6 +118,30 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         defaultProps={props}
       />
+      {/* v17 STYLE PRESETS — the SAME composition + SAME episode props, rendered
+          with a different `style` token so the cast's remotion_comp slot offers a
+          real visual choice. build_ep_v2 renders `npx remotion render <comp>
+          --props=<beat spec>`; the beat spec has no top-level `style` key, so each
+          composition's defaultProps.style survives the merge. `Short` stays classic
+          (unchanged above); ShortBold/ShortMinimal only add the style override. */}
+      <Composition
+        id="ShortBold"
+        component={Short}
+        durationInFrames={frames}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ ...props, style: "bold" }}
+      />
+      <Composition
+        id="ShortMinimal"
+        component={Short}
+        durationInFrames={frames}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ ...props, style: "minimal" }}
+      />
       <Composition
         id="StatBarsDemo"
         component={StatBars}
@@ -143,6 +182,127 @@ export const RemotionRoot: React.FC = () => {
           commentCta: "Comment your #1 👇",
           tagline: "one AI trick, every single day",
         }}
+      />
+
+      {/* ---- VISUAL COOKBOOK demos (docs/COOKBOOK.md) — parameterized graphical
+          b-roll components. Preview with `npx remotion studio`; each is a drop-in
+          for a beat's visual slot, driven entirely by its props contract. ---- */}
+      <Composition
+        id="ChatAppDemo"
+        component={ChatApp}
+        durationInFrames={7 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={chatAppDemo}
+      />
+      <Composition
+        id="LineRevealDemo"
+        component={LineReveal}
+        durationInFrames={5 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={lineRevealDemo}
+      />
+      <Composition
+        id="CommandPaletteDemo"
+        component={CommandPalette}
+        durationInFrames={5 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={commandPaletteDemo}
+      />
+      <Composition
+        id="BentoGridDemo"
+        component={BentoGrid}
+        durationInFrames={4 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={bentoGridDemo}
+      />
+      <Composition
+        id="DiffRevealDemo"
+        component={DiffReveal}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={diffRevealDemo}
+      />
+      <Composition
+        id="RingGaugeDemo"
+        component={RingGauge}
+        durationInFrames={5 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={ringGaugeDemo}
+      />
+      <Composition
+        id="OdometerDemo"
+        component={Odometer}
+        durationInFrames={4 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={odometerDemo}
+      />
+      <Composition
+        id="OrbitNodesDemo"
+        component={OrbitNodes}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={orbitNodesDemo}
+      />
+      <Composition
+        id="KineticQuoteDemo"
+        component={KineticQuote}
+        durationInFrames={5 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={kineticQuoteDemo}
+      />
+      <Composition
+        id="NotificationStackDemo"
+        component={NotificationStack}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={notificationStackDemo}
+      />
+      <Composition
+        id="DynamicIslandDemo"
+        component={DynamicIsland}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={dynamicIslandDemo}
+      />
+      <Composition
+        id="VoiceOrbDemo"
+        component={VoiceOrb}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={voiceOrbDemo}
+      />
+      <Composition
+        id="SwipeDeckDemo"
+        component={SwipeDeck}
+        durationInFrames={5 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={swipeDeckDemo}
       />
     </>
   );

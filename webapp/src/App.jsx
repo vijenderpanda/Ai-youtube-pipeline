@@ -83,9 +83,11 @@ export default function App() {
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/renders" element={<Renders />} />
           <Route path="/posts" element={<Posts />} />
-          <Route path="/generators" element={<Generators />} />
+          {/* Archived 2026-08-19 — folded into Templates + Library. Redirect to keep
+              old links working; page components (Generators/Assets) kept for history. */}
+          <Route path="/generators" element={<Navigate to="/studio/templates" replace />} />
+          <Route path="/assets" element={<Navigate to="/renders" replace />} />
           <Route path="/workers" element={<Workers />} />
-          <Route path="/assets" element={<Assets />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

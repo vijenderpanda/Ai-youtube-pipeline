@@ -66,7 +66,15 @@ export function previewSourceFor(assetType, v) {
     declared === 'video' ? '▶' : declared === 'image' ? '🖼' : declared === 'audio' ? 'wave' : '{ }'
   if (!v) return { mode: 'none', glyph }
 
-  const poster = (isImagePath(v.thumb_path) && v.thumb_path) || null
+  // A host_outfit revision now carries the REAL HeyGen avatar image at
+  // meta.heygen_face.face — the actual face the build renders, not the outfit
+  // still. Prefer it so "pick who is Sol" is made on the face itself, wherever a
+  // host tile is drawn (picker, slot row, cast strip, board). Only host rows
+  // have this key, so nothing else is affected.
+  const faceImg =
+    (v.meta && v.meta.heygen_face && isImagePath(v.meta.heygen_face.face) &&
+      v.meta.heygen_face.face) || null
+  const poster = faceImg || (isImagePath(v.thumb_path) && v.thumb_path) || null
   const store = mediaKind('', v.storage_path || '')
   if (v.storage_path && store === 'audio') {
     return { mode: 'audio', path: v.storage_path, poster, glyph }

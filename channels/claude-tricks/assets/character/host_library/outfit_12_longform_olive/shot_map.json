@@ -1,0 +1,45 @@
+{
+  "_comment": "LOCKED long-form host shot map (VJ 2026-08-16). Which frame for which shot need, and how it renders. HeyGen photo avatars animate the FACE only (body/hands FROZEN), so only clear front-facing frames are lip-synced; the rest are static Ken-Burns beats.",
+  "host": "AI Unpacked / Sol \u2014 long-form (olive overshirt, warm creator studio)",
+  "identity_locked_from": "outfit_11 -> EDIT_0 -> HANDS_0 (Nano Banana image-edit; see host-consistency-edit-not-regenerate)",
+  "shots": {
+    "closeup": {
+      "file": "keyframe_closeup.jpg",
+      "need": "primary lip-synced delivery to camera + the PiP corner over screen recordings",
+      "render": "heygen_talking_avatar",
+      "heygen_talking_photo_id": "2a21eaa3a10441cba7c7db58877a7b97",
+      "heygen_cache": ".heygen_closeup"
+    },
+    "rest_medium": {
+      "file": "keyframe_rest.jpg",
+      "need": "medium lip-synced delivery (framing variety; hands at rest on desk so nothing freezes awkwardly)",
+      "render": "heygen_talking_avatar",
+      "heygen_talking_photo_id": "0446ec9e6f2140d49b886bfdca92dff0",
+      "heygen_cache": ".heygen_rest"
+    },
+    "hands_up_medium": {
+      "file": "hands_locked.jpg",
+      "need": "1\u20132s emphasis / energy punch between talking beats",
+      "render": "static_ken_burns",
+      "note": "hands are RAISED \u2014 must NOT be a HeyGen lip-sync clip (hands would freeze mid-gesture); use as a still with a slow push only"
+    },
+    "wide": {
+      "file": "keyframe_wide.jpg",
+      "need": "establishing shot / B-roll / chapter breaks",
+      "render": "static_ken_burns",
+      "note": "face too small for HeyGen lip-sync; static only"
+    },
+    "pip_face_crop": {
+      "file": "center.jpg",
+      "need": "tight face source for the PiP corner",
+      "render": "derived_crop"
+    }
+  },
+  "heygen_registration": {
+    "status": "REGISTERED",
+    "reason": "2 pool slots freed (dc9533,184a41); close-up + rest-medium registered",
+    "to_unblock": "Upgrade the HeyGen plan for more photo-avatar slots (preferred \u2014 keeps the Shorts outfit rotation), OR free 2 pool slots via heygen_avatar.delete_group(<pool_id>) (this deletes 2 Shorts-outfit avatars \u2014 VJ decision).",
+    "register_command": "python3 -c \"import sys;sys.path.insert(0,'scripts');import heygen_avatar as hg;print(hg.upload_photo('<file>', cache='<cache>'))\"  # run per shot once a slot is free; writes talking_photo_id into heygen_talking_photo_id above",
+    "renders_need": "HeyGen wallet funded (~1.5 credits/sec \u2248 $0.025/sec of avatar video)"
+  }
+}

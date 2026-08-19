@@ -51,6 +51,10 @@ const RENDER_ORIGINS = ["job", "historical"];
 const CALENDAR_KINDS = ["content", "factory"];
 // v6: cheap uuid shape check so bad ids get a 400 instead of a pg error
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+// v19: ?r=suggestions reads this many candidate rows before the evidence guard
+// runs, so `limit` counts suggestions that actually SHIP, not rows dropped for
+// having no citations. Comfortably above the live standalone-suggestion count.
+const SUGGESTION_POOL = 200;
 // v4: post fields patchable via update_post
 const POST_PATCH_FIELDS = [
   "yt_title",
@@ -68,6 +72,36 @@ const PROVENANCE_SCAN_MAX = 5000;
 // v7: + control, heartbeat_at (job-control: stop requests + worker liveness)
 const JOB_LIST_COLS =
   "id, channel_key, type, title, prompt, model, effort, status, result, meta, error, created_at, started_at, finished_at, control, heartbeat_at, assigned_worker, target_worker";
+
+// Sprint 2 — the LOCKED composition template vocabulary. A template version's
+// draft carries an editable block SEQUENCE (factory_template_blocks); lock
+// freezes it into composition._sequence, and build_ep_v2 turns that into
+// spec.segments. The designer UI, this edge validator and the Remotion Short all
+// share these three vocabularies (kept in sync with the SHARED CONTRACT).
+//
+// The 13 graphical b-roll components — mirror of
+// remotion-studio/src/cookbook/registry.ts. Exposed via GET ?r=cookbook so the
+// designer palette and set_template_version_block's validator read ONE source.
+const COOKBOOK_CATALOG: { id: string; label: string; role: string; needs: string }[] = [
+  { id: "ChatApp", label: "AI chat app", role: "app-ui", needs: "dialogue" },
+  { id: "LineReveal", label: "Line/area trend reveal", role: "dataviz", needs: "series" },
+  { id: "CommandPalette", label: "Command palette (⌘K)", role: "interaction", needs: "query-results" },
+  { id: "BentoGrid", label: "Bento fact grid", role: "layout", needs: "facts" },
+  { id: "DiffReveal", label: "Before → after rewrite", role: "transformation", needs: "before-after" },
+  { id: "RingGauge", label: "Concentric ring gauge", role: "dataviz", needs: "metrics" },
+  { id: "Odometer", label: "Rolling number", role: "interaction", needs: "single-number" },
+  { id: "OrbitNodes", label: "Hub + orbit constellation", role: "interaction", needs: "hub-spokes" },
+  { id: "KineticQuote", label: "Kinetic punchline", role: "typography", needs: "phrase" },
+  { id: "NotificationStack", label: "Phone alert pile", role: "device-ui", needs: "alerts" },
+  { id: "DynamicIsland", label: "Live-activity island", role: "device-ui", needs: "steps" },
+  { id: "VoiceOrb", label: "Voice assistant orb", role: "device-ui", needs: "utterance" },
+  { id: "SwipeDeck", label: "Decision swipe deck", role: "interaction", needs: "options" },
+];
+const COOKBOOK_IDS = new Set(COOKBOOK_CATALOG.map((c) => c.id));
+// The 6 spatial layout ids (remotion-studio/src/layouts.ts) a slot/spatial block
+// may name, and the 7 block types a composition sequence is built from.
+const LAYOUT_IDS = new Set(["full-broll", "host-top", "host-bottom", "split", "host-pip", "framed"]);
+const BLOCK_TYPES = new Set(["hook", "host", "broll", "statbars", "outro", "slot", "cards"]);
 
 const db = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -208,6 +242,52 @@ function clampLimit(raw: string | null, def: number, max: number): number {
   return Math.min(n, max);
 }
 
+// v8: THE staged-production entry point — lifted verbatim out of
+// `case "stage_calendar_item"` so `case "accept_suggestion"` (v19) can reuse it
+// instead of forking it. Guards, job shape, status transition and the
+// { item, job } response body are unchanged; the caller validates `id` first.
+async function stageCalendarItem(id: string): Promise<Response> {
+  const { data: item, error: itemErr } = await db.from("factory_calendar")
+    .select("*").eq("id", id).maybeSingle();
+  if (itemErr) return json({ error: itemErr.message }, 500);
+  if (!item) return json({ error: "calendar item not found" }, 404);
+  if (item.status !== "planned" && item.status !== "suggested") {
+    return json({
+      error: "calendar item must be planned or suggested to stage (status: " + item.status + ")",
+    }, 409);
+  }
+  const { count: assetCount, error: countErr } = await db.from("factory_assets")
+    .select("id", { count: "exact", head: true }).eq("calendar_id", id);
+  if (countErr) return json({ error: countErr.message }, 500);
+  if ((assetCount ?? 0) > 0) {
+    return json({ error: "calendar item already has staged assets — open its Studio board instead" }, 409);
+  }
+  const { data: job, error: jobErr } = await db.from("factory_jobs")
+    .insert({
+      channel_key: item.channel_key,
+      type: "plan_assets",
+      title: "Plan assets — " + item.title,
+      prompt: item.brief,
+      model: item.model,
+      effort: item.effort,
+      ultracode: item.ultracode,
+      status: "queued",
+      meta: { calendar_id: item.id },
+    })
+    .select().single();
+  if (jobErr) return json({ error: jobErr.message }, 500);
+  const { data: updated, error: updErr } = await db.from("factory_calendar")
+    .update({ status: "queued", production_mode: "staged", job_id: job.id })
+    .eq("id", id).select().single();
+  if (updErr) return json({ error: updErr.message }, 500);
+  await logEvent(
+    "assets_staged",
+    `Staged production queued for '${item.title}' (${item.channel_key})`,
+    { item_id: id, job_id: job.id, channel_key: item.channel_key },
+  );
+  return json({ item: updated, job });
+}
+
 // v8: asset actions only apply to the LATEST version of an asset_key
 // deno-lint-ignore no-explicit-any
 async function isLatestAssetVersion(asset: any): Promise<{ latest: boolean; error: string | null }> {
@@ -318,7 +398,7 @@ async function handleGet(url: URL): Promise<Response> {
       if (tvErr) return json({ error: tvErr.message }, 500);
       const tvIds = (tVersions ?? []).map((v) => v.id);
       if (tvIds.length === 0) {
-        return json({ versions: tVersions ?? [], assets: [], asset_versions: [] });
+        return json({ versions: tVersions ?? [], assets: [], asset_versions: [], blocks: [] });
       }
       const { data: tAssets, error: taErr } = await db.from("factory_template_assets")
         .select("*").in("template_version_id", tvIds)
@@ -336,7 +416,30 @@ async function handleGet(url: URL): Promise<Response> {
         if (avErr) return json({ error: avErr.message }, 500);
         avRows = avData ?? [];
       }
-      return json({ versions: tVersions, assets: tAssets ?? [], asset_versions: avRows });
+      // Sprint 2: the draft-editable composition SEQUENCE for these versions,
+      // returned as a 4th flat array the designer joins by template_version_id.
+      const { data: tBlocks, error: tbErr } = await db.from("factory_template_blocks")
+        .select("*").in("template_version_id", tvIds)
+        .order("position", { ascending: true });
+      if (tbErr) return json({ error: tbErr.message }, 500);
+      return json({
+        versions: tVersions, assets: tAssets ?? [],
+        asset_versions: avRows, blocks: tBlocks ?? [],
+      });
+    }
+
+    // Sprint 2 — the cookbook CATALOG: the 13 graphical b-roll components the
+    // composition designer can drop into a broll/slot block, plus the layout ids
+    // and block types the sequence is built from. ONE source shared by the
+    // designer palette and set_template_version_block's validator, so an unknown
+    // id can never slip into a locked _sequence. Mirrors
+    // remotion-studio/src/cookbook/registry.ts.
+    case "cookbook": {
+      return json({
+        cookbook: COOKBOOK_CATALOG,
+        layouts: [...LAYOUT_IDS],
+        block_types: [...BLOCK_TYPES],
+      });
     }
 
     // Phase 3 — asset BACKLINKS: "where has this revision actually been used?"
@@ -597,6 +700,44 @@ async function handleGet(url: URL): Promise<Response> {
       return json({ items: data });
     }
 
+    // v19: the Studio suggestion shelf — research-backed "what to make next".
+    //
+    // Deliberately does NOT inherit ?r=calendar's now-7d … now+30d window: a
+    // suggestion parked a cadence out (chore/blocker cards) would be silently
+    // dropped by it, and "silently dropped" is the one thing this shelf may
+    // never do. Ordering is planned_date asc so the nearest slot leads.
+    //
+    // `replaces_id is null` is the server-side twin of Calendar.jsx's
+    // challengerByTarget/hiddenChallengerIds logic: a challenger row attaches
+    // to an original and must NEVER render standalone in the launcher.
+    case "suggestions": {
+      const limit = clampLimit(url.searchParams.get("limit"), 6, 24);
+      // Over-fetch, THEN guard, THEN slice. The black-box guard below is not
+      // expressible as a PostgREST filter, and there are ~10x more evidence-less
+      // pre-022 'suggested' rows than real ones — applying `limit` in SQL would
+      // spend the whole budget on rows the guard then drops and hand back an
+      // empty shelf. SUGGESTION_POOL is the read cap; `limit` is what ships.
+      let q = db.from("factory_calendar").select("*")
+        .eq("status", "suggested")
+        .eq("kind", "content")
+        .is("replaces_id", null)
+        .order("planned_date", { ascending: true })
+        .limit(SUGGESTION_POOL);
+      const channel = url.searchParams.get("channel");
+      if (channel) q = q.eq("channel_key", channel);
+      const { data, error } = await q;
+      if (error) return json({ error: error.message }, 500);
+      // Black-box guard, read side. scripts/suggest_next.py asserts non-empty
+      // cites[] on the write side; this is the belt to that pair of braces, and
+      // it also hides the pre-022 legacy rows that never carried evidence. An
+      // ai_suggestion that cannot show its work does not get shown.
+      const items = (data ?? []).filter((r) =>
+        r.origin !== "ai_suggestion" ||
+        (r.evidence && Array.isArray(r.evidence.cites) && r.evidence.cites.length > 0)
+      ).slice(0, limit);
+      return json({ items });
+    }
+
     // v4: publish pipeline posts
     case "posts": {
       const limit = clampLimit(url.searchParams.get("limit"), 100, 200);
@@ -832,22 +973,35 @@ async function handleGet(url: URL): Promise<Response> {
       if (!calendarId || !UUID_RE.test(calendarId)) {
         return json({ error: "calendar_id (uuid) required" }, 400);
       }
-      const [item, assets, jobs] = await Promise.all([
+      const [item, assets, jobs, provenance] = await Promise.all([
         db.from("factory_calendar").select("*").eq("id", calendarId).maybeSingle(),
         db.from("factory_assets").select("*").eq("calendar_id", calendarId)
           .order("created_at", { ascending: false }),
-        db.from("factory_jobs").select("id, type, status, title, created_at")
+        // error + meta are load-bearing for the board: the format step shows WHY a
+        // run stopped (an account cap reads very differently from a real fault),
+        // and meta.iteration drives the incubation revision counter. logs +
+        // heartbeat_at + started_at feed the live produce panel: the current
+        // activity line, the "is it still alive?" pulse, and the elapsed timer.
+        db.from("factory_jobs").select("id, type, status, title, created_at, error, meta, model, logs, heartbeat_at, started_at")
           // v16: also surface the monolithic preview job + its finalize
           // (shell_script) job so the direct-mode board can show their status
           // and gate the Finalize & Arm button.
           .in("type", [...STAGED_JOB_TYPES, "produce_preview", "shell_script"])
           .eq("meta->>calendar_id", calendarId)
           .order("created_at", { ascending: false }),
+        // Cast reconciliation: what the build ACTUALLY resolved per slot
+        // (factory_episode_assets_used), so the produced piece can be diffed
+        // against its locked cast and a silent host/outro swap is legible.
+        db.from("factory_episode_assets_used")
+          .select("asset_type, version_id, build_ref, resolved_from, build_tag, created_at")
+          .eq("calendar_id", calendarId)
+          .order("created_at", { ascending: false }),
       ]);
       const err = item.error || assets.error || jobs.error;
       if (err) return json({ error: err.message }, 500);
       if (!item.data) return json({ error: "calendar item not found" }, 404);
-      return json({ item: item.data, assets: assets.data, jobs: jobs.data });
+      return json({ item: item.data, assets: assets.data, jobs: jobs.data,
+                    provenance: provenance.data || [] });
     }
 
     case "events": {
@@ -1469,45 +1623,74 @@ async function handlePost(body: any): Promise<Response> {
     case "stage_calendar_item": {
       const { id } = body;
       if (!id || !UUID_RE.test(String(id))) return json({ error: "id (uuid) required" }, 400);
-      const { data: item, error: itemErr } = await db.from("factory_calendar")
-        .select("*").eq("id", id).maybeSingle();
-      if (itemErr) return json({ error: itemErr.message }, 500);
-      if (!item) return json({ error: "calendar item not found" }, 404);
-      if (item.status !== "planned" && item.status !== "suggested") {
-        return json({
-          error: "calendar item must be planned or suggested to stage (status: " + item.status + ")",
-        }, 409);
+      return await stageCalendarItem(String(id));
+    }
+
+    // v19: accept a research-backed suggestion from the Studio shelf.
+    //
+    // stage_calendar_item already accepts `suggested`, but it stages the row AS
+    // STORED. The shelf lets the owner edit the prefilled title/brief first, so
+    // this patches then delegates to the EXACT same stage path — same guards
+    // (planned|suggested → else 409; 0 assets → else 409), same plan_assets job
+    // with meta.calendar_id, same {item, job} response. No fork.
+    // Bind a piece to a specific locked CAST before producing. The board's
+    // "Confirm the format" step could show the template but not change it, so an
+    // accepted suggestion was stuck with the channel default. build_ep_v2 already
+    // binds via factory_calendar.template_version_id — this just exposes it.
+    case "set_calendar_template_version": {
+      const { calendar_id: cvCal, template_version_id: cvVer } = body;
+      if (!cvCal || !UUID_RE.test(String(cvCal))) return json({ error: "calendar_id (uuid) required" }, 400);
+      if (cvVer !== null && !UUID_RE.test(String(cvVer ?? ""))) {
+        return json({ error: "template_version_id must be a uuid or null" }, 400);
       }
-      const { count: assetCount, error: countErr } = await db.from("factory_assets")
-        .select("id", { count: "exact", head: true }).eq("calendar_id", id);
-      if (countErr) return json({ error: countErr.message }, 500);
-      if ((assetCount ?? 0) > 0) {
-        return json({ error: "calendar item already has staged assets — open its Studio board instead" }, 409);
+      const { data: cvItem, error: cvItemErr } = await db.from("factory_calendar")
+        .select("id, channel_key").eq("id", String(cvCal)).maybeSingle();
+      if (cvItemErr) return json({ error: cvItemErr.message }, 500);
+      if (!cvItem) return json({ error: "calendar item not found" }, 404);
+      if (cvVer) {
+        // only a LOCKED cast of the SAME channel may be bound — a draft is still
+        // being edited and must never drive a render (same rule as _tpl_lookup).
+        const { data: cvTv, error: cvTvErr } = await db.from("factory_template_versions")
+          .select("id, status, channel_key, version, label").eq("id", String(cvVer)).maybeSingle();
+        if (cvTvErr) return json({ error: cvTvErr.message }, 500);
+        if (!cvTv) return json({ error: "template version not found" }, 404);
+        if (cvTv.status !== "locked") {
+          return json({ error: "only a locked cast can be produced with — lock it first" }, 409);
+        }
+        if (cvTv.channel_key !== cvItem.channel_key) {
+          return json({ error: "that cast belongs to another channel" }, 409);
+        }
       }
-      const { data: job, error: jobErr } = await db.from("factory_jobs")
-        .insert({
-          channel_key: item.channel_key,
-          type: "plan_assets",
-          title: "Plan assets — " + item.title,
-          prompt: item.brief,
-          model: item.model,
-          effort: item.effort,
-          ultracode: item.ultracode,
-          status: "queued",
-          meta: { calendar_id: item.id },
-        })
-        .select().single();
-      if (jobErr) return json({ error: jobErr.message }, 500);
-      const { data: updated, error: updErr } = await db.from("factory_calendar")
-        .update({ status: "queued", production_mode: "staged", job_id: job.id })
-        .eq("id", id).select().single();
-      if (updErr) return json({ error: updErr.message }, 500);
+      const { data: cvUpd, error: cvUpdErr } = await db.from("factory_calendar")
+        .update({ template_version_id: cvVer ?? null }).eq("id", String(cvCal)).select().single();
+      if (cvUpdErr) return json({ error: cvUpdErr.message }, 500);
+      return json({ ok: true, item: cvUpd });
+    }
+
+    case "accept_suggestion": {
+      const { id, title, brief } = body;
+      if (!id || !UUID_RE.test(String(id))) return json({ error: "id (uuid) required" }, 400);
+      const patch: Record<string, unknown> = {};
+      if (typeof title === "string" && title.trim()) patch.title = title.trim();
+      if (typeof brief === "string") patch.brief = brief;
+      // Accepting a suggestion approves the IDEA onto the calendar. It must not
+      // also choose the production path: staging here forced production_mode
+      // 'staged', which skips the board's "Confirm the format" step — the only
+      // place the template/cast is chosen — so an accepted suggestion could not
+      // switch templates. Promote suggested -> planned and let the board decide
+      // (produce_preview for direct channels, stage for staged ones), exactly as
+      // it does for any other planned row.
+      patch.status = "planned";
+      const { data: accepted, error: accErr } = await db.from("factory_calendar")
+        .update(patch).eq("id", String(id)).select().single();
+      if (accErr) return json({ error: accErr.message }, 500);
+      if (!accepted) return json({ error: "calendar item not found" }, 404);
       await logEvent(
-        "assets_staged",
-        `Staged production queued for '${item.title}' (${item.channel_key})`,
-        { item_id: id, job_id: job.id, channel_key: item.channel_key },
+        "suggestion_accepted",
+        `Accepted '${accepted.title}' (${accepted.channel_key}) onto the calendar`,
+        { calendar_id: accepted.id },
       );
-      return json({ item: updated, job });
+      return json({ item: accepted, job: null });
     }
 
     // v16: add_asset — used by scripts/push_asset.py in a produce_preview
@@ -2309,6 +2492,50 @@ async function handlePost(body: any): Promise<Response> {
       return json({ ok: true });
     }
 
+    // retire_asset_version {version_id}
+    // Shelve a library revision that pivoted out of use (e.g. component_buildclub
+    // once Build Club was de-prioritised) WITHOUT deleting bytes: status='retired'
+    // + retired_at=now. The composer already refuses a retired pick and the Assets
+    // board renders it struck-through. Never deletes — unretire restores it. Only
+    // the owner clicks this; nothing auto-retires from code.
+    case "retire_asset_version": {
+      const vId = String(body.version_id ?? "");
+      if (!vId || !UUID_RE.test(vId)) return json({ error: "version_id (uuid) required" }, 400);
+      const { data: av, error: avErr } = await db.from("factory_asset_versions")
+        .select("id, channel_key, asset_type, version, status").eq("id", vId).maybeSingle();
+      if (avErr) return json({ error: avErr.message }, 500);
+      if (!av) return json({ error: "asset version not found" }, 404);
+      const { data: updated, error: uErr } = await db.from("factory_asset_versions")
+        .update({ status: "retired", retired_at: new Date().toISOString() })
+        .eq("id", vId).select().single();
+      if (uErr) return json({ error: uErr.message }, 500);
+      await logEvent("asset_version_retired",
+        `${av.asset_type} v${av.version} retired (${av.channel_key})`,
+        { channel_key: av.channel_key, asset_type: av.asset_type, version_id: vId, version: av.version });
+      return json({ version: updated });
+    }
+
+    // unretire_asset_version {version_id}
+    // Undo of the above — restores a retired revision to 'candidate' (never to
+    // 'locked'; re-locking is an explicit lock_asset). 404 if not found; never
+    // deletes.
+    case "unretire_asset_version": {
+      const vId = String(body.version_id ?? "");
+      if (!vId || !UUID_RE.test(vId)) return json({ error: "version_id (uuid) required" }, 400);
+      const { data: av, error: avErr } = await db.from("factory_asset_versions")
+        .select("id, channel_key, asset_type, version, status").eq("id", vId).maybeSingle();
+      if (avErr) return json({ error: avErr.message }, 500);
+      if (!av) return json({ error: "asset version not found" }, 404);
+      const { data: updated, error: uErr } = await db.from("factory_asset_versions")
+        .update({ status: "candidate", retired_at: null })
+        .eq("id", vId).select().single();
+      if (uErr) return json({ error: uErr.message }, 500);
+      await logEvent("asset_version_unretired",
+        `${av.asset_type} v${av.version} restored (${av.channel_key})`,
+        { channel_key: av.channel_key, asset_type: av.asset_type, version_id: vId, version: av.version });
+      return json({ version: updated });
+    }
+
     // ── Phase 4: the Template Composer ───────────────────────────────
     // factory_templates names the PIPELINE; a template VERSION names the CAST.
     // A version is edited as join rows while `draft`, then FROZEN into its
@@ -2489,6 +2716,96 @@ async function handlePost(body: any): Promise<Response> {
       return json({ ok: true, assets: slots ?? [] });
     }
 
+    // set_template_version_block {template_version_id, position, block_type,
+    //                             layout?, config?, cookbook_id?}
+    // One block in the composition SEQUENCE on a DRAFT. The spatial sibling of
+    // set_template_version_asset: draft-only (a locked cast is immutable so its
+    // frozen _sequence stays reproducible), upsert on the (version, position)
+    // unique key, then re-select the ORDERED blocks so the designer re-renders
+    // from one response. `cookbook_id` (when the block draws a cookbook b-roll)
+    // is validated against the shared 13-id catalog so a typo can't survive into
+    // a locked sequence — the authoritative reference still travels inside the
+    // OPEN `config` (config.cookbook.id / config.slot.broll.id), which build_ep_v2
+    // turns into spec.segments.
+    case "set_template_version_block": {
+      const bvId = String(body.template_version_id ?? "");
+      if (!bvId || !UUID_RE.test(bvId)) return json({ error: "template_version_id (uuid) required" }, 400);
+      const position = Number.isFinite(Number(body.position)) ? parseInt(String(body.position), 10) : NaN;
+      if (!Number.isInteger(position) || position < 0) {
+        return json({ error: "position (non-negative integer) required" }, 400);
+      }
+      const block_type = String(body.block_type ?? "").trim();
+      if (!BLOCK_TYPES.has(block_type)) {
+        return json({ error: "block_type must be one of: " + [...BLOCK_TYPES].join(" | ") }, 400);
+      }
+      const layout = body.layout === null || body.layout === undefined || String(body.layout).trim() === ""
+        ? null : String(body.layout).trim();
+      if (layout !== null && !LAYOUT_IDS.has(layout)) {
+        return json({ error: "unknown layout '" + layout + "' — one of: " + [...LAYOUT_IDS].join(" | ") }, 400);
+      }
+      const cookbook_id = body.cookbook_id === null || body.cookbook_id === undefined ||
+          String(body.cookbook_id).trim() === ""
+        ? null : String(body.cookbook_id).trim();
+      if (cookbook_id !== null && !COOKBOOK_IDS.has(cookbook_id)) {
+        return json({ error: "unknown cookbook_id '" + cookbook_id + "' — one of: " + [...COOKBOOK_IDS].join(", ") }, 400);
+      }
+      const config = body.config && typeof body.config === "object" && !Array.isArray(body.config)
+        ? body.config : {};
+
+      const { data: bv, error: bvErr } = await db.from("factory_template_versions")
+        .select("id, channel_key, template_key, status").eq("id", bvId).maybeSingle();
+      if (bvErr) return json({ error: bvErr.message }, 500);
+      if (!bv) return json({ error: "template version not found" }, 404);
+      if (bv.status !== "draft") {
+        return json({ error: "locked template versions are immutable — branch a new version" }, 409);
+      }
+
+      const { error: bUpErr } = await db.from("factory_template_blocks").upsert(
+        { template_version_id: bvId, position, block_type, layout, config },
+        { onConflict: "template_version_id,position" },
+      );
+      if (bUpErr) return json({ error: bUpErr.message }, 500);
+      const { data: blocks, error: bSelErr } = await db.from("factory_template_blocks")
+        .select("*").eq("template_version_id", bvId).order("position", { ascending: true });
+      if (bSelErr) return json({ error: bSelErr.message }, 500);
+      await logEvent("template_block_set",
+        `${bv.template_key}: block ${position} = ${block_type}` +
+          (cookbook_id ? ` (${cookbook_id})` : "") + (layout ? ` [${layout}]` : ""),
+        {
+          template_version_id: bvId, channel_key: bv.channel_key,
+          position, block_type, layout, cookbook_id,
+        });
+      return json({ ok: true, blocks: blocks ?? [] });
+    }
+
+    // delete_template_version_block {template_version_id, position}
+    // Remove one block from a DRAFT sequence; returns the ordered remainder.
+    case "delete_template_version_block": {
+      const dbvId = String(body.template_version_id ?? "");
+      if (!dbvId || !UUID_RE.test(dbvId)) return json({ error: "template_version_id (uuid) required" }, 400);
+      const dPos = Number.isFinite(Number(body.position)) ? parseInt(String(body.position), 10) : NaN;
+      if (!Number.isInteger(dPos) || dPos < 0) {
+        return json({ error: "position (non-negative integer) required" }, 400);
+      }
+      const { data: dbv, error: dbvErr } = await db.from("factory_template_versions")
+        .select("id, channel_key, template_key, status").eq("id", dbvId).maybeSingle();
+      if (dbvErr) return json({ error: dbvErr.message }, 500);
+      if (!dbv) return json({ error: "template version not found" }, 404);
+      if (dbv.status !== "draft") {
+        return json({ error: "locked template versions are immutable — branch a new version" }, 409);
+      }
+      const { error: dDelErr } = await db.from("factory_template_blocks").delete()
+        .eq("template_version_id", dbvId).eq("position", dPos);
+      if (dDelErr) return json({ error: dDelErr.message }, 500);
+      const { data: dBlocks, error: dSelErr } = await db.from("factory_template_blocks")
+        .select("*").eq("template_version_id", dbvId).order("position", { ascending: true });
+      if (dSelErr) return json({ error: dSelErr.message }, 500);
+      await logEvent("template_block_deleted",
+        `${dbv.template_key}: block ${dPos} removed`,
+        { template_version_id: dbvId, channel_key: dbv.channel_key, position: dPos });
+      return json({ ok: true, blocks: dBlocks ?? [] });
+    }
+
     // regenerate_asset {channel_key, asset_type, from_version_id, params, label?}
     // "Generate a new one from this." The swap drawer is where you notice a pick
     // is close but the wording is wrong, so that is where the next revision gets
@@ -2559,6 +2876,66 @@ async function handlePost(body: any): Promise<Response> {
         "asset_regen_queued",
         `New ${asset_type} revision queued from v${src.version} (${channel_key})`,
         { job_id: job.id, channel_key, asset_type, from_version_id, params },
+      );
+      return json({ ok: true, job_id: job.id, job });
+    }
+
+    // capture_demo {channel_key, view, theme, url?, site?, prompt?, selector?, label?}
+    // "Add a real recording asset." Films a genuine screen recording of a live
+    // web app in the chosen VIEW (mobile 9:16 / desktop 16:9) and THEME
+    // (light / dark), then registers it as a CANDIDATE demo_clip revision — the
+    // same lineage/versioning as every other asset. Queues scripts/capture_demo.py
+    // on the EXISTING shell_script job type (no new worker job type, no restart),
+    // which drives scripts/record_demo.py, uploads the mp4 + poster, and inserts
+    // the row. Insert shape MIRRORS regenerate_asset above (columns/status/title/
+    // meta convention) so the direct-mode board tracks it the same way.
+    case "capture_demo": {
+      const channel_key = String(body.channel_key ?? "").trim();
+      const url = String(body.url ?? "").trim();
+      const site = String(body.site ?? "").trim();
+      const prompt = String(body.prompt ?? "").trim();
+      const selector = String(body.selector ?? "").trim();
+      const label = String(body.label ?? "").trim();
+      const view = String(body.view ?? "mobile").trim() || "mobile";
+      const theme = String(body.theme ?? "light").trim() || "light";
+      if (!channel_key) return json({ error: "channel_key required" }, 400);
+      if (!url && !site) return json({ error: "one of url / site is required" }, 400);
+      if (view !== "mobile" && view !== "desktop") {
+        return json({ error: "view must be 'mobile' or 'desktop'" }, 400);
+      }
+      if (theme !== "light" && theme !== "dark") {
+        return json({ error: "theme must be 'light' or 'dark'" }, 400);
+      }
+      // exactly one target flag reaches the script (prefer url when both are set)
+      const target = url ? ["--url", url] : ["--site", site];
+      const selArgs = selector ? ["--selector", selector] : [];
+      const { data: job, error: jobErr } = await db.from("factory_jobs")
+        .insert({
+          channel_key,
+          type: "shell_script",
+          title: "Record demo (" + view + " · " + theme + ")",
+          status: "queued",
+          meta: {
+            asset_type: "demo_clip",
+            script_path: "scripts/capture_demo.py",
+            capture: { view, theme, url: url || null, site: site || null },
+            script_args: [
+              "--channel", channel_key,
+              "--view", view,
+              "--theme", theme,
+              ...target,
+              "--prompt", prompt || "",
+              ...selArgs,
+              "--label", label || "",
+            ],
+          },
+        })
+        .select().single();
+      if (jobErr) return json({ error: jobErr.message }, 500);
+      await logEvent(
+        "demo_capture_queued",
+        `Screen recording queued (${view} · ${theme}) for ${channel_key}`,
+        { job_id: job.id, channel_key, view, theme, url: url || null, site: site || null },
       );
       return json({ ok: true, job_id: job.id, job });
     }
@@ -2649,16 +3026,32 @@ async function handlePost(body: any): Promise<Response> {
           composition[s.asset_type] = { ...slot, alts: [...(slot.alts ?? []), frozen] };
         }
       }
+      // Sprint 2: freeze the composition SEQUENCE alongside the frozen frames.
+      // build_ep_v2 turns composition._sequence into spec.segments, so the whole
+      // locked cast + sequence resolves from ONE row (migration-020 one-select
+      // invariant). Ships in the SAME update as _settings below.
+      const { data: seqBlocks, error: seqErr } = await db.from("factory_template_blocks")
+        .select("position, block_type, layout, config")
+        .eq("template_version_id", lvId).order("position", { ascending: true });
+      if (seqErr) return json({ error: seqErr.message }, 500);
+      const _sequence = (seqBlocks ?? []).map((b) => ({
+        position: b.position,
+        block_type: b.block_type,
+        layout: b.layout ?? null,
+        config: b.config ?? {},
+      }));
       const nowIso = new Date().toISOString();
       const { data: lockedRow, error: lockErr2 } = await db.from("factory_template_versions")
-        // Freeze the cast SETTINGS alongside the frames. Some of what ships is
-        // behaviour, not a file — outro_cta:"auto" makes Sol speak a fresh CTA
-        // over the outro card. A snapshot that captured only frames would not
-        // reproduce the episode. build_ep_v2.resolve_setting() reads _settings.
+        // Freeze the cast SETTINGS + SEQUENCE alongside the frames. Some of what
+        // ships is behaviour, not a file — outro_cta:"auto" makes Sol speak a
+        // fresh CTA over the outro card; _sequence is the ordered block plan. A
+        // snapshot that captured only frames would not reproduce the episode.
+        // build_ep_v2.resolve_setting() reads _settings; the builder reads
+        // _sequence.
         .update({
           status: "locked",
           locked_at: nowIso,
-          composition: { ...composition, _settings: (lv.meta ?? {}).settings ?? {} },
+          composition: { ...composition, _settings: (lv.meta ?? {}).settings ?? {}, _sequence },
         })
         .eq("id", lvId).select().single();
       if (lockErr2) return json({ error: lockErr2.message }, 500);
@@ -2683,6 +3076,129 @@ async function handlePost(body: any): Promise<Response> {
           slots: Object.keys(composition),
         });
       return json({ version: lockedRow, active: makeActive, previous_active_version_id });
+    }
+
+    // unlock_template_version {template_version_id, confirm_active?:bool}
+    // "Edit a locked cast in place" — the counterpart to lock, and the owner's
+    // ask: a locked version is not a dead end. You can go INSIDE it and update it
+    // (unlock → draft → swap → re-lock), or Fork a fresh copy. This flips
+    // status locked→draft and clears locked_at, then REBUILDS the editable
+    // factory_template_assets join rows from the frozen `composition` — a version
+    // that was created and locked may have no join rows (or stale ones), so the
+    // draft editor would otherwise have nothing to swap. meta.settings is
+    // restored from composition._settings so the cast setting survives the
+    // round-trip. This is the ONLY action that turns a locked version editable.
+    //
+    // ACTIVE-CAST GUARD: if this IS the template's active_version_id, unlocking
+    // leaves production with no LOCKED active cast (build_ep_v2 only resolves
+    // through a locked version — a draft is ignored, so the build falls back to
+    // the channel locks, or refuses) until it is re-locked. That is honest but
+    // consequential, so it requires an explicit confirm_active:true; the response
+    // flags was_active either way. active_version_id is left pointing at this
+    // version so re-locking with make_active restores the pointer with no gap.
+    case "unlock_template_version": {
+      const uvId = String(body.template_version_id ?? "");
+      if (!uvId || !UUID_RE.test(uvId)) return json({ error: "template_version_id (uuid) required" }, 400);
+      const { data: uv, error: uvErr } = await db.from("factory_template_versions")
+        .select("*").eq("id", uvId).maybeSingle();
+      if (uvErr) return json({ error: uvErr.message }, 500);
+      if (!uv) return json({ error: "template version not found" }, 404);
+      if (uv.status !== "locked") {
+        return json({ error: "only a locked version can be unlocked (status: " + uv.status + ")" }, 409);
+      }
+
+      // Is this the template's ACTIVE cast? Unlocking re-opens it as a draft and
+      // production loses its locked active cast until re-lock — require confirm.
+      const { data: tplActive, error: uaErr } = await db.from("factory_templates")
+        .select("key, active_version_id").eq("key", uv.template_key).maybeSingle();
+      if (uaErr) return json({ error: uaErr.message }, 500);
+      const was_active = !!(tplActive && tplActive.active_version_id === uvId);
+      if (was_active && body.confirm_active !== true) {
+        return json({
+          error: "this is the template's active cast — unlocking re-opens it as a draft and production falls back until you re-lock it. Pass confirm_active:true to proceed.",
+          was_active: true,
+          needs_confirm: true,
+        }, 409);
+      }
+
+      // Rebuild the editable join rows from the frozen composition: one position-0
+      // row per slot (asset_type → composition[slot].version_id), skipping the
+      // _settings / _sequence pseudo-slots. Delete any existing rows first so a
+      // stale/partial set does not survive alongside the rebuilt one.
+      // deno-lint-ignore no-explicit-any
+      const comp = (uv.composition ?? {}) as Record<string, any>;
+      const rebuilt: {
+        template_version_id: string; asset_type: string;
+        asset_version_id: string; position: number; note: string;
+      }[] = [];
+      for (const [slot, val] of Object.entries(comp)) {
+        if (slot === "_settings" || slot === "_sequence") continue;
+        const vId = val && (val.version_id ?? null);
+        if (!vId) continue;
+        rebuilt.push({
+          template_version_id: uvId, asset_type: slot, asset_version_id: String(vId),
+          position: 0, note: "restored from the locked composition",
+        });
+      }
+      const { error: delErr } = await db.from("factory_template_assets").delete()
+        .eq("template_version_id", uvId);
+      if (delErr) return json({ error: delErr.message }, 500);
+      if (rebuilt.length > 0) {
+        const { error: insErr } = await db.from("factory_template_assets").insert(rebuilt);
+        if (insErr) return json({ error: insErr.message }, 500);
+      }
+
+      // Sprint 2: rebuild the editable block SEQUENCE from composition._sequence —
+      // the counterpart to lock freezing it. Delete any existing blocks first so a
+      // stale set does not survive the round-trip, then re-insert one row per
+      // frozen entry.
+      // deno-lint-ignore no-explicit-any
+      const seqEntries: any[] = Array.isArray(comp._sequence) ? comp._sequence : [];
+      const { error: bDelErr } = await db.from("factory_template_blocks").delete()
+        .eq("template_version_id", uvId);
+      if (bDelErr) return json({ error: bDelErr.message }, 500);
+      const blockRows = seqEntries
+        .filter((e) => e && Number.isInteger(e.position) && typeof e.block_type === "string")
+        .map((e) => ({
+          template_version_id: uvId,
+          position: e.position,
+          block_type: e.block_type,
+          layout: e.layout ?? null,
+          config: e.config ?? {},
+        }));
+      if (blockRows.length > 0) {
+        const { error: bInsErr } = await db.from("factory_template_blocks").insert(blockRows);
+        if (bInsErr) return json({ error: bInsErr.message }, 500);
+      }
+
+      // Restore cast SETTINGS onto meta.settings so the draft editor shows them
+      // and the round-trip preserves behaviour (outro_cta etc.).
+      const meta = { ...(uv.meta ?? {}) };
+      const frozenSettings = comp._settings;
+      if (frozenSettings && typeof frozenSettings === "object") {
+        meta.settings = { ...(meta.settings ?? {}), ...frozenSettings };
+      }
+
+      const { data: unlocked, error: unlErr } = await db.from("factory_template_versions")
+        .update({ status: "draft", locked_at: null, meta })
+        .eq("id", uvId).select().single();
+      if (unlErr) return json({ error: unlErr.message }, 500);
+
+      const { data: slots } = await db.from("factory_template_assets")
+        .select("*").eq("template_version_id", uvId)
+        .order("asset_type", { ascending: true }).order("position", { ascending: true });
+      const { data: blocks } = await db.from("factory_template_blocks")
+        .select("*").eq("template_version_id", uvId).order("position", { ascending: true });
+      await logEvent("template_version_unlocked",
+        `${uv.template_key} v${uv.version} unlocked for in-place editing` +
+          (was_active ? " (was the active cast — production falls back until re-lock)" : "") +
+          ` — ${rebuilt.length} slots + ${blockRows.length} blocks restored`,
+        {
+          template_key: uv.template_key, channel_key: uv.channel_key,
+          template_version_id: uvId, version: uv.version,
+          was_active, slots: rebuilt.map((r) => r.asset_type),
+        });
+      return json({ version: unlocked, assets: slots ?? [], blocks: blocks ?? [], was_active });
     }
 
     // retire_template_version {template_version_id, undo?:bool}

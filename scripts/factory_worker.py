@@ -1246,6 +1246,16 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
             "--ep <ep_key> --preview --tag prev`. This produces "
             "channels/claude-tricks/renders/ep<ep_key>_prev_raw.mp4 — 1080x1920, "
             "unmastered VO, no music bed, no polish. That IS the preview.\n"
+            "   - CAST INTEGRITY (hard rule): if this build ABORTS with CastUnrenderable "
+            "— or ANY error naming 'cast' / 'unrenderable' / a host outfit with no "
+            "pip/wide photo-avatar ids / a template_version divergence — STOP and REPORT "
+            "it in your manifest as `cast unrenderable — hold for owner fix`, quoting the "
+            "error. Do NOT edit the episode spec to re-pin a different template_version, "
+            "do NOT swap outro_src or the host to something that builds, and do NOT pass "
+            "--allow-cast-override. The owner's cast pin (template_version / host outfit / "
+            "outro card) is a DELIBERATE choice, NOT a misconfiguration for you to work "
+            "around — silently substituting a build-able cast is exactly the EP15 defect "
+            "this gate exists to stop.\n"
             "6. QC LITE: run scripts/lipsync_align.py measure and scripts/probe_frames.py "
             "corner on the preview raw. Log offsets but do NOT re-render — that's "
             "for finalize_episode. Fail loudly only if lipsync offset > 60ms.\n"
@@ -2909,7 +2919,10 @@ def suggestion_row(channel_key, planned_date, title, *, brief="", kind="content"
         "kind": kind,
         # factory items are concrete generator create/update tasks -> always custom
         "type": ("custom" if kind == "factory" else (type_ or "produce_short")),
-        "model": model or "fable",
+        # opus is what this network actually produces with (every shipped
+        # claude-tricks episode; fable was a default nobody chose and it
+        # silently became the model for auto-suggested pieces -- VJ 2026-08-18)
+        "model": model or "opus",
         "effort": effort or "high",
         "ultracode": bool(ultracode),
         "status": "suggested",
