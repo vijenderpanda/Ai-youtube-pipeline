@@ -1296,6 +1296,14 @@ _RESOLVED = []
 _VERSION_ID_BY = {}
 
 
+class CastUnrenderable(Exception):
+    """A chosen cast slot cannot render this format and the build refuses to
+    silently substitute a different one. Raised loudly (recorded to provenance,
+    aborts the build) instead of the old silent fall-through to a dead avatar id
+    — a cast switcher that gets quietly overridden at render time is worse than
+    none (VJ 2026-08-19, the EP15 outfit_12→outfit_11 silent swap)."""
+
+
 def _supa():
     """factory_worker.Supa client from the repo env. Callers ALWAYS wrap this in the
     try that owns their never-raise contract — it is the exact statement sequence
@@ -1584,8 +1592,9 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     # is ONLY for the small pipCallout box; feeding it to the host letterboxes +
     # over-crops the face (the Ep32 regression this fixes). `framed_tid` = the
     # wide avatar for host beats; `tid` stays the pip for the small box.
-    _o11 = os.path.join(CH, "assets",
-                        resolve_locked("host_outfit", "character/host_library/outfit_11_sol_magenta"))
+    _HOST_DEFAULT = "character/host_library/outfit_11_sol_magenta"
+    _host_ref = resolve_locked("host_outfit", _HOST_DEFAULT)
+    _o11 = os.path.join(CH, "assets", _host_ref)
     _o11_pip = os.path.join(_o11, ".heygen_photo_id_pip")
     _o11_wide = os.path.join(_o11, ".heygen_photo_id_wide")
     framed_tid = open(_o11_wide).read().strip() if os.path.exists(_o11_wide) else None
@@ -1604,11 +1613,33 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
             tid = tid_3q = open(_o11_pip if os.path.exists(_o11_pip) else CACHE).read().strip()
     elif os.path.exists(_o11_pip):
         tid = tid_3q = open(_o11_pip).read().strip()   # small pipCallout box only
-        open(os.path.join(A, "host_outfit.txt"), "w").write("outfit_11_sol_magenta (PINNED)\n")
-        print(f">> host PINNED to Ep11 (framed host = WIDE {(framed_tid or '?')[:8]}..., "
+        open(os.path.join(A, "host_outfit.txt"), "w").write(
+            f"{os.path.basename(_host_ref)} (PINNED)\n")
+        print(f">> host PINNED to {os.path.basename(_host_ref)} "
+              f"(framed host = WIDE {(framed_tid or '?')[:8]}..., "
               f"pip box = {tid[:8]}...) — rotation held until HOST_OUTFIT_POOL=on")
     else:
-        tid = tid_3q = open(CACHE).read().strip()
+        # Phase 0 (2026-08-19): the resolved host outfit has no .heygen_photo_id_pip,
+        # so a Short cannot render its host from it. This is exactly the long-form
+        # outfit_12 case: it has closeup/rest ids but not the pip/wide a Short needs.
+        # The old line here opened the legacy CACHE id, which HeyGen now 404s — so a
+        # chosen-but-unrenderable cast shipped as a DIFFERENT host (outfit_11) with no
+        # signal. REFUSE loudly: record the refused slot to provenance, then abort.
+        _RESOLVED.append({"asset_type": "host_outfit", "build_ref": _host_ref,
+                          "resolved_from": "refused",
+                          "version_id": _VERSION_ID_BY.get(("template", "host_outfit"))})
+        try:
+            _flush_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
+        except Exception:
+            pass
+        _chosen = bool(_TPL_VERSION_ID) or _host_ref != _HOST_DEFAULT
+        raise CastUnrenderable(
+            f"host_outfit '{os.path.basename(_host_ref)}' has no pip/wide photo-avatar "
+            f"ids — it is a long-form host and cannot render a Short. "
+            + ("Chosen via a locked cast — pick a short-fit host (pip+wide) or generate "
+               "them; NOT silently substituting a different host."
+               if _chosen else
+               "This is the channel default and is missing its ids — an infra problem."))
     if not framed_tid:
         framed_tid = tid   # fallback if the wide-avatar id file is missing
     # Phase 4 provenance: WHICH composed cast produced this episode, on disk beside
