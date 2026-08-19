@@ -76,7 +76,10 @@ if (-not (IFaceOK)) {
   # --no-deps means insightface's own runtime imports aren't pulled: it needs `onnx`
   # (model_zoo) + onnxruntime + scikit-image/scikit-learn (utils) at IMPORT time. cv2
   # /numpy/scipy come from requirements.txt above. Install these as wheels (no build).
-  & $VenvPy -m pip install onnx onnxruntime scikit-image scikit-learn easydict prettytable 2>&1 | Out-Host
+  # albucore==0.0.16: requirements pulls albumentations 1.4.10 (needed by insightface's
+  # mask_renderer) which pins only albucore>=0.0.11, so pip floats to 0.2.13 -- but
+  # `preserve_channel_dim` (imported by albumentations 1.4.10) was removed after 0.0.16.
+  & $VenvPy -m pip install onnx onnxruntime scikit-image scikit-learn easydict prettytable "albucore==0.0.16" 2>&1 | Out-Host
 }
 if (-not (IFaceOK)) {
   Say "insightface import failed -- detail:"
