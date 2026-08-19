@@ -11,6 +11,16 @@ $Repo = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 Set-Location $Repo
 $env:FACTORY_REPO = $Repo
 
+# Single-instance guard: a second supervisor (double worker-ctl start, watchdog +
+# manual start, a leftover after a power-cut reboot) fights the first over
+# logs\factory_worker.log AND double-claims jobs. Hold a named mutex for this
+# process's life; a duplicate says so and exits cleanly instead of crash-looping.
+$script:WorkerMutex = New-Object System.Threading.Mutex($false, "Local\FactoryWorkerRunner")
+if (-not $script:WorkerMutex.WaitOne(0)) {
+  Write-Host "[!] a factory worker supervisor is already running - exiting this duplicate." -ForegroundColor Yellow
+  exit 0
+}
+
 # Resolve Python (python.exe preferred, else the py launcher) as exe + base args.
 $PyExe = (Get-Command python -ErrorAction SilentlyContinue).Source
 $PyArgs = @()
