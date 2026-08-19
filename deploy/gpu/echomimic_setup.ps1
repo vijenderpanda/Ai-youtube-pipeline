@@ -57,10 +57,19 @@ Write-Host "ECHO_STEP3_OK"
 # deps: requirements.txt content, pinned; overrides installed LAST so they win.
 function DepsOK { try { return ((& $VenvPy -c "import diffusers,transformers,facenet_pytorch,mediapipe,omegaconf,av,numpy;import moviepy.editor;from huggingface_hub import snapshot_download;print(1)" 2>$null).Trim() -eq "1") } catch { return $false } }
 if (-not (DepsOK)) {
-  Say "installing EchoMimic deps (torch already pinned; won't be touched)..."
+  # SPLIT installs -- pip installs a command atomically, so one source-build failure
+  # (e.g. av) would otherwise take diffusers + everything down with it. gradio dropped
+  # (webgui.py only; heavy resolver bloat, not needed for CLI inference).
+  Say "installing EchoMimic core deps (torch already pinned; won't be touched)..."
   & $VenvPy -m pip install diffusers==0.24.0 transformers==4.38.2 einops==0.4.1 omegaconf==2.3.0 `
-      ffmpeg-python==0.2.0 facenet_pytorch==2.5.0 moviepy==1.0.3 av==11.0.0 `
-      torchmetrics torchtyping tqdm mediapipe gradio 2>&1 | Out-Host
+      ffmpeg-python==0.2.0 facenet_pytorch==2.5.0 moviepy==1.0.3 `
+      torchmetrics torchtyping tqdm mediapipe 2>&1 | Out-Host
+  if ($LASTEXITCODE -ne 0) { Die "core deps install failed" }
+  # av 11.0.0 has NO cp310 win wheel -> source-build needs MSVC. 12.x ships wheels and
+  # is API-compatible for EchoMimic's frame I/O; --only-binary blocks any source build.
+  Say "installing av (prebuilt wheel, no source build)..."
+  & $VenvPy -m pip install "av==12.3.0" --only-binary=:all: 2>&1 | Out-Host
+  if ($LASTEXITCODE -ne 0) { Die "av wheel install failed" }
   # 4 ecosystem breakages, pinned LAST: hub 0.20.3 (diffusers 0.24.0 cached_download,
   # issue #207); numpy 1.26.4 (numpy-2 ABI crash under torch/mediapipe/opencv); Pillow
   # 9.5.0 (moviepy 1.0.3 Image.ANTIALIAS); opencv 4.9.0.80 (holds numpy 1.26).
