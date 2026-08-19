@@ -12,7 +12,10 @@ $Venv = Join-Path $Root "venv"
 $Repo = Join-Path $Root "LivePortrait"
 $VenvPy = Join-Path $Venv "Scripts\python.exe"
 $env:HF_HOME = Join-Path $Root "hf-cache"
-$IF_WHEEL = "https://huggingface.co/ussoewwin/Insightface_for_windows/resolve/main/insightface-0.7.3-cp310-cp310-win_amd64.whl"
+# insightface prebuilt cp310 win wheel, mirrored to OUR storage (reliably reachable
+# + ungated). The upstream HF repo `ussoewwin/Insightface_for_windows` is GATED
+# (401) -> pip's download wedged for 40min with no error. Source: Gourieff/Assets.
+$IF_WHEEL = "https://xfqyovimnqdghiekicqr.supabase.co/storage/v1/object/public/factory-renders/gpu-refs/insightface-0.7.3-cp310-cp310-win_amd64.whl"
 New-Item -ItemType Directory -Force -Path $Root, $env:HF_HOME | Out-Null
 function Say ($m) { Write-Host ("[lp] " + $m) }
 function Die ($m) { Write-Host ("LP_SETUP_FAIL " + $m); exit 1 }
@@ -60,8 +63,16 @@ if (-not (IFaceOK)) {
   Say "installing LivePortrait requirements..."
   & $VenvPy -m pip install -r (Join-Path $Repo "requirements.txt") 2>&1 | Out-Host
   if ($LASTEXITCODE -ne 0) { Die "requirements install failed" }
+  # Fetch the wheel to a LOCAL file with a hard timeout, THEN pip-install it -- so a
+  # bad/slow URL fails fast (Die) instead of wedging pip's own downloader for 40min.
+  $whl = Join-Path $Root "insightface-0.7.3-cp310-cp310-win_amd64.whl"
+  if (-not (Test-Path $whl)) {
+    Say "downloading insightface wheel (mirror)..."
+    try { Invoke-WebRequest -UseBasicParsing -Uri $IF_WHEEL -OutFile $whl -TimeoutSec 180 } catch { Die ("insightface wheel download failed: " + $_.Exception.Message) }
+  }
+  if ((Get-Item $whl).Length -lt 100000) { Die ("insightface wheel too small (" + (Get-Item $whl).Length + " bytes)") }
   Say "installing insightface (prebuilt wheel, --no-deps)..."
-  & $VenvPy -m pip install --no-deps $IF_WHEEL 2>&1 | Out-Host
+  & $VenvPy -m pip install --no-deps $whl 2>&1 | Out-Host
   & $VenvPy -m pip install onnxruntime easydict prettytable 2>&1 | Out-Host
 }
 if (-not (IFaceOK)) { Die "insightface import failed" }
