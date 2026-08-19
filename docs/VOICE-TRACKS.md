@@ -56,18 +56,33 @@ legible **text-in-image** — for text-heavy thumbnails keep `leonardo` or (futu
 Qwen-Image track. Everything else (hooks, b-roll, character stills) is thumbnail-grade.
 
 ## Avatar track (same pattern) — `avatar_track`
-Per-channel `factory_channels.meta.avatar_track`:
+Router: **`scripts/avatar_render.py`** (`--channel --audio vo.wav --out host.mp4 [--image
+frame.png] [--track ...]`). **Source of truth today = the router's in-file `AVATAR_TRACKS`
+registry** (same as `vo_render`/`img_render` — the DB has no `meta` column; the per-channel
+DB field + template-UI selector is the shared TODO for all three tracks). The value is also
+stashed in `factory_channels.brand.avatar_track` (`= echomimic_local`, `avatar_fallback =
+heygen`) so the template session can surface it.
 
 | value | backend | cost | where |
 |---|---|---|---|
-| `heygen` (default) | HeyGen (existing `heygen_avatar.py`) | paid | cloud |
-| `musetalk_local` | **MuseTalk 1.5** lip-sync on the RTX 3060 worker | **free** | `DESKTOP-DEIR7RS` |
+| `echomimic_local` (claude-tricks default) | **EchoMimic V1** audio-driven portrait on the RTX 3060 | **free** | `DESKTOP-DEIR7RS` |
+| `heygen` | HeyGen talking-photo (`heygen_avatar.py`) | paid | cloud |
 
-`musetalk_local` combines the other free tracks: a **face** (FLUX via `img_render`, or any
-portrait/base video) + **audio** (CosyVoice 2 via `vo_render`) → `deploy/gpu/musetalk_gen.ps1`
-(`-FaceUrl -AudioUrl`) → talking-head mp4. A still image gives a HeyGen-photo-avatar look;
-a real base video gives natural head motion. So the fully-local talking head is
-FLUX face → MuseTalk lips → CosyVoice 2 voice, all on the worker.
+**`echomimic_local` is the free quality track (VJ-approved 2026-08-19).** A host portrait +
+a VO wav → `deploy/gpu/echomimic_gen.ps1` (`-SrcUrl -AudioUrl`) → 512×512 talking head with
+whole-face diffusion (natural head/eye motion, **no** mouth-inpaint seam). It **always
+dispatches to the worker** (pinned `shell_script`, `target_worker=DESKTOP-DEIR7RS`) and on
+**any** failure (job failed/timeout/download) **automatically falls back to `heygen`** — so a
+worker hiccup never breaks a build. Pass `--no-fallback` to fail hard instead. Output is
+512×512; upscale (lanczos/AI) or composite onto the 1080p brand frame for a Short.
+
+The router also uploads the local image/audio to `gpu-inputs/` to hand the worker public URLs.
+Per-channel config (host portrait storage path + heygen fallback `talking_photo_id`) lives in
+`avatar_render.py::AVATAR_TRACKS`.
+
+**Superseded:** `musetalk_local` (MuseTalk 1.5) + the LivePortrait-motion combo — rejected on
+quality (mouth-inpaint blur + looping driving clip); EchoMimic replaces them. Scripts remain
+on the worker but are no longer the avatar track.
 
 ## For the factory-app / template session
 Surface **three** per-channel (and per-template) selectors:
