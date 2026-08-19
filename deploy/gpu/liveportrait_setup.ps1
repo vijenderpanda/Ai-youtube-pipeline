@@ -73,9 +73,16 @@ if (-not (IFaceOK)) {
   if ((Get-Item $whl).Length -lt 100000) { Die ("insightface wheel too small (" + (Get-Item $whl).Length + " bytes)") }
   Say "installing insightface (prebuilt wheel, --no-deps)..."
   & $VenvPy -m pip install --no-deps $whl 2>&1 | Out-Host
-  & $VenvPy -m pip install onnxruntime easydict prettytable 2>&1 | Out-Host
+  # --no-deps means insightface's own runtime imports aren't pulled: it needs `onnx`
+  # (model_zoo) + onnxruntime + scikit-image/scikit-learn (utils) at IMPORT time. cv2
+  # /numpy/scipy come from requirements.txt above. Install these as wheels (no build).
+  & $VenvPy -m pip install onnx onnxruntime scikit-image scikit-learn easydict prettytable 2>&1 | Out-Host
 }
-if (-not (IFaceOK)) { Die "insightface import failed" }
+if (-not (IFaceOK)) {
+  Say "insightface import failed -- detail:"
+  & $VenvPy -c "import insightface" 2>&1 | Out-Host   # surface the exact ModuleNotFoundError
+  Die "insightface import failed"
+}
 Write-Host "LP_STEP4_OK"
 
 # weights -> pretrained_weights/
