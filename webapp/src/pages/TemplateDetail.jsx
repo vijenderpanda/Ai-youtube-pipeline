@@ -330,6 +330,7 @@ export default function TemplateDetail() {
   const [swapFor, setSwapFor] = useState(null) // asset_type whose picker is open
   const [regenFor, setRegenFor] = useState(null) // revision id the "new from this" form is open on
   const [showAllSlots, setShowAllSlots] = useState(false)
+  const [showFrames, setShowFrames] = useState(false) // the asset/frames grid — collapsed by default (declutter: design is the intent, not a library dump)
   const [unlockConfirm, setUnlockConfirm] = useState(false) // active-cast unlock confirm dialog
   const [busy, setBusy] = useState(null)
 
@@ -662,6 +663,9 @@ export default function TemplateDetail() {
             {tpl.aspect} · {tpl.runtime_s}s
             {tpl.description ? ' · ' + tpl.description : ''}
           </p>
+          <p className="sub" style={{ marginTop: 4 }}>
+            Design the sequence, set the cast, then <strong>Lock</strong> — that’s what production renders.
+          </p>
           <div className="tpl-head-meta">
             {arm ? (
               <span className="chip tpl-armable">Ready to arm</span>
@@ -677,9 +681,29 @@ export default function TemplateDetail() {
 
       {assetsQ.error && <div className="error-bar">{assetsQ.error.message}</div>}
 
-      <div className="tpl-section-title">Frames &amp; cosmetics</div>
+      {/* The composition designer is the intent of this page — surface it first;
+          the cast + asset frames sit below (frames collapsed by default). */}
+      {selected && (
+        <SequenceEditor
+          versionId={selected.id}
+          isDraft={isDraft}
+          blocks={blocksForSelected}
+          cookbook={cookbookCat}
+          layouts={layoutIds}
+          blockTypes={blockTypeIds}
+          busy={busy}
+          onPost={post}
+        />
+      )}
 
-      {hasFrames ? (
+      <div className="tpl-section-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+        <span>Frames &amp; cosmetics</span>
+        <button type="button" className="btn-ghost" style={{ padding: '4px 12px', fontSize: 12, fontWeight: 600 }} onClick={() => setShowFrames((v) => !v)} aria-expanded={showFrames}>
+          {showFrames ? 'Hide' : 'Show'} assets
+        </button>
+      </div>
+
+      {showFrames && (hasFrames ? (
         <div className="tpl-frames">
           {groups.map(({ type, vers }) => {
             const byId = {}
@@ -742,7 +766,7 @@ export default function TemplateDetail() {
             Frame previews arrive once this channel’s assets are registered.
           </p>
         </div>
-      )}
+      ))}
 
       {/* ── Cast (Phase 4): composed template versions ───────────────── */}
       <div className="tpl-section-title">Cast — the revisions this recipe renders with</div>
@@ -764,7 +788,7 @@ export default function TemplateDetail() {
           </div>
           <button
             type="button"
-            className="btn-primary"
+            className="btn-ghost"
             disabled={busy === 'fork' || !channelKey}
             onClick={fork}
             title={
@@ -1221,17 +1245,6 @@ export default function TemplateDetail() {
                 </div>
               </div>
             </section>
-
-            <SequenceEditor
-              versionId={selected.id}
-              isDraft={isDraft}
-              blocks={blocksForSelected}
-              cookbook={cookbookCat}
-              layouts={layoutIds}
-              blockTypes={blockTypeIds}
-              busy={busy}
-              onPost={post}
-            />
 
             <div className="cast-foot">
               <div className="cast-foot-copy">
