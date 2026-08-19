@@ -110,6 +110,49 @@ EPISODES_V2 = {
       ("STEP 3/3 — IT KEEPS YOUR STREAK", 4, 4, "tl"),
     ],
   },
+  # Post-pivot standalone tip #3 (2026-08-20): the "paste an example" writing tip.
+  # Promised by tip #2's (_habit) outro tease. prompt-teardown cluster (PIVOT-DECISION §4 #8).
+  # SLATE RISK: "Stop X" abstract hooks flopped in-feed + muted text before/after is weaker than
+  # an app-appears. MITIGATION: proof-first CONTRAST hook (generic vs distinct, side by side),
+  # BEFORE state legible early, real single-tape proof (chatgpt no-login, describe->paste-example).
+  "_style": {
+    "title": "Stop DESCRIBING The Style — Paste 1 Example 🎯",
+    "tags": "chatgpt tips,ai writing,prompt tips,writing style,ai for beginners,better ai answers,paste example,ai tools,ai tips",
+    "hook": {"image": "ep_style/hook.png", "until": 2.4,
+             "lines": ["SAME ASK.", "ONE PASTED LINE"], "hot": "ONE"},
+    "outro": True,
+    "outro_dur": 0,
+    "outro_src": "ep_style/outro_card.mp4",   # LOCKED Ep11-style question-CTA card (gen_outro_card.py)
+    "outro_cta": "auto",   # Sol speaks the CTA over the card; line 7 is a loopback, not a CTA
+    "lines": [
+      "Same request to the same AI — but one pasted line changes everything. Watch.",
+      "Don't describe the style you want. Show it one real example.",
+      "First, I describe it — bold, punchy, modern. I get this: generic, every-brand copy.",
+      "So I paste one line in the exact voice I want, and ask for the same thing.",
+      "Now it's a real voice — punchy and specific. It copied my example, not my adjectives.",
+      "Describing a style makes AI guess. Give it one real example, and it nails the voice.",
+      "Stop describing the vibe — paste one line that already has it.",
+    ],
+    "hot_words": ["SAME", "REQUEST", "ONE", "PASTED", "LINE", "CHANGES", "WATCH",
+                  "DESCRIBE", "STYLE", "SHOW", "EXAMPLE", "BOLD", "PUNCHY", "MODERN",
+                  "GENERIC", "COPY", "PASTE", "EXACT", "VOICE", "SPECIFIC",
+                  "COPIED", "ADJECTIVES", "GUESS", "NAILS", "STOP", "VIBE",
+                  "FOLLOW", "SKILL", "DAY"],
+    "beats": ["host", "host",
+              "rec:ep_style/demo.mp4@16",   # describe -> generic answer (the fail: "your new coffee obsession has officially arrived")
+              "rec:ep_style/demo.mp4@30",   # paste ONE example line + ask again
+              "rec:ep_style/demo.mp4@44",   # matched, distinct voice (the fix/proof: "no weak brews... rocket fuel")
+              "host2", "host2"],
+    "host_panels": [
+      {"lines": ["SAME ASK", "ONE PASTED", "LINE — WATCH"]},
+      {"lines": ["DESCRIBE =", "A GUESS —", "EXAMPLE = VOICE"]},
+    ],
+    "steps": [   # chips in the bottom dead space (answer cards sit upper-middle)
+      ("STEP 1/3 — DESCRIBE THE STYLE", 2, 2, "bl"),
+      ("STEP 2/3 — PASTE ONE EXAMPLE", 3, 3, "bl"),
+      ("STEP 3/3 — IT MATCHES THE VOICE", 4, 4, "bl"),
+    ],
+  },
   "20": {
     "title": "The Effort Dial Nobody Uses (Deeper Answers, Free) 🧠",
     "tags": "claude effort,extended thinking,claude models,claude ai tips,ai for beginners,ai productivity,ai tips",
@@ -1787,8 +1830,121 @@ def _flush_sequence_provenance(ch, ep, tag, calendar_id):
         print(f"!! sequence provenance not recorded ({e}) — render is unaffected")
 
 
+def _sequence_mode():
+    """The bound composition's sequence_mode from its frozen _settings: 'replace'
+    (the composed _sequence IS the whole short — its scenes supply the VO script and
+    the segments) or 'augment' (default — the sequence adds b-roll AFTER the classic
+    beats). Absent / unbound => 'augment', so the classic path is byte-for-byte
+    unchanged (Sprint-5, VJ per-composition decision 2026-08-19)."""
+    try:
+        _tpl_lookup(CHANNEL_KEY_FOR_PROV, "__seq_probe__")   # populate _TPL_SETTINGS if a version is bound
+    except Exception:
+        pass
+    s = _TPL_SETTINGS or {}
+    m = s.get("sequence_mode")
+    return m if m in ("replace", "augment") else "augment"
+
+
+def _emit_manifest(ep, tag, cfg, replace_scenes, calendar_id):
+    """Sprint-5 --manifest: build the pre-render GENERATION MANIFEST for REVIEW and
+    (when calendar_id) persist it to factory_calendar.generation_manifest — WITHOUT
+    rendering or spending on VO/HeyGen. Lists every asset the build WILL make, each
+    linked to its scene(s), tagged free|paid, low-confidence flagged. Cast resolve is
+    IDENTITY-ONLY (resolve_locked/resolve_cast look up which asset, they don't
+    generate), so this is a read pass. Never raises on the persist (bookkeeping)."""
+    lines = cfg.get("lines") or []
+    n = len(lines)
+    assets, low_conf, host_scenes = [], [], []
+
+    # VO is the clock; captions derive from its word-timings.
+    assets.append({"type": "vo", "engine": "elevenlabs", "cost": "paid",
+                   "scenes": list(range(n)), "detail": f"{n} line(s)"})
+    assets.append({"type": "captions", "cost": "free", "scenes": list(range(n)),
+                   "detail": "derived from VO word-timings"})
+
+    if replace_scenes:
+        # REPLACE: one visual per scene, straight from the composed blocks.
+        for i, b in enumerate(replace_scenes):
+            conf = (b.get("config") or {}).get("confidence")
+            cb = (((b.get("config") or {}).get("cookbook") or {}).get("id")
+                  or ((b.get("config") or {}).get("broll") or {}).get("id"))
+            if b.get("block_type") == "host" or ((b.get("config") or {}).get("host") or {}).get("id"):
+                host_scenes.append(i)
+            entry = {"type": "cookbook" if cb else b.get("block_type"), "scene": i, "cost": "free"}
+            if cb:
+                entry["id"] = cb
+            if conf is not None:
+                entry["confidence"] = conf
+                if conf < 0.5:
+                    low_conf.append(i)
+            assets.append(entry)
+    else:
+        # CLASSIC / AUGMENT: enumerate the hand-authored beats, then any augment blocks.
+        for i, bt in enumerate(cfg.get("beats") or []):
+            b0 = str(bt).split("|")[0]
+            if b0 in ("host", "host2"):
+                host_scenes.append(i); assets.append({"type": "host", "scene": i, "cost": "paid"})
+            elif b0.startswith("cook:"):
+                assets.append({"type": "cookbook", "id": b0[5:], "scene": i, "cost": "free"})
+            elif b0.startswith("pip:"):
+                assets.append({"type": "pip", "ref": b0[4:], "scene": i, "cost": "free"})
+            elif b0.startswith("rec:"):
+                assets.append({"type": "recording", "ref": b0[4:].split("@")[0], "scene": i, "cost": "free"})
+            elif b0.startswith("stat:"):
+                assets.append({"type": "statbars", "scene": i, "cost": "free"})
+        for b in _composed_sequence(CHANNEL_KEY_FOR_PROV):
+            cb = ((b.get("config") or {}).get("cookbook") or {}).get("id")
+            if cb:
+                assets.append({"type": "cookbook", "id": cb, "cost": "free", "augment": True})
+
+    if host_scenes:
+        try:
+            href = resolve_locked("host_outfit", "character/host_library/outfit_11_sol_magenta", cfg=cfg)
+        except Exception:
+            href = None
+        assets.append({"type": "host_outfit", "ref": href, "cost": "paid", "scenes": host_scenes})
+
+    try:
+        cast = resolve_cast(cfg)
+    except Exception:
+        cast = {}
+    assets.append({"type": "music_bed", "ref": cast.get("music_bed"), "cost": "free"})
+    assets.append({"type": "outro_sting", "ref": cast.get("outro_sting"), "cost": "free"})
+    if cast.get("outro_cta"):
+        assets.append({"type": "outro_cta", "cost": "paid", "detail": "host speaks the CTA card"})
+    assets.append({"type": "hook" if cfg.get("hook") else "cover", "cost": "free",
+                   "detail": "illustration opener" if cfg.get("hook") else "poster opener"})
+    try:
+        rc = resolve_locked("remotion_comp", "Short", cfg=cfg)
+    except Exception:
+        rc = "Short"
+    assets.append({"type": "remotion_comp", "ref": rc, "cost": "free"})
+
+    manifest = {
+        "version": 1,
+        "sequence_mode": _sequence_mode(),
+        "template_version_id": _TPL_VERSION_ID,
+        "scene_count": n,
+        "paid_asset_count": sum(1 for a in assets if a.get("cost") == "paid"),
+        "low_confidence_scenes": low_conf,
+        "assets": assets,
+    }
+    print(f">> MANIFEST — {len(assets)} assets, {manifest['paid_asset_count']} paid, "
+          f"mode={manifest['sequence_mode']}, {n} scenes"
+          + (f", {len(low_conf)} low-confidence" if low_conf else ""))
+    print(json.dumps(manifest, indent=1))
+    if calendar_id:
+        try:
+            _supa().patch("factory_calendar", f"id=eq.{calendar_id}",
+                          {"generation_manifest": manifest, "manifest_version_lock": _TPL_VERSION_ID})
+            print(f">> manifest persisted to factory_calendar {calendar_id}")
+        except Exception as e:
+            print(f"!! manifest not persisted ({e}) — review it above")
+    return manifest
+
+
 def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_version=None,
-          allow_cast_override=False):
+          allow_cast_override=False, manifest=False):
     """tag = the render stem (ep<NN>_<tag>{,_raw,_outro}.mp4). Defaults to the
     historical "v2"; pass another (e.g. "v3") to cut a REVISION without
     overwriting the shipped file, so old and new can be compared side by side.
@@ -1817,6 +1973,28 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     _bind_template_version("claude-tricks", explicit=template_version,
                            cfg=cfg, calendar_id=calendar_id,
                            allow_cast_override=allow_cast_override, ep=ep, tag=tag)
+
+    # Sprint-5 REPLACE mode: when the bound locked composition declares
+    # sequence_mode='replace', the composed _sequence IS the whole short — its scenes
+    # supply the VO script (1 scene : 1 VO line) and the segments, so the classic
+    # hand-authored beats are cleared. The append loop below then times each scene
+    # segment from the VO (seg_durs), not its placeholder config.dur. Inert (byte-
+    # identity) in the default 'augment' mode and whenever nothing is bound
+    # (_composed_sequence() == []), so classic produces are unchanged.
+    _replace_scenes = _composed_sequence(CHANNEL_KEY_FOR_PROV) if _sequence_mode() == "replace" else []
+    if _replace_scenes:
+        cfg = dict(cfg)  # never mutate a shared EPISODES_V2 entry
+        cfg["lines"] = [str((b.get("config") or {}).get("line") or "") for b in _replace_scenes]
+        cfg["beats"] = []                 # segments come from the scenes, not classic beats
+        cfg.setdefault("hot_words", [])
+        cfg.setdefault("steps", [])
+        cfg.setdefault("cover", {"until": 1.8})   # render-path opener default (manifest returns before this)
+
+    # Sprint-5 --manifest: emit the pre-render GENERATION MANIFEST and STOP, BEFORE
+    # any VO/HeyGen/render spend — a planning surface for REVIEW (what it WILL make).
+    if manifest:
+        return _emit_manifest(ep, tag, cfg, _replace_scenes, calendar_id)
+
     A = os.path.join(CH, "assets", f"ep{ep}"); os.makedirs(A, exist_ok=True)
     R = os.path.join(CH, "renders"); os.makedirs(R, exist_ok=True)
 
@@ -2198,9 +2376,15 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     # contract shapes) to augment the classic beat segments above. When no
     # _sequence is bound, _composed_sequence() is [] and this is a no-op — the
     # classic beat path stays byte-for-byte unchanged.
-    for _blk in _composed_sequence(CHANNEL_KEY_FOR_PROV):
+    _seq_replace = _sequence_mode() == "replace"
+    for _idx, _blk in enumerate(_composed_sequence(CHANNEL_KEY_FOR_PROV)):
         _seg = _seq_segment(_blk)
         if _seg is not None:
+            # REPLACE: the scene IS a VO line, so time it from seg_durs (the VO
+            # clock, 1 scene:1 line) instead of the block's placeholder config.dur.
+            # AUGMENT keeps config.dur (extra b-roll after the spoken beats).
+            if _seq_replace and _idx < len(seg_durs):
+                _seg["dur"] = round(seg_durs[_idx], 3)
             segments.append(_seg)
         # S4 block reconciliation: record EVERY locked block, rendered or not.
         # A locked block _seq_segment() dropped (rendered=False) is a real
@@ -2515,6 +2699,11 @@ if __name__ == "__main__":
                          "fallback spec at episodes/<ep>.v2.json (v16)")
     ap.add_argument("--dry", action="store_true",
                     help="regenerate the episode spec JSON only (no render/master)")
+    ap.add_argument("--manifest", action="store_true",
+                    help="Sprint-5: emit the pre-render generation manifest (assets + "
+                         "scene links + free/paid + low-confidence) and stop, BEFORE any "
+                         "VO/HeyGen/render spend. Persists to factory_calendar when "
+                         "--calendar-id is given.")
     ap.add_argument("--preview", action="store_true",
                     help="v16: stop after Remotion raw render — no master, "
                          "no endcard, no outro. For produce_preview jobs.")
@@ -2538,4 +2727,5 @@ if __name__ == "__main__":
                          "owner's deliberate cast pin. Operator escape hatch only.")
     a = ap.parse_args()
     build(a.ep, dry=a.dry, tag=a.tag, preview=a.preview, calendar_id=a.calendar_id,
-          template_version=a.template_version, allow_cast_override=a.allow_cast_override)
+          template_version=a.template_version, allow_cast_override=a.allow_cast_override,
+          manifest=a.manifest)
