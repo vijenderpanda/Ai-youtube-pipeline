@@ -5,7 +5,7 @@
 # under %LOCALAPPDATA%\echomimic (outside the git repo). Spec verified against the
 # repo (torch<=2.2.2 hard cap; diffusers 0.24.0 needs hub 0.20.3 + transformers
 # 4.38.2; numpy 1.26.4 / Pillow 9.5.0 pinned last). Markers ECHO_STEP0..5/ECHO_SETUP_OK.
-param([string]$RepoRoot)
+param([string]$RepoRoot, [switch]$Fresh)
 $ErrorActionPreference = "Continue"; $ProgressPreference = "SilentlyContinue"
 $env:PYTHONUTF8 = "1"; $env:PYTHONIOENCODING = "utf-8"
 
@@ -16,8 +16,19 @@ $VenvPy = Join-Path $Venv "Scripts\python.exe"
 $env:HF_HOME = Join-Path $Root "hf-cache"
 New-Item -ItemType Directory -Force -Path $Root, $env:HF_HOME | Out-Null
 function Say ($m) { Write-Host ("[em] " + $m) }
-function Die ($m) { Write-Host ("ECHO_SETUP_FAIL " + $m); exit 1 }
+function Die ($m) { Remove-Item $Lock -ErrorAction SilentlyContinue; Write-Host ("ECHO_SETUP_FAIL " + $m); exit 1 }
 $sw = [System.Diagnostics.Stopwatch]::StartNew()
+
+# concurrency guard: two parallel installs into one venv corrupt it (WinError 32).
+# A fresh lock (<95min) means another install is live -> refuse. -Fresh forces past it
+# (used after a killed collision) and wipes the venv for a clean rebuild.
+$Lock = Join-Path $Root ".installing.lock"
+if ((Test-Path $Lock) -and -not $Fresh) {
+  $age = ((Get-Date) - (Get-Item $Lock).LastWriteTime).TotalMinutes
+  if ($age -lt 95) { Die ("another install in progress (lock age " + [int]$age + "min); pass -Fresh to override") }
+}
+if ($Fresh -and (Test-Path $Venv)) { Say "-Fresh: removing venv for a clean rebuild..."; Remove-Item -Recurse -Force $Venv -ErrorAction SilentlyContinue }
+Set-Content -Path $Lock -Value $PID -Encoding ASCII
 try { Say ("gpu: " + ((& nvidia-smi --query-gpu=name,memory.free,driver_version --format=csv,noheader) -join "; ")) } catch {}
 
 function Find310 {
@@ -122,6 +133,7 @@ foreach ($n in $need) {
 }
 Write-Host "ECHO_STEP5_OK"
 
+Remove-Item $Lock -ErrorAction SilentlyContinue
 $sw.Stop()
 Write-Host ("ECHO_SETUP_OK root=$Root venv=$VenvPy repo=$Repo elapsed_s=" + [int]$sw.Elapsed.TotalSeconds)
 exit 0
