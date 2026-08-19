@@ -98,6 +98,10 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
   const [buf, setBuf] = useState('') // JSON config buffer for the open block
   const [cfgErr, setCfgErr] = useState('')
   const [preview, setPreview] = useState(false) // S4: live structural preview
+  // S6 (Sprint 5) semi-auto compose: paste a script, pickCookbook picks per line.
+  const [autoOpen, setAutoOpen] = useState(false)
+  const [autoScript, setAutoScript] = useState('')
+  const [autoBusy, setAutoBusy] = useState('')
 
   const sorted = useMemo(() => [...(blocks || [])].sort((a, b) => a.position - b.position), [blocks])
 
@@ -164,6 +168,44 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
     }
     setCfgErr('')
     put(b.position, b.block_type, b.layout, parsed, 'block:set:' + b.position)
+  }
+
+  // S6 semi-auto compose: one script line = one scene. pickCookbook (the SAME
+  // ranker registry.ts/build_ep_v2 use — lazy-imported so it and the demo props
+  // stay out of the main bundle) chooses the best-fit visual per line; each block
+  // is seeded with that component's demo props so the sequence renders immediately,
+  // then the operator refines. Stamps sequence_mode='replace' (this IS the short).
+  const STOP = new Set('the a an to of and or in on for it is you your with that this my our we i me just can could what if get got are be by as at so'.split(' '))
+  const kwOf = (line) => (line.toLowerCase().match(/[a-z0-9']+/g) || []).filter((w) => w.length > 2 && !STOP.has(w))
+  const beatOf = (i, n) => (i === 0 ? 'hook' : i === n - 1 ? 'cta' : i === 1 ? 'context' : 'demo')
+
+  const autoCompose = async () => {
+    const lines = autoScript.split('\n').map((l) => l.trim()).filter(Boolean)
+    if (!lines.length || autoBusy) return
+    setAutoBusy('compose')
+    try {
+      const [{ pickCookbook }, demosMod] = await Promise.all([
+        import('@remotion-src/cookbook/registry'),
+        import('@remotion-src/cookbook/demos').catch(() => ({ COOKBOOK_DEMOS: {} })),
+      ])
+      const demos = demosMod.COOKBOOK_DEMOS || {}
+      const existing = sorted.map((b) => b.position)
+      for (let i = 0; i < lines.length; i++) {
+        const [top] = pickCookbook({ beat: beatOf(i, lines.length), keywords: kwOf(lines[i]) }, 1)
+        if (!top) continue
+        const id = top.entry.id
+        const confidence = Math.min(1, Math.round((top.score / 8) * 100) / 100)
+        await put(i, 'broll', 'full-broll', { cookbook: { id, props: demos[id] || {} }, line: lines[i], confidence }, 'auto:' + i)
+      }
+      for (const pos of existing.filter((p) => p >= lines.length)) {
+        await onPost({ action: 'delete_template_version_block', template_version_id: versionId, position: pos }, 'auto:del:' + pos)
+      }
+      await onPost({ action: 'set_template_version_setting', template_version_id: versionId, name: 'sequence_mode', value: 'replace' }, 'auto:mode')
+      setAutoOpen(false)
+      setAutoScript('')
+    } finally {
+      setAutoBusy('')
+    }
   }
 
   return (
@@ -277,9 +319,50 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
       </div>
 
       {isDraft && (
-        <button type="button" className="btn-ghost" style={{ marginTop: 10, width: '100%', borderStyle: 'dashed' }} disabled={!!busy} onClick={addBlock}>
-          ＋ Add block
-        </button>
+        <>
+          <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+            <button type="button" className="btn-ghost" style={{ flex: 1, borderStyle: 'dashed' }} disabled={!!busy} onClick={addBlock}>
+              ＋ Add block
+            </button>
+            <button
+              type="button"
+              className={autoOpen ? 'btn-primary' : 'btn-ghost'}
+              style={autoOpen ? undefined : { borderStyle: 'dashed' }}
+              disabled={!!busy}
+              onClick={() => setAutoOpen((v) => !v)}
+              title="Turn a script into a composed sequence — pickCookbook chooses a best-fit visual per line"
+            >
+              ✨ Auto-compose
+            </button>
+          </div>
+          {autoOpen && (
+            <div className="card" style={{ marginTop: 10 }}>
+              <div className="field-label">Script — one line per scene</div>
+              <textarea
+                rows={6}
+                value={autoScript}
+                onChange={(e) => setAutoScript(e.target.value)}
+                placeholder={'What if one line could build your whole app?\nWatch the agent plan every step ahead.\nIt shipped in twelve seconds.'}
+                style={{ width: '100%', marginTop: 6, fontSize: 13 }}
+              />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 8, flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className="btn-primary"
+                  disabled={!!autoBusy || !autoScript.trim()}
+                  onClick={autoCompose}
+                >
+                  {autoBusy
+                    ? 'Composing…'
+                    : `Compose ${autoScript.split('\n').map((l) => l.trim()).filter(Boolean).length} scene(s) →`}
+                </button>
+                <span className="dim small">
+                  Each line → best-fit visual (seeded with demo content) + sequence_mode=replace. Refine props below, then lock.
+                </span>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </section>
   )
