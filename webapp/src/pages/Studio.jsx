@@ -34,12 +34,19 @@ const STAGE_BADGE = {
  * so a specific post is easy to find at a glance.
  */
 
+// A DIRECT monolithic produce stamps preview_path only when it FINISHES, so a
+// direct item that has none yet is still producing — even when every pushed
+// asset already reads "approved". Used to keep the card's badge/rail/lane from
+// flipping to READY mid-run. (The board is authoritative via the live job; this
+// grid infers from the calendar row it already has.)
+const isProducing = (it) => it.production_mode === 'direct' && !it.preview_path
+
 // Which status "lane" a card belongs to, for the filter + sort.
 function laneOf(it, c) {
   if (it.status === 'produced') return 'produced'
   if ((c.failed || 0) > 0) return 'attention'
   if ((c.review || 0) > 0) return 'review'
-  if ((c.generating || 0) > 0 || (c.total || 0) === 0) return 'producing'
+  if (isProducing(it) || (c.generating || 0) > 0 || (c.total || 0) === 0) return 'producing'
   return 'ready'
 }
 
@@ -227,7 +234,8 @@ export default function Studio() {
             const emoji = channelEmoji(it.channel_key)
             const name = chanName[it.channel_key] || it.channel_key
             // Same state machine the board + rail use, so a card can never disagree.
-            const pipe = resolveStage(it, c)
+            const producing = isProducing(it)
+            const pipe = resolveStage(it, c, { producing })
             const stageAt = stageIndex(pipe.stage)
             const badge = STAGE_BADGE[pipe.stage] || STAGE_BADGE.plan
             return (
@@ -250,7 +258,7 @@ export default function Studio() {
                     {name}
                   </span>
                   <span className={'studio-cover-stage sc-tone-' + badge.tone}>
-                    {(c.generating || 0) > 0 && <span className="live-dot" />}
+                    {((c.generating || 0) > 0 || producing) && <span className="live-dot" />}
                     {badge.label}
                   </span>
                   {formatOf(it) === 'longform' && (

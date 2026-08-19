@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { RENDERS_BASE } from '../config'
 import { assetLabel, isImagePath, kindOf } from '../assetCatalog'
+import { mediaKind, fileExt } from '../mediaKind'
 import { resolveStage } from '../pipeline'
 import PipelineRail from './PipelineRail'
 import { fmtDayHeading } from '../format'
@@ -131,6 +132,207 @@ function castFrames(cast, lockFrames) {
   })
 }
 
+// ── LIVE PRODUCE PANEL ────────────────────────────────────────────────────
+// While a DIRECT monolithic produce_preview job runs, this is what the produce
+// step shows instead of the empty "Producing the final cut…" spinner: elapsed
+// time, a heartbeat pulse, the assets landed so far, the current activity line,
+// and a phase stepper. It is deliberately HONEST — no fake %/denominator/ETA
+// (a monolithic produce has no fixed total), only what we can actually observe.
+
+const PHASES = [
+  { key: 'script', label: 'Script' },
+  { key: 'visuals', label: 'Visuals' },
+  { key: 'render', label: 'Render' },
+  { key: 'master', label: 'Master' },
+]
+
+const liveFilename = (a) =>
+  a.filename || String(a.storage_path || '').split('/').pop() || a.asset_key || ''
+
+/** frames jsonb (array | JSON string | nothing) — first frame is a servable still. */
+function firstFrame(a) {
+  let f = a && a.frames
+  if (typeof f === 'string') {
+    try {
+      f = JSON.parse(f)
+    } catch {
+      f = null
+    }
+  }
+  return Array.isArray(f) && typeof f[0] === 'string' && f[0] ? f[0] : null
+}
+
+/** A small servable still for a pushed asset, or null → glyph cell. */
+function liveThumbSrc(a) {
+  const name = liveFilename(a)
+  const kind = mediaKind(a.kind, name)
+  if (kind === 'image' && a.storage_path) return RENDERS_BASE + a.storage_path
+  if (isImagePath(a.thumb_path)) return RENDERS_BASE + a.thumb_path
+  if (a.poster_path) return RENDERS_BASE + a.poster_path
+  const fr = firstFrame(a)
+  if (fr) return RENDERS_BASE + fr
+  return null
+}
+
+function liveGlyph(a) {
+  const kind = mediaKind(a.kind, liveFilename(a))
+  if (kind === 'video') return '▶'
+  if (kind === 'audio') return '♪'
+  if (kind === 'image') return '▣'
+  const e = fileExt(liveFilename(a))
+  return e ? '.' + e.toUpperCase() : 'TXT'
+}
+
+/**
+ * The last human-meaningful line of the agent's live log. Strips the streaming
+ * scaffolding — [thinking…], [system:*], [result…], [worker]… — and tool-call
+ * lines ([tool:Bash] {…json…}); prefers the last plain assistant sentence. When
+ * only tool lines remain, returns a friendly fallback derived from the tool.
+ */
+function currentActivity(logs) {
+  if (!logs) return ''
+  const text = Array.isArray(logs) ? logs.join('\n') : String(logs)
+  const lines = text.split('\n').map((l) => l.trim()).filter(Boolean)
+  const isScaffold = (l) => /^\[(thinking|system:|result|worker\])/i.test(l)
+  const isTool = (l) => /^\[tool:/i.test(l)
+  let lastTool = null
+  for (let i = lines.length - 1; i >= 0; i--) {
+    const l = lines[i]
+    if (isScaffold(l)) continue
+    if (isTool(l)) {
+      if (!lastTool) lastTool = l
+      continue
+    }
+    // A plain assistant sentence — the thing worth showing. Trim any trailing
+    // tool JSON that got concatenated onto the same buffer line, just in case.
+    return l.replace(/\s*\[tool:.*$/i, '').slice(0, 140)
+  }
+  if (lastTool) {
+    const m = /^\[tool:([^\]]+)\]/i.exec(lastTool)
+    const tool = (m && m[1]) || ''
+    const verb = /bash/i.test(tool)
+      ? 'running commands'
+      : /read|grep|glob|ls/i.test(tool)
+        ? 'reading files'
+        : /write|edit/i.test(tool)
+          ? 'writing files'
+          : 'rendering'
+    return `Working… (${verb})`
+  }
+  return ''
+}
+
+/**
+ * Best-effort phase inference from what's observable — assets pushed + log
+ * keywords. Later phases win. Returns null when we can't tell confidently
+ * (earliest moment, nothing pushed, no keyword) so the stepper stays hidden
+ * rather than guessing.
+ */
+function inferPhase(assets, logs) {
+  const t = String(logs || '').toLowerCase()
+  if (/master|lufs|loudnorm|mastering|final cut/.test(t)) return 'master'
+  if (/render|remotion|stitch|ffmpeg|encod|assembl/.test(t)) return 'render'
+  const hasVideo = assets.some((a) => mediaKind(a.kind, liveFilename(a)) === 'video')
+  if (hasVideo) return 'render'
+  if (assets.length > 0) return 'visuals'
+  if (/script|writing|write the|outline|hook|plan/.test(t)) return 'script'
+  return null
+}
+
+const mmss = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`
+
+function LiveProducePanel({ job, assets = [], accent }) {
+  // Local 1s tick so elapsed reads live between the board's 8s polls.
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  const startedMs = job && job.started_at ? Date.parse(job.started_at) : NaN
+  const elapsed = Number.isFinite(startedMs) ? Math.max(0, Math.floor((now - startedMs) / 1000)) : null
+  const hbMs = job && job.heartbeat_at ? Date.parse(job.heartbeat_at) : NaN
+  const hbAge = Number.isFinite(hbMs) ? Math.max(0, Math.floor((now - hbMs) / 1000)) : null
+  const live = hbAge != null && hbAge <= 90
+
+  const n = assets.length
+  const activity = currentActivity(job && job.logs)
+  const phase = inferPhase(assets, job && job.logs)
+  const phaseAt = phase ? PHASES.findIndex((p) => p.key === phase) : -1
+
+  const style = accent ? { '--ch': accent } : undefined
+
+  return (
+    <div className="live-produce" style={style} role="status" aria-live="polite">
+      <div className="live-produce-head">
+        <span
+          className={'live-produce-dot' + (live ? ' on' : ' stale')}
+          aria-hidden="true"
+        />
+        <span className="live-produce-title">
+          Producing — {n} piece{n === 1 ? '' : 's'} done so far
+        </span>
+        {elapsed != null && (
+          <span className="mono live-produce-elapsed" aria-hidden="true">
+            {mmss(elapsed)}
+          </span>
+        )}
+        <span className="dim small live-produce-liveness">
+          {live ? 'live' : hbAge != null ? `no heartbeat for ${hbAge}s` : 'starting…'}
+        </span>
+      </div>
+
+      {phase && (
+        <div className="phase-steps" aria-hidden="true">
+          {PHASES.map((p, i) => (
+            <Fragment key={p.key}>
+              {i > 0 && <span className={'phase-seg' + (i <= phaseAt ? ' done' : '')} />}
+              <span
+                className={
+                  'phase-step' +
+                  (i < phaseAt ? ' done' : '') +
+                  (i === phaseAt ? ' at' : '')
+                }
+              >
+                {p.label}
+              </span>
+            </Fragment>
+          ))}
+        </div>
+      )}
+
+      {n > 0 && (
+        <div className="frames-strip live-filmstrip" aria-label="Assets produced so far">
+          {assets.map((a) => {
+            const src = liveThumbSrc(a)
+            const st = String(a.status || 'queued').toLowerCase()
+            return (
+              <div
+                key={a.asset_key}
+                className={`frame-cell live-cell fs-${st}`}
+                title={`${a.title || a.asset_key} — ${st}`}
+              >
+                <span className={'frame-cell-thumb' + (src ? '' : ' is-empty')}>
+                  {src ? (
+                    <img src={src} alt="" loading="lazy" />
+                  ) : (
+                    <span className="fs-glyph">{liveGlyph(a)}</span>
+                  )}
+                </span>
+                <span className="frame-cell-label">{a.title || assetLabel(a.asset_key)}</span>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      <div className="live-produce-activity dim small" title={activity || undefined}>
+        {activity || 'Working…'}
+      </div>
+    </div>
+  )
+}
+
 export default function StepSpine({
   item,
   counts = {},
@@ -146,6 +348,9 @@ export default function StepSpine({
   busy = '',
   schedule = '',
   onSchedule,
+  producing = false,
+  produceJob = null,
+  producedAssets = [],
   planning = false,
   planFailed = false,
   planFailReason = '',
@@ -163,7 +368,7 @@ export default function StepSpine({
   onAssemble,
   children,
 }) {
-  const { stage } = resolveStage(item, counts)
+  const { stage } = resolveStage(item, counts, { producing })
   const step = stepForStage(stage, counts.total || 0)
 
   // Local view-navigation only (no pipeline state): a direct-mode reviewer can
@@ -433,10 +638,19 @@ export default function StepSpine({
     )
   } else {
     // produce / qc: the board's own monitor + review body, passed as children.
+    // While a DIRECT monolithic produce is live, the produce step shows the
+    // honest live-progress panel (elapsed + assets + activity + phase) instead
+    // of the staged monitor body — this is where the old empty "Producing the
+    // final cut…" spinner used to sit once the rail wrongly jumped to Arm.
+    const showLive = effStep === 'produce' && isDirect && producing
     panel = (
       <>
         <div className="step-tag">{STEP_TAG[effStep]}</div>
-        {children}
+        {showLive ? (
+          <LiveProducePanel job={produceJob} assets={producedAssets} accent={accent} />
+        ) : (
+          children
+        )}
       </>
     )
   }

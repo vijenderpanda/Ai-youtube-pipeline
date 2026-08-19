@@ -37,12 +37,15 @@ export function countsFromAssets(assets = []) {
 /**
  * Resolve an episode's current stage + its single next action.
  * `item` is a factory_calendar row; `counts` is per-status asset counts.
+ * `opts.producing` is a caller-supplied liveness flag: true when a DIRECT-mode
+ * monolithic produce_preview job is still running for this piece (see below).
  * Returns { stage, label, action } where action is null (nothing for the
  * creator to do — the factory is working) or { kind, label } with
  *   kind: 'review' | 'arm' | 'fix'   (all route to the episode board).
  */
-export function resolveStage(item, counts = {}) {
+export function resolveStage(item, counts = {}, opts = {}) {
   const status = item?.status
+  const producing = !!opts.producing
   const total = counts.total || 0
   const done = (counts.approved || 0) + (counts.skipped || 0)
   const failed = counts.failed || 0
@@ -60,7 +63,16 @@ export function resolveStage(item, counts = {}) {
   if (total === 0) return mk('produce', 'Planning assets…', null)
   if (generating > 0) return mk('produce', `Producing · ${generating} generating`, null)
   if (review > 0) return mk('qc', `${review} to review`, action('review', `Review ${review}`))
-  if (total > 0 && done >= total) return mk('arm', 'Ready to schedule', action('arm', 'Finalize & schedule'))
+  // done>=total normally means "every part approved → ready to arm". But a
+  // DIRECT-mode monolithic produce pushes its assets ALREADY-APPROVED and
+  // incrementally, so mid-run "4 of 4 approved" is NOT finished — the run only
+  // stamps preview_path at the very end. While that produce_preview job is live
+  // the caller sets opts.producing, and we hold the piece at 'produce' (never
+  // advancing to 'arm' or offering "Finalize & schedule") so the rail can't lie.
+  if (total > 0 && done >= total) {
+    if (producing) return mk('produce', 'Producing…', null)
+    return mk('arm', 'Ready to schedule', action('arm', 'Finalize & schedule'))
+  }
   return mk('produce', 'In production', null)
 }
 

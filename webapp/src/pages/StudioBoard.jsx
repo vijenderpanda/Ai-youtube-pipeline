@@ -273,9 +273,9 @@ export default function StudioBoard() {
   // Single stage machine (unchanged) drives both the rail and which step panel
   // the spine shows. resolveStage never emits 'plan'; stepForStage splits the
   // pre-production total===0 case back out into the "confirm the format" step.
+  // NB: pipeStage/step are computed further down — they need the direct-produce
+  // liveness signal (`producing`), which depends on the jobs list below.
   const counts = useMemo(() => countsFromAssets(assets), [assets])
-  const pipeStage = item ? resolveStage(item, counts).stage : 'plan'
-  const step = stepForStage(pipeStage, counts.total || 0)
 
   // First load: land on what needs the human — a pending revision, then a
   // failure, then the first visual step. Never reset later (poll refreshes
@@ -470,6 +470,16 @@ export default function StudioBoard() {
     ? !!(previewJobDirect && previewJobDirect.status === 'failed')
     : !!(planJob && planJob.status === 'failed')
 
+  // ── The direct-produce liveness signal the stage machine needs ─────
+  // A direct monolithic produce_preview pushes its assets already-approved and
+  // incrementally, so "all approved" mid-run is NOT done. While that job is live
+  // we hold the rail at 'produce' (resolveStage's opts.producing) so it can never
+  // jump to Arm / offer scheduling before the final cut actually exists. Computed
+  // here — after previewBusy — then fed to BOTH the local stage math and the spine.
+  const producing = isDirect && previewBusy
+  const pipeStage = item ? resolveStage(item, counts, { producing }).stage : 'plan'
+  const step = stepForStage(pipeStage, counts.total || 0)
+
   // The one line of the failure that a human needs. Worker errors arrive as
   // "claude exited 1. Log tail:\n[worker] starting…\n<the real reason>\n[result…]",
   // so the useful sentence is buried; pull the first line that isn't scaffolding.
@@ -480,7 +490,10 @@ export default function StudioBoard() {
     const line = raw
       .split('\n')
       .map((l) => l.trim())
-      .find((l) => l && !/^claude exited|^\[worker\]|^\[system:init\]|^\[result/.test(l))
+      // skip ALL [system:*] noise, not just init — a run that retried ten times
+      // then failed shows '[system:api_retry]' first, which tells you nothing;
+      // the line that matters is the 'API Error: 529 Overloaded' after it.
+      .find((l) => l && !/^claude exited|^\[worker\]|^\[system:|^\[result/.test(l))
     return (line || raw.split('\n')[0] || '').slice(0, 160)
   })()
 
@@ -978,6 +991,9 @@ export default function StudioBoard() {
             busy={busy}
             schedule={schedule}
             onSchedule={setSchedule}
+            producing={producing}
+            produceJob={previewJobDirect}
+            producedAssets={ordered}
             planning={planning}
             planFailed={planFailed}
             planFailReason={planFailReason}

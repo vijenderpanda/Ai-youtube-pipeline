@@ -926,8 +926,10 @@ async function handleGet(url: URL): Promise<Response> {
           .order("created_at", { ascending: false }),
         // error + meta are load-bearing for the board: the format step shows WHY a
         // run stopped (an account cap reads very differently from a real fault),
-        // and meta.iteration drives the incubation revision counter.
-        db.from("factory_jobs").select("id, type, status, title, created_at, error, meta, model")
+        // and meta.iteration drives the incubation revision counter. logs +
+        // heartbeat_at + started_at feed the live produce panel: the current
+        // activity line, the "is it still alive?" pulse, and the elapsed timer.
+        db.from("factory_jobs").select("id, type, status, title, created_at, error, meta, model, logs, heartbeat_at, started_at")
           // v16: also surface the monolithic preview job + its finalize
           // (shell_script) job so the direct-mode board can show their status
           // and gate the Finalize & Arm button.

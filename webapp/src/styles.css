@@ -4531,6 +4531,16 @@ a.out-chip:hover {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.35; transform: scale(0.8); }
 }
+/* live pulse inside the cover stage badge (generating / direct-produce running) */
+.studio-cover-stage .live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse-dot 1.4s ease-in-out infinite;
+  flex: none;
+}
 
 .studio-card-body {
   display: flex;
@@ -6219,6 +6229,87 @@ a.out-chip:hover {
 .arm-card-media .pm-video { width: 100%; border-radius: var(--r-sm); display: block; }
 .arm-card-note { margin: 0; }
 .arm-when-field { display: flex; flex-direction: column; gap: var(--s-1); }
+
+/* PRODUCE step — live monolithic-produce progress (no fake %/ETA) */
+.live-produce {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--border);
+  border-left: 3px solid color-mix(in srgb, var(--ch, var(--accent)) 60%, transparent);
+  border-radius: var(--r-md);
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+}
+.live-produce-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+.live-produce-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.live-produce-dot.on {
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+.live-produce-dot.stale {
+  background: var(--faint);
+  box-shadow: none;
+}
+.live-produce-title { font-size: var(--fs-md); font-weight: 700; }
+.live-produce-elapsed {
+  font-size: var(--fs-sm);
+  color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+.live-produce-liveness { margin-left: auto; }
+.live-produce-activity {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--mono);
+}
+/* the pushed-asset filmstrip scrolls horizontally rather than wrapping */
+.live-filmstrip {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  margin: 0;
+  padding-bottom: var(--s-1);
+  scrollbar-width: thin;
+}
+.live-cell { flex: none; }
+/* colour each cell's thumb by the asset's status (reuses the fs-* edge vars) */
+.live-cell .frame-cell-thumb { border-color: var(--fs-edge, var(--border)); }
+/* phase stepper — script → visuals → render → master, current one lit */
+.phase-steps {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  flex-wrap: wrap;
+}
+.phase-step {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+  white-space: nowrap;
+}
+.phase-step.done { color: var(--dim); }
+.phase-step.at { color: var(--ch, var(--accent)); }
+.phase-seg {
+  width: 16px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--border);
+}
+.phase-seg.done { background: color-mix(in srgb, var(--ch, var(--accent)) 55%, transparent); }
 
 /* ── DoNext: guided execution queue ── */
 .donext-panel { margin-bottom: var(--s-5); }
