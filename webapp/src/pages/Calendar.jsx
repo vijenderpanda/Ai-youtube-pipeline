@@ -36,6 +36,7 @@ export default function Calendar() {
   const [dayOpen, setDayOpen] = useState(null) // 'YYYY-MM-DD' | null
   const [showPlan, setShowPlan] = useState(false)
   const [confirmChal, setConfirmChal] = useState(null) // challenger pending supersede confirm
+  const [showUrgent, setShowUrgent] = useState(false) // collapse the revisions strip so the calendar isn't buried
   const [chalBusy, setChalBusy] = useState('') // '' | 'supersede' | 'dismiss'
   const { toast, show } = useToast()
 
@@ -401,7 +402,13 @@ export default function Calendar() {
 
       {urgentPairs.length > 0 && (
         <section className="urgent-strip" aria-label="Urgent revisions">
-          <div className="urgent-strip-head">
+          <button
+            type="button"
+            className="urgent-strip-head"
+            onClick={() => setShowUrgent((v) => !v)}
+            aria-expanded={showUrgent}
+            style={{ width: '100%', background: 'none', border: 0, cursor: 'pointer', textAlign: 'left', color: 'inherit' }}
+          >
             <span className="urgent-strip-icon" aria-hidden="true">⚠</span>
             <span className="urgent-strip-title">
               Urgent revisions <span className="dim">({urgentPairs.length})</span>
@@ -409,7 +416,11 @@ export default function Calendar() {
             <span className="urgent-strip-sub dim small">
               Challenger AI suggestions within {URGENT_HOURS}h of publish — decide before they ship
             </span>
-          </div>
+            <span className="dim small" style={{ marginLeft: 'auto', whiteSpace: 'nowrap' }}>
+              {showUrgent ? '▲ Hide' : '▼ Review'}
+            </span>
+          </button>
+          {showUrgent && (
           <ul className="urgent-strip-list">
             {urgentPairs.map(({ original, challenger, hoursTo }) => (
               <li key={original.id} className="urgent-row" style={{ '--ch': accents[original.channel_key] || '#94A3B8' }}>
@@ -451,6 +462,7 @@ export default function Calendar() {
               </li>
             ))}
           </ul>
+          )}
         </section>
       )}
 

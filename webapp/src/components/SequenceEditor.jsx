@@ -357,7 +357,7 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
                     : `Compose ${autoScript.split('\n').map((l) => l.trim()).filter(Boolean).length} scene(s) →`}
                 </button>
                 <span className="dim small">
-                  Each line → best-fit visual (seeded with demo content) + sequence_mode=replace. Refine props below, then lock.
+                  Each line becomes one scene with a best-fit visual (seeded with sample content), and this sequence becomes the whole short. Refine each scene below, then lock.
                 </span>
               </div>
             </div>
