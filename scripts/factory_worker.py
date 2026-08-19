@@ -783,6 +783,61 @@ def resources_snapshot():
     return out
 
 
+# Outages shorter than this on a restart are just a clean bounce (auto-update, manual
+# restart) -- not worth an event. Longer gaps (power cut, crash, sleep) get logged.
+DOWNTIME_LOG_MIN = 4
+
+
+def _last_unclean_shutdown():
+    """Windows only: TimeCreated (UTC) of the most recent UNEXPECTED shutdown --
+    System-log Kernel-Power id 41 or EventLog id 6008 (both mean 'last shutdown was
+    dirty', i.e. a power cut / hard reset). None off Windows, on error, or if none
+    found. Best-effort; the System log is readable without elevation."""
+    if not IS_WINDOWS:
+        return None
+    try:
+        ps = ("$e=Get-WinEvent -FilterHashtable @{LogName='System';Id=41,6008} "
+              "-MaxEvents 1 -ErrorAction SilentlyContinue; "
+              "if($e){$e.TimeCreated.ToUniversalTime().ToString('o')}")
+        out = subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command", ps],
+                             capture_output=True, text=True, timeout=30)
+        s = (out.stdout or "").strip()
+        return _parse_iso(s) if s else None
+    except (OSError, subprocess.SubprocessError, ValueError):
+        return None
+
+
+def _log_downtime(supa, prev_last_seen):
+    """After a (re)start, record a factory_events 'worker_downtime' row when the
+    worker was gone longer than DOWNTIME_LOG_MIN -- classified as a power cut when a
+    matching Windows unexpected-shutdown event lines up. Makes silent outages (the
+    power cuts we weren't logging) visible on the dashboard. Never raises."""
+    if not prev_last_seen:
+        return
+    gap = (datetime.now(timezone.utc) - prev_last_seen).total_seconds()
+    if gap < DOWNTIME_LOG_MIN * 60:
+        return  # clean bounce, not an outage
+    unclean = _last_unclean_shutdown()
+    # a dirty-shutdown event at/after our last heartbeat => this outage was a power cut
+    if unclean and unclean >= prev_last_seen - timedelta(minutes=5):
+        cause = "power_cut"
+    else:
+        cause = "unknown"  # sleep / crash / manual stop / clean shutdown
+    mins = int(gap // 60)
+    try:
+        supa.insert("factory_events", [{
+            "kind": "worker_downtime",
+            "message": (f"worker {WORKER_ID} recovered after ~{mins}min down "
+                        f"(cause: {cause})"),
+            "meta": {"worker_id": WORKER_ID, "down_seconds": int(gap),
+                     "down_since": prev_last_seen.isoformat(), "cause": cause,
+                     "unclean_shutdown_at": unclean.isoformat() if unclean else None},
+        }])
+        log(f"downtime logged: ~{mins}min down (cause: {cause})")
+    except (RuntimeError, requests.RequestException) as e:
+        log(f"downtime log failed (continuing): {e}")
+
+
 def register_worker(supa, max_parallel):
     """Upsert this machine's row in factory_workers. Preserves dashboard-owned
     fields (paused, accept_types, name) on re-registration by NOT overwriting them
@@ -797,16 +852,22 @@ def register_worker(supa, max_parallel):
         "meta": _worker_meta(),
     }
     # First insert seeds name (friendly default); later upserts leave name/paused/
-    # accept_types alone so dashboard edits stick.
+    # accept_types alone so dashboard edits stick. Also grab the prior last_seen so a
+    # (re)start can measure + log how long this worker was gone (power cuts etc.).
+    prev_last_seen = None
     try:
-        existing = supa.select("factory_workers", f"worker_id=eq.{WORKER_ID}&select=worker_id")
+        existing = supa.select("factory_workers",
+                               f"worker_id=eq.{WORKER_ID}&select=worker_id,last_seen")
     except (RuntimeError, requests.RequestException):
         existing = []
-    if not existing:
+    if existing:
+        prev_last_seen = _parse_iso(existing[0].get("last_seen"))
+    else:
         row["name"] = WORKER_NAME
     supa.insert("factory_workers", [row], on_conflict="worker_id",
                 resolution="merge-duplicates")
     log(f"registered worker '{WORKER_NAME}' ({WORKER_ID}) os={row['os']} gpu={row['gpu'] or 'none'}")
+    _log_downtime(supa, prev_last_seen)
 
 
 def worker_heartbeat(supa):
