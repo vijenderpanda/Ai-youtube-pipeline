@@ -118,7 +118,11 @@ EPISODES_V2 = {
   "_style": {
     "title": "Stop DESCRIBING The Style — Paste 1 Example 🎯",
     "tags": "chatgpt tips,ai writing,prompt tips,writing style,ai for beginners,better ai answers,paste example,ai tools,ai tips",
-    "hook": {"image": "ep_style/hook.png", "until": 2.4,
+    # HOOK SHORTENED 2.4 -> 1.6 (2026-08-19 analytics): on tip #2 (Ag9tBHbyrbo) AVP
+    # 38.6% was ABOVE typical but Shorts-feed selection 22.9% only mid-typical — i.e.
+    # the ceiling is the swipe window, not retention. The static contrast frame states
+    # the claim fast; beat 0 then ANIMATES it (cook:DiffReveal) so motion lands by ~1.6s.
+    "hook": {"image": "ep_style/hook.png", "until": 1.6,
              "lines": ["SAME ASK.", "ONE PASTED LINE"], "hot": "ONE"},
     "outro": True,
     "outro_dur": 0,
@@ -126,7 +130,7 @@ EPISODES_V2 = {
     "outro_cta": "auto",   # Sol speaks the CTA over the card; line 7 is a loopback, not a CTA
     "lines": [
       "Same request to the same AI — but one pasted line changes everything. Watch.",
-      "Don't describe the style you want. Show it one real example.",
+      "Don't describe the style — show it one example.",
       "First, I describe it — bold, punchy, modern. I get this: generic, every-brand copy.",
       "So I paste one line in the exact voice I want, and ask for the same thing.",
       "Now it's a real voice — punchy and specific. It copied my example, not my adjectives.",
@@ -138,11 +142,52 @@ EPISODES_V2 = {
                   "GENERIC", "COPY", "PASTE", "EXACT", "VOICE", "SPECIFIC",
                   "COPIED", "ADJECTIVES", "GUESS", "NAILS", "STOP", "VIBE",
                   "FOLLOW", "SKILL", "DAY"],
-    "beats": ["host", "host",
+    # FIRST PRODUCTION USE OF THE VISUAL COOKBOOK (2026-08-19). The library was
+    # "inert demos" until now; `cook:<id>` beats + cfg["cookbook"][id] props are the
+    # wired path (build_ep_v2 -> Short.tsx CookbookBlock). Two components earn their
+    # place here (honesty bar — each serves the beat, neither replaces real proof):
+    #   beat 0 DiffReveal  — MOTION in the swipe window; animates the very thing the
+    #                        episode is about (vague in -> sharp out) using the REAL
+    #                        before/after text verbatim. Fixes the feed-selection ceiling.
+    #   beat 6 KineticQuote— the takeaway lands as designed typography, not a 3rd host card.
+    # Beats 2-4 stay REAL TAPE — the proof is never a graphic.
+    "beats": ["cook:DiffReveal", "host",
               "rec:ep_style/demo.mp4@16",   # describe -> generic answer (the fail: "your new coffee obsession has officially arrived")
-              "rec:ep_style/demo.mp4@30",   # paste ONE example line + ask again
-              "rec:ep_style/demo.mp4@44",   # matched, distinct voice (the fix/proof: "no weak brews... rocket fuel")
-              "host2", "host2"],
+              "rec:ep_style/demo.mp4@29",   # paste ONE example line + ask again
+              "rec:ep_style/matched_hold.mp4@0.0",  # matched, distinct voice held (the fix/proof: "no weak brews... rocket fuel") — still-hold for the ~5s payoff line
+              "host2", "cook:KineticQuote"],
+    # props for the cook: beats above, keyed by component id (JSON-safe only)
+    "cookbook": {
+      "DiffReveal": {
+        "filename": "brand-copy.txt",
+        "kicker": "SAME ASK · ONE PASTED LINE",
+        "title": "Describe the style, and AI guesses.",
+        "lines": [
+          {"text": "# launch my coffee brand", "kind": "same"},
+          {"text": "Wake up to bold. Sip something unforgettable.", "kind": "del"},
+          {"text": "Your new coffee obsession has officially arrived.", "kind": "del"},
+          {"text": "No weak brews. No sleepy mornings.", "kind": "add"},
+          {"text": "Just a punch of dark-roasted rocket fuel", "kind": "add"},
+          {"text": "that makes 6 a.m. flinch.", "kind": "add"},
+        ],
+        # footer auto-truncates around ~30 chars — keep it short or it renders "…"
+        "footer": "Show it. Don't describe it.",
+        # hold the BEFORE state a beat longer so the generic copy reads before it melts
+        "start": 0.5,
+      },
+      "KineticQuote": {
+        "kicker": "The whole trick",
+        "parts": [
+          {"text": "Don't describe"},
+          {"text": "the vibe."},
+          {"text": "PASTE ONE LINE", "hot": True},
+          {"text": "that already"},
+          {"text": "HAS IT.", "hot": True},
+        ],
+        # no footer — the outro card already says "one AI trick, every single day"
+        "highlight": "bar",
+      },
+    },
     "host_panels": [
       {"lines": ["SAME ASK", "ONE PASTED", "LINE — WATCH"]},
       {"lines": ["DESCRIBE =", "A GUESS —", "EXAMPLE = VOICE"]},
@@ -1988,7 +2033,8 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         cfg["beats"] = []                 # segments come from the scenes, not classic beats
         cfg.setdefault("hot_words", [])
         cfg.setdefault("steps", [])
-        cfg.setdefault("cover", {"until": 1.8})   # render-path opener default (manifest returns before this)
+        # no cover/hook default: a replace auto-short opens straight on scene 0
+        # (build()'s opener now tolerates neither — see the elif below).
 
     # Sprint-5 --manifest: emit the pre-render GENERATION MANIFEST and STOP, BEFORE
     # any VO/HeyGen/render spend — a planning surface for REVIEW (what it WILL make).
@@ -2452,11 +2498,12 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
             hk["image"] = "assets/" + hk["image"]
         hk.setdefault("until", round(min(max(hook_end + 0.6, 1.6), 3.0), 2))
         spec["hook"] = hk
-    else:
+    elif cfg.get("cover"):
         spec["cover"] = {**cfg["cover"],
                          "until": cfg["cover"].get(
                              "until",
                              round(min(max(hook_end + 0.6, 0.7), 1.8), 2) if not news_split else 2.2)}
+    # else (Sprint-5 replace auto-short): no cover/hook — open straight on scene 0.
     # v16.3: attach the static key line that fills each framed-host "THE IDEA"
     # panel (order matches the framed segments: hook run, then payoff run, ...).
     host_panels = cfg.get("host_panels", [])
