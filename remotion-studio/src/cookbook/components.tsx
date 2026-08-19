@@ -13,6 +13,10 @@ import { NotificationStack } from "./NotificationStack";
 import { DynamicIsland } from "./DynamicIsland";
 import { VoiceOrb } from "./VoiceOrb";
 import { SwipeDeck } from "./SwipeDeck";
+import { Fogline } from "./Fogline";
+import { HoloCard } from "./HoloCard";
+import { GlassPanel } from "./GlassPanel";
+import { MorphField } from "./MorphField";
 
 /* =============================================================================
    COOKBOOK render dispatch — the id -> component map.
@@ -37,6 +41,10 @@ export const COOKBOOK_COMPONENTS: Record<string, React.FC<any>> = {
   DynamicIsland,
   VoiceOrb,
   SwipeDeck,
+  Fogline,
+  HoloCard,
+  GlassPanel,
+  MorphField,
 };
 
 export type CookbookBlockProps = {

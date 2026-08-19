@@ -96,6 +96,13 @@ const COOKBOOK_CATALOG: { id: string; label: string; role: string; needs: string
   { id: "DynamicIsland", label: "Live-activity island", role: "device-ui", needs: "steps" },
   { id: "VoiceOrb", label: "Voice assistant orb", role: "device-ui", needs: "utterance" },
   { id: "SwipeDeck", label: "Decision swipe deck", role: "interaction", needs: "options" },
+  // wow-mechanics (registry.ts adds these; the render map COOKBOOK_COMPONENTS and
+  // this validator must carry them too or set_template_version_block 400s a valid id
+  // OR a loud placeholder renders — keep all three in sync, this list never leads).
+  { id: "Fogline", label: "Agent plan / lit road", role: "app-ui", needs: "steps" },
+  { id: "HoloCard", label: "Holographic hero card", role: "layout", needs: "facts" },
+  { id: "GlassPanel", label: "Liquid-glass stat panel", role: "device-ui", needs: "single-number" },
+  { id: "MorphField", label: "Button → field → confirm", role: "interaction", needs: "steps" },
 ];
 const COOKBOOK_IDS = new Set(COOKBOOK_CATALOG.map((c) => c.id));
 // The 6 spatial layout ids (remotion-studio/src/layouts.ts) a slot/spatial block
@@ -973,7 +980,7 @@ async function handleGet(url: URL): Promise<Response> {
       if (!calendarId || !UUID_RE.test(calendarId)) {
         return json({ error: "calendar_id (uuid) required" }, 400);
       }
-      const [item, assets, jobs, provenance, blocksUsed] = await Promise.all([
+      const [item, assets, jobs, provenance, blocksUsed, beatReview] = await Promise.all([
         db.from("factory_calendar").select("*").eq("id", calendarId).maybeSingle(),
         db.from("factory_assets").select("*").eq("calendar_id", calendarId)
           .order("created_at", { ascending: false }),
@@ -1005,13 +1012,26 @@ async function handleGet(url: URL): Promise<Response> {
           .select("position, block_type, layout, ref, rendered, resolved_from, build_tag, created_at")
           .eq("calendar_id", calendarId)
           .order("created_at", { ascending: false }),
+        // S5 · per-beat REVIEW state (factory_episode_beat_review) — swap/regen/
+        // confidence/notes the operator set per scene. Non-critical + additive like
+        // the two provenance reads above: degrade to [] so the board keeps working
+        // if migration 025 hasn't applied yet (deploy-order safe).
+        db.from("factory_episode_beat_review")
+          .select("position, block_ref, swap_asset_key, regen_kind, confidence, note, updated_at")
+          .eq("calendar_id", calendarId)
+          .order("position", { ascending: true }),
       ]);
       const err = item.error || assets.error || jobs.error;
       if (err) return json({ error: err.message }, 500);
       if (!item.data) return json({ error: "calendar item not found" }, 404);
+      // S5 · generation manifest rides on the calendar row (select * above), so no
+      // second version-row select — one-select resolve stays intact. null until the
+      // build composes it, which keeps the classic path byte-identical.
       return json({ item: item.data, assets: assets.data, jobs: jobs.data,
                     provenance: provenance.data || [],
-                    sequence: blocksUsed.data || [] });
+                    sequence: blocksUsed.data || [],
+                    manifest: item.data.generation_manifest ?? null,
+                    beat_review: beatReview.data || [] });
     }
 
     case "events": {
