@@ -16,6 +16,9 @@ import { Odometer, odometerDemo } from "./cookbook/Odometer";
 import { OrbitNodes, orbitNodesDemo } from "./cookbook/OrbitNodes";
 import { KineticQuote, kineticQuoteDemo } from "./cookbook/KineticQuote";
 import { NotificationStack, notificationStackDemo } from "./cookbook/NotificationStack";
+import { DynamicIsland, dynamicIslandDemo } from "./cookbook/DynamicIsland";
+import { VoiceOrb, voiceOrbDemo } from "./cookbook/VoiceOrb";
+import { SwipeDeck, swipeDeckDemo } from "./cookbook/SwipeDeck";
 
 const FPS = 30;
 
@@ -273,6 +276,33 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={notificationStackDemo}
+      />
+      <Composition
+        id="DynamicIslandDemo"
+        component={DynamicIsland}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={dynamicIslandDemo}
+      />
+      <Composition
+        id="VoiceOrbDemo"
+        component={VoiceOrb}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={voiceOrbDemo}
+      />
+      <Composition
+        id="SwipeDeckDemo"
+        component={SwipeDeck}
+        durationInFrames={5 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={swipeDeckDemo}
       />
     </>
   );

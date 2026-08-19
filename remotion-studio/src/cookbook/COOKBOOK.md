@@ -67,6 +67,9 @@ stacks, `rgba()`, `clamp()`, `coverBg()`, and the `<Fonts/>` loader.
 | **OrbitNodes** | invented / spatial | A glowing hub with feature nodes fanned on an orbit ring; connector lines draw outward, chips pop in, the constellation drifts. "One input, many outputs." |
 | **KineticQuote** | typography flex | A punchline assembled part-by-part (each springs up); the words that matter land in the accent color with a highlight-bar wipe. For hook / big-statement beats. |
 | **NotificationStack** | invented / depth | Frosted alert cards cascade onto a fanned lock-screen pile — each older card recedes with a scale/dim/blur taper behind the crisp newest, plus a live "N NEW ALERTS" count. |
+| **DynamicIsland** | device-ui / live activity | An iOS Dynamic Island pill morphs wide into a live-activity card, advances an AI task through phases with a progress bar, then pops to a checkmark "done" state. |
+| **VoiceOrb** | device-ui / voice | A living glass assistant orb with a radial equalizer + sound rings; a spoken prompt transcribes in word-by-word, then the orb calms and a "got it" pill confirms. |
+| **SwipeDeck** | interaction / decision | A Tinder-style option deck: weak cards fling off with a "NOPE" stamp, the winner warms to accent, scales up, and a rotated "PICKED" badge slams in. The decision reads in motion. |
 
 ### Preview
 
@@ -81,12 +84,65 @@ Render a still to eyeball a frame:
 npx remotion still BentoGridDemo out.png --frame=110
 ```
 
+## Categorization & selection (`registry.ts`)
+
+Each component draws one **shape** of information well. `registry.ts` is the
+machine-readable catalog that lets the planner pick the right component for a
+beat instead of guessing. Every entry is tagged on four axes:
+
+- **role** — visual family: `app-ui`, `device-ui`, `dataviz`, `interaction`,
+  `layout`, `typography`, `transformation`.
+- **beats** — where it earns its place: `hook`, `context`, `stat`, `process`,
+  `comparison`, `demo`, `punchline`, `cta`, `social-proof`.
+- **needs** — the data shape it requires (the planner must supply this):
+  `series`, `metrics`, `single-number`, `facts`, `before-after`, `steps`,
+  `options`, `dialogue`, `phrase`, `query-results`, `hub-spokes`, `alerts`,
+  `utterance`.
+- plus **keywords**, **wow** (1–5), **density**, and `transparentCapable`
+  (can it overlay a host/b-roll).
+
+### Picking a component from a plan
+
+```ts
+import { pickCookbook } from "./cookbook/registry";
+
+// beat: "the channel went from 2K to 41K views over 10 weeks"
+pickCookbook({ beat: "stat", needs: "series", keywords: ["views", "growth"] });
+// → [LineReveal (top), Odometer, …]  each with a score + why[]
+```
+
+Scoring is additive: **+5** exact `needs` match (the strongest signal), **+3**
+if the `beat` fits, **+1** per overlapping keyword, `wow/10` as a tie-breaker.
+`role`, `minWow`, and `transparent` in the intent act as hard filters. So the
+planner's job is to describe each beat as a `BeatIntent` (what it's saying +
+what data it has), and the registry returns the best-suited components ranked.
+
+Selection cheat-sheet by data shape:
+
+| The beat has… | `needs` | Best component(s) |
+|---------------|---------|-------------------|
+| a number over time | `series` | LineReveal |
+| one big number/milestone | `single-number` | Odometer |
+| a few % / progress values | `metrics` | RingGauge |
+| 3-6 facts to recap | `facts` | BentoGrid |
+| a messy→clean rewrite | `before-after` | DiffReveal |
+| a task running in phases | `steps` | DynamicIsland |
+| options to sift & pick | `options` | SwipeDeck |
+| an AI conversation | `dialogue` | ChatApp |
+| a command / search | `query-results` | CommandPalette |
+| one idea → many uses | `hub-spokes` | OrbitNodes |
+| a punchy statement | `phrase` | KineticQuote |
+| results piling up | `alerts` | NotificationStack |
+| a spoken prompt | `utterance` | VoiceOrb |
+
 ## Adding a component
 
 1. Copy the shape of an existing file; keep the three exports.
 2. Prefer a **novel** idea over a copy of an existing UI — the brief wants
    "wait, a card/button can be made like *this*?" invention.
-3. Add a row to the Catalog above and register a `<Name>Demo` in `Root.tsx`.
+3. Add a row to the Catalog above, register a `<Name>Demo` in `Root.tsx`, **and
+   add a `registry.ts` entry** (role / beats / needs / keywords) so the planner
+   can select it.
 4. Render a still at a representative frame; confirm nothing clips at 1080×1920
    and the point lands inside the first 15s of a real beat.
 
