@@ -1353,7 +1353,32 @@ _TPL_SETTINGS = None     # {name: value} cast SETTINGS frozen with the compositi
 _TPL_INFO = {}
 
 
-def _bind_template_version(ch, explicit=None, cfg=None, calendar_id=None):
+def _cast_override_allowed(flag):
+    """The two operator escape hatches for the divergence gate: the --allow-cast-
+    override CLI flag OR a truthy FACTORY_ALLOW_CAST_OVERRIDE env."""
+    return bool(flag) or os.environ.get("FACTORY_ALLOW_CAST_OVERRIDE", "").strip().lower() \
+        in ("1", "true", "yes", "on")
+
+
+def _print_divergence_banner(chosen, cal_pin, allow):
+    """Loud, un-missable banner naming BOTH pinned casts on a divergence."""
+    print("\n" + "!" * 74)
+    print("!! CAST PIN DIVERGENCE — "
+          + ("OVERRIDDEN (operator-approved)" if allow else "REFUSED"))
+    print(f"!!   spec/CLI/env template_version : {chosen}")
+    print(f"!!   calendar's pinned cast        : {cal_pin}")
+    if allow:
+        print("!!   proceeding with the spec/CLI/env pick per --allow-cast-override "
+              "/ FACTORY_ALLOW_CAST_OVERRIDE=1")
+    else:
+        print("!!   the owner's calendar pin is DELIBERATE; NOT silently swapping the cast.")
+        print("!!   re-run with --allow-cast-override (or FACTORY_ALLOW_CAST_OVERRIDE=1) "
+              "ONLY if this override is intended.")
+    print("!" * 74 + "\n")
+
+
+def _bind_template_version(ch, explicit=None, cfg=None, calendar_id=None,
+                           allow_cast_override=False, ep=None, tag="v2"):
     """Resolve WHICH template version this build runs with, first hit wins:
       1. --template-version <uuid>            (explicit, an operator re-cut)
       2. cfg["template_version"]              (a spec pins its own cast)
@@ -1361,28 +1386,71 @@ def _bind_template_version(ch, explicit=None, cfg=None, calendar_id=None):
       4. factory_calendar.template_version_id (the durable record, --calendar-id)
       5. factory_channels.template -> factory_templates.active_version_id
       6. None -> layer disabled, resolution is byte-for-byte today's.
-    Never raises."""
+
+    Phase 2 (2026-08-19) divergence guard: a rank-1/2/3 pick that CONTRADICTS the
+    calendar's rank-4 pin (BOTH present, DIFFERENT) is no longer silently accepted
+    — that is exactly how the EP15 agent re-pinned the whole cast (it wrote
+    cfg["template_version"]=<v1> over the calendar's v2). The contradiction path
+    REFUSES (records the divergence to provenance, prints a loud banner, raises
+    CastUnrenderable) unless an operator override is set (--allow-cast-override or
+    FACTORY_ALLOW_CAST_OVERRIDE=1), in which case it proceeds with the higher-rank
+    pick after the same banner + provenance marker.
+
+    Never raises on the normal (agreeing / only-one-present / offline) path — ONLY
+    the un-overridden contradiction raises."""
     global _TPL_VERSION_ID
-    _TPL_VERSION_ID = explicit or (cfg or {}).get("template_version") \
+    chosen = explicit or (cfg or {}).get("template_version") \
         or os.environ.get("FACTORY_TEMPLATE_VERSION") or None
-    if _TPL_VERSION_ID:
+    # The calendar's durable rank-4 pin. Fetched EVEN when a higher-rank pick
+    # exists, so a contradiction can be caught instead of silently winning.
+    # Never raises: an offline/absent lookup leaves cal_pin=None (no divergence).
+    cal_pin = None
+    if calendar_id:
+        try:
+            rows = _supa().select("factory_calendar",
+                                  f"id=eq.{calendar_id}&select=template_version_id")
+            cal_pin = (rows[0].get("template_version_id") if rows else None)
+        except Exception as e:
+            print(f"!! calendar pin lookup unavailable ({e}); divergence check skipped")
+            cal_pin = None
+    # Divergence guard — the ONLY path in this function that may raise.
+    if chosen and cal_pin and chosen != cal_pin:
+        allow = _cast_override_allowed(allow_cast_override)
+        _print_divergence_banner(chosen, cal_pin, allow)
+        _RESOLVED.append({"asset_type": "template_version",
+                          "build_ref": f"{chosen} OVER calendar {cal_pin}",
+                          "resolved_from": ("cast_override" if allow else
+                                            "divergence_refused"),
+                          "version_id": chosen})
+        if not allow:
+            try:                      # persist the refusal marker (mirrors Phase 0)
+                _flush_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
+            except Exception:
+                pass
+            raise CastUnrenderable(
+                f"cast pin conflict: template_version {chosen} (from the spec/CLI/env) "
+                f"contradicts the calendar's pinned cast {cal_pin}. The owner's calendar "
+                f"pin is DELIBERATE — refusing to silently swap the whole cast. Re-run "
+                f"with --allow-cast-override (or FACTORY_ALLOW_CAST_OVERRIDE=1) ONLY if "
+                f"this override is intended.")
+        _TPL_VERSION_ID = chosen
         return _TPL_VERSION_ID
-    try:
-        supa = _supa()
-        if calendar_id:
-            rows = supa.select("factory_calendar",
-                               f"id=eq.{calendar_id}&select=template_version_id")
-            _TPL_VERSION_ID = (rows[0].get("template_version_id") if rows else None)
-        if not _TPL_VERSION_ID:
-            crow = supa.select("factory_channels", f"key=eq.{ch}&select=template")
+    # Normal path — never raises, byte-for-byte today's resolution.
+    if chosen:
+        _TPL_VERSION_ID = chosen
+        return _TPL_VERSION_ID
+    _TPL_VERSION_ID = cal_pin
+    if not _TPL_VERSION_ID:
+        try:
+            crow = _supa().select("factory_channels", f"key=eq.{ch}&select=template")
             tkey = crow[0].get("template") if crow else None
             if tkey:
-                trow = supa.select("factory_templates",
-                                   f"key=eq.{tkey}&select=active_version_id")
+                trow = _supa().select("factory_templates",
+                                      f"key=eq.{tkey}&select=active_version_id")
                 _TPL_VERSION_ID = (trow[0].get("active_version_id") if trow else None)
-    except Exception as e:
-        print(f"!! template-version bind unavailable ({e}); using channel locks")
-        _TPL_VERSION_ID = None
+        except Exception as e:
+            print(f"!! template-version bind unavailable ({e}); using channel locks")
+            _TPL_VERSION_ID = None
     return _TPL_VERSION_ID
 
 
@@ -1459,13 +1527,50 @@ def resolve_setting(name, default=None, ch="claude-tricks", cfg=None):
     SPEAK a freshly-composed CTA over whatever card is in the outro slot — there
     is no file to pick, but it is absolutely part of the cast, and a cast that
     only described frames did not describe what we actually publish.
-    Never raises: an unbound/unavailable version leaves today's behaviour."""
+
+    Phase 1 (2026-08-19): records the resolution in _RESOLVED too, symmetric with
+    resolve_locked's _note, so _flush_provenance captures outro_cta — the exact
+    slot that let Sol speak over EP15's own question card with NO provenance row.
+    Never raises: an unbound/unavailable version leaves today's behaviour, and a
+    list append cannot fail the render."""
     if cfg is not None and name in cfg:
-        return cfg.get(name)
-    _tpl_lookup(ch, "__settings_probe__")      # ensures the version is loaded
-    if _TPL_SETTINGS and name in _TPL_SETTINGS:
-        return _TPL_SETTINGS.get(name)
-    return default
+        val, src = cfg.get(name), "cfg"
+    else:
+        _tpl_lookup(ch, "__settings_probe__")      # ensures the version is loaded
+        if _TPL_SETTINGS and name in _TPL_SETTINGS:
+            val, src = _TPL_SETTINGS.get(name), "template"
+        else:
+            val, src = default, "default"
+    _RESOLVED.append({"asset_type": name,
+                      "build_ref": ("none" if val is None else str(val)),
+                      "resolved_from": src, "version_id": None})
+    return val
+
+
+def resolve_cast(cfg, ch="claude-tricks"):
+    """Resolve the reusable cast slots the LATER render lines consume — music bed,
+    outro sting, outro_cta setting — ONCE, up front, before the Remotion raw render
+    (reached in BOTH preview and finalize). Returns them in a dict the render lines
+    read from, so no slot is resolved (and appended to _RESOLVED) twice.
+
+    Why this exists (EP15 missing rows): produce_preview RETURNS right after the raw
+    render, BEFORE the master's music resolve and the outro block's outro/outro_cta
+    resolves ever ran — so a preview's _flush_provenance only ever held host_outfit
+    + remotion_comp. Pulling these resolves up front means _flush_provenance records
+    the WHOLE cast (host_outfit, remotion_comp, music_bed, outro_sting, outro_cta) on
+    every build, preview included.
+
+    host_outfit and remotion_comp are intentionally NOT re-resolved here: host_outfit
+    is resolved (and Phase-0-gated) at its own consumer above, remotion_comp at the
+    Remotion run() call — both already reached before the preview flush, so resolving
+    them here would double-append. Defaults MUST match the later consumer lines.
+    Never raises (same contract as resolve_locked / resolve_setting)."""
+    return {
+        "music_bed":  resolve_locked("music_bed", "music/bed_active.mp3", ch=ch, cfg=cfg),
+        "outro_sting": resolve_locked("outro_sting", "outro/outro_sub_comment.mp4",
+                                      ch=ch, cfg=cfg),
+        "outro_cta":  resolve_setting("outro_cta", None, ch=ch, cfg=cfg),
+    }
 
 
 def _flush_provenance(ch, ep, tag, calendar_id):
@@ -1498,7 +1603,8 @@ def _flush_provenance(ch, ep, tag, calendar_id):
         print(f"!! provenance not recorded ({e}) — render is unaffected")
 
 
-def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_version=None):
+def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_version=None,
+          allow_cast_override=False):
     """tag = the render stem (ep<NN>_<tag>{,_raw,_outro}.mp4). Defaults to the
     historical "v2"; pass another (e.g. "v3") to cut a REVISION without
     overwriting the shipped file, so old and new can be compared side by side.
@@ -1521,9 +1627,12 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         with open(cfg_path) as f:
             cfg = json.load(f)
     # Phase 4: bind the composed cast BEFORE the first resolve_locked() call.
-    # Never raises; None = layer disabled = today's channel-lock resolution.
+    # Never raises on the normal path (None = layer disabled = today's channel-lock
+    # resolution); Phase 2 divergence guard may raise CastUnrenderable when the spec
+    # pins a template_version that CONTRADICTS the calendar's pin (unless overridden).
     _bind_template_version("claude-tricks", explicit=template_version,
-                           cfg=cfg, calendar_id=calendar_id)
+                           cfg=cfg, calendar_id=calendar_id,
+                           allow_cast_override=allow_cast_override, ep=ep, tag=tag)
     A = os.path.join(CH, "assets", f"ep{ep}"); os.makedirs(A, exist_ok=True)
     R = os.path.join(CH, "renders"); os.makedirs(R, exist_ok=True)
 
@@ -1986,6 +2095,14 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         print(">> DRY — spec written, skipping render/master")
         return sp
 
+    # Phase 1 (2026-08-19): resolve the reusable cast slots (music bed, outro sting,
+    # outro_cta) ONCE, up front — BEFORE the preview return below — so the whole cast
+    # lands in _RESOLVED and _flush_provenance records it on EVERY build, preview
+    # included (host_outfit + remotion_comp are already resolved above / at the raw
+    # render). The master + outro lines below CONSUME cast[...] instead of calling
+    # resolve_locked again, so no slot is double-appended.
+    cast = resolve_cast(cfg)
+
     # 4) remotion render (video + VO only; music mixed in mastering pass)
     raw = os.path.join(R, f"ep{ep}_{tag}_raw.mp4")
     # GPU/CPU tuning via env (unset -> Remotion defaults, unchanged behaviour):
@@ -2018,8 +2135,9 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     # the channel's locked active bed
     # _LOCK_CFG_KEY["music_bed"] == "music", so a per-episode cfg["music"]
     # override still wins — this only adds the lock/template layers beneath it.
-    music = os.path.join(CH, "assets",
-                         resolve_locked("music_bed", "music/bed_active.mp3", cfg=cfg))
+    # Phase 1: consume the up-front resolve_cast() result (already recorded in
+    # provenance) instead of re-resolving here (which would double-append).
+    music = os.path.join(CH, "assets", cast["music_bed"])
     assert os.path.exists(music), f"music bed missing: {music}"
     # The locked 0.35 mix ratio (playbook §3) was calibrated against the channel's
     # standing bed at -8.3 LUFS. A per-episode bed at a different programme level
@@ -2089,8 +2207,9 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         # v16.2: per-episode outro override (cfg["outro_src"], relative to assets/)
         # so premium episodes can use a stronger question-CTA card instead of the
         # shared subscribe/comment sting.
-        outro = os.path.join(CH, "assets",
-                             resolve_locked("outro_sting", "outro/outro_sub_comment.mp4", cfg=cfg))
+        # Phase 1: consume resolve_cast()'s outro sting (already in provenance);
+        # re-resolving here would double-append the slot.
+        outro = os.path.join(CH, "assets", cast["outro_sting"])
         out2 = os.path.join(R, f"ep{ep}_{tag}_outro.mp4")
         # `outro_dur` trims the sting (the asset itself is never re-rendered —
         # §15 bookends hygiene keeps it a shared branding asset). Needed when the
@@ -2108,7 +2227,9 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         # VJ approval of the test render — do not add outro_cta to the locked
         # templates until then. See channels/claude-tricks/outro_cta.py.
         cta = None
-        _cta_mode = resolve_setting("outro_cta", None, cfg=cfg)
+        # Phase 1: consume resolve_cast()'s outro_cta setting (already recorded in
+        # provenance via resolve_setting); resolving it again would double-append.
+        _cta_mode = cast["outro_cta"]
         if _cta_mode:
             if CH not in sys.path:
                 sys.path.insert(0, CH)
@@ -2188,6 +2309,12 @@ if __name__ == "__main__":
                          "to render with. Only a status='locked' version of this "
                          "channel is honoured; anything else (or omitted) falls "
                          "through to the channel's factory_asset_locks")
+    ap.add_argument("--allow-cast-override", action="store_true",
+                    help="Phase 2: proceed even when the spec/CLI/env template_version "
+                         "CONTRADICTS the calendar's pinned cast. Without this (and "
+                         "without FACTORY_ALLOW_CAST_OVERRIDE=1) a divergence REFUSES "
+                         "the build (CastUnrenderable) instead of silently swapping the "
+                         "owner's deliberate cast pin. Operator escape hatch only.")
     a = ap.parse_args()
     build(a.ep, dry=a.dry, tag=a.tag, preview=a.preview, calendar_id=a.calendar_id,
-          template_version=a.template_version)
+          template_version=a.template_version, allow_cast_override=a.allow_cast_override)
