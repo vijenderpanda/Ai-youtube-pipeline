@@ -502,6 +502,8 @@ export default function TemplateDetail() {
   // Fork: from the active cast if there is one, else from the version on screen,
   // else a fresh draft seeded from the channel's live locks (create_template_version
   // does the seeding — a new draft starts as exactly what production runs today).
+  // S4: forking now copies the composition SEQUENCE too (not just the cast), so a
+  // designed+locked version can be forked to redesign it without losing its blocks.
   const fork = () => {
     const from =
       (tpl && tpl.active_version_id) || (selected && selected.id) || null
@@ -793,7 +795,7 @@ export default function TemplateDetail() {
             onClick={fork}
             title={
               channelKey
-                ? 'Copy the current cast into a new draft you can edit'
+                ? 'Copy the current cast and sequence into a new draft you can edit'
                 : 'No channel produces with this template yet'
             }
           >
@@ -1308,7 +1310,7 @@ export default function TemplateDetail() {
                         className="btn-ghost"
                         disabled={busy === 'fork' || busy === 'unlock' || !channelKey}
                         onClick={fork}
-                        title="Copy this cast into a new draft and leave this version frozen"
+                        title="Copy this cast and sequence into a new draft and leave this version frozen"
                       >
                         {busy === 'fork' ? 'Forking…' : 'Fork a new version'}
                       </button>

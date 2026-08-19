@@ -6,6 +6,7 @@ import { mediaKind, fileExt } from '../mediaKind'
 import { resolveStage } from '../pipeline'
 import PipelineRail from './PipelineRail'
 import CastReconciliation from './CastReconciliation'
+import SequenceReconciliation from './SequenceReconciliation'
 import { fmtDayHeading } from '../format'
 
 /**
@@ -353,6 +354,7 @@ export default function StepSpine({
   produceJob = null,
   producedAssets = [],
   builtRows = null,
+  builtBlocks = null,
   planning = false,
   planFailed = false,
   planFailReason = '',
@@ -435,16 +437,27 @@ export default function StepSpine({
   const reqRoles = requiredShotRoles(tpl)
   const reconEl =
     item && item.preview_path && (effStep === 'qc' || effStep === 'arm' || effStep === 'live') ? (
-      <CastReconciliation
-        item={item}
-        pickedCast={pickedCast}
-        effCast={effCast}
-        deadPin={deadPin}
-        boundId={boundId}
-        brandVersions={(assets && assets.versions) || []}
-        reqRoles={reqRoles}
-        builtRows={builtRows}
-      />
+      <>
+        <CastReconciliation
+          item={item}
+          pickedCast={pickedCast}
+          effCast={effCast}
+          deadPin={deadPin}
+          boundId={boundId}
+          brandVersions={(assets && assets.versions) || []}
+          reqRoles={reqRoles}
+          builtRows={builtRows}
+        />
+        {/* S4 — the SEQUENCE twin of the cast card: locked composition._sequence
+            vs the blocks the build actually rendered (factory_episode_blocks_used). */}
+        <SequenceReconciliation
+          item={item}
+          pickedCast={pickedCast}
+          deadPin={deadPin}
+          boundId={boundId}
+          builtBlocks={builtBlocks}
+        />
+      </>
     ) : null
 
   // Only locked casts are offered. Drafts stay visible but disabled (you can

@@ -1,4 +1,32 @@
-import { useMemo, useState } from 'react'
+import { Component, Suspense, lazy, useMemo, useState } from 'react'
+
+// S4 · deliverable #2 — client-side live preview. Lazy chunk: the preview pulls
+// in remotion + @remotion/player (heavy), so it loads only when the designer
+// opens it; the rest of the app is unaffected. The vite alias + React dedupe
+// (webapp/vite.config.js) make importing the real Short.tsx composition safe.
+const LivePreview = lazy(() => import('./LivePreview'))
+
+// A preview failure (bad block config, a bundling hiccup) must never take down
+// the designer — isolate it to a small inline notice.
+class PreviewBoundary extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { err: null }
+  }
+  static getDerivedStateFromError(err) {
+    return { err }
+  }
+  render() {
+    if (this.state.err) {
+      return (
+        <div className="dim small" style={{ padding: '14px 0', textAlign: 'center' }}>
+          Preview unavailable — {String((this.state.err && this.state.err.message) || this.state.err)}
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 
 /* =============================================================================
    SequenceEditor — the composition designer's SEQUENCE section (Sprint 3).
@@ -69,6 +97,7 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
   const [openPos, setOpenPos] = useState(null)
   const [buf, setBuf] = useState('') // JSON config buffer for the open block
   const [cfgErr, setCfgErr] = useState('')
+  const [preview, setPreview] = useState(false) // S4: live structural preview
 
   const sorted = useMemo(() => [...(blocks || [])].sort((a, b) => a.position - b.position), [blocks])
 
@@ -146,8 +175,28 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
             The ordered blocks that play — each a layout + config. Frozen into the composition at lock.
           </div>
         </div>
-        <span className="chip">{sorted.length} block{sorted.length === 1 ? '' : 's'}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button
+            type="button"
+            className={preview ? 'btn-primary' : 'btn-ghost'}
+            style={{ padding: '5px 12px' }}
+            disabled={!sorted.length}
+            onClick={() => setPreview((v) => !v)}
+            title={sorted.length ? 'Play this sequence live in the browser — free, no render' : 'Add a block to preview'}
+          >
+            {preview ? '▣ Hide preview' : '▷ Preview'}
+          </button>
+          <span className="chip">{sorted.length} block{sorted.length === 1 ? '' : 's'}</span>
+        </div>
       </div>
+
+      {preview && sorted.length > 0 && (
+        <PreviewBoundary>
+          <Suspense fallback={<div className="dim small" style={{ padding: '18px 0', textAlign: 'center' }}>Loading preview…</div>}>
+            <LivePreview blocks={sorted} />
+          </Suspense>
+        </PreviewBoundary>
+      )}
 
       {!sorted.length && (
         <div style={{ color: 'var(--text-3)', fontSize: 13, padding: '10px 0' }}>

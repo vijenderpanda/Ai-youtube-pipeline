@@ -973,7 +973,7 @@ async function handleGet(url: URL): Promise<Response> {
       if (!calendarId || !UUID_RE.test(calendarId)) {
         return json({ error: "calendar_id (uuid) required" }, 400);
       }
-      const [item, assets, jobs, provenance] = await Promise.all([
+      const [item, assets, jobs, provenance, blocksUsed] = await Promise.all([
         db.from("factory_calendar").select("*").eq("id", calendarId).maybeSingle(),
         db.from("factory_assets").select("*").eq("calendar_id", calendarId)
           .order("created_at", { ascending: false }),
@@ -996,12 +996,22 @@ async function handleGet(url: URL): Promise<Response> {
           .select("asset_type, version_id, build_ref, resolved_from, build_tag, created_at")
           .eq("calendar_id", calendarId)
           .order("created_at", { ascending: false }),
+        // S4 · block reconciliation — the SEQUENCE twin of the cast provenance
+        // above: which block played at each position per build
+        // (factory_episode_blocks_used), so the produced piece can be diffed
+        // against its locked composition._sequence and a silent block drop/swap
+        // is legible. Non-critical (bookkeeping) like provenance — degrade to [].
+        db.from("factory_episode_blocks_used")
+          .select("position, block_type, layout, ref, rendered, resolved_from, build_tag, created_at")
+          .eq("calendar_id", calendarId)
+          .order("created_at", { ascending: false }),
       ]);
       const err = item.error || assets.error || jobs.error;
       if (err) return json({ error: err.message }, 500);
       if (!item.data) return json({ error: "calendar item not found" }, 404);
       return json({ item: item.data, assets: assets.data, jobs: jobs.data,
-                    provenance: provenance.data || [] });
+                    provenance: provenance.data || [],
+                    sequence: blocksUsed.data || [] });
     }
 
     case "events": {
@@ -2086,6 +2096,29 @@ async function handlePost(body: any): Promise<Response> {
       if (liveJobs && liveJobs.length > 0) {
         return json({ error: "a preview job for this item is already " + liveJobs[0].status }, 409);
       }
+      // S4 · deliverable #1 — stamp the active composition version at QUEUE time so
+      // this calendar/Studio-driven produce reproduces the SAME locked
+      // composition._sequence at finalize. finalize_episode.py re-cuts the MASTER
+      // via build_ep_v2 --calendar-id, which binds rank-4 =
+      // factory_calendar.template_version_id; if that column is null it falls back
+      // to whatever the channel's active version is AT FINALIZE TIME — so a lock
+      // swap between preview approval and finalize would arm a master built from a
+      // DIFFERENT sequence than the reviewer approved. Mirrors produce_channel's
+      // activeVersion stamp. Seed from item.template_version_id FIRST so an
+      // existing deliberate pin is written back unchanged (a no-op equal to
+      // itself) and the rank-4 divergence guard in _bind_template_version stays
+      // satisfied; only a null pin is filled with the current active version.
+      let activeVersionId: string | null = item.template_version_id ?? null;
+      if (!activeVersionId) {
+        const { data: tplChan } = await db.from("factory_channels")
+          .select("template").eq("key", item.channel_key).maybeSingle();
+        const tplKey = tplChan?.template ?? null;
+        if (tplKey) {
+          const { data: tplActive } = await db.from("factory_templates")
+            .select("active_version_id").eq("key", tplKey).maybeSingle();
+          activeVersionId = tplActive?.active_version_id ?? null;
+        }
+      }
       const { data: job, error: jobErr } = await db.from("factory_jobs")
         .insert({
           channel_key: item.channel_key,
@@ -2096,14 +2129,17 @@ async function handlePost(body: any): Promise<Response> {
           effort: item.effort,
           ultracode: item.ultracode,
           status: "queued",
-          meta: { calendar_id: item.id, ep },
+          meta: { calendar_id: item.id, ep, template_version_id: activeVersionId },
         })
         .select().single();
       if (jobErr) return json({ error: jobErr.message }, 500);
       // direct mode + queued so the Studio index (?r=staged) surfaces it once
-      // its first asset lands; keep job_id pointing at the preview job.
+      // its first asset lands; keep job_id pointing at the preview job. The
+      // template_version_id write makes the pin DURABLE on the calendar row so
+      // finalize's --calendar-id resolves it (no-op when a pin was already set).
       const { data: updated, error: updErr } = await db.from("factory_calendar")
-        .update({ status: "queued", production_mode: "direct", job_id: job.id })
+        .update({ status: "queued", production_mode: "direct", job_id: job.id,
+                  template_version_id: activeVersionId })
         .eq("id", calendar_id).select().single();
       if (updErr) return json({ error: updErr.message }, 500);
       await logEvent(
@@ -2574,9 +2610,15 @@ async function handlePost(body: any): Promise<Response> {
         return json({ error: "from_version_id must be a uuid" }, 400);
       }
       let seedRows: { asset_type: string; asset_version_id: string; position: number; note?: string }[] = [];
+      // S4 · deliverable #3 — a fork must carry the composition SEQUENCE too, not
+      // just the cast. Without this, forking a designed+locked version to redesign
+      // it silently opens an EMPTY Sequence designer (the Sprint-3 work is lost),
+      // while edit-in-place (unlock) preserves it — so fork was the broken half of
+      // "boilerplate vs redesign-from-existing".
+      let seedBlocks: { position: number; block_type: string; layout: string | null; config: unknown }[] = [];
       if (from_version_id) {
         const { data: base, error: bErr } = await db.from("factory_template_versions")
-          .select("id, channel_key").eq("id", from_version_id).maybeSingle();
+          .select("id, channel_key, composition").eq("id", from_version_id).maybeSingle();
         if (bErr) return json({ error: bErr.message }, 500);
         if (!base) return json({ error: "from_version_id not found" }, 404);
         if (base.channel_key !== channel_key) {
@@ -2587,6 +2629,31 @@ async function handlePost(body: any): Promise<Response> {
           .eq("template_version_id", from_version_id);
         if (bsErr) return json({ error: bsErr.message }, 500);
         seedRows = baseSlots ?? [];
+        // Blocks: prefer the editable DRAFT rows — they persist even when the
+        // source is locked (lock freezes into _sequence but never deletes them).
+        // Fall back to the frozen composition._sequence when a locked source has
+        // had its editable rows retired. Position is preserved verbatim (a fresh
+        // version id keeps UNIQUE(template_version_id, position) satisfied).
+        const { data: baseBlocks, error: bbErr } = await db.from("factory_template_blocks")
+          .select("position, block_type, layout, config")
+          .eq("template_version_id", from_version_id).order("position", { ascending: true });
+        if (bbErr) return json({ error: bbErr.message }, 500);
+        if (baseBlocks && baseBlocks.length > 0) {
+          seedBlocks = baseBlocks.map((b) => ({
+            position: b.position, block_type: b.block_type,
+            layout: b.layout ?? null, config: b.config ?? {},
+          }));
+        } else {
+          const frozenSeq = Array.isArray(base.composition?._sequence)
+            ? base.composition._sequence : [];
+          seedBlocks = frozenSeq
+            .filter((e: Record<string, unknown>) =>
+              Number.isInteger(e?.position) && typeof e?.block_type === "string")
+            .map((e: Record<string, unknown>) => ({
+              position: e.position as number, block_type: e.block_type as string,
+              layout: (e.layout as string | null) ?? null, config: e.config ?? {},
+            }));
+        }
       } else if (body.seed_from_locks !== false) {
         const { data: lockRows, error: lkErr } = await db.from("factory_asset_locks")
           .select("asset_type, locked_version_id").eq("channel_key", channel_key);
@@ -2638,14 +2705,31 @@ async function handlePost(body: any): Promise<Response> {
         );
         if (seedErr) return json({ error: seedErr.message }, 500);
       }
+      // S4 · deliverable #3 — seed the forked SEQUENCE (mirrors the cast seed
+      // above). A fresh version id means UNIQUE(template_version_id, position)
+      // holds; the new draft re-freezes its own _sequence at lock. Empty for a
+      // seed_from_locks fork (no source sequence exists) — a valid blank start.
+      if (seedBlocks.length > 0) {
+        const { error: sbErr } = await db.from("factory_template_blocks").insert(
+          seedBlocks.map((b) => ({
+            template_version_id: created!.id,
+            position: b.position,
+            block_type: b.block_type,
+            layout: b.layout,
+            config: b.config ?? {},
+          })),
+        );
+        if (sbErr) return json({ error: sbErr.message }, 500);
+      }
       const { data: slots } = await db.from("factory_template_assets")
         .select("*").eq("template_version_id", created.id)
         .order("asset_type", { ascending: true }).order("position", { ascending: true });
       await logEvent("template_version_created",
-        `${template_key} v${created.version} forked as a draft (${seedRows.length} slots)`,
+        `${template_key} v${created.version} forked as a draft (${seedRows.length} slots, ${seedBlocks.length} blocks)`,
         {
           template_key, channel_key, template_version_id: created.id,
-          version: created.version, from_version_id, seeded: seedRows.length,
+          version: created.version, from_version_id,
+          seeded: seedRows.length, seeded_blocks: seedBlocks.length,
         });
       return json({ version: created, assets: slots ?? [] });
     }

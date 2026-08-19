@@ -1,7 +1,8 @@
 # Composition Designer — Sprint Plan
 
-> **Status: LOCKED 2026-08-19 (VJ).** IA confirmed: Design=Templates · Plan=Calendar ·
-> Produce=Studio · Arm=Publish. Archiving `/assets` + `/generators`. Building Sprint 1.
+> **Status: LOCKED 2026-08-19 (VJ). Sprints 1–4 SHIPPED; Sprint 5 (Plan→Produce loop) is next.**
+> IA confirmed: Design=Templates · Plan=Calendar · Produce=Studio · Arm=Publish. Archived
+> `/assets` + `/generators`.
 > Mockups: [Designer screen](https://claude.ai/code/artifact/00c63bab-fea8-41b6-81b0-f67512bd5acc) ·
 > [Factory Flow](https://claude.ai/code/artifact/4f9405fc-3c00-49db-97b3-83fc8518fc6a).
 
@@ -119,14 +120,27 @@ The full block designer — the screen you'll test.
 - Lock guard extended for blocks (missing config, unknown cookbook id, empty sequence).
 - **Exit:** design a composition in the app → lock → produce_preview adheres. **The full flow.**
 
-## Sprint 4 — Adherence, audition & polish
-- `produce_preview` stamps the active composition version so calendar/Studio-driven produces
-  honor the locked sequence (lift the `produce_channel` activeVersion lookup).
-- In-designer + in-review live preview via `@remotion/player` (client-side, no API cost) — see
-  "Preview vs render" above. A separate "Render" enqueues the full worker render.
-- Boilerplate vs redesign-from-existing (both already in the version lifecycle: fork a fresh
-  draft or edit an existing one).
-- Built-vs-locked reconciliation for blocks (mirror the cast reconciliation).
+## Sprint 4 — Adherence, audition & polish — **SHIPPED 2026-08-19**
+- ✅ `produce_preview` stamps the active composition version so calendar/Studio-driven produces
+  honor the locked sequence (lifted the `produce_channel` activeVersion lookup, seeding from any
+  existing calendar pin first). Closes the finalize rank-4 gap so the armed MASTER reproduces the
+  approved `composition._sequence`. — `factory-api/index.ts` produce_preview.
+- ✅ In-designer live preview via `@remotion/player` (client-side, no API cost). The webapp imports
+  the REAL `Short.tsx` unchanged (vite alias `@remotion-src` + React **dedupe** so the app's React 18
+  and remotion-studio's React 19 don't collide) and maps draft blocks → ShortProps via
+  `LivePreview.jsx` (browser twin of `_seq_segment`). Toggle in `SequenceEditor`. Runtime-verified:
+  Player mounts + plays the composition with branded fonts, zero console errors. *In-review* full
+  preview (produced-asset props at absolute URLs) is the remaining follow-on — needs per-episode
+  asset hosting; structural preview works before generation, as planned.
+- ✅ Boilerplate vs redesign-from-existing. Fork was the broken half — `create_template_version`
+  copied the cast but dropped the sequence; it now copies `factory_template_blocks` too (fallback to
+  the frozen `_sequence`). Edit-in-place already preserved it via unlock rebuild.
+- ✅ Built-vs-locked reconciliation for blocks. Full 5-piece chain mirroring the cast: migration
+  `024_sequence_provenance.sql` (`factory_episode_blocks_used`), `_flush_sequence_provenance` in the
+  build (records EVERY locked block incl. dropped ones via a `rendered` flag), edge returns it as
+  `sequence`, `StudioBoard`→`StepSpine` plumbing, new `SequenceReconciliation.jsx`.
+- **Deploy:** apply migration 024 · redeploy factory-api edge fn · Netlify webapp deploy · worker
+  git-pull + restart (build_ep_v2). Additive + degrades gracefully if migration lags (sequence:[]).
 
 ## Sprint 5 — Plan → Produce loop (the switch you flip per content piece)
 Turn a planned content piece into a produced Short through a chosen locked composition.

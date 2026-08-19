@@ -1340,6 +1340,11 @@ CHANNEL_KEY_FOR_PROV = "claude-tricks"
 # factory_asset_versions.id behind each pick (keyed by (source, asset_type)).
 _RESOLVED = []
 _VERSION_ID_BY = {}
+# S4 block reconciliation: what THIS build rendered for each locked _sequence
+# block (position, block_type, layout, ref, rendered). The SEQUENCE twin of
+# _RESOLVED — flushed to factory_episode_blocks_used so a produced Short can be
+# diffed against its locked composition._sequence.
+_RESOLVED_BLOCKS = []
 
 
 class CastUnrenderable(Exception):
@@ -1614,6 +1619,26 @@ def _seq_segment(block):
     return None
 
 
+def _block_ref(block):
+    """A stable identity string for a locked _sequence block — WHAT filled it: the
+    cookbook/broll component id, else the host label/id, else the layout, else the
+    block_type. The build_ref analog for sequence provenance, so the app can diff
+    built.ref against the same identity derived from the locked block's config."""
+    if not isinstance(block, dict):
+        return "—"
+    conf = block.get("config") or {}
+    cb = conf.get("cookbook")
+    if isinstance(cb, dict) and isinstance(cb.get("id"), str) and cb.get("id"):
+        return cb["id"]
+    broll = conf.get("broll")
+    if isinstance(broll, dict) and broll.get("id"):
+        return str(broll["id"])
+    host = conf.get("host") or {}
+    if host.get("label") or host.get("id"):
+        return "host:" + str(host.get("label") or host.get("id"))
+    return conf.get("layout") or block.get("layout") or block.get("block_type") or "—"
+
+
 def resolve_locked(asset_type, default, ch="claude-tricks", cfg=None):
     """Precedence: per-episode cfg override > bound template version's frozen
     composition > channel lock row > built-in default.
@@ -1725,6 +1750,41 @@ def _flush_provenance(ch, ep, tag, calendar_id):
         print(f">> provenance: {len(rows)} slot(s) recorded ({', '.join(srcs)})")
     except Exception as e:
         print(f"!! provenance not recorded ({e}) — render is unaffected")
+
+
+def _flush_sequence_provenance(ch, ep, tag, calendar_id):
+    """Record the composition SEQUENCE this build actually rendered — the block
+    twin of _flush_provenance (S4 block reconciliation). One row per locked
+    _sequence block, in play order, carrying whether it produced a segment: a
+    locked block that renders NOTHING is a real divergence the reviewer must see,
+    so dropped blocks are recorded too (rendered=False), not skipped.
+
+    Never raises (bookkeeping must not fail a successful render). A re-cut of the
+    same (calendar, tag) replaces its own rows, so re-running does not double."""
+    if not _RESOLVED_BLOCKS:
+        return
+    try:
+        by_pos = {b["position"]: b for b in _RESOLVED_BLOCKS}   # last write per position wins
+        rows = [{"calendar_id": calendar_id, "channel_key": ch, "ep": str(ep),
+                 "build_tag": tag, "position": pos,
+                 "block_type": b.get("block_type"), "layout": b.get("layout"),
+                 "ref": b.get("ref"), "rendered": bool(b.get("rendered")),
+                 "resolved_from": "template"}
+                for pos, b in sorted(by_pos.items())]
+        sp = _supa()
+        if calendar_id:
+            # Supa has no delete(); go straight at PostgREST with its own headers.
+            import requests
+            requests.delete(
+                f"{sp.url}/rest/v1/factory_episode_blocks_used"
+                f"?calendar_id=eq.{calendar_id}&build_tag=eq.{tag}",
+                headers=sp.headers, timeout=30)
+        sp.insert("factory_episode_blocks_used", rows)
+        drops = sum(1 for r in rows if not r["rendered"])
+        note = f", {drops} rendered nothing" if drops else ""
+        print(f">> sequence provenance: {len(rows)} block(s) recorded{note}")
+    except Exception as e:
+        print(f"!! sequence provenance not recorded ({e}) — render is unaffected")
 
 
 def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_version=None,
@@ -2142,6 +2202,17 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         _seg = _seq_segment(_blk)
         if _seg is not None:
             segments.append(_seg)
+        # S4 block reconciliation: record EVERY locked block, rendered or not.
+        # A locked block _seq_segment() dropped (rendered=False) is a real
+        # divergence — the reviewer sees it in the sequence-reconciliation card.
+        _RESOLVED_BLOCKS.append({
+            "position": _blk.get("position", 0),
+            "block_type": _blk.get("block_type"),
+            "layout": (_seg or {}).get("slot", {}).get("layout")
+                      if isinstance(_seg, dict) else None,
+            "ref": _block_ref(_blk),
+            "rendered": _seg is not None,
+        })
 
     # steps -> absolute times
     line_starts = []
@@ -2275,6 +2346,7 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         # up the SAME cfg later and runs mastering + endcard + outro to publish.
         print(f">> PREVIEW mode — stopped after raw: {raw}")
         _flush_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
+        _flush_sequence_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
         return raw
 
     # 5) master: sidechain-ducked music + limiter
@@ -2433,6 +2505,7 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         print(f">> ENDCARD {ec['in_s']}s -> last frame (over the sting)", outc)
         out = outc
     _flush_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
+    _flush_sequence_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
     return out
 
 if __name__ == "__main__":
