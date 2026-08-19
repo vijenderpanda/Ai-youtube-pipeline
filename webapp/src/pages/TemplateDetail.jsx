@@ -29,6 +29,7 @@ import MediaPreview, { sampleNoteOf, previewSourceFor } from '../components/Medi
 import ShotRoleChips from '../components/ShotRoleChips'
 import Toast, { useToast } from '../components/Toast'
 import ConfirmDialog from '../components/ConfirmDialog'
+import SequenceEditor from '../components/SequenceEditor'
 
 /**
  * TemplateDetail — one factory_templates row.
@@ -321,6 +322,9 @@ export default function TemplateDetail() {
   // migration 021, so a candidate with NO entry gets no hint at all; it is not
   // claimed to be unused.
   const useQ = usePoll(() => api.get('?r=asset_backlinks'), 60000)
+  // Sprint 3: the composition-designer palette (cookbook comps + layouts +
+  // block types), served by ?r=cookbook as the one source the validator shares.
+  const cbQ = usePoll(() => api.get('?r=cookbook'), 0)
   const { toast, show } = useToast()
   const [selId, setSelId] = useState(null)   // version the composer is showing
   const [swapFor, setSwapFor] = useState(null) // asset_type whose picker is open
@@ -337,6 +341,10 @@ export default function TemplateDetail() {
   const castSlots = (tvQ.data && tvQ.data.assets) || []
   const castJoined = (tvQ.data && tvQ.data.asset_versions) || []
   const usage = (useQ.data && useQ.data.usage) || {}
+  const castBlocks = (tvQ.data && tvQ.data.blocks) || []
+  const cookbookCat = (cbQ.data && cbQ.data.cookbook) || []
+  const layoutIds = (cbQ.data && cbQ.data.layouts) || []
+  const blockTypeIds = (cbQ.data && cbQ.data.block_types) || []
 
   const tpl = templates.find((t) => t.key === key) || null
   const chan = tpl ? templateForChannel(channels, tpl.key) : null
@@ -434,6 +442,12 @@ export default function TemplateDetail() {
 
   // The frozen composition of a locked version (build_refs copied at lock).
   const frozen = (selected && selected.composition) || {}
+
+  // Sprint 3: this version's ordered block sequence (draft rows; frozen at lock).
+  const blocksForSelected = useMemo(
+    () => castBlocks.filter((b) => b.template_version_id === (selected && selected.id)),
+    [castBlocks, selected],
+  )
 
   const isDraft = !!selected && selected.status === 'draft'
   const isLocked = !!selected && selected.status === 'locked'
@@ -1207,6 +1221,17 @@ export default function TemplateDetail() {
                 </div>
               </div>
             </section>
+
+            <SequenceEditor
+              versionId={selected.id}
+              isDraft={isDraft}
+              blocks={blocksForSelected}
+              cookbook={cookbookCat}
+              layouts={layoutIds}
+              blockTypes={blockTypeIds}
+              busy={busy}
+              onPost={post}
+            />
 
             <div className="cast-foot">
               <div className="cast-foot-copy">
