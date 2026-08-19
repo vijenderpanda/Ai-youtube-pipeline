@@ -64,6 +64,52 @@ EPISODES_V2 = {
       ("STEP 3/3 — IT JUST WORKS", 4, 4, "tl"),
     ],
   },
+  # Post-pivot standalone tip #2 (2026-08-19): the Habit Tracker short. Doubles down
+  # on the winning "one line -> real working app" magic from _artifacts (pTXcKAw9qj4,
+  # 30.4% stayed-to-watch vs 19-20% norm). SAME proven 7-beat spine: reverse hook =
+  # the finished tracker in frame 0 (still_hero.png) -> rebuild it live (mobile tape)
+  # -> baked still-hold of the opened app (payoff) -> Sol outro. Fresh theme (habits,
+  # not money) so the franchise reads as range, not repetition. Payoff a still can
+  # honestly show: Mon-Fri checked, a 5-day streak (beat 5 states the RESULT, no live
+  # motion needed - the _artifacts Rs400 pattern).
+  "_habit": {
+    "title": "I Built A Habit Tracker By Typing One Line 🔥",
+    "tags": "claude artifacts,habit tracker,build app with ai,no code,claude ai,ai for beginners,vibe coding,ai tools,ai tips",
+    "hook": {"image": "ep_habit/still_hero.png", "until": 2.2,
+             "lines": ["I BUILT THIS", "BY TYPING ONE LINE"], "hot": "ONE"},
+    "outro": True,
+    "outro_dur": 0,
+    "outro_src": "ep_habit/outro_card.mp4",   # LOCKED Ep11-style question-CTA card (gen_outro_card.py)
+    "outro_cta": "auto",   # Sol speaks the CTA over the card; line 7 is a loopback, not a CTA
+    "lines": [
+      "I typed one line — and Claude built me this habit tracker. No code.",
+      "Empty chat, one sentence, an app that counts my streak. Watch.",
+      "In Claude, I type one line: build me a weekly habit tracker.",
+      "A few seconds later, it's built — seven days, tap to check one off.",
+      "Monday to Friday done — a five-day streak. It actually keeps count.",
+      "That's Artifacts. Ask for a tool, and Claude builds the working thing, right there.",
+      "One line of plain English — and you've got a habit tracker that works.",
+    ],
+    "hot_words": ["TYPED", "CLAUDE", "HABIT", "TRACKER", "CODE", "ONE", "LINE", "EMPTY",
+                  "SENTENCE", "COUNTS", "STREAK", "WATCH", "TYPE", "WEEKLY",
+                  "SECONDS", "BUILT", "SEVEN", "DAYS", "TAP", "CHECK",
+                  "MONDAY", "FRIDAY", "FIVE", "COUNT", "ARTIFACTS", "TOOL",
+                  "THING", "ENGLISH", "WORKS", "FOLLOW", "SKILL", "DAY"],
+    "beats": ["host", "host",
+              "rec:ep_habit/raw_capture.mp4@11",   # type one line (account-name greeting redacted, <=12.0s)
+              "rec:ep_habit/card_hold.mp4@0.0",     # seconds later: the built 'Habit tracker' card (real t84 frame, held)
+              "rec:ep_habit/hold_app.mp4@0.0",      # the working app — 5-day streak (payoff)
+              "host2", "host2"],
+    "host_panels": [
+      {"lines": ["I TYPED", "ONE LINE", "NO CODE"]},
+      {"lines": ["EMPTY CHAT", "TO A HABIT", "TRACKER — WATCH"]},
+    ],
+    "steps": [   # 4th = corner in DEAD SPACE (prompt bubble is top; empty chat is bottom)
+      ("STEP 1/3 — TYPE ONE LINE", 2, 2, "bl"),
+      ("STEP 2/3 — CLAUDE BUILDS IT", 3, 3, "bl"),
+      ("STEP 3/3 — IT KEEPS YOUR STREAK", 4, 4, "tl"),
+    ],
+  },
   "20": {
     "title": "The Effort Dial Nobody Uses (Deeper Answers, Free) 🧠",
     "tags": "claude effort,extended thinking,claude models,claude ai tips,ai for beginners,ai productivity,ai tips",
@@ -1350,6 +1396,7 @@ def _lock_lookup(ch, asset_type):
 _TPL_VERSION_ID = None   # bound once by build(); None = layer disabled
 _TPL_CACHE = None        # {asset_type: build_ref} from the frozen composition
 _TPL_SETTINGS = None     # {name: value} cast SETTINGS frozen with the composition
+_TPL_SEQUENCE = None     # [block,...] ordered composition._sequence frozen at lock (Sprint-2)
 _TPL_INFO = {}
 
 
@@ -1470,12 +1517,23 @@ def _tpl_lookup(ch, asset_type):
                 # only a LOCKED version of THIS channel may drive a build — a draft cast
                 # is still being edited and must never leak into a render.
                 if row and row.get("status") == "locked" and row.get("channel_key") == ch:
-                    for atype, slot in (row.get("composition") or {}).items():
-                        ref = (slot or {}).get("build_ref")
+                    comp = row.get("composition") or {}
+                    for atype, slot in comp.items():
+                        # Skip the non-slot sections (_settings dict, _sequence list) —
+                        # only per-asset slot dicts carry a build_ref. The isinstance
+                        # guard also keeps _sequence (a LIST) from raising .get() here.
+                        if not isinstance(slot, dict):
+                            continue
+                        ref = slot.get("build_ref")
                         if ref:
                             _TPL_CACHE[atype] = ref
-                            _VERSION_ID_BY[("template", atype)] = (slot or {}).get("version_id")
-                    globals()["_TPL_SETTINGS"] = dict((row.get("composition") or {}).get("_settings") or {})
+                            _VERSION_ID_BY[("template", atype)] = slot.get("version_id")
+                    globals()["_TPL_SETTINGS"] = dict(comp.get("_settings") or {})
+                    # Sprint-2: freeze the ordered block sequence alongside _settings so
+                    # build resolves the whole locked cast+sequence from this ONE row
+                    # (migration-020 one-select invariant). Absent -> None -> no-op.
+                    _seq = comp.get("_sequence")
+                    globals()["_TPL_SEQUENCE"] = list(_seq) if isinstance(_seq, list) else None
                     _TPL_INFO.update(template_key=row.get("template_key"),
                                      version=row.get("version"), id=_TPL_VERSION_ID)
                     print(f">> template version: {row.get('template_key')} "
@@ -1488,6 +1546,72 @@ def _tpl_lookup(ch, asset_type):
             except Exception as e:
                 print(f"!! template composition unavailable ({e}); using channel locks")
     return _TPL_CACHE.get(asset_type)
+
+
+# --- Sprint-2 composition _sequence reader -----------------------------------
+# A LOCKED template version may freeze an ordered block sequence in
+# composition["_sequence"] (rides alongside composition["_settings"], captured by
+# _tpl_lookup above into _TPL_SEQUENCE). These two helpers turn those frozen blocks
+# into Remotion segment dicts using the EXACT Sprint-1 Short.tsx field names. When
+# no version is bound (or it carries no _sequence) _TPL_SEQUENCE is None and
+# _composed_sequence() returns [] — the classic beat path is byte-for-byte unchanged.
+
+def _composed_sequence(ch="claude-tricks"):
+    """Ordered frozen blocks from the bound locked composition's _sequence, or []
+    when none is bound. Probes _tpl_lookup first so the version row is loaded even
+    if no earlier resolve happened to touch it. Never raises."""
+    try:
+        _tpl_lookup(ch, "__seq_probe__")   # ensure _TPL_SEQUENCE is populated
+    except Exception:
+        pass
+    seq = _TPL_SEQUENCE
+    if not seq:
+        return []
+    return sorted([b for b in seq if isinstance(b, dict)],
+                  key=lambda b: b.get("position", 0))
+
+
+def _seq_segment(block):
+    """Convert one frozen _sequence block to a Remotion segment dict, or None if it
+    carries nothing renderable here. EXACT contract shapes (Short.tsx consumes
+    seg["cookbook"]["id"]/["props"] and seg["slot"]["layout"]/["host"]/["broll"]):
+      cookbook: {"kind":"cookbook","dur":d,"cookbook":{"id":..,"props":{..}}}
+      slot:     {"kind":"slot","dur":d,"slot":{"layout":..,"host":{..},"broll":{..}}}
+    """
+    if not isinstance(block, dict):
+        return None
+    conf = block.get("config") or {}
+    dur = conf.get("dur")
+    btype = block.get("block_type")
+    if btype == "slot":
+        host_in = conf.get("host") or {}
+        broll_in = conf.get("broll") or {}
+        slot = {"layout": conf.get("layout") or block.get("layout")}
+        host = {}
+        if host_in.get("src"):
+            host["src"] = host_in["src"]
+        # config's host carries an `id` (an outfit id); the segment's host uses
+        # `label` for that id per the contract.
+        label = host_in.get("label") or host_in.get("id")
+        if label:
+            host["label"] = label
+        if host:
+            slot["host"] = host
+        if isinstance(broll_in, dict) and broll_in.get("id"):
+            slot["broll"] = {"kind": "cookbook", "id": broll_in["id"],
+                             "props": broll_in.get("props") or {}}
+        if conf.get("tag"):
+            slot["tag"] = conf["tag"]
+        return {"kind": "slot", "dur": dur, "slot": slot}
+    # any block whose config carries a cookbook payload (e.g. block_type "broll")
+    cb = conf.get("cookbook")
+    if isinstance(cb, dict) and isinstance(cb.get("id"), str) and cb.get("id"):
+        seg = {"kind": "cookbook", "dur": dur,
+               "cookbook": {"id": cb["id"], "props": cb.get("props") or {}}}
+        if "transparent" in cb:
+            seg["cookbook"]["transparent"] = cb["transparent"]
+        return seg
+    return None
 
 
 def resolve_locked(asset_type, default, ch="claude-tricks", cfg=None):
@@ -1993,7 +2117,31 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
                 seg["pip"] = "assets/" + rel(wpip_by_pid[pid])
                 seg["pipFrom"] = 0.0
             segments.append(seg)
+        elif b.startswith("cook:"):
+            # Sprint-2 cookbook beat ("cook:<componentId>"): draw a Visual-Cookbook
+            # component in-frame for this beat's VO slice. Mirrors the pip: branch —
+            # the beat's merged dur is the segment dur; props come from
+            # cfg["cookbook"][<componentId>] (a dict keyed by component id), default {}.
+            # Emits the EXACT Short.tsx contract shape: seg["cookbook"]["id"]/["props"].
+            cid = b[5:]
+            if isinstance(cid, str) and cid:
+                props = (cfg.get("cookbook") or {}).get(cid, {})
+                segments.append({"kind": "cookbook", "dur": round(dur, 3),
+                                 "cookbook": {"id": cid, "props": props or {}}})
+            else:
+                print(f"!! cook: beat with empty component id — skipped ({b!r})")
         i += 1
+
+    # Sprint-2: a LOCKED composition may freeze an ordered block sequence
+    # (composition["_sequence"], resolved from the SAME row the cast came from).
+    # When present, append each block's cookbook/slot segment (EXACT Short.tsx
+    # contract shapes) to augment the classic beat segments above. When no
+    # _sequence is bound, _composed_sequence() is [] and this is a no-op — the
+    # classic beat path stays byte-for-byte unchanged.
+    for _blk in _composed_sequence(CHANNEL_KEY_FOR_PROV):
+        _seg = _seq_segment(_blk)
+        if _seg is not None:
+            segments.append(_seg)
 
     # steps -> absolute times
     line_starts = []
