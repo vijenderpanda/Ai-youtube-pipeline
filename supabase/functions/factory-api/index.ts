@@ -2859,6 +2859,104 @@ async function handlePost(body: any): Promise<Response> {
       return json({ version: lockedRow, active: makeActive, previous_active_version_id });
     }
 
+    // unlock_template_version {template_version_id, confirm_active?:bool}
+    // "Edit a locked cast in place" — the counterpart to lock, and the owner's
+    // ask: a locked version is not a dead end. You can go INSIDE it and update it
+    // (unlock → draft → swap → re-lock), or Fork a fresh copy. This flips
+    // status locked→draft and clears locked_at, then REBUILDS the editable
+    // factory_template_assets join rows from the frozen `composition` — a version
+    // that was created and locked may have no join rows (or stale ones), so the
+    // draft editor would otherwise have nothing to swap. meta.settings is
+    // restored from composition._settings so the cast setting survives the
+    // round-trip. This is the ONLY action that turns a locked version editable.
+    //
+    // ACTIVE-CAST GUARD: if this IS the template's active_version_id, unlocking
+    // leaves production with no LOCKED active cast (build_ep_v2 only resolves
+    // through a locked version — a draft is ignored, so the build falls back to
+    // the channel locks, or refuses) until it is re-locked. That is honest but
+    // consequential, so it requires an explicit confirm_active:true; the response
+    // flags was_active either way. active_version_id is left pointing at this
+    // version so re-locking with make_active restores the pointer with no gap.
+    case "unlock_template_version": {
+      const uvId = String(body.template_version_id ?? "");
+      if (!uvId || !UUID_RE.test(uvId)) return json({ error: "template_version_id (uuid) required" }, 400);
+      const { data: uv, error: uvErr } = await db.from("factory_template_versions")
+        .select("*").eq("id", uvId).maybeSingle();
+      if (uvErr) return json({ error: uvErr.message }, 500);
+      if (!uv) return json({ error: "template version not found" }, 404);
+      if (uv.status !== "locked") {
+        return json({ error: "only a locked version can be unlocked (status: " + uv.status + ")" }, 409);
+      }
+
+      // Is this the template's ACTIVE cast? Unlocking re-opens it as a draft and
+      // production loses its locked active cast until re-lock — require confirm.
+      const { data: tplActive, error: uaErr } = await db.from("factory_templates")
+        .select("key, active_version_id").eq("key", uv.template_key).maybeSingle();
+      if (uaErr) return json({ error: uaErr.message }, 500);
+      const was_active = !!(tplActive && tplActive.active_version_id === uvId);
+      if (was_active && body.confirm_active !== true) {
+        return json({
+          error: "this is the template's active cast — unlocking re-opens it as a draft and production falls back until you re-lock it. Pass confirm_active:true to proceed.",
+          was_active: true,
+          needs_confirm: true,
+        }, 409);
+      }
+
+      // Rebuild the editable join rows from the frozen composition: one position-0
+      // row per slot (asset_type → composition[slot].version_id), skipping the
+      // _settings pseudo-slot. Delete any existing rows first so a stale/partial
+      // set does not survive alongside the rebuilt one.
+      // deno-lint-ignore no-explicit-any
+      const comp = (uv.composition ?? {}) as Record<string, any>;
+      const rebuilt: {
+        template_version_id: string; asset_type: string;
+        asset_version_id: string; position: number; note: string;
+      }[] = [];
+      for (const [slot, val] of Object.entries(comp)) {
+        if (slot === "_settings") continue;
+        const vId = val && (val.version_id ?? null);
+        if (!vId) continue;
+        rebuilt.push({
+          template_version_id: uvId, asset_type: slot, asset_version_id: String(vId),
+          position: 0, note: "restored from the locked composition",
+        });
+      }
+      const { error: delErr } = await db.from("factory_template_assets").delete()
+        .eq("template_version_id", uvId);
+      if (delErr) return json({ error: delErr.message }, 500);
+      if (rebuilt.length > 0) {
+        const { error: insErr } = await db.from("factory_template_assets").insert(rebuilt);
+        if (insErr) return json({ error: insErr.message }, 500);
+      }
+
+      // Restore cast SETTINGS onto meta.settings so the draft editor shows them
+      // and the round-trip preserves behaviour (outro_cta etc.).
+      const meta = { ...(uv.meta ?? {}) };
+      const frozenSettings = comp._settings;
+      if (frozenSettings && typeof frozenSettings === "object") {
+        meta.settings = { ...(meta.settings ?? {}), ...frozenSettings };
+      }
+
+      const { data: unlocked, error: unlErr } = await db.from("factory_template_versions")
+        .update({ status: "draft", locked_at: null, meta })
+        .eq("id", uvId).select().single();
+      if (unlErr) return json({ error: unlErr.message }, 500);
+
+      const { data: slots } = await db.from("factory_template_assets")
+        .select("*").eq("template_version_id", uvId)
+        .order("asset_type", { ascending: true }).order("position", { ascending: true });
+      await logEvent("template_version_unlocked",
+        `${uv.template_key} v${uv.version} unlocked for in-place editing` +
+          (was_active ? " (was the active cast — production falls back until re-lock)" : "") +
+          ` — ${rebuilt.length} slots restored`,
+        {
+          template_key: uv.template_key, channel_key: uv.channel_key,
+          template_version_id: uvId, version: uv.version,
+          was_active, slots: rebuilt.map((r) => r.asset_type),
+        });
+      return json({ version: unlocked, assets: slots ?? [], was_active });
+    }
+
     // retire_template_version {template_version_id, undo?:bool}
     // Shelves a cast nobody should pick up again. Refuses while it is the
     // template's ACTIVE version — silently retiring the live cast is the

@@ -7041,6 +7041,14 @@ a.out-chip:hover {
 .cast-foot-actions { display: flex; align-items: center; gap: 10px; }
 .cast-block { font-size: 12px; color: var(--danger, #E5484D); }
 
+/* "Edit a locked cast in place" — the two paths offered on a locked version:
+   update it here (unlock → draft → re-lock) vs Fork a frozen copy. Each option
+   pairs its button with one line of helper text so the choice reads distinctly. */
+.cast-edit-choice { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start; }
+.cast-edit-opt { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.cast-edit-opt .dim { max-width: 22ch; }
+.cast-edit-reproduce { max-width: 66ch; }
+
 /* ── Playable media previews (components/MediaPreview.jsx) ──────────────────
    The owner's rule: "I should be able to feel them before I choose them." So a
    music bed is heard, an outro sting is watched, and a Remotion composition

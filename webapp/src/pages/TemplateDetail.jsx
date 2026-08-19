@@ -28,6 +28,7 @@ import EmptyState from '../components/EmptyState'
 import MediaPreview, { sampleNoteOf, previewSourceFor } from '../components/MediaPreview'
 import ShotRoleChips from '../components/ShotRoleChips'
 import Toast, { useToast } from '../components/Toast'
+import ConfirmDialog from '../components/ConfirmDialog'
 
 /**
  * TemplateDetail — one factory_templates row.
@@ -325,6 +326,7 @@ export default function TemplateDetail() {
   const [swapFor, setSwapFor] = useState(null) // asset_type whose picker is open
   const [regenFor, setRegenFor] = useState(null) // revision id the "new from this" form is open on
   const [showAllSlots, setShowAllSlots] = useState(false)
+  const [unlockConfirm, setUnlockConfirm] = useState(false) // active-cast unlock confirm dialog
   const [busy, setBusy] = useState(null)
 
   const templates = (tplQ.data && tplQ.data.templates) || []
@@ -558,6 +560,34 @@ export default function TemplateDetail() {
       { action: 'lock_template_version', template_version_id: selected.id, make_active: true },
       'lock',
     )
+
+  // "Edit this cast" — the counterpart to Fork. Unlock this exact version back to
+  // a draft so the existing swap/settings/Lock UI takes over and the owner edits
+  // in place, then re-locks. confirm_active is only sent for the ACTIVE cast,
+  // where re-opening it means production falls back until re-lock. The refresh
+  // (mirrors lockCast/swapTo) flips the whole panel to draft/editable.
+  const unlockCast = (confirmActive) =>
+    post(
+      {
+        action: 'unlock_template_version',
+        template_version_id: selected.id,
+        ...(confirmActive ? { confirm_active: true } : {}),
+      },
+      'unlock',
+      (res) => {
+        if (res && res.version) setSelId(res.version.id)
+        setUnlockConfirm(false)
+        setSwapFor(null)
+        setRegenFor(null)
+      },
+    )
+
+  // A non-active locked version unlocks with no ceremony. The active cast is the
+  // one production renders, so it gets the warning dialog first.
+  const editCast = () => {
+    if (isActive) setUnlockConfirm(true)
+    else unlockCast(false)
+  }
 
   const retireCast = (id) =>
     post({ action: 'retire_template_version', template_version_id: id }, 'retire:' + id, () =>
@@ -1183,14 +1213,21 @@ export default function TemplateDetail() {
                 {isDraft ? (
                   <p className="dim small">
                     Locking freezes each pick’s build reference into this version and makes it the
-                    cast production renders with. Locked versions never change — to alter the cast,
-                    fork again.
+                    cast production renders with. You can re-open a locked version to edit it in
+                    place, or fork a fresh copy.
                   </p>
                 ) : (
-                  <p className="dim small">
-                    Locked {selected.locked_at ? 'and frozen' : ''} — this is a permanent snapshot.
-                    Fork it to change a slot.
-                  </p>
+                  <>
+                    <p className="dim small">
+                      Locked {selected.locked_at ? 'and frozen' : ''} — production renders this cast
+                      as-is. Change it two ways: edit this version in place, or fork a fresh copy and
+                      leave this one frozen.
+                    </p>
+                    <p className="dim small cast-edit-reproduce">
+                      Editing changes what any episode pinned to this cast re-renders as. To keep
+                      this version frozen for past episodes, Fork instead.
+                    </p>
+                  </>
                 )}
                 {isDraft && deadPicks.length > 0 && (
                   <p className="cast-block">
@@ -1213,6 +1250,34 @@ export default function TemplateDetail() {
                 )}
               </div>
               <div className="cast-foot-actions">
+                {isLocked && (
+                  <div className="cast-edit-choice">
+                    <div className="cast-edit-opt">
+                      <button
+                        type="button"
+                        className="btn-primary"
+                        disabled={busy === 'unlock' || busy === 'fork'}
+                        onClick={editCast}
+                        title="Re-open this exact version as a draft so you can swap slots and re-lock it"
+                      >
+                        {busy === 'unlock' ? 'Opening…' : 'Edit this cast'}
+                      </button>
+                      <span className="dim small">Update this version in place</span>
+                    </div>
+                    <div className="cast-edit-opt">
+                      <button
+                        type="button"
+                        className="btn-ghost"
+                        disabled={busy === 'fork' || busy === 'unlock' || !channelKey}
+                        onClick={fork}
+                        title="Copy this cast into a new draft and leave this version frozen"
+                      >
+                        {busy === 'fork' ? 'Forking…' : 'Fork a new version'}
+                      </button>
+                      <span className="dim small">Leave this frozen, start a copy</span>
+                    </div>
+                  </div>
+                )}
                 {!isActive && (
                   <button
                     type="button"
@@ -1249,6 +1314,26 @@ export default function TemplateDetail() {
       <div className="tpl-manage">
         <Link className="link" to="/assets">Manage frames →</Link>
       </div>
+
+      {unlockConfirm && selected && (
+        <ConfirmDialog
+          title="Edit the active cast?"
+          confirmLabel="Edit this cast"
+          danger
+          busy={busy === 'unlock'}
+          onConfirm={() => unlockCast(true)}
+          onCancel={() => setUnlockConfirm(false)}
+        >
+          <p>
+            This is the <b>active cast</b> production renders with. Editing it re-opens it as a
+            draft, and production falls back until you re-lock it.
+          </p>
+          <p className="dim small">
+            Editing also changes what any episode pinned to this cast re-renders as. To keep this
+            version frozen, cancel and Fork a new version instead.
+          </p>
+        </ConfirmDialog>
+      )}
 
       <Toast toast={toast} />
     </div>
