@@ -13,6 +13,7 @@ import {
 } from "remotion";
 import { fitFont, splitHook } from "./components/fitText";
 import { StatBars, StatBarsProps } from "./components/StatBars";
+import { CookbookBlock } from "./cookbook/components";
 import {
   BuildRail,
   ChapterCard,
@@ -32,7 +33,7 @@ export type Seg = {
   src?: string;
   dur: number;
   kind?: "video" | "image" | "statBars" | "pipCallout" | "splitWide" | "recFull"
-    | "chapterCard" | "pauseCard" | "recipeCard";
+    | "chapterCard" | "pauseCard" | "recipeCard" | "cookbook";
   from?: number;
   /* per-beat pane mode (newsSplit only): "split" b-roll top + host bottom,
      "full" b-roll full-frame, "host" host full-frame */
@@ -41,6 +42,12 @@ export type Seg = {
      beats render the native 1080x1920 component, never a cover-fit image).
      stat.start is relative to THIS beat (Sequence-local frames). */
   stat?: StatBarsProps;
+  /* kind "cookbook": a graphical b-roll component from the visual cookbook
+     (cookbook/registry.ts). `id` = the component export name (e.g. "LineReveal");
+     `props` = that component's JSON-safe props; `transparent` overlays it on the
+     host/b-roll instead of its own backdrop. Rendered native in-comp via
+     CookbookBlock, exactly like statBars — never pre-baked. */
+  cookbook?: { id: string; props?: Record<string, unknown>; transparent?: boolean };
   /* kind "pipCallout" (v16 Vaibhav-DNA): the flagship numbered-list layout.
      `src` = the b-roll top zone (product screencap, video or image, cover-fit).
      `pip` = the host talking-head clip shown as a rounded-square PIP bottom-left.
@@ -1225,6 +1232,12 @@ export const Short: React.FC<ShortProps> = (props) => {
                 <FramedHost seg={seg} fps={fps} ranked={ranked} />
               ) : seg.kind === "statBars" && seg.stat ? (
                 <StatBars {...seg.stat} />
+              ) : seg.kind === "cookbook" && seg.cookbook ? (
+                <CookbookBlock
+                  id={seg.cookbook.id}
+                  props={seg.cookbook.props}
+                  transparent={seg.cookbook.transparent}
+                />
               ) : seg.kind === "image" ? (
                 <Img src={res(seg.src!)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               ) : seg.frame === "phone" ? (
