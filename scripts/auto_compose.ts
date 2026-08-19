@@ -113,14 +113,18 @@ function compose(scene: Scene, position: number, versionId: string): { block: Bl
     role: scene.role, minWow: scene.minWow, transparent: scene.transparent,
   };
   const [top] = pickCookbook(intent, 1);
-  if (!top) {
+  // Never drop a scene: replace mode is 1 scene : 1 VO line, so a line that
+  // matches nothing still composes — KineticQuote carries a spoken phrase — at
+  // 0 confidence so the manifest/review flags it. (A hard role/minWow filter
+  // that matches nothing is the operator's own constraint, so still fail there.)
+  if (!top && (scene.role || scene.minWow != null || scene.transparent)) {
     throw new Error(
-      `scene ${position}: no cookbook component matched intent ${JSON.stringify(intent)} ` +
-      `— loosen role/minWow or add keywords`,
+      `scene ${position}: no component satisfies role/minWow/transparent ` +
+      `${JSON.stringify(intent)} — loosen the filter or add keywords`,
     );
   }
-  const id = top.entry.id;
-  const confidence = confidenceOf(top.score);
+  const id = top ? top.entry.id : "KineticQuote";
+  const confidence = top ? confidenceOf(top.score) : 0;
   const block_type = scene.block_type || "broll";
   const layout = scene.layout !== undefined
     ? scene.layout
@@ -140,7 +144,8 @@ function compose(scene: Scene, position: number, versionId: string): { block: Bl
   return {
     block: { action: "set_template_version_block", template_version_id: versionId,
              position, block_type, layout, cookbook_id: id, config },
-    pick: { position, id, score: top.score, confidence, why: top.why, line: scene.line },
+    pick: { position, id, score: top ? top.score : 0, confidence,
+            why: top ? top.why : ["fallback: no keyword match"], line: scene.line },
   };
 }
 

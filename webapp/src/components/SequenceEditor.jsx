@@ -198,9 +198,11 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
       const existing = sorted.map((b) => b.position)
       for (let i = 0; i < lines.length; i++) {
         const [top] = pickCookbook({ beat: beatOf(i, lines.length), keywords: kwOf(lines[i]) }, 1)
-        if (!top) continue
-        const id = top.entry.id
-        const confidence = Math.min(1, Math.round((top.score / 8) * 100) / 100)
+        // Never skip a line: replace mode is 1 scene : 1 VO line, so a line that
+        // matches nothing still gets a scene — KineticQuote carries a spoken
+        // phrase — flagged at 0 confidence so review catches it.
+        const id = top ? top.entry.id : 'KineticQuote'
+        const confidence = top ? Math.min(1, Math.round((top.score / 8) * 100) / 100) : 0
         await put(i, 'broll', 'full-broll', { cookbook: { id, props: demos[id] || {} }, line: lines[i], confidence }, 'auto:' + i)
       }
       for (const pos of existing.filter((p) => p >= lines.length)) {
