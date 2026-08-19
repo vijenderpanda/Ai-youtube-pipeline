@@ -2087,6 +2087,10 @@ async function handlePost(body: any): Promise<Response> {
     // and is threaded to finalize via the job's meta so both agree.
     case "produce_preview": {
       const { calendar_id } = body;
+      // S4 (Sprint 5) auto-mode: run all beats with minimal review. Persisted to
+      // the calendar row + job.meta so the worker honours it; the ARM GATE stays a
+      // human go — finalize_episode / arm_post NEVER read this flag.
+      const auto_mode = body.auto_mode === true;
       let ep = body.ep === undefined || body.ep === null ? "" : String(body.ep).trim();
       if (!calendar_id || !UUID_RE.test(String(calendar_id))) {
         return json({ error: "calendar_id (uuid) required" }, 400);
@@ -2149,7 +2153,7 @@ async function handlePost(body: any): Promise<Response> {
           effort: item.effort,
           ultracode: item.ultracode,
           status: "queued",
-          meta: { calendar_id: item.id, ep, template_version_id: activeVersionId },
+          meta: { calendar_id: item.id, ep, template_version_id: activeVersionId, auto_mode },
         })
         .select().single();
       if (jobErr) return json({ error: jobErr.message }, 500);
@@ -2159,7 +2163,7 @@ async function handlePost(body: any): Promise<Response> {
       // finalize's --calendar-id resolves it (no-op when a pin was already set).
       const { data: updated, error: updErr } = await db.from("factory_calendar")
         .update({ status: "queued", production_mode: "direct", job_id: job.id,
-                  template_version_id: activeVersionId })
+                  template_version_id: activeVersionId, auto_mode })
         .eq("id", calendar_id).select().single();
       if (updErr) return json({ error: updErr.message }, 500);
       await logEvent(

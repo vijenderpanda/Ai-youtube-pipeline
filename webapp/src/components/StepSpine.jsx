@@ -335,6 +335,48 @@ function LiveProducePanel({ job, assets = [], accent }) {
   )
 }
 
+// S6 (Sprint 5): the pre-produce GENERATION MANIFEST — every asset the build will
+// make, each linked to its scene(s), free|paid, low-confidence flagged. Populated
+// by build_ep_v2 --manifest (persisted to factory_calendar.generation_manifest);
+// null until a produce/manifest run has stamped it.
+function ManifestPanel({ manifest }) {
+  if (!manifest || !Array.isArray(manifest.assets)) return null
+  const paid = manifest.paid_asset_count ?? manifest.assets.filter((a) => a.cost === 'paid').length
+  const low = manifest.low_confidence_scenes || []
+  return (
+    <div className="card" style={{ marginTop: 12 }}>
+      <div className="step-tag">
+        Generation manifest · {manifest.assets.length} assets · {paid} paid · {manifest.sequence_mode || 'augment'}
+      </div>
+      {low.length > 0 && (
+        <div className="small" style={{ color: '#e0a84a', margin: '4px 0' }}>
+          ⚠ {low.length} low-confidence scene{low.length === 1 ? '' : 's'} — review before producing
+        </div>
+      )}
+      <ul style={{ listStyle: 'none', padding: 0, margin: '8px 0 0', display: 'grid', gap: 4 }}>
+        {manifest.assets.map((a, i) => (
+          <li key={i} style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13 }}>
+            <span className="tag" style={{ minWidth: 78 }}>{a.type}</span>
+            {a.id && <span style={{ fontWeight: 600 }}>{a.id}</span>}
+            {a.scene != null && <span className="dim small">scene {a.scene}</span>}
+            {a.confidence != null && (
+              <span className="dim small" style={a.confidence < 0.5 ? { color: '#e0a84a' } : undefined}>
+                {Math.round(a.confidence * 100)}%
+              </span>
+            )}
+            <span
+              className="tag"
+              style={{ marginLeft: 'auto', color: a.cost === 'paid' ? 'var(--ch)' : 'var(--text-3)' }}
+            >
+              {a.cost}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 export default function StepSpine({
   item,
   counts = {},
@@ -378,6 +420,9 @@ export default function StepSpine({
   // Local view-navigation only (no pipeline state): a direct-mode reviewer can
   // jump the QC step forward to the Arm confirm without waiting for a re-poll.
   const [peek, setPeek] = useState(null)
+  // S7 (Sprint 5): auto-mode toggle — produce all beats with minimal review.
+  // View state (like peek); passed to onProduce, which sends it to produce_preview.
+  const [autoMode, setAutoMode] = useState(!!(item && item.auto_mode))
   useEffect(() => {
     setPeek(null)
   }, [step])
@@ -607,6 +652,17 @@ export default function StepSpine({
             </p>
           ) : null}
         </div>
+        {item && item.generation_manifest && <ManifestPanel manifest={item.generation_manifest} />}
+        <label
+          className="auto-mode-toggle"
+          style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 13 }}
+        >
+          <input type="checkbox" checked={autoMode} onChange={(e) => setAutoMode(e.target.checked)} />
+          <span>
+            Auto-mode — produce all beats with minimal review{' '}
+            <span className="dim">(still stops at the arm gate for your go)</span>
+          </span>
+        </label>
       </>
     )
   } else if (effStep === 'arm') {
@@ -699,11 +755,11 @@ export default function StepSpine({
       <>
         <button
           className="btn btn-primary"
-          onClick={onProduce}
+          onClick={() => onProduce(autoMode)}
           disabled={previewDisabled || !!busy}
           title={previewTitle}
         >
-          {busy === 'preview' ? 'Producing…' : 'Use this template & produce →'}
+          {busy === 'preview' ? 'Producing…' : autoMode ? 'Auto-produce →' : 'Use this template & produce →'}
         </button>
         {tpl && (
           <Link className="btn btn-ghost" to={`/studio/templates/${tpl.key}`}>

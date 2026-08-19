@@ -1890,7 +1890,7 @@ def _sequence_mode():
     return m if m in ("replace", "augment") else "augment"
 
 
-def _emit_manifest(ep, tag, cfg, replace_scenes, calendar_id):
+def _emit_manifest(ep, tag, cfg, replace_scenes, calendar_id, quiet=False):
     """Sprint-5 --manifest: build the pre-render GENERATION MANIFEST for REVIEW and
     (when calendar_id) persist it to factory_calendar.generation_manifest — WITHOUT
     rendering or spending on VO/HeyGen. Lists every asset the build WILL make, each
@@ -1977,7 +1977,8 @@ def _emit_manifest(ep, tag, cfg, replace_scenes, calendar_id):
     print(f">> MANIFEST — {len(assets)} assets, {manifest['paid_asset_count']} paid, "
           f"mode={manifest['sequence_mode']}, {n} scenes"
           + (f", {len(low_conf)} low-confidence" if low_conf else ""))
-    print(json.dumps(manifest, indent=1))
+    if not quiet:
+        print(json.dumps(manifest, indent=1))
     if calendar_id:
         try:
             _supa().patch("factory_calendar", f"id=eq.{calendar_id}",
@@ -2578,6 +2579,15 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         print(f">> PREVIEW mode — stopped after raw: {raw}")
         _flush_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
         _flush_sequence_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
+        # S6 (Sprint 5): stamp the generation manifest onto the calendar row so the
+        # review board can show what this produce made (scene-linked, free|paid,
+        # low-confidence). Additive + never fails the produce (render already done).
+        if calendar_id:
+            try:
+                _rs = _composed_sequence(CHANNEL_KEY_FOR_PROV) if _sequence_mode() == "replace" else []
+                _emit_manifest(ep, tag, cfg, _rs, calendar_id, quiet=True)
+            except Exception as e:
+                print(f"!! manifest stamp skipped ({e}) — render is unaffected")
         return raw
 
     # 5) master: sidechain-ducked music + limiter
