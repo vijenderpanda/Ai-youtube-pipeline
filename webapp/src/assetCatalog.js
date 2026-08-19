@@ -106,6 +106,75 @@ export function heygenHealth(v) {
   }
 }
 
+/* ── Shot roles & format fit (EP15 cast-fidelity) ──────────────────────────
+ * A host_outfit only renders the SHOTS its meta.heygen declares. A Short needs
+ * two photo-avatar frames — `pip` (the callout box) and `wide` (the framed
+ * host) — which build_ep_v2 reads as .heygen_photo_id_pip / _wide. A long-form
+ * host (outfit_12_longform_olive) declares only `closeup` / `rest`, so it can
+ * NOT render a Short: that is the exact EP15 trap where the composer let an
+ * unrenderable cast be locked and the build silently shipped a different host.
+ *
+ * The role signal already lives in the row — meta.heygen's non-`pool_live`,
+ * non-`*_state` string keys ARE the shot roles. This mirrors heygenHealth's
+ * parsing so liveness and coverage read the same field the same way.
+ */
+
+/**
+ * The shot roles an outfit provides (['pip','wide'] for a Short host,
+ * ['rest','closeup'] for a long-form one). Every key of meta.heygen that maps
+ * to a plain string and is neither `pool_live` nor a `*_state` health flag is a
+ * shot role. Returns [] when the row has no meta.heygen (nothing to read) — so
+ * a slot with no recorded roles is treated as "unknown", never "incapable".
+ */
+export function shotRolesOf(v) {
+  const h = v && v.meta && v.meta.heygen
+  if (!h || typeof h !== 'object') return []
+  return Object.keys(h).filter(
+    (k) => k !== 'pool_live' && !k.endsWith('_state') && typeof h[k] === 'string',
+  )
+}
+
+/** A Short (9:16, the ai-unpacked-v16 avatar style) needs both frames. */
+export const SHORT_SHOT_ROLES = ['pip', 'wide']
+
+/**
+ * The shot roles a TEMPLATE's format requires of its host. 9:16 (or anything we
+ * cannot classify) is treated as a Short and needs pip+wide — a fail-safe,
+ * because the silent EP15 ship was a long-form host passing as short-capable, so
+ * "unknown ⇒ require the Short frames" is the safe default. An explicit 16:9
+ * long-form template imposes no Short requirement (returns []).
+ */
+export function requiredShotRoles(tpl) {
+  const aspect = tpl && tpl.aspect ? String(tpl.aspect) : ''
+  if (aspect === '16:9') return []
+  return SHORT_SHOT_ROLES
+}
+
+/**
+ * Can this revision render a format that needs `required` shot roles?
+ * Only host_outfit rows carry shot roles, so every other asset_type fits by
+ * definition (it has none to be missing). A host with NO recorded roles also
+ * fits — absence of meta.heygen is unknown, not proof of incapability, and
+ * older rows predate the field; we only BLOCK when roles are recorded and a
+ * required one is genuinely absent (the outfit_12 case).
+ *
+ * Returns { fits, missing:[], warn }. warn is the human reason shown on the
+ * tile / lock foot / picker and used as the accessible title.
+ */
+export function shotCoverage(v, required = SHORT_SHOT_ROLES) {
+  if (!v || v.asset_type !== 'host_outfit') return { fits: true, missing: [], warn: '' }
+  if (!required || required.length === 0) return { fits: true, missing: [], warn: '' }
+  const roles = shotRolesOf(v)
+  if (roles.length === 0) return { fits: true, missing: [], warn: '' }
+  const missing = required.filter((r) => !roles.includes(r))
+  if (missing.length === 0) return { fits: true, missing: [], warn: '' }
+  return {
+    fits: false,
+    missing,
+    warn: `long-form host — no ${missing.join('/')}; can’t render this short`,
+  }
+}
+
 /* ── Usage backlinks (Phase 3) ────────────────────────────────────────────
  * `?r=asset_backlinks` returns usage keyed by factory_asset_versions.id, built
  * from factory_episode_assets_used — what a build ACTUALLY resolved, not what

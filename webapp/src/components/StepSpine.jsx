@@ -1,10 +1,11 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { RENDERS_BASE } from '../config'
-import { assetLabel, isImagePath, kindOf } from '../assetCatalog'
+import { assetLabel, isImagePath, kindOf, requiredShotRoles } from '../assetCatalog'
 import { mediaKind, fileExt } from '../mediaKind'
 import { resolveStage } from '../pipeline'
 import PipelineRail from './PipelineRail'
+import CastReconciliation from './CastReconciliation'
 import { fmtDayHeading } from '../format'
 
 /**
@@ -351,6 +352,7 @@ export default function StepSpine({
   producing = false,
   produceJob = null,
   producedAssets = [],
+  builtRows = null,
   planning = false,
   planFailed = false,
   planFailReason = '',
@@ -422,6 +424,28 @@ export default function StepSpine({
   const lockFrames = lockedFrames(assets, channelKey)
   const frames = effCast ? castFrames(effCast, lockFrames) : lockFrames
   const hasFrames = frames.some((f) => f.coverUrl)
+
+  // ── Cast reconciliation (EP15) — shown once produced, on the review steps.
+  // Diffs what the piece is pinned to against what the build used; the only
+  // ground truth for "used" is factory_episode_assets_used, which has no
+  // per-episode read yet, so it renders the divergences provable now (a refused
+  // cast, a host that can't render this format) and marks the Built column
+  // honestly. `brandVersions` carries meta.heygen so the host's shotCoverage can
+  // be checked from the pinned version_id.
+  const reqRoles = requiredShotRoles(tpl)
+  const reconEl =
+    item && item.preview_path && (effStep === 'qc' || effStep === 'arm' || effStep === 'live') ? (
+      <CastReconciliation
+        item={item}
+        pickedCast={pickedCast}
+        effCast={effCast}
+        deadPin={deadPin}
+        boundId={boundId}
+        brandVersions={(assets && assets.versions) || []}
+        reqRoles={reqRoles}
+        builtRows={builtRows}
+      />
+    ) : null
 
   // Only locked casts are offered. Drafts stay visible but disabled (you can
   // see the work in progress; you cannot ship it). Retired casts are noise
@@ -743,7 +767,10 @@ export default function StepSpine({
   return (
     <div className="step-spine" style={style}>
       <PipelineRail current={stage} accent={accent} />
-      <div className="step-panel">{panel}</div>
+      <div className="step-panel">
+        {panel}
+        {reconEl}
+      </div>
       {foot && <div className="step-foot">{foot}</div>}
     </div>
   )

@@ -17,6 +17,8 @@ import {
   hasCover,
   lineageOf,
   heygenHealth,
+  shotCoverage,
+  requiredShotRoles,
   usageOf,
   usageBadge,
   usageTitle,
@@ -24,6 +26,7 @@ import {
 } from '../assetCatalog'
 import EmptyState from '../components/EmptyState'
 import MediaPreview, { sampleNoteOf } from '../components/MediaPreview'
+import ShotRoleChips from '../components/ShotRoleChips'
 import Toast, { useToast } from '../components/Toast'
 
 /**
@@ -312,6 +315,13 @@ export default function TemplateDetail() {
   const chan = tpl ? templateForChannel(channels, tpl.key) : null
   const channelKey = chan ? chan.key : null
 
+  // The shot roles THIS template's format demands of its host. A Short needs
+  // pip+wide; unknown formats default to the Short roles (fail-safe). `isShort`
+  // gates the ✓/⚠ fit badge — a non-Short template has no Short requirement to
+  // assert, so the badge would be meaningless there.
+  const reqRoles = useMemo(() => requiredShotRoles(tpl), [tpl])
+  const isShort = reqRoles.length > 0
+
   const accents = useMemo(() => resolveAccents(channels), [channels])
   const accent = channelKey ? accentFor(channelKey, accents) : null
   const emoji = channelKey ? channelEmoji(channelKey) : null
@@ -409,13 +419,16 @@ export default function TemplateDetail() {
       const slot = castByType[type]
       if (!slot || !slot.pick) continue
       const rev = revById[slot.pick.asset_version_id] || null
-      out.push({ type, rev, health: heygenHealth(rev) })
+      out.push({ type, rev, health: heygenHealth(rev), cov: shotCoverage(rev, reqRoles) })
     }
     return out
-  }, [slotRows, castByType, revById])
+  }, [slotRows, castByType, revById, reqRoles])
 
   const deadPicks = chosen.filter((c) => c.health.dead)
   const missingRev = chosen.filter((c) => !c.rev)
+  // A host that structurally cannot render this format (long-form host on a
+  // Short) — the EP15 cast. Blocks the lock exactly like a freed HeyGen id.
+  const unfitPicks = chosen.filter((c) => c.rev && !c.cov.fits)
 
   const post = async (bodyObj, tag, after) => {
     setBusy(tag)
@@ -729,31 +742,54 @@ export default function TemplateDetail() {
                 eyeballable. Not a render — no credits are spent here. */}
             {chosen.length > 0 && (
               <div className="cast-strip">
-                {chosen.map(({ type, rev, health }) => (
-                  <div
-                    key={type}
-                    className={'cast-strip-tile' + (health.dead ? ' cast-dead' : '')}
-                  >
-                    <MediaPreview
-                      assetType={type}
-                      version={rev}
-                      size="tile"
-                      className="cast-strip-cover"
-                      name={assetLabel(type) + (rev ? ' v' + rev.version : '')}
-                    />
-                    <div className="cast-strip-label">{assetLabel(type)}</div>
-                    <div className="dim small">
-                      {rev ? 'v' + rev.version : 'missing revision'}
+                {chosen.map(({ type, rev, health, cov }) => {
+                  const isOutroSlot = (SLOTS[type] || {}).buildKey === 'outro_src'
+                  // The pick's OWN slot decides whether it is a per-episode
+                  // question card (it may sit in the outro_sting row) — an Auto
+                  // spoken CTA over a card that already asks a question is the
+                  // exact silent EP15 collision.
+                  const pickSlot = rev && SLOTS[rev.asset_type]
+                  const pickIsCard =
+                    !!(pickSlot && pickSlot.perEpisode && pickSlot.buildKey === 'outro_src')
+                  return (
+                    <div
+                      key={type}
+                      className={'cast-strip-tile' + (health.dead || !cov.fits ? ' cast-dead' : '')}
+                    >
+                      <MediaPreview
+                        assetType={type}
+                        version={rev}
+                        size="tile"
+                        className="cast-strip-cover"
+                        name={assetLabel(type) + (rev ? ' v' + rev.version : '')}
+                      />
+                      <div className="cast-strip-label">{assetLabel(type)}</div>
+                      <div className="dim small">
+                        {rev ? 'v' + rev.version : 'missing revision'}
+                      </div>
+                      {/* Shot roles + fit, so a long-form host in the cast is
+                          obvious at a glance rather than one look-alike cover. */}
+                      <ShotRoleChips version={rev} required={reqRoles} showFit={isShort} />
+                      {/* The outro ships with more than its frames when
+                          outro_cta is set. If the pick is a question card, a
+                          spoken CTA COLLIDES with it — warn instead of reassure. */}
+                      {ctaOn && isOutroSlot && (
+                        pickIsCard ? (
+                          <span
+                            className="chip cast-strip-conflict"
+                            title="This card already asks a question; an Auto spoken CTA talks over it. Pick one — set the outro CTA to Off, or choose a plain outro sting."
+                          >
+                            ⚠ CTA talks over this card
+                          </span>
+                        ) : (
+                          <span className="chip cast-strip-add" title={ctaSummary(outroCta)}>
+                            ＋ spoken CTA
+                          </span>
+                        )
+                      )}
                     </div>
-                    {/* The outro ships with more than its frames when
-                        outro_cta is set — say so on the tile. */}
-                    {ctaOn && (SLOTS[type] || {}).buildKey === 'outro_src' && (
-                      <span className="chip cast-strip-add" title={ctaSummary(outroCta)}>
-                        ＋ spoken CTA
-                      </span>
-                    )}
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
 
@@ -763,6 +799,7 @@ export default function TemplateDetail() {
                 const pick = slot && slot.pick
                 const rev = pick ? revById[pick.asset_version_id] : null
                 const health = heygenHealth(rev)
+                const cov = shotCoverage(rev, reqRoles)
                 const wiring = wiringOf(type)
                 const froz = frozen[type]
                 // Offer every revision that feeds this slot's build key, not just
@@ -821,7 +858,15 @@ export default function TemplateDetail() {
                           {!health.dead && health.warn && (
                             <span className="chip cast-warn">{health.warn}</span>
                           )}
+                          {rev && !cov.fits && (
+                            <span className="chip cast-warn-dead" title={cov.warn}>
+                              can’t render this short
+                            </span>
+                          )}
                         </div>
+                        {/* Shot roles the picked host provides (self-hidden for
+                            non-host slots) — the piece the library never showed. */}
+                        <ShotRoleChips version={rev} required={reqRoles} showFit={isShort} />
                         {sampleNote && (
                           <div className="dim small cast-slot-note" title={sampleNote}>
                             ▶ {sampleNote}
@@ -855,17 +900,22 @@ export default function TemplateDetail() {
                         )}
                         {opts.map((o) => {
                           const h = heygenHealth(o)
+                          // Structural fit: a long-form host cannot render this
+                          // Short (no pip/wide). Blocks selection like a freed id.
+                          const cov = shotCoverage(o, reqRoles)
                           const retired = o.status === 'retired'
                           const noRef = !(o.meta && o.meta.build_ref)
                           const isPick = pick && pick.asset_version_id === o.id
-                          const blocked = h.dead || retired || noRef
+                          const blocked = h.dead || !cov.fits || retired || noRef
                           const why = h.dead
                             ? h.reason
-                            : retired
-                              ? 'Retired revision'
-                              : noRef
-                                ? 'No build_ref — the build cannot resolve it'
-                                : h.warn || 'Use this revision'
+                            : !cov.fits
+                              ? cov.warn
+                              : retired
+                                ? 'Retired revision'
+                                : noRef
+                                  ? 'No build_ref — the build cannot resolve it'
+                                  : h.warn || 'Use this revision'
                           // Track record. Absent = not recorded, so we render
                           // nothing rather than a "0 eps" that would read as
                           // "never used".
@@ -930,6 +980,10 @@ export default function TemplateDetail() {
                                   )}
                                 </span>
                                 <span className="dim small">{o.label || assetLabel(type)}</span>
+                                {/* Shot roles + fit badge — one source of truth
+                                    with the block above (both use shotCoverage).
+                                    Self-hidden for non-host candidates. */}
+                                <ShotRoleChips version={o} required={reqRoles} showFit={isShort} />
                                 {blocked && <span className="cast-opt-why">{why}</span>}
                                 {isPick && !blocked && <span className="cast-opt-why">current pick</span>}
                                 {/* Some slots have a real generator behind them,
@@ -1061,6 +1115,13 @@ export default function TemplateDetail() {
                     no longer exists — re-pick it.
                   </p>
                 )}
+                {isDraft && unfitPicks.length > 0 && (
+                  <p className="cast-block">
+                    {unfitPicks.map((d) => assetLabel(d.type)).join(', ')} is a long-form host with
+                    no pip/wide frames — a short can’t render it. Swap in a short-fit host before
+                    locking. (This is the EP15 trap: a cast that can’t build.)
+                  </p>
+                )}
               </div>
               <div className="cast-foot-actions">
                 {!isActive && (
@@ -1082,7 +1143,8 @@ export default function TemplateDetail() {
                       busy === 'lock' ||
                       chosen.length === 0 ||
                       deadPicks.length > 0 ||
-                      missingRev.length > 0
+                      missingRev.length > 0 ||
+                      unfitPicks.length > 0
                     }
                     onClick={lockCast}
                   >

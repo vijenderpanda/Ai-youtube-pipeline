@@ -920,7 +920,7 @@ async function handleGet(url: URL): Promise<Response> {
       if (!calendarId || !UUID_RE.test(calendarId)) {
         return json({ error: "calendar_id (uuid) required" }, 400);
       }
-      const [item, assets, jobs] = await Promise.all([
+      const [item, assets, jobs, provenance] = await Promise.all([
         db.from("factory_calendar").select("*").eq("id", calendarId).maybeSingle(),
         db.from("factory_assets").select("*").eq("calendar_id", calendarId)
           .order("created_at", { ascending: false }),
@@ -936,11 +936,19 @@ async function handleGet(url: URL): Promise<Response> {
           .in("type", [...STAGED_JOB_TYPES, "produce_preview", "shell_script"])
           .eq("meta->>calendar_id", calendarId)
           .order("created_at", { ascending: false }),
+        // Cast reconciliation: what the build ACTUALLY resolved per slot
+        // (factory_episode_assets_used), so the produced piece can be diffed
+        // against its locked cast and a silent host/outro swap is legible.
+        db.from("factory_episode_assets_used")
+          .select("asset_type, version_id, build_ref, resolved_from, build_tag, created_at")
+          .eq("calendar_id", calendarId)
+          .order("created_at", { ascending: false }),
       ]);
       const err = item.error || assets.error || jobs.error;
       if (err) return json({ error: err.message }, 500);
       if (!item.data) return json({ error: "calendar item not found" }, 404);
-      return json({ item: item.data, assets: assets.data, jobs: jobs.data });
+      return json({ item: item.data, assets: assets.data, jobs: jobs.data,
+                    provenance: provenance.data || [] });
     }
 
     case "events": {

@@ -118,6 +118,8 @@ export default function StudioBoard() {
   const item = (boardQ.data && boardQ.data.item) || null
   const assets = (boardQ.data && boardQ.data.assets) || []
   const jobs = (boardQ.data && boardQ.data.jobs) || []
+  // Phase 4: what the build ACTUALLY resolved per slot (cast reconciliation).
+  const builtRows = (boardQ.data && boardQ.data.provenance) || null
 
   // Phase B — the step-spine PLAN panel shows the channel's resolved template
   // card + its locked brand frames. Templates are the whole registry; brand
@@ -994,6 +996,7 @@ export default function StudioBoard() {
             producing={producing}
             produceJob={previewJobDirect}
             producedAssets={ordered}
+            builtRows={builtRows}
             planning={planning}
             planFailed={planFailed}
             planFailReason={planFailReason}

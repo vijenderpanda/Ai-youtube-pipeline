@@ -15,6 +15,7 @@ import {
 } from '../assetCatalog'
 import EmptyState from '../components/EmptyState'
 import MediaPreview, { hasPreview, sampleNoteOf } from '../components/MediaPreview'
+import ShotRoleChips from '../components/ShotRoleChips'
 import Toast, { useToast } from '../components/Toast'
 import { fmtDate } from '../format'
 
@@ -205,6 +206,13 @@ export default function Assets() {
                       {vers.length} revision{vers.length > 1 ? 's' : ''}
                     </span>
                   </div>
+                  {/* Shot roles + short/long-form fit for the fronted host —
+                      so a long-form host (no pip/wide) is legible from the
+                      board, not hidden behind one look-alike cover. Self-hidden
+                      for non-host slots. Default Short roles: this channel's
+                      hosts are all for Shorts. */}
+                  <ShotRoleChips version={head} />
+
                   {!hasCover(kind) && buildRef && (
                     <div className="asset-buildref mono">{buildRef}</div>
                   )}
@@ -361,6 +369,10 @@ export default function Assets() {
                               name={assetLabel(type) + ' v' + v.version}
                             />
                             <span className="dim small">v{v.version}</span>
+                            {/* fit-only badge per host revision (roles chip lives
+                                on the card head above) so each audition candidate
+                                still says whether it can render a short */}
+                            <ShotRoleChips version={v} className="shot-roles-aud" />
                           </span>
                         ))}
                       </div>
