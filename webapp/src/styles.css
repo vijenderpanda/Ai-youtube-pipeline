@@ -7723,3 +7723,55 @@ a.out-chip:hover {
   font-size: 12px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .looks-swap .opt .cu { font-family: var(--mono); font-size: 9.5px; color: var(--ok); }
+
+/* ── SCOREBOARD — hit, flop, or too early ──────────────────────────────── */
+.score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; }
+@media (max-width: 900px) { .score-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 620px) { .score-grid { grid-template-columns: 1fr; } }
+
+.score {
+  background: var(--input-bg); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 14px;
+}
+.score.early { border-color: rgba(94, 198, 214, 0.3); color: #5ec6d6; }
+.score.hit { border-color: rgba(92, 192, 138, 0.34); color: var(--ok); }
+.score.flop { border-color: rgba(223, 111, 104, 0.32); color: var(--dead, #d1706a); }
+.score.normal { color: var(--text-3); }
+
+.score .st {
+  font-family: 'Bricolage Grotesque', var(--font); font-weight: 700; font-size: 14px;
+  color: var(--text); letter-spacing: -0.01em; line-height: 1.25; margin-bottom: 3px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.score .sm { font-family: var(--mono); font-size: 10px; color: var(--text-3); margin-bottom: 12px; }
+.score .sm .fresh { color: var(--accent); }
+
+.score .vrow { display: flex; align-items: center; gap: 12px; margin-bottom: 11px; }
+.score .vrow svg { flex: 0 0 auto; display: block; }
+.score .word {
+  font-family: 'Bricolage Grotesque', var(--font); font-weight: 700; font-size: 18px;
+  letter-spacing: -0.015em; line-height: 1.1;
+}
+.score .sub { font-size: 11.5px; color: var(--text-2); margin-top: 2px; }
+
+.score .dist { margin-bottom: 10px; }
+.score .dist .bar {
+  height: 22px; border-radius: 5px; position: relative; border: 1px solid var(--border);
+  background: linear-gradient(90deg,
+    rgba(223,111,104,.26) 0%, rgba(223,111,104,.12) 20%,
+    rgba(120,124,140,.10) 38%, rgba(92,192,138,.15) 66%, rgba(92,192,138,.28) 100%);
+}
+.score .dist .me {
+  position: absolute; top: 50%; width: 10px; height: 10px; border-radius: 50%;
+  transform: translate(-50%, -50%); background: currentColor; box-shadow: 0 0 0 3px var(--input-bg);
+}
+.score .dist .sc {
+  display: flex; justify-content: space-between; font-family: var(--mono);
+  font-size: 9px; color: var(--text-3); margin-top: 4px;
+}
+.score .nx {
+  font-size: 11.5px; color: var(--text-2); border-top: 1px solid var(--border-soft);
+  padding-top: 9px;
+}
+.score .nx b { color: var(--text); }
+.score .nx .loop { color: var(--text-3); font-size: 11px; margin-top: 6px; }

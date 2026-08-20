@@ -22,6 +22,7 @@ import Piece from './pages/Piece'
 import Make from './pages/Make'
 import Today from './pages/Today'
 import Looks from './pages/Looks'
+import Scoreboard from './pages/Scoreboard'
 import TemplateLibrary from './pages/TemplateLibrary'
 import TemplateDetail from './pages/TemplateDetail'
 import Assets from './pages/Assets'
@@ -91,6 +92,8 @@ export default function App() {
           {/* One Desk · Looks — the locked design + its frames. */}
           <Route path="/looks" element={<Looks />} />
           <Route path="/looks/:templateKey" element={<Looks />} />
+          {/* One Desk · Scoreboard — the verdict, once the clock allows one. */}
+          <Route path="/scoreboard" element={<Scoreboard />} />
           <Route path="/channels" element={<Channels />} />
           <Route path="/channels/new" element={<ChannelWizard />} />
           <Route path="/channels/:channelKey" element={<ChannelDetail />} />
