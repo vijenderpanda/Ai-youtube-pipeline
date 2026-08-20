@@ -51,3 +51,49 @@ the reply rather than from my frame sampling.
   but the INPUT is not. Solid drawbox plates per `redaction.technique`.
 - "Alcohol - Rs 1,000: The Liquor Fort" appears as its own category line. VJ
   ruled: mask it. It stays counted in the denominator.
+
+---
+
+# TAKE 3 (29 screenshots) — 2026-08-21 04:35 IST
+
+## Your Rs 7,339 IS REAL — verified frame by frame
+The four "missing" Blinkit orders are plainly legible in the recording's deep
+scroll: **Rs 923 and Rs 1,215 (03 Aug), Rs 841 and Rs 598 (02 Aug)**.
+923+1215+841+598 = 3,577, and 3,577 + 3,762 = **7,339 exactly**. The locked
+numbers were right; take 2 was starved of evidence, not wrong about the month.
+
+## But the app CAPS the upload — this is the real ceiling
+Selected 29 (`picked_29`), and the reply opens:
+
+> "Here's the deduplicated picture (**11 screenshots** -> 9 Aug through today,
+> with 13 Aug missing from the shots)."
+
+Eleven. The Claude Android app silently kept ~11 of 29. For a month of PhonePe
+history that is roughly HALF the scroll, and the half it kept is the recent
+half — so the 02-03 Aug Blinkit orders can never be in evidence.
+
+**Consequence: beat 4 can never show Rs 7,339 from one phone upload.** Not a
+capture bug, not a prompt bug. It is the product's limit meeting a real month.
+
+## What take 3 got RIGHT, and it is worth keeping
+The reply renders as a real **two-column table** (Category | Amount), not prose
+— a far better proof shot than anything specced. It also kept People to ONE
+unnamed line ("Transfers to people (13 payments) Rs 15,715"), and again
+volunteered its own gap ("13 Aug missing from the shots").
+
+| category | amount |
+|---|---|
+| Credit card bill (Amex) | 45,000 |
+| Transfers to people (13 payments) | 15,715 |
+| Groceries & quick commerce | 10,693 |
+| Clinic | 3,600 |
+| Gas bill | 1,500 |
+| Liquor | 1,000 |
+| Gullak auto-save (Rs 100 x10) | 1,000 |
+
+## Still true regardless of which way this goes
+The ASK tape's attachment thumbnails show real payees by name — Kamal sani,
+MANOJ KUMAR CHAUHAN, RANJANA, ANNU, Majalom Mansuri are all legible in the
+strip above the composer. The REPLY is clean; the INPUT is not.
+
+## NOT ARMED. 05:00 IST is unreachable and the cut is not honest yet.
