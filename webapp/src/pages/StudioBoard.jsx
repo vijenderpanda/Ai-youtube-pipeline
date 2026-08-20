@@ -894,6 +894,10 @@ export default function StudioBoard() {
             </Link>{' '}
             <span className="dim">/</span>{' '}
             <span className="mono">{item ? item.channel_key : '…'}</span>
+            {/* One Desk slice 1: the new single-page gate rail, opt-in while it proves out. */}
+            <Link className="link" to={'/piece/' + calendarId} style={{ marginLeft: 10 }}>
+              new piece view →
+            </Link>
           </div>
           <h1>{item ? item.title || '(untitled)' : 'Loading…'}</h1>
           {item && (
