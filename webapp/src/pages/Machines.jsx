@@ -41,6 +41,15 @@ const JOB_TYPES = ['produce_preview', 'shell_script', 'generate_asset', 'plan_co
    can never be the AI cap. Only these types spend the account quota. */
 const AI_TYPES = new Set(['produce_preview', 'generate_asset', 'plan_content', 'analyze_and_suggest', 'produce_short', 'custom', 'channel_intake'])
 
+/* Maintenance the app can run on a box. Mirrors the server's allow-list — the
+   client sends an id, never a script path. `os` keeps PowerShell off the Mac. */
+const MAINTENANCE = [
+  { id: 'disk_report', label: 'Disk report', hint: 'reads only — shows what is eating the disk', os: 'Windows' },
+  { id: 'disk_clean', label: 'Free up disk', hint: 'deletes caches, temp files and old renders', os: 'Windows', destructive: true },
+  { id: 'keep_awake', label: 'Stop it sleeping', hint: 'disables idle sleep on AC', os: 'Windows' },
+  { id: 'schedule_maint', label: 'Weekly auto-cleanup', hint: 'registers the scheduled task', os: 'Windows' },
+]
+
 export default function Machines() {
   const { toast, show } = useToast()
   const [busy, setBusy] = useState('')
@@ -229,6 +238,51 @@ export default function Machines() {
                   </div>
                 </div>
               )}
+
+              {(() => {
+                const mine2 = MAINTENANCE.filter((m) => !m.os || m.os === w.os)
+                if (!mine2.length) {
+                  return (
+                    <div className="dim small" style={{ marginTop: 10 }}>
+                      No maintenance scripts for {w.os} yet — the committed ones are PowerShell.
+                    </div>
+                  )
+                }
+                return (
+                  <div className="mach-maint">
+                    <div className="pc-eyebrow" style={{ margin: '0 0 8px' }}>Run on this box</div>
+                    {mine2.map((m) => {
+                      const last = jobs.find((j) => j.meta && j.meta.maintenance === m.id && j.assigned_worker === id)
+                      const live = last && (last.status === 'queued' || last.status === 'running')
+                      return (
+                        <div key={m.id} className="mrow">
+                          <div style={{ minWidth: 0 }}>
+                            <div className="ml">{m.label}</div>
+                            <div className="mh">{m.hint}</div>
+                          </div>
+                          {last && !live && <span className={'mst ' + last.status}>{last.status} {fmtAgo(last.finished_at || last.created_at)}</span>}
+                          <button
+                            className={'btn ' + (m.destructive ? 'btn-ghost' : 'btn-ghost')}
+                            disabled={!!busy || live || !awake}
+                            title={!awake ? 'This box is asleep — it will pick the job up when it wakes' : undefined}
+                            onClick={() => {
+                              if (m.destructive && !window.confirm(`${m.label} on ${w.name}?\n\nThis ${m.hint}. It cannot be undone.`)) return
+                              act({ action: 'run_maintenance', worker_id: id, maintenance: m.id }, 'mt:' + m.id, `${m.label} queued on ${w.name}`)
+                            }}
+                          >
+                            {live ? 'running…' : busy === 'mt:' + m.id ? 'queuing…' : 'Run'}
+                          </button>
+                        </div>
+                      )
+                    })}
+                    {!awake && (
+                      <div className="dim small" style={{ marginTop: 6 }}>
+                        Asleep — anything you queue runs when it next checks in.
+                      </div>
+                    )}
+                  </div>
+                )
+              })()}
 
               <div className="piece-foot" style={{ marginTop: 12, paddingTop: 11 }}>
                 <button

@@ -1209,6 +1209,66 @@ async function handlePost(body: any): Promise<Response> {
     // v14: edit a worker's dashboard-owned routing config. Accepts any of:
     //   name (string), paused (bool), accept_types (string[]|null = all types),
     //   max_parallel (int, advisory). worker_id is required and must exist.
+    // One Desk · Machines: run a committed maintenance script on a box.
+    //
+    // The client sends an ID from this list — never a path. shell_script jobs
+    // execute whatever meta.script_path names, so accepting a path from the
+    // browser would turn the shared factory token into "run anything in the
+    // repo". The allow-list keeps the surface to the handful of operations that
+    // are genuinely useful from the app, and `os` stops PowerShell being sent
+    // to the Mac (where it can only fail).
+    case "run_maintenance": {
+      const MAINTENANCE: Record<string, {
+        label: string; script_path: string; script_args: string[]; os: string; destructive?: boolean;
+      }> = {
+        disk_report: {
+          label: "Disk report (reads only)",
+          script_path: "deploy/gpu/disk_maint.ps1", script_args: [], os: "Windows",
+        },
+        disk_clean: {
+          label: "Free up disk",
+          script_path: "deploy/gpu/disk_maint.ps1", script_args: ["-Clean"], os: "Windows",
+          destructive: true,
+        },
+        keep_awake: {
+          label: "Stop it sleeping",
+          script_path: "deploy/gpu/keep_awake.ps1", script_args: [], os: "Windows",
+        },
+        schedule_maint: {
+          label: "Weekly auto-cleanup",
+          script_path: "deploy/gpu/schedule_maint.ps1", script_args: [], os: "Windows",
+        },
+      };
+      const actionId = String(body.maintenance ?? "");
+      const spec = MAINTENANCE[actionId];
+      if (!spec) {
+        return json({ error: "unknown maintenance action — one of: " + Object.keys(MAINTENANCE).join(", ") }, 400);
+      }
+      const worker_id = String(body.worker_id ?? "").trim();
+      if (!worker_id) return json({ error: "worker_id required" }, 400);
+      const { data: w, error: wErr } = await db.from("factory_workers")
+        .select("worker_id, os, name").eq("worker_id", worker_id).maybeSingle();
+      if (wErr) return json({ error: wErr.message }, 500);
+      if (!w) return json({ error: "machine not found" }, 404);
+      if (spec.os && w.os !== spec.os) {
+        return json({ error: `${spec.label} only runs on ${spec.os}; ${w.name} is ${w.os}` }, 409);
+      }
+      const { data: job, error: jErr } = await db.from("factory_jobs")
+        .insert({
+          channel_key: "claude-tricks",
+          type: "shell_script",
+          title: spec.label + " — " + w.name,
+          status: "queued",
+          target_worker: worker_id,
+          meta: { script_path: spec.script_path, script_args: spec.script_args, maintenance: actionId },
+        })
+        .select().single();
+      if (jErr) return json({ error: jErr.message }, 500);
+      await logEvent("maintenance_queued", `${spec.label} queued on ${w.name}`,
+        { job_id: job.id, worker_id, maintenance: actionId });
+      return json({ ok: true, job });
+    }
+
     case "update_worker": {
       const { worker_id } = body;
       if (!worker_id) return json({ error: "worker_id required" }, 400);
