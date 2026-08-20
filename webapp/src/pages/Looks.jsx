@@ -60,6 +60,9 @@ export default function Looks() {
   const tplAssets = (tvQ.data && tvQ.data.assets) || []
   const allBlocks = (tvQ.data && tvQ.data.blocks) || []
   const revisions = (assetsQ.data && assetsQ.data.versions) || []
+  // A draft keeps its settings in meta.settings; locking freezes them into
+  // composition._settings. Reading only one is how a locked look shows none.
+  const settingsOf = (v) => (v && ((v.composition || {})._settings || (v.meta || {}).settings)) || {}
   // Which slots a worker can actually build. Every one of Looks' four slots was
   // offering "Make a new one on a worker" while the server had a generator for
   // none of them, so each click was a guaranteed 400 under copy that promised
@@ -336,8 +339,41 @@ export default function Looks() {
             Open the sequence designer →
           </Link>
 
+          {/* Who owns the outro. Both the outro_sting FRAME and a scene in the
+              sequence can supply one, so dropping a cook:OutroGlass into a look
+              without saying which wins ships two outros back to back. Declared
+              here rather than guessed from the component, because build_ep_v2 is
+              Python and the cookbook registry is TypeScript. */}
+          <span className="pc-eyebrow" style={{ marginTop: 18 }}>The outro comes from</span>
+          {isDraft ? (
+            <>
+              <select
+                className="make-select"
+                value={settingsOf(selected).outro_source || 'sting'}
+                disabled={!!busy}
+                onChange={(e) => post(
+                  { action: 'set_template_version_setting', template_version_id: selected.id,
+                    name: 'outro_source', value: e.target.value },
+                  'outro', 'Outro source set'
+                )}
+              >
+                <option value="sting">The Outro frame above (a rendered card)</option>
+                <option value="sequence">A scene in the sequence (a cookbook component)</option>
+              </select>
+              <div className="dim small" style={{ marginTop: 7 }}>
+                {settingsOf(selected).outro_source === 'sequence'
+                  ? 'The classic card is skipped — the sequence scene has to carry the question and the CTA words itself, including the spoken one.'
+                  : 'The flat question-CTA card. A cookbook outro in the sequence would be appended after it, giving you two.'}
+              </div>
+            </>
+          ) : (
+            <div className="piece-kv">
+              <span>source</span><b>{settingsOf(selected).outro_source || 'sting'}</b>
+            </div>
+          )}
+
           <span className="pc-eyebrow" style={{ marginTop: 18 }}>Settings</span>
-          {Object.entries((selected && ((selected.composition || {})._settings || (selected.meta || {}).settings)) || {}).map(([k, v]) => (
+          {Object.entries(settingsOf(selected)).map(([k, v]) => (
             <div key={k} className="piece-kv"><span>{k.replace(/_/g, ' ')}</span><b>{String(v)}</b></div>
           ))}
         </section>

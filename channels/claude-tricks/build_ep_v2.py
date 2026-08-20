@@ -2196,6 +2196,34 @@ def _sequence_mode():
     return m if m in ("replace", "augment") else "augment"
 
 
+def _outro_source():
+    """WHO OWNS THE OUTRO: the look's outro_sting FILE ('sting', the default) or a
+    scene in the composed sequence ('sequence').
+
+    Both currently claim it. cfg["outro"] appends the flat question-CTA card that
+    gen_outro_card.py bakes, while an augment sequence appends its scenes after
+    the classic beats -- so dropping a cook:OutroGlass scene into a look today
+    ships TWO outros, one after the other.
+
+    It is DECLARED, not sniffed. The alternative was inferring it from the
+    component (OutroGlass registers beats ["cta","punchline"]), but that registry
+    is TypeScript and this is Python: the inference would have to be duplicated
+    and would silently rot the moment a new outro component landed. A setting the
+    designer sets is one fact in one place, and 'sting' by default keeps every
+    existing look byte-for-byte unchanged.
+
+    NOTE when you switch a look to 'sequence': cfg["outro_cta"] -- Sol speaking
+    the CTA over the card -- rides the classic filtergraph, so it goes with it.
+    The sequence scene has to carry its own words.
+    """
+    try:
+        _tpl_lookup(CHANNEL_KEY_FOR_PROV, "__seq_probe__")   # populate _TPL_SETTINGS
+    except Exception:
+        pass
+    v = (_TPL_SETTINGS or {}).get("outro_source")
+    return v if v in ("sting", "sequence") else "sting"
+
+
 def _emit_manifest(ep, tag, cfg, replace_scenes, calendar_id, quiet=False):
     """Sprint-5 --manifest: build the pre-render GENERATION MANIFEST for REVIEW and
     (when calendar_id) persist it to factory_calendar.generation_manifest — WITHOUT
@@ -2274,6 +2302,7 @@ def _emit_manifest(ep, tag, cfg, replace_scenes, calendar_id, quiet=False):
     manifest = {
         "version": 1,
         "sequence_mode": _sequence_mode(),
+        "outro_source": _outro_source(),
         "template_version_id": _TPL_VERSION_ID,
         "scene_count": n,
         "paid_asset_count": sum(1 for a in assets if a.get("cost") == "paid"),
@@ -3014,7 +3043,12 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         out = outc
 
     # optional reusable outro sting (subscribe/comment), music keeps rolling + fades
-    if cfg.get("outro"):
+    _outro_owner = _outro_source()
+    if cfg.get("outro") and _outro_owner == "sequence":
+        print(">> OUTRO owned by the composed sequence — classic sting SKIPPED "
+              "(look setting outro_source=sequence). The sequence scene must carry "
+              "the question and the CTA words itself.")
+    if cfg.get("outro") and _outro_owner == "sting":
         # v16.2: per-episode outro override (cfg["outro_src"], relative to assets/)
         # so premium episodes can use a stronger question-CTA card instead of the
         # shared subscribe/comment sting.
