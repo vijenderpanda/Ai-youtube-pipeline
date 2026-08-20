@@ -2677,6 +2677,74 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         if cw:
             caps.append({"w": cw, "start": w["start"], "end": w["end"], "hot": cw in hot})
 
+    # ---- spoken figures become NUMERALS on screen ------------------------
+    # VJ: "for number figures rather have them in number italic". The VO must
+    # still SAY "six thousand and sixty nine" (ElevenLabs reads digits badly and
+    # the cache is keyed on the spoken text), so the conversion happens only on
+    # the caption stream. KaraokeLine italicises any token containing a digit,
+    # so this changes the words and NOT the style.
+    #
+    # ONLY runs of 2+ number words collapse. A lone number word is prose, not a
+    # figure: "Six quick taps" must stay SIX (writing "6 quick taps" reads like a
+    # spec), and "One supermarket trip" must stay ONE. But "SIX THOUSAND AND
+    # SIXTY NINE" is a figure and becomes 6,069.
+    _UNITS = {"ZERO":0,"ONE":1,"TWO":2,"THREE":3,"FOUR":4,"FIVE":5,"SIX":6,
+              "SEVEN":7,"EIGHT":8,"NINE":9,"TEN":10,"ELEVEN":11,"TWELVE":12,
+              "THIRTEEN":13,"FOURTEEN":14,"FIFTEEN":15,"SIXTEEN":16,
+              "SEVENTEEN":17,"EIGHTEEN":18,"NINETEEN":19,"TWENTY":20,
+              "THIRTY":30,"FORTY":40,"FIFTY":50,"SIXTY":60,"SEVENTY":70,
+              "EIGHTY":80,"NINETY":90}
+    _SCALE = {"HUNDRED":100,"THOUSAND":1000,"LAKH":100000,"CRORE":10000000}
+
+    def _numword(w):
+        return w in _UNITS or w in _SCALE
+
+    def _to_int(tokens):
+        totalv, cur = 0, 0
+        for tk in tokens:
+            if tk == "AND":
+                continue
+            if tk in _UNITS:
+                cur += _UNITS[tk]
+            elif tk == "HUNDRED":
+                cur = (cur or 1) * 100
+            else:                      # THOUSAND / LAKH / CRORE
+                totalv += (cur or 1) * _SCALE[tk]; cur = 0
+        return totalv + cur
+
+    # A RUN MUST NOT CROSS A LINE BOUNDARY. Without this, line 5's "five
+    # thousand nine hundred" swallowed the "Six" that opens line 6 and rendered
+    # 5,906 — a figure that was never said and is not in the data.
+    def _lineno(c):
+        n = 0
+        for b in boundaries:
+            if c["start"] >= b - 1e-6:
+                n += 1
+        return n
+
+    merged, i = [], 0
+    while i < len(caps):
+        j, ln = i, _lineno(caps[i])
+        while j < len(caps) and _lineno(caps[j]) == ln and (
+                _numword(caps[j]["w"])
+                or (caps[j]["w"] == "AND" and j > i
+                    and j + 1 < len(caps) and _lineno(caps[j + 1]) == ln
+                    and _numword(caps[j + 1]["w"]))):
+            j += 1
+        numrun = [c["w"] for c in caps[i:j] if c["w"] != "AND"]
+        if len(numrun) >= 2:
+            val = _to_int([c["w"] for c in caps[i:j]])
+            merged.append({"w": f"{val:,}", "start": caps[i]["start"],
+                           "end": caps[j - 1]["end"], "hot": True})
+            i = j
+        else:
+            merged.append(caps[i]); i += 1
+    if len(merged) != len(caps):
+        print(f">> captions: {len(caps) - len(merged)} spoken number words "
+              f"collapsed into numerals "
+              f"({', '.join(m['w'] for m in merged if any(ch.isdigit() for ch in m['w']))})")
+    caps = merged
+
     n_lines = len(cfg["lines"])
     total = caps[-1]["end"]
     if len(boundaries) == n_lines - 1:

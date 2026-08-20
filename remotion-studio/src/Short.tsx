@@ -371,7 +371,7 @@ const Caption: React.FC<{ word: Word; fps: number; y?: string | number; size?: n
 const NUMERIC = /[0-9]/;
 const KaraokeLine: React.FC<{
   words: Word[]; t: number; fps: number; size?: number; bottom?: number;
-}> = ({ words, t, fps, size = 58, bottom = 104 }) => {
+}> = ({ words, t, fps, size = 58, bottom = 360 }) => {
   const theme = useTheme();
   const frame = useCurrentFrame();
   if (!words.length) return null;
@@ -381,14 +381,17 @@ const KaraokeLine: React.FC<{
   }
   return (
     <div style={{
-      // THE CAPTION OWNS THE BOTTOM, AND ONLY THE BOTTOM. kit.tsx SAFE.captionCeil
-      // is 1580: components never draw below it, so the caption must never grow
-      // above it. A long line wraps to three rows, so the block is anchored low
-      // and set small enough that three rows still start under the ceiling --
-      // otherwise the caption sits on the graphic it is describing, which is the
-      // "last frame caption buries the text behind" defect.
+      // TWO CEILINGS, NOT ONE. kit.tsx SAFE.captionCeil (1580) keeps our own
+      // components off the caption -- but YOUTUBE paints its own furniture over
+      // the bottom ~330px of a Short: the @handle, the title, the Scheduled
+      // line, and the like/comment/share rail. Anchored at bottom:104 the line
+      // rendered perfectly and was then buried by the player itself, which no
+      // amount of internal safe-area respects.
+      // So the band is 1517 (LedgerFlow's SAFE_BOTTOM + margin) to ~1560, and
+      // the block bottom sits at 1920-360 = 1560 and grows UP into frame space
+      // the designed beats deliberately leave empty.
       position: "absolute", left: 56, right: 56, bottom,
-      maxHeight: 1920 - 1580 - bottom,
+      maxHeight: 1560 - 1180,
       display: "flex", flexWrap: "wrap", alignItems: "baseline",
       justifyContent: "center", gap: "0 12px",
     }}>
