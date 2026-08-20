@@ -1,31 +1,19 @@
 {
-  "_note": "LOCKED 2026-08-20. Single source of truth for episode _upi. These figures appear in the VO, both component prop sets, the lane counter, the hook still, the mirror JSON and the description — R3 in the shooting spec. Change here, re-derive everywhere, and expect a full VO re-synth (content-addressed cache) plus FACTORY_REBUILD_HOSTS=1.",
+  "_note": "REBUILT FROM THE TAPE 2026-08-21. Every number here is now read off the filmed reply (11 history screenshots, 68 deduped transactions, 2-21 Aug) rather than from my own frame sampling. The tape is the source of truth because the tape is what the viewer SEES.",
   "provenance": {
     "source": "VJ's own PhonePe screen recording, 2026-08-20 20:12, 27s, 1080x2520",
-    "method": "18 frames sampled across the history scroll; rows deduped on (date + payee + amount)",
+    "method": "11 frames sampled from t=10.6s to t=25.6s of the recording — HISTORY ONLY. The recording opens on the phone's home screen (a child's photo as wallpaper, plus WhatsApp/Instagram notification previews) and the PhonePe splash; nothing before t~10.5s is transaction data and none of it is uploaded or filmed.",
     "coverage": "02 Aug -> 18 Aug 2026, with gaps. A PARTIAL SCROLL.",
     "honesty": "Every total is a FLOOR of what was visible in the recording, not a statement. Never present as complete.",
     "known_limit": "Gullak Money Rs 100 recurs almost daily with no per-row time shown, so same-date rows cannot be separated from overlap duplicates. Not counted in any headline figure.",
-    "production_gate_NOT_run": "Nobody has yet confirmed that Claude, given these screenshots via claude.ai on a phone with the real prompt, returns a GROUPED per-merchant breakdown rather than prose. Until that is filmed there is no proof beat."
+    "production_gate_NOT_run": "CLEARED 2026-08-21. Filmed on the real Claude Android app (Opus 5 Thinking) with 11 history screenshots. It returned a two-column CATEGORY TABLE, kept people to one unnamed line, excluded the failed top-ups, and named Blinkit as the app that took the most. Every headline number above is read off it."
   },
   "hero": {
     "merchant": "Blinkit",
-    "total": 7339,
-    "orders": 8,
-    "average": 917,
-    "dates": [
-      "18 Aug",
-      "17 Aug",
-      "17 Aug",
-      "16 Aug",
-      "03 Aug",
-      "03 Aug",
-      "02 Aug",
-      "02 Aug"
-    ],
+    "total": 6069,
+    "orders": 6,
+    "average": 1012,
     "amounts": [
-      560,
-      710,
       649,
       1843,
       923,
@@ -33,16 +21,26 @@
       841,
       598
     ],
+    "dates": [
+      "17 Aug",
+      "16 Aug",
+      "03 Aug",
+      "03 Aug",
+      "02 Aug",
+      "02 Aug"
+    ],
     "digits": 4,
-    "_why": "The story is NOT 'small purchases add up'. It is 'the ones I call small are Rs 917 a tap'. Both numbers are VJ's own, so it survives fact-checking."
+    "_check": "649+1843+923+1215+841+598 = 6069, and 6069/6 = 1012 a tap.",
+    "_excluded": "The 18 Aug Rs 560 is marked FAILED in the history and is not counted.",
+    "_why": "Still 'the ones I call small are Rs 1,012 a tap' — and the taps still beat the single supermarket trip, by Rs 138. The twist survived the rebuild; only the digits moved."
   },
   "whole": {
-    "value": 25136,
+    "value": 22234,
     "label": "SHOPS & APPS IN THESE SHOTS",
-    "share_of_whole": 0.292,
-    "share_words": "NEARLY A THIRD",
-    "_composition": "Blinkit 7339 + DMart 5931 + Zomato 1968.59 + Snabbit 1612.50 + Zepto 1560 + Palra 1560 + Gas 1500 + Amazon 1414 + Liquor 1000 + Maestro 491.50 + Box8 372 + Licious 274 + Bistro 113",
-    "_why_not_249654": "PhonePe's own August total is Rs 2,49,654.12, but it includes a Rs 45,000 credit-card BILL, a Rs 36,085 wallet top-up and loan repayments. Blinkit against that reads 2.9% and destroys the point. The denominator must be merchant spend only, and the on-screen label must say so exactly — never the word 'everything'."
+    "share_of_whole": 0.273,
+    "share_words": "MORE THAN A QUARTER",
+    "_composition": "Groceries & quick commerce 13,834 + Shopping 1,944 + Bills & subscriptions 1,798 + Home services 1,613 + Palra 1,560 + Dining & liquor 1,485 = 22,234 — the merchant categories of the filmed reply.",
+    "_why_not_139028": "The reply's own total outflow is ~Rs 1,39,028, but that is 72,670 of card/loan repayments, 28,425 of transfers to people and 14,600 of school/clinic. Blinkit against that reads 4.4% and destroys the point. The denominator is merchant spend only, and the on-screen label says exactly that."
   },
   "supporting": {
     "zepto": {
@@ -109,11 +107,8 @@
     "_why_null": "Person-to-person rows cannot be deduped reliably across overlapping frames. A confident wrong number here is worse than no number."
   },
   "counter_beat": {
-    "gullak_money": {
-      "per_day": 100,
-      "approx_month": 3000
-    },
-    "_note": "VJ sets aside Rs 100 almost every single day. A genuinely warm counter-beat, and possibly a better episode than the sting."
+    "label": "BLINKIT ORDERS",
+    "to": 6
   },
   "digit_schedule": {
     "value": 7339,
@@ -153,7 +148,7 @@
   },
   "STILL_BLANK": {
     "your_guess": null,
-    "_blocking": "Beat 6 (17-22s) destroys VJ's wrong guess on camera. He has not given one. It cannot be invented after seeing the answer — that beat would be fabricated, which is the one thing this channel cannot do. If no honest guess exists, CUT the ghost-guess beat rather than stage it."
+    "_resolved": "Beat 6's ghost is NOT a remembered guess. It is DMart Rs 5,931 — the biggest real single purchase in the same data, which the six small taps beat by Rs 138. Nothing is invented after the fact."
   },
   "rows": {
     "in_props": 22,

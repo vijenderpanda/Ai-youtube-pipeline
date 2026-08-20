@@ -73,7 +73,9 @@ export const LineReveal: React.FC<LineRevealProps> = ({
   const bot = Math.round(height * 0.72);
   const plotW = R - L;
   const plotH = bot - top;
-
+  // never dereference a prop a locked sequence may have frozen empty — a throw
+  // here takes down the entire episode render, not just this card
+  if (!points || points.length === 0) return null;
   const n = points.length;
   const maxV = Math.max(...points);
   const minV = Math.min(...points);

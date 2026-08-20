@@ -178,10 +178,26 @@ def main():
            or bounds_of(r'class="android.widget.EditText"'))
     must(box is not None, "composer not found")
     tap(*box, 1.2)
-    core.type_text(PROMPT)
+    # TYPE, THEN PROVE IT. core.type_text splits at 120 chars and one chunk
+    # landed TWICE, so the composer read "...took the most.e with no names, and
+    # tell me which app took the most." That garbled line was legible on tape for
+    # ~1.5s at beat 4, against a description that pins the prompt verbatim.
+    tail = PROMPT[-46:]
+    ok = False
+    for attempt in range(3):
+        core.type_text(PROMPT)
+        time.sleep(1.2)
+        xml = core.ui_text()
+        if xml.count(tail) == 1 and "group by category" in xml:
+            ok = True
+            break
+        print(f"!! composer text wrong on attempt {attempt} — clearing and retyping")
+        sh("input", "keycombination", "113", "29")   # ctrl+a
+        time.sleep(0.4)
+        sh("input", "keyevent", "KEYCODE_DEL")
+        time.sleep(0.8)
+    must(ok, "composer never held the prompt verbatim after 3 attempts")
     core.mk("prompt_typed")
-    time.sleep(1.0)
-    must("group by category" in core.ui_text(), "typed prompt not visible in composer")
 
     plus = bounds_of(r'content-desc="(?:Add to chat|Add|Attach|Plus|Add attachment)"')
     must(plus is not None, "attach (+) button not found -- no blind taps")
@@ -216,46 +232,87 @@ def main():
          f"media store holds {len(names)} images ({names[:6]}), expected exactly "
          f"{len(SHOTS)} -- purge strays before filming")
 
-    # the grid scrolls; tap every cell, scroll, repeat until all are selected
-    picked, seen, guard = 0, set(), 0
-    while picked < len(SHOTS) and guard < 20:
+    # THE PICKER MARKS NOTHING. Its cells carry content-desc="Photo taken on
+    # <date>", clickable="false", and selected="true" NEVER appears -- so there
+    # is no way to ask a cell whether it is chosen. The only ground truth is the
+    # bar's content-desc="N photos or videos selected".
+    #
+    # Two earlier versions failed on this. Counting taps deselected photos when a
+    # scroll moved them to a new y (11 taps -> 1 attachment, and the model said
+    # "only one screenshot came through"). Skipping selected="true" cells matched
+    # nothing, so it re-tapped cell 0 forever and toggled it.
+    #
+    # So: tap a cell, then CHECK the counter moved. If it went down we just
+    # deselected and tap it again. Verify every tap.
+    def sel_count(xml=None):
+        m = re.search(r'content-desc="(\d+) photos? or videos? selected"',
+                      xml if xml is not None else core.ui_text())
+        return int(m.group(1)) if m else 0
+
+    def cells_now(xml):
+        out = []
+        for n in re.findall(r'<node[^>]*content-desc="Photo taken on [^"]*"[^>]*>', xml):
+            b = re.search(r'bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', n)
+            if not b:
+                continue
+            x0, y0, x1, y1 = map(int, b.groups())
+            # the floating "N | Preview | Done" bar owns the bottom ~300px
+            if y1 > 2050 or y0 < 260:
+                continue
+            out.append(((x0 + x1) // 2, (y0 + y1) // 2))
+        return out
+
+    want, guard = len(SHOTS), 0
+    done_pts = set()
+    while sel_count() < want and guard < 40:
         guard += 1
         x = core.ui_text()
-        cells = re.findall(r'content-desc="(Photo taken on [^"]*)"[^>]*'
-                           r'bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', x)
-        fresh = 0
-        for desc, x0, y0, x1, y1 in cells:
-            # the picker's selection bar ("N | Preview | Done") floats over the
-            # bottom ~300px. Tapping a cell under it hits the BAR, not the photo,
-            # which is why the first attempt stalled at 3 selected.
-            if int(y1) > 2050:
-                continue
-            key = (desc, x0, y0)
-            if key in seen:
-                continue
-            seen.add(key)
-            tap((int(x0) + int(x1)) // 2, (int(y0) + int(y1)) // 2, 0.5)
-            picked += 1
-            fresh += 1
-            if picked >= len(SHOTS):
+        before = sel_count(x)
+        fresh = [c for c in cells_now(x) if c not in done_pts]
+        if not fresh:
+            sh("input", "swipe", "540", "1900", "540", "1250", "700")
+            time.sleep(1.4)
+            after_scroll = cells_now(core.ui_text())
+            if not [c for c in after_scroll if c not in done_pts]:
                 break
-        if picked >= len(SHOTS):
-            break
-        if fresh == 0:
-            break
-        sh("input", "swipe", "540", "1900", "540", "1150", "700")
-        time.sleep(1.2)
+            continue
+        cx, cy = fresh[0]
+        tap(cx, cy, 0.8)
+        after = sel_count()
+        if after < before:          # that tap DESELECTED an already-chosen photo
+            tap(cx, cy, 0.8)
+            after = sel_count()
+        if after > before:
+            done_pts.add((cx, cy))
+        else:
+            done_pts.add((cx, cy))  # unresponsive cell; do not spin on it
+    picked = sel_count()
     core.mk(f"picked_{picked}")
-    must(picked == len(SHOTS),
-         f"photo picker: selected {picked}/{len(SHOTS)} screenshots")
+    must(picked == want,
+         f"photo picker: {picked}/{want} selected (picker's own counter)")
 
     conf = (bounds_of(r'text="Add"') or bounds_of(r'text="Done"')
             or bounds_of(r'content-desc="Done"') or bounds_of(r'text="Select"'))
     if conf:
         tap(*conf, 3.0)
     core.mk("attached")
-    time.sleep(6.0)          # thumbnails must finish uploading before send
     must(fg_claude(), "not back in Claude after the picker")
+    # A FLAT SLEEP RACES THE UPLOAD. 6s produced 18-of-18 once, 11-of-29 next,
+    # and 1-of-11 after that -- the model then answered from whatever had landed
+    # ("Only one image came through, and it's the PhonePe home screen"). Give it
+    # real time per image and wait for the composer to stop changing.
+    time.sleep(3.0)
+    prev, quiet = "", 0
+    for _ in range(int(14 + 4.5 * len(SHOTS))):
+        time.sleep(2.0)
+        cur = core.ui_text()
+        if cur == prev:
+            quiet += 1
+            if quiet >= 4:
+                break
+        else:
+            quiet, prev = 0, cur
+    core.mk(f"upload_settled_q{quiet}")
 
     sb = bounds_of(r'content-desc="(?:Send|Send message)"')
     must(sb is not None, "send button not found -- no blind taps")

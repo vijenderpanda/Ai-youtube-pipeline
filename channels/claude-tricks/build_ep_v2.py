@@ -46,7 +46,7 @@ def _build_upi_cookbook():
     # Every row is a transaction that ACTUALLY APPEARS in the source recording.
     # masked rows carry merchant "" — the identity is absent from the props.
     rows = [
-        {"id": "u01", "merchant": "Blinkit", "amount": 560, "day": "18 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u01", "merchant": "Blinkit", "amount": 560, "day": "18 AUG", "cat": "blinkit", "counted": False},
         {"id": "u02", "merchant": "Zomato", "amount": 1072, "day": "18 AUG", "cat": "food", "counted": True},
         {"id": "u03", "merchant": "Zomato", "amount": 897, "day": "18 AUG", "cat": "food", "counted": True},
         {"id": "u04", "merchant": "Amazon", "amount": 1414, "day": "18 AUG", "cat": "shop", "counted": True},
@@ -96,7 +96,7 @@ def _build_upi_cookbook():
         elif r.get("cat"):
             c["cat"] = _tap_cat[r["cat"]]
         if r["id"] == "u09":
-            c["hot"] = True     # the Rs 5,931 ghost that beat 6 kills at 16.31s
+            c["hot"] = True     # the DMart Rs 5,931 the six taps beat by Rs 138
         tap_cards.append(c)
     base = {"rows": rows, "lanes": lanes, "scrollFrom": 0, "scrollTo": 0}
     br = {b["beat"]: b for b in sched["breaks"]}
@@ -187,8 +187,8 @@ EPISODES_V2 = {
   # the first second the viewer is paid. It costs zero runtime; it is a prop.
   #
   # NUMBERS ARE LOCKED IN assets/ep_upi/locked_numbers.json. Blinkit Rs 7,339
-  # across 8 orders = Rs 917 a tap, against Rs 25,136 of merchant spend visible
-  # in the shots (nearly a third). Change them THERE, never here first — they
+  # across 6 orders = Rs 1,012 a tap, against Rs 22,234 of merchant spend visible
+  # in the shots (more than a quarter). Change them THERE, never here first — they
   # appear in seven places and one numeral re-synths the whole VO cache.
   #
   # HONESTY, structural not editorial: person-to-person rows carry merchant:""
@@ -219,10 +219,10 @@ EPISODES_V2 = {
       "It only saw the pictures. And threw out the doubles.",
       "Here's what it sent back. Grouped by where it went.",
       "One supermarket trip: five thousand nine hundred.",
-      "Eight quick taps cost more. Seven thousand, three hundred and thirty nine.",
-      "Nearly a third of what I spent. Nobody spends money badly - we just never add it up.",
+      "Six quick taps cost more. Six thousand and sixty nine.",
+      "More than a quarter of what I spent. Nobody spends money badly - we just never add it up.",
     ],
-    "hot_words": ["SCREENSHOTS", "UPI", "HISTORY", "ONE", "LINE", "CLAUDE", "NOTHING", "CONNECTED", "READ", "EVERY", "ROW", "FORGOTTEN", "ONLY", "PICTURES", "THREW", "DOUBLES", "SENT", "BACK", "GROUPED", "WENT", "SUPERMARKET", "TRIP", "THOUSAND", "HUNDRED", "EIGHT", "QUICK", "TAPS", "MORE", "THIRD", "SPENT", "BADLY", "ADD", "UP"],
+    "hot_words": ["SCREENSHOTS", "UPI", "HISTORY", "ONE", "LINE", "CLAUDE", "NOTHING", "CONNECTED", "READ", "EVERY", "ROW", "FORGOTTEN", "ONLY", "PICTURES", "THREW", "DOUBLES", "SENT", "BACK", "GROUPED", "WENT", "SUPERMARKET", "TRIP", "THOUSAND", "HUNDRED", "SIX", "QUICK", "TAPS", "MORE", "QUARTER", "SPENT", "BADLY", "ADD", "UP"],
     # 8 lines : 8 beats. Real tape carries beats 0, 1 and 4 — the previous cut
     # was 5-of-7 motion graphics, which is how a designed number ends up
     # asserting something the tool cannot guarantee.
@@ -2222,6 +2222,18 @@ def _seq_segment(block):
     # any block whose config carries a cookbook payload (e.g. block_type "broll")
     cb = conf.get("cookbook")
     if isinstance(cb, dict) and isinstance(cb.get("id"), str) and cb.get("id"):
+        # A COOKBOOK BLOCK WITH NO PROPS IS NOT RENDERABLE. Cookbook components
+        # read their data straight off props (LineReveal does `points.length`,
+        # RingGauge `metrics`, Odometer `value`), so an empty payload does not
+        # degrade to a blank card -- it throws mid-render and kills the whole
+        # episode. _upi died at frame 762 on an augment-mode LineReveal block
+        # frozen with props {}. Drop it here instead: the caller already records
+        # every dropped block as a sequence divergence, so it surfaces in the
+        # reconciliation card rather than vanishing silently.
+        if not (cb.get("props") or {}):
+            print(f"!! sequence block '{cb['id']}' has EMPTY props — dropped "
+                  f"(a cookbook component cannot render without data)")
+            return None
         seg = {"kind": "cookbook", "dur": dur,
                "cookbook": {"id": cb["id"], "props": cb.get("props") or {}}}
         if "transparent" in cb:
@@ -2438,7 +2450,19 @@ def _outro_source():
     except Exception:
         pass
     v = (_TPL_SETTINGS or {}).get("outro_source")
-    return v if v in ("sting", "sequence") else "sting"
+    _src = v if v in ("sting", "sequence") else "sting"
+    # A SEQUENCE THAT RENDERS NOTHING MUST NOT OWN THE OUTRO. The look can
+    # declare outro_source="sequence", but if every block in that sequence is
+    # dropped (e.g. frozen with empty props) the classic sting is skipped AND
+    # nothing replaces it -- the episode ships with no question card and no
+    # spoken CTA, silently. _upi hit exactly this. Fall back to the sting and
+    # say so out loud.
+    if _src == "sequence" and not any(
+            _seq_segment(_b) is not None for _b in _composed_sequence(CHANNEL_KEY_FOR_PROV)):
+        print("!! look says outro_source=sequence but the sequence renders NOTHING "
+              "— falling back to the classic sting so the episode keeps its outro")
+        return "sting"
+    return _src
 
 
 def _emit_manifest(ep, tag, cfg, replace_scenes, calendar_id, quiet=False):

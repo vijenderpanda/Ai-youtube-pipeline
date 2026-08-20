@@ -1,14 +1,15 @@
 {
-  "rec_upi_ask_t0": 32.33,
-  "ask_t0": 33.54,
-  "prompt_typed": 44.52,
-  "attach_open": 52.08,
-  "picker_open": 57.59,
-  "picked_18": 76.61,
-  "attached": 83.8,
-  "sent": 92.99,
-  "reply_seen_True": 148.96,
-  "rec_upi_answer_t0": 157.53,
-  "answer_t0": 158.74,
-  "scrolled": 173.93
+  "rec_upi_ask_t0": 23.08,
+  "ask_t0": 24.29,
+  "prompt_typed": 34.6,
+  "attach_open": 39.13,
+  "picker_open": 44.66,
+  "picked_11": 295.13,
+  "attached": 302.27,
+  "upload_settled_q4": 329.85,
+  "sent": 332.95,
+  "reply_seen_True": 394.24,
+  "rec_upi_answer_t0": 402.82,
+  "answer_t0": 404.02,
+  "scrolled": 419.28
 }
