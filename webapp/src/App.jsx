@@ -72,13 +72,22 @@ export default function App() {
       <Sidebar onLock={lock} />
       <main className="main">
         <Routes>
-          <Route path="/" element={<Overview />} />
-          <Route path="/analytics" element={<Analytics />} />
+          {/* One Desk: the front door is Today. Overview is kept reachable at
+              /overview so nothing that linked to it breaks. */}
+          <Route path="/" element={<Today />} />
+          <Route path="/overview" element={<Overview />} />
+          {/* Insights → Scoreboard: verdicts replaced charts-without-a-verdict.
+              The old page stays at /analytics/legacy for the deep reads. */}
+          <Route path="/analytics" element={<Navigate to="/scoreboard" replace />} />
+          <Route path="/analytics/legacy" element={<Analytics />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/studio" element={<Studio />} />
           {/* Template Library routes MUST precede /studio/:calendarId so the
               literal "templates" segment isn't captured as a calendarId. */}
-          <Route path="/studio/templates" element={<TemplateLibrary />} />
+          {/* Templates → Looks. The per-template DESIGNER is still the sequence
+              editor, which Looks links into, so :key is NOT redirected. */}
+          <Route path="/studio/templates" element={<Navigate to="/looks" replace />} />
+          <Route path="/studio/templates/legacy" element={<TemplateLibrary />} />
           <Route path="/studio/templates/:key" element={<TemplateDetail />} />
           <Route path="/studio/:calendarId" element={<StudioBoard />} />
           {/* One Desk slice 1 — the piece's own page, beside the old board
@@ -88,7 +97,7 @@ export default function App() {
           <Route path="/make" element={<Make />} />
           <Route path="/make/:channelKey" element={<Make />} />
           {/* One Desk · Today — triage that can reach zero. */}
-          <Route path="/today" element={<Today />} />
+
           {/* One Desk · Looks — the locked design + its frames. */}
           <Route path="/looks" element={<Looks />} />
           <Route path="/looks/:templateKey" element={<Looks />} />

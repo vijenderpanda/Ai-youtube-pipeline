@@ -154,19 +154,22 @@ export default function Today() {
   const health = useMemo(() => {
     const now = Date.now()
     const alive = workers.filter((w) => w.last_seen && now - new Date(w.last_seen).getTime() < 15 * 60 * 1000)
+    const failedJobs = jobs.filter((j) => j.status === 'failed').length
     const usage = workers.map((w) => (w.meta || {}).usage).filter(Boolean)
     const limited = usage.some((u) => u.rate_limited)
     const reset = usage.map((u) => u.reset_est).filter(Boolean).sort()[0]
     return {
-      ok: alive.length === workers.length && workers.length > 0 && !limited,
+      ok: alive.length === workers.length && workers.length > 0 && !limited && failedJobs === 0,
+      failedJobs,
       text:
         workers.length === 0
           ? 'No machines have checked in'
           : `${alive.length} of ${workers.length} machine${workers.length === 1 ? '' : 's'} awake` +
             (limited ? ' · AI budget spent' : '') +
-            (reset ? ` · budget resets ${istTime(reset)}` : ''),
+            (reset ? ` · budget resets ${istTime(reset)}` : '') +
+            (failedJobs ? ` · ${failedJobs} background task${failedJobs === 1 ? '' : 's'} failed` : ''),
     }
-  }, [workers])
+  }, [workers, jobs])
 
   const loading = stagedQ.loading && !stagedQ.data
 
@@ -242,8 +245,8 @@ export default function Today() {
       <div className={'today-health' + (health.ok ? '' : ' warn')}>
         <span className="dot" aria-hidden="true" />
         {health.text}
-        <Link className="link" to="/workers" style={{ marginLeft: 'auto' }}>
-          machines →
+        <Link className="link" to={health.failedJobs ? '/jobs' : '/workers'} style={{ marginLeft: 'auto' }}>
+          {health.failedJobs ? 'see what failed →' : 'machines →'}
         </Link>
       </div>
     </div>

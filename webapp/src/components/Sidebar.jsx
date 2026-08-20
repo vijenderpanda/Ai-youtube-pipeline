@@ -100,32 +100,14 @@ function Icon({ name }) {
  * Today (things waiting on the creator) and Activity (failed tasks).
  */
 const NAV_GROUPS = [
-  { label: null, items: [{ to: '/', label: 'Today', icon: 'overview', end: true, badge: 'today' }] },
   {
-    label: 'Create',
+    label: null,
     items: [
+      { to: '/', label: 'Today', icon: 'overview', end: true, badge: 'today' },
+      { to: '/make', label: 'Make', icon: 'studio' },
       { to: '/calendar', label: 'Plan', icon: 'calendar' },
-      { to: '/studio', label: 'Studio', icon: 'studio' },
-      { to: '/posts', label: 'Publish', icon: 'posts' },
-    ],
-  },
-  {
-    label: 'Grow',
-    items: [
-      { to: '/analytics', label: 'Insights', icon: 'analytics' },
-      { to: '/channels', label: 'Channels', icon: 'channels' },
-    ],
-  },
-  {
-    label: 'Behind the scenes',
-    quiet: true,
-    items: [
-      { to: '/jobs', label: 'Activity', icon: 'jobs', badge: 'failed' },
-      { to: '/renders', label: 'Library', icon: 'renders' },
-      { to: '/studio/templates', label: 'Templates', icon: 'renders' },
-      // 'Formats' (/generators) archived 2026-08-19 — the composition/format now lives in
-      // Templates (sequence × layout × theme). Route redirects; page kept for history.
-      { to: '/workers', label: 'Machines', icon: 'workers' },
+      { to: '/looks', label: 'Looks', icon: 'renders' },
+      { to: '/scoreboard', label: 'Scoreboard', icon: 'analytics' },
     ],
   },
 ]
@@ -137,8 +119,19 @@ export default function Sidebar({ onLock }) {
 
   const items = (stagedQ.data && stagedQ.data.items) || []
   const counts = (stagedQ.data && stagedQ.data.counts) || {}
-  const todayCount = items.filter((it) => resolveStage(it, counts[it.id] || {}).action).length
-  const failedCount = ((jobsQ.data && jobsQ.data.jobs) || []).filter((j) => j.status === 'failed').length
+  const allJobs = (jobsQ.data && jobsQ.data.jobs) || []
+  // A piece mid-produce is the factory working, not a decision — counting it
+  // here is the same lie the old Overview told by dropping this flag.
+  const producingIds = new Set(
+    allJobs
+      .filter((j) => j.type === 'produce_preview' && (j.status === 'queued' || j.status === 'running'))
+      .map((j) => j.meta && j.meta.calendar_id)
+      .filter(Boolean)
+  )
+  const todayCount = items.filter(
+    (it) => resolveStage(it, counts[it.id] || {}, { producing: producingIds.has(it.id) }).action
+  ).length
+  const failedCount = allJobs.filter((j) => j.status === 'failed').length
 
   const badge = (kind) => {
     if (kind === 'today' && todayCount > 0)
