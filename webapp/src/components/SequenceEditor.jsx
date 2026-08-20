@@ -520,7 +520,7 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
                       <textarea className="input" disabled={!isDraft || !!busy} value={buf} onChange={(e) => { setBuf(e.target.value); if (cfgErr) setCfgErr('') }} spellCheck={false}
                         style={{ marginTop: 6, minHeight: 120, fontFamily: 'var(--mono, monospace)', fontSize: 12.5, lineHeight: 1.5, resize: 'vertical', width: '100%' }} />
                     )}
-                    {cfgErr && <div style={{ color: 'var(--dead, #d1706a)', fontSize: 12, marginTop: 6 }}>{cfgErr}</div>}
+                    {cfgErr && <div style={{ color: 'var(--danger)', fontSize: 12, marginTop: 6 }}>{cfgErr}</div>}
                     {isDraft && (
                       <div style={{ marginTop: 8 }}>
                         <button type="button" className="btn-primary" disabled={!!busy} onClick={() => saveConfig(b)}>Save scene</button>

@@ -34,15 +34,23 @@ const pct = (sorted, p) => {
 }
 const daysBetween = (a, b) => Math.max(0, Math.round((b - a) / 86400000))
 
-/** Shorts settle in about a week; search/suggested keeps earning for months. */
-function clockFor(v) {
+/** Shorts settle in about a week; search/suggested keeps earning for months.
+
+    The mix only means something once there IS traffic: a video with 4 views has
+    no meaningful "traffic mix", and reading one put every dud on a 90-day clock
+    where it could not be called for a month — burying the flops this screen
+    exists to surface. Below that floor we fall back to what the channel actually
+    publishes, which for a Shorts channel is the 7-day clock. */
+const MIX_FLOOR = 20
+function clockFor(v, views) {
+  const SHORTS = { days: 7, name: 'Shorts', callableAt: 3 }
+  const SLOW = { days: 90, name: 'Search & suggested', callableAt: 30 }
+  if ((views || 0) < MIX_FLOOR) return SHORTS
   const mix = v.traffic_mix || {}
   const total = Object.values(mix).reduce((s, n) => s + (Number(n) || 0), 0) || 1
   const shorts = (Number(mix.SHORTS) || 0) / total
   const shortsPct = v.shorts_pct != null ? Number(v.shorts_pct) / 100 : shorts
-  return shortsPct >= 0.5
-    ? { days: 7, name: 'Shorts', callableAt: 3 }
-    : { days: 90, name: 'Search & suggested', callableAt: 30 }
+  return shortsPct >= 0.5 ? SHORTS : SLOW
 }
 
 function trajectory(trend) {
@@ -66,8 +74,20 @@ export default function Scoreboard() {
     60000,
     [channel]
   )
+  // first_date is the first day a video appears in STATS, which for anything
+  // backfilled is when tracking started, not when it went public — that made
+  // three-week-old videos with 2 views read as "too early to tell". The post
+  // carries the real publish time, so age uses whichever is earlier.
+  const postsQ = usePoll(() => api.get('?r=posts&limit=200'), 0)
   const channels = (chansQ.data && chansQ.data.channels) || []
   const videos = (vidsQ.data && vidsQ.data.videos) || []
+  const publishedAt = useMemo(() => {
+    const m = new Map()
+    for (const p of (postsQ.data && postsQ.data.posts) || []) {
+      if (p.video_id && p.publish_at) m.set(p.video_id, new Date(p.publish_at).getTime())
+    }
+    return m
+  }, [postsQ.data])
 
   /* Pasted Studio rows outrank stored stats for the videos they name — the API
      lags ~48h and the newest Shorts have no rows at all. Matched on title. */
@@ -103,9 +123,13 @@ export default function Scoreboard() {
     return videos
       .map((v) => {
         const views = viewsOf(v)
-        const first = v.first_date ? new Date(v.first_date + 'T00:00:00Z').getTime() : null
+        // public-since = the earliest evidence it was live: its publish time, or
+        // the first day stats saw it, whichever came first.
+        const statFirst = v.first_date ? new Date(v.first_date + 'T00:00:00Z').getTime() : null
+        const pub = publishedAt.get(v.video_id) || null
+        const first = pub && statFirst ? Math.min(pub, statFirst) : (pub || statFirst)
         const age = first ? daysBetween(first, now) : null
-        const clock = clockFor(v)
+        const clock = clockFor(v, views)
         const maturity = age == null ? 0 : Math.min(1, age / clock.days)
         const callable = age != null && age >= clock.callableAt
         const traj = trajectory(v.trend)
@@ -135,7 +159,7 @@ export default function Scoreboard() {
         const rank = (c) => (c.verdict === 'flop' ? 0 : c.verdict === 'hit' ? 1 : c.verdict === 'early' ? 2 : 3)
         return rank(a) - rank(b) || (a.age ?? 999) - (b.age ?? 999)
       })
-  }, [videos, pasted]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [videos, pasted, publishedAt]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const dist = cards.length ? { p25: cards[0].p25, p50: cards[0].p50, p75: cards[0].p75 } : null
 

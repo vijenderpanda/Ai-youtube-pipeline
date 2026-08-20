@@ -7482,7 +7482,7 @@ a.out-chip:hover {
   padding: 7px 16px; border-radius: 999px; white-space: nowrap;
   font-size: 12px; font-weight: 650; color: var(--text-3); letter-spacing: -0.005em;
 }
-.piece-rail .pg.done { color: var(--ok); }
+.piece-rail .pg.done { color: var(--success); }
 .piece-rail .pg.now {
   background: linear-gradient(180deg, var(--accent-hi), var(--accent));
   color: var(--accent-ink); box-shadow: 0 4px 16px -6px var(--accent-glow);
@@ -7514,7 +7514,7 @@ a.out-chip:hover {
   display: block; font-size: 11.5px; color: var(--text-3); font-style: italic;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.piece-scene .fit { font-family: var(--mono); font-size: 10.5px; color: var(--ok); }
+.piece-scene .fit { font-family: var(--mono); font-size: 10.5px; color: var(--success); }
 .piece-scene .fit.low { color: var(--warn); }
 
 /* ── the money card — the one place the app spends ────────────────────── */
@@ -7547,8 +7547,8 @@ a.out-chip:hover {
 .piece-ledger .lrow:last-child { border-bottom: 0; }
 .piece-ledger .m { font-family: var(--mono); font-size: 11px; color: var(--text-2); font-variant-numeric: tabular-nums; }
 .piece-ledger .vd { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; }
-.piece-ledger .vd.pass { color: var(--ok); }
-.piece-ledger .vd.fail { color: var(--dead, #d1706a); }
+.piece-ledger .vd.pass { color: var(--success); }
+.piece-ledger .vd.fail { color: var(--danger); }
 .piece-ledger .vd.na { color: var(--faint); }
 
 /* ── exactly one primary, always the next gate ────────────────────────── */
@@ -7558,7 +7558,7 @@ a.out-chip:hover {
 }
 .piece-why { font-size: 11.5px; color: var(--text-3); margin-left: auto; text-align: right; max-width: 34ch; }
 .warn-chip { color: var(--warn); border-color: var(--warn); background: var(--warn-soft); }
-.ok-chip { color: var(--ok); border-color: var(--ok); background: var(--ok-soft); }
+.ok-chip { color: var(--success); border-color: var(--success); background: var(--success-soft); }
 .warn-txt { color: var(--warn); }
 /* The preview is the RAW cut — the polish (music, outro, master) lands at
    finalize. Saying so is the difference between "reviewing the story" and
@@ -7580,7 +7580,7 @@ a.out-chip:hover {
 }
 .make-paste:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .make-parsed { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
-.make-parsed .lb { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em; color: var(--ok); }
+.make-parsed .lb { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em; color: var(--success); }
 .make-select {
   background: var(--panel-2); border: 1px solid var(--border-strong); border-radius: 7px;
   color: var(--text); font: inherit; font-size: 12.5px; padding: 5px 9px;
@@ -7655,7 +7655,7 @@ a.out-chip:hover {
   width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center;
   font-size: 14px; background: var(--panel-2); border: 1px solid var(--border-strong); color: var(--text-2);
 }
-.today-card .ic.fail { color: var(--dead, #d1706a); border-color: var(--dead, #d1706a); }
+.today-card .ic.fail { color: var(--danger); border-color: var(--danger); }
 .today-card .ic.empty { color: var(--text-3); }
 .today-card .t { display: block; font-size: 13.5px; font-weight: 650; }
 .today-card .s { display: block; font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
@@ -7673,7 +7673,7 @@ a.out-chip:hover {
   font-size: 12px; color: var(--text-3);
 }
 .today-health .dot {
-  width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 8px var(--ok);
+  width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success);
 }
 .today-health.warn .dot { background: var(--warn); box-shadow: 0 0 8px var(--warn); }
 .today-backlog {
@@ -7692,8 +7692,8 @@ a.out-chip:hover {
 .looks-rail .lv .st { font-size: 9.5px; font-weight: 400; letter-spacing: 0.06em; opacity: 0.85; }
 .looks-rail .lv:hover { border-color: var(--text-3); color: var(--text-2); }
 .looks-rail .lv.on { color: var(--text); border-color: var(--accent); background: var(--accent-soft); }
-.looks-rail .lv.live { color: var(--ok); border-color: var(--ok); }
-.looks-rail .lv.live.on { background: var(--ok-soft); }
+.looks-rail .lv.live { color: var(--success); border-color: var(--success); }
+.looks-rail .lv.live.on { background: var(--success-soft); }
 
 .piece-cast .cf.as-btn {
   width: 100%; cursor: pointer; font: inherit; color: inherit; text-align: left;
@@ -7712,7 +7712,7 @@ a.out-chip:hover {
   padding: 6px 9px; cursor: pointer; font: inherit; color: inherit; text-align: left;
 }
 .looks-swap .opt:not(:disabled):hover { border-color: var(--border-strong); }
-.looks-swap .opt.cur { border-color: var(--ok); background: var(--ok-soft); cursor: default; }
+.looks-swap .opt.cur { border-color: var(--success); background: var(--success-soft); cursor: default; }
 .looks-swap .opt img,
 .looks-swap .opt .ph {
   width: 30px; height: 30px; border-radius: 5px; object-fit: cover; display: block;
@@ -7722,7 +7722,7 @@ a.out-chip:hover {
 .looks-swap .opt .lb {
   font-size: 12px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.looks-swap .opt .cu { font-family: var(--mono); font-size: 9.5px; color: var(--ok); }
+.looks-swap .opt .cu { font-family: var(--mono); font-size: 9.5px; color: var(--success); }
 
 /* ── SCOREBOARD — hit, flop, or too early ──────────────────────────────── */
 .score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; }
@@ -7734,8 +7734,8 @@ a.out-chip:hover {
   border-radius: var(--radius-sm); padding: 14px;
 }
 .score.early { border-color: rgba(94, 198, 214, 0.3); color: #5ec6d6; }
-.score.hit { border-color: rgba(92, 192, 138, 0.34); color: var(--ok); }
-.score.flop { border-color: rgba(223, 111, 104, 0.32); color: var(--dead, #d1706a); }
+.score.hit { border-color: rgba(92, 192, 138, 0.34); color: var(--success); }
+.score.flop { border-color: rgba(223, 111, 104, 0.32); color: var(--danger); }
 .score.normal { color: var(--text-3); }
 
 .score .st {
