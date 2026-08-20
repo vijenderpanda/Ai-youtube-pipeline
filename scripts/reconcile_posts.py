@@ -129,8 +129,11 @@ def yt_uploads(channel_key, limit=25):
     return out
 
 
-def from_youtube(supa, apply):
-    """Write the missing post for any calendar row whose video is on YouTube."""
+def from_youtube(supa, apply, quiet=False):
+    """Write the missing post for any calendar row whose video is on YouTube.
+
+    Returns {"written": n, "unsure": n} so the daily job can report it."""
+    say = (lambda *a: None) if quiet else print
     cal = supa.select("factory_calendar", "select=*&limit=2000")
     posts = supa.select("factory_posts", "select=*&limit=1000")
     linked = {p["calendar_id"] for p in posts if p.get("calendar_id")}
@@ -150,7 +153,7 @@ def from_youtube(supa, apply):
         try:
             vids = yt_uploads(ch)
         except Exception as e:  # noqa: BLE001
-            print(f"  {ch}: could not read YouTube — {type(e).__name__}: {str(e)[:90]}")
+            say(f"  {ch}: could not read YouTube — {type(e).__name__}: {str(e)[:90]}")
             continue
         by_day = defaultdict(list)
         for v in vids:
@@ -178,20 +181,20 @@ def from_youtube(supa, apply):
                 known_vids.add(v["video_id"])
                 made.append((it, v))
 
-    print(f"=== {len(made)} MISSING POST(S) TO WRITE ===")
+    say(f"=== {len(made)} MISSING POST(S) TO WRITE ===")
     for it, v in made:
-        print(f"  {it['planned_date']} {it['channel_key']}")
-        print(f"      piece : {str(it.get('title'))[:64]}")
-        print(f"      video : {v['title'][:64]}  [{v['video_id']}] {v['status']}")
+        say(f"  {it['planned_date']} {it['channel_key']}")
+        say(f"      piece : {str(it.get('title'))[:64]}")
+        say(f"      video : {v['title'][:64]}  [{v['video_id']}] {v['status']}")
     if skipped:
-        print(f"\n=== {len(skipped)} piece(s) a title could not separate — not touched ===")
+        say(f"\n=== {len(skipped)} piece(s) a title could not separate — not touched ===")
         for it, cands in skipped:
-            print(f"  {it['planned_date']} {it['channel_key']}: {str(it.get('title'))[:52]}")
+            say(f"  {it['planned_date']} {it['channel_key']}: {str(it.get('title'))[:52]}")
             for v in cands:
-                print(f"      candidate: {v['title'][:56]}  [{v['video_id']}]")
+                say(f"      candidate: {v['title'][:56]}  [{v['video_id']}]")
     if not apply:
-        print("\nDRY RUN — nothing written. Add --apply to write these posts.")
-        return
+        say("\nDRY RUN — nothing written. Add --apply to write these posts.")
+        return {"written": 0, "unsure": len(skipped), "would_write": len(made)}
     ok = 0
     for it, v in made:
         try:
@@ -207,8 +210,9 @@ def from_youtube(supa, apply):
             }])
             ok += 1
         except Exception as e:  # noqa: BLE001
-            print(f"  FAILED {v['video_id']}: {e}")
-    print(f"\nwrote {ok} of {len(made)} post(s).")
+            say(f"  FAILED {v['video_id']}: {e}")
+    say(f"\nwrote {ok} of {len(made)} post(s).")
+    return {"written": ok, "unsure": len(skipped), "would_write": len(made)}
 
 
 def main():
@@ -261,6 +265,14 @@ def main():
         from_youtube(supa, args.apply)
         return
 
+    link_existing(supa, args.apply)
+
+
+def link_existing(supa, apply, quiet=False):
+    """Link posts that already exist to the calendar rows that made them.
+
+    Returns {"linked": n, "ambiguous": n} for the daily job to report."""
+    say = (lambda *a: None) if quiet else print
     posts = supa.select("factory_posts", "select=*&limit=1000")
     cal = supa.select("factory_calendar", "select=*&limit=2000")
 
@@ -305,34 +317,34 @@ def main():
         if key not in free_cal:
             orphan_posts.append((key, ps))
 
-    print(f"posts: {len(posts)}  ·  calendar rows: {len(cal)}")
-    print(f"already linked: {len(linked_cal_ids)}\n")
+    say(f"posts: {len(posts)}  ·  calendar rows: {len(cal)}")
+    say(f"already linked: {len(linked_cal_ids)}\n")
 
-    print(f"=== {len(pairs)} UNAMBIGUOUS PAIR(S) ===")
+    say(f"=== {len(pairs)} UNAMBIGUOUS PAIR(S) ===")
     for it, p in pairs:
-        print(f"  {it['planned_date']} {it['channel_key']}")
-        print(f"      piece : {str(it.get('title'))[:64]}")
-        print(f"      video : {str(p.get('yt_title'))[:64]}  [{p.get('video_id')}] {p.get('status')}")
+        say(f"  {it['planned_date']} {it['channel_key']}")
+        say(f"      piece : {str(it.get('title'))[:64]}")
+        say(f"      video : {str(p.get('yt_title'))[:64]}  [{p.get('video_id')}] {p.get('status')}")
 
     if ambiguous:
-        print(f"\n=== {len(ambiguous)} AMBIGUOUS DAY(S) — not touched ===")
+        say(f"\n=== {len(ambiguous)} AMBIGUOUS DAY(S) — not touched ===")
         for (ch, day), cands, ps in ambiguous:
-            print(f"  {day} {ch}: {len(cands)} unlinked piece(s) vs {len(ps)} unlinked video(s)")
+            say(f"  {day} {ch}: {len(cands)} unlinked piece(s) vs {len(ps)} unlinked video(s)")
             for c in cands:
-                print(f"      piece : {str(c.get('title'))[:60]}")
+                say(f"      piece : {str(c.get('title'))[:60]}")
             for p in ps:
-                print(f"      video : {str(p.get('yt_title'))[:60]}  [{p.get('video_id')}]")
+                say(f"      video : {str(p.get('yt_title'))[:60]}  [{p.get('video_id')}]")
 
     if orphan_cal:
         n = sum(len(c) for _, c in orphan_cal)
-        print(f"\n=== {n} piece(s) with no video that day — nothing proves they shipped ===")
+        say(f"\n=== {n} piece(s) with no video that day — nothing proves they shipped ===")
         for (ch, day), cands in orphan_cal:
             for c in cands:
-                print(f"  {day} {ch}: {str(c.get('title'))[:60]}")
+                say(f"  {day} {ch}: {str(c.get('title'))[:60]}")
 
-    if not args.apply:
-        print("\nDRY RUN — nothing written. Re-run with --apply to write these links.")
-        return
+    if not apply:
+        say("\nDRY RUN — nothing written. Re-run with --apply to write these links.")
+        return {"linked": 0, "would_link": len(pairs), "ambiguous": len(ambiguous)}
 
     ok = 0
     for it, p in pairs:
@@ -340,9 +352,9 @@ def main():
             supa.patch("factory_posts", f"id=eq.{p['id']}", {"calendar_id": it["id"]})
             ok += 1
         except Exception as e:  # noqa: BLE001
-            print(f"  FAILED {p.get('video_id')}: {e}")
-    print(f"\nlinked {ok} of {len(pairs)} pair(s).")
-
+            say(f"  FAILED {p.get('video_id')}: {e}")
+    say(f"\nlinked {ok} of {len(pairs)} pair(s).")
+    return {"linked": ok if apply else 0, "would_link": len(pairs), "ambiguous": len(ambiguous)}
 
 if __name__ == "__main__":
     main()
