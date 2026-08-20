@@ -165,6 +165,13 @@ def _build_upi_cookbook():
             "atLeast": {"at": 3.5, "word": "",
                         "note": "A FLOOR \u2014 NOT A STATEMENT"},
             "ghostBars": 5,
+            # WHAT THE REMAINDER IS MADE OF. Without this the grey side is an
+            # anonymous block: the viewer learns "the part is big" and never what
+            # it BEAT. DMart Rs 5,931 sitting second inside the remainder is the
+            # beat-6 payoff restated as one image. The liquor Rs 1,000 is folded
+            # into REST — counted, never labelled (redaction masks the name, not
+            # the money). Values come from locked_numbers.json, not retyped.
+            "wholeParts": whole["parts"],
             # top-right: the hero figure owns y700-950 on the LEFT
             "host": True, "hostSize": 420, "hostAnchor": "tr",
         },

@@ -40,7 +40,41 @@
     "share_of_whole": 0.273,
     "share_words": "MORE THAN A QUARTER",
     "_composition": "Groceries & quick commerce 13,834 + Shopping 1,944 + Bills & subscriptions 1,798 + Home services 1,613 + Palra 1,560 + Dining & liquor 1,485 = 22,234 — the merchant categories of the filmed reply.",
-    "_why_not_139028": "The reply's own total outflow is ~Rs 1,39,028, but that is 72,670 of card/loan repayments, 28,425 of transfers to people and 14,600 of school/clinic. Blinkit against that reads 4.4% and destroys the point. The denominator is merchant spend only, and the on-screen label says exactly that."
+    "_why_not_139028": "The reply's own total outflow is ~Rs 1,39,028, but that is 72,670 of card/loan repayments, 28,425 of transfers to people and 14,600 of school/clinic. Blinkit against that reads 4.4% and destroys the point. The denominator is merchant spend only, and the on-screen label says exactly that.",
+    "parts": [
+      {
+        "label": "DMART",
+        "value": 5931,
+        "tint": "#5FA82C"
+      },
+      {
+        "label": "SHOPPING",
+        "value": 1944,
+        "tint": "#FF9900"
+      },
+      {
+        "label": "BILLS",
+        "value": 1798,
+        "tint": "#E40000"
+      },
+      {
+        "label": "SNABBIT",
+        "value": 1613,
+        "tint": "#22D3EE"
+      },
+      {
+        "label": "ZEPTO",
+        "value": 1560,
+        "tint": "#7C4DFF"
+      },
+      {
+        "label": "REST",
+        "value": 3319,
+        "tint": "#7A6B76"
+      }
+    ],
+    "_parts_why": "WHAT THE REMAINDER IS MADE OF. Without it the grey side is an anonymous block and the viewer only learns 'the part is big' — never what it BEAT. DMart is the ghost beat 6 kills, so seeing it sit second inside the remainder is the payoff restated in one image.",
+    "_rest_holds": "REST 3319 = Palra 1560 + dining/liquor 1485 + grocery residual 274. The Rs 1,000 liquor line is COUNTED here and never labelled — the redaction policy masks the name, not the money."
   },
   "supporting": {
     "zepto": {
