@@ -263,14 +263,14 @@ export default function Machines() {
                           {last && !live && <span className={'mst ' + last.status}>{last.status} {fmtAgo(last.finished_at || last.created_at)}</span>}
                           <button
                             className={'btn ' + (m.destructive ? 'btn-ghost' : 'btn-ghost')}
-                            disabled={!!busy || live || !awake}
-                            title={!awake ? 'This box is asleep — it will pick the job up when it wakes' : undefined}
+                            disabled={!!busy || live}
+                            title={!awake ? 'This box is asleep — it picks the job up when it wakes' : undefined}
                             onClick={() => {
                               if (m.destructive && !window.confirm(`${m.label} on ${w.name}?\n\nThis ${m.hint}. It cannot be undone.`)) return
                               act({ action: 'run_maintenance', worker_id: id, maintenance: m.id }, 'mt:' + m.id, `${m.label} queued on ${w.name}`)
                             }}
                           >
-                            {live ? 'running…' : busy === 'mt:' + m.id ? 'queuing…' : 'Run'}
+                            {live ? 'running…' : busy === 'mt:' + m.id ? 'queuing…' : awake ? 'Run' : 'Queue'}
                           </button>
                         </div>
                       )
