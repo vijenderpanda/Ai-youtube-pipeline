@@ -20,6 +20,7 @@ import Studio from './pages/Studio'
 import StudioBoard from './pages/StudioBoard'
 import Piece from './pages/Piece'
 import Make from './pages/Make'
+import Today from './pages/Today'
 import TemplateLibrary from './pages/TemplateLibrary'
 import TemplateDetail from './pages/TemplateDetail'
 import Assets from './pages/Assets'
@@ -84,6 +85,8 @@ export default function App() {
           {/* One Desk · Make — the on-demand proposer (no overnight daemon). */}
           <Route path="/make" element={<Make />} />
           <Route path="/make/:channelKey" element={<Make />} />
+          {/* One Desk · Today — triage that can reach zero. */}
+          <Route path="/today" element={<Today />} />
           <Route path="/channels" element={<Channels />} />
           <Route path="/channels/new" element={<ChannelWizard />} />
           <Route path="/channels/:channelKey" element={<ChannelDetail />} />
