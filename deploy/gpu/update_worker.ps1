@@ -45,21 +45,35 @@ if ($before -eq $after) {
 # missing ffmpeg or node shows up as a confusing failure 20 minutes in.
 Write-Output ""
 Write-Output "=== CAN THIS BOX RUN A PRODUCE? ==="
-function Check-Cmd($name, $probe) {
+# "MISSING" was ambiguous and cost four round-trips: node WAS installed
+# machine-wide, but the worker supervisor had started before the install, so its
+# inherited PATH had no nodejs and every child saw nothing. A tool that is on the
+# machine but invisible to this process needs a different answer than one that is
+# not installed, because the fix is a restart, not an install.
+function Check-Cmd($name, $probe, $knownPath) {
   $c = Get-Command $name -ErrorAction SilentlyContinue
   if ($c) {
     $v = ""
     try { $v = (& $name $probe 2>&1 | Select-Object -First 1) } catch { }
     Write-Output ("  {0,-10} YES  {1}" -f $name, $v)
-  } else {
-    Write-Output ("  {0,-10} MISSING" -f $name)
+    return
   }
+  if ($knownPath -and (Test-Path $knownPath)) {
+    Write-Output ("  {0,-10} INSTALLED BUT INVISIBLE TO THE WORKER" -f $name)
+    Write-Output ("             found at {0}, but not on this process's PATH." -f $knownPath)
+    Write-Output  "             The worker started before it was installed. RESTARTING IS THE FIX,"
+    Write-Output  "             and note run-worker.ps1 holds a single-instance mutex: a second"
+    Write-Output  "             start exits SILENTLY while the stale process keeps serving. Kill"
+    Write-Output  "             the supervisor by PID first, then start."
+    return
+  }
+  Write-Output ("  {0,-10} MISSING" -f $name)
 }
-Check-Cmd "python"  "--version"
-Check-Cmd "node"    "--version"
-Check-Cmd "npx"     "--version"
-Check-Cmd "ffmpeg"  "-version"
-Check-Cmd "git"     "--version"
+Check-Cmd "python"  "--version" $null
+Check-Cmd "node"    "--version" "C:\Program Files\nodejs\node.exe"
+Check-Cmd "npx"     "--version" "C:\Program Files\nodejs\npx.cmd"
+Check-Cmd "ffmpeg"  "-version" $null
+Check-Cmd "git"     "--version" $null
 
 $envFile = Join-Path $RepoRoot "secrets\factory.env"
 Write-Output ""
@@ -78,6 +92,20 @@ Write-Output ""
 Write-Output ("  remotion node_modules  {0}" -f $(if (Test-Path $nm) { "present" } else { "MISSING - run npm install in remotion-studio" }))
 
 Write-Output ""
+Write-Output "=== HOW OLD IS THE PROCESS SERVING THIS JOB? ==="
+try {
+  $me = Get-CimInstance Win32_Process -Filter "ProcessId = $PID"
+  $par = Get-CimInstance Win32_Process -Filter ("ProcessId = " + $me.ParentProcessId)
+  Write-Output ("  worker pid {0} started {1}" -f $par.ProcessId, $par.CreationDate)
+  Write-Output  "  anything installed AFTER that time is invisible to it until it restarts."
+} catch { Write-Output "  could not read the parent process" }
+
+Write-Output ""
 Write-Output "=== RESTART THE WORKER TO LOAD THE NEW CODE ==="
 Write-Output "  the worker imports factory_worker.py once at start, so a pull alone"
-Write-Output "  changes nothing until it restarts:  deploy\worker-ctl.ps1 restart"
+Write-Output "  changes nothing until it restarts."
+Write-Output "  DO NOT trust 'worker-ctl.ps1 restart' on its own: run-worker.ps1 holds a"
+Write-Output "  single-instance mutex, so if the old supervisor survives the stop, the new"
+Write-Output "  start exits SILENTLY and the stale process keeps serving jobs. That is how"
+Write-Output "  a freshly installed node stayed invisible across three restarts."
+Write-Output "  Kill the supervisor by PID, confirm it is gone, THEN start."
