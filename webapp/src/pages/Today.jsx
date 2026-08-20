@@ -148,8 +148,9 @@ export default function Today() {
           )}
           {unlinked > 0 && (
             <>
-              {unlinked} older cut{unlinked === 1 ? '' : 's'} have no record of going out. They may well
-              have shipped before the app started linking a post back to its piece — it cannot tell.{' '}
+              {unlinked} older cut{unlinked === 1 ? ' has' : 's have'} no record of going out.
+              {unlinked === 1 ? ' It' : ' They'} may well have shipped before the app started
+              linking a post back to its piece — it cannot tell.{' '}
             </>
           )}
           {stalled > 0 && (

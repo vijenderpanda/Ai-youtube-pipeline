@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api } from '../api'
 import { usePoll } from '../hooks'
+import { parsePaste, freshViewsFor, namedWithoutNumber } from '../paste'
 import Toast, { useToast } from '../components/Toast'
 
 /* =============================================================================
@@ -19,23 +20,6 @@ import Toast, { useToast } from '../components/Toast'
    YouTube Studio right now. So the paste box sits ABOVE the button, is parsed
    forgivingly, and is READ BACK to you before anything argues from it.
    ========================================================================== */
-
-/** Parse a YouTube Studio paste. Forgiving on purpose: any line with a title and
-    at least one number counts; the first plain number is views, a % is CTR. */
-function parsePaste(txt) {
-  const lines = String(txt || '').split('\n').map((l) => l.trim()).filter(Boolean)
-  const rows = []
-  let ignored = 0
-  for (const l of lines) {
-    const nums = l.match(/[\d][\d,.]*%?/g) || []
-    const title = l.split(/\s{2,}|\t/)[0].trim()
-    if (!nums.length || !title || /^video\b/i.test(title)) { ignored += 1; continue }
-    const pct = nums.find((n) => n.includes('%')) || null
-    const plain = nums.filter((n) => !n.includes('%'))
-    rows.push({ title, views: plain[0] ? plain[0].replace(/[^\d]/g, '') : null, ctr: pct })
-  }
-  return { rows, ignored }
-}
 
 const ANGLE_LABEL = {
   analytics: 'from your analytics',
@@ -66,6 +50,37 @@ export default function Make() {
   const ch = channels.find((c) => c.key === channel) || channels[0]
   const chKey = (ch && ch.key) || ''
   const parsed = useMemo(() => (paste.trim() ? parsePaste(paste) : null), [paste])
+
+  /* Make can now MATCH, so its read-back can stop being vague. It used to hold
+     no video list at all, which is why it could only honestly report "N rows
+     read" — it had nothing to match against. The channel is already chosen
+     right here, so its videos are one cheap call away, and a Studio link in the
+     paste resolves to an exact video. */
+  const vidsQ = usePoll(
+    () => (chKey ? api.get(`?r=video_summary&channel=${encodeURIComponent(chKey)}&days=90`) : Promise.resolve(null)),
+    0,
+    [chKey]
+  )
+  /* Stats AND posts. Matching only against ?r=video_summary means matching only
+     against the stats table — and the video with the freshest number is exactly
+     the one the stats table cannot see yet, since analytics lag ~48h. So the
+     paste that matters most reported as matching nothing. The posts carry
+     video_id + title for everything that has shipped. */
+  const postsQ = usePoll(() => api.get('?r=posts'), 0)
+  const chanVideos = useMemo(() => {
+    const out = (vidsQ.data && vidsQ.data.videos) || []
+    const known = new Set(out.map((v) => v.video_id))
+    const extra = ((postsQ.data && postsQ.data.posts) || [])
+      .filter((p) => p.channel_key === chKey && p.video_id && !known.has(p.video_id))
+      .map((p) => ({ video_id: p.video_id, title: p.yt_title || '' }))
+    return [...out, ...extra]
+  }, [vidsQ.data, postsQ.data, chKey])
+  const readBack = useMemo(() => {
+    if (!parsed) return null
+    const matched = chanVideos.filter((v) => freshViewsFor(parsed, v) != null).length
+    const named = chanVideos.filter((v) => namedWithoutNumber(parsed, v)).length
+    return { matched, named, unmatched: Math.max(0, parsed.size - matched - named), ...parsed }
+  }, [parsed, chanVideos])
 
   /* Ask for ideas. Same job the channel page has always used — now carrying the
      paste and, optionally, a machine to run on. */
@@ -151,24 +166,40 @@ export default function Make() {
               <span className="pc-eyebrow">Numbers this app can’t see yet</span>
               <p style={{ margin: '0 0 9px', fontSize: 13, color: 'var(--text-2)' }}>
                 Your newest Shorts have no API data, and the daily sync lags ~48h. Paste the rows
-                straight out of YouTube Studio — messy paste is fine.
+                straight out of YouTube Studio, or any write-up that links the videos — a Studio
+                link carries the video&rsquo;s id, so it matches exactly rather than by title. Messy
+                paste is fine.
               </p>
               <textarea
                 className="make-paste"
                 spellCheck={false}
                 value={paste}
                 onChange={(e) => setPaste(e.target.value)}
-                placeholder={'I Built A Habit Tracker By Typing One…   1,204   18,900   6.1%   0:19\nI Built A Working App By Typing One L…      31      910   2.8%   0:11'}
+                placeholder={
+                  'I Built A Habit Tracker By Typing One…   1,204   18,900   6.1%   0:19\n' +
+                  'I Built A Working App By Typing One L…      31      910   2.8%   0:11\n\n' +
+                  '…or prose: “[I Built A Habit Tracker](https://studio.youtube.com/video/Ag9tBHbyrbo/analytics) ' +
+                  'is your top performer with 225 views.”'
+                }
               />
-              {parsed && (
+              {parsed && readBack && (
                 <div className="make-parsed">
                   <span className="lb">READ BACK ✓</span>
-                  {/* Make never loads a video list, so nothing here was matched against
-                      anything — it was parsed. The read-back exists to prove the app
-                      understood the paste; a false 'matched' defeats exactly that. */}
-                  <span className="chip ok-chip">{parsed.rows.length} row{parsed.rows.length === 1 ? '' : 's'} read</span>
+                  {/* This page now holds the channel's videos, so the read-back can
+                      report what actually matched instead of how many lines it
+                      parsed. Whatever matched nothing still goes to the planner —
+                      the whole paste does — it just is not claimed as understood. */}
+                  <span className={'chip ' + (readBack.matched ? 'ok-chip' : '')}>
+                    {readBack.matched} video{readBack.matched === 1 ? '' : 's'} matched with a view count
+                  </span>
+                  {readBack.named > 0 && (
+                    <span className="chip">{readBack.named} recognised by link, no view count in the text</span>
+                  )}
+                  {readBack.unmatched > 0 && (
+                    <span className="chip warn-chip">{readBack.unmatched} named nothing on this channel</span>
+                  )}
                   {parsed.ignored > 0 && <span className="chip">{parsed.ignored} line{parsed.ignored === 1 ? '' : 's'} ignored</span>}
-                  <span className="chip">used before the app’s own data</span>
+                  <span className="chip">the whole paste goes to the planner either way</span>
                 </div>
               )}
             </section>
@@ -230,7 +261,9 @@ export default function Make() {
           <span className="pc-eyebrow">Reading before it says anything</span>
           <div className="make-reading">
             {[
-              paste.trim() ? `Your paste · ${parsed ? parsed.rows.length : 0} videos · freshest source` : null,
+              paste.trim()
+                ? `Your paste · ${readBack ? readBack.matched : 0} matched · freshest source`
+                : null,
               'This channel’s last shorts + their numbers',
               'What actually held retention (curriculum vs news)',
               'Competitor DNA + this week’s AI news',

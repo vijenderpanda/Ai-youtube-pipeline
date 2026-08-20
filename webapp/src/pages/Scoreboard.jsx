@@ -4,6 +4,7 @@ import { usePoll } from '../hooks'
 import Toast, { useToast } from '../components/Toast'
 import { fmtDayHeading } from '../format'
 import { istToday } from '../triage'
+import { parsePaste, freshViewsFor, namedWithoutNumber } from '../paste'
 
 /* =============================================================================
    SCOREBOARD — hit, flop, or too early to tell.
@@ -99,67 +100,12 @@ export default function Scoreboard() {
   }, [postsQ.data])
 
   /* Pasted numbers outrank stored stats for the videos they name — the API
-     finalizes ~48h late and the newest Shorts have no rows at all.
-
-     TWO shapes are accepted, because two are what actually get pasted here.
-
-     BY LINK (exact, and preferred). Anything containing a YouTube or Studio URL
-     carries the video id — studio.youtube.com/video/<ID>/analytics, youtu.be/<ID>,
-     watch?v=<ID>. That is an exact key: no title matching, no near-miss. It also
-     means a prose write-up pastes in as-is, which is what an analytics summary
-     actually looks like when it arrives.
-
-     BY TITLE (the Studio table). Tab- or run-of-spaces separated rows, first
-     column the title, first plain number the views.
-
-     A number only counts as views when the word "views" is next to it. The same
-     sentence often carries "45.45% Stayed to watch" or "the 12-second mark", and
-     silently reading either as a view count would be worse than reading nothing. */
-  const VIDEO_ID = /(?:youtu\.be\/|\/video\/|[?&]v=|\/shorts\/)([A-Za-z0-9_-]{11})/g
-
-  const pasted = useMemo(() => {
-    const byId = new Map()
-    const byTitle = new Map()
-    const text = String(paste || '')
-
-    // by link — scan each paragraph so a number stays with its own video
-    for (const para of text.split(/\n{2,}|\n(?=\s*[-*•\d])/)) {
-      const ids = [...para.matchAll(VIDEO_ID)].map((m) => m[1])
-      if (!ids.length) continue
-      const m = para.match(/\*{0,2}([\d][\d,]*)\*{0,2}\s*views\b/i)
-      const views = m ? Number(m[1].replace(/[^\d]/g, '')) : null
-      for (const id of ids) if (!byId.has(id)) byId.set(id, views)
-    }
-
-    // by title — the Studio table shape
-    for (const line of text.split('\n')) {
-      if (VIDEO_ID.test(line)) { VIDEO_ID.lastIndex = 0; continue }
-      VIDEO_ID.lastIndex = 0
-      const nums = line.match(/[\d][\d,.]*%?/g) || []
-      const title = line.split(/\s{2,}|\t/)[0].trim()
-      if (!title || !nums.length || /^video\b/i.test(title)) continue
-      const plain = nums.filter((n) => !n.includes('%'))
-      if (!plain.length) continue
-      byTitle.set(title.replace(/[…\.]+$/, '').toLowerCase(), Number(plain[0].replace(/[^\d]/g, '')))
-    }
-    return { byId, byTitle, size: byId.size + byTitle.size }
-  }, [paste])
-
-  const freshViews = (v) => {
-    // an id is exact, so it always wins over a title guess
-    if (v.video_id && pasted.byId.has(v.video_id)) {
-      const n = pasted.byId.get(v.video_id)
-      if (n != null) return n
-    }
-    const t = String(v.title || '').toLowerCase()
-    for (const [k, views] of pasted.byTitle) {
-      if (k.length > 12 && (t.startsWith(k.slice(0, 24)) || k.startsWith(t.slice(0, 24)))) return views
-    }
-    return null
-  }
-
-  /** Recognised the video but the paste carried no view count for it. */
-  const namedNoNumber = (v) => !!(v.video_id && pasted.byId.get(v.video_id) === null)
+     finalizes ~48h late and the newest Shorts have no rows at all. The parser
+     is shared with Make (src/paste.js) so the same paste reads the same way on
+     both screens; they used to have separate ones and drifted. */
+  const pasted = useMemo(() => parsePaste(paste), [paste])
+  const freshViews = (v) => freshViewsFor(pasted, v)
+  const namedNoNumber = (v) => namedWithoutNumber(pasted, v)
 
   /* Videos that are LIVE but have no analytics row yet.
      The board is built from ?r=video_summary, which reads the stats table, and
