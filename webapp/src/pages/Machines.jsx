@@ -52,6 +52,7 @@ const MAINTENANCE = [
   { id: 'disk_deep', label: 'Deep clean', hint: 'also drops browser and Playwright caches', os: ['Darwin'], destructive: true },
   { id: 'docker_reclaim', label: 'Reclaim Docker disk', hint: 'removes unused images — the biggest single win on this Mac', os: ['Darwin'], destructive: true },
   { id: 'keep_awake', label: 'Stop it sleeping', hint: 'holds the machine awake so jobs finish', os: ['Windows', 'Darwin'] },
+  { id: 'enable_wol', label: 'Enable wake-on-LAN', hint: 'prepares it to be woken remotely — run once, while it is awake', os: ['Windows'] },
   { id: 'schedule_maint', label: 'Weekly auto-cleanup', hint: 'registers the recurring cleanup', os: ['Windows', 'Darwin'] },
 ]
 
@@ -246,6 +247,7 @@ export default function Machines() {
 
               {(() => {
                 const mine2 = MAINTENANCE.filter((m) => !m.os || m.os.includes(w.os))
+                const canWake = !awake && w.os === 'Windows'
                 if (!mine2.length) {
                   return (
                     <div className="dim small" style={{ marginTop: 10 }}>
@@ -255,9 +257,31 @@ export default function Machines() {
                 }
                 return (
                   <div className="mach-maint">
+                    {canWake && (() => {
+                      const wj = jobs.find((j) => j.meta && j.meta.maintenance === 'wake_worker' && j.meta.acts_on === id)
+                      const wlive = wj && (wj.status === 'queued' || wj.status === 'running')
+                      return (
+                        <div className="mrow wake-row">
+                          <div style={{ minWidth: 0 }}>
+                            <div className="ml">Wake it up</div>
+                            <div className="mh">sends a wake signal from another machine on its network</div>
+                          </div>
+                          {wj && !wlive && <span className={'mst ' + wj.status}>{wj.status} {fmtAgo(wj.finished_at || wj.created_at)}</span>}
+                          <button
+                            className="btn"
+                            disabled={!!busy || wlive}
+                            onClick={() => act({ action: 'run_maintenance', worker_id: id, maintenance: 'wake_worker' },
+                              'mt:wake', `Wake signal sent to ${w.name}`)}
+                          >
+                            {wlive ? 'sending…' : busy === 'mt:wake' ? 'sending…' : 'Wake'}
+                          </button>
+                        </div>
+                      )
+                    })()}
                     <div className="pc-eyebrow" style={{ margin: '0 0 8px' }}>Run on this box</div>
                     {mine2.map((m) => {
-                      const last = jobs.find((j) => j.meta && j.meta.maintenance === m.id && j.assigned_worker === id)
+                      const last = jobs.find((j) => j.meta && j.meta.maintenance === m.id &&
+                        (j.meta.acts_on ? j.meta.acts_on === id : j.assigned_worker === id))
                       const live = last && (last.status === 'queued' || last.status === 'running')
                       return (
                         <div key={m.id} className="mrow">
@@ -283,6 +307,7 @@ export default function Machines() {
                     {!awake && (
                       <div className="dim small" style={{ marginTop: 6 }}>
                         Asleep — anything you queue runs when it next checks in.
+                        {canWake && ' Waking it only works if it still has power.'}
                       </div>
                     )}
                   </div>

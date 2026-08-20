@@ -91,7 +91,13 @@ if [ "$DOCKER" = 1 ]; then
   echo
   echo "=== DOCKER RECLAIM ==="
   if command -v docker >/dev/null && docker info >/dev/null 2>&1; then
-    docker system prune -a -f --volumes 2>&1 | tail -3
+    # NEVER --volumes. Named volumes here hold local project databases
+    # (postgres data for pregmitra, globallivetracker, panda_logix, supabase...)
+    # and a volume that is merely "unused" is just one whose container is not
+    # running right now. Pruning them reclaims ~250 MB and can destroy data that
+    # exists nowhere else. Images and build cache are re-pullable; volumes are not.
+    docker system prune -a -f 2>&1 | tail -3
+    docker builder prune -a -f 2>&1 | tail -2
   else
     echo "  Docker is not running — start Docker Desktop and re-run."
     echo "  Its VM disk is $(sz "$HOME/Library/Containers/com.docker.docker"); the space"

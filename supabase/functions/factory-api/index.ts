@@ -1223,7 +1223,7 @@ async function handlePost(body: any): Promise<Response> {
       // simply missing from by_os means we have not written that script yet — the
       // 409 below says so instead of sending PowerShell somewhere it cannot run.
       const MAINTENANCE: Record<string, {
-        label: string; destructive?: boolean;
+        label: string; destructive?: boolean; runs_on?: string; needs_mac?: boolean;
         by_os: Record<string, { script_path: string; script_args: string[] }>;
       }> = {
         disk_report: {
@@ -1252,6 +1252,24 @@ async function handlePost(body: any): Promise<Response> {
             Darwin: { script_path: "deploy/mac/disk_maint.sh", script_args: ["--docker"] },
           },
         },
+        enable_wol: {
+          label: "Enable wake-on-LAN",
+          by_os: {
+            Windows: { script_path: "deploy/gpu/enable_wol.ps1", script_args: [] },
+          },
+        },
+        wake_worker: {
+          label: "Wake it up",
+          // Runs on a DIFFERENT machine: a sleeping box cannot run the script that
+          // wakes it. The peer must share its LAN to broadcast the magic packet.
+          runs_on: "peer",
+          needs_mac: true,
+          // Keyed by the OS of the machine that SENDS the packet, not the one
+          // being woken. Only the Mac relay exists today.
+          by_os: {
+            Darwin: { script_path: "deploy/mac/wake_worker.sh", script_args: [] },
+          },
+        },
         keep_awake: {
           label: "Stop it sleeping",
           by_os: {
@@ -1275,13 +1293,41 @@ async function handlePost(body: any): Promise<Response> {
       const worker_id = String(body.worker_id ?? "").trim();
       if (!worker_id) return json({ error: "worker_id required" }, 400);
       const { data: w, error: wErr } = await db.from("factory_workers")
-        .select("worker_id, os, name").eq("worker_id", worker_id).maybeSingle();
+        .select("worker_id, os, name, meta").eq("worker_id", worker_id).maybeSingle();
       if (wErr) return json({ error: wErr.message }, 500);
       if (!w) return json({ error: "machine not found" }, 404);
-      const variant = spec.by_os[String(w.os ?? "")];
+      // Normally the script runs on the machine it acts on. A relay action is the
+      // exception: a sleeping box cannot run the script that wakes it, so the job
+      // goes to another machine on its network and the variant is chosen from THAT
+      // machine's OS.
+      let runner = worker_id;
+      let runnerOs = String(w.os ?? "");
+      let runnerName = w.name;
+      if (spec.runs_on === "peer") {
+        const cutoff = new Date(Date.now() - 5 * 60_000).toISOString();
+        const { data: peers } = await db.from("factory_workers")
+          .select("worker_id, name, os, last_seen, paused")
+          .neq("worker_id", worker_id).gte("last_seen", cutoff).eq("paused", false);
+        const peer = (peers ?? []).find((p) => spec.by_os[String(p.os ?? "")]);
+        if (!peer) {
+          return json({ error: `Nothing is awake to send the wake signal. ${w.name} can only be ` +
+            `woken by another machine on the same network, and none is online right now.` }, 409);
+        }
+        runner = peer.worker_id; runnerOs = String(peer.os ?? ""); runnerName = peer.name;
+      }
+      const variant = spec.by_os[runnerOs];
       if (!variant) {
-        return json({ error: `${spec.label} has no script for ${w.name} (${w.os}) yet — ` +
+        return json({ error: `${spec.label} has no script for ${runnerName} (${runnerOs}) yet — ` +
           `it exists for ${Object.keys(spec.by_os).join(", ")}` }, 409);
+      }
+      let args = [...variant.script_args];
+      if (spec.needs_mac) {
+        const mac = ((w.meta ?? {}) as Record<string, unknown>).mac;
+        if (!mac) {
+          return json({ error: `We do not know ${w.name}'s network address yet. Run ` +
+            `"Enable wake-on-LAN" on it once while it is awake — that reports the address.` }, 409);
+        }
+        args = [String(mac), ...args];
       }
       const { data: job, error: jErr } = await db.from("factory_jobs")
         .insert({
@@ -1289,8 +1335,9 @@ async function handlePost(body: any): Promise<Response> {
           type: "shell_script",
           title: spec.label + " — " + w.name,
           status: "queued",
-          target_worker: worker_id,
-          meta: { script_path: variant.script_path, script_args: variant.script_args, maintenance: actionId },
+          target_worker: runner,
+          meta: { script_path: variant.script_path, script_args: args, maintenance: actionId,
+                  acts_on: worker_id },
         })
         .select().single();
       if (jErr) return json({ error: jErr.message }, 500);
@@ -1306,6 +1353,12 @@ async function handlePost(body: any): Promise<Response> {
       if (body.name !== undefined) patch.name = body.name;
       if (body.paused !== undefined) patch.paused = Boolean(body.paused);
       if (body.max_parallel !== undefined) patch.max_parallel = body.max_parallel;
+      if (body.meta !== undefined) {
+        if (body.meta === null || typeof body.meta !== "object" || Array.isArray(body.meta)) {
+          return json({ error: "meta must be an object" }, 400);
+        }
+        patch.meta = body.meta;
+      }
       if (body.accept_types !== undefined) {
         // null / [] => accept ALL types; else validate each against JOB_TYPES
         const at = body.accept_types;

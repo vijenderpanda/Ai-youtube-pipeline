@@ -7857,3 +7857,8 @@ a.out-chip:hover {
 .mach-maint .mst.done { color: var(--success); }
 .mach-maint .mst.failed { color: var(--danger); }
 .mach-maint .btn { padding: 5px 12px; font-size: 12px; }
+
+/* The wake action is the only switch that acts on a box which is DOWN, so it
+   sits above the run-list with a live accent instead of the ghost treatment. */
+.mach-maint .wake-row { border-bottom: 1px solid var(--border); margin-bottom: 10px; padding-bottom: 10px; }
+.mach-maint .wake-row .ml { color: var(--text); }
