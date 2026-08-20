@@ -1,0 +1,261 @@
+{
+  "_note": "LOCKED 2026-08-20. Single source of truth for episode _upi. These figures appear in the VO, both component prop sets, the lane counter, the hook still, the mirror JSON and the description — R3 in the shooting spec. Change here, re-derive everywhere, and expect a full VO re-synth (content-addressed cache) plus FACTORY_REBUILD_HOSTS=1.",
+  "provenance": {
+    "source": "VJ's own PhonePe screen recording, 2026-08-20 20:12, 27s, 1080x2520",
+    "method": "18 frames sampled across the history scroll; rows deduped on (date + payee + amount)",
+    "coverage": "02 Aug -> 18 Aug 2026, with gaps. A PARTIAL SCROLL.",
+    "honesty": "Every total is a FLOOR of what was visible in the recording, not a statement. Never present as complete.",
+    "known_limit": "Gullak Money Rs 100 recurs almost daily with no per-row time shown, so same-date rows cannot be separated from overlap duplicates. Not counted in any headline figure.",
+    "production_gate_NOT_run": "Nobody has yet confirmed that Claude, given these screenshots via claude.ai on a phone with the real prompt, returns a GROUPED per-merchant breakdown rather than prose. Until that is filmed there is no proof beat."
+  },
+  "hero": {
+    "merchant": "Blinkit",
+    "total": 7339,
+    "orders": 8,
+    "average": 917,
+    "dates": [
+      "18 Aug",
+      "17 Aug",
+      "17 Aug",
+      "16 Aug",
+      "03 Aug",
+      "03 Aug",
+      "02 Aug",
+      "02 Aug"
+    ],
+    "amounts": [
+      560,
+      710,
+      649,
+      1843,
+      923,
+      1215,
+      841,
+      598
+    ],
+    "digits": 4,
+    "_why": "The story is NOT 'small purchases add up'. It is 'the ones I call small are Rs 917 a tap'. Both numbers are VJ's own, so it survives fact-checking."
+  },
+  "whole": {
+    "value": 25136,
+    "label": "SHOPS & APPS IN THESE SHOTS",
+    "share_of_whole": 0.292,
+    "share_words": "NEARLY A THIRD",
+    "_composition": "Blinkit 7339 + DMart 5931 + Zomato 1968.59 + Snabbit 1612.50 + Zepto 1560 + Palra 1560 + Gas 1500 + Amazon 1414 + Liquor 1000 + Maestro 491.50 + Box8 372 + Licious 274 + Bistro 113",
+    "_why_not_249654": "PhonePe's own August total is Rs 2,49,654.12, but it includes a Rs 45,000 credit-card BILL, a Rs 36,085 wallet top-up and loan repayments. Blinkit against that reads 2.9% and destroys the point. The denominator must be merchant spend only, and the on-screen label must say so exactly — never the word 'everything'."
+  },
+  "supporting": {
+    "zepto": {
+      "total": 1560,
+      "count": 1
+    },
+    "snabbit": {
+      "total": 1612.5,
+      "count": 6
+    },
+    "maestro_solutions": {
+      "total": 491.5,
+      "count": 3,
+      "_note": "Rs 199 / 99 / 193.50 — reads like a subscription"
+    },
+    "zomato": {
+      "total": 1968.59,
+      "count": 2
+    },
+    "quick_commerce_combined": {
+      "total": 8899,
+      "count": 9
+    }
+  },
+  "excluded": {
+    "failed": [
+      {
+        "payee": "Wallet top-up",
+        "amount": 5155
+      },
+      {
+        "payee": "Wallet top-up",
+        "amount": 7217
+      },
+      {
+        "payee": "Blinkit",
+        "amount": 560,
+        "date": "18 Aug",
+        "_note": "a SECOND Rs 560 on the same day, marked Failed. Including it makes Blinkit read 7899."
+      }
+    ],
+    "not_spending": [
+      {
+        "payee": "American Express",
+        "amount": 45000,
+        "reason": "credit-card bill payment"
+      },
+      {
+        "payee": "Wallet top-up",
+        "amount": 36085,
+        "reason": "self-transfer"
+      },
+      {
+        "payee": "PhonePe Wallet withdrawal",
+        "amount": 35000,
+        "reason": "money IN, never net off"
+      }
+    ],
+    "_why": "These exclusions are the skill's own rules meeting real data for the first time. They held."
+  },
+  "people": {
+    "policy": "COLLAPSE TO ONE UNNAMED LINE. Never print a name, a number or a count of individuals.",
+    "total": null,
+    "_why_null": "Person-to-person rows cannot be deduped reliably across overlapping frames. A confident wrong number here is worse than no number."
+  },
+  "counter_beat": {
+    "gullak_money": {
+      "per_day": 100,
+      "approx_month": 3000
+    },
+    "_note": "VJ sets aside Rs 100 almost every single day. A genuinely warm counter-beat, and possibly a better episode than the sting."
+  },
+  "digit_schedule": {
+    "value": 7339,
+    "breaks": [
+      {
+        "digit": "7",
+        "beat": "rush",
+        "absolute_s": 6.7,
+        "revealed": 0,
+        "revealAt": 0.79,
+        "_why": "6-7s is the channel's worst measured second; 6.70 clears the ingest shatter that ends at ~6.51"
+      },
+      {
+        "digit": "3",
+        "beat": "floor",
+        "absolute_s": 10.2,
+        "revealed": 1,
+        "revealAt": 1.83
+      },
+      {
+        "digit": "3",
+        "beat": "sort",
+        "absolute_s": 16.6,
+        "revealed": 2,
+        "revealAt": 1.61
+      },
+      {
+        "digit": "9",
+        "beat": "grow",
+        "absolute_s": 20.8,
+        "revealed": 3,
+        "revealAt": 2.73,
+        "_why": "the number lands with ~8s still to run"
+      }
+    ],
+    "_retimed_from_vo": "2026-08-20: the first VO ran 42.45s against a 34s target — my 3.0 words/sec estimate was wrong, the real rate is 2.67. Script trimmed 106 -> 74 words, VO is now 28.75s, and these anchors are derived from the ACTUAL word timings, not from targets."
+  },
+  "STILL_BLANK": {
+    "your_guess": null,
+    "_blocking": "Beat 6 (17-22s) destroys VJ's wrong guess on camera. He has not given one. It cannot be invented after seeing the answer — that beat would be fabricated, which is the one thing this channel cannot do. If no honest guess exists, CUT the ghost-guess beat rather than stage it."
+  },
+  "rows": {
+    "in_props": 22,
+    "excluded_failed": 3,
+    "_note": "ONLY assert counts that come from this file. An earlier cut showed 'ROWS READ 47' and 'DUPES CUT 3' — 47 was never derived from anything, and the 3 excluded rows were FAILED transactions, not duplicates. Both were caught by VJ on playback. The recording is a partial scroll, so the TRUE number of transactions in the month is unknown and must never be stated.",
+    "total_in_month": null,
+    "_why_null": "Unknowable from a 27s partial scroll. Do not put a denominator on screen."
+  },
+  "labels": {
+    "cost": "COST",
+    "_why_not_spend": "'SPEND \\u20b90' read as a contradiction in a film about spending \\u20b97,339. The figure means what the tool cost to run, so the label is COST.",
+    "cost_value": "FREE",
+    "_rule": "Never render a zero in a row of populated counts. 22 / 3 / 8 / 0 makes the zero look like the stat that failed to load, which turns the film's best selling point into an apparent bug. Say FREE."
+  },
+  "prompt": {
+    "verified": "My UPI history - the shots overlap so count each payment once, group by category, keep people as one line with no names, and tell me which app took the most.",
+    "tested": "2026-08-20 on claude.ai (Sonnet 5, High) with 3 real overlapping screenshots",
+    "gate_result": "PASS — returned CATEGORY groups, collapsed people to one unnamed line, and named a MERCHANT as the shock",
+    "surfaces_must_match": [
+      "rec_upi_gate.py PROMPT",
+      "the text typed on the beat-1 tape",
+      "episodes/_upi.v2.json desc_prompt",
+      "the pinned comment"
+    ],
+    "_first_attempt_failed": "The original 50-word prompt grouped by RECIPIENT, printed five real people's names, and picked a PERSON as the shock ('Rs 5,000 to <name>, odd/unclear name'). Caught only by running it. Never ship a prompt that has not been run end to end.",
+    "_delivery": "Pasted on tape, never typed — 2.0s cannot type 30 words. NOT read aloud: it is already on screen, voice-over is not indexed, and speaking it would cost ~9s of a 34s film for zero information gain.",
+    "open_question": "The reply surfaced an 'Alcohol (Liquor Fort)' category. Truthful; VJ to decide whether it appears on screen."
+  },
+  "redaction": {
+    "alcohol": {
+      "policy": "COUNTED, NEVER NAMED, MASKED ON TAPE",
+      "counted_in_whole": true,
+      "_why_still_counted": "Removing the Rs 1,000 moves the share from 29.2% to 30.4%. A better number produced by deleting real spending is the exact massaging this episode argues against. It stays in the denominator.",
+      "on_screen_graphics": "already safe — folded into wholeParts REST 2560 (Palra 1560 + Liquor 1000), never labelled",
+      "on_tape": "Claude's reply WILL show an 'Alcohol (Liquor Fort)' category line. Mask it before the tape enters the repo."
+    },
+    "technique": {
+      "use": "ffmpeg drawbox — a SOLID plate, not a blur",
+      "_why_not_blur": "A blur on small type can stay legible at video bitrates and reads as something being hidden. A solid plate reads as deliberate redaction.",
+      "match_the_component": "Use the language LedgerFlow already speaks: plate fill rgba(224,33,138,0.14), 1.5px rgba(224,33,138,0.55) border, r6 — the same treatment as the masked rows. The redaction then looks authored rather than patched.",
+      "also_mask": [
+        "every person-to-person line in the reply",
+        "the claude.ai greeting 'Back at it, <name>' in the ask tape",
+        "any account digits or UPI handles"
+      ]
+    }
+  },
+  "timing": {
+    "vo_total_s": 28.75,
+    "beat_starts": [
+      0.0,
+      2.55,
+      5.91,
+      8.37,
+      12.02,
+      14.99,
+      18.07,
+      23.11
+    ],
+    "beat_durs": [
+      2.55,
+      3.36,
+      2.46,
+      3.65,
+      2.97,
+      3.08,
+      5.04,
+      5.64
+    ],
+    "tape_lengths_needed": {
+      "ask.mp4": 3.36,
+      "answer.mp4": 2.97
+    },
+    "_beat0": "beat 0 is the designed TapStack hook, not tape. pick.mp4 was RETIRED 2026-08-21 (VJ: no phone screenshots in 0-3s). Provenance is still proven on real tape at 2.55s by ask.mp4 — the graphic only states it in words and hands off an EMPTY container."
+  },
+  "av_sync": {
+    "principle": "Every screen event lands ON or just BEFORE the word that names it. Three were LATE on the first voiced cut (hero number +0.37s, order counter +2.00s, ghost strike +0.28s) because they were timed from beat targets rather than from the word timings. Re-derive from words.json, never from the beat sheet.",
+    "fixes": {
+      "grow_digit": {
+        "spoken": 20.43,
+        "start": 18.07,
+        "revealAt": 1.94,
+        "_why": "break now COMPLETES as the voice lands 'seven thousand'"
+      },
+      "grow_counter": {
+        "spoken": 18.07,
+        "start": 18.07,
+        "at": 0.0,
+        "roll": 0.7,
+        "_why": "'eight' is the beat's FIRST word; the roll cannot precede it, so shorten it from 1.6s to 0.7s"
+      },
+      "sort_ghost": {
+        "spoken": 16.31,
+        "start": 14.990000000000002,
+        "killAt": 2.21,
+        "_why": "ghost is ESTABLISHED while the voice says 5,900 and struck at the END of the line, so line 6 ('eight quick taps cost more') explains the kill"
+      }
+    },
+    "result": {
+      "hero_number_7339": "FIXED — was +0.37s late, now 0.00s. The break COMPLETES exactly as the voice lands 'seven thousand'.",
+      "order_counter_8": "STRUCTURAL, not a defect. 'Eight' is the FIRST word of the beat, so a roll cannot finish before the beat starts; 0.7s is the shortest that still reads as motion. And the lane chip already shows BLINKIT 8 from the sort beat, so the number IS on screen when the word is said — the big counter is emphasis arriving after.",
+      "ghost_strike": "INTENTIONAL. The voice SAYS 5,900 to establish the ghost; the strike lands at the END of the line so that line 6 ('Eight quick taps cost more') is what explains the kill. Syncing the strike to the establishing words would kill it before the reason exists. Completes at 17.92, inside the 18.07 beat end."
+    }
+  }
+}

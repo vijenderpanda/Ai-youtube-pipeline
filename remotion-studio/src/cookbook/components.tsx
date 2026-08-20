@@ -18,9 +18,12 @@ import { HoloCard } from "./HoloCard";
 import { GlassPanel } from "./GlassPanel";
 import { MorphField } from "./MorphField";
 import { ReactionMeter } from "./ReactionMeter";
+import { LedgerFlow } from "./LedgerFlow";
+import { ShareSplit } from "./ShareSplit";
 import { SpinWheel } from "./SpinWheel";
 import { OutroGlass } from "./OutroGlass";
 import { ScreenStage } from "./ScreenStage";
+import { TapStack } from "./TapStack";
 import { GenerativeUI } from "./GenerativeUI";
 
 /* =============================================================================
@@ -51,10 +54,13 @@ export const COOKBOOK_COMPONENTS: Record<string, React.FC<any>> = {
   GlassPanel,
   MorphField,
   ReactionMeter,
+  LedgerFlow,
+  ShareSplit,
   SpinWheel,
   OutroGlass,
   ScreenStage,
   GenerativeUI,
+  TapStack,
 };
 
 export type CookbookBlockProps = {

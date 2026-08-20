@@ -25,6 +25,10 @@ import { GlassPanel, glassPanelDemo } from "./cookbook/GlassPanel";
 import { MorphField, morphFieldDemo } from "./cookbook/MorphField";
 import { ReactionMeter, reactionMeterDemo } from "./cookbook/ReactionMeter";
 import { SpinWheel, spinWheelDemo } from "./cookbook/SpinWheel";
+import { LedgerFlow, ledgerFlowDemo } from "./cookbook/LedgerFlow";
+import { ShareSplit, shareSplitDemo } from "./cookbook/ShareSplit";
+import { TapStack, tapStackDemo } from "./cookbook/TapStack";
+import { Fogline } from "./cookbook/Fogline";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
 import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
 import { GenerativeUI, generativeUIDemo } from "./cookbook/GenerativeUI";
@@ -35,6 +39,178 @@ const fallback: ShortProps = {
   segments: [],
   captions: [],
   vo: "",
+};
+
+/* ---- LedgerFlow QC harness: one composition per phase, so each of the four
+   re-layouts can be fixed in isolation before any beat authoring. The four
+   share ONE row set on purpose — that is the component's whole thesis. */
+
+/* ---- Fogline as the UPI SCAN (VJ 2026-08-20: "use the fogline component you
+   invented"). Right call: Fogline's mechanic is blur = confidence, and "which
+   rows did Claude actually read" IS a confidence statement. It also puts the
+   DEDUPE on screen as a numbered result — the single best piece of teaching in
+   the whole episode, which was otherwise buried in a reference file. Every
+   `result` here is a real measured number from the 2026-08-20 legibility test. */
+const FOGLINE_UPI = {
+  runLabel: "READING 3 SCREENSHOTS · UPI HISTORY",
+  currency: "\u20b9",
+  spendDecimals: 0,
+  lift: 0.62,
+  doneTone: "#0E2A26",
+  perStep: 0.85,
+  horizon: 3,
+  startAt: 1.15,
+  steps: [
+    { verb: "Read screenshot 1", detail: "18 Aug \u2192 15 Aug", params: "vision only \u00b7 nothing connected", result: "23 rows", dur: 1, cost: "" },
+    { verb: "Read screenshot 2", detail: "15 Aug \u2192 11 Aug", params: "overlap with #1 detected", result: "24 rows", dur: 1, cost: "" },
+    { verb: "Read screenshot 3", detail: "11 Aug \u2192 06 Aug", params: "", result: "19 rows", dur: 1, cost: "" },
+    { verb: "Drop the sliced rows", detail: "cut in half at the crop edge", params: "never guessed", result: "2 skipped", dur: 1, cost: "" },
+    { verb: "Remove the duplicates", detail: "same day \u00b7 same payee \u00b7 same amount", params: "the overlap counted them twice", result: "5 removed", dur: 3, cost: "" },
+    { verb: "Hide the people", detail: "person-to-person transfers", params: "no names, ever", result: "1 line", dur: 1, cost: "" },
+    { verb: "Group by merchant", detail: "food \u00b7 groceries \u00b7 shopping \u00b7 travel", params: "", result: "8 groups", dur: 2, cost: "" },
+    { verb: "Total what was visible", detail: "a floor \u2014 not a bank statement", params: "", result: "\u20b912,640", dur: 2, cost: "" },
+  ],
+};
+
+
+/* ---- EPISODE _upi — LOCKED 2026-08-20 -------------------------------------
+   Every row below is a transaction that ACTUALLY APPEARS in VJ's own PhonePe
+   history recording. Nothing here is invented: brandmarks.ts:17-19 — "Usage is
+   nominative... Never imply endorsement. Never invent a transaction."
+   Person-to-person rows carry merchant:"" and masked:true — the identity is
+   absent from the PROPS, not hidden at render, so no name ever enters the repo.
+   Source of truth: channels/claude-tricks/assets/ep_upi/locked_numbers.json */
+const UPI_LANES = [
+  { key: "blinkit", label: "BLINKIT", emoji: "\u{1F6F5}", tint: "#F8CB46" },
+  { key: "other", label: "OTHER APPS", emoji: "\u{1F4F1}", tint: "#5FA82C" },
+  { key: "food", label: "FOOD", emoji: "\u{1F37D}", tint: "#E23744" },
+  { key: "shop", label: "SHOPPING", emoji: "\u{1F6CD}", tint: "#FF9900" },
+];
+const UPI_ROWS = [
+  { id: "u01", merchant: "Blinkit", amount: 560, day: "18 AUG", cat: "blinkit", counted: true },
+  { id: "u02", merchant: "Zomato", amount: 1072, day: "18 AUG", cat: "food", counted: true },
+  { id: "u03", merchant: "Zomato", amount: 897, day: "18 AUG", cat: "food", counted: true },
+  { id: "u04", merchant: "Amazon", amount: 1414, day: "18 AUG", cat: "shop", counted: true },
+  { id: "u05", merchant: "", amount: 100, day: "18 AUG", masked: true },
+  { id: "u06", merchant: "Blinkit", amount: 710, day: "17 AUG", cat: "blinkit", counted: true },
+  { id: "u07", merchant: "Blinkit", amount: 649, day: "17 AUG", cat: "blinkit", counted: true },
+  { id: "u08", merchant: "Snabbit", amount: 399, day: "17 AUG", cat: "other", counted: true },
+  { id: "u09", merchant: "DMart", amount: 5931, day: "17 AUG", cat: "shop", counted: true },
+  { id: "u10", merchant: "Blinkit", amount: 1843, day: "16 AUG", cat: "blinkit", counted: true },
+  { id: "u11", merchant: "", amount: 2800, day: "16 AUG", masked: true },
+  { id: "u12", merchant: "Maestro", amount: 199, day: "15 AUG", cat: "other", counted: true },
+  { id: "u13", merchant: "Gas Bill", amount: 1500, day: "14 AUG", cat: "other", counted: true },
+  { id: "u14", merchant: "Box8", amount: 372, day: "12 AUG", cat: "food", counted: true },
+  { id: "u15", merchant: "Snabbit", amount: 248, day: "12 AUG", cat: "other", counted: true },
+  { id: "u16", merchant: "", amount: 250, day: "12 AUG", masked: true },
+  { id: "u17", merchant: "Snabbit", amount: 323, day: "09 AUG", cat: "other", counted: true },
+  { id: "u18", merchant: "Blinkit", amount: 923, day: "03 AUG", cat: "blinkit", counted: true },
+  { id: "u19", merchant: "Blinkit", amount: 1215, day: "03 AUG", cat: "blinkit", counted: true },
+  { id: "u20", merchant: "Blinkit", amount: 841, day: "02 AUG", cat: "blinkit", counted: true },
+  { id: "u21", merchant: "Blinkit", amount: 598, day: "02 AUG", cat: "blinkit", counted: true },
+  { id: "u22", merchant: "Zepto", amount: 1560, day: "02 AUG", cat: "other", counted: true },
+];
+/* the four digits of 7339, one per beat — see locked_numbers.json digit_schedule */
+const UPI_HUD = { label: "BLINKIT SO FAR", value: 7339, prefix: "\u20b9 " };
+const UPI_BASE = {
+  rows: UPI_ROWS, lanes: UPI_LANES, scrollFrom: 0, scrollTo: 0,
+};
+const UPI_RUSH = {
+  ...UPI_BASE, phase: "rush" as const, ingest: { count: 3, at: 0 },
+  scrollTo: 14, hud: { ...UPI_HUD, revealed: 0, revealAt: 0.79 },
+  tally: { label: "ROWS READ", from: 0, to: 22 },
+  claimLines: ["I SCREENSHOTTED", "MY UPI HISTORY"], claimHot: "UPI",
+  contentStart: 0.37, claimHold: 2.15,
+};
+const UPI_FLOOR = {
+  ...UPI_BASE, phase: "floor" as const, scrollFrom: 8, scrollTo: 8,
+  hud: { ...UPI_HUD, revealed: 1, revealAt: 1.83 },
+  bracket: { from: 2, to: 12, label: "WHAT THE SHOTS SHOWED", ghostLabel: "NOT IN THE PICTURES" },
+  skipLabel: "DUPLICATE \u2014 SKIPPED",
+  footNote: "FREE CHATS TRAIN THE MODEL \u2014 TURN IT OFF IN SETTINGS",
+};
+const UPI_SORT = {
+  ...UPI_BASE, phase: "sort" as const, scrollFrom: 6, scrollTo: 6,
+  hud: { ...UPI_HUD, revealed: 2, revealAt: 1.61 },
+  host: "mock/host_wide.mp4", hostSize: 470, hostAnchor: "ml" as const,
+  /* NOT a remembered guess — VJ never gave one, and inventing it after seeing
+     the answer would fabricate the beat. This is the biggest SINGLE purchase in
+     the same data (DMart, 17 Aug, Rs 5,931), which the eight small taps beat.
+     True, already on screen elsewhere in the film, and a stronger reversal. */
+  ghostGuess: { value: 5931, label: "ONE SUPERMARKET TRIP", killAt: 2.21, prefix: "\u20b9" },
+};
+const UPI_GROW = {
+  ...UPI_BASE, phase: "grow" as const, scrollFrom: 6, scrollTo: 6,
+  focusLane: "blinkit", hud: { ...UPI_HUD, revealed: 3, revealAt: 1.94 },
+  spill: { atPct: 0.78, releaseAt: 1.4 },
+  counter: { label: "BLINKIT ORDERS", to: 8, at: 0, roll: 0.7 },
+  handoff: { w: 750, h: 930, at: 0.6 },
+};
+const UPI_SPLIT = {
+  runLabel: "FROM MY OWN SCREENSHOTS",
+  meta: [
+    { k: "ROWS READ", v: "22" },
+    { k: "SKIPPED", v: "3" },
+    { k: "ORDERS", v: "8" },
+    { k: "COST", v: "FREE" },
+  ],
+  total: { value: 7339, label: "BLINKIT", sub: "8 orders \u00b7 \u20b9917 a tap" },
+  whole: { value: 25136, label: "SHOPS & APPS IN THESE SHOTS" },
+  atoms: 8,
+  shareLabel: "NEARLY A THIRD",
+  openFrost: { w: 750, h: 930, dur: 0.5 },
+  splitAt: 1.15,
+  capSafe: 1200,
+  atLeast: { at: 3.5, word: "", note: "A FLOOR \u2014 NOT A STATEMENT" },
+  ghostBars: 5,
+  /* host goes RIGHT here — the twist line starts at x=104 in the same y-band */
+  host: "mock/host_wide.mp4", hostSize: 420, hostAnchor: "tr" as const,
+  /* the remainder, by group — Blinkit Rs 7,339 lands almost exactly level with
+     ALL shopping (Rs 7,345), which the eye catches before any label does */
+  wholeParts: [
+    { label: "SHOPPING", value: 7345, tint: "#FF9900" },
+    { label: "OTHER APPS", value: 5164, tint: "#5FA82C" },
+    { label: "FOOD", value: 2728, tint: "#E23744" },
+    { label: "REST", value: 2560, tint: "#7A6B76" },
+  ],
+};
+
+const LEDGER_RUSH = { ...ledgerFlowDemo, phase: "rush" as const };
+const LEDGER_FLOOR = {
+  ...ledgerFlowDemo,
+  phase: "floor" as const,
+  ingest: undefined,
+  claimLines: undefined,
+  scrollFrom: 8,
+  scrollTo: 8,
+  bracket: { from: 2, to: 15, label: "WHAT MY SCREENSHOTS SHOWED", ghostLabel: "NOT IN THE PICTURES" },
+  hud: { label: "FOOD SO FAR", value: 4212, revealed: 0, revealAt: 1.6, prefix: "₹ " },
+  tally: { label: "ROWS READ", from: 61, to: 61 },
+  footNote: "FREE CHATS TRAIN THE MODEL — TURN IT OFF IN SETTINGS",
+};
+const LEDGER_SORT = {
+  ...ledgerFlowDemo,
+  phase: "sort" as const,
+  ingest: undefined,
+  claimLines: undefined,
+  scrollFrom: 8,
+  scrollTo: 8,
+  hud: { label: "FOOD SO FAR", value: 4212, revealed: 1, revealAt: 1.8, prefix: "₹ " },
+  tally: undefined,
+  ghostGuess: { value: 900, label: "MY GUESS", killAt: 0.9, prefix: "₹" },
+};
+const LEDGER_GROW = {
+  ...ledgerFlowDemo,
+  phase: "grow" as const,
+  ingest: undefined,
+  claimLines: undefined,
+  scrollFrom: 8,
+  scrollTo: 8,
+  focusLane: "food",
+  hud: { label: "FOOD SO FAR", value: 4212, revealed: 2, revealAt: 1.5, prefix: "₹ " },
+  tally: undefined,
+  spill: { atPct: 0.78, releaseAt: 1.4 },
+  counter: { label: "ORDERS", to: 41, at: 0.4 },
 };
 
 /* ---- StatBarsDemo: reference usage + QC harness for the locked chart spec.
@@ -303,6 +479,114 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={reactionMeterDemo}
+      />
+      <Composition
+        id="UpiRushDemo"
+        component={LedgerFlow}
+        durationInFrames={74}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={UPI_RUSH}
+      />
+      <Composition
+        id="UpiFloorDemo"
+        component={LedgerFlow}
+        durationInFrames={110}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={UPI_FLOOR}
+      />
+      <Composition
+        id="UpiSortDemo"
+        component={LedgerFlow}
+        durationInFrames={92}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={UPI_SORT}
+      />
+      <Composition
+        id="UpiSplitDemo"
+        component={ShareSplit}
+        durationInFrames={169}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={UPI_SPLIT}
+      />
+      <Composition
+        id="UpiGrowDemo"
+        component={LedgerFlow}
+        durationInFrames={151}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={UPI_GROW}
+      />
+      <Composition
+        id="FoglineUpiDemo"
+        component={Fogline}
+        durationInFrames={8 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={FOGLINE_UPI}
+      />
+      <Composition
+        id="TapStackDemo"
+        component={TapStack}
+        durationInFrames={77}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={tapStackDemo}
+      />
+      <Composition
+        id="ShareSplitDemo"
+        component={ShareSplit}
+        durationInFrames={5 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={shareSplitDemo}
+      />
+      <Composition
+        id="LedgerFlowRushDemo"
+        component={LedgerFlow}
+        durationInFrames={4 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={LEDGER_RUSH}
+      />
+      <Composition
+        id="LedgerFlowFloorDemo"
+        component={LedgerFlow}
+        durationInFrames={4 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={LEDGER_FLOOR}
+      />
+      <Composition
+        id="LedgerFlowSortDemo"
+        component={LedgerFlow}
+        durationInFrames={4 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={LEDGER_SORT}
+      />
+      <Composition
+        id="LedgerFlowGrowDemo"
+        component={LedgerFlow}
+        durationInFrames={4 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={LEDGER_GROW}
       />
       <Composition
         id="SpinWheelDemo"

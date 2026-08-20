@@ -49,6 +49,8 @@ export type DataShape =
   | "phrase" // a sentence with words to emphasize
   | "query-results" // a search query + result rows
   | "hub-spokes" // one center + N related items
+  | "ledger" // many homogeneous records that must be read, filtered and grouped
+  | "part-whole" // one figure and the larger figure it is a share of
   | "alerts" // a set of short notifications
   | "utterance"; // a spoken line -> live transcript
 
@@ -210,11 +212,36 @@ export const COOKBOOK: CookbookEntry[] = [
     gist: "The library's Plate 09 block: a panel holds on red, snaps hard to green, and the result ARRIVES — ring drawn via stroke-dashoffset, digits rotating up on a 26ms stagger, then an average-human marker that turns the readout into a challenge the viewer can answer.",
   },
   {
+    id: "LedgerFlow", demoId: "LedgerFlowRushDemo", title: "Conserved ledger column",
+    role: "transformation", beats: ["hook", "demo", "process", "stat"], needs: "ledger",
+    keywords: ["transactions", "spend", "upi", "ledger", "rows", "sort", "categories",
+               "screenshots", "history", "group", "bank", "expenses", "audit"],
+    transparentCapable: true, wow: 5, density: "high",
+    gist: "40-60 real records stream past too fast to read, get bracketed against what was NOT read, then re-lay themselves into category lanes as ticks - one conserved row set across four phases, so consecutive beats hand off with no cut. Masks person-to-person rows by construction.",
+  },
+  {
+    id: "ShareSplit", demoId: "ShareSplitDemo", title: "Part-of-whole split",
+    role: "dataviz", beats: ["punchline", "stat", "comparison"], needs: "part-whole",
+    keywords: ["share", "fraction", "part", "whole", "third", "portion", "total",
+               "breakdown", "proportion", "payoff", "floor", "at least"],
+    transparentCapable: true, wow: 5, density: "low",
+    gist: "One total and the whole it is a share of, as a single bar that splits in ONE un-eased frame - the part rebuilt out of the countable atoms that produced it, the remainder greyed aside. Opens pixel-continuous with a handed-off rectangle, and can late-reveal a >= so the number re-reads as a floor.",
+  },
+  {
     id: "SpinWheel", demoId: "SpinWheelDemo", title: "Decision wheel (spins)",
     role: "interaction", beats: ["hook", "demo", "punchline"], needs: "options",
     keywords: ["wheel", "spin", "decide", "decision", "random", "picker", "chance", "dinner", "game"],
     transparentCapable: true, wow: 5, density: "med",
     gist: "A designed decision wheel that accelerates, smears at speed, eases onto the chosen wedge and lands with a flare + result pill. The cookbook's motion-hook: continuous movement in the swipe window.",
+  },
+  {
+    id: "TapStack", demoId: "TapStackDemo", title: "Receipts that keep arriving",
+    role: "transformation", beats: ["hook"], needs: "ledger",
+    keywords: ["receipt", "payment", "upi", "spend", "hook", "opening", "pile",
+               "stack", "arrive", "accumulate", "transactions", "adds up", "screenshots"],
+    transparentCapable: true, wow: 5, density: "med",
+    useWhen: "The OPENING frame of a spend/accumulation episode. Use when the first image must be recognised with no run-up: it opens on ONE nameable payment receipt, then buries it under real receipts at an accelerating rate that plateaus. Structurally cannot draw a total, a HUD or a digit plate — safe in front of a withheld payoff.",
+    gist: "Frame 0 is a single UPI receipt — PAID TO, merchant medallion, green success ring, one big rupee figure — drawn in our glass language, not photographed. Then the gap between arrivals contracts and floors at 4 frames while the group scales down, so the pile grows without leaving frame. Person-to-person rows carry no name in the PROPS at all and draw a mask plate with the amount still readable. Recedes to an EMPTY container for real tape to fill: it hands off a container, never an artifact.",
   },
   {
     id: "MorphField", demoId: "MorphFieldDemo", title: "Button → field → confirm",

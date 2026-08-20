@@ -22,7 +22,224 @@ STYLE = 0.4
 BREAK = '<break time="0.4s" />'
 MUSIC = "assets/music/bed_active.mp3"   # relative to remotion public/
 
+
+# =============================================================================
+# _upi cookbook props. Numbers are LOADED, never retyped — R3 in the shooting
+# spec: the same figure lives in the VO, two prop sets, the lane counter, the
+# hook still, the mirror JSON and the description, and one numeral edit
+# re-synths the whole VO cache. One file owns them.
+# =============================================================================
+def _upi_numbers():
+    import json as _json
+    with open(os.path.join(CH, "assets", "ep_upi", "locked_numbers.json")) as f:
+        return _json.load(f)
+
+def _build_upi_cookbook():
+    n = _upi_numbers()
+    hero, whole, sched = n["hero"], n["whole"], n["digit_schedule"]
+    lanes = [
+        {"key": "blinkit", "label": "BLINKIT", "emoji": "\U0001F6F5", "tint": "#F8CB46"},
+        {"key": "other", "label": "OTHER APPS", "emoji": "\U0001F4F1", "tint": "#5FA82C"},
+        {"key": "food", "label": "FOOD", "emoji": "\U0001F37D", "tint": "#E23744"},
+        {"key": "shop", "label": "SHOPPING", "emoji": "\U0001F6CD", "tint": "#FF9900"},
+    ]
+    # Every row is a transaction that ACTUALLY APPEARS in the source recording.
+    # masked rows carry merchant "" — the identity is absent from the props.
+    rows = [
+        {"id": "u01", "merchant": "Blinkit", "amount": 560, "day": "18 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u02", "merchant": "Zomato", "amount": 1072, "day": "18 AUG", "cat": "food", "counted": True},
+        {"id": "u03", "merchant": "Zomato", "amount": 897, "day": "18 AUG", "cat": "food", "counted": True},
+        {"id": "u04", "merchant": "Amazon", "amount": 1414, "day": "18 AUG", "cat": "shop", "counted": True},
+        {"id": "u05", "merchant": "", "amount": 100, "day": "18 AUG", "masked": True},
+        {"id": "u06", "merchant": "Blinkit", "amount": 710, "day": "17 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u07", "merchant": "Blinkit", "amount": 649, "day": "17 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u08", "merchant": "Snabbit", "amount": 399, "day": "17 AUG", "cat": "other", "counted": True},
+        {"id": "u09", "merchant": "DMart", "amount": 5931, "day": "17 AUG", "cat": "shop", "counted": True},
+        {"id": "u10", "merchant": "Blinkit", "amount": 1843, "day": "16 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u11", "merchant": "", "amount": 2800, "day": "16 AUG", "masked": True},
+        {"id": "u12", "merchant": "Maestro", "amount": 199, "day": "15 AUG", "cat": "other", "counted": True},
+        {"id": "u13", "merchant": "Gas Bill", "amount": 1500, "day": "14 AUG", "cat": "other", "counted": True},
+        {"id": "u14", "merchant": "Box8", "amount": 372, "day": "12 AUG", "cat": "food", "counted": True},
+        {"id": "u15", "merchant": "Snabbit", "amount": 248, "day": "12 AUG", "cat": "other", "counted": True},
+        {"id": "u16", "merchant": "", "amount": 250, "day": "12 AUG", "masked": True},
+        {"id": "u17", "merchant": "Snabbit", "amount": 323, "day": "09 AUG", "cat": "other", "counted": True},
+        {"id": "u18", "merchant": "Blinkit", "amount": 923, "day": "03 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u19", "merchant": "Blinkit", "amount": 1215, "day": "03 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u20", "merchant": "Blinkit", "amount": 841, "day": "02 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u21", "merchant": "Blinkit", "amount": 598, "day": "02 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u22", "merchant": "Zepto", "amount": 1560, "day": "02 AUG", "cat": "other", "counted": True},
+    ]
+    hud = {"label": "BLINKIT SO FAR", "value": hero["total"], "prefix": "\u20b9 "}
+    # ---- beat 0: the designed hook (TapStack) ------------------------------
+    # Replaces the pick.mp4 gallery tape. VJ 2026-08-20: "for 0-3s hook i dont
+    # want my phone screenshots ... lets create some animation which stands on
+    # our existing shorts where creating hooks was our forte".
+    #
+    # WHY A GRAPHIC IS SAFE HERE: it never claims to BE the input. It says the
+    # provenance in words ("FROM MY OWN SCREENSHOTS"), and it recedes to an
+    # EMPTY container that beat 1's real tape fills — a graphic may hand off a
+    # container, never an artifact. The actual upload is still demonstrated on
+    # real tape at 2.55s (ask.mp4), which is where provenance is proven.
+    #
+    # It also cannot spoil the payoff: TapStack has no HUD, no tally and no
+    # digit plate, so the withheld Rs 7,339 keeps its shape until 20.43s. Only
+    # 3 of the 8 Blinkit addends are ever on screen (710/649/1843 = 3,202), so
+    # the total is not derivable from the hook.
+    _tap_cat = {"blinkit": "grocery", "food": "food", "shop": "shopping",
+                "other": "other"}
+    tap_cards = []
+    for r in rows[1:13]:   # u02-u13 — 12 arrivals is what fits 2.55s without strobing
+        c = {"id": r["id"], "merchant": r["merchant"], "amount": r["amount"],
+             "day": r["day"]}
+        if r.get("masked"):
+            c["masked"] = True
+        elif r.get("cat"):
+            c["cat"] = _tap_cat[r["cat"]]
+        if r["id"] == "u09":
+            c["hot"] = True     # the Rs 5,931 ghost that beat 6 kills at 16.31s
+        tap_cards.append(c)
+    base = {"rows": rows, "lanes": lanes, "scrollFrom": 0, "scrollTo": 0}
+    br = {b["beat"]: b for b in sched["breaks"]}
+    return {
+        # --- designed hook (beat 0) -----------------------------------------
+        "TapStack": {
+            "cards": tap_cards,
+            # front-loaded then floored at 4 frames: contraction is spent before
+            # 0.8s (where relativeRetentionPerformance first samples) and the
+            # floor is the densest rate that still resolves at 2x playback.
+            "gaps": [0, 0.3, 0.5, 0.667, 0.8, 0.933, 1.067, 1.2,
+                     1.333, 1.467, 1.6, 1.733],
+            "provenance": "FROM MY OWN SCREENSHOTS",
+            "unitLabel": "ONE TAP",       # the denominator line 6 completes at 20.43s
+            "claimLines": ["I SCREENSHOTTED", "MY UPI HISTORY"],
+            "claimHot": "UPI", "claimAt": 0.467, "claimOut": 1.8,
+            "debt": "I NEVER ADDED THEM UP", "debtHot": "NEVER", "debtAt": 1.933,
+            "handoffAt": 2.2,
+        },
+        # --- real tape ------------------------------------------------------
+        # pick.mp4 is RETIRED — beat 0 is TapStack. Left here unreferenced would
+        # be dead config, so it is gone; tape_lengths_needed in
+        # locked_numbers.json no longer asks for it.
+        "ScreenStage#ask":    {"src": "ep_upi/ask.mp4",    "chip": "NO CONNECTOR \u00b7 NO LOGIN",
+                               "host": True, "hostSize": 300},
+        "ScreenStage#answer": {"src": "ep_upi/answer.mp4", "chip": "WHAT IT SENT BACK"},
+        # --- designed -------------------------------------------------------
+        "LedgerFlow#rush": dict(base, phase="rush", ingest={"count": 3, "at": 0}, scrollTo=14,
+                                hud=dict(hud, revealed=br["rush"]["revealed"], revealAt=br["rush"]["revealAt"]),
+                                tally={"label": "ROWS READ", "from": 0, "to": 22},
+                                # claimLines RETIRED: TapStack burns this line at
+                                # 0.467s. Repeating it at 5.91s reads as a loop,
+                                # and its words are line 0's, not line 2's.
+                                contentStart=0.37),
+        "LedgerFlow#floor": dict(base, phase="floor", scrollFrom=8, scrollTo=8,
+                                 hud=dict(hud, revealed=br["floor"]["revealed"], revealAt=br["floor"]["revealAt"]),
+                                 bracket={"from": 2, "to": 12, "label": "WHAT THE SHOTS SHOWED",
+                                          "ghostLabel": "NOT IN THE PICTURES"},
+                                 skipLabel="DUPLICATE \u2014 SKIPPED",
+                                 footNote="FREE CHATS TRAIN THE MODEL \u2014 TURN IT OFF IN SETTINGS"),
+        "LedgerFlow#sort": dict(base, phase="sort", scrollFrom=6, scrollTo=6,
+                                hud=dict(hud, revealed=br["sort"]["revealed"], revealAt=br["sort"]["revealAt"]),
+                                ghostGuess={"value": 5931, "label": "ONE SUPERMARKET TRIP",
+                                            "killAt": 2.21, "prefix": "\u20b9"},
+                                # the rows have departed by mid-beat, so mid-left is a genuine
+                                # void — a small corner card there would waste half the frame
+                                host="ep_upi/host_wide.mp4", hostSize=470, hostAnchor="ml"),
+        "LedgerFlow#grow": dict(base, phase="grow", scrollFrom=6, scrollTo=6, focusLane="blinkit",
+                                hud=dict(hud, revealed=br["grow"]["revealed"], revealAt=br["grow"]["revealAt"]),
+                                spill={"atPct": 0.78, "releaseAt": 1.4},
+                                counter={"label": "BLINKIT ORDERS", "to": hero["orders"], "at": 0, "roll": 0.7},
+                                handoff={"w": 750, "h": 930, "at": 0.6}),
+        "ShareSplit": {
+            "runLabel": "FROM MY OWN SCREENSHOTS",
+            "meta": [{"k": "ROWS READ", "v": str(n["rows"]["in_props"])},
+                     {"k": "SKIPPED", "v": str(n["rows"]["excluded_failed"])},
+                     {"k": "ORDERS", "v": str(hero["orders"])}, {"k": "COST", "v": "FREE"}],
+            "total": {"value": hero["total"], "label": "BLINKIT",
+                      "sub": "%d orders \u00b7 \u20b9%d a tap" % (hero["orders"], hero["average"])},
+            "whole": {"value": whole["value"], "label": whole["label"]},
+            "atoms": hero["orders"],
+            "shareLabel": whole["share_words"],
+            "openFrost": {"w": 750, "h": 930, "dur": 0.5},
+            "splitAt": 1.15,
+            "capSafe": 1200,
+            "atLeast": {"at": 3.5, "word": "",
+                        "note": "A FLOOR \u2014 NOT A STATEMENT"},
+            "ghostBars": 5,
+            # top-right: the hero figure owns y700-950 on the LEFT
+            "host": "ep_upi/host_wide.mp4", "hostSize": 420, "hostAnchor": "tr",
+        },
+    }
+
+_UPI_COOKBOOK = _build_upi_cookbook()
+
 EPISODES_V2 = {
+  # ===========================================================================
+  # _upi — "I Audited My UPI Spending By Typing One Line" (2026-08-20)
+  #
+  # THE FIRST TIER-0 EPISODE: zero setup, no connector, no login. The viewer
+  # screenshots their own UPI history and uploads it. Everything Claude does
+  # here it does to PICTURES THE USER SENT — never a feed, never a live account.
+  #
+  # CUT BACKWARDS FROM ONE FACT: across 10 real retention curves this channel's
+  # worst single second is 6s (median -7.3pp) and 15 of 30 steepest drops fall
+  # in 4-8s. There is no 15s cliff. So the masked-HUD digit schedule pays its
+  # FIRST digit at exactly 6.00s absolute — the most-abandoned second becomes
+  # the first second the viewer is paid. It costs zero runtime; it is a prop.
+  #
+  # NUMBERS ARE LOCKED IN assets/ep_upi/locked_numbers.json. Blinkit Rs 7,339
+  # across 8 orders = Rs 917 a tap, against Rs 25,136 of merchant spend visible
+  # in the shots (nearly a third). Change them THERE, never here first — they
+  # appear in seven places and one numeral re-synths the whole VO cache.
+  #
+  # HONESTY, structural not editorial: person-to-person rows carry merchant:""
+  # and masked:true, so no name enters the props at all. The Rs 5,931 "ghost"
+  # at beat 6 is NOT a remembered guess (VJ never gave one, and inventing it
+  # after seeing the answer would fabricate the beat) — it is the biggest real
+  # single purchase in the same data, which the eight small taps beat.
+  # ===========================================================================
+  "_upi": {
+    "title": "I Audited My UPI Spending By Typing One Line \U0001F4B8",
+    "tags": ("upi,upi spending,phonepe,gpay,blinkit,expense tracker,where my money went,claude ai,"
+             "ai for beginners,screenshot,money saving india,spending tracker,ai tips"),
+    # NO `hook` BLOCK — TapStack *is* the hook. HookCard renders full-frame over
+    # beat 0, so it would cover the receipt during the exact 0-0.3s window the
+    # receipt has to be recognised in, and burn the same headline twice (its own
+    # at 0.0s, TapStack's again at 0.467s). `baked: true` exists to guarantee a
+    # legible frame 0; TapStack does that natively, with motion instead of a
+    # 0.3s freeze. build_ep_v2 opens straight on beat 0 when neither hook nor
+    # cover is set.
+    "outro": True,
+    "outro_dur": 0,
+    "outro_src": "ep_upi/outro_card.mp4",
+    "outro_cta": "Screenshot your own month and ask the same line. Which app eats your money? Tell me below.",
+    "lines": [
+      "Screenshots of my UPI history.",
+      "One line in Claude. Nothing connected.",
+      "It read every row I'd forgotten.",
+      "It only saw the pictures. And threw out the doubles.",
+      "Here's what it sent back. Grouped by where it went.",
+      "One supermarket trip: five thousand nine hundred.",
+      "Eight quick taps cost more. Seven thousand, three hundred and thirty nine.",
+      "Nearly a third of what I spent. Nobody spends money badly - we just never add it up.",
+    ],
+    "hot_words": ["SCREENSHOTS", "UPI", "HISTORY", "ONE", "LINE", "CLAUDE", "NOTHING", "CONNECTED", "READ", "EVERY", "ROW", "FORGOTTEN", "ONLY", "PICTURES", "THREW", "DOUBLES", "SENT", "BACK", "GROUPED", "WENT", "SUPERMARKET", "TRIP", "THOUSAND", "HUNDRED", "EIGHT", "QUICK", "TAPS", "MORE", "THIRD", "SPENT", "BADLY", "ADD", "UP"],
+    # 8 lines : 8 beats. Real tape carries beats 0, 1 and 4 — the previous cut
+    # was 5-of-7 motion graphics, which is how a designed number ends up
+    # asserting something the tool cannot guarantee.
+    "beats": ["cook:TapStack",             # 0.0-2.55 DESIGNED HOOK, LEGIBLE AT FRAME 0
+              "cook:ScreenStage#ask",      # 3.0-5.0  the line lands, send tapped (Sol PIP)
+              "cook:LedgerFlow#rush",      # 5.0-8.0  DIGIT 1 BREAKS AT 6.00s ABSOLUTE
+              "cook:LedgerFlow#floor",     # 8.0-12.0 the blind spot admitted + digit 2
+              "cook:ScreenStage#answer",   # 12.0-17.0 the REAL grouped reply, scrolling
+              "cook:LedgerFlow#sort",      # 17.0-22.0 the big single buy loses + digit 3
+              "cook:LedgerFlow#grow",      # 22.0-27.0 Blinkit overflows + FINAL digit 24.5s
+              "cook:ShareSplit"],          # 27.0-34.0 the one un-eased cut, then the >= twist
+    "steps": [],   # RETIRED — empty, not absent (build_ep_v2 requires the key)
+    "epTag": "",
+    "header_scrim": True,   # claude.ai mobile is a cream column; the lockup would vanish
+    "cookbook": _UPI_COOKBOOK,
+  },
+
   # First fill for the post-pivot standalone-tips slot (PIVOT-DECISION.md, 2026-08-18):
   # the Artifacts short. Reverse hook = the finished Rs400 app in frame 0 (hook_art.png),
   # then rebuild it live. Footage: rec_artifacts_app.py capture (type->build->card) +
