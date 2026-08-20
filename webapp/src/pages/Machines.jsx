@@ -79,8 +79,12 @@ export default function Machines() {
     setBusy('')
   }
 
-  /* The budget is one number for the whole factory, because the quota is one
-     account. Take the worker that has spent the most in the current window. */
+  /* Total AI spend across the machines in the current window.
+     NOT one account: the Mac worker was deliberately moved onto its own Claude
+     login (CLAUDE_CONFIG_DIR=~/.claude-worker in its launchd plist) after all
+     three boxes hit the cap within four seconds on 2026-08-18. So this is a sum
+     of spend, and the CAP is per account — which is why the note below talks
+     about logins rather than machines. */
   const budget = useMemo(() => {
     const us = workers.map((w) => (w.meta || {}).usage).filter(Boolean)
     if (!us.length) return null
@@ -88,7 +92,7 @@ export default function Machines() {
     const limited = us.some((u) => u.rate_limited)
     const reset = us.map((u) => u.reset_est).filter(Boolean).sort()[0]
     const jobsRun = us.reduce((s, u) => s + (Number(u.jobs) || 0), 0)
-    return { spend, limited, reset, jobsRun, windowH: us[0].window_h }
+    return { spend, limited, reset, jobsRun, windowH: us[0].window_h || null }
   }, [workers])
 
   /* Failures, split by what actually caused them — because the fix differs. */
@@ -146,11 +150,11 @@ export default function Machines() {
       {budget && (
         <section className={'mach-budget' + (budget.limited ? ' spent' : '')}>
           <div>
-            <div className="pc-eyebrow" style={{ margin: 0 }}>AI budget · one account, all machines</div>
+            <div className="pc-eyebrow" style={{ margin: 0 }}>AI spend · across the machines</div>
             <div className="amt">
               ${budget.spend.toFixed(2)}
               <span className="sub">
-                {' '}spent in this {budget.windowH || 5}h window · {budget.jobsRun} job
+                {' '}spent{budget.windowH ? ` in this ${budget.windowH}h window` : ' so far'} · {budget.jobsRun} job
                 {budget.jobsRun === 1 ? '' : 's'}
                 {budget.reset ? ` · resets ${istTime(budget.reset)} IST` : ''}
               </span>
@@ -158,8 +162,10 @@ export default function Machines() {
           </div>
           <div className="note">
             {budget.limited
-              ? 'Capped right now — more machines cannot help, the quota is per account.'
-              : 'Adding a machine does not add quota. Concurrency is what spends it.'}
+              ? 'Capped right now — another machine will not help if it signs in as the same account.'
+              : 'The cap follows the login, not the box. This Mac works under its own ' +
+                'Claude account; the Windows box shares yours, so running work there ' +
+                'competes with what you are doing here.'}
           </div>
         </section>
       )}
