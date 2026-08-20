@@ -52,6 +52,8 @@ const MAINTENANCE = [
   { id: 'disk_deep', label: 'Deep clean', hint: 'also drops browser and Playwright caches', os: ['Darwin'], destructive: true },
   { id: 'docker_reclaim', label: 'Reclaim Docker disk', hint: 'removes unused images — the biggest single win on this Mac', os: ['Darwin'], destructive: true },
   { id: 'keep_awake', label: 'Stop it sleeping', hint: 'holds the machine awake so jobs finish', os: ['Windows', 'Darwin'] },
+  { id: 'update_worker', label: 'Update + check', hint: 'pulls the latest code and reports what this box can actually run', os: ['Windows'] },
+  { id: 'restart_worker', label: 'Restart the worker', hint: 'loads pulled code — a pull alone does nothing until it restarts', os: ['Windows'] },
   { id: 'enable_wol', label: 'Enable wake-on-LAN', hint: 'prepares it to be woken remotely — run once, while it is awake', os: ['Windows'] },
   { id: 'schedule_maint', label: 'Weekly auto-cleanup', hint: 'registers the recurring cleanup', os: ['Windows', 'Darwin'] },
 ]

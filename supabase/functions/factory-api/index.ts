@@ -1267,6 +1267,20 @@ async function handlePost(body: any): Promise<Response> {
             Darwin: { script_path: "deploy/mac/disk_maint.sh", script_args: ["--docker"] },
           },
         },
+        update_worker: {
+          label: "Update + check",
+          by_os: {
+            Windows: { script_path: "deploy/gpu/update_worker.ps1", script_args: [] },
+          },
+        },
+        restart_worker: {
+          label: "Restart the worker",
+          // A pull alone changes nothing: factory_worker.py is imported once at
+          // start. Separate from the update so a restart is never implicit.
+          by_os: {
+            Windows: { script_path: "deploy/worker-ctl.ps1", script_args: ["restart"] },
+          },
+        },
         enable_wol: {
           label: "Enable wake-on-LAN",
           by_os: {
