@@ -392,9 +392,20 @@ def build_description(spec, final_path):
     # the ask existed only in the picture, not in any indexed text.
     ask = [spec["desc_cta"], ""] if spec.get("desc_cta") else []
 
+    # The exact prompt, verbatim and copy-pasteable, ABOVE the fold. Added
+    # 2026-08-20 for _upi: the analytics law is that the ask must live in
+    # INDEXED text, not only in the picture or the voice-over — and a viewer who
+    # has to expand the description to find the prompt does not find it. This is
+    # also the artifact being claimable: four episodes of the previous franchise
+    # asked people to want a thing and gave them no way to get it.
+    # MUST be char-for-char identical to what is typed on tape and to the
+    # capture script's PROMPT constant (gate C1 in the shooting spec).
+    recipe = ([spec["desc_prompt"].strip(), ""] if spec.get("desc_prompt") else [])
+
     desc = "\n".join([
         hook_line,
         "",
+        *recipe,
         *ask,
         *promise,
         "",
@@ -581,6 +592,15 @@ def main():
     print(">> QC gate PASSED")
 
     # 4) ARM YOUTUBE (optional)
+    # --dry USED TO PUBLISH FOR REAL. arm_youtube() accepted the flag and never
+    # used it, the yt_upload command it builds carries no --dry, and yt_upload.py
+    # has no --dry argument at all -- so "--dry" performed a live upload and only
+    # skipped the factory-DB sync. The one true rehearsal was --skip-arm, which
+    # is not what the flag name promises anyone reading --help.
+    if a.dry and not a.skip_arm:
+        print("!! --dry does NOT upload — treating it as --skip-arm. "
+              "Master and every gate still run. Drop --dry to actually arm.")
+        a.skip_arm = True
     if a.skip_arm or not a.schedule:
         print(">> skipping YT arm (no --schedule or --skip-arm)")
         print(f">> final master ready at: {final}")
