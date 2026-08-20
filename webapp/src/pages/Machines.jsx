@@ -37,6 +37,9 @@ const istTime = (iso) =>
   iso ? new Date(iso).toLocaleTimeString('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' }) : null
 
 const JOB_TYPES = ['produce_preview', 'shell_script', 'generate_asset', 'plan_content', 'analyze_and_suggest', 'analytics_sync']
+/* shell_script runs committed scripts directly — no `claude -p`, so its failures
+   can never be the AI cap. Only these types spend the account quota. */
+const AI_TYPES = new Set(['produce_preview', 'generate_asset', 'plan_content', 'analyze_and_suggest', 'produce_short', 'custom', 'channel_intake'])
 
 export default function Machines() {
   const { toast, show } = useToast()
@@ -87,7 +90,7 @@ export default function Machines() {
     }
     const bursts = [...byDay.entries()]
       .filter(([, n]) => n >= 5)
-      .map(([k, n]) => ({ day: k.split('|')[0], type: k.split('|')[1], n }))
+      .map(([k, n]) => ({ day: k.split('|')[0], type: k.split('|')[1], n, ai: AI_TYPES.has(k.split('|')[1]) }))
       .sort((a, b) => b.n - a.n)
     const burstCount = bursts.reduce((s, b) => s + b.n, 0)
     return { total: failed.length, orphaned, rest, bursts, singles: rest.length - burstCount }
@@ -172,10 +175,20 @@ export default function Machines() {
               <div className="stats">
                 {res.cpu && <span><b>{Math.round(res.cpu.pct)}%</b> cpu</span>}
                 {res.ram && <span><b>{res.ram.used_gb}</b>/{res.ram.total_gb} GB</span>}
-                {res.disk && <span><b>{Math.round((res.disk.used_gb / res.disk.total_gb) * 100)}%</b> disk</span>}
+                {res.disk && (
+                  <span className={res.disk.used_gb / res.disk.total_gb >= 0.85 ? 'risk' : undefined}>
+                    <b>{Math.round((res.disk.used_gb / res.disk.total_gb) * 100)}%</b> disk
+                  </span>
+                )}
                 {res.gpu && <span><b>{res.gpu.util_pct}%</b> gpu · {res.gpu.temp_c}°C</span>}
               </div>
 
+              {res.disk && res.disk.used_gb / res.disk.total_gb >= 0.85 && (
+                <div className="mach-warn">
+                  Only {Math.round(res.disk.total_gb - res.disk.used_gb)} GB free — renders write
+                  gigabytes per episode, and this box stops mid-produce when it runs out.
+                </div>
+              )}
               <div className="piece-kv"><span>In flight</span><b>{live} of {w.max_parallel}</b></div>
               <div className="piece-kv">
                 <span>Takes</span>
@@ -277,9 +290,19 @@ export default function Machines() {
                 {b.n} × {b.type} died together on {b.day}
               </div>
               <div className="d">
-                A fan-out hitting the AI cap: many jobs started within seconds and the quota is per
-                account, so they failed as one event. The fix is fewer parallel slots or a smaller
-                fan-out — not another machine.
+                {b.ai ? (
+                  <>
+                    A fan-out hitting the AI cap: many jobs started within seconds and the quota is
+                    per account, so they failed as one event. The fix is fewer parallel slots or a
+                    smaller fan-out — not another machine.
+                  </>
+                ) : (
+                  <>
+                    One bad run, counted many times — these run committed scripts directly, with no
+                    AI quota involved, so a cluster this tight is the same script failing repeatedly.{' '}
+                    <Link className="link" to="/jobs">Read the log →</Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
