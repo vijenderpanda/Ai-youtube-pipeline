@@ -7622,3 +7622,19 @@ a.out-chip:hover {
   font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.12em; color: var(--accent);
   flex: 0 0 auto; padding-top: 2px;
 }
+/* The locked look's frames — what is already decided before a script exists. */
+.piece-cast { display: flex; flex-direction: column; gap: 7px; }
+.piece-cast .cf {
+  display: grid; grid-template-columns: 34px 1fr auto; gap: 11px; align-items: center;
+  background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px;
+}
+.piece-cast .cf img,
+.piece-cast .cf .ph {
+  width: 34px; height: 34px; border-radius: 6px; object-fit: cover; display: block;
+  border: 1px solid var(--border-strong); background: linear-gradient(160deg, #33132a, #120711);
+}
+.piece-cast .cf .k { font-size: 12px; font-weight: 700; }
+.piece-cast .cf .l {
+  font-size: 11px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.piece-cast .cf .v { font-family: var(--mono); font-size: 10.5px; color: var(--text-3); }

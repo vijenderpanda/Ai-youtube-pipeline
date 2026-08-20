@@ -68,6 +68,41 @@ function Rail({ gate }) {
   )
 }
 
+/* ── the frames a locked look brings ───────────────────────────────────────
+   The cast frozen into composition: the host, the music bed, the outro sting and
+   the Remotion composition. Before a produce runs there is no script yet — the
+   VO lines are written during the run — so THIS is the honest answer to "what is
+   going to come out of this": the frames that are already decided. */
+const CAST_LABEL = {
+  host_outfit: 'Host',
+  music_bed: 'Music bed',
+  outro_sting: 'Outro',
+  remotion_comp: 'Composition',
+}
+function CastStrip({ composition }) {
+  const slots = Object.entries(composition || {})
+    .filter(([k, v]) => !k.startsWith('_') && v && typeof v === 'object')
+  if (!slots.length) return null
+  return (
+    <div className="piece-cast">
+      {slots.map(([k, v]) => (
+        <div key={k} className="cf">
+          {v.thumb_path ? (
+            <img src={RENDERS_BASE + v.thumb_path} alt="" loading="lazy" />
+          ) : (
+            <span className="ph" aria-hidden="true" />
+          )}
+          <div className="meta">
+            <div className="k">{CAST_LABEL[k] || k}</div>
+            <div className="l">{v.label || v.build_ref}</div>
+          </div>
+          <span className="v">v{v.version}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 /* ── the gate ledger ───────────────────────────────────────────────────────
    The gates that decide whether a cut may ship, with the REAL thresholds they
    are checked against (finalize_episode.py: LUFS −14.0 ±0.5, exit 2 = QC gate
@@ -307,8 +342,22 @@ export default function Piece() {
       {gate === 'plan' && (
         <div className="piece-cols">
           <section className="pc-card">
-            <span className="pc-eyebrow">The cut it will make</span>
-            <SceneList blocks={blocks} />
+            <span className="pc-eyebrow">
+              {blocks.length ? 'The cut it will make' : 'The frames it will use'}
+            </span>
+            {blocks.length ? (
+              <SceneList blocks={blocks} />
+            ) : boundVersion ? (
+              <>
+                <CastStrip composition={boundVersion.composition} />
+                <div className="dim small" style={{ marginTop: 10 }}>
+                  This look locks the frames, not the scene order — the host beats and the screen
+                  recording are cut from the script, which is written during the produce.
+                </div>
+              </>
+            ) : (
+              <SceneList blocks={blocks} />
+            )}
             <div className="piece-money">
               <div className="mt">What this will use</div>
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
