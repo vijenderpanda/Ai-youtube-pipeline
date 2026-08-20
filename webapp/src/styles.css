@@ -7862,3 +7862,7 @@ a.out-chip:hover {
    sits above the run-list with a live accent instead of the ghost treatment. */
 .mach-maint .wake-row { border-bottom: 1px solid var(--border); margin-bottom: 10px; padding-bottom: 10px; }
 .mach-maint .wake-row .ml { color: var(--text); }
+
+/* The amber wording covers "watch this"; a produce that will actually die
+   halfway through is a different statement and reads as one. */
+.mach-warn.bad { border-color: var(--danger); color: var(--danger); }

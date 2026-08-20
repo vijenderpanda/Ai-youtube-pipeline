@@ -198,12 +198,22 @@ export default function Machines() {
                 {res.gpu && <span><b>{res.gpu.util_pct}%</b> gpu · {res.gpu.temp_c}°C</span>}
               </div>
 
-              {res.disk && res.disk.used_gb / res.disk.total_gb >= 0.85 && (
-                <div className="mach-warn">
-                  Only {Math.round(res.disk.total_gb - res.disk.used_gb)} GB free — renders write
-                  gigabytes per episode, and this box stops mid-produce when it runs out.
-                </div>
-              )}
+              {/* What stops a render is gigabytes, not percent: a big disk at 89% still
+                  has plenty of room, and warning on the percentage cries wolf. An
+                  episode writes a few GB, so below 40 is worth watching and below 15
+                  is the one that actually kills a produce halfway through. */}
+              {(() => {
+                if (!res.disk) return null
+                const free = Math.round(res.disk.total_gb - res.disk.used_gb)
+                if (free >= 40) return null
+                return (
+                  <div className={'mach-warn' + (free < 15 ? ' bad' : '')}>
+                    {free < 15
+                      ? `Only ${free} GB free — an episode writes several gigabytes, so a produce will stop halfway through. Free up disk below.`
+                      : `${free} GB free — enough for now, but a few episodes will eat it. Worth a cleanup soon.`}
+                  </div>
+                )
+              })()}
               <div className="piece-kv"><span>In flight</span><b>{live} of {w.max_parallel}</b></div>
               <div className="piece-kv">
                 <span>Takes</span>
