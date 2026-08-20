@@ -145,7 +145,19 @@ ids do not appear in user-facing copy.
 
 **Every number is captioned.** A figure states what it measures and over what
 window. `$7.55` is meaningless; `$7.55 spent in this 5h window · 3 jobs · resets
-12:40 IST` is a fact.
+12:40 IST` is a fact. `412 views` was 90-day views shown as a lifetime total;
+`p25 5 · med 16 · p75 119` was three integers with no unit and no population.
+
+**Say it the way the page talks.** A screen that says "Too early", "Flop" and
+"the feed never showed it" must not also say "above this channel's p75". Plain
+language is not only for tooltips — it is the same voice everywhere, including
+the sentence that delivers the verdict.
+
+**A read-back proves the app understood you.** If it reports a match, it must
+have matched something. Where a page cannot match (Make holds no video list) it
+reports what it parsed; where it can (Scoreboard), it reports the hits AND the
+misses, because a row that matched nothing silently falls back to stored data —
+the exact case a green tick would hide.
 
 **Measure the thing that matters, not its proxy.** A disk warning keyed to
 percent-used cried wolf at 89% on a 460 GB disk with 51 GB free. What stops a
