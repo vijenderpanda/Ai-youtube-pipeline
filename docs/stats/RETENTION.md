@@ -25,3 +25,8 @@ bc01 is not clearing the 20–90 hold-and-fix-hook band, let alone the ≥90 kee
 retention curve to diagnose the hook, the immediate signal is impressions/sampling, not on-video
 drop-off. `yt_engage.py --count-keyword SHIPPED --days 7` found **0 comments** matching "SHIPPED"
 (0 unique authors) — no homework-CTA signal yet, consistent with the low view count.
+
+### Retention — claude-tricks (2026-08-18 09:13 IST)
+_Analytics lag ~48h; low-sample videos are withheld by YouTube._
+
+- **Ask AI For a Table, Not a Wall of Text 📊** (37s) — 3s hold 103%, 15s hold 26%, ends 5%. steepest drops: 4.8s (−8pp), 5.2s (−5pp), 7.4s (−5pp)

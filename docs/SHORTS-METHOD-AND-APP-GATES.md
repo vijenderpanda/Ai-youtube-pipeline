@@ -137,6 +137,12 @@ unwanted scheduled video once. Use `--skip-arm` for a true dry run.
 → **App requirement: a "preview what will be published" view that touches nothing** — title,
 description, tags, thumbnail, schedule, rendered from the same code paths as the real arm.
 
+Confirmed a **third** time on `_upi` (2026-08-21), at source, before use — and then fixed:
+`--dry` now coerces to `--skip-arm` at the single existing gate, prints why, and arms nothing.
+Say it the blunt way in every runbook anyway: **a flag whose name promises a no-op and which then
+writes to the world is a naming bug in a destructive path** — the app must never surface it as the
+"safe" button.
+
 ### 3.9 Other traps worth encoding
 - `outro_cta: "auto"` computes "tomorrow" from the **calendar row's `planned_date`**, not from
   `--schedule`. Mismatch ships a wrong day in the spoken outro.
@@ -146,6 +152,50 @@ description, tags, thumbnail, schedule, rendered from the same code paths as the
   YouTube auto-pick — on the channel where thumbnails drive a 6× CTR advantage.
   → **Gate: refuse to arm without a thumbnail on a channel whose CTR depends on one.**
 - `"steps": []` must be present-but-empty; the key's absence raises `KeyError`.
+
+### 3.10 A cookbook block with EMPTY props killed the render mid-episode
+Cookbook components read their data **straight off props** — `LineReveal` does `points.length`,
+`RingGauge` `metrics`, `Odometer` `value` — so an empty payload does not degrade to a blank card.
+It **throws mid-render**. `_upi` died at frame 762 on an augment-mode `LineReveal` block frozen
+with props `{}`, taking the whole episode with it.
+→ **Fixed** — `_seq_segment` drops a propless cookbook block, and the caller already records every
+dropped block as a sequence divergence, so it lands on the reconciliation card instead of vanishing.
+→ **App requirement: the designer must not be able to lock a block that carries no props.** An
+empty payload is an unfinished block, and the surface where it was authored is the only cheap place
+to catch it — a render is the most expensive one.
+
+### 3.11 A look declaring `outro_source="sequence"` shipped with NO outro at all
+`outro_source` decides who owns the outro: the look's sting file (`sting`, the default) or a scene
+in the composed sequence. `_upi` declared `sequence` — and every block in that sequence was dropped
+by §3.10, so the classic sting was **skipped AND nothing replaced it**: no question card, no spoken
+CTA, silently. Two survivable defects composed into a missing ending, which is exactly the frame a
+viewer decides on.
+→ **Fixed** — `_outro_source()` now probes whether the composed sequence renders *anything* and
+falls back to the sting, out loud, rather than handing ownership to an empty owner.
+→ **App requirement: any "X now owns Y" switch must be validated against X actually producing a Y,
+at the moment it is set.** A declaration is not a delivery. Note the coupling it also carries:
+`outro_cta` rides the classic filtergraph, so moving to `sequence` takes the spoken CTA with it.
+
+### 3.12 The `factory_posts` row and YouTube disagreed about a publish time
+The DB said 16:00 IST; YouTube had already published at 00:30 IST. **YouTube is authoritative for
+anything YouTube stores**: our row is a *plan*, `status.publishAt` on the live resource is the
+*fact*. Reconcile toward the platform, never the reverse. Note a public video has **no**
+`status.publishAt` at all — only `snippet.publishedAt` — so a slot must be matched on
+`publishAt or publishedAt` or every shipped row reads as empty.
+→ **App requirement: the row must display the value it last READ from YouTube and when it read it
+— not the value we wrote.** A schedule the board asserts and the platform does not hold fails in
+the same direction as §3.6: the surface a human trusts is the one that is wrong.
+
+### 3.13 The registry-vs-mirror gate is silently OFF for cookbook episodes
+`_registry_entry()` parses `build_ep_v2.py` by AST and calls `ast.literal_eval` on the
+`EPISODES_V2` node. Any episode whose entry contains a NAME rather than a literal —
+`"cookbook": _UPI_COOKBOOK` — throws, returns `None`, and the registry-vs-mirror diff (the check
+that exists *because* `_wheel` drifted within minutes) degrades to the warning
+`no EPISODES_V2[<ep>] to cross-check the mirror against`. That warning was read past all session.
+What actually caught `_upi`'s stale line 6 — a description that would have said Rs 7,339 under a
+video saying Rs 6,069 — was a *different* check, diffing each line against `vo_v2.words.json`.
+→ **A gate that degrades to a warning is a gate that is off.** Either it can evaluate the entry or
+it must fail loudly; and the mirror should be generated FROM the registry, not hand-edited.
 
 ---
 
@@ -165,6 +215,12 @@ EBU R128 integrated loudness == -14 LUFS                     # target, verified 
 mirror == registry (title, tags, every line)                 # §3.1
 every prompt surface == the capture script's PROMPT constant # §6.2
 spoken numbers == numbers visible on screen at that timestamp
+caption block bottom <= 1560                                  # YouTube paints the bottom ~330px
+every cookbook block in the sequence has non-empty props      # 3.10
+outro_source's declared owner actually renders an outro       # 3.11
+DB publish time == YouTube status.publishAt, re-read AFTER arm # 3.12
+numeral collapse ran only on 2+ word runs, none crossed a line
+designed short rendered at 2x AND its outro sting too
 ```
 
 ### 4.2 The motion profile is the retention gate
