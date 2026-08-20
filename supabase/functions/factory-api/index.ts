@@ -1218,25 +1218,53 @@ async function handlePost(body: any): Promise<Response> {
     // are genuinely useful from the app, and `os` stops PowerShell being sent
     // to the Mac (where it can only fail).
     case "run_maintenance": {
+      // One action id resolves to a different script per OS, so the app can offer
+      // "Free up disk" on either box without the client ever naming a path. An OS
+      // simply missing from by_os means we have not written that script yet — the
+      // 409 below says so instead of sending PowerShell somewhere it cannot run.
       const MAINTENANCE: Record<string, {
-        label: string; script_path: string; script_args: string[]; os: string; destructive?: boolean;
+        label: string; destructive?: boolean;
+        by_os: Record<string, { script_path: string; script_args: string[] }>;
       }> = {
         disk_report: {
           label: "Disk report (reads only)",
-          script_path: "deploy/gpu/disk_maint.ps1", script_args: [], os: "Windows",
+          by_os: {
+            Windows: { script_path: "deploy/gpu/disk_maint.ps1", script_args: [] },
+            Darwin:  { script_path: "deploy/mac/disk_maint.sh",  script_args: [] },
+          },
         },
         disk_clean: {
-          label: "Free up disk",
-          script_path: "deploy/gpu/disk_maint.ps1", script_args: ["-Clean"], os: "Windows",
-          destructive: true,
+          label: "Free up disk", destructive: true,
+          by_os: {
+            Windows: { script_path: "deploy/gpu/disk_maint.ps1", script_args: ["-Clean"] },
+            Darwin:  { script_path: "deploy/mac/disk_maint.sh",  script_args: ["--clean"] },
+          },
+        },
+        disk_deep: {
+          label: "Deep clean", destructive: true,
+          by_os: {
+            Darwin: { script_path: "deploy/mac/disk_maint.sh", script_args: ["--deep"] },
+          },
+        },
+        docker_reclaim: {
+          label: "Reclaim Docker disk", destructive: true,
+          by_os: {
+            Darwin: { script_path: "deploy/mac/disk_maint.sh", script_args: ["--docker"] },
+          },
         },
         keep_awake: {
           label: "Stop it sleeping",
-          script_path: "deploy/gpu/keep_awake.ps1", script_args: [], os: "Windows",
+          by_os: {
+            Windows: { script_path: "deploy/gpu/keep_awake.ps1", script_args: [] },
+            Darwin:  { script_path: "deploy/mac/keep_awake.sh",  script_args: [] },
+          },
         },
         schedule_maint: {
           label: "Weekly auto-cleanup",
-          script_path: "deploy/gpu/schedule_maint.ps1", script_args: [], os: "Windows",
+          by_os: {
+            Windows: { script_path: "deploy/gpu/schedule_maint.ps1", script_args: [] },
+            Darwin:  { script_path: "deploy/mac/schedule_maint.sh",  script_args: [] },
+          },
         },
       };
       const actionId = String(body.maintenance ?? "");
@@ -1250,8 +1278,10 @@ async function handlePost(body: any): Promise<Response> {
         .select("worker_id, os, name").eq("worker_id", worker_id).maybeSingle();
       if (wErr) return json({ error: wErr.message }, 500);
       if (!w) return json({ error: "machine not found" }, 404);
-      if (spec.os && w.os !== spec.os) {
-        return json({ error: `${spec.label} only runs on ${spec.os}; ${w.name} is ${w.os}` }, 409);
+      const variant = spec.by_os[String(w.os ?? "")];
+      if (!variant) {
+        return json({ error: `${spec.label} has no script for ${w.name} (${w.os}) yet — ` +
+          `it exists for ${Object.keys(spec.by_os).join(", ")}` }, 409);
       }
       const { data: job, error: jErr } = await db.from("factory_jobs")
         .insert({
@@ -1260,7 +1290,7 @@ async function handlePost(body: any): Promise<Response> {
           title: spec.label + " — " + w.name,
           status: "queued",
           target_worker: worker_id,
-          meta: { script_path: spec.script_path, script_args: spec.script_args, maintenance: actionId },
+          meta: { script_path: variant.script_path, script_args: variant.script_args, maintenance: actionId },
         })
         .select().single();
       if (jErr) return json({ error: jErr.message }, 500);

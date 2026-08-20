@@ -43,11 +43,16 @@ const AI_TYPES = new Set(['produce_preview', 'generate_asset', 'plan_content', '
 
 /* Maintenance the app can run on a box. Mirrors the server's allow-list — the
    client sends an id, never a script path. `os` keeps PowerShell off the Mac. */
+// Mirrors the server-side allow-list in factory-api. `os` lists the machines a
+// switch has a script for — the browser never names a path, it names an action,
+// and the edge function picks the PowerShell or the bash twin from the OS.
 const MAINTENANCE = [
-  { id: 'disk_report', label: 'Disk report', hint: 'reads only — shows what is eating the disk', os: 'Windows' },
-  { id: 'disk_clean', label: 'Free up disk', hint: 'deletes caches, temp files and old renders', os: 'Windows', destructive: true },
-  { id: 'keep_awake', label: 'Stop it sleeping', hint: 'disables idle sleep on AC', os: 'Windows' },
-  { id: 'schedule_maint', label: 'Weekly auto-cleanup', hint: 'registers the scheduled task', os: 'Windows' },
+  { id: 'disk_report', label: 'Disk report', hint: 'reads only — shows what is eating the disk', os: ['Windows', 'Darwin'] },
+  { id: 'disk_clean', label: 'Free up disk', hint: 'drops package and tool caches it can rebuild', os: ['Windows', 'Darwin'], destructive: true },
+  { id: 'disk_deep', label: 'Deep clean', hint: 'also drops browser and Playwright caches', os: ['Darwin'], destructive: true },
+  { id: 'docker_reclaim', label: 'Reclaim Docker disk', hint: 'removes unused images — the biggest single win on this Mac', os: ['Darwin'], destructive: true },
+  { id: 'keep_awake', label: 'Stop it sleeping', hint: 'holds the machine awake so jobs finish', os: ['Windows', 'Darwin'] },
+  { id: 'schedule_maint', label: 'Weekly auto-cleanup', hint: 'registers the recurring cleanup', os: ['Windows', 'Darwin'] },
 ]
 
 export default function Machines() {
@@ -240,11 +245,11 @@ export default function Machines() {
               )}
 
               {(() => {
-                const mine2 = MAINTENANCE.filter((m) => !m.os || m.os === w.os)
+                const mine2 = MAINTENANCE.filter((m) => !m.os || m.os.includes(w.os))
                 if (!mine2.length) {
                   return (
                     <div className="dim small" style={{ marginTop: 10 }}>
-                      No maintenance scripts for {w.os} yet — the committed ones are PowerShell.
+                      No maintenance scripts for {w.os} yet.
                     </div>
                   )
                 }
