@@ -7,6 +7,7 @@ import LockScreen from './components/LockScreen'
 import Overview from './pages/Overview'
 import Analytics from './pages/Analytics'
 import Calendar from './pages/Calendar'
+import Plan from './pages/Plan'
 import Channels from './pages/Channels'
 import ChannelWizard from './pages/ChannelWizard'
 import ChannelDetail from './pages/ChannelDetail'
@@ -81,7 +82,13 @@ export default function App() {
               The old page stays at /analytics/legacy for the deep reads. */}
           <Route path="/analytics" element={<Navigate to="/scoreboard" replace />} />
           <Route path="/analytics/legacy" element={<Analytics />} />
-          <Route path="/calendar" element={<Calendar />} />
+          {/* Plan is the rebuilt line-up. Same retire-by-redirect rule as
+              /analytics: the month grid stays reachable at /calendar/legacy so
+              old links and the lifecycle legend survive, but the nav and every
+              /calendar deep link land on the new page. */}
+          <Route path="/plan" element={<Plan />} />
+          <Route path="/calendar" element={<Navigate to="/plan" replace />} />
+          <Route path="/calendar/legacy" element={<Calendar />} />
           <Route path="/studio" element={<Studio />} />
           {/* Template Library routes MUST precede /studio/:calendarId so the
               literal "templates" segment isn't captured as a calendarId. */}

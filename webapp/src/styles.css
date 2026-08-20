@@ -7885,3 +7885,83 @@ a.out-chip:hover {
    version — lip-sync measures nothing when host clips are reused. */
 .piece-ledger.gates .lwhere { font-size: 10.5px; color: var(--faint); margin-top: 4px; line-height: 1.45; }
 .piece-ledger .vd.na { color: var(--faint); }
+
+/* ── PLAN — the line-up ────────────────────────────────────────────────────
+   Replaces the month grid. Of 144 calendar rows only five sit today-or-later,
+   so the layout is a short dated list whose most useful line is the gap at the
+   bottom, not a month of empty squares. */
+.plan-h1 { font-family: var(--display, var(--font)); font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin: 4px 0 0; text-wrap: balance; }
+.plan .pc-card { margin-bottom: 14px; }
+
+.plan-day { margin-bottom: 14px; }
+.plan-day:last-of-type { margin-bottom: 0; }
+.pd-head {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-3); display: flex; align-items: center; gap: 8px; margin: 0 0 7px;
+}
+.pd-today {
+  font-size: 9px; letter-spacing: 0.1em; color: var(--accent-ink); background: var(--accent);
+  border-radius: var(--r-pill); padding: 1px 7px;
+}
+
+.plan-row {
+  display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center;
+  padding: 9px 0; border-bottom: 1px solid var(--border-soft);
+}
+.plan-row:last-child { border-bottom: 0; }
+.plan-row .pr-main { min-width: 0; }
+.plan-row .pr-title { font-size: 13.5px; font-weight: 600; color: var(--text); text-decoration: none; }
+.plan-row .pr-title:hover { text-decoration: underline; }
+.plan-row .pr-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.plan-row .pr-state { font-size: 11px; white-space: nowrap; }
+.plan-row .pr-state.ok { color: var(--success); }
+.plan-row .pr-state.warn { color: var(--warn); }
+.plan-row .pr-state.info { color: var(--info); }
+.plan-row .pr-state.dim { color: var(--dim); }
+.plan-row .pr-acts { display: flex; align-items: center; gap: 7px; }
+.plan-row .pr-date {
+  background: var(--input-bg); border: 1px solid var(--border); color: var(--text-2);
+  border-radius: var(--r-xs); font-family: var(--mono); font-size: 10.5px; padding: 3px 6px;
+}
+.plan-row .pr-date:disabled { opacity: 0.45; }
+.plan-row.past { opacity: 0.72; }
+
+.plan-gap {
+  margin-top: 12px; padding: 9px 11px; font-size: 12px; color: var(--text-2);
+  background: var(--input-bg); border: 1px solid var(--border); border-radius: var(--r-sm);
+}
+
+.plan-chan { border-bottom: 1px solid var(--border-soft); }
+.plan-chan:last-child { border-bottom: 0; }
+.plan-chan .pc-row {
+  width: 100%; display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center;
+  background: none; border: 0; color: inherit; cursor: pointer; padding: 9px 0; text-align: left;
+}
+.plan-chan .pc-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.plan-chan .pc-n { font-family: var(--mono); font-size: 11px; color: var(--text-3); }
+.plan-chan .pc-caret { color: var(--faint); font-size: 11px; }
+
+.plan-ideas { padding: 2px 0 10px; }
+.plan-idea {
+  display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center;
+  padding: 8px 0 8px 12px; border-left: 2px solid var(--border);
+}
+.plan-idea .pi-title { font-size: 12.5px; color: var(--text-2); }
+.plan-idea .pi-why { font-size: 11px; color: var(--faint); margin-top: 2px; line-height: 1.45; }
+.plan-idea .pi-acts { display: flex; gap: 6px; }
+
+.plan-more { background: none; border: 0; color: var(--text-3); cursor: pointer; font-size: 12px; padding: 0; font-family: inherit; }
+.plan-more:hover { color: var(--text-2); }
+
+.plan-new .pn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.plan-new .pn-f { display: block; margin-bottom: 11px; }
+.plan-new .pn-f > span {
+  display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-3); margin-bottom: 5px;
+}
+.plan-new .pn-f input, .plan-new .pn-f select, .plan-new .pn-f textarea {
+  width: 100%; background: var(--input-bg); border: 1px solid var(--border); color: var(--text);
+  border-radius: var(--r-sm); padding: 8px 10px; font-size: 13px; font-family: inherit;
+}
+.plan-new .pn-f textarea { resize: vertical; line-height: 1.5; }
+.plan-new .pn-acts { display: flex; justify-content: flex-end; gap: 9px; margin-top: 4px; }

@@ -105,7 +105,7 @@ const NAV_GROUPS = [
     items: [
       { to: '/', label: 'Today', icon: 'overview', end: true, badge: 'today' },
       { to: '/make', label: 'Make', icon: 'studio' },
-      { to: '/calendar', label: 'Plan', icon: 'calendar' },
+      { to: '/plan', label: 'Plan', icon: 'calendar' },
       { to: '/looks', label: 'Looks', icon: 'renders' },
       { to: '/scoreboard', label: 'Scoreboard', icon: 'analytics' },
       { to: '/machines', label: 'Machines', icon: 'workers' },

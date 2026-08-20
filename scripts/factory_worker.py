@@ -56,13 +56,11 @@ v6 additions:
   suggest_brief and analytics_sync jobs skip recaps (results already structured).
 
 v6 challenge additions:
-- analyze_and_suggest v3 CHALLENGE PASS: the strategist re-audits upcoming
-  (today..+14d) planned/suggested calendar items against the newest per-video
-  analytics + web research. A suggestion carrying replaces_ref/why_not lands as
-  a CHALLENGER factory_calendar row (replaces_id + why_not, kind copied from
-  the original, status 'suggested', origin 'ai_suggestion'). An original that
-  already has a live challenger (status 'suggested' with replaces_id=it) is
-  never challenged again -- no stacking duplicates.
+- CHALLENGE PASS: RETIRED 2026-08-20 by owner decision. The strategist used to
+  re-audit upcoming items and write a CHALLENGER row (replaces_id + why_not)
+  proposing to replace one. The prompt no longer asks for it and
+  challenger_row() refuses any that still arrives. The replaces_id/why_not
+  columns and the two edge actions remain so historical rows stay resolvable.
 - analytics_sync upserts factory_settings.last_sync_at (ISO) after a successful
   sync -- powers the dashboard's "last ran" display.
 
@@ -1475,15 +1473,6 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
             "improve: 0-2 suggestions with kind 'factory' -- each a concrete generator "
             "create/update task that names the exact scripts/<file> (see the generator "
             "catalog in the context file).\n"
-            "STEP 3 -- CHALLENGE PASS: re-audit every existing planned/suggested item "
-            "dated today..+14d against the newest per-video analytics and your web "
-            "research. For any item likely to underperform, add a suggestion entry with "
-            "replaces_ref:'<item id>', why_not:'<one crisp sentence: why the current plan "
-            "is weak, citing data/research>', and a REVISED title+brief that keeps the "
-            "item's intent but fixes the weakness. Do not challenge items already "
-            "queued/produced, or items that already have a live challenger (a 'suggested' "
-            "calendar row whose replaces_id points at them). Challenge only when you have "
-            "a real reason -- no churn.\n"
             f"Write {suggestions_path(job['id'])}: "
             '{"analysis_summary": str, '
             '"suggestions": [{"kind": "content"|"factory", '
@@ -1494,10 +1483,7 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
             '"type": "produce_short"|"record_demo"|"custom" (factory items always "custom"), '
             '"model": str, "effort": str, '
             '"ultracode": bool, "reason": str (one crisp sentence citing the data or the '
-            'research you found), '
-            '"replaces_ref": str (CHALLENGE PASS entries only -- the id of the calendar '
-            'item this suggestion revises; omit otherwise), '
-            '"why_not": str (required with replaces_ref: why the current plan is weak)}], '
+            'research you found)}], '
             '"insights": {"<channel_key>": {"summary": str, "details": {"wins": [str], '
             '"risks": [str], "next": [str]}}}}\n'
             "This job is planning only -- do NOT produce any videos. "
@@ -2886,11 +2872,22 @@ def ingest_insights(supa, data, buf):
 
 
 def challenger_row(supa, s, row, buf):
-    """v6 challenge pass: a suggestion carrying replaces_ref revises an existing
-    calendar item. Completes `row` with replaces_id + why_not and the ORIGINAL
-    item's kind, and returns it -- or returns None to skip (original missing or
-    unreadable, or it already has a live challenger: a 'suggested' row whose
-    replaces_id points at it -- no stacking duplicates)."""
+    """RETIRED 2026-08-20 by owner decision: the challenge pass is gone.
+
+    It wrote a CHALLENGER calendar row (replaces_id + why_not) proposing to
+    replace an already-planned piece, and the app showed those within 72h of
+    publish as a decision to make. The prompt no longer asks for one; this
+    refuses any that still arrives, so a stray replaces_ref in an old cached
+    plan cannot quietly resurrect rows nothing renders. The two edge actions
+    (supersede_calendar_item, dismiss_challenge) stay callable so the existing
+    rows can still be resolved."""
+    ref = str(s.get("replaces_ref") or "").strip()
+    if ref:
+        buf.add(f"[worker] ignored challenger for {ref!r} — the challenge pass is retired")
+    return None
+
+
+def _challenger_row_retired(supa, s, row, buf):
     ref = str(s.get("replaces_ref") or "").strip()
     try:
         orig = supa.select("factory_calendar", f"id=eq.{ref}&select=id,kind,status")

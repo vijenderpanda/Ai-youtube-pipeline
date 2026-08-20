@@ -1432,7 +1432,7 @@ async function handlePost(body: any): Promise<Response> {
     }
 
     case "create_calendar_item": {
-      const { channel_key, planned_date, title, brief, type, model, effort, ultracode } = body;
+      const { channel_key, planned_date, title, brief, type, model, effort, ultracode, format } = body;
       if (!channel_key || !planned_date || !title) {
         return json({ error: "channel_key, planned_date and title required" }, 400);
       }
@@ -1454,6 +1454,15 @@ async function handlePost(body: any): Promise<Response> {
       if (model !== undefined) row.model = model;
       if (effort !== undefined) row.effort = effort;
       if (ultracode !== undefined) row.ultracode = Boolean(ultracode);
+      // Long-form is a real production path, and update_calendar_item has always
+      // allowed `format` -- but create did not, so a long-form piece could only be
+      // planned by creating a Short and then patching it.
+      if (format !== undefined) {
+        if (format !== "short" && format !== "longform") {
+          return json({ error: "format must be short | longform" }, 400);
+        }
+        row.format = format;
+      }
       const { data, error } = await db.from("factory_calendar").insert(row).select().single();
       if (error) return json({ error: error.message }, 500);
       await logEvent(
