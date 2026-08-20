@@ -23,6 +23,11 @@ import { Fogline, foglineDemo } from "./cookbook/Fogline";
 import { HoloCard, holoCardDemo } from "./cookbook/HoloCard";
 import { GlassPanel, glassPanelDemo } from "./cookbook/GlassPanel";
 import { MorphField, morphFieldDemo } from "./cookbook/MorphField";
+import { ReactionMeter, reactionMeterDemo } from "./cookbook/ReactionMeter";
+import { SpinWheel, spinWheelDemo } from "./cookbook/SpinWheel";
+import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
+import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
+import { GenerativeUI, generativeUIDemo } from "./cookbook/GenerativeUI";
 
 const FPS = 30;
 
@@ -262,6 +267,51 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={orbitNodesDemo}
+      />
+      <Composition
+        id="GenerativeUIDemo"
+        component={GenerativeUI}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={generativeUIDemo}
+      />
+      <Composition
+        id="ScreenStageDemo"
+        component={ScreenStage}
+        durationInFrames={5 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={screenStageDemo}
+      />
+      <Composition
+        id="OutroGlassDemo"
+        component={OutroGlass}
+        durationInFrames={9 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={outroGlassDemo}
+      />
+      <Composition
+        id="ReactionMeterDemo"
+        component={ReactionMeter}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={reactionMeterDemo}
+      />
+      <Composition
+        id="SpinWheelDemo"
+        component={SpinWheel}
+        durationInFrames={5 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={spinWheelDemo}
       />
       <Composition
         id="KineticQuoteDemo"

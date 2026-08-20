@@ -253,7 +253,7 @@ export const THEMES: Record<ShortStyle, Theme> = {
     accent: ACCENT,    // #22D3EE
     gradBg: GRAD_BG_CLASSIC,
     cap: {
-      size: 78, ls: 1, weight: 900, panel: 100, plain: 38,
+      size: 54, ls: 1, weight: 900, panel: 100, plain: 38,
       stroke: "0 3px 0 #000, 0 -3px 0 #000, 3px 0 0 #000, -3px 0 0 #000, 0 6px 18px rgba(0,0,0,0.85)",
       panelStroke: "0 3px 0 #000, 0 -3px 0 #000, 3px 0 0 #000, -3px 0 0 #000, 0 8px 22px rgba(0,0,0,0.85)",
       plainShadow: "0 2px 10px rgba(0,0,0,0.9)",
@@ -276,7 +276,7 @@ export const THEMES: Record<ShortStyle, Theme> = {
       "radial-gradient(88% 58% at 84% 94%, rgba(44,233,255,0.18) 0%, rgba(14,14,20,0) 52%)," +
       "linear-gradient(178deg, #23122a 0%, #150d1a 42%, #0E0E14 80%)",
     cap: {
-      size: 90, ls: 2, weight: 900, panel: 112, plain: 42,
+      size: 62, ls: 2, weight: 900, panel: 112, plain: 42,
       stroke: "0 4px 0 #000, 0 -4px 0 #000, 4px 0 0 #000, -4px 0 0 #000, 0 8px 24px rgba(0,0,0,0.9)",
       panelStroke: "0 4px 0 #000, 0 -4px 0 #000, 4px 0 0 #000, -4px 0 0 #000, 0 10px 26px rgba(0,0,0,0.9)",
       plainShadow: "0 2px 12px rgba(0,0,0,0.95)",
@@ -300,7 +300,7 @@ export const THEMES: Record<ShortStyle, Theme> = {
       "radial-gradient(85% 55% at 84% 94%, rgba(34,211,238,0.05) 0%, rgba(14,14,20,0) 52%)," +
       "linear-gradient(178deg, #17121c 0%, #121016 42%, #0E0E14 80%)",
     cap: {
-      size: 70, ls: 0.5, weight: 700, panel: 88, plain: 34,
+      size: 50, ls: 0.5, weight: 700, panel: 88, plain: 34,
       stroke: "0 2px 10px rgba(0,0,0,0.82), 0 6px 26px rgba(0,0,0,0.6)",
       panelStroke: "0 2px 12px rgba(0,0,0,0.82), 0 8px 28px rgba(0,0,0,0.55)",
       plainShadow: "0 1px 8px rgba(0,0,0,0.8)",
@@ -326,7 +326,7 @@ const Caption: React.FC<{ word: Word; fps: number; y?: string | number; size?: n
     <div
       style={{
         position: "absolute",
-        bottom: y ?? "21%",
+        bottom: y ?? "12%",   // VJ 2026-08-19: sit lower
         width: "100%",
         display: "flex",
         justifyContent: "center",
@@ -379,7 +379,65 @@ const PanelCaption: React.FC<{ words: Word[]; t: number; top?: number; bottom?: 
   );
 };
 
-/* ---------- step marker: “STEP 1/3” chip, top-left, slides in ---------- */
+/* IdeaKinetic (2026-08-19) — the framed-host "THE IDEA" panel, as AUTHORED text
+   with Plate 03 motion instead of a running karaoke caption.
+
+   VJ: "have idea component with kinetic plate of wow mechanics artifact and put
+   some text which aligns with vo but not captions". The panel used to echo the
+   VO word-for-word via PanelCaption, which produced broken half-phrases
+   ("WANT SHOW IT ONE REAL EXAMPLE"). `hostLines` has been emitted by
+   build_ep_v2 (from the spec's host_panels) since v16.3 but was never rendered.
+   Now it is: short authored lines that AGREE with the VO without transcribing it.
+
+   Motion is Plate 03 "Kinetic type" from the Wow Mechanics study (artifact
+   b9570dbc): per-word stagger 26ms, rotateX(-82deg)->0, scaleX 1.7->1 (fakes a
+   variable width axis). It holds fully readable, which is the whole point of the
+   plate — "still fully readable a quarter-second later". */
+const IdeaKinetic: React.FC<{ lines: string[]; hot?: string; startF: number; fps: number; size: number }> = ({ lines, hot, startF, fps, size }) => {
+  const theme = useTheme();
+  const frame = useCurrentFrame();
+  let wi = 0;
+  return (
+    <div style={{ position: "absolute", left: 72, right: 72, top: 924, bottom: 196, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", perspective: 900 }}>
+      {lines.map((ln, li) => (
+        <div key={li} style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0 16px" }}>
+          {ln.split(" ").map((w) => {
+            const d = 0.12 + wi++ * 0.026; // 26ms stagger, per the plate
+            const sp = spring({ frame: frame - startF - Math.round(d * fps), fps, config: { damping: 15, mass: 0.7, stiffness: 130 } });
+            const isHot = !!hot && w.toUpperCase().replace(/[^A-Z0-9']/g, "") === hot.toUpperCase();
+            return (
+              <span
+                key={w + wi}
+                style={{
+                  display: "inline-block",
+                  fontFamily: "Anton, Arial Black, sans-serif",
+                  fontSize: size,
+                  lineHeight: 1.08,
+                  letterSpacing: theme.cap.ls,
+                  textTransform: "uppercase",
+                  color: isHot ? theme.mag : "white",
+                  textShadow: theme.cap.panelStroke,
+                  opacity: Math.max(0, Math.min(1, sp * 1.5)),
+                  transformOrigin: "50% 100%",
+                  transform: `rotateX(${interpolate(sp, [0, 1], [-82, 0])}deg) scaleX(${interpolate(sp, [0, 1], [1.7, 1])})`,
+                }}
+              >
+                {w}
+              </span>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/* ---------- step marker: “STEP 1/3” chip, top-left, slides in ----------
+   DEPRECATED 2026-08-19 (VJ: "remove the steps chips and retire them"). Kept
+   ONLY so already-shipped episodes still reproduce byte-identically. Do not
+   add `steps` to a new episode spec — the authored IdeaKinetic panel carries
+   the through-line now, and these chips narrated what the frame already
+   showed while permanently risking a collision with the content. */
 // Modern status-chip: dark glass, hairline border, a magenta accent dot and a
 // medium tracked sans label — no fat Anton block or thick brand border. Shared
 // design language with the outro CTAs (gen_outro.py).
@@ -1218,7 +1276,21 @@ export const Short: React.FC<ShortProps> = (props) => {
           <Sequence
             key={i}
             from={Math.round(segStarts[i] * fps)}
-            durationInFrames={Math.round(seg.dur * fps)}
+            /* End this beat exactly where the NEXT one begins.
+               Rounding `from` off the cumulative start but `durationInFrames` off
+               this beat's own duration is inconsistent: round(a) + round(b) is not
+               always round(a + b). When it fell one short the frame between two
+               beats was covered by NEITHER sequence and rendered BLANK — a visible
+               one-frame dropout at the cut (caught on _game at 14.52s, and latent
+               in every episode this comp has ever rendered). When it ran one long,
+               two beats drew on top of each other instead. Deriving the end from
+               the next beat's rounded start makes the timeline exactly contiguous. */
+            durationInFrames={
+              (i + 1 < props.segments.length
+                ? Math.round(segStarts[i + 1] * fps)
+                : Math.round((segStarts[i] + seg.dur) * fps)) -
+              Math.round(segStarts[i] * fps)
+            }
           >
             <div style={paneFor(mode)}>
               {seg.kind === "pipCallout" ? (
@@ -1316,7 +1388,18 @@ export const Short: React.FC<ShortProps> = (props) => {
       {/* v16.3: framed-host panel caption renders through word GAPS too (it holds
           the current phrase), so it is NOT gated behind an active word. */}
       {activeIsFramed ? (
-        <PanelCaption words={beatWords} t={t} size={theme.cap.panel} />
+        // authored idea lines (kinetic) when the beat has them; else the running caption
+        props.segments[Math.max(activeIdx, 0)]?.hostLines?.length ? (
+          <IdeaKinetic
+            lines={props.segments[Math.max(activeIdx, 0)]!.hostLines!}
+            hot={props.segments[Math.max(activeIdx, 0)]!.hostHot}
+            startF={Math.round(beatStart * fps)}
+            fps={fps}
+            size={theme.cap.panel}
+          />
+        ) : (
+          <PanelCaption words={beatWords} t={t} size={theme.cap.panel} />
+        )
       ) : activeIsSplit || activeCapLow ? (
         // v16.4: split/recording beats get the running VO caption as a small,
         // sentence-case strip low on the frame (VJ: captions on every frame,

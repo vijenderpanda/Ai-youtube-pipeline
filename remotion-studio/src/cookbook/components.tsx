@@ -17,6 +17,11 @@ import { Fogline } from "./Fogline";
 import { HoloCard } from "./HoloCard";
 import { GlassPanel } from "./GlassPanel";
 import { MorphField } from "./MorphField";
+import { ReactionMeter } from "./ReactionMeter";
+import { SpinWheel } from "./SpinWheel";
+import { OutroGlass } from "./OutroGlass";
+import { ScreenStage } from "./ScreenStage";
+import { GenerativeUI } from "./GenerativeUI";
 
 /* =============================================================================
    COOKBOOK render dispatch — the id -> component map.
@@ -45,6 +50,11 @@ export const COOKBOOK_COMPONENTS: Record<string, React.FC<any>> = {
   HoloCard,
   GlassPanel,
   MorphField,
+  ReactionMeter,
+  SpinWheel,
+  OutroGlass,
+  ScreenStage,
+  GenerativeUI,
 };
 
 export type CookbookBlockProps = {

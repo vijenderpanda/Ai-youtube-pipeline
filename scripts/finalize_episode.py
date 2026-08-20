@@ -199,9 +199,18 @@ def build_description(spec, final_path):
     else:
         promise = ["One 30-second Claude trick, every day."]
 
+    # Optional per-episode ask, placed directly under the hook line where it is
+    # visible without expanding the description. Opt-in: episodes that do not set
+    # `desc_cta` render exactly as before, so this changes no existing episode.
+    # Added 2026-08-20 — YouTube analytics on tip #2 flagged zero likes and zero
+    # viewer comments on 221 views and recommended asking a specific question, and
+    # the ask existed only in the picture, not in any indexed text.
+    ask = [spec["desc_cta"], ""] if spec.get("desc_cta") else []
+
     desc = "\n".join([
         hook_line,
         "",
+        *ask,
         *promise,
         "",
         "AI Unpacked — no hype, just what actually works.",

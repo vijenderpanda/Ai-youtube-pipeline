@@ -70,6 +70,8 @@ stacks, `rgba()`, `clamp()`, `coverBg()`, and the `<Fonts/>` loader.
 | **DynamicIsland** | device-ui / live activity | An iOS Dynamic Island pill morphs wide into a live-activity card, advances an AI task through phases with a progress bar, then pops to a checkmark "done" state. |
 | **VoiceOrb** | device-ui / voice | A living glass assistant orb with a radial equalizer + sound rings; a spoken prompt transcribes in word-by-word, then the orb calms and a "got it" pill confirms. |
 | **SwipeDeck** | interaction / decision | A Tinder-style option deck: weak cards fling off with a "NOPE" stamp, the winner warms to accent, scales up, and a rotated "PICKED" badge slams in. The decision reads in motion. |
+| **ReactionMeter** | dataviz / measurement | WAIT → a hard snap to GREEN → a number that **arrives**: the ring draws via `stroke-dashoffset`, the digits rotate up on a 26ms stagger, then an average-human marker turns the readout into a challenge the viewer can answer. The library's Plate 09 block. |
+| **SpinWheel** | interaction / chance | A decision wheel that really spins: accelerates, smears at speed, eases onto the chosen wedge, then lands with a ring flare, a wedge pop and a result pill. The cookbook's **motion-hook** — continuous movement for the swipe window. |
 | **Fogline** | invented agent-UI / foresight | An agent's whole PLAN as a lit road it drives down. A fixed NOW line; steps rise out of the fog (future), sharpen as the headlights reach them, EXECUTE at NOW, recede done into the mirror. **Render fidelity is bound to confidence** — blur/dimness/detail = `1 − distance/horizon`, so the picture can't look more certain than the plan is. HEIGHT is duration; LIGHT is the present. Sibling to DynamicIsland: that's one task in the present, this is the whole future. |
 | **HoloCard** | hero / depth-without-3D | One subject as a floating artifact: four layers (glow, rings, emblem, type) parallax at four depths on a slow SCRIPTED camera orbit, assembling from depth on entry. Solid-3D feel, no renderer. The low-density hero spotlight (vs. BentoGrid's dense grid). |
 | **GlassPanel** | material / liquid-glass | A frosted, REFRACTIVE panel over a live color bed, carrying one hero figure + supporting rows. The refraction is BAKED (the bed re-drawn, clipped, scaled + blurred) so it survives a headless render where `backdrop-filter` can't be trusted; `transparent` mode falls back to real backdrop blur for overlay use. The 2026 "style" flex. |
@@ -132,6 +134,8 @@ Selection cheat-sheet by data shape:
 | a messy→clean rewrite | `before-after` | DiffReveal |
 | a task running in phases | `steps` | DynamicIsland (one task, present) · Fogline (whole plan, future) |
 | options to sift & pick | `options` | SwipeDeck |
+| a choice left to chance | `options` | SpinWheel |
+| a single measured number as the payoff | `ms` | ReactionMeter |
 | an AI conversation | `dialogue` | ChatApp |
 | a command / search | `query-results` | CommandPalette |
 | one idea → many uses | `hub-spokes` | OrbitNodes |

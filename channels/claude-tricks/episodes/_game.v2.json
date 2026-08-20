@@ -1,0 +1,15 @@
+{
+ "_note": "Metadata mirror for finalize_episode.py (title/tags/lines only). FULL render config lives in EPISODES_V2['_game'] in build_ep_v2.py, which shadows this JSON for RENDERING — but finalize reads THIS file for the YouTube title/description/tags. Franchise entry #4 — the playable reaction test. THIS FILE IS NOT OPTIONAL: tip #2 shipped with the title 'ep_habit_v2_outro.mp4' because the mirror was never created.",
+ "title": "I Built A Reaction Game By Typing One Line ⚡",
+ "tags": "claude artifacts,reaction time game,reaction game,build app with ai,no code,claude ai,ai for beginners,vibe coding,reaction time test,ai tools,ai tips",
+ "lines": [
+  "I typed one line — and Claude built me a reaction test. Can you beat it?",
+  "Red means wait. Green means tap. It clocks you to the millisecond.",
+  "In Claude, I type one line — the whole game, described in plain English.",
+  "It writes the whole thing itself — the timer, the colours, the score.",
+  "Open it, tap to start, and wait. The screen holds on red…",
+  "Green. Tap. Two hundred and sixty nine milliseconds, measured live.",
+  "One line of plain English — and you've got a real game you can play."
+ ],
+ "desc_cta": "How fast are you? Drop your reaction time in the comments — mine was 269ms."
+}

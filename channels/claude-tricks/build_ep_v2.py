@@ -110,6 +110,316 @@ EPISODES_V2 = {
       ("STEP 3/3 — IT KEEPS YOUR STREAK", 4, 4, "tl"),
     ],
   },
+  # FRANCHISE ENTRY #3 (2026-08-20) — the Spin-The-Wheel dinner picker.
+  # WHY THIS EXISTS: tip #3 (_style) failed frame-by-frame QC — ~14 of 39s were two
+  # FROZEN SCREENSHOTS sitting in the 3-15s sustain window, because a *text* payoff
+  # has nothing that appears. VJ called it: the format capped the wow. This returns to
+  # the proven form (_artifacts 30.4% stayed; _habit 213 views / 38.6% AVP): a real
+  # thing MATERIALIZES. Upgrade over both: the payoff is no longer a baked still-hold
+  # — rec_wheel_app.py films the artifact OPENED AND RUNNING, so the wheel physically
+  # spins on camera. Continuous motion is the direct lever on Shorts-feed selection
+  # (22.9%, mid-typical), which is the measured ceiling. Every beat below is real tape.
+  "_wheel": {
+    "title": "I Built A Dinner Decider By Typing One Line 🎰",
+    "tags": "claude artifacts,build app with ai,no code,claude ai,ai for beginners,vibe coding,spin the wheel,ai tools,ai tips",
+    # VJ 2026-08-19: "for hook start with spin wheel not static". `until` is now
+    # only long enough to own frame 0 (the feed thumbnail keeps the burned claim);
+    # by 0.3s we are on the SpinWheel, already mid-spin.
+    # baked=True is MANDATORY: HookCard ramps headline opacity over frames 2-12,
+    # so without it frame 0 ships with the claim text BLANK — and this channel
+    # cannot set a custom thumbnail, so frame 0 IS the thumbnail everywhere.
+    # headTop 96 aligns this headline with SpinWheel's own claim (also top 96) so
+    # the 0.3s cross-dissolve doesn't show two offset ghost copies of the words.
+    "hook": {"image": "ep_wheel/hook.png", "until": 0.3, "baked": True, "headTop": 96,
+             "lines": ["I BUILT THIS", "BY TYPING ONE LINE"], "hot": "ONE"},
+    "outro": True,
+    "outro_dur": 0,
+    "outro_src": "ep_wheel/outro_card.mp4",
+    "outro_cta": "That's the exact prompt. Follow for more simple, fast AI tools you can actually use.",
+    "lines": [
+      "I typed one line — and Claude built me this.",
+      "Can't decide what to eat? Empty chat, one sentence, a real app.",
+      "In Claude, I type one line: build me a spin-the-wheel dinner picker.",
+      "It writes the whole app itself — every slice, the spin, the result.",
+      "I tap SPIN, and it actually spins. Real animation, not a picture.",
+      "Biryani it is. Dinner decided — by an app that didn't exist a minute ago.",
+      "One line of plain English — and you've got a real app you can use.",
+    ],
+    "hot_words": ["TYPED", "ONE", "LINE", "CLAUDE", "BUILT", "WATCH", "SPIN", "SPINS",
+                  "DECIDE", "EAT", "EMPTY", "SENTENCE", "REAL", "APP", "TYPE", "WHEEL",
+                  "DINNER", "PICKER", "WRITES", "WHOLE", "SLICE", "RESULT", "TAP",
+                  "ACTUALLY", "ANIMATION", "PICTURE", "BIRYANI", "DECIDED", "MINUTE",
+                  "ENGLISH", "USE", "FOLLOW", "SKILL", "DAY"],
+    # Beat 0 is the NEW cookbook component SpinWheel (invented for this episode):
+    # designed, on-brand motion for the swipe window — a wheel that accelerates,
+    # smears, eases onto the winner and lands with a flare. Its options and winner
+    # MIRROR THE REAL APP EXACTLY (same six dishes, same Biryani result), so it is a
+    # stylized restatement of what the tape then proves, never a fabricated result.
+    # Beats 2-5 are ALL REAL TAPE — timings verified frame-by-frame. The proof is
+    # never a graphic (COOKBOOK.md honesty bar).
+    "beats": ["cook:SpinWheel",                      # DESIGNED motion in the swipe window (see cookbook note below)
+              "host",
+              "cook:GenerativeUI",                   # the ASK, Plate 08 style: components land, not prose
+              "cook:ScreenStage#code",              # REAL Claude writing the app — code STREAMS (the evidence)
+              # app_shift.mp4 = tape[115..127] raised ~100px so the app's result pill
+              # clears the karaoke caption band (the caption was landing ON "Biryani
+              # it is!"); the same crop also removes claude's top chrome. 0s == t115.
+              "cook:ScreenStage#spin",              # SPIN #1 — REAL tape, staged (Plates 01/05/07)
+              "cook:ScreenStage#result",            # SPIN #2 — REAL tape, lands "Biryani it is!"
+              "host2"],
+    "cookbook": {
+      # GenerativeUI — Plate 08 ("tool call -> component, NOT tokens -> prose").
+      # This is the ILLUSTRATIVE beat: the one-line ask, then the built thing
+      # LANDING as UI objects (spec card -> preview tile -> action row). The
+      # earlier chat-bubble version was the wrong port — bubbles are prose, i.e.
+      # the fallback, not the interface. The tile image is a REAL frame of the
+      # real app, and the next two beats are real tape, so evidence is untouched.
+      "GenerativeUI": {
+        "promptLabel": "ONE LINE",
+        "prompt": "build me a spin-the-wheel dinner picker",
+        "items": [
+          {"kind": "spec", "title": "Dinner wheel", "chips": ["6 OPTIONS", "SPIN BUTTON", "SINGLE FILE"]},
+          {"kind": "tile", "media": "assets/ep_wheel/hook.png", "title": "Ready to run",
+           "subtitle": "HTML \u00b7 NO SETUP", "mediaHeight": 440},
+          {"kind": "action", "title": "Open it", "value": "\u21b3"},
+        ],
+        "start": 0.1,
+        "promptHold": 0.7,
+        "perItem": 0.5,
+      },
+      # ScreenStage — the REAL recording, staged with the plates that port to a
+      # frame clock (07 depth-without-3D on a scripted camera, 01 glass bezel,
+      # 05 bounding-box morph). The pixels inside are untouched evidence; only
+      # the presentation changes. Instance #1 travels in from an inset card;
+      # #2 is already hero so the payoff never re-animates its own frame.
+      "ScreenStage#code": {
+        "src": "assets/ep_wheel/raw_capture.mp4",
+        "from": 68,
+        "morph": False,          # already hero — the writing shouldn't re-animate its frame
+        "sheen": False,
+        "heroAspect": 1.62,      # the chat view is content-light; a shorter card crops the dead space
+        "host": True,            # VJ: host PIP on the Claude code beat ONLY — the payoff stays clean
+      },
+      "ScreenStage#spin": {
+        "src": "assets/ep_wheel/app_shift.mp4",
+        "from": 4,
+        "label": "REAL SCREEN RECORDING",
+        "morph": True,
+        "morphStart": 0.15,
+        "morphDur": 0.85,
+        "insetScale": 0.66,
+      },
+      "ScreenStage#result": {
+        "src": "assets/ep_wheel/app_shift.mp4",
+        "from": 14,
+        "morph": False,
+        "sheen": False,
+      },
+      "SpinWheel": {
+        "kicker": "",   # the burned claim already says this; keeping both collided
+        "title": "What's for dinner?",
+        "options": [
+          {"label": "Biryani", "emoji": "🍛"},
+          {"label": "Pizza", "emoji": "🍕"},
+          {"label": "Pasta", "emoji": "🍝"},
+          {"label": "Tacos", "emoji": "🌮"},
+          {"label": "Sushi", "emoji": "🍣"},
+          {"label": "Burger", "emoji": "🍔"},
+        ],
+        "winner": 0,                # Biryani — exactly what the real app landed on
+        "resultPrefix": "Tonight:",
+        "spinStart": 0.05,          # already spinning when the 0.3s hook clears
+        "claimLines": ["I BUILT THIS", "BY TYPING ONE LINE"],
+        "claimHot": "ONE",
+        "claimHold": 2.4,   # readable over the motion instead of flashing past
+        "contentStart": 0.32,  # wait for the 0.3s hook to clear — else the hook's
+                               # headline and this claim ghost as two offset copies
+        "spinDur": 2.7,
+        "turns": 5,
+      },
+    },
+    # authored idea lines — they AGREE with the VO without transcribing it, and
+    # render through IdeaKinetic (Plate 03) instead of the running caption
+    "host_panels": [
+      {"lines": ["CAN'T DECIDE", "WHAT TO EAT?", "ONE LINE."], "hot": "ONE"},
+      {"lines": ["ONE LINE", "OF ENGLISH", "= A REAL APP"], "hot": "REAL"},
+    ],
+    "steps": [],   # RETIRED — empty, not absent (build_ep_v2 requires the key)
+    # STEP CHIPS RETIRED (VJ, 2026-08-19). The "STEP n/3 — ..." chips are gone:
+    # they narrated what the frame already showed, they were a standing collision
+    # risk with the content (the reason `pos` corners existed at all), and the
+    # authored IdeaKinetic panel now carries the through-line. No `steps` key =
+    # no chips. Do NOT reintroduce them on new episodes.
+  },
+  # ===========================================================================
+  # Franchise entry #4 (2026-08-20): the PLAYABLE reaction test.
+  #
+  # Why a game, and why THIS game. The build franchise wins distribution (median
+  # 228 views) but bleeds retention — tip #2 held 39.8% AVP against a 50.9% tip
+  # median — and two builds in a row drew ZERO comments on 218 views. A reaction
+  # test is the one build shape that attacks both at once:
+  #   · RETENTION — the payoff is a NUMBER the viewer waits for. The measured
+  #     killer on tip #2 was the 0:15–0:25 drop-off, which mapped exactly onto
+  #     two FROZEN STILL-HOLDS. Every beat here is live motion; nothing freezes.
+  #   · COMMENTS — "what should I build next?" is homework, and it returned
+  #     nothing. "What's your reaction time?" is answerable in two seconds and
+  #     the viewer already has the answer in their hand.
+  #
+  # HONESTY NOTE (important, read before re-capturing). The capture script taps
+  # by polling the artifact frame's computed background colour, which detects
+  # green in ~36ms — faster than any human can be (physiological floor ~100ms,
+  # the well-known benchmark ~250ms). A 36ms readout makes a CORRECTLY WORKING
+  # app look broken, and reporting it as a personal score would be a false claim.
+  # rec_game_app.py therefore waits --tap-delay before tapping, and this episode's
+  # VO never brags a reflex: it says what the app MEASURES ("it clocks you to the
+  # millisecond") and hands the number to the viewer as a challenge. The three
+  # rounds on tape are real and unedited: 231ms, 271ms, 269ms.
+  "_game": {
+    "title": "I Built A Reaction Game By Typing One Line ⚡",
+    "tags": "claude artifacts,reaction time game,reaction game,build app with ai,no code,claude ai,ai for beginners,vibe coding,reaction time test,ai tools,ai tips",
+    # frame 0 IS the thumbnail everywhere (this channel cannot set a custom one),
+    # so baked=True is mandatory — without it HookCard ramps the headline in over
+    # frames 2-12 and ships a blank claim. hook.png is the REAL 231ms result frame
+    # with a top scrim, so the claim reads on near-black over full-bleed red.
+    "hook": {"image": "ep_game/hook.png", "until": 0.3, "baked": True, "headTop": 96,
+             "lines": ["I BUILT THIS", "BY TYPING ONE LINE"], "hot": "ONE"},
+    "outro": True,
+    "outro_dur": 0,
+    "outro_src": "ep_game/outro_card.mp4",
+    # the ask is answerable in two seconds — that is the whole point of this episode
+    "outro_cta": "Drop your reaction time in the comments. Follow for more simple, fast AI tools you can actually use.",
+    "lines": [
+      "I typed one line — and Claude built me a reaction test. Can you beat it?",
+      "Red means wait. Green means tap. It clocks you to the millisecond.",
+      "In Claude, I type one line — the whole game, described in plain English.",
+      "It writes the whole thing itself — the timer, the colours, the score.",
+      "Open it, tap to start, and wait. The screen holds on red…",
+      "Green. Tap. Two hundred and sixty nine milliseconds, measured live.",
+      "One line of plain English — and you've got a real game you can play.",
+    ],
+    "hot_words": ["TYPED", "ONE", "LINE", "CLAUDE", "BUILT", "REACTION", "TEST",
+                  "BEAT", "RED", "WAIT", "GREEN", "TAP", "CLOCKS", "MILLISECOND",
+                  "TYPE", "GAME", "FULL", "SCREEN", "WRITES", "WHOLE", "TIMER",
+                  "COLOURS", "SCORE", "OPEN", "START", "HOLDS", "SIXTY", "NINE", "PLAIN",
+                  "MILLISECONDS", "MEASURED", "LIVE", "ENGLISH", "REAL", "PLAY",
+                  "FOLLOW", "SKILL", "DAY"],
+    # Beat 0 is the NEW cookbook component ReactionMeter (invented for this
+    # episode): the library's Plate 09 block — WAIT, a hard snap to GREEN, then a
+    # number that ARRIVES on a drawn ring. It mirrors the real app EXACTLY (same
+    # 231ms, same red/green grammar), so it is a stylized restatement of what the
+    # tape then proves, never a fabricated result.
+    # Beats 3-5 are ALL REAL TAPE from one continuous 80s recording — timings
+    # verified frame-by-frame against a colour-transition scan of take4.mp4:
+    #   49.23s app opens fullscreen | 58.03-58.33 green #1 -> 231ms (held to 65.47)
+    #   65.47 green #2 -> 271ms     | 73.00 green #3 -> 269ms (held to 80.47 end)
+    "beats": ["cook:ReactionMeter",          # DESIGNED motion in the swipe window
+              "host",
+              "cook:GenerativeUI",           # the ASK, Plate 08: components land, not prose
+              "cook:ScreenStage#code",       # REAL Claude writing the app — code STREAMS
+              "cook:ScreenStage#play",       # REAL: red hold -> GREEN -> the tap
+              "cook:ScreenStage#score",      # REAL: 231ms, same unbroken hold (no rewind)
+              "host2"],
+    "cookbook": {
+      "ReactionMeter": {
+        "kicker": "",   # the burned claim already says this; keeping both collided
+        "title": "How fast are you?",
+        "ms": 269,                  # EXACTLY what the real app measured on round 3 (the round on tape)
+        "avgMs": 250,
+        "challenge": "CAN YOU BEAT IT?",
+        "start": 0.05,              # already running when the 0.3s hook clears
+        # WAIT breathes, so a longer wait keeps the beat ALIVE and shrinks the
+        # static tail after the number lands (QC: 1.15 left ~3s of held readout)
+        "waitDur": 1.9,
+        "greenDur": 0.45,
+        "claimLines": ["I BUILT THIS", "BY TYPING ONE LINE"],
+        "claimHot": "ONE",
+        "claimHold": 2.4,   # readable over the motion instead of flashing past
+        "contentStart": 0.32,  # wait for the 0.3s hook to clear — else the hook's
+                               # headline and this claim ghost as two offset copies
+      },
+      # GenerativeUI — Plate 08 ("tool call -> component, NOT tokens -> prose").
+      "GenerativeUI": {
+        "promptLabel": "ONE LINE",
+        # THE REAL TYPED PROMPT, verbatim. The earlier short paraphrase was a
+        # FABRICATED QUOTATION: the tape 4s later shows this long text in the
+        # prompt bubble and the outro brands it "THE EXACT PROMPT", so the cut
+        # contradicted itself — in the flattering direction, making the result
+        # look cheaper to get than it was.
+        "prompt": 'Build me a reaction time game that fills the whole screen edge to edge - no borders, no header, just colour. Red means wait, green means tap, and show my reaction time in milliseconds in huge numbers.',
+        "items": [
+          {"kind": "spec", "title": "Reaction game", "chips": ["FULL BLEED", "RANDOM DELAY", "SINGLE FILE"]},
+          {"kind": "tile", "media": "assets/ep_game/ready.png", "title": "Ready to play",
+           "subtitle": "HTML · NO SETUP", "mediaHeight": 300},
+          {"kind": "action", "title": "Open it", "value": "↳"},
+        ],
+        "start": 0.1,
+        "promptHold": 0.7,
+        "perItem": 0.5,
+      },
+      # ScreenStage — the REAL recording, staged with the plates that port to a
+      # frame clock (07 depth, 01 glass bezel, 05 bounding-box morph). The pixels
+      # inside are untouched evidence; only the presentation changes.
+      "ScreenStage#code": {
+        "src": "assets/ep_game/app_clean.mp4",
+        # 34.6-35.8 is the ONLY sustained WRITING motion in the tape: the spec
+        # bullets stream in one by one, then the file card lands. src 29 looked
+        # like code but was a FROZEN, already-finished block (YAVG locked, message
+        # stamped "just now", idle composer) — 3.6s of a still under a VO saying
+        # "It writes the whole thing itself", and at 32.7 the block vanished so a
+        # caption landed on an empty panel. The streamed bullets also happen to
+        # name the timer, the colours and the score, which is the line verbatim.
+        "from": 34.0,
+        "morph": False,          # already hero — the writing shouldn't re-animate its frame
+        "sheen": False,
+        "heroAspect": 1.62,      # the chat view is content-light; crop the dead space
+        "host": True,            # VJ: host PIP on the Claude code beat ONLY
+      },
+      "ScreenStage#play": {
+        "src": "assets/ep_game/app_clean.mp4",
+        # VO: "Open it, tap to start, and wait. The screen holds on red." The app's
+        # own idle screen literally reads "WAIT / Tap to start" and is up from 49.23
+        # to the first arm — so this window matches the line word for word AND is
+        # long enough (round 3's armed wait is only 4.05s, shorter than this beat,
+        # which forced the green into this beat and stranded it before the word).
+        "from": 49.3,
+        "label": "REAL SCREEN RECORDING",
+        "morph": True,
+        "morphStart": 0.15,
+        "morphDur": 0.85,
+        "insetScale": 0.66,
+      },
+      "ScreenStage#score": {
+        # ROUND 3 IS THE ONLY ROUND WITH A LONG TAIL. Round 1's 231ms is on screen
+        # for just 3.2s (58.33 -> ~61.5, when the script arms round 2), so the first
+        # cut ran the payoff beat straight into round 2 and showed 271ms under a VO
+        # saying "two hundred and thirty one". Round 3's 269ms holds 73.27 -> 80.47
+        # (7.2s, to the end of tape). Picks up later in that same unbroken hold, so
+        # the payoff never rewinds onto moving footage.
+        "src": "assets/ep_game/app_clean.mp4",
+        # Green is only 267ms long (73.000-73.267). At from=73.45 the beat opened
+        # AFTER it, so "Green. Tap." was narrated over the red result and the magenta
+        # caption GREEN sat on a bright red screen — reading as a caption-sync bug.
+        # Beat 6 starts at master 23.30 and the word GREEN is spoken 23.30-23.78, so
+        # from=72.90 puts the flash at master 23.40 — inside the word.
+        "from": 72.90,
+        "morph": False,
+        # sheen ON. The app's result screen is a FLAT COLOUR that genuinely does not
+        # move, so without it the payoff sits near-static for seconds — the exact
+        # still-hold pattern that cost tip #2 its retention. The sheen and the deeper
+        # parallax drift are chrome AROUND the evidence; the recording's own pixels
+        # are untouched.
+        "sheen": True,
+        "drift": 24,
+      },
+    },
+    # authored idea lines — they AGREE with the VO without transcribing it, and
+    # render through IdeaKinetic (Plate 03) instead of the running caption
+    "host_panels": [
+      {"lines": ["RED = WAIT", "GREEN = TAP", "IT CLOCKS YOU"], "hot": "GREEN"},
+      {"lines": ["ONE LINE", "OF ENGLISH", "= A REAL GAME"], "hot": "REAL"},
+    ],
+    "steps": [],   # RETIRED — empty, not absent (build_ep_v2 requires the key)
+  },
   # Post-pivot standalone tip #3 (2026-08-20): the "paste an example" writing tip.
   # Promised by tip #2's (_habit) outro tease. prompt-teardown cluster (PIVOT-DECISION §4 #8).
   # SLATE RISK: "Stop X" abstract hooks flopped in-feed + muted text before/after is weaker than
@@ -122,12 +432,12 @@ EPISODES_V2 = {
     # 38.6% was ABOVE typical but Shorts-feed selection 22.9% only mid-typical — i.e.
     # the ceiling is the swipe window, not retention. The static contrast frame states
     # the claim fast; beat 0 then ANIMATES it (cook:DiffReveal) so motion lands by ~1.6s.
-    "hook": {"image": "ep_style/hook.png", "until": 1.6,
+    "hook": {"image": "ep_style/hook.png", "until": 1.6, "baked": True,
              "lines": ["SAME ASK.", "ONE PASTED LINE"], "hot": "ONE"},
     "outro": True,
     "outro_dur": 0,
     "outro_src": "ep_style/outro_card.mp4",   # LOCKED Ep11-style question-CTA card (gen_outro_card.py)
-    "outro_cta": "auto",   # Sol speaks the CTA over the card; line 7 is a loopback, not a CTA
+    "outro_cta": "That's the whole trick. Follow for more simple, fast AI tools you can actually use.",
     "lines": [
       "Same request to the same AI — but one pasted line changes everything. Watch.",
       "Don't describe the style — show it one example.",
@@ -189,14 +499,10 @@ EPISODES_V2 = {
       },
     },
     "host_panels": [
-      {"lines": ["SAME ASK", "ONE PASTED", "LINE — WATCH"]},
-      {"lines": ["DESCRIBE =", "A GUESS —", "EXAMPLE = VOICE"]},
+      {"lines": ["SAME ASK", "ONE PASTED", "LINE — WATCH"], "hot": "ONE"},
+      {"lines": ["DESCRIBE =", "A GUESS —", "EXAMPLE = VOICE"], "hot": "EXAMPLE"},
     ],
-    "steps": [   # chips in the bottom dead space (answer cards sit upper-middle)
-      ("STEP 1/3 — DESCRIBE THE STYLE", 2, 2, "bl"),
-      ("STEP 2/3 — PASTE ONE EXAMPLE", 3, 3, "bl"),
-      ("STEP 3/3 — IT MATCHES THE VOICE", 4, 4, "bl"),
-    ],
+    "steps": [],   # RETIRED 2026-08-19 (empty, not absent — build requires the key)
   },
   "20": {
     "title": "The Effort Dial Nobody Uses (Deeper Answers, Free) 🧠",
@@ -1930,7 +2236,7 @@ def _emit_manifest(ep, tag, cfg, replace_scenes, calendar_id, quiet=False):
             if b0 in ("host", "host2"):
                 host_scenes.append(i); assets.append({"type": "host", "scene": i, "cost": "paid"})
             elif b0.startswith("cook:"):
-                assets.append({"type": "cookbook", "id": b0[5:], "scene": i, "cost": "free"})
+                assets.append({"type": "cookbook", "id": b0[5:].split("#", 1)[0], "scene": i, "cost": "free"})
             elif b0.startswith("pip:"):
                 assets.append({"type": "pip", "ref": b0[4:], "scene": i, "cost": "free"})
             elif b0.startswith("rec:"):
@@ -2047,9 +2353,31 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
 
     # 1) VO with word timings (breaks between lines)
     from eleven_vo import load_key, synth
+    import hashlib
     vo = os.path.join(A, "vo_v2.wav")
+    # CONTENT-ADDRESSED CACHE. File existence alone is NOT a valid cache key, and
+    # trusting it shipped a real defect: on `_game` the script's payoff line was
+    # edited from "two hundred and thirty one" to "two hundred and sixty nine",
+    # the rebuild silently reused the old audio, and the master ended up showing
+    # 269ms on screen while the voice said 231. Hash the script instead — when it
+    # moves, the VO is stale, and so is every host clip CUT FROM that VO.
+    vo_txt = f" {BREAK} ".join(cfg["lines"])
+    vo_sig_p = os.path.join(A, "vo_v2.sig")
+    sig = hashlib.sha256(vo_txt.encode("utf-8")).hexdigest()[:16]
+    prev = open(vo_sig_p).read().strip() if os.path.exists(vo_sig_p) else None
     if not os.path.exists(vo):
-        synth(load_key(), ELEVEN_VOICE, f" {BREAK} ".join(cfg["lines"]), vo, speed=1.0, style=STYLE)
+        synth(load_key(), ELEVEN_VOICE, vo_txt, vo, speed=1.0, style=STYLE)
+    elif prev is None:
+        # An episode built before this guard existed. Adopt the cached VO rather
+        # than re-spending (and re-cutting an already-shipped master's audio);
+        # every edit from here on is protected.
+        print(f">> vo_v2.sig absent for ep{ep} — adopting cached VO, guarding future edits")
+    elif prev != sig:
+        print(f">> SCRIPT CHANGED ({prev} -> {sig}) — re-synthesizing VO and all host clips")
+        synth(load_key(), ELEVEN_VOICE, vo_txt, vo, speed=1.0, style=STYLE)
+        # host clips are cut from VO slices, so changed line timings invalidate them
+        os.environ["FACTORY_REBUILD_HOSTS"] = "1"
+    open(vo_sig_p, "w").write(sig)
     words = json.load(open(vo.rsplit(".", 1)[0] + ".words.json"))
     hot = set(cfg["hot_words"])
 
@@ -2408,9 +2736,29 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
             # the beat's merged dur is the segment dur; props come from
             # cfg["cookbook"][<componentId>] (a dict keyed by component id), default {}.
             # Emits the EXACT Short.tsx contract shape: seg["cookbook"]["id"]/["props"].
-            cid = b[5:]
+            # "cook:<Id>" or "cook:<Id>#<variant>" — the variant suffix lets ONE
+            # component appear on several beats with different props (e.g. two
+            # ScreenStage beats pointing at different offsets of the same tape).
+            # Component id is before the '#'; the FULL string is the props key.
+            raw_cid = b[5:]
+            cid = raw_cid.split("#", 1)[0]
             if isinstance(cid, str) and cid:
-                props = (cfg.get("cookbook") or {}).get(cid, {})
+                cb_props = cfg.get("cookbook") or {}
+                props = dict(cb_props.get(raw_cid, cb_props.get(cid, {})))
+                # `host: true` -> generate a HeyGen clip cut from THIS beat's own
+                # VO slice (so the lipsync matches the words spoken over it) and
+                # swap the real path in. Same path pip: beats use.
+                if props.get("host") is True:
+                    # The pinned PIP photo-avatar (dc9533a1...) is GONE from the
+                    # HeyGen account — /v3/videos returns avatar_not_found. The
+                    # WIDE avatar is alive (the host beats render from it), so the
+                    # PIP is cut from the wide 16:9 avatar and shown as a small
+                    # landscape card rather than a square crop.
+                    _pip_tid = WIDE_TID or framed_tid or tid
+                    _hc = host_clip(f"v2_cook_{raw_cid.replace('#', '_')}",
+                                    _seg_t[i], _seg_t[i + 1],
+                                    photo=_pip_tid, aspect="16:9")
+                    props["host"] = "assets/" + rel(_hc)
                 segments.append({"kind": "cookbook", "dur": round(dur, 3),
                                  "cookbook": {"id": cid, "props": props or {}}})
             else:
@@ -2511,6 +2859,8 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     framed_segs = [s for s in segments if s.get("framed")]
     for s, panel in zip(framed_segs, host_panels):
         s["hostLines"] = panel["lines"]
+        if panel.get("hot"):
+            s["hostHot"] = panel["hot"]
         if panel.get("hot"):
             s["hostHot"] = panel["hot"]
     if news_split:

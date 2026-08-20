@@ -201,6 +201,15 @@ export const COOKBOOK: CookbookEntry[] = [
     gist: "The channel sting rebuilt on the 2026 mechanics: a refractive glass panel over a drifting aurora bed (baked blur + inset hairline + specular sweep), the question arriving as kinetic type on a 26ms per-word stagger, and Plate 09 draw grammar applied to the panel's OWN rules: an accent rule plus both hairlines DRAW left-to-right in a top-down cascade, each line leading its row in. No chart, no numerals, no fabricated data. Holds a readable end state.",
   },
   {
+    id: "ReactionMeter", demoId: "ReactionMeterDemo", title: "Reaction time (measured)",
+    role: "dataviz", beats: ["hook", "demo", "punchline"], needs: "value",
+    keywords: ["reaction", "speed", "time", "ms", "milliseconds", "test", "score", "measure",
+               "benchmark", "challenge", "game", "fast", "timer", "stopwatch"],
+    transparentCapable: true, wow: 5, density: "med",
+    useWhen: "A single measured NUMBER is the payoff. Runs a WAIT -> GREEN -> arrive cycle so the value is earned on camera, then holds a readable end state with an average marker to compare against.",
+    gist: "The library's Plate 09 block: a panel holds on red, snaps hard to green, and the result ARRIVES — ring drawn via stroke-dashoffset, digits rotating up on a 26ms stagger, then an average-human marker that turns the readout into a challenge the viewer can answer.",
+  },
+  {
     id: "SpinWheel", demoId: "SpinWheelDemo", title: "Decision wheel (spins)",
     role: "interaction", beats: ["hook", "demo", "punchline"], needs: "options",
     keywords: ["wheel", "spin", "decide", "decision", "random", "picker", "chance", "dinner", "game"],

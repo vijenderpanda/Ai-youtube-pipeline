@@ -1,0 +1,13 @@
+[
+  {
+    "ts": "2026-08-19T19:28:53+00:00",
+    "action": "pin_comment_posted",
+    "video_id": "Ag9tBHbyrbo",
+    "video_title": "I Built A Habit Tracker By Typing One Line 🔥",
+    "comment_id": "Ugz07VCGfzxOZeWV6KR4AaABAg",
+    "text": "Here is the exact line I typed: \"Build me a weekly habit tracker - mark Mon to Fri done, show my streak.\" What would you build with one line? 👇",
+    "pinned": false,
+    "pin_url": "https://studio.youtube.com/video/Ag9tBHbyrbo/comments",
+    "note": "posted via commentThreads.insert; PIN IS A MANUAL STUDIO CLICK (Data API v3 has no pin endpoint)"
+  }
+]
