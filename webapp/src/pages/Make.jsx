@@ -163,7 +163,10 @@ export default function Make() {
               {parsed && (
                 <div className="make-parsed">
                   <span className="lb">READ BACK ✓</span>
-                  <span className="chip ok-chip">{parsed.rows.length} video{parsed.rows.length === 1 ? '' : 's'} matched</span>
+                  {/* Make never loads a video list, so nothing here was matched against
+                      anything — it was parsed. The read-back exists to prove the app
+                      understood the paste; a false 'matched' defeats exactly that. */}
+                  <span className="chip ok-chip">{parsed.rows.length} row{parsed.rows.length === 1 ? '' : 's'} read</span>
                   {parsed.ignored > 0 && <span className="chip">{parsed.ignored} line{parsed.ignored === 1 ? '' : 's'} ignored</span>}
                   <span className="chip">used before the app’s own data</span>
                 </div>
@@ -195,9 +198,18 @@ export default function Make() {
                   </select>
                 </b>
               </div>
+              {/* This used to assert "the Windows box currently accepts shell
+                  scripts only" as a hardcoded string, while never reading
+                  accept_types — so it kept claiming a configuration long after
+                  it was changed on Machines. It is read now, or not claimed. */}
               <div className="dim small" style={{ marginTop: 9 }}>
                 Pinning is per job. Which machine takes which <em>kind</em> of work is set on the
-                machine itself — the Windows box currently accepts shell scripts only.
+                machine itself.
+                {(() => {
+                  const limited = workers.filter((w) => Array.isArray(w.accept_types) && w.accept_types.length)
+                  if (!limited.length) return ' Every machine here takes any job.'
+                  return ' ' + limited.map((w) => `${w.name} takes only ${w.accept_types.length} kind${w.accept_types.length === 1 ? '' : 's'} of work`).join('; ') + '.'
+                })()}
               </div>
             </section>
           </div>

@@ -199,7 +199,7 @@ export default function Today() {
         <section className="pc-card today-empty">
           <div className="big">The queue is empty.</div>
           <p>
-            The factory keeps running without you. Next honest read: <b>tomorrow 07:33</b>, when the
+            The factory keeps running without you. The numbers refresh once a day, <b>around 07:00</b>, and only while this Mac is awake — when the
             overnight numbers land.
           </p>
         </section>

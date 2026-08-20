@@ -259,7 +259,7 @@ export default function Scoreboard() {
 
               <div className="nx">
                 {c.verdict === 'early' ? (
-                  <>Next honest read: <b>tomorrow 07:33</b>. Nothing to do until then.</>
+                  <>The numbers refresh once a day, <b>around 07:00</b>, and only while this Mac is awake. Paste fresher ones above if you have them.</>
                 ) : c.verdict === 'flop' ? (
                   <>{c.diagnosis}</>
                 ) : c.verdict === 'hit' ? (

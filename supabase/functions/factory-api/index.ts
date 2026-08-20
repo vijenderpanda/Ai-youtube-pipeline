@@ -51,6 +51,7 @@ const RENDER_ORIGINS = ["job", "historical"];
 const CALENDAR_KINDS = ["content", "factory"];
 // v6: cheap uuid shape check so bad ids get a 400 instead of a pg error
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const GENERATABLE: Record<string, string[]> = { outro_card_gen: ["q", "pill"] };
 // v19: ?r=suggestions reads this many candidate rows before the evidence guard
 // runs, so `limit` counts suggestions that actually SHIP, not rows dropped for
 // having no citations. Comfortably above the live standalone-suggestion count.
@@ -362,6 +363,10 @@ async function handleGet(url: URL): Promise<Response> {
     // Phase 1 — Studio "Assets" board: brand-asset versions + their locks.
     // versions ordered asset_type asc, version desc; optional ?channel= filter.
     // Mirrors the "templates" single-table read + the "jobs" channel filter.
+    // GENERATABLE mirrors regen_asset.py's GENERATORS table and is read by BOTH
+    // sides: regenerate_asset refuses an unwired slot here rather than queueing a
+    // job that exits 2 on the worker, and ?r=assets returns the key list so the
+    // app can stop offering a button that cannot work.
     case "assets": {
       let vq = db.from("factory_asset_versions").select("*")
         .order("asset_type", { ascending: true })
@@ -378,7 +383,8 @@ async function handleGet(url: URL): Promise<Response> {
       ]);
       if (versions.error) return json({ error: versions.error.message }, 500);
       if (locks.error) return json({ error: locks.error.message }, 500);
-      return json({ versions: versions.data, locks: locks.data });
+      return json({ versions: versions.data, locks: locks.data,
+                    generatable: Object.keys(GENERATABLE) });
     }
 
     // Phase 4 — the Template Composer. factory_templates names the PIPELINE;
@@ -3071,7 +3077,6 @@ async function handlePost(body: any): Promise<Response> {
     // wired generator is refused HERE with the honest reason, rather than
     // queueing a job that would exit 2 on the worker minutes later.
     case "regenerate_asset": {
-      const GENERATABLE: Record<string, string[]> = { outro_card_gen: ["q", "pill"] };
       const channel_key = String(body.channel_key ?? "").trim();
       const asset_type = String(body.asset_type ?? "").trim();
       const from_version_id = String(body.from_version_id ?? "").trim();

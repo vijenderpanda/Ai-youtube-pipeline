@@ -60,6 +60,11 @@ export default function Looks() {
   const tplAssets = (tvQ.data && tvQ.data.assets) || []
   const allBlocks = (tvQ.data && tvQ.data.blocks) || []
   const revisions = (assetsQ.data && assetsQ.data.versions) || []
+  // Which slots a worker can actually build. Every one of Looks' four slots was
+  // offering "Make a new one on a worker" while the server had a generator for
+  // none of them, so each click was a guaranteed 400 under copy that promised
+  // the opposite. The list comes from the server; the button follows it.
+  const generatable = (assetsQ.data && assetsQ.data.generatable) || []
   const templates = (tplQ.data && tplQ.data.templates) || []
   const jobs = (jobsQ.data && jobsQ.data.jobs) || []
   const tpl = templates.find((t) => t.key === templateKey)
@@ -111,9 +116,9 @@ export default function Looks() {
   const buildingSlot = (slot) =>
     jobs.find(
       (j) =>
-        j.type === 'shell_script' &&
         (j.status === 'queued' || j.status === 'running') &&
-        String(j.title || '').toLowerCase().includes('new ' + slot.replace('_', ' ').toLowerCase().split(' ')[0])
+        j.meta && j.meta.asset_type === slot &&
+        (!j.channel_key || j.channel_key === channelKey)
     )
 
   const post = async (body, tag, ok) => {
@@ -274,19 +279,28 @@ export default function Looks() {
                           </button>
                         ))}
                       </div>
-                      <button
-                        type="button"
-                        className="btn btn-ghost"
-                        style={{ marginTop: 10 }}
-                        disabled={!!busy || !!building}
-                        onClick={() => makeNew(f.slot, f.version_id)}
-                      >
-                        {busy === 'regen:' + f.slot ? 'Handing over…' : '✦ Make a new one on a worker'}
-                      </button>
-                      <div className="dim small" style={{ marginTop: 7 }}>
-                        A worker generates a fresh {(SLOT_LABEL[f.slot] || f.slot).toLowerCase()} from this one and
-                        hands it back as the next revision — then you choose it here.
-                      </div>
+                      {generatable.includes(f.slot) ? (
+                        <>
+                          <button
+                            type="button"
+                            className="btn btn-ghost"
+                            style={{ marginTop: 10 }}
+                            disabled={!!busy || !!building}
+                            onClick={() => makeNew(f.slot, f.version_id)}
+                          >
+                            {busy === 'regen:' + f.slot ? 'Handing over…' : '✦ Make a new one on a worker'}
+                          </button>
+                          <div className="dim small" style={{ marginTop: 7 }}>
+                            A worker generates a fresh {(SLOT_LABEL[f.slot] || f.slot).toLowerCase()} from this one and
+                            hands it back as the next revision — then you choose it here.
+                          </div>
+                        </>
+                      ) : (
+                        <div className="dim small" style={{ marginTop: 10 }}>
+                          No worker can build a {(SLOT_LABEL[f.slot] || f.slot).toLowerCase()} yet — this one is made
+                          by hand and swapped in above.
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
