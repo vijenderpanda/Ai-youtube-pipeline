@@ -350,6 +350,84 @@ const Caption: React.FC<{ word: Word; fps: number; y?: string | number; size?: n
   );
 };
 
+
+/* KaraokeLine (2026-08-21) — the caption treatment VJ locked in conversation and
+   that was never actually in the renderer.
+
+   What was shipping instead: <Caption/>, ONE all-caps Anton word at a time,
+   magenta if hot. The locked style is different in four ways, all of them his
+   words: the whole line is ALREADY THERE and only the hot word pops ("frames
+   have the caption ready but only gets popped the hot word in karaoke style");
+   hot words are set BIGGER in small-caps while the rest sit smaller and white
+   ("use small cases and bigger small case for hotwords"); figures are italic
+   NUMERALS, never spelled ("for number figures rather have them in number
+   italic"); and the whole thing is "a lil smaller and sleek".
+
+   Why a line beats a word: a single word gives a muted viewer no sentence to
+   read, and Shorts now play at 2x with tap-to-mute — a word authored for 0.3s
+   is exposed for 0.15s. A standing line survives both.
+
+   It never crosses capSafe: the last frame used to bury its own text. */
+const NUMERIC = /[0-9]/;
+const KaraokeLine: React.FC<{
+  words: Word[]; t: number; fps: number; size?: number; bottom?: number;
+}> = ({ words, t, fps, size = 58, bottom = 104 }) => {
+  const theme = useTheme();
+  const frame = useCurrentFrame();
+  if (!words.length) return null;
+  let ai = words.findIndex((w) => t >= w.start && t <= w.end);
+  if (ai < 0) {
+    for (let i = 0; i < words.length; i++) if (t >= words[i].start) ai = i;
+  }
+  return (
+    <div style={{
+      // THE CAPTION OWNS THE BOTTOM, AND ONLY THE BOTTOM. kit.tsx SAFE.captionCeil
+      // is 1580: components never draw below it, so the caption must never grow
+      // above it. A long line wraps to three rows, so the block is anchored low
+      // and set small enough that three rows still start under the ceiling --
+      // otherwise the caption sits on the graphic it is describing, which is the
+      // "last frame caption buries the text behind" defect.
+      position: "absolute", left: 56, right: 56, bottom,
+      maxHeight: 1920 - 1580 - bottom,
+      display: "flex", flexWrap: "wrap", alignItems: "baseline",
+      justifyContent: "center", gap: "0 12px",
+    }}>
+      {words.map((w, i) => {
+        const isNum = NUMERIC.test(w.w);
+        const spoken = i <= ai;
+        const active = i === ai;
+        // only the ACTIVE word springs — the rest of the line is already set,
+        // so the eye tracks one moving thing instead of a bouncing sentence
+        const sp = active
+          ? spring({ frame: frame - w.start * fps, fps,
+                     config: { damping: 13, stiffness: 220, mass: 0.7 } })
+          : 1;
+        const lift = active ? (1 - sp) * -16 : 0;
+        const scale = active ? 1 + (1 - sp) * 0.12 : 1;
+        const hot = w.hot || isNum;
+        return (
+          <span key={i} style={{
+            display: "inline-block",
+            fontFamily: hot ? "Anton, Arial Black, sans-serif"
+                            : '"Helvetica Neue", Helvetica, Arial, sans-serif',
+            fontWeight: hot ? theme.cap.weight : 600,
+            fontSize: hot ? size : size * 0.62,
+            fontStyle: isNum ? "italic" : "normal",
+            fontVariant: hot && !isNum ? "small-caps" : "normal",
+            letterSpacing: hot ? theme.cap.ls : 0.5,
+            textTransform: hot && !isNum ? "lowercase" : "none",
+            color: active ? theme.mag : "#FFFFFF",
+            opacity: spoken ? 1 : 0.34,
+            transform: `translateY(${lift}px) scale(${scale})`,
+            textShadow: theme.cap.stroke,
+            lineHeight: 1.04,
+          }}>{w.w}</span>
+        );
+      })}
+    </div>
+  );
+};
+
 /* PanelCaption (v16.3) — a running karaoke caption: advancing phrases with the
    active word in magenta, so it RUNS with the VO (never a frozen line). Used in
    the framed-host "THE IDEA" panel AND as a bottom strip on the split/recording
@@ -1254,9 +1332,11 @@ export const Short: React.FC<ShortProps> = (props) => {
   const activeCaption = props.captions.find(
     (w) => t >= w.start && t <= w.end && w.start >= beatStart - 1e-3 && w.start < beatEnd
   );
-  const beatWords = (activeIsFramed || activeIsSplit || activeCapLow)
-    ? props.captions.filter((w) => w.start >= beatStart - 1e-3 && w.start < beatEnd)
-    : [];
+  const beatWords = props.captions.filter(
+    (w) => w.start >= beatStart - 1e-3 && w.start < beatEnd);
+  // an all-cookbook episode is never framed/split/capLow, so it used to fall
+  // through to the single-word <Caption/> and lose the locked line treatment
+  const activeIsCookbook = props.segments[Math.max(activeIdx, 0)]?.kind === "cookbook";
   const paneFor = (mode: NonNullable<Seg["mode"]>): React.CSSProperties =>
     mode === "split"
       ? { position: "absolute", top: 0, left: 0, width: "100%", height: "55%", overflow: "hidden" }
@@ -1405,6 +1485,8 @@ export const Short: React.FC<ShortProps> = (props) => {
         // sentence-case strip low on the frame (VJ: captions on every frame,
         // smaller + not all-caps here so it doesn't fight the #NN callout/desc).
         <PanelCaption words={beatWords} t={t} top={1772} bottom={38} size={theme.cap.plain} chunk={6} plain />
+      ) : activeIsCookbook && beatWords.length ? (
+        <KaraokeLine words={beatWords} t={t} fps={fps} />
       ) : activeCaption ? (
         activeIsPip ? (
           // v16.2: small running captions with hot-word highlight in the bottom
