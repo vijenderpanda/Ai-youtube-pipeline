@@ -79,6 +79,7 @@ export default function Make() {
      is visible before anything is approved or spent. Same pickCookbook the
      sequence designer and auto_compose use — one ranker, not a second opinion. */
   const [picks, setPicks] = useState({})
+  const [composed, setComposed] = useState(null)
   useEffect(() => {
     let dead = false
     const withBeats = ideas.filter((i) => Array.isArray(i.beats) && i.beats.length)
@@ -147,6 +148,53 @@ export default function Make() {
   }
 
   /* Turn the chosen idea into a Piece and go straight to its Plan gate. */
+  /* AUTO-COMPOSE ON ACCEPT.
+     Forks a draft off the channel's live look and writes ONE block per planned
+     beat, using the component pickCookbook already chose and showed you. It is
+     a PROPOSAL: a draft cannot be produced (set_calendar_template_version takes
+     locked versions only), so nothing here can reach a render without you
+     locking it first.
+
+     Deliberately does NOT stamp sequence_mode. 'replace' makes the sequence BE
+     the short, and build_ep_v2 derives the timeline 1:1 from each scene's VO
+     `line` -- which does not exist yet, because the script is written inside the
+     produce. Composing into 'replace' with the on-screen text standing in for
+     the spoken line would make the host say the wrong words. So the draft lands
+     in the default 'augment', and switching it to 'replace' stays a deliberate
+     act after the lines exist. */
+  const composeDraft = async (idea, calendarId) => {
+    const beats = Array.isArray(idea.beats) ? idea.beats : []
+    const chosen = picks[picked] || []
+    const tplKey = ch && ch.template
+    if (!beats.length || !chosen.some(Boolean) || !tplKey) return
+    try {
+      const v = await api.post({
+        action: 'create_template_version',
+        template_key: tplKey,
+        channel_key: chKey,
+      })
+      const vid = (v.version && v.version.id) || (v.item && v.item.id) || (v.id)
+      if (!vid) return
+      let pos = 0
+      for (let i = 0; i < beats.length; i++) {
+        const pick = chosen[i]
+        if (!pick) continue          // no component scored — leave the gap visible
+        await api.post({
+          action: 'set_template_version_block',
+          template_version_id: vid,
+          position: pos++,
+          block_type: beats[i].beat === 'cta' ? 'outro' : 'broll',
+          config: { dur: 4, cookbook: { id: pick.id, props: {} },
+                    note: beats[i].shows || '' },
+        })
+      }
+      setComposed({ id: vid, n: pos })
+    } catch (e) {
+      // never block the accept on this — the piece matters, the proposal does not
+      show('Piece created; the look proposal could not be composed: ' + e.message, 'error')
+    }
+  }
+
   const usePick = async () => {
     if (picked < 0 || busy) return
     const idea = ideas[picked]
@@ -167,6 +215,7 @@ export default function Make() {
       })
       const id = d.item && d.item.id
       if (!id) throw new Error('the piece was not created')
+      await composeDraft(idea, id)
       navigate('/piece/' + id)
     } catch (e) {
       show(e.message, 'error')
@@ -357,6 +406,12 @@ export default function Make() {
             ))}
           </div>
           <div className="piece-foot">
+            {composed && (
+              <span className="piece-why" style={{ marginRight: 'auto' }}>
+                Composed a draft look with {composed.n} scene{composed.n === 1 ? '' : 's'} — review and
+                lock it in Looks before it can be produced through.
+              </span>
+            )}
             <button className="btn btn-primary" onClick={usePick} disabled={picked < 0 || !!busy}>
               {busy === 'create' ? 'Creating…' : 'Use this one →'}
             </button>
