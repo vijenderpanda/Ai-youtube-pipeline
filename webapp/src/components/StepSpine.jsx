@@ -381,7 +381,7 @@ function ManifestPanel({ manifest }) {
               {a.scene == null && Array.isArray(a.scenes) && a.scenes.length > 0 && (
                 <span className="dim small" style={{ fontFamily: 'var(--mono, monospace)' }}>→ {a.scenes.length} sc</span>
               )}
-              <span className="tag" style={{ color: a.cost === 'paid' ? 'var(--ch)' : 'var(--text-3)' }}>{a.cost}</span>
+              <span className="tag" style={{ color: a.cost === 'paid' ? 'var(--ch, var(--neutral))' : 'var(--text-3)' }}>{a.cost}</span>
             </div>
           </li>
         ))}

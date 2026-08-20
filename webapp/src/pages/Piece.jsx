@@ -104,44 +104,72 @@ function CastStrip({ composition }) {
 }
 
 /* ── the gate ledger ───────────────────────────────────────────────────────
-   The gates that decide whether a cut may ship, with the REAL thresholds they
-   are checked against (finalize_episode.py: LUFS −14.0 ±0.5, exit 2 = QC gate
-   failed; lipsync_visual.py: PASS at |lag| ≤ 80ms and corr ≥ 0.30).
+   The checks that decide whether a cut may ship, stated exactly as the code
+   actually performs them — verified 2026-08-20 by reading the pipeline:
 
-   Nothing persists these measurements per cut yet — they are computed inside
-   finalize and reported by exit code — so this prints the threshold and says
-   plainly when a number is not measured yet. A row of green ticks that was
-   never measured would be worse than no ledger at all: it teaches you to stop
-   looking, which is exactly how a lip-sync passed at corr 0.99 while the lips
-   ran 320ms early. */
+     Loudness  finalize_episode.py:52-53 measures integrated LUFS on the
+               finished master against −14.0 ±0.5 and exits 2 if it is out of
+               band. Real, and it runs on every cut that is finalized.
+     Lip-sync  build_ep_v2.py:2522-2531, at PRODUCE time, per host clip:
+               lipsync_align.measure gives (lag, corr); corr < 0.85 means the
+               drift is not a straight time-shift so it ships uncut for a human
+               to judge, and |lag| > 45 ms is auto-corrected in place. It sits
+               inside `if stale or not os.path.exists(mp4)` (build_ep_v2.py:2507),
+               so a run that reuses cached host clips measures NOTHING.
+
+   Two things this ledger used to claim and must never claim again:
+
+   1. It printed a lip-sync row of "|lag| ≤ 80 ms, corr ≥ 0.30" from
+      lipsync_visual.py — a tool with ZERO callers anywhere in the repo. Those
+      were not the thresholds and that check was not running.
+   2. It stamped PASS on all three rows whenever the finalize job exited 0.
+      Nothing persists a per-cut measurement: finalize is normally run locally
+      so there is usually no job row at all, and the produce job's logs are a
+      `claude -p` transcript rather than build stdout. So the ticks were
+      manufactured from an exit code.
+
+   A row of green ticks that was never measured is worse than no ledger: it
+   teaches you to stop looking, which is exactly how a lip-sync shipped at
+   corr 0.99 while the lips ran 320 ms early. Until something writes these
+   numbers per cut, this reports the threshold and says it was not recorded. */
 const GATE_LEDGER = [
-  { k: 'Loudness', t: '−14.0 ±0.5 LUFS' },
-  { k: 'Lip-sync · visual', t: '|lag| ≤ 80 ms' },
-  { k: 'Lip-sync · audio', t: 'corr ≥ 0.30' },
+  {
+    k: 'Loudness',
+    t: '−14.0 ±0.5 LUFS',
+    where: 'on the finished master, every time a cut is finalized',
+  },
+  {
+    k: 'Lip-sync',
+    t: 'corr ≥ 0.85 · auto-cut above 45 ms',
+    where: 'per host clip while producing — skipped when clips are reused',
+  },
 ]
 
 function Ledger({ finalizeJob }) {
-  // The one thing we DO know: finalize exit 2 means a QC gate rejected the cut.
+  // A failed finalize is the only per-cut evidence that reaches this page, and
+  // it says a gate rejected the cut — not which one, and never that one passed.
   const failed = finalizeJob && finalizeJob.status === 'failed'
-  const passed = finalizeJob && finalizeJob.status === 'done'
   return (
     <div className="piece-ledger">
       {GATE_LEDGER.map((g) => (
         <div key={g.k} className="lrow">
           <span>{g.k}</span>
           <span className="m">{g.t}</span>
-          <span className={'vd ' + (passed ? 'pass' : failed ? 'fail' : 'na')}>
-            {passed ? 'PASS' : failed ? 'CHECK' : 'AT FINALIZE'}
+          <span className={'vd ' + (failed ? 'fail' : 'na')}>
+            {failed ? 'check' : 'not recorded'}
           </span>
         </div>
       ))}
       <div className="dim small" style={{ marginTop: 9 }}>
-        {passed
-          ? 'These passed when the master was cut.'
-          : failed
-            ? 'Finalize stopped on a QC gate — the numbers are in its log.'
-            : 'Measured when this piece is finalized; the cut cannot ship if one fails.'}
+        {failed
+          ? 'Finalizing stopped on one of these — the numbers are in its log.'
+          : 'These run inside the pipeline, but no cut stores its numbers yet, ' +
+            'so this cannot tell you what THIS cut measured. Read them in the ' +
+            'build log until a cut records them.'}
       </div>
+      {GATE_LEDGER.map((g) => (
+        <div key={g.k + '-w'} className="lwhere">{g.k} — {g.where}</div>
+      ))}
     </div>
   )
 }
@@ -490,7 +518,10 @@ export default function Piece() {
                   This cut was made <b>outside the app</b> — it was built locally and synced in, so there’s
                   no produce run on record. Scheduling needs that run to know which episode it’s finishing.
                 </p>
-                <div className="piece-kv"><span>Cut</span><b>on disk ✓</b></div>
+                {/* This reads factory_calendar.preview_path — a string. Nothing
+                    checks the file is there, so a green "on disk ✓" would be a
+                    tick certifying a database column while the player 404s. */}
+                <div className="piece-kv"><span>Cut</span><b>a file is recorded for it</b></div>
                 <div className="piece-kv"><span>Produce run</span><b className="warn-txt">not recorded</b></div>
                 <div className="dim small" style={{ marginTop: 10 }}>
                   Two honest ways forward: produce it here (that records the run — and spends), or arm it

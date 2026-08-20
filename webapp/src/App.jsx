@@ -65,7 +65,7 @@ export default function App() {
       {staleBuild && (
         <div className="update-banner" role="status">
           <span>A newer dashboard version is live — reload to see the latest episodes &amp; features.</span>
-          <button className="btn btn-primary btn-sm" onClick={() => window.location.reload()}>
+          <button className="btn btn-ghost btn-sm" onClick={() => window.location.reload()}>
             Reload now
           </button>
         </div>

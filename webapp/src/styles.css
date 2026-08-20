@@ -15,6 +15,12 @@
   --text: #eceef2;         /* primary */
   --text-2: #b6b9c4;       /* secondary */
   --dim: #9096a0;          /* tertiary */
+  --text-3: #9096a0;       /* tertiary, ramp name — the redesigned surfaces ask
+                              for it by position (text -> text-2 -> text-3) while
+                              older CSS says --dim. Same colour, both spellings
+                              live, because 44 declarations already use this one
+                              and an undefined property does not fall back, it
+                              INHERITS: every eyebrow rendered near-white. */
   --faint: #62656f;        /* labels / eyebrows */
   --disabled: #45474f;
 
@@ -61,7 +67,7 @@
   --sidebar-w: 232px;
   --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     sans-serif;
-  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono',
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono',
     monospace;
 }
 
@@ -7866,3 +7872,12 @@ a.out-chip:hover {
 /* The amber wording covers "watch this"; a produce that will actually die
    halfway through is a different statement and reads as one. */
 .mach-warn.bad { border-color: var(--danger); color: var(--danger); }
+
+/* Where each gate actually runs. The threshold alone reads as a promise that
+   the app checked it; naming the stage and its skip condition is the honest
+   version — lip-sync measures nothing when host clips are reused. */
+.piece-ledger .lwhere {
+  font-size: 10.5px; color: var(--faint); margin-top: 5px; line-height: 1.5;
+}
+.piece-ledger .lwhere:first-of-type { margin-top: 9px; }
+.piece-ledger .vd.na { color: var(--faint); }
