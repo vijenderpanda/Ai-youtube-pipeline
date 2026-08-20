@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../api'
 import { usePoll } from '../hooks'
-import { countsFromAssets, resolveStage } from '../pipeline'
+import { buildTriage, MAX_CARDS, istToday } from '../triage'
 
 /* =============================================================================
    TODAY — only what needs a human, and nothing else.
@@ -20,7 +20,6 @@ import { countsFromAssets, resolveStage } from '../pipeline'
    ========================================================================== */
 
 const IST = 'Asia/Kolkata'
-const istToday = () => new Date().toLocaleDateString('en-CA', { timeZone: IST })
 const istTime = (iso) =>
   new Date(iso).toLocaleTimeString('en-GB', { timeZone: IST, hour: '2-digit', minute: '2-digit' })
 
@@ -28,7 +27,12 @@ export default function Today() {
   const stagedQ = usePoll(() => api.get('?r=staged'), 10000)
   const chansQ = usePoll(() => api.get('?r=channels'), 0)
   const workersQ = usePoll(() => api.get('?r=workers'), 30000)
-  const postsQ = usePoll(() => api.get('?r=posts&status=scheduled'), 30000)
+  // ALL posts, not just scheduled: a post is the only proof a piece already
+  // shipped, and a published one proves it just as well as a scheduled one.
+  const postsQ = usePoll(() => api.get('?r=posts'), 30000)
+  // ?r=staged cannot see status planned|suggested, so without the calendar the
+  // page cannot tell whether a channel has upcoming work.
+  const planQ = usePoll(() => api.get('?r=calendar'), 60000)
   // ?r=staged carries items + counts + covers but NOT jobs, and without the live
   // job we cannot tell "producing" from "ready to review" — which is precisely
   // how the old Overview came to offer "Finalize & schedule" on a video that did
@@ -41,103 +45,15 @@ export default function Today() {
   const channels = (chansQ.data && chansQ.data.channels) || []
   const workers = (workersQ.data && workersQ.data.workers) || []
   const posts = (postsQ.data && postsQ.data.posts) || []
+  const planned = (planQ.data && planQ.data.items) || []
 
   /* ── the triage stack ────────────────────────────────────────────────── */
-  /* Today is what needs a human NOW, not every unfinished thing ever made. A cut
-     that has sat unarmed for weeks is backlog: real, but not today's decision —
-     and 23 cards is not a queue that can reach zero, which is the whole promise
-     of this screen. So cuts are only surfaced while they are still live work
-     (planned within the last week, or still ahead), and the stack is capped;
-     the rest is counted honestly on one line instead of being hidden. */
-  const RECENT_DAYS = 7
-  const MAX_CARDS = 6
-  const cards = useMemo(() => {
-    const out = []
-    const cutoff = new Date()
-    cutoff.setDate(cutoff.getDate() - RECENT_DAYS)
-    const cutoffStr = cutoff.toLocaleDateString('en-CA', { timeZone: IST })
-    const isLiveWork = (it) => !it.planned_date || it.planned_date >= cutoffStr
-    const liveJobFor = (id) =>
-      jobs.find(
-        (j) =>
-          j.meta &&
-          j.meta.calendar_id === id &&
-          j.type === 'produce_preview' &&
-          (j.status === 'queued' || j.status === 'running')
-      )
-
-    for (const it of items) {
-      if (it.status === 'published' || it.status === 'skipped' || it.status === 'superseded') continue
-      const counts = countsById[it.id] || countsFromAssets([])
-      const producing = !!liveJobFor(it.id)
-      const { stage } = resolveStage(it, counts, { producing })
-
-      if (producing) continue // the factory is working — nothing for a human
-      if ((stage === 'qc' || (stage === 'arm' && it.preview_path)) && isLiveWork(it)) {
-        out.push({
-          k: 'cut',
-          rank: 0,
-          when: it.planned_date || '',
-          icon: '▶',
-          title: `${it.title || '(untitled)'} — a cut is waiting`,
-          sub: `${it.channel_key}${it.preview_path ? ' · ' + String(it.preview_path).split('/').pop() : ''}`,
-          to: '/piece/' + it.id,
-          verb: 'Review it',
-        })
-      } else if (counts.failed > 0) {
-        out.push({
-          k: 'fail',
-          rank: -1,
-          icon: '⚠',
-          title: `${it.title || '(untitled)'} — ${counts.failed} part${counts.failed === 1 ? '' : 's'} failed`,
-          sub: `${it.channel_key} · this has to be fixed before it ships`,
-          to: '/piece/' + it.id,
-          verb: 'Open it',
-        })
-      }
-    }
-
-    // Channels with nothing planned ahead — a FACT, not a nag. No proposal is
-    // attached because nothing plans overnight; asking is one agent run.
-    const today = istToday()
-    for (const c of channels) {
-      if (c.lifecycle === 'incubating' || c.status === 'paused') continue
-      const ahead = items.filter(
-        (it) =>
-          it.channel_key === c.key &&
-          it.planned_date &&
-          it.planned_date >= today &&
-          !['skipped', 'superseded', 'published'].includes(it.status)
-      )
-      if (ahead.length === 0) {
-        out.push({
-          k: 'empty',
-          rank: 2,
-          icon: '○',
-          title: `${c.name || c.key} has nothing planned`,
-          sub: 'Nothing is proposed — asking costs one agent run',
-          to: '/make/' + c.key,
-          verb: '✦ Make something',
-        })
-      }
-    }
-    // failures first, then newest live work, then the empty-slot facts
-    return out.sort((a, b) => a.rank - b.rank || String(b.when || '').localeCompare(String(a.when || '')))
-  }, [items, countsById, jobs, channels])
-
-  /* Everything that is real work but not today's decision. Counted, never hidden. */
-  const backlog = useMemo(() => {
-    const cutoff = new Date()
-    cutoff.setDate(cutoff.getDate() - RECENT_DAYS)
-    const cutoffStr = cutoff.toLocaleDateString('en-CA', { timeZone: IST })
-    return items.filter(
-      (it) =>
-        it.preview_path &&
-        it.planned_date &&
-        it.planned_date < cutoffStr &&
-        !['published', 'skipped', 'superseded', 'armed'].includes(it.status)
-    ).length
-  }, [items])
+  /* One selector, shared with the sidebar badge — see triage.js for why the two
+     used to disagree and why a shipped piece never left this list before. */
+  const { cards, shipped, unlinked, stalled } = useMemo(
+    () => buildTriage({ items, countsById, jobs, posts, channels, planned }),
+    [items, countsById, jobs, posts, channels, planned]
+  )
 
   const shown = cards.slice(0, MAX_CARDS)
   const overflow = cards.length - shown.length
@@ -145,7 +61,9 @@ export default function Today() {
   /* ── ships today ─────────────────────────────────────────────────────── */
   const shipsToday = useMemo(() => {
     const t = istToday()
+    const live = ['scheduled', 'armed', 'uploading', 'published']
     return posts
+      .filter((p) => live.includes(String(p.status || '').toLowerCase()))
       .filter((p) => p.publish_at && new Date(p.publish_at).toLocaleDateString('en-CA', { timeZone: IST }) === t)
       .sort((a, b) => String(a.publish_at).localeCompare(String(b.publish_at)))
   }, [posts])
@@ -167,7 +85,9 @@ export default function Today() {
           : `${alive.length} of ${workers.length} machine${workers.length === 1 ? '' : 's'} awake` +
             (limited ? ' · AI budget spent' : '') +
             (reset ? ` · budget resets ${istTime(reset)}` : '') +
-            (failedJobs ? ` · ${failedJobs} background task${failedJobs === 1 ? '' : 's'} failed` : ''),
+            (failedJobs
+              ? ` · ${failedJobs} of the last ${jobs.length} background tasks failed`
+              : ''),
     }
   }, [workers, jobs])
 
@@ -218,15 +138,27 @@ export default function Today() {
         ))}
       </div>
 
-      {(overflow > 0 || backlog > 0) && (
+      {(overflow > 0 || unlinked > 0 || stalled > 0 || shipped > 0) && (
         <div className="today-backlog">
-          {overflow > 0 && <>{overflow} more need{overflow === 1 ? 's' : ''} you. </>}
-          {backlog > 0 && (
+          {overflow > 0 && (
             <>
-              {backlog} older cut{backlog === 1 ? '' : 's'} are still unfinished —{' '}
-              <Link className="link" to="/studio">that's backlog, not today</Link>.
+              {overflow} more need{overflow === 1 ? 's' : ''} you —{' '}
+              <Link className="link" to="/plan">see them all</Link>.{' '}
             </>
           )}
+          {unlinked > 0 && (
+            <>
+              {unlinked} older cut{unlinked === 1 ? '' : 's'} have no record of going out. They may well
+              have shipped before the app started linking a post back to its piece — it cannot tell.{' '}
+            </>
+          )}
+          {stalled > 0 && (
+            <>
+              {stalled} older piece{stalled === 1 ? '' : 's'} stalled before a cut was ever made —{' '}
+              <Link className="link" to="/plan">in the plan</Link>.{' '}
+            </>
+          )}
+          {shipped > 0 && <>{shipped} already shipped and left this list.</>}
         </div>
       )}
 
@@ -245,7 +177,9 @@ export default function Today() {
       <div className={'today-health' + (health.ok ? '' : ' warn')}>
         <span className="dot" aria-hidden="true" />
         {health.text}
-        <Link className="link" to={health.failedJobs ? '/jobs' : '/workers'} style={{ marginLeft: 'auto' }}>
+        {/* Both used to leave the six destinations (/jobs, /workers). Machines
+            carries the failure breakdown and the machine state now. */}
+        <Link className="link" to="/machines" style={{ marginLeft: 'auto' }}>
           {health.failedJobs ? 'see what failed →' : 'machines →'}
         </Link>
       </div>

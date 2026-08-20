@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { api } from '../api'
 import { usePoll } from '../hooks'
-import { resolveStage } from '../pipeline'
+import { buildTriage } from '../triage'
 
 function Icon({ name }) {
   const paths = {
@@ -114,31 +114,30 @@ const NAV_GROUPS = [
 ]
 
 export default function Sidebar({ onLock }) {
-  // Badge data rides the endpoints the app already polls elsewhere.
+  // The badge must count exactly what Today shows. It used to run its own
+  // filter over the same rows with no recency window, no preview_path test, no
+  // cap and no empty-channel cards, on a different page of jobs at a different
+  // interval — so the two could never agree (measured: badge 19, headline 20,
+  // six cards drawn). Same selector, same inputs, one number.
   const stagedQ = usePoll(() => api.get('?r=staged'), 15000)
-  const jobsQ = usePoll(() => api.get('?r=jobs&limit=100'), 30000)
+  const jobsQ = usePoll(() => api.get('?r=jobs&limit=60'), 30000)
+  const postsQ = usePoll(() => api.get('?r=posts'), 60000)
+  const chansQ = usePoll(() => api.get('?r=channels'), 0)
+  const planQ = usePoll(() => api.get('?r=calendar'), 60000)
 
-  const items = (stagedQ.data && stagedQ.data.items) || []
-  const counts = (stagedQ.data && stagedQ.data.counts) || {}
-  const allJobs = (jobsQ.data && jobsQ.data.jobs) || []
-  // A piece mid-produce is the factory working, not a decision — counting it
-  // here is the same lie the old Overview told by dropping this flag.
-  const producingIds = new Set(
-    allJobs
-      .filter((j) => j.type === 'produce_preview' && (j.status === 'queued' || j.status === 'running'))
-      .map((j) => j.meta && j.meta.calendar_id)
-      .filter(Boolean)
-  )
-  const todayCount = items.filter(
-    (it) => resolveStage(it, counts[it.id] || {}, { producing: producingIds.has(it.id) }).action
-  ).length
-  const failedCount = allJobs.filter((j) => j.status === 'failed').length
+  const { cards } = buildTriage({
+    items: (stagedQ.data && stagedQ.data.items) || [],
+    countsById: (stagedQ.data && stagedQ.data.counts) || {},
+    jobs: (jobsQ.data && jobsQ.data.jobs) || [],
+    posts: (postsQ.data && postsQ.data.posts) || [],
+    channels: (chansQ.data && chansQ.data.channels) || [],
+    planned: (planQ.data && planQ.data.items) || [],
+  })
+  const todayCount = cards.length
 
   const badge = (kind) => {
     if (kind === 'today' && todayCount > 0)
       return <span className="nav-badge nav-badge-today">{todayCount}</span>
-    if (kind === 'failed' && failedCount > 0)
-      return <span className="nav-badge nav-badge-failed">{failedCount}</span>
     return null
   }
 
