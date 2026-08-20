@@ -49,8 +49,14 @@ function clockFor(v, views) {
   const SLOW = { days: 90, name: 'Search & suggested', callableAt: 30 }
   if ((views || 0) < MIX_FLOOR) return SHORTS
   const mix = v.traffic_mix || {}
-  const total = Object.values(mix).reduce((s, n) => s + (Number(n) || 0), 0) || 1
-  const shorts = (Number(mix.SHORTS) || 0) / total
+  const total = Object.values(mix).reduce((s, n) => s + (Number(n) || 0), 0)
+  // No mix data at all is not evidence of search traffic. Without this, a video
+  // with views but no stats row -- which is exactly what a pasted number gives
+  // you -- computed shorts=0/1 and got the 90-day search clock, so a day-old
+  // Short read as "day 1 of 90". Absence of evidence is not evidence; fall back
+  // to the channel's format clock, the same rule MIX_FLOOR applies below.
+  if (v.shorts_pct == null && total === 0) return SHORTS
+  const shorts = total ? (Number(mix.SHORTS) || 0) / total : 0
   const shortsPct = v.shorts_pct != null ? Number(v.shorts_pct) / 100 : shorts
   return shortsPct >= 0.5 ? SHORTS : SLOW
 }
@@ -92,28 +98,68 @@ export default function Scoreboard() {
     return m
   }, [postsQ.data])
 
-  /* Pasted Studio rows outrank stored stats for the videos they name — the API
-     lags ~48h and the newest Shorts have no rows at all. Matched on title. */
+  /* Pasted numbers outrank stored stats for the videos they name — the API
+     finalizes ~48h late and the newest Shorts have no rows at all.
+
+     TWO shapes are accepted, because two are what actually get pasted here.
+
+     BY LINK (exact, and preferred). Anything containing a YouTube or Studio URL
+     carries the video id — studio.youtube.com/video/<ID>/analytics, youtu.be/<ID>,
+     watch?v=<ID>. That is an exact key: no title matching, no near-miss. It also
+     means a prose write-up pastes in as-is, which is what an analytics summary
+     actually looks like when it arrives.
+
+     BY TITLE (the Studio table). Tab- or run-of-spaces separated rows, first
+     column the title, first plain number the views.
+
+     A number only counts as views when the word "views" is next to it. The same
+     sentence often carries "45.45% Stayed to watch" or "the 12-second mark", and
+     silently reading either as a view count would be worse than reading nothing. */
+  const VIDEO_ID = /(?:youtu\.be\/|\/video\/|[?&]v=|\/shorts\/)([A-Za-z0-9_-]{11})/g
+
   const pasted = useMemo(() => {
-    const map = new Map()
-    for (const line of String(paste || '').split('\n')) {
+    const byId = new Map()
+    const byTitle = new Map()
+    const text = String(paste || '')
+
+    // by link — scan each paragraph so a number stays with its own video
+    for (const para of text.split(/\n{2,}|\n(?=\s*[-*•\d])/)) {
+      const ids = [...para.matchAll(VIDEO_ID)].map((m) => m[1])
+      if (!ids.length) continue
+      const m = para.match(/\*{0,2}([\d][\d,]*)\*{0,2}\s*views\b/i)
+      const views = m ? Number(m[1].replace(/[^\d]/g, '')) : null
+      for (const id of ids) if (!byId.has(id)) byId.set(id, views)
+    }
+
+    // by title — the Studio table shape
+    for (const line of text.split('\n')) {
+      if (VIDEO_ID.test(line)) { VIDEO_ID.lastIndex = 0; continue }
+      VIDEO_ID.lastIndex = 0
       const nums = line.match(/[\d][\d,.]*%?/g) || []
       const title = line.split(/\s{2,}|\t/)[0].trim()
       if (!title || !nums.length || /^video\b/i.test(title)) continue
       const plain = nums.filter((n) => !n.includes('%'))
       if (!plain.length) continue
-      map.set(title.replace(/[…\.]+$/, '').toLowerCase(), Number(plain[0].replace(/[^\d]/g, '')))
+      byTitle.set(title.replace(/[…\.]+$/, '').toLowerCase(), Number(plain[0].replace(/[^\d]/g, '')))
     }
-    return map
+    return { byId, byTitle, size: byId.size + byTitle.size }
   }, [paste])
 
   const freshViews = (v) => {
+    // an id is exact, so it always wins over a title guess
+    if (v.video_id && pasted.byId.has(v.video_id)) {
+      const n = pasted.byId.get(v.video_id)
+      if (n != null) return n
+    }
     const t = String(v.title || '').toLowerCase()
-    for (const [k, views] of pasted) {
+    for (const [k, views] of pasted.byTitle) {
       if (k.length > 12 && (t.startsWith(k.slice(0, 24)) || k.startsWith(t.slice(0, 24)))) return views
     }
     return null
   }
+
+  /** Recognised the video but the paste carried no view count for it. */
+  const namedNoNumber = (v) => !!(v.video_id && pasted.byId.get(v.video_id) === null)
 
   /* Videos that are LIVE but have no analytics row yet.
      The board is built from ?r=video_summary, which reads the stats table, and
@@ -122,7 +168,7 @@ export default function Scoreboard() {
      which is worse than "too early to tell", and it hides exactly the work you
      most want to look at. The posts prove they are public, so they appear with
      no numbers rather than not at all. */
-  const pending = useMemo(() => {
+  const livePosts = useMemo(() => {
     const known = new Set(videos.map((v) => v.video_id))
     const now = Date.now()
     return ((postsQ.data && postsQ.data.posts) || [])
@@ -132,20 +178,43 @@ export default function Scoreboard() {
       .map((p) => ({
         pending: true,
         v: { video_id: p.video_id, title: p.yt_title || '(untitled)' },
+        publish_at: p.publish_at,
         day: new Date(p.publish_at).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }),
         age: daysBetween(new Date(p.publish_at).getTime(), now),
       }))
   }, [videos, postsQ.data, channel])
 
+  /* A live video the stats table has not reached yet, but which the paste DID
+     give a number for, is not "too early" any more — it has a real figure from
+     a real source. It joins the measured set and gets judged like the rest,
+     which is the entire point of pasting. The ones still without a number stay
+     as pending cards. */
+  const promoted = useMemo(
+    () => livePosts
+      .filter((p) => freshViews(p.v) != null)
+      .map((p) => ({
+        video_id: p.v.video_id,
+        title: p.v.title,
+        first_date: String(p.publish_at).slice(0, 10),
+        total_views: freshViews(p.v),
+      })),
+    [livePosts, pasted] // eslint-disable-line react-hooks/exhaustive-deps
+  )
+  const pending = useMemo(
+    () => livePosts.filter((p) => freshViews(p.v) == null),
+    [livePosts, pasted] // eslint-disable-line react-hooks/exhaustive-deps
+  )
+  const measured = useMemo(() => [...videos, ...promoted], [videos, promoted])
+
   const cards = useMemo(() => {
     const now = Date.now()
     const viewsOf = (v) => freshViews(v) ?? (v.total_views || 0)
-    const dist = videos.map(viewsOf).sort((a, b) => a - b)
+    const dist = measured.map(viewsOf).sort((a, b) => a - b)
     const p25 = pct(dist, 25)
     const p50 = pct(dist, 50)
     const p75 = pct(dist, 75)
 
-    return videos
+    return measured
       .map((v) => {
         const views = viewsOf(v)
         // public-since = the earliest evidence it was live: its publish time, or
@@ -185,7 +254,7 @@ export default function Scoreboard() {
       // what you actually shipped this week — and the verdicts are already
       // colour-coded, so severity does not need the running order too.
       .sort((a, b) => String(b.day || '').localeCompare(String(a.day || '')) || (a.age ?? 999) - (b.age ?? 999))
-  }, [videos, pasted, publishedAt]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [measured, pasted, publishedAt]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const dist = cards.length ? { p25: cards[0].p25, p50: cards[0].p50, p75: cards[0].p75 } : null
   const byDay = useMemo(() => {
@@ -233,29 +302,51 @@ export default function Scoreboard() {
         <section className="pc-card" style={{ marginBottom: 14 }}>
           <span className="pc-eyebrow">Numbers this app can’t see yet</span>
           <p style={{ margin: '0 0 9px', fontSize: 13, color: 'var(--text-2)' }}>
-            The API finalizes ~48h late and the newest Shorts have no rows at all. Paste from
-            YouTube Studio — matched by title, and used instead of the stored figure.
+            The API finalizes ~48h late and the newest Shorts have no rows at all. Paste the
+            Studio table, or any write-up that links the videos — a Studio link carries the
+            video&rsquo;s id, which matches exactly instead of by title. Whatever matches is used
+            instead of the stored figure.
           </p>
           <textarea
             className="make-paste"
             spellCheck={false}
             value={paste}
             onChange={(e) => setPaste(e.target.value)}
-            placeholder={'I Built A Habit Tracker By Typing One…   1,204   18,900   6.1%'}
+            placeholder={
+              'I Built A Habit Tracker By Typing One…   1,204   18,900   6.1%\n\n' +
+              '…or prose: “[I Built A Habit Tracker](https://studio.youtube.com/video/Ag9tBHbyrbo/analytics) ' +
+              'is your top performer with 225 views.”'
+            }
           />
           {pasted.size > 0 && (() => {
             // Unlike Make, this page HAS the video list, so it can report what
             // actually matched rather than how many lines it parsed. A row whose
             // title matches nothing silently falls back to the stored number, so
             // saying it matched would hide exactly the case worth seeing.
-            const hits = videos.filter((v) => freshViews(v) != null).length
-            const missed = pasted.size - hits
+            // dedupe: a promoted video appears in BOTH measured and livePosts,
+            // so counting the concatenation reported it twice.
+            const seen = new Set()
+            const all = [...measured, ...livePosts.map((p) => p.v)].filter((v) => {
+              if (!v.video_id || seen.has(v.video_id)) return false
+              seen.add(v.video_id); return true
+            })
+            const hits = all.filter((v) => freshViews(v) != null).length
+            // A link the app recognised but that carried no view count. Worth
+            // its own line: the video WAS found, the paste just did not say how
+            // many views — "matched nothing" would be the wrong story.
+            const named = all.filter((v) => namedNoNumber(v)).length
+            const missed = Math.max(0, pasted.size - hits - named)
             return (
               <div className="make-parsed">
                 <span className="lb">READ BACK ✓</span>
                 <span className={'chip ' + (hits ? 'ok-chip' : '')}>
-                  {hits} of {pasted.size} row{pasted.size === 1 ? '' : 's'} matched a video
+                  {hits} video{hits === 1 ? '' : 's'} got a fresh view count
                 </span>
+                {named > 0 && (
+                  <span className="chip">
+                    {named} recognised by link, but no view count in the text
+                  </span>
+                )}
                 {missed > 0 && (
                   <span className="chip warn-chip">
                     {missed} matched nothing — those keep the stored numbers
