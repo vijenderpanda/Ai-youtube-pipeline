@@ -1241,6 +1241,87 @@ async function handlePost(body: any): Promise<Response> {
     // repo". The allow-list keeps the surface to the handful of operations that
     // are genuinely useful from the app, and `os` stops PowerShell being sent
     // to the Mac (where it can only fail).
+    // A planned beat that no component fits is the signal that grew Fogline,
+    // SpinWheel, ReactionMeter and OutroGlass. This turns that gap into a build
+    // request. The BROWSER names the beat; the prompt is composed HERE, so the
+    // three-place registration contract lives in one place and a client can
+    // never post a free-form instruction to a worker.
+    case "build_cookbook_component": {
+      const BEAT_KINDS = new Set(["hook","context","stat","process","comparison","demo","punchline","cta","social-proof"]);
+      const DATA_SHAPES = new Set(["series","metrics","single-number","facts","before-after","steps","options","dialogue","phrase","query-results","hub-spokes","alerts","utterance"]);
+      const beat = String(body.beat ?? "").trim();
+      const needs = String(body.needs ?? "").trim();
+      const shows = String(body.shows ?? "").trim().slice(0, 400);
+      const kws = Array.isArray(body.keywords)
+        ? body.keywords.map((k: unknown) => String(k).trim()).filter(Boolean).slice(0, 8)
+        : [];
+      const ck = String(body.channel_key ?? "").trim();
+      if (!BEAT_KINDS.has(beat)) return json({ error: "beat must be one of: " + [...BEAT_KINDS].join(" | ") }, 400);
+      if (!DATA_SHAPES.has(needs)) return json({ error: "needs must be one of: " + [...DATA_SHAPES].join(" | ") }, 400);
+      if (!shows) return json({ error: "shows (what is on screen) required" }, 400);
+      if (!ck) return json({ error: "channel_key required" }, 400);
+
+      // Code-writing jobs go to a machine that is allowed to edit the repo. The
+      // Windows worker is RUN + REPORT only (CLAUDE.md), so pin to a Darwin box.
+      const { data: macs } = await db.from("factory_workers")
+        .select("worker_id, os, paused, last_seen").eq("os", "Darwin").eq("paused", false);
+      const mac = (macs ?? [])[0];
+      if (!mac) {
+        return json({ error: "no Mac worker is available — the Windows box may run scripts and report, but not edit the repo" }, 409);
+      }
+
+      const prompt = [
+        "Build ONE new Remotion cookbook component for a planned beat that nothing in the library fits.",
+        "",
+        "THE BEAT:",
+        `  beat kind : ${beat}`,
+        `  data shape: ${needs}`,
+        `  on screen : ${shows}`,
+        `  keywords  : ${kws.join(", ") || "(none given)"}`,
+        `  channel   : ${ck}`,
+        "",
+        "READ FIRST: remotion-studio/src/cookbook/COOKBOOK.md for the house rules, and one",
+        "recent component (SpinWheel.tsx, ReactionMeter.tsx or OutroGlass.tsx) for the shape.",
+        "Use the shared kit (./kit: BRAND, SANS, MONO, DISPLAY, rgba, clamp, Fonts, AuroraBed) —",
+        "never hardcode brand colours or re-implement easing that kit already gives you.",
+        "",
+        "IT MUST BE REGISTERED IN THREE PLACES OR IT IS INVISIBLE:",
+        "  1. remotion-studio/src/cookbook/<Name>.tsx — the component + an exported demo props const",
+        "  2. remotion-studio/src/cookbook/components.tsx — import + add to the id -> component map",
+        "  3. remotion-studio/src/cookbook/registry.ts — the metadata entry (id, demoId, title,",
+        "     role, beats, needs, keywords, transparentCapable, wow, density, gist/useWhen)",
+        "  4. supabase/functions/factory-api/index.ts — COOKBOOK_CATALOG (id,label,role,needs)",
+        "Miss (4) and it renders and ranks fine but NOBODY CAN CHOOSE IT. That exact drift left",
+        "OutroGlass unusable for a day.",
+        "",
+        "THEN VERIFY, and do not report success without it:",
+        "  python3 scripts/check_cookbook_sync.py     (must print: all three lists agree)",
+        "  cd remotion-studio && npx tsc --noEmit     (must typecheck)",
+        "",
+        "RULES: create ONE new component; do not modify any existing component's behaviour;",
+        "no fabricated data or numbers in the demo props — use the beat's own subject.",
+        "It must hold a readable END STATE (a Short gets rewatched, frozen frames kill retention).",
+        "Do NOT commit. Report the component name, what it shows, and the verification output.",
+      ].join("\n");
+
+      const { data: job, error: bErr } = await db.from("factory_jobs")
+        .insert({
+          channel_key: ck,
+          type: "custom",
+          title: `Build a component — ${shows.slice(0, 48)}`,
+          prompt,
+          model: "claude-opus-5",
+          effort: "high",
+          status: "queued",
+          target_worker: mac.worker_id,
+          meta: { kind: "cookbook_build", beat, needs, keywords: kws, shows },
+        })
+        .select().single();
+      if (bErr) return json({ error: bErr.message }, 500);
+      await logEvent("cookbook_build_queued", `New component requested for a ${beat} beat`, { job_id: job.id, beat, needs });
+      return json({ ok: true, job });
+    }
+
     case "run_maintenance": {
       // One action id resolves to a different script per OS, so the app can offer
       // "Free up disk" on either box without the client ever naming a path. An OS

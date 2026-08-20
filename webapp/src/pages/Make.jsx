@@ -80,6 +80,38 @@ export default function Make() {
      sequence designer and auto_compose use — one ranker, not a second opinion. */
   const [picks, setPicks] = useState({})
   const [composed, setComposed] = useState(null)
+  const [builds, setBuilds] = useState({})
+
+  /* Turn a beat nothing fits into a build request. The browser sends the BEAT,
+     not a prompt — the edge composes the instruction, so the three-place
+     registration contract (component file, render map, registry, edge catalog)
+     lives in one place and cannot drift per caller. Code-writing is pinned
+     server-side to a Mac: the Windows box is RUN + REPORT only. */
+  const buildFor = async (ideaIx, beatIx, beat) => {
+    const key = `${ideaIx}:${beatIx}`
+    if (builds[key]) return
+    setBuilds((b) => ({ ...b, [key]: 'queueing…' }))
+    try {
+      const r = await api.post({
+        action: 'build_cookbook_component',
+        channel_key: chKey,
+        beat: beat.beat,
+        needs: beat.needs,
+        shows: beat.shows,
+        keywords: beat.keywords || [],
+      })
+      if (r && r.error) {
+        setBuilds((b) => ({ ...b, [key]: null }))
+        show(r.error, 'error')
+      } else {
+        setBuilds((b) => ({ ...b, [key]: 'building…' }))
+        show('A worker is building a component for that beat', 'ok')
+      }
+    } catch (e) {
+      setBuilds((b) => ({ ...b, [key]: null }))
+      show(e.message, 'error')
+    }
+  }
   useEffect(() => {
     let dead = false
     const withBeats = ideas.filter((i) => Array.isArray(i.beats) && i.beats.length)
@@ -394,8 +426,21 @@ export default function Make() {
                           <span className="bs">{b.shows}</span>
                           {p ? (
                             <span className="bp" title={(p.why || []).join(' · ')}>{p.label}</span>
+                          ) : builds[`${i}:${bi}`] ? (
+                            <span className="bp building">{builds[`${i}:${bi}`]}</span>
                           ) : (
-                            <span className="bp none">needs a new component</span>
+                            // The gap is the feature: this is the signal that grew
+                            // Fogline, SpinWheel, ReactionMeter and OutroGlass.
+                            <span
+                              role="button"
+                              tabIndex={0}
+                              className="bp build"
+                              title="Ask a worker to build a component for this beat"
+                              onClick={(e) => { e.stopPropagation(); buildFor(i, bi, b) }}
+                              onKeyDown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); buildFor(i, bi, b) } }}
+                            >
+                              ✦ build one
+                            </span>
                           )}
                         </div>
                       )

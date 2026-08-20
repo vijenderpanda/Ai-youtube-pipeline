@@ -8030,3 +8030,9 @@ a.out-chip:hover {
 .mk-beat .bs { color: var(--text-2); min-width: 0; }
 .mk-beat .bp { font-size: 10.5px; color: var(--success); white-space: nowrap; }
 .mk-beat .bp.none { color: var(--warn); }
+/* A beat nothing fits is an invitation, not an error — it reads as an action. */
+.mk-beat .bp.build {
+  color: var(--accent); cursor: pointer; border-bottom: 1px dashed var(--accent-deep);
+}
+.mk-beat .bp.build:hover { color: var(--accent-hi); }
+.mk-beat .bp.building { color: var(--info); }
