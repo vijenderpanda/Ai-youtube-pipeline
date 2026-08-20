@@ -43,13 +43,65 @@ def main():
     if orphan:
         problems.append(f"offered or renderable but NOT in registry.ts: {', '.join(orphan)}")
 
+    # The CLOSED VOCABULARIES drift too, and more quietly. registry.ts owns
+    # BeatKind and DataShape; the planner prompt and the build validator each
+    # carry a hand-copied list. When registry gains a shape (it gained "ledger"
+    # and "part-whole" within a day), the planner cannot emit it and the build
+    # action REJECTS it as invalid -- a valid beat refused by a stale copy.
+    #
+    # These are parsed from the SPECIFIC list, not searched for anywhere in the
+    # file: the first version of this check looked for the value anywhere in
+    # index.ts and passed happily while the validator was broken, because the
+    # same string also appears in a catalog entry.
+    reg_txt = REG.read_text()
+
+    def type_values(name):
+        m = re.search(rf"export type {name} =(.*?);", reg_txt, re.S)
+        return set(re.findall(r'\|\s*"([a-z0-9-]+)"', m.group(1))) if m else set()
+
+    edge_txt = EDGE.read_text()
+    worker_txt = (REPO / "scripts/factory_worker.py").read_text()
+
+    def edge_set(const_name):
+        m = re.search(rf"const {const_name} = new Set\(\[(.*?)\]\)", edge_txt, re.S)
+        return set(re.findall(r'"([a-z0-9-]+)"', m.group(1))) if m else None
+
+    # The prompt is built from ADJACENT Python string literals, so the option
+    # list spans several source lines with quotes and newlines between them.
+    # Reading only the first literal made this report eight valid shapes as
+    # missing. Slice from the field to the NEXT field and collect everything.
+    PROMPT_BOUNDS = {"needs": '"keywords"', "beat": '"shows"'}
+
+    def planner_set(field):
+        i = worker_txt.find(f'"{field}": ')
+        if i < 0:
+            return None
+        j = worker_txt.find(PROMPT_BOUNDS[field], i)
+        window = worker_txt[i:j if j > i else i + 900]
+        return set(re.findall(r'"([a-z0-9-]+)"', window))
+
+    for tname, edge_const, prompt_field in (("DataShape", "DATA_SHAPES", "needs"),
+                                            ("BeatKind", "BEAT_KINDS", "beat")):
+        want = type_values(tname)
+        if not want:
+            continue
+        for got, label in ((edge_set(edge_const), f"the edge validator ({edge_const})"),
+                           (planner_set(prompt_field), f"the planner prompt (\"{prompt_field}\")")):
+            if got is None:
+                problems.append(f"could not find {label} to check {tname} against")
+                continue
+            missing = sorted(want - got)
+            if missing:
+                problems.append(f"{tname} value(s) in registry.ts but missing from {label}: {', '.join(missing)}")
+
     print(f"registry {len(reg_s)} · render map {len(map_s)} · edge catalog {len(edge_s)}")
     if problems:
         print("\n✖ the cookbook's three lists disagree:\n")
         for p in problems:
             print("  " + p)
         print("\nA component missing from the edge catalog renders and ranks fine "
-              "but cannot be chosen by anyone.")
+              "but cannot be chosen by anyone; a vocabulary value missing from the "
+              "planner or the validator makes a legitimate beat unplannable.")
         sys.exit(1)
     print("✓ all three lists agree")
 

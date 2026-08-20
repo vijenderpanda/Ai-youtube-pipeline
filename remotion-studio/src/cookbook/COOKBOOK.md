@@ -148,15 +148,53 @@ Selection cheat-sheet by data shape:
 1. Copy the shape of an existing file; keep the three exports.
 2. Prefer a **novel** idea over a copy of an existing UI — the brief wants
    "wait, a card/button can be made like *this*?" invention.
-3. Add a row to the Catalog above, register a `<Name>Demo` in `Root.tsx`, **and
-   add a `registry.ts` entry** (role / beats / needs / keywords) so the planner
-   can select it.
+3. **Register it in FOUR places, or it is invisible.** This list has been wrong
+   twice, and both times a finished component sat unusable:
+
+   | # | file | miss it and… |
+   |---|------|--------------|
+   | 1 | `src/cookbook/<Name>.tsx` | nothing exists |
+   | 2 | `src/cookbook/components.tsx` — the id→component render map | a locked block renders a loud placeholder |
+   | 3 | `src/cookbook/registry.ts` — role / beats / needs / keywords | `pickCookbook` never proposes it |
+   | 4 | `supabase/functions/factory-api/index.ts` — `COOKBOOK_CATALOG` | **it ranks and renders perfectly and NOBODY CAN CHOOSE IT** |
+
+   Number 4 is the one that gets forgotten, because nothing fails: `OutroGlass`
+   was written to replace the flat PIL outro sting, and the flat sting kept
+   shipping for a day while OutroGlass sat there working. Also add a row to the
+   Catalog above and a `<Name>Demo` composition in `Root.tsx`.
+
+   **Verify, do not assume:**
+
+   ```bash
+   python3 scripts/check_cookbook_sync.py    # fails if the lists disagree
+   ```
+
 4. Render a still at a representative frame; confirm nothing clips at 1080×1920
    and the point lands inside the first 15s of a real beat.
+5. **Then look at it in MOTION.** A component that compiles, typechecks and
+   renders a clean still can still be dead on screen — the `_style` short was
+   frozen for 14 of its 39 seconds and passed every automated check. Use
+   `scripts/probe_frames.py` for a contact sheet and judge the motion, not the
+   frame.
 
-## Next (wiring — see the vision doc)
+## Wiring — DONE (Sprint 5, 2026-08)
 
-These are **inert demos** today (previewable, not yet selectable by the builder).
-The path from here: formalize the composition as a typed **block sequence** so a
-cookbook component is a block type with per-block config → the designer UI →
-`lock → produce_preview` adheres (extends the cast/template-version system).
+These are no longer inert demos. The full path exists: a composition is a typed
+**block sequence**, a cookbook component is a block type with per-block config,
+the designer UI edits a draft, and `lock → produce_preview` adheres to it.
+
+Since 2026-08-20 the loop also runs the other way. The planner emits a **beat
+skeleton** per idea (`beat` / `shows` / `needs` / `keywords`), Make ranks each
+beat through the same `pickCookbook` and shows which component would take it
+*before* the money gate, accepting an idea auto-composes those picks into a
+draft look, and a beat that nothing scores for offers **"build one"** — which
+queues a component-build job carrying that beat's intent.
+
+Two things that are still true and easy to trip over:
+
+- **`sequence_mode`.** `augment` (the default) appends the sequence as b-roll
+  AFTER the classic beats. `replace` makes the sequence *be* the short, and
+  `build_ep_v2` then derives the timeline 1:1 from each scene's VO `line` — so
+  `replace` is only honest once real script lines exist.
+- **`outro_source`.** The look's `outro_sting` frame and a sequence scene can
+  both supply an outro. Declare which wins, or you ship two.
