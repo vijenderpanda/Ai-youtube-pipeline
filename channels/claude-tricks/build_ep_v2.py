@@ -1924,6 +1924,13 @@ def run(cmd, **kw):
     print("+", " ".join(str(c) for c in cmd))
     subprocess.run(cmd, check=True, **kw)
 
+# The outro sting is rendered at the composition's native 1080x1920. When the
+# body is rendered at a scale factor the two no longer match and concat refuses
+# ("Input link parameters do not match"), so the card is scaled to the body.
+_OUTRO_W = int(1080 * float(os.environ.get("FACTORY_REMOTION_SCALE", 1)))
+_OUTRO_H = int(1920 * float(os.environ.get("FACTORY_REMOTION_SCALE", 1)))
+
+
 def outro_fc(pre, fst, ratio=None, gain_db=None):
     """Filtergraph for the outro concat (inputs: 0=mastered body, 1=outro card,
     2=music bed looped, 3=CTA wav — 3 only in the spoken-CTA variant).
@@ -1933,11 +1940,12 @@ def outro_fc(pre, fst, ratio=None, gain_db=None):
     master chain. Module-level so audition_outro_cta.py exercises the SAME
     graph the builder ships — a test harness with its own copy would drift."""
     if gain_db is None:
-        return ("[1:v]fps=30,format=yuv420p[ov];"
+        return (f"[1:v]fps=30,scale={_OUTRO_W}:{_OUTRO_H},format=yuv420p[ov];"
                 f"[2:a]{pre}volume=0.30,afade=t=out:st={fst}:d=1.2,apad[oa];"
                 "[0:v][0:a][ov][oa]concat=n=2:v=1:a=1[v][a]")
-    ov = (f"[1:v]setpts={ratio:.5f}*PTS,fps=30,format=yuv420p[ov];"
-          if ratio and ratio > 1.001 else "[1:v]fps=30,format=yuv420p[ov];")
+    ov = (f"[1:v]setpts={ratio:.5f}*PTS,fps=30,scale={_OUTRO_W}:{_OUTRO_H},format=yuv420p[ov];"
+          if ratio and ratio > 1.001 else
+          f"[1:v]fps=30,scale={_OUTRO_W}:{_OUTRO_H},format=yuv420p[ov];")
     return (ov +
             f"[2:a]{pre}volume=0.30,afade=t=out:st={fst}:d=1.2[bed];"
             "[3:a]aformat=channel_layouts=stereo,"
@@ -3262,6 +3270,17 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         rflags.append(f"--concurrency={os.environ['FACTORY_REMOTION_CONCURRENCY']}")
     if os.environ.get("FACTORY_REMOTION_HWACCEL"):
         rflags.append(f"--hardware-acceleration={os.environ['FACTORY_REMOTION_HWACCEL']}")
+    #   FACTORY_REMOTION_SCALE=2  -> render the 1080x1920 comp at 2160x3840.
+    #     Shorts play on phones, so the pixels are not the point: uploading above
+    #     1080p is what moves YouTube onto the VP9/AV1 ladder instead of
+    #     H.264-only, and this film is mostly aurora gradients and glass, which
+    #     is exactly the content that bands on a thin H.264 encode.
+    #   FACTORY_REMOTION_CRF=16   -> quality of the raw. The default master step
+    #     is -c:v copy, so whatever Remotion writes here IS the shipped video.
+    if os.environ.get("FACTORY_REMOTION_SCALE"):
+        rflags.append(f"--scale={os.environ['FACTORY_REMOTION_SCALE']}")
+    if os.environ.get("FACTORY_REMOTION_CRF"):
+        rflags.append(f"--crf={os.environ['FACTORY_REMOTION_CRF']}")
     run(["npx", "remotion", "render", resolve_locked("remotion_comp", "Short"), raw,
          f"--props={sp}", *rflags],
         cwd=os.path.join(REPO, "remotion-studio"))
