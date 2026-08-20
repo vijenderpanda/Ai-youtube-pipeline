@@ -150,26 +150,29 @@ function Ledger({ finalizeJob }) {
   // it says a gate rejected the cut — not which one, and never that one passed.
   const failed = finalizeJob && finalizeJob.status === 'failed'
   return (
-    <div className="piece-ledger">
+    <div className="piece-ledger gates">
+      {/* Stacked, not a three-column grid: this sits in the narrow right rail
+          and a real threshold string ("corr ≥ 0.85 · auto-cut above 45 ms") is
+          far too long to share a row with the label and the verdict. */}
       {GATE_LEDGER.map((g) => (
         <div key={g.k} className="lrow">
-          <span>{g.k}</span>
-          <span className="m">{g.t}</span>
-          <span className={'vd ' + (failed ? 'fail' : 'na')}>
-            {failed ? 'check' : 'not recorded'}
-          </span>
+          <div className="ltop">
+            <span className="lk">{g.k}</span>
+            <span className={'vd ' + (failed ? 'fail' : 'na')}>
+              {failed ? 'check' : 'not recorded'}
+            </span>
+          </div>
+          <div className="m">{g.t}</div>
+          <div className="lwhere">{g.where}</div>
         </div>
       ))}
-      <div className="dim small" style={{ marginTop: 9 }}>
+      <div className="dim small" style={{ marginTop: 10 }}>
         {failed
           ? 'Finalizing stopped on one of these — the numbers are in its log.'
-          : 'These run inside the pipeline, but no cut stores its numbers yet, ' +
-            'so this cannot tell you what THIS cut measured. Read them in the ' +
-            'build log until a cut records them.'}
+          : 'These run inside the pipeline, but nothing stores a number per cut, ' +
+            'so this cannot tell you what THIS cut measured — only what it was ' +
+            'measured against.'}
       </div>
-      {GATE_LEDGER.map((g) => (
-        <div key={g.k + '-w'} className="lwhere">{g.k} — {g.where}</div>
-      ))}
     </div>
   )
 }

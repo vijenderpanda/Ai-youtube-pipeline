@@ -7550,8 +7550,15 @@ a.out-chip:hover {
   display: grid; grid-template-columns: 1fr auto auto; gap: 11px; align-items: center;
   padding: 7px 0; border-bottom: 1px solid var(--border-soft); font-size: 12.5px;
 }
+/* The GATE ledger stacks instead: it shares .lrow with the money card above,
+   but a real threshold ("corr >= 0.85 - auto-cut above 45 ms") plus a verdict
+   cannot share one row in the narrow right rail. */
+.piece-ledger.gates .lrow { display: block; padding: 9px 0; }
+.piece-ledger.gates .ltop { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.piece-ledger.gates .lk { font-weight: 600; color: var(--text); }
 .piece-ledger .lrow:last-child { border-bottom: 0; }
 .piece-ledger .m { font-family: var(--mono); font-size: 11px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.piece-ledger.gates .m { margin-top: 3px; }
 .piece-ledger .vd { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; }
 .piece-ledger .vd.pass { color: var(--success); }
 .piece-ledger .vd.fail { color: var(--danger); }
@@ -7876,8 +7883,5 @@ a.out-chip:hover {
 /* Where each gate actually runs. The threshold alone reads as a promise that
    the app checked it; naming the stage and its skip condition is the honest
    version — lip-sync measures nothing when host clips are reused. */
-.piece-ledger .lwhere {
-  font-size: 10.5px; color: var(--faint); margin-top: 5px; line-height: 1.5;
-}
-.piece-ledger .lwhere:first-of-type { margin-top: 9px; }
+.piece-ledger.gates .lwhere { font-size: 10.5px; color: var(--faint); margin-top: 4px; line-height: 1.45; }
 .piece-ledger .vd.na { color: var(--faint); }
