@@ -7775,3 +7775,66 @@ a.out-chip:hover {
 }
 .score .nx b { color: var(--text); }
 .score .nx .loop { color: var(--text-3); font-size: 11px; margin-top: 6px; }
+
+/* ── MACHINES — the boxes, the budget, and what actually stops them ────── */
+.mach-budget {
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  background: var(--input-bg); border: 1px solid var(--border);
+  border-left: 3px solid var(--success); border-radius: var(--radius-sm);
+  padding: 14px 16px; margin-bottom: 14px;
+}
+.mach-budget.spent { border-left-color: var(--danger); }
+.mach-budget .amt {
+  font-family: 'Bricolage Grotesque', var(--font); font-weight: 800; font-size: 24px;
+  letter-spacing: -0.02em; margin-top: 4px;
+}
+.mach-budget .amt .sub {
+  font-family: var(--font); font-weight: 400; font-size: 12px; color: var(--text-3); letter-spacing: 0;
+}
+.mach-budget .note { margin-left: auto; max-width: 34ch; font-size: 12px; color: var(--text-3); text-align: right; }
+
+.mach-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (max-width: 820px) { .mach-grid { grid-template-columns: 1fr; } }
+.mach {
+  background: var(--input-bg); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 14px 15px;
+}
+.mach.asleep { opacity: 0.75; }
+.mach.paused { border-color: var(--warn); }
+.mach .top { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; }
+.mach .top .dot {
+  width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto;
+  background: var(--success); box-shadow: 0 0 8px var(--success);
+}
+.mach.asleep .top .dot { background: var(--text-3); box-shadow: none; }
+.mach.paused .top .dot { background: var(--warn); box-shadow: 0 0 8px var(--warn); }
+.mach .nm { font-family: var(--mono); font-size: 13px; font-weight: 600; }
+.mach .top .sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.mach .state {
+  margin-left: auto; font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
+  color: var(--text-3); text-transform: uppercase;
+}
+.mach .stats {
+  display: flex; gap: 14px; flex-wrap: wrap; padding: 9px 0; margin-bottom: 6px;
+  border-bottom: 1px solid var(--border-soft); font-size: 11.5px; color: var(--text-3);
+}
+.mach .stats b { color: var(--text-2); font-family: var(--mono); }
+.mach .piece-foot { border-top: 1px solid var(--border-soft); }
+
+.mach-types { margin: 9px 0 2px; padding: 11px 12px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; }
+.mach-types .ty {
+  font-family: var(--mono); font-size: 10.5px; padding: 4px 9px; margin: 0 5px 5px 0;
+  border-radius: 999px; border: 1px solid var(--border-strong); background: transparent;
+  color: var(--text-3); cursor: pointer;
+}
+.mach-types .ty.on { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); font-weight: 600; }
+
+.mach-cause { display: grid; grid-template-columns: 52px 1fr; gap: 13px; align-items: start; padding: 11px 0; border-bottom: 1px solid var(--border-soft); }
+.mach-cause:last-child { border-bottom: 0; }
+.mach-cause .n {
+  font-family: 'Bricolage Grotesque', var(--font); font-weight: 800; font-size: 24px;
+  color: var(--text-3); text-align: right; line-height: 1.1;
+}
+.mach-cause .n.warn { color: var(--warn); }
+.mach-cause .h { font-size: 13px; font-weight: 650; margin-bottom: 3px; }
+.mach-cause .d { font-size: 12px; color: var(--text-3); }

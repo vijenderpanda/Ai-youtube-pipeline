@@ -108,6 +108,7 @@ const NAV_GROUPS = [
       { to: '/calendar', label: 'Plan', icon: 'calendar' },
       { to: '/looks', label: 'Looks', icon: 'renders' },
       { to: '/scoreboard', label: 'Scoreboard', icon: 'analytics' },
+      { to: '/machines', label: 'Machines', icon: 'workers' },
     ],
   },
 ]

@@ -23,6 +23,7 @@ import Make from './pages/Make'
 import Today from './pages/Today'
 import Looks from './pages/Looks'
 import Scoreboard from './pages/Scoreboard'
+import Machines from './pages/Machines'
 import TemplateLibrary from './pages/TemplateLibrary'
 import TemplateDetail from './pages/TemplateDetail'
 import Assets from './pages/Assets'
@@ -103,6 +104,9 @@ export default function App() {
           <Route path="/looks/:templateKey" element={<Looks />} />
           {/* One Desk · Scoreboard — the verdict, once the clock allows one. */}
           <Route path="/scoreboard" element={<Scoreboard />} />
+          {/* One Desk · Machines — the boxes, the shared AI budget, and
+              the two things that actually stop them. */}
+          <Route path="/machines" element={<Machines />} />
           <Route path="/channels" element={<Channels />} />
           <Route path="/channels/new" element={<ChannelWizard />} />
           <Route path="/channels/:channelKey" element={<ChannelDetail />} />
