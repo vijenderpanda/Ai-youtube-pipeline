@@ -1,7 +1,7 @@
 {
  "_note": "Metadata mirror for finalize_episode.py (title/tags/lines only). FULL render config lives in EPISODES_V2['_wheel'] in build_ep_v2.py, which shadows this JSON for RENDERING — but finalize reads THIS file for the YouTube title/description/tags. Franchise entry #3 — the Spin-The-Wheel dinner picker.",
  "title": "I Built A Dinner Decider By Typing One Line 🎰",
- "tags": "claude artifacts,build app with ai,no code,claude ai,ai for beginners,vibe coding,spin the wheel,ai tools,ai tips",
+ "tags": "claude artifacts,dinner decider,what to eat,spin the wheel,decision wheel,build app with ai,no code,claude ai,ai for beginners,vibe coding,ai tools,ai tips",
  "lines": [
   "I typed one line — and Claude built me this.",
   "Can't decide what to eat? Empty chat, one sentence, a real app.",
@@ -10,5 +10,6 @@
   "I tap SPIN, and it actually spins. Real animation, not a picture.",
   "Biryani it is. Dinner decided — by an app that didn't exist a minute ago.",
   "One line of plain English — and you've got a real app you can use."
- ]
+ ],
+ "desc_cta": "What would your dinner wheel land on tonight? Drop it in the comments."
 }

@@ -121,7 +121,7 @@ EPISODES_V2 = {
   # (22.9%, mid-typical), which is the measured ceiling. Every beat below is real tape.
   "_wheel": {
     "title": "I Built A Dinner Decider By Typing One Line 🎰",
-    "tags": "claude artifacts,build app with ai,no code,claude ai,ai for beginners,vibe coding,spin the wheel,ai tools,ai tips",
+    "tags": "claude artifacts,dinner decider,what to eat,spin the wheel,decision wheel,build app with ai,no code,claude ai,ai for beginners,vibe coding,ai tools,ai tips",
     # VJ 2026-08-19: "for hook start with spin wheel not static". `until` is now
     # only long enough to own frame 0 (the feed thumbnail keeps the burned claim);
     # by 0.3s we are on the SpinWheel, already mid-spin.
