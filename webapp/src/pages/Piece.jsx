@@ -372,7 +372,17 @@ export default function Piece() {
               Current cut {cutName && <span className="dim small">· {cutName}</span>}
             </span>
             {previewSrc ? (
-              <video className="piece-player" controls preload="metadata" src={previewSrc} />
+              <>
+                <video className="piece-player" controls preload="metadata" src={previewSrc} />
+                {/* The preview is deliberately the RAW cut: build_ep_v2 --preview stops
+                    after Remotion and skips the master chain, end card and outro concat.
+                    Say so — otherwise this reads as a finished video that lost its music. */}
+                <div className="piece-rawnote">
+                  <b>This is the raw cut</b> — judge the story, the pacing and the visuals here.
+                  The <b>music bed</b>, <b>outro sting</b>, end card and the <b>−14 LUFS master</b> are
+                  added when you schedule it, and the gates above are measured on that finished file.
+                </div>
+              </>
             ) : (
               <div className="dim small">The cut isn’t on disk yet.</div>
             )}

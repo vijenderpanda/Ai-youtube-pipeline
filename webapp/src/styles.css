@@ -7560,3 +7560,13 @@ a.out-chip:hover {
 .warn-chip { color: var(--warn); border-color: var(--warn); background: var(--warn-soft); }
 .ok-chip { color: var(--ok); border-color: var(--ok); background: var(--ok-soft); }
 .warn-txt { color: var(--warn); }
+/* The preview is the RAW cut — the polish (music, outro, master) lands at
+   finalize. Saying so is the difference between "reviewing the story" and
+   "wondering where the music went". */
+.piece-rawnote {
+  margin-top: 11px; padding: 10px 12px; font-size: 12px; line-height: 1.55;
+  color: var(--text-2); background: var(--panel-2);
+  border: 1px solid var(--border); border-left: 2px solid var(--accent);
+  border-radius: 8px;
+}
+.piece-rawnote b { color: var(--text); font-weight: 650; }
