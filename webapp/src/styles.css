@@ -7965,3 +7965,14 @@ a.out-chip:hover {
 }
 .plan-new .pn-f textarea { resize: vertical; line-height: 1.5; }
 .plan-new .pn-acts { display: flex; justify-content: flex-end; gap: 9px; margin-top: 4px; }
+
+/* Which machine runs a job. Sits in the gate footer beside the primary, so it
+   reads as part of the decision rather than a setting hidden somewhere else. */
+.piece-machine { display: flex; flex-direction: column; gap: 4px; margin-right: 4px; }
+.piece-machine label { display: flex; flex-direction: column; gap: 5px; }
+.piece-machine select {
+  background: var(--input-bg); border: 1px solid var(--border); color: var(--text);
+  border-radius: var(--r-sm); padding: 7px 9px; font-size: 12.5px; font-family: inherit; min-width: 190px;
+}
+.piece-machine select:disabled { opacity: 0.5; }
+.piece-machine .pm-note { font-size: 10.5px; color: var(--warn); max-width: 250px; line-height: 1.45; }

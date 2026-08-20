@@ -145,6 +145,50 @@ const GATE_LEDGER = [
   },
 ]
 
+/* ── which machine runs it ─────────────────────────────────────────────────
+   The ask was "select workers, single or double or mix of them, separated by
+   jobs". The honest answer, from reading the pipeline: a produce is exactly ONE
+   factory_jobs row (index.ts produce_preview) and that one job's `claude -p`
+   session does the planning, the host clips, the VO and the Remotion render
+   in-process (build_ep_v2.py). There is nothing inside it to hand to a second
+   machine. What IS separable is the produce and the upload — two jobs, two
+   machines if you want. So this offers exactly that, and says so rather than
+   implying a per-beat routing that does not exist.
+
+   A pin is an override, not a preference: the claim RPC treats a pinned job as
+   always eligible and lets it past the machine's own accept_types
+   (013_workers.sql:80-92). So a machine set to take only scripts will still run
+   a produce you aim at it — which is worth knowing before you aim one. */
+function MachinePicker({ workers, value, onChange, disabled, what }) {
+  const chosen = workers.find((w) => (w.worker_id || w.name) === value)
+  const limited = chosen && Array.isArray(chosen.accept_types) && chosen.accept_types.length
+  const asleep = chosen && chosen.last_seen && Date.now() - new Date(chosen.last_seen).getTime() > 15 * 60 * 1000
+  return (
+    <div className="piece-machine">
+      <label>
+        <span className="pc-eyebrow" style={{ margin: 0 }}>Run {what} on</span>
+        <select value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled}>
+          <option value="">Any free machine</option>
+          {workers.map((w) => {
+            const id = w.worker_id || w.name
+            return (
+              <option key={id} value={id} disabled={w.paused}>
+                {w.name}{w.gpu ? ' · GPU' : ''}{w.paused ? ' (paused)' : ''}
+              </option>
+            )
+          })}
+        </select>
+      </label>
+      {chosen && (asleep || limited) && (
+        <div className="pm-note">
+          {asleep && <>It is asleep — the job waits until it checks in. </>}
+          {limited && <>It is set to take only some kinds of work; aiming a job at it overrides that.</>}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function Ledger({ finalizeJob }) {
   // A failed finalize is the only per-cut evidence that reaches this page, and
   // it says a gate rejected the cut — not which one, and never that one passed.
@@ -218,6 +262,10 @@ export default function Piece() {
   const [busy, setBusy] = useState('')
   const [schedule, setSchedule] = useState('')
   const [cutApproved, setCutApproved] = useState(false)
+  // Which machine runs the produce, and which runs the upload. They are separate
+  // because they are genuinely separate jobs — see the note by the picker.
+  const [produceOn, setProduceOn] = useState('')
+  const [uploadOn, setUploadOn] = useState('')
 
   const boardQ = usePoll(
     () => api.get(`?r=episode_assets&calendar_id=${encodeURIComponent(calendarId)}`),
@@ -225,6 +273,7 @@ export default function Piece() {
     [calendarId]
   )
   const chansQ = usePoll(() => api.get('?r=channels'), 0)
+  const workersQ = usePoll(() => api.get('?r=workers'), 30000)
 
   const item = boardQ.data && boardQ.data.item
   const assets = (boardQ.data && boardQ.data.assets) || []
@@ -232,6 +281,7 @@ export default function Piece() {
   const manifest = (boardQ.data && boardQ.data.manifest) || null
 
   const channels = (chansQ.data && chansQ.data.channels) || []
+  const workers = (workersQ.data && workersQ.data.workers) || []
   const chan = channels.find((c) => c.key === (item && item.channel_key))
   const tplKey = chan && chan.template ? chan.template : null
 
@@ -298,7 +348,7 @@ export default function Piece() {
     if (busy) return
     setBusy('produce')
     try {
-      await api.post({ action: 'produce_preview', calendar_id: calendarId })
+      await api.post({ action: 'produce_preview', calendar_id: calendarId, target_worker: produceOn || undefined })
       show('Producing — this page will show it being made', 'ok')
       boardQ.refresh()
     } catch (e) {
@@ -312,7 +362,12 @@ export default function Piece() {
     if (!schedule) return show('Pick a publish time first', 'error')
     setBusy('schedule')
     try {
-      await api.post({ action: 'finalize_episode', calendar_id: calendarId, schedule: new Date(schedule).toISOString() })
+      await api.post({
+        action: 'finalize_episode',
+        calendar_id: calendarId,
+        schedule: new Date(schedule).toISOString(),
+        target_worker: uploadOn || undefined,
+      })
       show('Scheduling — finishing the final cut and setting the YouTube time', 'ok')
       boardQ.refresh()
     } catch (e) {
@@ -328,15 +383,29 @@ export default function Piece() {
   const titleLen = title.length
 
   // What this produce will use — CATEGORIES, never invented dollars.
+  //
+  // This used to read host purely from `blocks`, which is EMPTY on the classic
+  // path (a look that locks frames but no designed scene list). So on the very
+  // gate the design designates as the money gate, the two most expensive things
+  // a default produce buys went unlisted: build_ep_v2 renders a host clip per
+  // host beat and tags it paid (build_ep_v2.py:2237), and the spoken outro is
+  // paid too (build_ep_v2.py:2264). The cast the look locks is what proves they
+  // are coming, so read that when there are no blocks.
   const spend = useMemo(() => {
     const out = []
-    const hasHost = blocks.some((b) => b.block_type === 'host' || ((b.config || {}).host && ((b.config || {}).host.id || (b.config || {}).host.label)))
+    const comp = (boundVersion && boundVersion.composition) || {}
+    const settings = comp._settings || {}
+    const hasHost =
+      blocks.some((b) => b.block_type === 'host' || ((b.config || {}).host && ((b.config || {}).host.id || (b.config || {}).host.label))) ||
+      !!comp.host_outfit
+    const outroSpoken = String(settings.outro_cta || '') && String(settings.outro_cta) !== 'off'
     const freeScenes = blocks.filter((b) => ((b.config || {}).cookbook || (b.config || {}).broll || {}).id).length
     out.push({ label: 'Voice track', cost: 'paid', detail: 'ElevenLabs' })
-    if (hasHost) out.push({ label: 'Host clips', cost: 'paid', detail: 'HeyGen' })
+    if (hasHost) out.push({ label: 'Host clips', cost: 'paid', detail: 'HeyGen · one per host beat' })
+    if (outroSpoken) out.push({ label: 'Spoken outro', cost: 'paid', detail: 'the host reads the end card' })
     if (freeScenes) out.push({ label: `${freeScenes} scene${freeScenes === 1 ? '' : 's'}`, cost: 'free', detail: 'rendered locally' })
     return out
-  }, [blocks])
+  }, [blocks, boundVersion])
 
   const elapsed =
     produceJob && produceJob.started_at ? Date.now() - new Date(produceJob.started_at).getTime() : null
@@ -553,10 +622,17 @@ export default function Piece() {
       <div className="piece-foot">
         {gate === 'plan' && (
           <>
+            <MachinePicker
+              workers={workers} value={produceOn} onChange={setProduceOn}
+              disabled={!!busy} what="the produce"
+            />
             <button className="btn btn-primary" onClick={doProduce} disabled={!!busy}>
               {busy === 'produce' ? 'Starting…' : 'Approve plan & produce →'}
             </button>
-            <span className="piece-why">This is the only screen that spends money.</span>
+            <span className="piece-why">
+              This is the only screen that spends money. The whole produce runs as one job on
+              one machine — the upload is the separate one you can put elsewhere.
+            </span>
           </>
         )}
         {gate === 'produce' && (
@@ -579,6 +655,10 @@ export default function Piece() {
         )}
         {gate === 'schedule' && (
           <>
+            <MachinePicker
+              workers={workers} value={uploadOn} onChange={setUploadOn}
+              disabled={!!busy} what="the upload"
+            />
             <button
               className="btn btn-primary"
               onClick={doSchedule}

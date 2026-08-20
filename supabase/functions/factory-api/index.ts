@@ -52,6 +52,15 @@ const CALENDAR_KINDS = ["content", "factory"];
 // v6: cheap uuid shape check so bad ids get a 400 instead of a pg error
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const GENERATABLE: Record<string, string[]> = { outro_card_gen: ["q", "pill"] };
+
+/* Pin a job to one machine. The claim RPC treats a pinned job as ALWAYS eligible
+   and lets it override the worker's own accept_types (013_workers.sql:80-92), so
+   a pin is a deliberate override, not a hint -- the UI has to say so. Returns
+   undefined for "any free machine". */
+function pinnedWorker(v: unknown): string | undefined {
+  const s = String(v ?? "").trim();
+  return s ? s : undefined;
+}
 // v19: ?r=suggestions reads this many candidate rows before the evidence guard
 // runs, so `limit` counts suggestions that actually SHIP, not rows dropped for
 // having no citations. Comfortably above the live standalone-suggestion count.
@@ -2311,6 +2320,10 @@ async function handlePost(body: any): Promise<Response> {
           effort: item.effort,
           ultracode: item.ultracode,
           status: "queued",
+          // The run that actually spends money and takes ~25 minutes could not be
+          // aimed at a machine, while idea-generation could. The column and the
+          // claim RPC have supported it since 013_workers.sql.
+          target_worker: pinnedWorker(body.target_worker),
           meta: { calendar_id: item.id, ep, template_version_id: activeVersionId, auto_mode },
         })
         .select().single();
@@ -2416,6 +2429,10 @@ async function handlePost(body: any): Promise<Response> {
           type: "shell_script",
           title: "Finalize & arm — " + item.title,
           status: "queued",
+          // The upload is the one genuinely separate job in a piece's life, so
+          // it is the one thing that can run on a different machine than the
+          // produce did.
+          target_worker: pinnedWorker(body.target_worker),
           meta: {
             calendar_id,
             ep,
