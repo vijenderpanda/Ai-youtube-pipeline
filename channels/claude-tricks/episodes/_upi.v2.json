@@ -1,0 +1,17 @@
+{
+  "_note": "Metadata mirror for finalize_episode.py (title/tags/lines only). FULL render config lives in EPISODES_V2['_upi'] in build_ep_v2.py, which shadows this JSON for RENDERING. THIS FILE IS NOT OPTIONAL — the arm gate diffs title/tags/lines against the registry and aborts on drift. Numbers come from assets/ep_upi/locked_numbers.json; change there first.",
+  "title": "I Audited My UPI Spending By Typing One Line 💸",
+  "tags": "upi,upi spending,phonepe,gpay,blinkit,expense tracker,where my money went,claude ai,ai for beginners,screenshot,money saving india,spending tracker,ai tips",
+  "lines": [
+    "Screenshots of my UPI history.",
+    "One line in Claude. Nothing connected.",
+    "It read every row I'd forgotten.",
+    "It only saw the pictures. And threw out the doubles.",
+    "Here's what it sent back. Grouped by where it went.",
+    "One supermarket trip: five thousand nine hundred.",
+    "Six quick taps cost more. Six thousand and sixty nine.",
+    "More than a quarter of what I spent. Nobody spends money badly - we just never add it up."
+  ],
+  "desc_cta": "Screenshot your own month and ask the same line. Which app eats your money? Tell me below.",
+  "desc_prompt": "📋 THE EXACT LINE I TYPED (copy it):\n\nMy UPI history - the shots overlap so count each payment once, group by category, keep people as one line with no names, and tell me which app took the most."
+}
