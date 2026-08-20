@@ -198,6 +198,11 @@ export default function Piece() {
   const rawGate = gateFor(item, counts, producing)
   const hasCut = !!(item && item.preview_path)
   const blocked = (counts.failed || 0) > 0
+  // Scheduling derives the episode key from this piece's produce run, so a cut
+  // that was made OUTSIDE the app (built locally, then synced) has a playable
+  // preview but nothing to finalize from. Know that BEFORE offering the button:
+  // an irreversible action that can only fail is worse than no button at all.
+  const canSchedule = !!(produceJob && produceJob.meta && produceJob.meta.ep)
   // REVIEW is a HUMAN gate, in both directions:
   //  · the backend auto-approves the assets a direct produce pushes, so a piece
   //    that reads as "ready to arm" is still held here until the cut is approved;
@@ -410,12 +415,30 @@ export default function Piece() {
             </label>
           </section>
           <section className="pc-card">
-            <span className="pc-eyebrow">How it will be judged</span>
-            <div className="piece-kv"><span>Clock</span><b>Shorts · 7 days</b></div>
-            <div className="piece-kv"><span>No verdict</span><b>before day 3</b></div>
-            <div className="dim small" style={{ marginTop: 10 }}>
-              Setting the expectation now is what stops a day-zero panic later.
-            </div>
+            {canSchedule ? (
+              <>
+                <span className="pc-eyebrow">How it will be judged</span>
+                <div className="piece-kv"><span>Clock</span><b>Shorts · 7 days</b></div>
+                <div className="piece-kv"><span>No verdict</span><b>before day 3</b></div>
+                <div className="dim small" style={{ marginTop: 10 }}>
+                  Setting the expectation now is what stops a day-zero panic later.
+                </div>
+              </>
+            ) : (
+              <>
+                <span className="pc-eyebrow">Can’t schedule this one from here</span>
+                <p style={{ margin: '0 0 10px', fontSize: 13, color: 'var(--text-2)' }}>
+                  This cut was made <b>outside the app</b> — it was built locally and synced in, so there’s
+                  no produce run on record. Scheduling needs that run to know which episode it’s finishing.
+                </p>
+                <div className="piece-kv"><span>Cut</span><b>on disk ✓</b></div>
+                <div className="piece-kv"><span>Produce run</span><b className="warn-txt">not recorded</b></div>
+                <div className="dim small" style={{ marginTop: 10 }}>
+                  Two honest ways forward: produce it here (that records the run — and spends), or arm it
+                  the way it was built, with <span className="mono">finalize_episode.py</span>.
+                </div>
+              </>
+            )}
           </section>
         </div>
       )}
@@ -463,11 +486,20 @@ export default function Piece() {
         )}
         {gate === 'schedule' && (
           <>
-            <button className="btn btn-primary" onClick={doSchedule} disabled={!!busy || !schedule}>
+            <button
+              className="btn btn-primary"
+              onClick={doSchedule}
+              disabled={!!busy || !schedule || !canSchedule}
+              title={canSchedule ? undefined : 'This cut has no produce run on record'}
+            >
               {busy === 'schedule' ? 'Scheduling…' : 'Upload to YouTube →'}
             </button>
             <button className="btn btn-ghost" onClick={() => setCutApproved(false)}>Back to the cut</button>
-            <span className="piece-why">The only irreversible action in the product.</span>
+            <span className="piece-why">
+              {canSchedule
+                ? 'The only irreversible action in the product.'
+                : 'Nothing to upload from — this cut was built outside the app.'}
+            </span>
           </>
         )}
         {finalizeJob && finalizeJob.status === 'failed' && (
