@@ -19,6 +19,7 @@ import Workers from './pages/Workers'
 import Studio from './pages/Studio'
 import StudioBoard from './pages/StudioBoard'
 import Piece from './pages/Piece'
+import Make from './pages/Make'
 import TemplateLibrary from './pages/TemplateLibrary'
 import TemplateDetail from './pages/TemplateDetail'
 import Assets from './pages/Assets'
@@ -80,6 +81,9 @@ export default function App() {
           {/* One Desk slice 1 — the piece's own page, beside the old board
               while it's proven on real production. */}
           <Route path="/piece/:calendarId" element={<Piece />} />
+          {/* One Desk · Make — the on-demand proposer (no overnight daemon). */}
+          <Route path="/make" element={<Make />} />
+          <Route path="/make/:channelKey" element={<Make />} />
           <Route path="/channels" element={<Channels />} />
           <Route path="/channels/new" element={<ChannelWizard />} />
           <Route path="/channels/:channelKey" element={<ChannelDetail />} />

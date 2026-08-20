@@ -3348,6 +3348,14 @@ async function handlePost(body: any): Promise<Response> {
     case "plan_content": {
       const { channel_key } = body;
       if (!channel_key) return json({ error: "channel_key required" }, 400);
+      // One Desk · Make: the owner can paste numbers straight out of YouTube
+      // Studio before asking for ideas. The app's own analytics lag ~48h and a
+      // 1-3 day old Short has no API data at all, so this paste is the FRESHEST
+      // source there is — it rides in job.meta and the prompt says to trust it
+      // over the stored context. `target_worker` pins the run to one machine.
+      const fresh_numbers = typeof body.fresh_numbers === "string"
+        ? body.fresh_numbers.slice(0, 4000).trim() : "";
+      const target_worker = body.target_worker ? String(body.target_worker) : null;
       const { data: live, error: lErr } = await db.from("factory_jobs")
         .select("id, status").eq("type", "plan_content").eq("channel_key", channel_key)
         .in("status", ["queued", "running"]).limit(1);
@@ -3360,6 +3368,8 @@ async function handlePost(body: any): Promise<Response> {
           channel_key, type: "plan_content",
           model: "sonnet", effort: "medium",
           title: "Content ideas: " + channel_key, status: "queued",
+          meta: fresh_numbers ? { fresh_numbers } : {},
+          ...(target_worker ? { target_worker } : {}),
         })
         .select().single();
       if (error) return json({ error: error.message }, 500);

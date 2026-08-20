@@ -1598,7 +1598,23 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
         # v17: the channel-page "Plan content" idea engine. Ranked list across 4
         # signals (analytics / Vaibhav-DNA / recent news / upcoming events). Each
         # idea carries a production-ready brief so the user can pick -> produce_channel.
+        #
+        # One Desk · Make: the owner may PASTE fresh rows out of YouTube Studio
+        # before asking. That paste outranks everything else in the context file:
+        # the Analytics API finalizes with ~48h lag and a 1-3 day old Short has no
+        # rows at all, so the stored numbers can be flatly wrong about exactly the
+        # videos the next idea should learn from.
+        fresh = str((job.get("meta") or {}).get("fresh_numbers") or "").strip()
+        fresh_block = (
+            "FRESH NUMBERS, PASTED BY THE OWNER MINUTES AGO -- this is the newest and most\n"
+            "trustworthy source you have. It OUTRANKS the stats in the context file and the\n"
+            "Analytics API (both lag ~48h; the newest Shorts have no API rows at all). Read it\n"
+            "as ground truth for the videos it names, and SAY in why_viral when an idea is\n"
+            "driven by it:\n"
+            f"<<<PASTED\n{fresh}\nPASTED\n\n"
+        ) if fresh else ""
         body = (
+            fresh_block +
             f"You are the content strategist for the AI Unpacked channel ('{key}': a premium "
             "AI-tips Short channel for GENERAL beginners; synthetic host Sol, magenta).\n"
             f"Read {ctx_path or '(context file missing)'} (guidelines, last-30d stats, recent "

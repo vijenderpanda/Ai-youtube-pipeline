@@ -7570,3 +7570,55 @@ a.out-chip:hover {
   border-radius: 8px;
 }
 .piece-rawnote b { color: var(--text); font-weight: 650; }
+
+/* ── MAKE — the on-demand proposer ─────────────────────────────────────── */
+.make-paste {
+  width: 100%; min-height: 92px; resize: vertical;
+  background: var(--panel-2); border: 1px solid var(--border-strong); border-radius: 8px;
+  padding: 10px 12px; color: var(--text-2);
+  font-family: var(--mono); font-size: 11px; line-height: 1.65;
+}
+.make-paste:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.make-parsed { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+.make-parsed .lb { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em; color: var(--ok); }
+.make-select {
+  background: var(--panel-2); border: 1px solid var(--border-strong); border-radius: 7px;
+  color: var(--text); font: inherit; font-size: 12.5px; padding: 5px 9px;
+}
+.make-reading { display: flex; flex-direction: column; gap: 7px; }
+.make-reading .rl { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--text-2); }
+.make-reading .sp {
+  width: 12px; height: 12px; flex: 0 0 auto; border-radius: 50%;
+  border: 2px solid var(--border-strong); border-top-color: var(--accent);
+  animation: make-spin 0.7s linear infinite;
+}
+@keyframes make-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .make-reading .sp { animation: none; } }
+
+.make-idea {
+  display: block; width: 100%; text-align: left; cursor: pointer; position: relative;
+  background: var(--input-bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 14px 15px; color: inherit; font: inherit;
+}
+.make-idea:hover { border-color: var(--border-strong); }
+.make-idea[aria-selected='true'] {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, var(--accent-soft), transparent), var(--input-bg);
+}
+.make-idea .rk {
+  position: absolute; top: 14px; right: 15px;
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em; color: var(--text-3);
+}
+.make-idea .ttl {
+  font-family: 'Bricolage Grotesque', var(--font); font-weight: 700; font-size: 16px;
+  letter-spacing: -0.012em; margin: 0 78px 3px 0; text-wrap: balance;
+}
+.make-idea .hk { font-size: 12.5px; color: var(--text-2); font-style: italic; margin-bottom: 9px; }
+.make-idea .why {
+  display: flex; gap: 9px; align-items: flex-start; font-size: 12.5px; color: var(--text-2);
+  border-top: 1px solid var(--border-soft); padding-top: 9px;
+}
+.make-idea .why .lb {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.12em; color: var(--accent);
+  flex: 0 0 auto; padding-top: 2px;
+}
