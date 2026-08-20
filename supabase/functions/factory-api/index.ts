@@ -113,6 +113,15 @@ const COOKBOOK_CATALOG: { id: string; label: string; role: string; needs: string
   { id: "HoloCard", label: "Holographic hero card", role: "layout", needs: "facts" },
   { id: "GlassPanel", label: "Liquid-glass stat panel", role: "device-ui", needs: "single-number" },
   { id: "MorphField", label: "Button → field → confirm", role: "interaction", needs: "steps" },
+  // 2026-08-20: these five existed in registry.ts AND in the render map, but not
+  // here -- so the designer could not offer them and OutroGlass, written to
+  // replace the flat PIL sting, was unofferable. That is the same three-way
+  // drift as before, re-opened. scripts/check_cookbook_sync.py now fails on it.
+  { id: "GenerativeUI", label: "Prompt in, components land", role: "app-ui", needs: "steps" },
+  { id: "ScreenStage", label: "Staged screen recording", role: "layout", needs: "steps" },
+  { id: "OutroGlass", label: "Glass question-CTA outro", role: "layout", needs: "phrase" },
+  { id: "ReactionMeter", label: "Reaction time (measured)", role: "dataviz", needs: "value" },
+  { id: "SpinWheel", label: "Decision wheel (spins)", role: "interaction", needs: "options" },
 ];
 const COOKBOOK_IDS = new Set(COOKBOOK_CATALOG.map((c) => c.id));
 // The 6 spatial layout ids (remotion-studio/src/layouts.ts) a slot/spatial block

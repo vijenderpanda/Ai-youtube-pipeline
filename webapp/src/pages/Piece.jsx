@@ -274,6 +274,9 @@ export default function Piece() {
   )
   const chansQ = usePoll(() => api.get('?r=channels'), 0)
   const workersQ = usePoll(() => api.get('?r=workers'), 30000)
+  // which look the CHANNEL publishes through, so a piece pinned to an older one
+  // can say so instead of silently running it
+  const tplQ = usePoll(() => api.get('?r=templates'), 0)
 
   const item = boardQ.data && boardQ.data.item
   const assets = (boardQ.data && boardQ.data.assets) || []
@@ -296,6 +299,15 @@ export default function Piece() {
   const allBlocks = (tvQ.data && tvQ.data.blocks) || []
   const boundId = (item && item.template_version_id) || null
   const boundVersion = versions.find((v) => v.id === boundId) || null
+  const lockedVersions = useMemo(
+    () => versions.filter((v) => v.status === 'locked').sort((a, b) => (b.version || 0) - (a.version || 0)),
+    [versions]
+  )
+  const activeVersionId = useMemo(() => {
+    const rows = (tplQ.data && (tplQ.data.templates || tplQ.data.items)) || []
+    const row = rows.find((t) => t.key === tplKey)
+    return (row && row.active_version_id) || null
+  }, [tplQ.data, tplKey])
   const blocks = useMemo(() => {
     if (!boundId) return []
     const rows = allBlocks.filter((b) => b.template_version_id === boundId)
@@ -344,6 +356,23 @@ export default function Piece() {
   }, [item, schedule])
 
   /* ── actions ───────────────────────────────────────────────────────── */
+  const setLook = async (versionId) => {
+    if (busy) return
+    setBusy('look')
+    try {
+      const r = await api.post({
+        action: 'set_calendar_template_version',
+        calendar_id: calendarId,
+        template_version_id: versionId || null,
+      })
+      if (r && r.error) show(r.error, 'error')
+      else { show('Look changed — this piece will produce through it', 'ok'); boardQ.refresh() }
+    } catch (e) {
+      show(e.message, 'error')
+    }
+    setBusy('')
+  }
+
   const doProduce = async () => {
     if (busy) return
     setBusy('produce')
@@ -476,7 +505,41 @@ export default function Piece() {
 
           <section className="pc-card">
             <span className="pc-eyebrow">Checked before it burns</span>
-            <div className="piece-kv"><span>Look</span><b>{boundVersion ? `v${boundVersion.version}${boundVersion.label ? ' · ' + boundVersion.label : ''}` : 'channel default'}</b></div>
+            {/* The look is CHANGEABLE until the piece produces. It gets pinned by
+                produce_preview, so a run that was started and cancelled leaves the
+                piece on whatever was active then -- publish a new look afterwards
+                and this page would keep quietly running the old one with no way to
+                say otherwise. set_calendar_template_version has existed since the
+                old drawer and simply had no caller here. Locked versions only:
+                a draft is still being edited and must never drive a render. */}
+            <div className="piece-kv">
+              <span>Look</span>
+              <b>
+                {gate === 'plan' && lockedVersions.length ? (
+                  <select
+                    className="make-select"
+                    value={boundId || ''}
+                    disabled={!!busy}
+                    onChange={(e) => setLook(e.target.value)}
+                  >
+                    {!boundId && <option value="">channel default</option>}
+                    {lockedVersions.map((v) => (
+                      <option key={v.id} value={v.id}>
+                        v{v.version}{v.label ? ' · ' + v.label : ''}{v.id === activeVersionId ? ' (channel default)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  boundVersion ? `v${boundVersion.version}${boundVersion.label ? ' · ' + boundVersion.label : ''}` : 'channel default'
+                )}
+              </b>
+            </div>
+            {gate === 'plan' && activeVersionId && boundId && boundId !== activeVersionId && (
+              <div className="dim small" style={{ margin: '2px 0 8px' }}>
+                This piece is pinned to an older look — the channel now publishes through{' '}
+                <b>v{(versions.find((v) => v.id === activeVersionId) || {}).version}</b>.
+              </div>
+            )}
             <div className="piece-kv"><span>Scenes</span><b>{blocks.length || '—'}</b></div>
             <div className="piece-kv"><span>Title length</span><b>{titleLen} chars</b></div>
             <div className="piece-kv"><span>Slot</span><b>{item.planned_date || 'unscheduled'}</b></div>
