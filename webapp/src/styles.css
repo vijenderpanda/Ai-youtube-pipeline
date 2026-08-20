@@ -8010,3 +8010,23 @@ a.out-chip:hover {
    numbers — it is there to prove the video exists, not to be read for a verdict. */
 .score.pending { opacity: 0.82; }
 .score.pending .word { color: var(--text-2); }
+
+/* The planned shot list under an idea, with the library's answer per beat.
+   Shown before the money gate: the point of a component library is that you can
+   see what it will put on screen before you pay to render it. */
+.mk-beats { margin-top: 11px; border-top: 1px solid var(--border-soft); padding-top: 9px; }
+.mk-beats .lb {
+  display: block; font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+  color: var(--text-3); margin-bottom: 7px;
+}
+.mk-beat {
+  display: grid; grid-template-columns: 74px 1fr auto; gap: 9px; align-items: baseline;
+  padding: 3px 0; font-size: 11.5px;
+}
+.mk-beat .bk {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--faint);
+}
+.mk-beat .bs { color: var(--text-2); min-width: 0; }
+.mk-beat .bp { font-size: 10.5px; color: var(--success); white-space: nowrap; }
+.mk-beat .bp.none { color: var(--warn); }

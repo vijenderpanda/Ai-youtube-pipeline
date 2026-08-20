@@ -1541,6 +1541,23 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
             '"title": str (provocation/curiosity, keyword front-loaded, 40-55 chars), '
             '"hook": str (the <=1.5s spoken cold-open line), '
             '"why_viral": str (1-2 sentences; cite the dated source that anchors it), '
+            # BEAT SKELETON (2026-08-20): the planner emits the shot list as
+            # BeatIntents so the visual library can propose a component per beat
+            # BEFORE the money gate. pickCookbook (remotion-studio/src/cookbook/
+            # registry.ts) ranks on exactly these fields, and its `keywords` are
+            # documented as "free words from the script / plan" -- so this does
+            # not need the final VO, which is written later inside the produce.
+            # The vocabularies are CLOSED: an invented value ranks nothing.
+            '"beats": [{"beat": "hook"|"context"|"stat"|"process"|"comparison"|"demo"'
+            '|"punchline"|"cta"|"social-proof", '
+            '"shows": str (one line: what is literally ON SCREEN in this beat), '
+            '"needs": "series"|"metrics"|"single-number"|"facts"|"before-after"|"steps"'
+            '|"options"|"dialogue"|"phrase"|"query-results"|"hub-spokes"|"alerts"|"utterance" '
+            '(the SHAPE of what is on screen, not the topic), '
+            '"keywords": [str] (3-6 CONCRETE nouns this visual is about -- they are matched '
+            'against a component library, so "budget, spending, category, total" ranks and '
+            '"useful, clean, modern" ranks nothing)}] '
+            '(3-6 beats IN ORDER; the LAST beat must be "cta"), '
             '"brief": str (production-ready: the 6-beat outline, the verified TODAY anchor + '
             'its source, and the 6 shot ideas -- enough for produce_channel to run)}]}\n'
             "Rank by viral potential. Planning only -- do NOT produce videos, do NOT write a manifest."
@@ -1576,6 +1593,23 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
             '"title": str (YouTube title in this channel\'s voice), '
             '"hook": str (the cold-open line), '
             '"why_viral": str (1-2 sentences; cite the evidence/source/date), '
+            # BEAT SKELETON (2026-08-20): the planner emits the shot list as
+            # BeatIntents so the visual library can propose a component per beat
+            # BEFORE the money gate. pickCookbook (remotion-studio/src/cookbook/
+            # registry.ts) ranks on exactly these fields, and its `keywords` are
+            # documented as "free words from the script / plan" -- so this does
+            # not need the final VO, which is written later inside the produce.
+            # The vocabularies are CLOSED: an invented value ranks nothing.
+            '"beats": [{"beat": "hook"|"context"|"stat"|"process"|"comparison"|"demo"'
+            '|"punchline"|"cta"|"social-proof", '
+            '"shows": str (one line: what is literally ON SCREEN in this beat), '
+            '"needs": "series"|"metrics"|"single-number"|"facts"|"before-after"|"steps"'
+            '|"options"|"dialogue"|"phrase"|"query-results"|"hub-spokes"|"alerts"|"utterance" '
+            '(the SHAPE of what is on screen, not the topic), '
+            '"keywords": [str] (3-6 CONCRETE nouns this visual is about -- they are matched '
+            'against a component library, so "budget, spending, category, total" ranks and '
+            '"useful, clean, modern" ranks nothing)}] '
+            '(3-6 beats IN ORDER; the LAST beat must be "cta"), '
             '"brief": str (production-ready brief following the channel blueprint -- '
             'enough for produce_channel to run)}]}\n'
             "Rank by viral potential. Planning only -- do NOT produce videos, do NOT write a manifest."
@@ -1626,6 +1660,23 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
             '"title": str (YouTube title w/ emoji, Vaibhav-DNA hook grammar), '
             '"hook": str (the <=1.5s spoken hook line), '
             '"why_viral": str (1-2 sentences; cite the evidence/source/date), '
+            # BEAT SKELETON (2026-08-20): the planner emits the shot list as
+            # BeatIntents so the visual library can propose a component per beat
+            # BEFORE the money gate. pickCookbook (remotion-studio/src/cookbook/
+            # registry.ts) ranks on exactly these fields, and its `keywords` are
+            # documented as "free words from the script / plan" -- so this does
+            # not need the final VO, which is written later inside the produce.
+            # The vocabularies are CLOSED: an invented value ranks nothing.
+            '"beats": [{"beat": "hook"|"context"|"stat"|"process"|"comparison"|"demo"'
+            '|"punchline"|"cta"|"social-proof", '
+            '"shows": str (one line: what is literally ON SCREEN in this beat), '
+            '"needs": "series"|"metrics"|"single-number"|"facts"|"before-after"|"steps"'
+            '|"options"|"dialogue"|"phrase"|"query-results"|"hub-spokes"|"alerts"|"utterance" '
+            '(the SHAPE of what is on screen, not the topic), '
+            '"keywords": [str] (3-6 CONCRETE nouns this visual is about -- they are matched '
+            'against a component library, so "budget, spending, category, total" ranks and '
+            '"useful, clean, modern" ranks nothing)}] '
+            '(3-6 beats IN ORDER; the LAST beat must be "cta"), '
             '"brief": str (production-ready brief following the Ep11/Ep12 template -- enough for '
             'produce_channel to run)}]}\n'
             "Rank by viral potential. Planning only -- do NOT produce videos, do NOT write a manifest."

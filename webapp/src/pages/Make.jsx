@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api } from '../api'
 import { usePoll } from '../hooks'
@@ -75,6 +75,33 @@ export default function Make() {
       .map((p) => ({ video_id: p.video_id, title: p.yt_title || '' }))
     return [...out, ...extra]
   }, [vidsQ.data, postsQ.data, chKey])
+  /* The library's answer to each planned beat, worked out HERE so the proposal
+     is visible before anything is approved or spent. Same pickCookbook the
+     sequence designer and auto_compose use — one ranker, not a second opinion. */
+  const [picks, setPicks] = useState({})
+  useEffect(() => {
+    let dead = false
+    const withBeats = ideas.filter((i) => Array.isArray(i.beats) && i.beats.length)
+    if (!withBeats.length) { setPicks({}); return }
+    import('@remotion-src/cookbook/registry').then(({ pickCookbook }) => {
+      if (dead) return
+      const out = {}
+      ideas.forEach((idea, ix) => {
+        if (!Array.isArray(idea.beats)) return
+        out[ix] = idea.beats.map((b) => {
+          const [top] = pickCookbook(
+            { beat: b.beat, needs: b.needs, keywords: b.keywords || [] }, 1
+          ) || []
+          return top
+            ? { id: top.entry.id, label: top.entry.title, score: top.score, why: top.why || [] }
+            : null   // nothing scored — that is the build-a-component signal
+        })
+      })
+      setPicks(out)
+    }).catch(() => setPicks({}))
+    return () => { dead = true }
+  }, [ideas])
+
   const readBack = useMemo(() => {
     if (!parsed) return null
     const matched = chanVideos.filter((v) => freshViewsFor(parsed, v) != null).length
@@ -302,6 +329,30 @@ export default function Make() {
                   </div>
                 )}
                 {idea.angle && <span className="chip" style={{ marginTop: 8 }}>{ANGLE_LABEL[idea.angle] || idea.angle}</span>}
+
+                {/* The shot list, and what the library would put on screen for each
+                    beat — visible BEFORE the money gate, which is the whole point of
+                    keeping a component library. A beat nothing scores for is not a
+                    failure: it is the signal that this idea needs a component built. */}
+                {Array.isArray(idea.beats) && idea.beats.length > 0 && (
+                  <div className="mk-beats">
+                    <span className="lb">THE CUT IT WOULD MAKE</span>
+                    {idea.beats.map((b, bi) => {
+                      const p = (picks[i] || [])[bi]
+                      return (
+                        <div key={bi} className="mk-beat">
+                          <span className="bk">{b.beat}</span>
+                          <span className="bs">{b.shows}</span>
+                          {p ? (
+                            <span className="bp" title={(p.why || []).join(' · ')}>{p.label}</span>
+                          ) : (
+                            <span className="bp none">needs a new component</span>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
               </button>
             ))}
           </div>
