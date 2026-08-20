@@ -37,7 +37,7 @@ rooms, and a seventh is a design failure until proven otherwise.
 |---|---|---|
 | **Today** | What needs me right now? | `/` |
 | **Make** | I want a new piece for a channel. | `/make` |
-| **Plan** | What is going out, and when? | `/calendar` |
+| **Plan** | What is going out, and when? | `/plan` |
 | **Piece** | Move this one episode forward. | `/piece/:calendarId` |
 | **Looks** | What does the channel look like? | `/looks` |
 | **Scoreboard** | How did the published work do? | `/scoreboard` |
@@ -45,7 +45,8 @@ rooms, and a seventh is a design failure until proven otherwise.
 
 **Retire by redirect, never by deletion.** Legacy routes still resolve so old
 links and cross-links keep working: `/analytics` → `/scoreboard` (the old charts
-survive at `/analytics/legacy`), `/studio/templates` → `/looks`. `/overview`
+survive at `/analytics/legacy`), `/calendar` → `/plan` (the month grid survives
+at `/calendar/legacy`), `/studio/templates` → `/looks`. `/overview`
 keeps the old dashboard. `/studio/templates/:key` is deliberately **not**
 redirected — it is the sequence designer that Looks links into.
 
@@ -119,6 +120,11 @@ fixes.
 
 These are not style preferences. A violation is a bug.
 
+**Scope.** Every rebuilt page's root is `className="piece <name>"`. `.piece` is
+the selector the frozen rules hang off — `.piece .pc-card`, `.piece .pc-eyebrow`.
+A page that omits it renders unstyled but not *broken*, which is exactly how this
+language erodes unnoticed. Plan shipped that way for one deploy.
+
 **Language.** New surfaces use `.pc-card` (flat `--input-bg`, hairline border)
 and `.pc-eyebrow` (mono, muted, `.14em` tracking). **Never** the old `.card` or
 `.field-label` — those belong to the retired app. Type is Bricolage Grotesque
@@ -152,6 +158,12 @@ may say "not measured yet". It may not say "passes".
 
 ## What the design refuses to do
 
+- **No AI challenger loop.** Retired 2026-08-20. The strategist used to write a
+  row proposing to replace an already-planned piece, and the app asked you to
+  decide within 72 hours of publish. It is gone at the source: the prompt no
+  longer runs a challenge pass and the worker refuses a stray one, because a
+  generator still writing rows nothing renders is the bits-and-pieces failure in
+  miniature.
 - **No overnight proposer.** `claude -p` quota is per *account*, not per machine —
   all three workers capped within four seconds on 2026-08-18. Proposing is
   on-demand, from Make, when the owner wants a piece.
@@ -169,9 +181,6 @@ may say "not measured yet". It may not say "passes".
 - The gate ledger shows thresholds and "at finalize" rather than measured
   numbers. Until `finalize_episode.py` stamps its measurements somewhere the app
   can read, the ledger is a promise, not a report.
-- `Plan` still points at the old calendar page. It keeps its nav slot only
-  because "calendar as a view of Pieces" has not been built, and its scheduling
-  signal has nowhere else to live yet.
 - The PLAN gate shows per-beat detail only when a look has designed scenes;
   host and recording beats cannot be sequence blocks, so a plan built from
   classic beats has nothing to preview.
