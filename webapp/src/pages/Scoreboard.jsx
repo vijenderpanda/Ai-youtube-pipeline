@@ -80,6 +80,7 @@ export default function Scoreboard() {
   // carries the real publish time, so age uses whichever is earlier.
   const postsQ = usePoll(() => api.get('?r=posts&limit=200'), 0)
   const channels = (chansQ.data && chansQ.data.channels) || []
+  const chanName = (channels.find((c) => c.key === channel) || {}).name || channel
   const videos = (vidsQ.data && vidsQ.data.videos) || []
   const publishedAt = useMemo(() => {
     const m = new Map()
@@ -169,10 +170,14 @@ export default function Scoreboard() {
         <div style={{ minWidth: 0, flex: 1 }}>
           <div className="crumb">Scoreboard</div>
           <h1 className="piece-title">Did it work — yet?</h1>
+          {/* p25/median/p75 is statistician vocabulary on the one screen read for
+              a verdict, where everything else says "Too early" and "the feed never
+              showed it". Same numbers, said the way the rest of the page talks —
+              and carrying the unit and the window, which they never did. */}
           <div className="piece-sub">
             {dist
-              ? `${channel} · this channel's own bar: p25 ${dist.p25} · median ${dist.p50} · p75 ${dist.p75} views`
-              : channel}
+              ? `${chanName} · typical video here gets ${dist.p50} views · the top quarter starts at ${dist.p75}`
+              : chanName}
           </div>
         </div>
         <div className="piece-chips">
@@ -201,13 +206,28 @@ export default function Scoreboard() {
             onChange={(e) => setPaste(e.target.value)}
             placeholder={'I Built A Habit Tracker By Typing One…   1,204   18,900   6.1%'}
           />
-          {pasted.size > 0 && (
-            <div className="make-parsed">
-              <span className="lb">READ BACK ✓</span>
-              <span className="chip ok-chip">{pasted.size} video{pasted.size === 1 ? '' : 's'} matched</span>
-              <span className="chip">used instead of the stored numbers</span>
-            </div>
-          )}
+          {pasted.size > 0 && (() => {
+            // Unlike Make, this page HAS the video list, so it can report what
+            // actually matched rather than how many lines it parsed. A row whose
+            // title matches nothing silently falls back to the stored number, so
+            // saying it matched would hide exactly the case worth seeing.
+            const hits = videos.filter((v) => freshViews(v) != null).length
+            const missed = pasted.size - hits
+            return (
+              <div className="make-parsed">
+                <span className="lb">READ BACK ✓</span>
+                <span className={'chip ' + (hits ? 'ok-chip' : '')}>
+                  {hits} of {pasted.size} row{pasted.size === 1 ? '' : 's'} matched a video
+                </span>
+                {missed > 0 && (
+                  <span className="chip warn-chip">
+                    {missed} matched nothing — those keep the stored numbers
+                  </span>
+                )}
+                {hits > 0 && <span className="chip">used instead of the stored numbers</span>}
+              </div>
+            )
+          })()}
         </section>
       )}
 
@@ -243,7 +263,7 @@ export default function Scoreboard() {
                   <div className="sub">
                     {c.verdict === 'early'
                       ? `we've seen ${Math.round(c.maturity * 100)}% of its life`
-                      : `${c.views} views${c.traj ? ' · ' + c.traj : ''}`}
+                      : `${c.views} views${c.age != null && c.age > 90 ? ' in the last 90 days' : ''}${c.traj ? ' · ' + c.traj : ''}`}
                   </div>
                 </div>
               </div>
@@ -253,8 +273,11 @@ export default function Scoreboard() {
                   <span className="me" style={{ left: dotPos + '%' }} />
                 </div>
                 <div className="sc">
-                  <span>p25 {c.p25}</span><span>med {c.p50}</span><span>p75 {c.p75}</span>
+                  <span><i>bottom quarter</i><b>{c.p25}</b></span>
+                  <span><i>typical</i><b>{c.p50}</b></span>
+                  <span><i>top quarter</i><b>{c.p75}</b></span>
                 </div>
+                <div className="scu">views, among this channel's own videos</div>
               </div>
 
               <div className="nx">
@@ -263,7 +286,7 @@ export default function Scoreboard() {
                 ) : c.verdict === 'flop' ? (
                   <>{c.diagnosis}</>
                 ) : c.verdict === 'hit' ? (
-                  <>Above this channel’s p75{c.traj === 'climbing' ? ' and still climbing' : ''} — the angle repeats.</>
+                  <>More views than three out of four videos on this channel{c.traj === 'climbing' ? ', and still climbing' : ''} — the angle repeats.</>
                 ) : (
                   <>Inside the normal band for this channel.</>
                 )}
