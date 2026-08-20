@@ -68,6 +68,49 @@ function Rail({ gate }) {
   )
 }
 
+/* ── the gate ledger ───────────────────────────────────────────────────────
+   The gates that decide whether a cut may ship, with the REAL thresholds they
+   are checked against (finalize_episode.py: LUFS −14.0 ±0.5, exit 2 = QC gate
+   failed; lipsync_visual.py: PASS at |lag| ≤ 80ms and corr ≥ 0.30).
+
+   Nothing persists these measurements per cut yet — they are computed inside
+   finalize and reported by exit code — so this prints the threshold and says
+   plainly when a number is not measured yet. A row of green ticks that was
+   never measured would be worse than no ledger at all: it teaches you to stop
+   looking, which is exactly how a lip-sync passed at corr 0.99 while the lips
+   ran 320ms early. */
+const GATE_LEDGER = [
+  { k: 'Loudness', t: '−14.0 ±0.5 LUFS' },
+  { k: 'Lip-sync · visual', t: '|lag| ≤ 80 ms' },
+  { k: 'Lip-sync · audio', t: 'corr ≥ 0.30' },
+]
+
+function Ledger({ finalizeJob }) {
+  // The one thing we DO know: finalize exit 2 means a QC gate rejected the cut.
+  const failed = finalizeJob && finalizeJob.status === 'failed'
+  const passed = finalizeJob && finalizeJob.status === 'done'
+  return (
+    <div className="piece-ledger">
+      {GATE_LEDGER.map((g) => (
+        <div key={g.k} className="lrow">
+          <span>{g.k}</span>
+          <span className="m">{g.t}</span>
+          <span className={'vd ' + (passed ? 'pass' : failed ? 'fail' : 'na')}>
+            {passed ? 'PASS' : failed ? 'CHECK' : 'AT FINALIZE'}
+          </span>
+        </div>
+      ))}
+      <div className="dim small" style={{ marginTop: 9 }}>
+        {passed
+          ? 'These passed when the master was cut.'
+          : failed
+            ? 'Finalize stopped on a QC gate — the numbers are in its log.'
+            : 'Measured when this piece is finalized; the cut cannot ship if one fails.'}
+      </div>
+    </div>
+  )
+}
+
 /* ── the cut a locked composition will make ────────────────────────────── */
 function SceneList({ blocks }) {
   if (!blocks.length) {
@@ -258,8 +301,8 @@ export default function Piece() {
       {/* ── PLAN ─────────────────────────────────────────────────────── */}
       {gate === 'plan' && (
         <div className="piece-cols">
-          <section className="card">
-            <div className="field-label">The cut it will make</div>
+          <section className="pc-card">
+            <span className="pc-eyebrow">The cut it will make</span>
             <SceneList blocks={blocks} />
             <div className="piece-money">
               <div className="mt">What this will use</div>
@@ -277,8 +320,8 @@ export default function Piece() {
             </div>
           </section>
 
-          <section className="card">
-            <div className="field-label">Checked before it burns</div>
+          <section className="pc-card">
+            <span className="pc-eyebrow">Checked before it burns</span>
             <div className="piece-kv"><span>Look</span><b>{boundVersion ? `v${boundVersion.version}${boundVersion.label ? ' · ' + boundVersion.label : ''}` : 'channel default'}</b></div>
             <div className="piece-kv"><span>Scenes</span><b>{blocks.length || '—'}</b></div>
             <div className="piece-kv"><span>Title length</span><b>{titleLen} chars</b></div>
@@ -291,8 +334,8 @@ export default function Piece() {
       {/* ── PRODUCE ──────────────────────────────────────────────────── */}
       {gate === 'produce' && (
         <div className="piece-cols">
-          <section className="card">
-            <div className="field-label">Being made {elapsed != null && <span className="dim small">· {fmtClock(elapsed)} elapsed</span>}</div>
+          <section className="pc-card">
+            <span className="pc-eyebrow">Being made {elapsed != null && <span className="dim small">· {fmtClock(elapsed)} elapsed</span>}</span>
             <div className="dim small" style={{ marginBottom: 10 }}>
               {produceJob && produceJob.status === 'queued'
                 ? 'Queued — waiting for a free machine.'
@@ -305,8 +348,8 @@ export default function Piece() {
               {assets.length === 0 && <span className="dim small">No parts made yet.</span>}
             </div>
           </section>
-          <section className="card">
-            <div className="field-label">Latest activity</div>
+          <section className="pc-card">
+            <span className="pc-eyebrow">Latest activity</span>
             <div className="piece-log">
               {(produceJob && produceJob.logs ? String(produceJob.logs).trim().split('\n').slice(-6) : ['starting…']).map((l, i) => (
                 <div key={i}>{l}</div>
@@ -319,18 +362,20 @@ export default function Piece() {
       {/* ── REVIEW ───────────────────────────────────────────────────── */}
       {gate === 'review' && (
         <div className="piece-cols">
-          <section className="card">
-            <div className="field-label">
+          <section className="pc-card">
+            <span className="pc-eyebrow">
               Current cut {cutName && <span className="dim small">· {cutName}</span>}
-            </div>
+            </span>
             {previewSrc ? (
               <video className="piece-player" controls preload="metadata" src={previewSrc} />
             ) : (
               <div className="dim small">The cut isn’t on disk yet.</div>
             )}
           </section>
-          <section className="card">
-            <div className="field-label">What it made</div>
+          <section className="pc-card">
+            <span className="pc-eyebrow">Gates on this cut</span>
+            <Ledger finalizeJob={finalizeJob} />
+            <span className="pc-eyebrow" style={{ marginTop: 16 }}>What it made</span>
             {manifest && Array.isArray(manifest.assets) ? (
               <div className="piece-ledger">
                 {manifest.assets.slice(0, 10).map((a, i) => (
@@ -353,19 +398,19 @@ export default function Piece() {
       {/* ── SCHEDULE ─────────────────────────────────────────────────── */}
       {gate === 'schedule' && (
         <div className="piece-cols">
-          <section className="card">
-            <div className="field-label">What YouTube will receive</div>
+          <section className="pc-card">
+            <span className="pc-eyebrow">What YouTube will receive</span>
             <div className="piece-kv"><span>Title</span><b>{title}</b></div>
             <div className="piece-kv"><span>Channel</span><b>{item.channel_key}</b></div>
             <div className="piece-kv"><span>Cut</span><b>{cutName || <span className="dim">none</span>}</b></div>
             <div className="piece-kv"><span>Look</span><b>{boundVersion ? `v${boundVersion.version}` : 'channel default'}</b></div>
             <label className="field" style={{ marginTop: 12 }}>
-              <span className="field-label">Publish time</span>
+              <span className="pc-eyebrow">Publish time</span>
               <input type="datetime-local" value={schedule} onChange={(e) => setSchedule(e.target.value)} />
             </label>
           </section>
-          <section className="card">
-            <div className="field-label">How it will be judged</div>
+          <section className="pc-card">
+            <span className="pc-eyebrow">How it will be judged</span>
             <div className="piece-kv"><span>Clock</span><b>Shorts · 7 days</b></div>
             <div className="piece-kv"><span>No verdict</span><b>before day 3</b></div>
             <div className="dim small" style={{ marginTop: 10 }}>
@@ -377,8 +422,8 @@ export default function Piece() {
 
       {/* ── VERDICT ──────────────────────────────────────────────────── */}
       {gate === 'verdict' && (
-        <section className="card">
-          <div className="field-label">{item.status === 'published' ? 'Published' : 'Scheduled'}</div>
+        <section className="pc-card">
+          <span className="pc-eyebrow">{item.status === 'published' ? 'Published' : 'Scheduled'}</span>
           <p className="dim small" style={{ margin: 0 }}>
             {item.status === 'published'
               ? 'This piece is out. Its verdict lands on the Scoreboard once the clock allows one.'
