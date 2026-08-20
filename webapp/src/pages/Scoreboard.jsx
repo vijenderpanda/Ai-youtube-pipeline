@@ -115,6 +115,28 @@ export default function Scoreboard() {
     return null
   }
 
+  /* Videos that are LIVE but have no analytics row yet.
+     The board is built from ?r=video_summary, which reads the stats table, and
+     YouTube's analytics run about two days behind — so the two most recent
+     Shorts simply vanished from the page. Absence reads as "it never went out",
+     which is worse than "too early to tell", and it hides exactly the work you
+     most want to look at. The posts prove they are public, so they appear with
+     no numbers rather than not at all. */
+  const pending = useMemo(() => {
+    const known = new Set(videos.map((v) => v.video_id))
+    const now = Date.now()
+    return ((postsQ.data && postsQ.data.posts) || [])
+      .filter((p) => p.channel_key === channel && p.video_id && !known.has(p.video_id))
+      .filter((p) => ['published', 'armed', 'scheduled', 'uploading'].includes(String(p.status || '').toLowerCase()))
+      .filter((p) => p.publish_at && new Date(p.publish_at).getTime() <= now)
+      .map((p) => ({
+        pending: true,
+        v: { video_id: p.video_id, title: p.yt_title || '(untitled)' },
+        day: new Date(p.publish_at).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }),
+        age: daysBetween(new Date(p.publish_at).getTime(), now),
+      }))
+  }, [videos, postsQ.data, channel])
+
   const cards = useMemo(() => {
     const now = Date.now()
     const viewsOf = (v) => freshViews(v) ?? (v.total_views || 0)
@@ -168,13 +190,16 @@ export default function Scoreboard() {
   const dist = cards.length ? { p25: cards[0].p25, p50: cards[0].p50, p75: cards[0].p75 } : null
   const byDay = useMemo(() => {
     const m = new Map()
-    for (const c of cards) {
+    const all = [...pending, ...cards].sort(
+      (a, b) => String(b.day || '').localeCompare(String(a.day || '')) || (a.age ?? 999) - (b.age ?? 999)
+    )
+    for (const c of all) {
       const k = c.day || 'unknown'
       if (!m.has(k)) m.set(k, [])
       m.get(k).push(c)
     }
     return [...m.entries()]
-  }, [cards])
+  }, [cards, pending])
 
   return (
     <div className="piece scoreboard">
@@ -253,6 +278,30 @@ export default function Scoreboard() {
           </div>
           <div className="score-grid">
         {group.map((c) => {
+          // Live, but YouTube has not reported a single number for it yet. It
+          // gets a card so it is not missing, and states exactly that — no
+          // verdict, no bar, no percentile it could not have been measured against.
+          if (c.pending) {
+            return (
+              <article key={c.v.video_id} className="score early pending">
+                <div className="st">{c.v.title}</div>
+                <div className="sm">live · day {c.age} — no numbers yet</div>
+                <div className="vrow">
+                  <svg width="46" height="46" viewBox="0 0 46 46" aria-hidden="true">
+                    <circle cx="23" cy="23" r="19" fill="none" stroke="var(--border)" strokeWidth="5" />
+                  </svg>
+                  <div>
+                    <div className="word">Too early</div>
+                    <div className="sub">nothing measured yet</div>
+                  </div>
+                </div>
+                <div className="nx">
+                  It is out, but YouTube&rsquo;s numbers run about two days behind, so there is
+                  nothing to judge it on. Paste fresher numbers above if you want them sooner.
+                </div>
+              </article>
+            )
+          }
           const dotPos =
             c.p75 > 0 ? Math.max(2, Math.min(98, (c.views / Math.max(c.p75 * 1.3, 1)) * 100)) : 2
           return (

@@ -8005,3 +8005,8 @@ a.out-chip:hover {
   font-size: 9px; letter-spacing: 0.1em; color: var(--accent-ink); background: var(--accent);
   border-radius: var(--r-pill); padding: 1px 7px; text-transform: none;
 }
+
+/* Live but unmeasured. Muted so it never competes with a card that has real
+   numbers — it is there to prove the video exists, not to be read for a verdict. */
+.score.pending { opacity: 0.82; }
+.score.pending .word { color: var(--text-2); }
