@@ -120,9 +120,9 @@ def _build_upi_cookbook():
         # pick.mp4 is RETIRED — beat 0 is TapStack. Left here unreferenced would
         # be dead config, so it is gone; tape_lengths_needed in
         # locked_numbers.json no longer asks for it.
-        "ScreenStage#ask":    {"src": "ep_upi/ask.mp4",    "chip": "NO CONNECTOR \u00b7 NO LOGIN",
+        "ScreenStage#ask":    {"src": "assets/ep_upi/ask.mp4",    "chip": "NO CONNECTOR \u00b7 NO LOGIN",
                                "host": True, "hostSize": 300},
-        "ScreenStage#answer": {"src": "ep_upi/answer.mp4", "chip": "WHAT IT SENT BACK"},
+        "ScreenStage#answer": {"src": "assets/ep_upi/answer.mp4", "chip": "WHAT IT SENT BACK"},
         # --- designed -------------------------------------------------------
         "LedgerFlow#rush": dict(base, phase="rush", ingest={"count": 3, "at": 0}, scrollTo=14,
                                 hud=dict(hud, revealed=br["rush"]["revealed"], revealAt=br["rush"]["revealAt"]),
@@ -143,7 +143,7 @@ def _build_upi_cookbook():
                                             "killAt": 2.21, "prefix": "\u20b9"},
                                 # the rows have departed by mid-beat, so mid-left is a genuine
                                 # void — a small corner card there would waste half the frame
-                                host="ep_upi/host_wide.mp4", hostSize=470, hostAnchor="ml"),
+                                host=True, hostSize=470, hostAnchor="ml"),
         "LedgerFlow#grow": dict(base, phase="grow", scrollFrom=6, scrollTo=6, focusLane="blinkit",
                                 hud=dict(hud, revealed=br["grow"]["revealed"], revealAt=br["grow"]["revealAt"]),
                                 spill={"atPct": 0.78, "releaseAt": 1.4},
@@ -166,7 +166,7 @@ def _build_upi_cookbook():
                         "note": "A FLOOR \u2014 NOT A STATEMENT"},
             "ghostBars": 5,
             # top-right: the hero figure owns y700-950 on the LEFT
-            "host": "ep_upi/host_wide.mp4", "hostSize": 420, "hostAnchor": "tr",
+            "host": True, "hostSize": 420, "hostAnchor": "tr",
         },
     }
 
