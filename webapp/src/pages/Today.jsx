@@ -43,8 +43,20 @@ export default function Today() {
   const posts = (postsQ.data && postsQ.data.posts) || []
 
   /* ── the triage stack ────────────────────────────────────────────────── */
+  /* Today is what needs a human NOW, not every unfinished thing ever made. A cut
+     that has sat unarmed for weeks is backlog: real, but not today's decision —
+     and 23 cards is not a queue that can reach zero, which is the whole promise
+     of this screen. So cuts are only surfaced while they are still live work
+     (planned within the last week, or still ahead), and the stack is capped;
+     the rest is counted honestly on one line instead of being hidden. */
+  const RECENT_DAYS = 7
+  const MAX_CARDS = 6
   const cards = useMemo(() => {
     const out = []
+    const cutoff = new Date()
+    cutoff.setDate(cutoff.getDate() - RECENT_DAYS)
+    const cutoffStr = cutoff.toLocaleDateString('en-CA', { timeZone: IST })
+    const isLiveWork = (it) => !it.planned_date || it.planned_date >= cutoffStr
     const liveJobFor = (id) =>
       jobs.find(
         (j) =>
@@ -61,10 +73,11 @@ export default function Today() {
       const { stage } = resolveStage(it, counts, { producing })
 
       if (producing) continue // the factory is working — nothing for a human
-      if (stage === 'qc' || (stage === 'arm' && it.preview_path)) {
+      if ((stage === 'qc' || (stage === 'arm' && it.preview_path)) && isLiveWork(it)) {
         out.push({
           k: 'cut',
           rank: 0,
+          when: it.planned_date || '',
           icon: '▶',
           title: `${it.title || '(untitled)'} — a cut is waiting`,
           sub: `${it.channel_key}${it.preview_path ? ' · ' + String(it.preview_path).split('/').pop() : ''}`,
@@ -108,8 +121,26 @@ export default function Today() {
         })
       }
     }
-    return out.sort((a, b) => a.rank - b.rank)
+    // failures first, then newest live work, then the empty-slot facts
+    return out.sort((a, b) => a.rank - b.rank || String(b.when || '').localeCompare(String(a.when || '')))
   }, [items, countsById, jobs, channels])
+
+  /* Everything that is real work but not today's decision. Counted, never hidden. */
+  const backlog = useMemo(() => {
+    const cutoff = new Date()
+    cutoff.setDate(cutoff.getDate() - RECENT_DAYS)
+    const cutoffStr = cutoff.toLocaleDateString('en-CA', { timeZone: IST })
+    return items.filter(
+      (it) =>
+        it.preview_path &&
+        it.planned_date &&
+        it.planned_date < cutoffStr &&
+        !['published', 'skipped', 'superseded', 'armed'].includes(it.status)
+    ).length
+  }, [items])
+
+  const shown = cards.slice(0, MAX_CARDS)
+  const overflow = cards.length - shown.length
 
   /* ── ships today ─────────────────────────────────────────────────────── */
   const shipsToday = useMemo(() => {
@@ -172,7 +203,7 @@ export default function Today() {
       )}
 
       <div className="today-stack">
-        {cards.map((c, i) => (
+        {shown.map((c, i) => (
           <Link key={c.k + i} to={c.to} className={'today-card' + (i === 0 ? ' focus' : '')}>
             <span className={'ic ' + c.k}>{c.icon}</span>
             <span style={{ minWidth: 0 }}>
@@ -183,6 +214,18 @@ export default function Today() {
           </Link>
         ))}
       </div>
+
+      {(overflow > 0 || backlog > 0) && (
+        <div className="today-backlog">
+          {overflow > 0 && <>{overflow} more need{overflow === 1 ? 's' : ''} you. </>}
+          {backlog > 0 && (
+            <>
+              {backlog} older cut{backlog === 1 ? '' : 's'} are still unfinished —{' '}
+              <Link className="link" to="/studio">that's backlog, not today</Link>.
+            </>
+          )}
+        </div>
+      )}
 
       {shipsToday.length > 0 && (
         <section className="pc-card" style={{ marginTop: 14 }}>
