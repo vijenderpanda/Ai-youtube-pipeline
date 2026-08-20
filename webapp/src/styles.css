@@ -7680,3 +7680,46 @@ a.out-chip:hover {
   margin-top: 11px; padding: 9px 13px; font-size: 12px; color: var(--text-3);
   background: var(--panel); border: 1px solid var(--border-soft); border-radius: 8px;
 }
+
+/* ── LOOKS — the design a channel's videos are made through ────────────── */
+.looks-rail { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 16px; }
+.looks-rail .lv {
+  display: flex; flex-direction: column; gap: 2px; align-items: flex-start;
+  font-family: var(--mono); font-size: 12px; font-weight: 600; cursor: pointer;
+  background: var(--input-bg); border: 1px solid var(--border-strong); border-radius: 8px;
+  padding: 7px 12px; color: var(--text-3);
+}
+.looks-rail .lv .st { font-size: 9.5px; font-weight: 400; letter-spacing: 0.06em; opacity: 0.85; }
+.looks-rail .lv:hover { border-color: var(--text-3); color: var(--text-2); }
+.looks-rail .lv.on { color: var(--text); border-color: var(--accent); background: var(--accent-soft); }
+.looks-rail .lv.live { color: var(--ok); border-color: var(--ok); }
+.looks-rail .lv.live.on { background: var(--ok-soft); }
+
+.piece-cast .cf.as-btn {
+  width: 100%; cursor: pointer; font: inherit; color: inherit; text-align: left;
+}
+.piece-cast .cf.as-btn:disabled { cursor: default; }
+.piece-cast .cf.as-btn:not(:disabled):hover { border-color: var(--accent-deep); }
+
+.looks-swap {
+  margin: 7px 0 3px; padding: 12px 13px;
+  background: var(--panel); border: 1px solid var(--accent-deep); border-radius: 8px;
+}
+.looks-swap .opts { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; }
+.looks-swap .opt {
+  display: grid; grid-template-columns: 30px auto 1fr auto; gap: 10px; align-items: center;
+  background: var(--input-bg); border: 1px solid var(--border); border-radius: 7px;
+  padding: 6px 9px; cursor: pointer; font: inherit; color: inherit; text-align: left;
+}
+.looks-swap .opt:not(:disabled):hover { border-color: var(--border-strong); }
+.looks-swap .opt.cur { border-color: var(--ok); background: var(--ok-soft); cursor: default; }
+.looks-swap .opt img,
+.looks-swap .opt .ph {
+  width: 30px; height: 30px; border-radius: 5px; object-fit: cover; display: block;
+  border: 1px solid var(--border-strong); background: linear-gradient(160deg, #33132a, #120711);
+}
+.looks-swap .opt .nm { font-family: var(--mono); font-size: 11px; color: var(--text-2); }
+.looks-swap .opt .lb {
+  font-size: 12px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.looks-swap .opt .cu { font-family: var(--mono); font-size: 9.5px; color: var(--ok); }
