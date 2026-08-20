@@ -44,6 +44,7 @@ Usage:
   python3 scripts/reconcile_posts.py --from-youtube      # dry run: youtube -> missing posts
   python3 scripts/reconcile_posts.py --from-youtube --apply
   python3 scripts/reconcile_posts.py --pair <calendar_id> <video_id> --apply
+  python3 scripts/reconcile_posts.py --unlink <video_id> --apply
 """
 import argparse
 import re
@@ -218,10 +219,30 @@ def main():
                     help="create the missing post for pieces whose video is on YouTube")
     ap.add_argument("--pair", nargs=2, metavar=("CALENDAR_ID", "VIDEO_ID"),
                     help="resolve one pair by hand, for a day titles cannot separate")
+    ap.add_argument("--unlink", metavar="VIDEO_ID",
+                    help="clear a wrong link. Every pairing rule here is a "
+                         "judgement about which video came from which piece, so "
+                         "undoing one has to be as easy as making it.")
     args = ap.parse_args()
 
     env = load_env()
     supa = Supa(env["SUPABASE_URL"], env["SUPABASE_SERVICE_KEY"])
+
+    if args.unlink:
+        rows = supa.select("factory_posts",
+                           f"video_id=eq.{args.unlink}&select=id,video_id,yt_title,calendar_id")
+        if not rows:
+            sys.exit(f"no post carries video {args.unlink}")
+        r = rows[0]
+        if not r.get("calendar_id"):
+            print(f"{args.unlink} is already unlinked."); return
+        print(f"unlink {args.unlink} ({str(r.get('yt_title'))[:52]}) from {r['calendar_id']}")
+        if not args.apply:
+            print("DRY RUN — add --apply to write it.")
+            return
+        supa.patch("factory_posts", f"id=eq.{r['id']}", {"calendar_id": None})
+        print("unlinked.")
+        return
 
     if args.pair:
         cal_id, vid = args.pair
