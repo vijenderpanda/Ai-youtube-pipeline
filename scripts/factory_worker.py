@@ -5057,8 +5057,12 @@ def main():
     # Propagate non-secret tuning knobs into the process env so the GPU/encode
     # settings reach child render subprocesses (ffmpeg helper, Remotion). Secrets
     # (service key etc.) are deliberately NOT exported to job children.
+    # FACTORY_REMOTION_SCALE/_CRF must be here or a worker-run produce silently
+    # ships 1080p while an interactive run on the same commit ships 4K — the
+    # nastiest kind of divergence, because nothing errors.
     for _k in ("FACTORY_FFMPEG_HWACCEL", "FACTORY_FFMPEG", "FACTORY_REMOTION_GL",
-               "FACTORY_REMOTION_CONCURRENCY", "FACTORY_REMOTION_HWACCEL"):
+               "FACTORY_REMOTION_CONCURRENCY", "FACTORY_REMOTION_HWACCEL",
+               "FACTORY_REMOTION_SCALE", "FACTORY_REMOTION_CRF"):
         if env.get(_k):
             os.environ.setdefault(_k, env[_k])
     supa = Supa(env["SUPABASE_URL"], env["SUPABASE_SERVICE_KEY"])

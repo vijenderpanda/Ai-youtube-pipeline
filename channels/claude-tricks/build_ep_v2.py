@@ -1927,8 +1927,19 @@ def run(cmd, **kw):
 # The outro sting is rendered at the composition's native 1080x1920. When the
 # body is rendered at a scale factor the two no longer match and concat refuses
 # ("Input link parameters do not match"), so the card is scaled to the body.
-_OUTRO_W = int(1080 * float(os.environ.get("FACTORY_REMOTION_SCALE", 1)))
-_OUTRO_H = int(1920 * float(os.environ.get("FACTORY_REMOTION_SCALE", 1)))
+def _render_scale():
+    """The active render multiple. Read at CALL time, not import time — reading it
+    at import bound audition_outro_cta.py (which imports this module) to whatever
+    the env happened to be, so a harness could build a filtergraph for a scale its
+    own inputs were never rendered at."""
+    try:
+        return float(os.environ.get("FACTORY_REMOTION_SCALE", 1) or 1)
+    except (TypeError, ValueError):
+        return 1.0
+
+
+def _body_dims():
+    return int(1080 * _render_scale()), int(1920 * _render_scale())
 
 
 def outro_fc(pre, fst, ratio=None, gain_db=None):
@@ -1940,12 +1951,14 @@ def outro_fc(pre, fst, ratio=None, gain_db=None):
     master chain. Module-level so audition_outro_cta.py exercises the SAME
     graph the builder ships — a test harness with its own copy would drift."""
     if gain_db is None:
-        return (f"[1:v]fps=30,scale={_OUTRO_W}:{_OUTRO_H},format=yuv420p[ov];"
+        _ow, _oh = _body_dims()
+        return (f"[1:v]fps=30,scale={_ow}:{_oh}:flags=lanczos,format=yuv420p[ov];"
                 f"[2:a]{pre}volume=0.30,afade=t=out:st={fst}:d=1.2,apad[oa];"
                 "[0:v][0:a][ov][oa]concat=n=2:v=1:a=1[v][a]")
-    ov = (f"[1:v]setpts={ratio:.5f}*PTS,fps=30,scale={_OUTRO_W}:{_OUTRO_H},format=yuv420p[ov];"
+    _ow, _oh = _body_dims()
+    ov = (f"[1:v]setpts={ratio:.5f}*PTS,fps=30,scale={_ow}:{_oh}:flags=lanczos,format=yuv420p[ov];"
           if ratio and ratio > 1.001 else
-          f"[1:v]fps=30,scale={_OUTRO_W}:{_OUTRO_H},format=yuv420p[ov];")
+          f"[1:v]fps=30,scale={_ow}:{_oh}:flags=lanczos,format=yuv420p[ov];")
     return (ov +
             f"[2:a]{pre}volume=0.30,afade=t=out:st={fst}:d=1.2[bed];"
             "[3:a]aformat=channel_layouts=stereo,"
@@ -3277,10 +3290,27 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     #     is exactly the content that bands on a thin H.264 encode.
     #   FACTORY_REMOTION_CRF=16   -> quality of the raw. The default master step
     #     is -c:v copy, so whatever Remotion writes here IS the shipped video.
-    if os.environ.get("FACTORY_REMOTION_SCALE"):
-        rflags.append(f"--scale={os.environ['FACTORY_REMOTION_SCALE']}")
-    if os.environ.get("FACTORY_REMOTION_CRF"):
-        rflags.append(f"--crf={os.environ['FACTORY_REMOTION_CRF']}")
+    # PER-FORMAT DEFAULT, not repo-wide. A DESIGNED short — every beat a cookbook
+    # component — renders at 2x by default, because that content is aurora
+    # gradients and glass, which is exactly what bands on a thin 1080p H.264
+    # encode, and >1080p is what moves YouTube onto the VP9/AV1 ladder.
+    #
+    # It is deliberately NOT the default for everything. Measured: --scale=2 is
+    # 3.01x wall clock, the worker's JOB_TIMEOUT_S is 45 min for a job that already
+    # carries VO + HeyGen + lipsync + render + concat, per-episode output goes
+    # 40MB -> 118MB, and tape-based/news formats gain far less because their
+    # content is already a 1080p screen recording that cannot be sharpened by
+    # rendering the frame around it larger.
+    _designed = bool(beats) and all(str(b).startswith("cook:") for b in beats)
+    _scale = os.environ.get("FACTORY_REMOTION_SCALE") or ("2" if _designed else None)
+    _crf = os.environ.get("FACTORY_REMOTION_CRF") or ("16" if _designed else None)
+    if _scale and float(_scale) != 1:
+        rflags.append(f"--scale={_scale}")
+        os.environ.setdefault("FACTORY_REMOTION_SCALE", str(_scale))  # outro card matches
+        print(f">> designed short -> rendering at {int(1080*float(_scale))}x"
+              f"{int(1920*float(_scale))} (scale {_scale}, crf {_crf})")
+    if _crf:
+        rflags.append(f"--crf={_crf}")
     run(["npx", "remotion", "render", resolve_locked("remotion_comp", "Short"), raw,
          f"--props={sp}", *rflags],
         cwd=os.path.join(REPO, "remotion-studio"))
@@ -3370,7 +3400,10 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         assert os.path.exists(card), f"endcard missing: {card}"
         outc = os.path.join(R, f"ep{ep}_{tag}_cta.mp4")
         run(["ffmpeg", "-y", "-i", out, "-i", card, "-filter_complex",
-             f"[0][1]overlay=0:0:enable='between(t,{ec['in_s']},{ec['out_s']})'",
+             # the endcard PNG is authored at 1080x1920; overlay=0:0 pins it to the
+             # top-left, so on a scaled body it covered only a quarter of frame
+             f"[1:v]scale={_body_dims()[0]}:{_body_dims()[1]}:flags=lanczos[ec];"
+             f"[0][ec]overlay=0:0:enable='between(t,{ec['in_s']},{ec['out_s']})'",
              "-map", "0:a", "-c:a", "copy",
              *venc("18", "veryfast"),
              "-pix_fmt", "yuv420p", outc])
@@ -3458,7 +3491,10 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         assert os.path.exists(card), f"endcard missing: {card}"
         outc = os.path.join(R, f"ep{ep}_{tag}_final.mp4")
         run(["ffmpeg", "-y", "-i", out, "-i", card, "-filter_complex",
-             f"[0][1]overlay=0:0:enable='gte(t,{ec['in_s']})'",
+             # the endcard PNG is authored at 1080x1920; overlay=0:0 pins it to the
+             # top-left, so on a scaled body it covered only a quarter of frame
+             f"[1:v]scale={_body_dims()[0]}:{_body_dims()[1]}:flags=lanczos[ec];"
+             f"[0][ec]overlay=0:0:enable='gte(t,{ec['in_s']})'",
              "-map", "0:a", "-c:a", "copy",
              *venc("18", "veryfast"),
              "-pix_fmt", "yuv420p", outc])

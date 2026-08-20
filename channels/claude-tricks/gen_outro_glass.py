@@ -50,6 +50,9 @@ def main():
     ap.add_argument("--prompt-hint", default="pause to copy")
     ap.add_argument("--prompt-dur", type=float, default=1.5)
     ap.add_argument("--dur", type=float, default=4.2)
+    ap.add_argument("--scale", default=None,
+                    help="render multiple, e.g. 2 for 2160x3840. Defaults to "
+                         "$FACTORY_REMOTION_SCALE so it matches the body.")
     a = ap.parse_args()
 
     out = a.out if os.path.isabs(a.out) else os.path.join(CH, a.out)
@@ -81,6 +84,14 @@ def main():
         f"--props={json.dumps(props)}",
         f"--frames=0-{frames - 1}",
     ]
+    # RENDER THE STING AT THE BODY'S SCALE. Without this the card comes out at the
+    # composition's native 1080x1920 and outro_fc upscales it into a larger body
+    # with ffmpeg's default bicubic — so the last 4-7 seconds of a 4K episode, the
+    # part carrying the prompt and the subscribe ask, is a soft upscale of a sharp
+    # source. _upi shipped exactly that.
+    _scale = a.scale or os.environ.get("FACTORY_REMOTION_SCALE")
+    if _scale and float(_scale) != 1:
+        cmd.append(f"--scale={_scale}")
     print("+", " ".join(cmd[:4]), "--props=<json>", cmd[-1])
     r = subprocess.run(cmd, cwd=STUDIO)
     if r.returncode != 0:

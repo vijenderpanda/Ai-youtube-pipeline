@@ -371,10 +371,27 @@ const Caption: React.FC<{ word: Word; fps: number; y?: string | number; size?: n
 const NUMERIC = /[0-9]/;
 const KaraokeLine: React.FC<{
   words: Word[]; t: number; fps: number; size?: number; bottom?: number;
-}> = ({ words, t, fps, size = 58, bottom = 360 }) => {
+}> = ({ words, t, fps, size, bottom = 360 }) => {
   const theme = useTheme();
   const frame = useCurrentFrame();
   if (!words.length) return null;
+  // HONOUR THE THEME, THEN FIT THE BAND. A hardcoded 58 silently discarded
+  // theme.cap.size (54 / 62 / 50 across the three themes), so the vaibhav
+  // theme's locked 62px caption quietly became 58 on every beat.
+  //
+  // Then shrink to fit: the band is bounded BELOW by YouTube's own furniture
+  // (~330px of @handle/title/rail) and ABOVE by the cookbook components' own
+  // SAFE_BOTTOM of 1460. That is 1460 -> 1560, and a long line at full size
+  // wants three rows (~200px) and climbs onto the graphic. Estimate the rows
+  // and scale down until it fits rather than growing upward without limit.
+  const base = size ?? Math.round(theme.cap.size * 0.94);
+  const BAND = 1560 - 1460 + 96;          // the 100px band, plus the headroom
+                                          // the designed beats actually leave
+  const CPR = 968 / (base * 0.46);        // chars per row at the hot-word size
+  const chars = words.reduce((a, w) => a + w.w.length + 1, 0);
+  const rows = Math.max(1, Math.ceil(chars / CPR));
+  const fit = Math.min(1, BAND / (rows * base * 1.04));
+  const sz = Math.max(38, Math.round(base * Math.max(fit, 0.72)));
   let ai = words.findIndex((w) => t >= w.start && t <= w.end);
   if (ai < 0) {
     for (let i = 0; i < words.length; i++) if (t >= words[i].start) ai = i;
@@ -391,7 +408,7 @@ const KaraokeLine: React.FC<{
       // the block bottom sits at 1920-360 = 1560 and grows UP into frame space
       // the designed beats deliberately leave empty.
       position: "absolute", left: 56, right: 56, bottom,
-      maxHeight: 1560 - 1180,
+      maxHeight: 1560 - 1380,
       display: "flex", flexWrap: "wrap", alignItems: "baseline",
       justifyContent: "center", gap: "0 12px",
     }}>
@@ -414,7 +431,7 @@ const KaraokeLine: React.FC<{
             fontFamily: hot ? "Anton, Arial Black, sans-serif"
                             : '"Helvetica Neue", Helvetica, Arial, sans-serif',
             fontWeight: hot ? theme.cap.weight : 600,
-            fontSize: hot ? size : size * 0.62,
+            fontSize: hot ? sz : sz * 0.62,
             fontStyle: isNum ? "italic" : "normal",
             fontVariant: hot && !isNum ? "small-caps" : "normal",
             letterSpacing: hot ? theme.cap.ls : 0.5,
