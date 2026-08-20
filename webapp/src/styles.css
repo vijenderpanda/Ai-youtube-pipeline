@@ -7992,3 +7992,16 @@ a.out-chip:hover {
    Three bare integers labelled p25/med/p75 told the reader neither. */
 .score .scu { font-size: 10px; color: var(--faint); margin-top: 3px; letter-spacing: 0.01em; }
 .make-parsed .warn-chip { color: var(--warn); border-color: var(--warn); }
+
+/* Scoreboard is grouped by the day a video went public, newest first — the
+   board used to lead with every flop regardless of age, which is impossible to
+   relate to what you actually shipped this week. */
+.scoreboard .score-day { margin-bottom: 18px; }
+.scoreboard .score-day .pd-head {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-3); display: flex; align-items: center; gap: 8px; margin: 0 0 9px;
+}
+.scoreboard .score-day .pd-today {
+  font-size: 9px; letter-spacing: 0.1em; color: var(--accent-ink); background: var(--accent);
+  border-radius: var(--r-pill); padding: 1px 7px; text-transform: none;
+}

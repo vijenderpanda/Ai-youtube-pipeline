@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import { api } from '../api'
 import { usePoll } from '../hooks'
 import Toast, { useToast } from '../components/Toast'
+import { fmtDayHeading } from '../format'
+import { istToday } from '../triage'
 
 /* =============================================================================
    SCOREBOARD — hit, flop, or too early to tell.
@@ -153,16 +155,26 @@ export default function Scoreboard() {
               ? 'the feed never showed it — not enough views to even measure retention'
               : `the feed showed it and they left early (15s hold ${Math.round(hold)}%)`
 
-        return { v, views, age, clock, maturity, callable, verdict, traj, hold, looping, diagnosis, p25, p50, p75, fresh: freshViews(v) != null }
+        const day = first ? new Date(first).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }) : ''
+        return { v, views, age, day, clock, maturity, callable, verdict, traj, hold, looping, diagnosis, p25, p50, p75, fresh: freshViews(v) != null }
       })
-      .sort((a, b) => {
-        // "needs a decision" first: flops, then hits, then everything else newest-first
-        const rank = (c) => (c.verdict === 'flop' ? 0 : c.verdict === 'hit' ? 1 : c.verdict === 'early' ? 2 : 3)
-        return rank(a) - rank(b) || (a.age ?? 999) - (b.age ?? 999)
-      })
+      // Newest first, by the day it went public. The board used to lead with
+      // every flop regardless of age, which is a ranking you cannot relate to
+      // what you actually shipped this week — and the verdicts are already
+      // colour-coded, so severity does not need the running order too.
+      .sort((a, b) => String(b.day || '').localeCompare(String(a.day || '')) || (a.age ?? 999) - (b.age ?? 999))
   }, [videos, pasted, publishedAt]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const dist = cards.length ? { p25: cards[0].p25, p50: cards[0].p50, p75: cards[0].p75 } : null
+  const byDay = useMemo(() => {
+    const m = new Map()
+    for (const c of cards) {
+      const k = c.day || 'unknown'
+      if (!m.has(k)) m.set(k, [])
+      m.get(k).push(c)
+    }
+    return [...m.entries()]
+  }, [cards])
 
   return (
     <div className="piece scoreboard">
@@ -233,8 +245,14 @@ export default function Scoreboard() {
 
       {vidsQ.loading && !vidsQ.data && <p className="dim">Loading…</p>}
 
-      <div className="score-grid">
-        {cards.map((c) => {
+      {byDay.map(([day, group]) => (
+        <div key={day} className="score-day">
+          <div className="pd-head">
+            {day === 'unknown' ? 'No publish date on record' : fmtDayHeading(day)}
+            {day === istToday() && <span className="pd-today">today</span>}
+          </div>
+          <div className="score-grid">
+        {group.map((c) => {
           const dotPos =
             c.p75 > 0 ? Math.max(2, Math.min(98, (c.views / Math.max(c.p75 * 1.3, 1)) * 100)) : 2
           return (
@@ -298,7 +316,9 @@ export default function Scoreboard() {
             </article>
           )
         })}
-      </div>
+          </div>
+        </div>
+      ))}
 
       <Toast toast={toast} />
     </div>
