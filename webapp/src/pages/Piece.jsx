@@ -153,9 +153,17 @@ export default function Piece() {
   const producing = !!produceJob && (produceJob.status === 'queued' || produceJob.status === 'running')
 
   const rawGate = gateFor(item, counts, producing)
-  // REVIEW is a human gate: the piece waits there until the cut is approved,
-  // even though the backend auto-approves the assets a direct produce pushes.
-  const gate = rawGate === 'schedule' && !cutApproved && item && item.preview_path ? 'review' : rawGate
+  const hasCut = !!(item && item.preview_path)
+  const blocked = (counts.failed || 0) > 0
+  // REVIEW is a HUMAN gate, in both directions:
+  //  · the backend auto-approves the assets a direct produce pushes, so a piece
+  //    that reads as "ready to arm" is still held here until the cut is approved;
+  //  · and once it IS approved, the piece moves on even though per-asset review
+  //    rows may still exist — those are parts, and the human just judged the whole.
+  // A failed part is the one thing that keeps it here regardless.
+  let gate = rawGate
+  if (rawGate === 'schedule' && !cutApproved && hasCut) gate = 'review'
+  if (rawGate === 'review' && cutApproved && hasCut && !blocked) gate = 'schedule'
 
   // Default the publish time from the planned date (09:00), never in the past.
   useEffect(() => {
@@ -397,11 +405,15 @@ export default function Piece() {
         )}
         {gate === 'review' && (
           <>
-            <button className="btn btn-primary" onClick={() => setCutApproved(true)} disabled={!previewSrc}>
+            <button className="btn btn-primary" onClick={() => setCutApproved(true)} disabled={!previewSrc || blocked}>
               Approve cut →
             </button>
             <button className="btn btn-ghost" onClick={doProduce} disabled={!!busy}>Rebuild it</button>
-            <span className="piece-why">A failed take fails again — rebuilding costs real credits.</span>
+            <span className="piece-why">
+              {blocked
+                ? `${counts.failed} part${counts.failed === 1 ? '' : 's'} failed — that has to be fixed before this ships.`
+                : 'A failed take fails again — rebuilding costs real credits.'}
+            </span>
           </>
         )}
         {gate === 'schedule' && (
