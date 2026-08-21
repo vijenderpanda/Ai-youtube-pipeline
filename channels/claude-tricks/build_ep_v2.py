@@ -3477,7 +3477,8 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
                            "hot": _hi})
 
         for _w in caps:
-            if _cur and (_w["start"] - _cur[-1]["end"] >= 0.25 or len(_cur) >= 3):
+            if _cur and (_w["start"] - _cur[-1]["end"] >= 0.25 or len(_cur) >= 3
+                         or _w["end"] - _cur[0]["start"] >= 1.4):
                 _flush_chip(); _cur = []
             _cur.append(_w)
         _flush_chip()
@@ -3497,6 +3498,18 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         # whiteout blooms sit ON beat boundaries, named by beat index
         _blooms = [round(_seg_t[b], 3) for b in (_fl.get("bloom_beats") or [])
                    if b < len(_seg_t)]
+        # chips_to routes the transcript INTO the film's spine component (the
+        # CLAYLIGHT worlds caption through their own ChipClay layer, in-world
+        # type) instead of the global Anton ChipCaption. Both at once would put
+        # six words on screen and fail U7 by construction.
+        _chips_to = _fl.get("chips_to")
+        if _chips_to:
+            _clay = [{"t": c["t"], "end": c["end"], "text": c["text"],
+                      "hot": c["hot"] >= 0} for c in _mg]
+            for _sg in segments:
+                if _sg.get("kind") == "cookbook" and _sg["cookbook"]["id"] == _chips_to:
+                    _sg["cookbook"].setdefault("props", {})["chips"] = _clay
+            _mg = []
         spec["film"] = {"chips": _mg, "blooms": _blooms,
                         "driftAmp": _fl.get("driftAmp", 7)}
         if _fl.get("plate"):

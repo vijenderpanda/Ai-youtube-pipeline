@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from "react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { OUT_E, IN_E, clamp01, vnoise1 } from "./motion";
+import { useFilmT } from "./filmclock";
 
 /* =============================================================================
    WorldCamera — a real camera over an oversized world.
@@ -79,9 +80,7 @@ export const WorldCamera: React.FC<WorldCameraProps> = ({
   height = 1920,
   children,
 }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const t = frame / fps;
+  const t = useFilmT();
 
   const keys = track.length ? track : [{ t: 0, x: width / 2, y: height / 2, z: 1 }];
 

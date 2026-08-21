@@ -1,0 +1,72 @@
+[
+ {
+  "w": "THE",
+  "start": 0.0,
+  "end": 0.15
+ },
+ {
+  "w": "NOTES",
+  "start": 0.21,
+  "end": 0.43
+ },
+ {
+  "w": "PROMPT",
+  "start": 0.5,
+  "end": 0.85
+ },
+ {
+  "w": "IS",
+  "start": 0.91,
+  "end": 1.01
+ },
+ {
+  "w": "IN",
+  "start": 1.07,
+  "end": 1.13
+ },
+ {
+  "w": "THE",
+  "start": 1.16,
+  "end": 1.23
+ },
+ {
+  "w": "DESCRIPTION",
+  "start": 1.28,
+  "end": 1.83
+ },
+ {
+  "w": "STEAL",
+  "start": 2.08,
+  "end": 2.37
+ },
+ {
+  "w": "IT",
+  "start": 2.43,
+  "end": 2.5
+ },
+ {
+  "w": "BEFORE",
+  "start": 2.55,
+  "end": 2.82
+ },
+ {
+  "w": "YOUR",
+  "start": 2.86,
+  "end": 2.96
+ },
+ {
+  "w": "NEXT",
+  "start": 3.01,
+  "end": 3.2
+ },
+ {
+  "w": "LONG",
+  "start": 3.25,
+  "end": 3.41
+ },
+ {
+  "w": "CHAT",
+  "start": 3.47,
+  "end": 4.09
+ }
+]

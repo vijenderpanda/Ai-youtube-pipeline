@@ -4,6 +4,7 @@ import {
 } from "remotion";
 import { rgba, clamp } from "./kit";
 import { enter, settle, idle, clamp01, mhash } from "./motion";
+import { useFilmT } from "./filmclock";
 
 /* =============================================================================
    Claylight — the stage components of the CLAYLIGHT world.
@@ -111,9 +112,8 @@ export const SpriteLayer: React.FC<SpriteProps> = ({
   idleAmp = 1.6, opacity = 1, zIndex, seed = 0,
   exitStyle = "fall",
 }) => {
-  const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const t = frame / fps;
+  const t = useFilmT();
   const w = h * aspect;
 
   // drop-in: from the camera (big + blurred) onto its mark, 8f overshoot
@@ -209,9 +209,8 @@ export const SlabScreen: React.FC<SlabProps> = ({
   capture, video, captureFrom = 0, x, y, h, aspect, provenance, staged,
   spill = "#3a3f4c", enterAt, zIndex, children,
 }) => {
-  const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const t = frame / fps;
+  const t = useFilmT();
   const e = enterAt == null ? 1 : enter(t, enterAt, 0.38, 0.05);
   if (e <= 0.001) return null;
   const w = h * aspect;
@@ -292,9 +291,7 @@ export const ChatMock: React.FC<{
   fontSize?: number;
   pad?: number;
 }> = ({ lines, scroll = 0, fontSize = 30, pad = 26 }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const t = frame / fps;
+  const t = useFilmT();
   return (
     <div style={{
       position: "absolute", inset: 0, background: "#241B1E",
@@ -359,9 +356,8 @@ export const ChipClay: React.FC<{
   anchorY?: number;
   size?: number;
 }> = ({ chips = [], anchorY = 1306, size = 72 }) => {
-  const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const t = frame / fps;
+  const t = useFilmT();
   let cur: ClayChip | null = null;
   for (let i = 0; i < chips.length; i++) {
     const c = chips[i];
@@ -403,9 +399,7 @@ export const CounterClay: React.FC<{
   size?: number;
   /** roll digits over this many seconds around each keyframe. */
 }> = ({ keys, label, x, y, size = 44 }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const t = frame / fps;
+  const t = useFilmT();
   if (!keys.length || t < keys[0][0]) return null;
   let v = keys[0][1];
   for (let i = 0; i < keys.length; i++) {

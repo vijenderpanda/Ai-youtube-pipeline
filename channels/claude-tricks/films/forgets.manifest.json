@@ -140,7 +140,8 @@
   ],
   "film": {
     "bloom_beats": [],
-    "driftAmp": 0
+    "driftAmp": 0,
+    "chips_to": "ForgetsClay"
   },
   "cookbook": {
     "ForgetsClay": {

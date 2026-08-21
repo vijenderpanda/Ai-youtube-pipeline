@@ -1,0 +1,86 @@
+{
+ "_note": "COMPILED from films/forgets.manifest.json by cast_scenes.py — edit the MANIFEST, not this file.",
+ "title": "Why Claude Forgets Long Chats 🧠",
+ "tags": "claude forgets,context window,claude ai,long chats,ai memory,chatgpt forgets,claude tips,ai for beginners,summary prompt,fresh chat,ai tools,claude tricks",
+ "outro": true,
+ "outro_dur": 0,
+ "outro_src": "ep_forgets/outro_card.mp4",
+ "outro_cta": "The notes prompt is in the description. Steal it before your next long chat.",
+ "lines": [
+  "Claude just forgot what you told it.",
+  "Every message becomes a block in this box.",
+  "The box holds two lakh tokens. Then it's full.",
+  "New messages push the oldest ones out.",
+  "Including yours.",
+  "Ask about it now — Claude genuinely can't see it.",
+  "The fix: before it fills, ask for notes. Paste them into a fresh chat.",
+  "Ask again — instant answer. The exact prompt is in the description."
+ ],
+ "hot_words": [
+  "FORGOT",
+  "EVERY",
+  "BLOCK",
+  "LAKH",
+  "FULL",
+  "OLDEST",
+  "YOURS",
+  "CAN'T",
+  "SEE",
+  "NOTES",
+  "FRESH",
+  "ANSWER",
+  "DESCRIPTION"
+ ],
+ "beats": [
+  "cook:ForgetsClay#hook",
+  "cook:ForgetsClay#fill",
+  "cook:ForgetsClay#limit",
+  "cook:ForgetsClay#push",
+  "cook:ForgetsClay#loss",
+  "cook:ForgetsClay#proof",
+  "cook:ForgetsClay#fix",
+  "cook:ForgetsClay#loop"
+ ],
+ "spine": [
+  "ForgetsClay"
+ ],
+ "film": {
+  "bloom_beats": [],
+  "driftAmp": 0,
+  "chips_to": "ForgetsClay"
+ },
+ "cookbook": {
+  "ForgetsClay": {
+   "coralAt": "@beat0+2.0",
+   "kneeAt": "@beat1+3.0",
+   "fullAt": "@beat2+2.2",
+   "coralOutAt": "@beat4+0.55",
+   "diveAt": "@beat5+1.9",
+   "proofAt": "@beat5+2.5",
+   "pullAt": "@beat6+2.4",
+   "payoffAt": "@beat6+4.2",
+   "loopAt": "@beat7+1.6",
+   "endAt": "@beat8",
+   "staged": true,
+   "provenance": "STAND-IN — final: claude.ai",
+   "counterKeys": [
+    [
+     1.6,
+     31000
+    ],
+    [
+     5.9,
+     176000
+    ],
+    [
+     6.05,
+     200000
+    ]
+   ]
+  },
+  "OutroGlass": {}
+ },
+ "desc_prompt": "📋 THE EXACT PROMPT (copy it — works in Claude, ChatGPT or Gemini):\n\nBefore this chat gets long: summarize everything worth keeping so far — decisions, facts, numbers, names — as short notes I can paste into a fresh chat and continue exactly where we left off.",
+ "desc_cta": "What's the one thing Claude keeps forgetting on you? Tell me below.",
+ "steps": []
+}

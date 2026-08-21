@@ -6,6 +6,7 @@ import {
   CLAY, ToyStage, SpriteLayer, SlabScreen, ChipClay, CounterClay, ClayChip, ChatMock,
 } from "./Claylight";
 import { WorldCamera, Parallax } from "./WorldCamera";
+import { FilmT } from "./filmclock";
 
 /* =============================================================================
    ForgetsClay — the pilot film in the CLAYLIGHT world.
@@ -83,15 +84,17 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
      Deterministic, derived from the anchors. Bricks stack BEHIND the box and
      peek above the mouth — a flat sprite cannot contain them, so the fill is
      told by the rising skyline of brick tops. */
-  const bricks: { t: number; dx: number; by: number; coral?: boolean }[] = [];
+  const bricks: { t: number; dx: number; by: number; coral?: boolean; out?: number }[] = [];
   {
     // each brick lands INSIDE the mouth; later bricks land higher, so the
     // skyline of peeking tops rises as the box fills
     // an opening VOLLEY — three falls inside the first second, so the hook is
     // motion the moment the feed shows frame 1 — then the pace settles
     const pre = [0.1, 0.55, 1.0, 2.9, 3.8, kneeAt - 1.3];
+    const firstOut = [kneeAt + 0.06, kneeAt + 3.1];   // ejected: at the limit, and on line 4
     pre.forEach((tt, i) => {
-      bricks.push({ t: tt, dx: -30 + (mhash(i * 3 + 1) - 0.5) * 140, by: RIM_Y + 150 - i * 20 });
+      bricks.push({ t: tt, dx: -30 + (mhash(i * 3 + 1) - 0.5) * 140, by: RIM_Y + 150 - i * 20,
+                    out: firstOut[i] });
     });
     bricks.push({ t: coralAt, dx: -46, by: RIM_Y + 96, coral: true });
     // the post-knee burst: the box crowds, tops jostling above the rim
@@ -109,7 +112,7 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
   /* ---- camera ------------------------------------------------------------ */
   const dive = clamp01((t - diveAt - 0.05) / 0.25);
   const proofOn = clamp01((t - proofAt) / 0.3);
-  const proofOff = clamp01((t - pullAt) / 0.35);
+  const proofOff = clamp01((t - pullAt) / 0.7);
   const track = [
     { t: 0, x: 540, y: 930, z: 1 },
     { t: coralAt + 0.6, x: 470, y: 980, z: 1.14 },       // shelf dolly toward the box
@@ -119,13 +122,15 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
     { t: diveAt, x: 430, y: 880, z: 1.3 },
     { t: diveAt + 0.6, x: MOUTH.x, y: MOUTH.y + 60, z: 5.4, dur: 0.6 },   // THE DIVE
     { t: pullAt, x: MOUTH.x, y: MOUTH.y + 60, z: 5.4 },
-    { t: pullAt + 0.9, x: 620, y: 950, z: 1.02, dur: 0.9 },               // the only reverse dolly
+    { t: pullAt + 1.3, x: 620, y: 950, z: 1.02, dur: 1.3 },               // the only reverse dolly
+    { t: payoffAt + 0.9, x: 640, y: 955, z: 1.07 },                        // keep travelling through the hold
     { t: loopAt + 0.8, x: 540, y: 930, z: 1, dur: 0.8 },                  // home = frame 1
   ];
 
   const amberBox = t >= fullAt && t < diveAt;
 
   return (
+    <FilmT.Provider value={t}>
     <AbsoluteFill style={{ width, height }}>
       <ToyStage>
         <WorldCamera track={track} punches={[kneeAt, coralOutAt]} punchScale={1.12}>
@@ -138,7 +143,7 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
           {/* box + contents share one recoil when the coral is thrown out */}
           <div style={{
             position: "absolute", inset: 0,
-            transform: `rotate(${(settle(t, coralOutAt + 0.42, 0.55) * 2.1).toFixed(2)}deg)`,
+            transform: `rotate(${(settle(t, coralOutAt + 0.42, 0.55) * 2.1).toFixed(2)}deg) translateY(${(settle(t, kneeAt, 0.45) * 9).toFixed(2)}px)`,
             transformOrigin: `${BOX.x}px ${BOX.y}px`,
           }}>
           {/* the box BACK — the whole sprite, behind the bricks */}
@@ -162,8 +167,8 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
               src={b.coral ? `${LIB}/brick_coral.png` : `${LIB}/brick_cream.png`}
               x={BOX.x + b.dx} y={b.by} h={b.coral ? 175 : 160} aspect={b.coral ? 1.207 : 1.093}
               enterAt={b.t}
-              exitAt={b.coral ? coralOutAt : undefined}
-              exitStyle={b.coral ? "eject" : "fall"}
+              exitAt={b.coral ? coralOutAt : b.out}
+              exitStyle={b.coral || b.out != null ? "eject" : "fall"}
               state={b.coral ? undefined : amberBox ? "amber" : "neutral"}
               seed={i + 2} zIndex={6}
             />
@@ -202,7 +207,7 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
             </SlabScreen>
           ) : (
             <SlabScreen x={772} y={664} h={360} aspect={1.195} zIndex={8}
-                        enterAt={pullAt + 0.25}
+                        enterAt={pullAt + 1.35}
                         provenance={provenance} staged={staged} spill="#2f4a40">
               <ChatMock fontSize={23} pad={18} lines={[
                 { who: "u", text: "Turn this chat into notes." },
@@ -224,8 +229,8 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
           {/* the jar arrives for the payoff, in the lamplight */}
           {t >= pullAt ? (
             <SpriteLayer src={`${LIB}/jar.png`} x={780} y={1265} h={470} aspect={0.69}
-                         enterAt={pullAt + 0.5} state={t >= payoffAt ? "mint" : "neutral"}
-                         seed={4} zIndex={10} />
+                         enterAt={pullAt + 0.95} state={t >= payoffAt ? "mint" : "neutral"}
+                         seed={4} zIndex={10} idleAmp={2.6} />
           ) : null}
 
           {/* the counter — the one measured number in the film */}
@@ -242,7 +247,7 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
           <div style={{
             position: "absolute", left: 70, top: 420, width: 940, height: 850, zIndex: 20,
             opacity: proofOn * (1 - proofOff),
-            transform: `scale(${(0.96 + 0.04 * OUT_E(proofOn)).toFixed(3)})`,
+            transform: `scale(${(0.96 + 0.04 * OUT_E(proofOn) + (t - proofAt) * 0.006).toFixed(4)})`,
             borderRadius: 30, overflow: "hidden",
             border: `2px solid ${rgba(CLAY.cream, 0.14)}`,
             boxShadow: `0 60px 130px -60px ${rgba("#000", 0.95)}`,
@@ -260,8 +265,48 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
         ) : null}
 
         <ChipClay chips={chips} />
+
+        {/* THE LIMIT STAMP — U10 at full size: the film's one measured number
+            takes the frame for a third of a second, then collapses into the
+            small counter it came from. Fusion's odometer moment, ours. */}
+        {t >= kneeAt && t < kneeAt + 1.05 ? (() => {
+          const inP = clamp01((t - kneeAt) / 0.12);
+          const outP = clamp01((t - kneeAt - 0.5) / 0.45);
+          const sc = (0.7 + 0.45 * OUT_E(inP)) * (1 - outP * 0.72);
+          return (
+            <div style={{
+              position: "absolute", left: 0, right: 0, top: 640, zIndex: 36,
+              display: "flex", justifyContent: "center",
+              opacity: Math.min(1, inP * 1.6) * (1 - clamp01((t - kneeAt - 0.82) / 0.22)),
+              transform: `translate(${outP * 180}px, ${outP * 420}px) scale(${sc.toFixed(3)})`,
+              pointerEvents: "none",
+            }}>
+              <div style={{
+                fontFamily: '"IBM Plex Mono", monospace', fontWeight: 500,
+                fontSize: 148, letterSpacing: 2, color: CLAY.amber,
+                fontVariantNumeric: "tabular-nums" as const,
+                textShadow: `0 0 60px ${rgba(CLAY.amber, 0.65)}, 0 6px 30px ${rgba("#000", 0.8)}`,
+              }}>2,00,000</div>
+            </div>
+          );
+        })() : null}
+
+        {/* THE KNEE FLASH — U9 demands the film's loudest visual second sit on
+            the limit moment, and a digit-roll alone is small pixels. Full-frame
+            amber wash, 3 frames up, fast decay + the punch already in the rig. */}
+        {t >= kneeAt && t < kneeAt + 0.34 ? (() => {
+          const d = t - kneeAt;
+          // frame 1-2: a hard, nearly-full-frame hit; then a fast amber decay.
+          const hard = d < 0.11 ? 0.58 - d * 3 : 0;
+          const soft = Math.max(0, 0.3 * (1 - d / 0.34));
+          return <AbsoluteFill style={{
+            background: `radial-gradient(105% 85% at 50% 55%, ${rgba("#FFE8C4", hard)} 0%, ${rgba(CLAY.amber, soft)} 45%, ${rgba(CLAY.amber, 0)} 80%)`,
+            zIndex: 35, pointerEvents: "none",
+          }} />;
+        })() : null}
       </ToyStage>
     </AbsoluteFill>
+    </FilmT.Provider>
   );
 };
 
