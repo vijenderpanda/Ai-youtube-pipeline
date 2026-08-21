@@ -46,6 +46,7 @@ const TOP_Y = 470;           // ceiling for the highest arc node
 const HEAD_Y = 1010;         // headline block sits under the plot
 
 const EASE_OUT = Easing.bezier(0.16, 1, 0.3, 1);
+const OUT_E = Easing.bezier(0.16, 1, 0.3, 1);
 /** seeded jitter — Math.random breaks resumability, see LedgerFlow */
 const jit = (i: number) => Math.sin(i * 12.9898 + 4.1414);
 
@@ -71,6 +72,14 @@ export type CareerArcProps = {
   /** shown BEFORE the snap — the problem, in the same slot the payoff takes. */
   preHeadline?: string;
   preSubhead?: string;
+  /** beat-local second a glass prompt card DROPS IN. The line flinches from the
+   *  impact — the spine has to react to events, not sit under them, or it stops
+   *  reading as one object having one continuous experience. */
+  pasteAt?: number;
+  pasteText?: string[];
+  /** beat-local second the arc shrinks and demotes to a header strip, handing
+   *  off to whatever beat comes next. */
+  demoteAt?: number;
   accent?: string;
   ink?: string;
   transparent?: boolean;
@@ -87,6 +96,9 @@ export const CareerArc: React.FC<CareerArcProps> = ({
   subhead,
   preHeadline,
   preSubhead,
+  pasteAt,
+  pasteText,
+  demoteAt,
   accent = BRAND.mag,
   ink = BRAND.ink,
   transparent,
@@ -140,6 +152,21 @@ export const CareerArc: React.FC<CareerArcProps> = ({
   const headIn = snapped ? 1 : 0;
   const preOut = snapped ? 0 : 1;
 
+  // ---- the spine is ALIVE, not a static rule -----------------------------
+  // a line that only moves when something happens to it reads as a diagram.
+  // a slow breath under everything reads as one object that is present the
+  // whole time, which is the entire point of a through-line.
+  const breathe = Math.sin(t * 1.15) * 3.2;
+
+  // the card lands and the line FLINCHES — a damped ring, not a bounce
+  const flinch = pasteAt == null || t < pasteAt ? 0
+    : Math.exp(-(t - pasteAt) * 5.5) * Math.sin((t - pasteAt) * 26) * 22;
+
+  // demote: the whole plot shrinks toward a header strip and hands off
+  const demote = demoteAt == null ? 0 : OUT_E(clamp((t - demoteAt) / 0.75));
+  const plotScale = 1 - demote * 0.42;
+  const plotShiftY = -demote * 300;
+
   const word = (s: string, hot?: string) =>
     s.split(" ").map((w, i) => (
       <span key={i} style={{
@@ -161,7 +188,11 @@ export const CareerArc: React.FC<CareerArcProps> = ({
         }}>{runLabel}</div>
       ) : null}
 
-      <svg width={width} height={height} style={{ position: "absolute", inset: 0 }}>
+      <svg width={width} height={height} style={{
+        position: "absolute", inset: 0,
+        transform: `translateY(${breathe + flinch + plotShiftY}px) scale(${plotScale})`,
+        transformOrigin: "540px 470px",
+      }}>
         <defs>
           <linearGradient id="ca-line" x1="0" y1="1" x2="1" y2="0">
             <stop offset="0%" stopColor={accent} />
@@ -220,9 +251,36 @@ export const CareerArc: React.FC<CareerArcProps> = ({
         ) : null}
       </svg>
 
+      {pasteAt != null && pasteText?.length ? (() => {
+        const sp = spring({
+          frame: frame - Math.round((start + pasteAt - 0.22) * fps),
+          fps, config: { damping: 15, stiffness: 200, mass: 0.7 },
+        });
+        const gone = demoteAt == null ? 0 : clamp((t - (demoteAt - 0.3)) / 0.4);
+        if (sp <= 0.001 || gone >= 1) return null;
+        return (
+          <div style={{
+            position: "absolute", left: 76, top: 236, width: 928,
+            opacity: sp * (1 - gone),
+            transform: `translateY(${(1 - sp) * -300 - gone * 40}px)`,
+            borderRadius: 24, overflow: "hidden", padding: "34px 40px",
+            background: `linear-gradient(180deg, ${rgba("#ffffff", 0.08)} 0%, ${rgba("#ffffff", 0.022)} 100%)`,
+            border: `1px solid ${rgba("#ffffff", 0.18)}`,
+            boxShadow: `0 30px 70px -32px ${rgba("#000", 0.9)}`,
+          }}>
+            <div style={{ position: "absolute", left: 0, top: 0, width: 6, height: "100%", background: accent }} />
+            {pasteText.slice(0, 4).map((ln, i) => (
+              <div key={i} style={{ fontFamily: MONO, fontSize: 30, lineHeight: "46px",
+                                    color: rgba(BRAND.paper, 0.82) }}>{ln}</div>
+            ))}
+          </div>
+        );
+      })() : null}
+
       {/* THE HEADLINE SLOT. The problem and the reframe occupy the SAME space,
           so the cut replaces one claim with the other rather than adding to it. */}
-      <div style={{ position: "absolute", left: PLOT_L - 4, top: HEAD_Y, right: 64 }}>
+      <div style={{ position: "absolute", left: PLOT_L - 4, top: HEAD_Y, right: 64,
+                    opacity: 1 - demote, transform: `translateY(${demote * -60}px)` }}>
         {preHeadline && preOut > 0 ? (
           <>
             <div style={{ fontFamily: DISPLAY, fontSize: 168, lineHeight: "150px",
@@ -258,6 +316,9 @@ export const careerArcDemo: CareerArcProps = {
     { label: "trained two juniors", lift: 0.86, at: 5.75 },
   ],
   snapAt: 6,
+  pasteAt: 2.35,
+  pasteText: ["You are my appraisal coach.", "Ask me ONE question at a time."],
+  demoteAt: 8.0,
   preHeadline: "FLAT.",
   preSubhead: "AND YOU CAN'T EXPLAIN WHY",
   headline: "NOT FLAT.",

@@ -547,7 +547,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="CareerArcDemo"
         component={CareerArc}
-        durationInFrames={9 * FPS}
+        durationInFrames={10 * FPS}
         fps={FPS}
         width={1080}
         height={1920}
