@@ -7,15 +7,16 @@ import { WorldCamera } from "./WorldCamera";
 import { ExposureScore, FlashCut } from "./craft";
 
 /* =============================================================================
-   BillNoir — ep2 "GHAR MEIN CHOR": a whodunit in a lamp-lit house at night.
+   BillDay — ep2 "GHAR MEIN CHOR": a whodunit in a sunlit house, daytime cut.
 
-   THE TREATMENT LESSON, applied. The last cut failed as "a diagram": flat
-   fills, one-step values, hard shadows. Here every environment is a
-   BAKED-LIGHT FLUX plate (assets/noir/*) — real lamplight, real material —
-   and code does what code does richly: light dying room by room, verdict
-   stamps, the needle, the camera. Two-layer shadows on every card (contact +
-   ambient bloom), a graded ground, and a dark value anchor in every frame,
-   per the measured forensics.
+   VJ's call on the noir cut: "storyboards promising but instead of dark
+   environment create day time environment." Same story, same treatment
+   physics, daylight world: every environment is a BAKED-SUNLIGHT FLUX plate
+   (assets/day/*), the ground is graded warm daylight, and the DARK cards —
+   the bill bars and the terminal dock — are the value anchors the forensics
+   demanded (dark-on-cream, the Isenberg move exactly). Cleared rooms don't
+   go black; they GREY-WASH like evidence photos being filed away, so the
+   countdown survives the daylight.
 
    THE STORY LOGIC, on screen (VJ's demand): three DEMO bill bars step up
    8,577 / 9,940 / 11,990 -> the AI overlays where SUMMER starts -> the
@@ -29,16 +30,17 @@ import { ExposureScore, FlashCut } from "./craft";
    the AI is the detective, never an anonymous stamp.
    ========================================================================== */
 
-const NOIR = {
-  ground: "#0D0B09",
-  ground2: "#1A1512",
+const DAY = {
+  ground: "#EFE7D8",       // warm daylight wall
+  ground2: "#F7F1E4",      // the sunlit center
   card: "#141110",
-  ink: "#F2E8D8",
-  mute: "#9A8D7C",
-  coral: "#FF7A55",
-  amber: "#FFB454",
-  green: "#4ADE80",       // the terminal green of the detective console
-  cleared: "#8FA98F",
+  ink: "#2B241D",          // dark ink on daylight
+  paper: "#F2E8D8",        // light text on the DARK anchor cards
+  mute: "#8A7D6A",
+  coral: "#E8603C",
+  amber: "#C77F14",        // amber deepened for a light ground
+  green: "#4ADE80",        // terminal green, lives on the dark dock
+  cleared: "#6E7D6E",
 } as const;
 
 const SANS = '"Inter", -apple-system, sans-serif';
@@ -50,11 +52,11 @@ const cardShadow = `0 6px 10px ${rgba("#000", 0.5)}, 0 36px 80px ${rgba("#000", 
 const cardRim = `inset 0 1.5px 0 ${rgba("#FFF6E8", 0.22)}`;
 
 const ROOMS = [
-  { id: "kitchen", plate: "assets/noir/room_kitchen.png", label: "KITCHEN · FRIDGE" },
-  { id: "tv", plate: "assets/noir/room_tv.png", label: "LIVING · TV" },
-  { id: "geyser", plate: "assets/noir/room_geyser.png", label: "BATH · GEYSER" },
-  { id: "washing", plate: "assets/noir/room_washing.png", label: "UTILITY · WASHING" },
-  { id: "study", plate: "assets/noir/room_study.png", label: "STUDY · OLD AC" },
+  { id: "kitchen", plate: "assets/day/room_kitchen.png", label: "KITCHEN · FRIDGE" },
+  { id: "tv", plate: "assets/day/room_tv.png", label: "LIVING · TV" },
+  { id: "geyser", plate: "assets/day/room_geyser.png", label: "BATH · GEYSER" },
+  { id: "washing", plate: "assets/day/room_washing.png", label: "UTILITY · WASHING" },
+  { id: "study", plate: "assets/day/room_study.png", label: "STUDY · OLD AC" },
 ];
 const STACK_TOP = 300;
 const CARD_H = 200;
@@ -63,7 +65,7 @@ const CARD_W = 900;
 const STUDY = 4;
 const studyCenterY = STACK_TOP + STUDY * (CARD_H + CARD_GAP) + CARD_H / 2;
 
-export type BillNoirProps = {
+export type BillDayProps = {
   bar2At?: number; bar3At?: number;
   lineupAt?: number; kneeAt?: number; caseAt?: number;
   clueAt?: number; deltaAt?: number;
@@ -76,7 +78,7 @@ export type BillNoirProps = {
   start?: number; width?: number; height?: number;
 };
 
-export const BillNoir: React.FC<BillNoirProps> = ({
+export const BillDay: React.FC<BillDayProps> = ({
   bar2At = 1.0, bar3At = 1.9,
   lineupAt = 4.8, kneeAt = 4.8, caseAt = 6.0,
   clueAt = 8.8, deltaAt = 10.1,
@@ -107,11 +109,11 @@ export const BillNoir: React.FC<BillNoirProps> = ({
 
   /* ---- exposure: lamplight film — dips as rooms die, blooms on the lock --- */
   const expo: [number, number][] = [
-    [0, 0.9], [bar3At, 1.0], [lineupAt - 0.2, 0.85], [lineupAt + 0.2, 1.0],
-    [caseAt, 0.92], [deltaAt, 0.96],
-    [clearAts[0], 0.88], [clearAts[3], 0.72],
-    [pushAt + 0.8, 0.8], [lockAt, 1.05], [lockAt + 0.5, 0.85],
-    [circleAt, 0.95], [circleAt + 1.2, 1.0], [stillAt, 0.95], [endAt, 0.88],
+    [0, 0.96], [bar3At, 1.02], [lineupAt - 0.2, 0.94], [lineupAt + 0.2, 1.04],
+    [caseAt, 0.98], [deltaAt, 1.0],
+    [clearAts[0], 0.96], [clearAts[3], 0.9],
+    [pushAt + 0.8, 0.94], [lockAt, 1.07], [lockAt + 0.5, 0.98],
+    [circleAt, 1.0], [circleAt + 1.2, 1.03], [stillAt, 1.0], [endAt, 0.97],
   ];
 
   /* which rooms are dark: cleared order kitchen, tv, geyser, washing */
@@ -152,12 +154,12 @@ export const BillNoir: React.FC<BillNoirProps> = ({
         overflow: "hidden", zIndex: 12,
       }}>
         <div style={{ position: "absolute", left: 34 * s, top: 24 * s, fontFamily: MONO,
-                      fontSize: 26 * s, letterSpacing: 4, color: NOIR.mute }}>
+                      fontSize: 26 * s, letterSpacing: 4, color: DAY.mute }}>
           ⚡ ELECTRICITY · LAST 3 MONTHS
         </div>
         <div style={{ position: "absolute", right: 30 * s, top: 22 * s, fontFamily: MONO,
-                      fontSize: 22 * s, letterSpacing: 3, color: rgba(NOIR.mute, 0.55),
-                      border: `1.5px solid ${rgba(NOIR.mute, 0.4)}`, borderRadius: 8,
+                      fontSize: 22 * s, letterSpacing: 3, color: rgba(DAY.mute, 0.55),
+                      border: `1.5px solid ${rgba(DAY.mute, 0.4)}`, borderRadius: 8,
                       padding: `${3 * s}px ${10 * s}px` }}>DEMO</div>
         {BARS.map((b, i) => {
           const on = OUT_E(clamp01((t - barOn[i]) / 0.45));
@@ -173,7 +175,7 @@ export const BillNoir: React.FC<BillNoirProps> = ({
               <div style={{
                 width: "100%", height: bh, borderRadius: 12 * s,
                 background: isJun
-                  ? `linear-gradient(180deg, ${rgba(NOIR.coral, 0.95)}, ${rgba("#C24E2E", 0.95)})`
+                  ? `linear-gradient(180deg, ${rgba(DAY.coral, 0.95)}, ${rgba("#C24E2E", 0.95)})`
                   : `linear-gradient(180deg, ${rgba("#8C7A64", 0.9)}, ${rgba("#5C4F41", 0.9)})`,
                 boxShadow: `0 4px 8px ${rgba("#000", 0.5)}, inset 0 2px 0 ${rgba("#FFF", 0.25)}`,
                 position: "relative", overflow: "hidden",
@@ -182,14 +184,14 @@ export const BillNoir: React.FC<BillNoirProps> = ({
                   <div style={{
                     position: "absolute", left: 0, top: 0, width: "100%", height: jumpH,
                     background: rgba("#FFD9A0", 0.85 * jump),
-                    boxShadow: `0 0 ${30 * jump}px ${rgba(NOIR.amber, 0.9)}`,
+                    boxShadow: `0 0 ${30 * jump}px ${rgba(DAY.amber, 0.9)}`,
                   }} />
                 ) : null}
               </div>
               <div style={{ marginTop: 10 * s, textAlign: "center", fontFamily: MONO,
-                            fontSize: 24 * s, color: NOIR.mute }}>{b.m}</div>
+                            fontSize: 24 * s, color: DAY.mute }}>{b.m}</div>
               <div style={{ textAlign: "center", fontFamily: MONO, fontSize: 30 * s,
-                            color: isJun ? NOIR.coral : NOIR.ink,
+                            color: isJun ? DAY.coral : DAY.ink,
                             fontVariantNumeric: "tabular-nums" as const }}>
                 ₹{b.v.toLocaleString("en-IN")}
               </div>
@@ -204,12 +206,12 @@ export const BillNoir: React.FC<BillNoirProps> = ({
               <div style={{
                 position: "absolute", left: (120 + 260) * s, bottom: 60 * s,
                 width: 430 * s, height: 340 * s * on,
-                borderLeft: `3px dashed ${rgba(NOIR.amber, 0.75)}`,
+                borderLeft: `3px dashed ${rgba(DAY.amber, 0.75)}`,
                 pointerEvents: "none",
               }} />
               <div style={{
                 position: "absolute", left: (140 + 260) * s, top: 70 * s, fontFamily: MONO,
-                fontSize: 25 * s, letterSpacing: 3, color: NOIR.amber, opacity: on,
+                fontSize: 25 * s, letterSpacing: 3, color: DAY.amber, opacity: on,
               }}>☀ SUMMER STARTS</div>
             </>
           );
@@ -221,9 +223,9 @@ export const BillNoir: React.FC<BillNoirProps> = ({
             <div style={{
               position: "absolute", right: 40 * s, top: 120 * s,
               opacity: on, transform: `scale(${0.9 + on * 0.1 + settle(t, deltaAt + 0.4, 0.4) * 0.05})`,
-              background: rgba(NOIR.amber, 0.14), border: `2.5px solid ${NOIR.amber}`,
+              background: rgba(DAY.amber, 0.14), border: `2.5px solid ${DAY.amber}`,
               borderRadius: 14 * s, padding: `${10 * s}px ${20 * s}px`,
-              fontFamily: MONO, fontSize: 40 * s, color: NOIR.amber,
+              fontFamily: MONO, fontSize: 40 * s, color: DAY.amber,
               fontVariantNumeric: "tabular-nums" as const,
             }}>JUMP ≈ ₹3,400</div>
           );
@@ -254,12 +256,12 @@ export const BillNoir: React.FC<BillNoirProps> = ({
       }}>
         <Img src={staticFile(r.plate)} style={{
           width: "100%", height: "100%", objectFit: "cover",
-          filter: dark > 0 ? `brightness(${1 - dark * 0.82})` : undefined,
+          filter: dark > 0 ? `grayscale(${dark * 0.95}) brightness(${1 - dark * 0.32}) contrast(${1 - dark * 0.15})` : undefined,
         }} />
         <div style={{
           position: "absolute", left: 18, bottom: 12, fontFamily: MONO,
           fontSize: 23, letterSpacing: 3,
-          color: dark > 0.5 ? rgba(NOIR.mute, 0.5) : NOIR.ink,
+          color: dark > 0.5 ? rgba("#FFF6E8", 0.45) : "#F6EEDF",
           textShadow: `0 2px 8px ${rgba("#000", 0.9)}`,
         }}>{r.label}</div>
         {/* CLEARED stamp — it stays on the dead room */}
@@ -267,7 +269,7 @@ export const BillNoir: React.FC<BillNoirProps> = ({
           <div style={{
             position: "absolute", right: 26, top: CARD_H / 2 - 30,
             fontFamily: DISP, fontWeight: 800, fontSize: 44, letterSpacing: 2,
-            color: NOIR.cleared, border: `3.5px solid ${NOIR.cleared}`,
+            color: DAY.cleared, border: `3.5px solid ${DAY.cleared}`,
             borderRadius: 12, padding: "2px 18px",
             transform: `rotate(-9deg) scale(${0.8 + Math.min(dark, 1) * 0.2})`,
             opacity: Math.min(1, dark * 1.6),
@@ -292,10 +294,10 @@ export const BillNoir: React.FC<BillNoirProps> = ({
         left: 830 + (540 - 830) * e, top: 250 + (ty - 250) * e,
         zIndex: 20, opacity: 1 - p * 0.3,
         transform: `scale(${1 - e * 0.3})`,
-        background: rgba(NOIR.green, 0.16), border: `2px solid ${NOIR.green}`,
+        background: rgba(DAY.green, 0.16), border: `2px solid ${DAY.green}`,
         borderRadius: 16, padding: "8px 18px",
-        fontFamily: MONO, fontSize: 26, color: NOIR.green,
-        boxShadow: `0 0 24px ${rgba(NOIR.green, 0.35)}`,
+        fontFamily: MONO, fontSize: 26, color: DAY.green,
+        boxShadow: `0 0 24px ${rgba(DAY.green, 0.35)}`,
       }}>✓</div>
     );
   });
@@ -308,17 +310,17 @@ export const BillNoir: React.FC<BillNoirProps> = ({
       opacity: Math.min(1, dockOn * 1.4),
       transform: `translateY(${(1 - dockOn) * -40}px)`,
       background: `linear-gradient(180deg, ${rgba("#101614", 0.98)}, ${rgba("#0B100E", 0.98)})`,
-      border: `1.5px solid ${rgba(NOIR.green, 0.4)}`,
-      borderRadius: 20, boxShadow: `${cardShadow}, 0 0 34px ${rgba(NOIR.green, 0.14)}`,
+      border: `1.5px solid ${rgba(DAY.green, 0.4)}`,
+      borderRadius: 20, boxShadow: `${cardShadow}, 0 0 34px ${rgba(DAY.green, 0.14)}`,
       padding: "14px 18px",
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontFamily: MONO, fontSize: 20, letterSpacing: 3, color: NOIR.green }}>
+        <span style={{ fontFamily: MONO, fontSize: 20, letterSpacing: 3, color: DAY.green }}>
           ● FREE AI · DETECTIVE
         </span>
       </div>
       <div style={{ marginTop: 10, fontFamily: MONO, fontSize: 21, lineHeight: 1.55,
-                    color: rgba(NOIR.ink, 0.75) }}>
+                    color: rgba(DAY.ink, 0.75) }}>
         {t < clueAt ? "reading 3 bills…" :
          t < clearAts[0] ? "> summer delta found" :
          t < pushAt ? "> eliminating suspects…" :
@@ -328,14 +330,14 @@ export const BillNoir: React.FC<BillNoirProps> = ({
       {/* the ₹0 meter — lit at the case handoff, never moves, stamped at the end */}
       <div style={{
         marginTop: 12, display: "flex", justifyContent: "space-between", alignItems: "center",
-        borderTop: `1px solid ${rgba(NOIR.green, 0.25)}`, paddingTop: 10,
+        borderTop: `1px solid ${rgba(DAY.green, 0.25)}`, paddingTop: 10,
       }}>
-        <span style={{ fontFamily: MONO, fontSize: 19, letterSpacing: 3, color: NOIR.mute }}>COST</span>
+        <span style={{ fontFamily: MONO, fontSize: 19, letterSpacing: 3, color: DAY.mute }}>COST</span>
         <span style={{
           fontFamily: MONO, fontSize: 34, fontVariantNumeric: "tabular-nums" as const,
-          color: t >= stillAt ? NOIR.green : NOIR.amber,
+          color: t >= stillAt ? DAY.green : DAY.amber,
           transform: `scale(${1 + settle(t, stillAt, 0.5) * 0.18})`, display: "inline-block",
-          textShadow: t >= stillAt ? `0 0 18px ${rgba(NOIR.green, 0.6)}` : undefined,
+          textShadow: t >= stillAt ? `0 0 18px ${rgba(DAY.green, 0.6)}` : undefined,
         }}>{t >= stillAt ? "STILL ₹0" : "₹0"}</span>
       </div>
     </div>
@@ -351,7 +353,7 @@ export const BillNoir: React.FC<BillNoirProps> = ({
       zIndex: 24, opacity: (1 - clamp01((t - caseAt) / 0.25)) * clamp01((t - (caseAt - 0.6)) / 0.2),
       transform: `rotate(${billFly * 40}deg) scale(${1 - billFly * 0.5})`,
       width: 120, height: 150, borderRadius: 10,
-      background: `linear-gradient(160deg, ${NOIR.coral}, #C24E2E)`,
+      background: `linear-gradient(160deg, ${DAY.coral}, #C24E2E)`,
       boxShadow: cardShadow,
     }}>
       {[0, 1, 2].map((k) => (
@@ -370,16 +372,14 @@ export const BillNoir: React.FC<BillNoirProps> = ({
   const dressFade = 1 - clamp01((t - (circleAt - 0.2)) / 0.4);
   const studyDressing = pushP > 0.5 && dressFade > 0.01 ? (
     <>
-      {/* the swinging bulb hangs over the scene */}
+      {/* the sun shaft — daytime's spotlight, drifting slowly */}
       <div style={{
-        position: "absolute", left: 540 - 90 + bulbSwing * 3, top: studyCenterY - 320,
-        width: 180, height: 260, zIndex: 14,
-        transform: `rotate(${bulbSwing}deg)`, transformOrigin: "50% 0%",
-        opacity: (pushP - 0.5) * 2 * dressFade,
-      }}>
-        <Img src={staticFile("assets/noir/bulb.png")}
-             style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-      </div>
+        position: "absolute", left: 540 - 520 + bulbSwing * 6, top: studyCenterY - 420,
+        width: 1040, height: 760, zIndex: 14, pointerEvents: "none",
+        opacity: (pushP - 0.5) * 2 * dressFade * 0.8,
+        background: `linear-gradient(115deg, ${rgba("#FFF3D0", 0)} 34%, ${rgba("#FFF3D0", 0.30)} 46%, ${rgba("#FFF3D0", 0.06)} 58%, ${rgba("#FFF3D0", 0)} 70%)`,
+        mixBlendMode: "screen",
+      }} />
       {/* nameplate booking card */}
       {plateOn > 0.001 ? (
         <div style={{
@@ -400,25 +400,29 @@ export const BillNoir: React.FC<BillNoirProps> = ({
           opacity: Math.min(1, mathOn * 1.4) * dressFade, textAlign: "center",
         }}>
           <div style={{
-            fontFamily: MONO, fontSize: 38, color: NOIR.ink,
-            textShadow: `0 3px 14px ${rgba("#000", 0.9)}`,
+            display: "inline-block",
+            fontFamily: MONO, fontSize: 38, color: "#F6EEDF",
+            background: rgba("#211A12", 0.82), borderRadius: 14,
+            padding: "8px 22px", boxShadow: cardShadow,
             fontVariantNumeric: "tabular-nums" as const,
           }}>
-            ₹3,400 <span style={{ color: NOIR.mute }}>÷ 30 din ÷ 6 ghante</span>
+            ₹3,400 <span style={{ color: rgba("#F6EEDF", 0.55) }}>÷ 30 din ÷ 6 ghante</span>
           </div>
           <div style={{
             marginTop: 16, display: "inline-block",
             fontFamily: DISP, fontWeight: 800, fontSize: lockOn ? 72 : 50,
-            color: lockOn ? NOIR.coral : rgba(NOIR.ink, 0.4),
+            color: lockOn ? "#FFB08F" : rgba("#F6EEDF", 0.5),
             background: lockOn ? rgba("#000", 0.55) : undefined,
             borderRadius: 18, padding: lockOn ? "6px 30px" : 0,
             transform: `scale(${1 + settle(t, lockAt, 0.5) * 0.1})`,
-            textShadow: lockOn ? `0 0 34px ${rgba(NOIR.coral, 0.6)}` : undefined,
+            textShadow: lockOn ? `0 0 34px ${rgba(DAY.coral, 0.6)}` : undefined,
           }}>
             {lockOn ? "= ₹18/HOUR" : "= ₹ __ /hour"}
           </div>
           {lockOn ? (
-            <div style={{ marginTop: 12, fontFamily: MONO, fontSize: 19, color: NOIR.mute }}>
+            <div style={{ marginTop: 12, display: "inline-block", fontFamily: MONO, fontSize: 19,
+                          color: rgba("#F6EEDF", 0.75), background: rgba("#211A12", 0.7),
+                          borderRadius: 9, padding: "4px 14px" }}>
               cross-check: 1.9 units/hr × ₹9.5/unit ≈ ₹18 (public specs)
             </div>
           ) : null}
@@ -433,7 +437,7 @@ export const BillNoir: React.FC<BillNoirProps> = ({
       position: "absolute", left: 90, top: 1180, width: 900, zIndex: 18,
       opacity: Math.min(1, circleP * 1.4) * (1 - clamp01((t - stillAt - 0.8) / 0.6)),
       textAlign: "center", fontFamily: MONO, fontSize: 34,
-      color: NOIR.amber, textShadow: `0 3px 14px ${rgba("#000", 0.9)}`,
+      color: DAY.amber, textShadow: `0 2px 10px ${rgba("#FFF", 0.6)}`,
       fontVariantNumeric: "tabular-nums" as const,
     }}>
       ₹18 × 6h × 30 din ≈ <span style={{ color: "#FFD9A0" }}>₹3,240</span> — wahi jump ↑
@@ -448,19 +452,19 @@ export const BillNoir: React.FC<BillNoirProps> = ({
       opacity: Math.min(1, promptOn * 1.4),
       transform: `translateY(${(1 - promptOn) * 60}px)`,
       background: `linear-gradient(180deg, ${rgba("#0F1512", 0.98)}, ${rgba("#0A0F0C", 0.98)})`,
-      border: `2px solid ${rgba(NOIR.green, 0.5)}`,
-      borderRadius: 24, boxShadow: `${cardShadow}, 0 0 44px ${rgba(NOIR.green, 0.16)}`,
+      border: `2px solid ${rgba(DAY.green, 0.5)}`,
+      borderRadius: 24, boxShadow: `${cardShadow}, 0 0 44px ${rgba(DAY.green, 0.16)}`,
       padding: "26px 32px",
     }}>
       <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
         {["#FF5F57", "#FEBC2E", "#28C840"].map((c) => (
           <div key={c} style={{ width: 14, height: 14, borderRadius: 7, background: c }} />
         ))}
-        <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 20, color: NOIR.mute }}>
-          model: <span style={{ color: NOIR.green }}>fable-5 ✓</span>
+        <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 20, color: DAY.mute }}>
+          model: <span style={{ color: DAY.green }}>fable-5 ✓</span>
         </span>
       </div>
-      <div style={{ fontFamily: MONO, fontSize: 29, lineHeight: 1.6, color: NOIR.green }}>
+      <div style={{ fontFamily: MONO, fontSize: 29, lineHeight: 1.6, color: DAY.green }}>
         {(() => {
           const txt = "> Mere last 3 bills: [Apr __, May __, Jun __]. Detective bano — seasonal jump nikaalo, culprit batao, maths ke saath. Free tareeke se fix bhi.";
           const chars = Math.max(0, Math.floor((t - promptAt - 0.2) * 44));
@@ -468,7 +472,7 @@ export const BillNoir: React.FC<BillNoirProps> = ({
         })()}
       </div>
       <div style={{ marginTop: 16, textAlign: "center", fontFamily: MONO, fontSize: 22,
-                    letterSpacing: 4, color: rgba(NOIR.ink, 0.55),
+                    letterSpacing: 4, color: rgba(DAY.ink, 0.55),
                     opacity: clamp01((t - promptAt - 1.6) / 0.4) }}>PINNED · COPY KARO</div>
     </div>
   ) : null;
@@ -478,7 +482,7 @@ export const BillNoir: React.FC<BillNoirProps> = ({
     <AbsoluteFill style={{ width, height }}>
       {/* the graded ground + vignette — never a flat fill */}
       <AbsoluteFill style={{
-        background: `radial-gradient(120% 85% at 50% 40%, ${NOIR.ground2} 0%, ${NOIR.ground} 62%, #060504 100%)`,
+        background: `radial-gradient(120% 85% at 50% 40%, ${DAY.ground2} 0%, ${DAY.ground} 60%, #CFC3AC 100%)`,
       }} />
       <ExposureScore keys={expo}>
         <WorldCamera track={track} punches={[lineupAt, lockAt]} punchScale={1.09} breath={4}>
@@ -498,12 +502,12 @@ export const BillNoir: React.FC<BillNoirProps> = ({
 
       {/* grain + vignette on top of everything but the chips */}
       <svg style={{ position: "absolute", inset: 0, opacity: 0.05, mixBlendMode: "overlay", pointerEvents: "none" }}>
-        <filter id="noir-grain"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed={6} /></filter>
+        <filter id="day-grain"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed={6} /></filter>
         <rect width="100%" height="100%" filter="url(#noir-grain)" />
       </svg>
       <div style={{
         position: "absolute", inset: 0, pointerEvents: "none",
-        background: `radial-gradient(130% 95% at 50% 42%, ${rgba("#000", 0)} 52%, ${rgba("#000", 0.5)} 100%)`,
+        background: `radial-gradient(130% 95% at 50% 42%, ${rgba("#4A3B26", 0)} 55%, ${rgba("#4A3B26", 0.28)} 100%)`,
       }} />
 
       {/* chips — noir-styled, dead band, hot = coral pill */}
@@ -526,11 +530,11 @@ export const BillNoir: React.FC<BillNoirProps> = ({
             <div style={{
               fontFamily: DISP, fontWeight: 800, fontSize: 62,
               textTransform: "uppercase" as const, whiteSpace: "nowrap" as const,
-              color: cur.hot ? "#1A0E08" : NOIR.ink,
-              background: cur.hot ? NOIR.coral : rgba("#0E0B09", 0.85),
+              color: cur.hot ? "#FFF6EC" : DAY.paper,
+              background: cur.hot ? DAY.coral : rgba("#211A12", 0.92),
               padding: "8px 30px", borderRadius: 18,
               boxShadow: cardShadow,
-              border: cur.hot ? undefined : `1.5px solid ${rgba("#FFF6E8", 0.14)}`,
+              border: cur.hot ? undefined : `1.5px solid ${rgba("#FFF6E8", 0.18)}`,
             }}>{cur.text}</div>
           </div>
         );
@@ -541,7 +545,7 @@ export const BillNoir: React.FC<BillNoirProps> = ({
 };
 
 /* ---- canonical demo (planned clock) -------------------------------------- */
-export const billNoirDemo: BillNoirProps = {
+export const billDayDemo: BillDayProps = {
   bar2At: 1.0, bar3At: 1.9,
   lineupAt: 4.8, kneeAt: 4.8, caseAt: 6.0,
   clueAt: 8.8, deltaAt: 10.1,

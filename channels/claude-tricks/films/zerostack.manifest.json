@@ -2,7 +2,7 @@
   "ep": "_zerostack",
   "class": "MYSTERY",
   "honesty": "declared-illustration",
-  "world": "NOIR HOUSE AT NIGHT — baked-light FLUX room plates + code-driven light; the coral paper bill is the one warm carry object",
+  "world": "DAYLIGHT HOUSE — baked-sunlight FLUX room plates (VJ: daytime), dark bars/dock cards as value anchors; cleared rooms grey-wash like filed evidence",
   "title_candidates": [
     "Your Bill Jumped ₹3,400 — A FREE AI Found Why 🔍",
     "Ghar Mein Bijli Chor — FREE AI Ne Pakda 🔍",
@@ -147,25 +147,25 @@
     }
   ],
   "beats": [
-    "cook:BillNoir#bars",
-    "cook:BillNoir#lineup",
-    "cook:BillNoir#clue",
-    "cook:BillNoir#cleared",
-    "cook:BillNoir#study",
-    "cook:BillNoir#conviction",
-    "cook:BillNoir#circle",
-    "cook:BillNoir#give"
+    "cook:BillDay#bars",
+    "cook:BillDay#lineup",
+    "cook:BillDay#clue",
+    "cook:BillDay#cleared",
+    "cook:BillDay#study",
+    "cook:BillDay#conviction",
+    "cook:BillDay#circle",
+    "cook:BillDay#give"
   ],
   "spine": [
-    "BillNoir"
+    "BillDay"
   ],
   "film": {
     "bloom_beats": [],
     "driftAmp": 0,
-    "chips_to": "BillNoir"
+    "chips_to": "BillDay"
   },
   "cookbook": {
-    "BillNoir": {
+    "BillDay": {
       "bar2At": "@beat0+1.0",
       "bar3At": "@beat0+1.9",
       "lineupAt": "@beat1+1.4",

@@ -39,7 +39,8 @@ import { TravelSprite, MorphSwap, ExposureScore, FlashCut } from "./cookbook/cra
 import { ToyStage } from "./cookbook/Claylight";
 import { PaperStage, OctoPuppet, PaperWord, PAPER } from "./cookbook/Kaagaz";
 import { ZeroStackPaper, zeroStackPaperDemo } from "./cookbook/ZeroStackPaper";
-import { BillNoir, billNoirDemo } from "./cookbook/BillNoir";
+import { BillDay, billDayDemo } from "./cookbook/BillDay";
+import { DayOutro, dayOutroDemo } from "./cookbook/DayOutro";
 import { CaseBullets, caseBulletsDemo } from "./cookbook/CaseBullets";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
 import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
@@ -665,13 +666,22 @@ export const RemotionRoot: React.FC = () => {
         defaultProps={careerArcDemo}
       />
       <Composition
-        id="BillNoirFilm"
-        component={BillNoir}
+        id="DayOutroDemo"
+        component={DayOutro}
+        durationInFrames={Math.round(6.8 * FPS)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={dayOutroDemo}
+      />
+      <Composition
+        id="BillDayFilm"
+        component={BillDay}
         durationInFrames={33 * FPS}
         fps={FPS}
         width={1080}
         height={1920}
-        defaultProps={billNoirDemo}
+        defaultProps={billDayDemo}
       />
       <Composition
         id="ZeroStackPaperFilm"

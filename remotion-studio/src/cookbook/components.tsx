@@ -29,7 +29,7 @@ import { ProofTrace } from "./ProofTrace";
 import { ContextTube } from "./ContextTube";
 import { ForgetsClay } from "./ForgetsClay";
 import { ZeroStackPaper } from "./ZeroStackPaper";
-import { BillNoir } from "./BillNoir";
+import { BillDay } from "./BillDay";
 import { CaseBullets } from "./CaseBullets";
 import { GenerativeUI } from "./GenerativeUI";
 
@@ -73,7 +73,7 @@ export const COOKBOOK_COMPONENTS: Record<string, React.FC<any>> = {
   ContextTube,
   ForgetsClay,
   ZeroStackPaper,
-  BillNoir,
+  BillDay,
   CaseBullets,
 };
 
