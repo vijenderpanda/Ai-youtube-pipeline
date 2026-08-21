@@ -1,9 +1,10 @@
 {
   "name": "remotion-studio",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/designsystem.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.build.json"
   },
   "keywords": [],
   "author": "",
@@ -11,8 +12,23 @@
   "description": "",
   "dependencies": {
     "@remotion/cli": "4.0.503",
+    "@remotion/player": "4.0.503",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "remotion": "4.0.503"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "typescript": "^7.0.2"
+  },
+  "module": "dist/designsystem.js",
+  "types": "dist/designsystem.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/designsystem.d.ts",
+      "import": "./dist/designsystem.js",
+      "default": "./dist/designsystem.js"
+    }
   }
 }

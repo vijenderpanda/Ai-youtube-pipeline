@@ -65,7 +65,14 @@ export type CookbookEntry = {
   transparentCapable: boolean; // supports `transparent` -> can overlay a host/b-roll
   wow: 1 | 2 | 3 | 4 | 5; // taste-flex impact (5 = showstopper)
   density: "low" | "med" | "high"; // how much info it carries at once
-  useWhen: string; // one-line selection guidance
+  /** One-line selection guidance. Optional because many entries carry `gist`
+   *  instead — the two coexisted for months while the type declared only this
+   *  one, so every `gist` was an excess-property error the loose tsconfig hid. */
+  useWhen?: string;
+  /** What the component actually DOES, in the library's own voice. Several
+   *  entries have used this since the cookbook was written; it was never on the
+   *  type. Declaring it is what makes those entries legal. */
+  gist?: string;
 };
 
 export const COOKBOOK: CookbookEntry[] = [
@@ -204,7 +211,7 @@ export const COOKBOOK: CookbookEntry[] = [
   },
   {
     id: "ReactionMeter", demoId: "ReactionMeterDemo", title: "Reaction time (measured)",
-    role: "dataviz", beats: ["hook", "demo", "punchline"], needs: "value",
+    role: "dataviz", beats: ["hook", "demo", "punchline"], needs: "single-number",
     keywords: ["reaction", "speed", "time", "ms", "milliseconds", "test", "score", "measure",
                "benchmark", "challenge", "game", "fast", "timer", "stopwatch"],
     transparentCapable: true, wow: 5, density: "med",
