@@ -206,3 +206,95 @@
   https://techcrunch.com/2026/08/13/anthropic-set-ai-agents-loose-on-the-same-task-they-started-a-turf-war/
 - [ ] OpenAI is losing its second executive this week
   https://www.theverge.com/ai-artificial-intelligence/979815/openai-denise-dresser-leaving-executive-departure
+
+## Radar 2026-08-15 04:30
+- [ ] You can now turn off Google Gemini&#8217;s visible watermarks
+  https://www.theverge.com/tech/980416/google-gemini-ai-watermarks-removal
+
+## Radar 2026-08-16 02:30
+- [ ] Anthropic shares more details about how Claude’s new watermarks will work
+  https://techcrunch.com/2026/08/15/anthropic-shares-more-details-about-how-claudes-new-watermarks-will-work/
+
+## Radar 2026-08-17 01:05
+- [ ] Anthropic CEO says AI backlash is ‘fundamentally a crisis of trust’
+  https://techcrunch.com/2026/08/16/anthropic-ceo-says-ai-backlash-is-fundamentally-a-crisis-of-trust/
+- [ ] ChatGPT’s Computer History tracks your clicks and keystrokes
+  https://www.theverge.com/ai-artificial-intelligence/980742/chatgpts-computer-history-tracks-your-clicks-and-keystrokes
+
+## Radar 2026-08-17 04:05
+- [ ] OpenAI reportedly disbanded its preparedness team
+  https://www.theverge.com/ai-artificial-intelligence/980817/openai-disbands-preparedness-team
+
+## Radar 2026-08-17 16:28
+- [ ] Anthropic explains how Claude&#8217;s invisible text watermarks will work
+  https://www.theverge.com/ai-artificial-intelligence/980869/anthropic-claude-watermarks-synthid-text-system
+
+## Radar 2026-08-17 23:11
+- [ ] Nvidia investing $1.5B in SoftBank data center developer behind OpenAI project
+  https://techcrunch.com/2026/08/17/nvidia-investing-1-5b-in-softbank-data-center-developer-behind-openai-project/
+
+## Radar 2026-08-18 08:11
+- [ ] Anthropic&#8217;s annualized revenue surges to $65B
+  https://techcrunch.com/2026/08/17/anthropics-annualized-revenue-surges-to-65b/
+
+## Radar 2026-08-18 17:11
+- [ ] ChatGPT is getting a dedicated mode for teens
+  https://www.theverge.com/ai-artificial-intelligence/981333/openai-chatgpt-teen-mode
+
+## Radar 2026-08-18 20:11
+- [ ] OpenAI launches a safer ChatGPT for teens — years after teens started using it
+  https://techcrunch.com/2026/08/18/openai-launches-a-safer-chatgpt-for-teens-years-after-teens-started-using-it/
+
+## Radar 2026-08-19 02:11
+- [ ] OpenAI institutes new safeguards after Hugging Face breach
+  https://techcrunch.com/2026/08/18/openai-institutes-new-safeguards-after-hugging-face-breach/
+
+## Radar 2026-08-19 05:11
+- [ ] Cursor capitalizes on GitHub frustration, launches rival hosting platform
+  https://techcrunch.com/2026/08/18/cursor-capitalizes-on-github-frustration-launches-rival-hosting-platform/
+- [ ] OpenAI lays out new security changes after its AI hacked Hugging Face
+  https://www.theverge.com/ai-artificial-intelligence/981640/openai-security-changes-ai-hugging-face-hack
+
+## Radar 2026-08-19 23:12
+- [ ] OpenAI hit the brakes. Now what?
+  https://www.theverge.com/ai-artificial-intelligence/982323/openai-hit-brakes-voluntary-pacing-ai
+
+## Radar 2026-08-20 02:12
+- [ ] Google packs Search and Gemini with new AI study tools
+  https://techcrunch.com/2026/08/19/google-launches-new-study-tools-for-students-across-search-and-gemini/
+- [ ] Researchers say OpenAI revoked their access to limited cyber program
+  https://techcrunch.com/2026/08/19/researchers-complain-that-openai-revoked-their-access-to-limited-cyber-program/
+- [ ] Google Gemini is getting a dedicated student hub
+  https://www.theverge.com/ai-artificial-intelligence/982425/google-gemini-student-hub
+
+## Radar 2026-08-20 05:12
+- [ ] OpenAI seeks to one-up Anthropic with new customer privacy protections
+  https://techcrunch.com/2026/08/19/openai-seeks-to-one-up-anthropic-with-new-customer-privacy-protections/
+
+## Radar 2026-08-20 17:35
+- [ ] Slack is launching collaborative vibe coding channels
+  https://www.theverge.com/tech/982628/slack-code-vibe-coding-channels-launch
+
+## Radar 2026-08-20 20:36
+- [ ] Slack is launching collaborative vibe-coding channels
+  https://www.theverge.com/tech/982628/slack-code-vibe-coding-channels-launch
+
+## Radar 2026-08-20 23:36
+- [ ] A third of web pages published since ChatGPT&#8217;s launch show signs of AI authorship, study finds
+  https://techcrunch.com/2026/08/20/a-third-of-webpages-published-since-chatgpts-launch-show-signs-of-ai-authorship-study-finds/
+- [ ] Ramp launches its own AI model router, called Router
+  https://techcrunch.com/2026/08/20/ramp-launches-its-own-ai-model-router-called-router/
+- [ ] It’s Greg Brockman’s OpenAI now
+  https://www.theverge.com/ai-artificial-intelligence/982774/greg-brockman-openai-role-expansion
+
+## Radar 2026-08-21 05:36
+- [ ] OpenAI is gaining on Anthropic with business users, new data indicates
+  https://techcrunch.com/2026/08/20/openai-is-gaining-on-anthropic-with-business-users-new-data-indicates/
+- [ ] ChatGPT can now send texts for you with new Apple Messages plug-in
+  https://techcrunch.com/2026/08/20/chatgpt-can-now-send-texts-for-you-with-new-apple-messages-plugin/
+
+## Radar 2026-08-21 20:51
+- [ ] Starcloud raises $250 million for orbital data centers as launch options dry up
+  https://techcrunch.com/2026/08/21/starcloud-raises-200-million-for-orbital-data-centers-as-launch-options-dry-up/
+- [ ] A third of web pages published since ChatGPT launched were written by AI, study finds
+  https://techcrunch.com/2026/08/20/a-third-of-webpages-published-since-chatgpts-launch-show-signs-of-ai-authorship-study-finds/

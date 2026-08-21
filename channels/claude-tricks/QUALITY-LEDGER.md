@@ -527,3 +527,68 @@ drop internal markers before finalize next time — series suffix comes from app
 - Post-publish human steps (Mon after 16:00 IST): pin SHARE-PROMPT.txt comment (+ Studio pin
   click), approve held link-comments daily, weekend `yt_engage --count-keyword SHIPPED` + gift picks.
 - d0+48h retention check pre-committed: avg-%-viewed <35% or 15s hold <40% → Ch.2 body ~45s.
+
+---
+
+## Build Club bc02 — "Your Website Just Answered a Customer — By Itself 🧠" (Ch.2) · RENDERED 2026-08-15 · NOT ARMED, awaiting VJ board approval (slot Tue 2026-08-18 16:00 IST)
+
+53.5s body + 12.9s spoken CTA = 66.5s total (tighter than bc01's 73.7s per the length read).
+**All footage REAL:** fresh claude.ai session (Sonnet 5) — Ch.2 pinned prompt + the real Ch.1
+index.html in one turn, Claude wrote the what-you're-missing list + a 21.6KB updated file with
+"Anita's Tiffin Assistant" (Hinglish Q&A, quick chips); deployed to the SAME live site
+(anitas-tiffin.netlify.app, netlify-cli, site-id not name — name 404s); tape B = the LIVE site
+answering "aaj ka menu kya hai?" on camera, native 1080×1920 dsf1 (letterbox lesson applied
+after one bad 540@dsf2 take). Tape tooling: rec_bc02_build.py — claude.ai response detection
+now uses the STOP-BUTTON lifecycle (the old .font-claude-response selector is stale and fired
+mid-generation on take 1).
+
+### AUDITION BLOCK (pre-arm, §7 — video ID filled at arm)
+
+| # | Gate | Result |
+|---|---|---|
+| 1 | Audio spine | **PASS** — −14.0 LUFS integrated on `epbc02_v2_outro.mp4` |
+| 2 | Lip-sync | audio: +23 ms corr 0.996–0.997 (engine). Visual (lipsync_visual): fresh HeyGen batch AGAIN random — hook −480, wpip −160, pip +120 pre-fix; after freeze-prepend corrections: **hook +40 · wpip_answers 0 · pip_answers +120 (WARN trade)**. Low corr 0.12–0.23 on all three (smiley-clip limitation) — lag deltas tracked the applied shifts exactly, which validates the measurements |
+| 3 | Chip placement | probed on this cut: claude-tape windows **0.0 clean** (tl/tr/br and bl/br); phone window best tr 0.266, splitWide best tl 0.316 = progress rail (intended UI); frames clean |
+| 4 | Standalone-first | **PASS** — frame 0 = baked chat-phone hook art ("IT ANSWERS / BY ITSELF"), stamp CH 2/6 at 0s; chapter card 4.8s with week strip, TUE pill highlighted (new `on` flag — MON-default was wrong for Ch.2) |
+| 5 | Homework CTA | **PASS** — SHIP IT card + TOMORROW·CHAPTER THREE (search-result phone, drawn magnifier after a tofu-glyph fix) to final frame |
+
+Known trades: hook frame 0 = frozen eyes-closed smile frame (0.48s freeze; opens by ~0.5s).
+Title = proof-first "Your Website Just Answered a Customer — By Itself 🧠" (deviates from the
+calendar's imperative "Make Your Website SMART" per the title-pattern read — VJ to confirm on
+the board).
+
+### bc02 AVD CUT — TEMPLATE PREVIEW 2026-08-16 · HeyGen ON HOLD (VJ) until frame lock
+
+Story rebuilt per VJ: the MODEL LADDER — Ch.1 secretly Haiku; Ch.2 = model chip + Effort dial on
+camera in the REAL Claude Android app (AVD, full preflight — see assets/bc02/AVD-SHOOT-NOTES.md
+for tape map + the 5-take lesson list, also in memory avd-shoot-mechanics). Verified story stats
+in VO: dead-order-button catch, 3 questions, 4 self-tested bug fixes, 8.4KB→44.9KB. Opus site
+LIVE at anitas-tiffin.netlify.app; money shot = live chips answering in Hinglish, live-aware.
+60.2s body + 11.9s CTA = 73.3s, **−13.8 LUFS**. Week pills word-synced (TUE hot). Pinned prompt
+v2 (model-dial first). **Host beats use stale clips as VIDEO STAND-INS — lip-sync is knowingly
+wrong; gates 2 (visual) deferred until VJ locks template/frames on the board, then fresh HeyGen
++ lipsync_visual + full §7 chain before any arm.** Board card 8e7acc4a.
+
+### bc02 FINAL — HeyGen regenerated + gated 2026-08-16 (VJ "template locked, generate heygen and finalize")
+
+Template/frames locked on the board. Stand-in host clips replaced with FRESH HeyGen from the
+locked VO. Visual lipsync (lipsync_visual): fresh batch again random (hook +400, pip +480 late,
+wpip −160) — corrected (hook 0.12s freeze, wpip 0.16s freeze, pip 0.48s in-point trim), all
+frame-strip-verified in-sync at their audio onsets (tool corr 0.07–0.20 = the smiley-clip
+limitation, frame strip is the §7 fallback). Engine audio-lipsync +23ms corr 0.995 on the pips.
+
+| # | Gate | Result |
+|---|---|---|
+| 1 | Audio spine | **PASS** −13.8 LUFS |
+| 2 | Lip-sync | audio +23ms corr 0.995; visual per-clip corrected + strip-verified (hook opens ~0.1s w/ audio, pip tracks speech, wpip 0ms) |
+| 3 | Chip placement | splitWide best br 0.207 = progress rail (intended); claude-tape windows clean |
+| 4 | Standalone-first | **PASS** — "THE CHEAPEST MODEL DID THIS" baked hook frame 0, CH 2/6 stamp, chapter card w/ TUE-hot pills |
+| 5 | Homework CTA | **PASS** — SHIP + TOMORROW·CH 3 tail |
+
+73.3s. Proceeding to finalize + arm Tue 2026-08-18 16:00 IST.
+
+### bc02 ARMED 2026-08-16 · youtu.be/sM6I7bsKHu8 · scheduled Tue 2026-08-18 16:00 IST (10:30Z), private until then
+finalize QC: −13.80 LUFS, drift +0.20 LU, PASSED. Title clean (no marker leak). Added to playlist
+PLIuiep7RRSGE. factory_posts scheduled + calendar 8e7acc4a → produced. Pinned comment =
+assets/bc02/SHARE-PROMPT.txt (model-dial-first). Human steps Tue after 16:00: pin the prompt,
+approve held link-comments, count SHIPPED. This ID is the file the bc02 audition block measured.

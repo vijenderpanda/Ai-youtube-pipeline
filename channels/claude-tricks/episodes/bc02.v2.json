@@ -1,0 +1,226 @@
+{
+ "_status": "v2 AVD CUT 2026-08-16 (VJ directives: real-app AVD footage, model+effort-dial story, HeyGen ON HOLD until template/frames locked — existing host clips are VIDEO STAND-INS, lipsync gates deferred to post-lock). Tape map: assets/bc02/AVD-SHOOT-NOTES.md.",
+ "series": "build-club",
+ "chapter": 2,
+ "title": "I Built It With the CHEAPEST Model — Watch Opus Fix It 💎",
+ "tags": "claude models,opus vs haiku,ai model comparison,extended thinking,build a website with ai,no code,claude ai,build club,ai for beginners,ai tips",
+ "epTag": "BUILD CLUB · CH 2/6",
+ "homework": "Re-run YOUR site through a top model with the effort up — drop your LIVE LINK with the word SHIPPED. My Claude Pro gift for the favourite build is still live this week.",
+ "lines": [
+  "What I didn't tell you yesterday: this whole website was built by the cheapest model there is.",
+  "Chapter two. Tonight, one dial makes it production-ready. Tomorrow — Wednesday — your name goes public.",
+  "Same app. Tap the model name — this little chip is the most ignored button in AI.",
+  "Switch to the top model, and push the effort up. Top models eat tokens — spend them only when quality is the point.",
+  "Then one short prompt: make it production-ready — and ask me what you need to know first.",
+  "Watch what a top model does. It found my dead order button before I did.",
+  "Three sharp questions later, it tested its own code — and fixed four bugs I never saw.",
+  "Yesterday's file: eight kilobytes. Today's: forty-five. Same prompt. Different brain.",
+  "Same free deploy — and now the site answers customers like a human. Even in Hinglish.",
+  "Tonight: re-run your site on a better model, real effort. Drop your link — SHIPPED. Tomorrow, Wednesday: your name goes public."
+ ],
+ "hot_words": [
+  "CHEAPEST",
+  "MODEL",
+  "YESTERDAY",
+  "TONIGHT",
+  "DIAL",
+  "TOMORROW",
+  "WEDNESDAY",
+  "PUBLIC",
+  "TAP",
+  "NAME",
+  "CHIP",
+  "IGNORED",
+  "TOP",
+  "EFFORT",
+  "TOKENS",
+  "QUALITY",
+  "POINT",
+  "PROMPT",
+  "ASK",
+  "FIRST",
+  "DEAD",
+  "ORDER",
+  "BUTTON",
+  "THREE",
+  "QUESTIONS",
+  "TESTED",
+  "OWN",
+  "CODE",
+  "FOUR",
+  "BUGS",
+  "EIGHT",
+  "FORTY",
+  "FIVE",
+  "BRAIN",
+  "FREE",
+  "DEPLOY",
+  "ANSWERS",
+  "HUMAN",
+  "HINGLISH",
+  "LINK",
+  "SHIPPED",
+  "CHAPTER",
+  "TWO"
+ ],
+ "beats": [
+  "host",
+  "chapter",
+  "rec:bc02/appM1.mp4@3.0",
+  "rec:bc02/appM1.mp4@10.0",
+  "rec:bc02/appM1.mp4@36.0",
+  "rec:bc02/appM2.mp4@2.0",
+  "rec:bc02/appM6.mp4@45.0",
+  "rec:bc02/appM6.mp4@100.0",
+  "pip:answers",
+  "recipe"
+ ],
+ "steps": [],
+ "host_panels": [],
+ "hook": {
+  "image": "epbc02/hook_art/smart_site.png",
+  "lines": [
+   "THE CHEAPEST",
+   "MODEL DID THIS"
+  ],
+  "hot": "CHEAPEST",
+  "kicker": "BUILD CLUB · CHAPTER 2/6",
+  "until": 2.0,
+  "baked": true,
+  "seeThrough": true,
+  "headTop": 846
+ },
+ "chapter_card": {
+  "kicker": "BUILD CLUB",
+  "word": "CHAPTER",
+  "num": "TWO",
+  "chip": "THE MODEL DIAL",
+  "sub": "one move a day, all week",
+  "season": [
+   2,
+   6
+  ],
+  "week": [
+   {
+    "d": "MON",
+    "t": "LIVE",
+    "at": 0.3,
+    "on": false
+   },
+   {
+    "d": "TUE",
+    "t": "SMART",
+    "at": 0.76,
+    "on": true
+   },
+   {
+    "d": "WED",
+    "t": "LISTED",
+    "at": 3.73,
+    "on": false
+   },
+   {
+    "d": "THU",
+    "t": "FINALE",
+    "at": 4.7,
+    "on": false
+   }
+  ]
+ },
+ "pause": {
+  "title": "PAUSE — COPY THIS PROMPT",
+  "lines": [
+   {
+    "t": "SECTION 1 — THE ONE MOVE",
+    "hot": true
+   },
+   {
+    "t": "   production-ready polish +"
+   },
+   {
+    "t": "   an Ask-Us-Anything box"
+   },
+   {
+    "t": "SECTION 2 — QUALITY RULES",
+    "hot": true
+   },
+   {
+    "t": "   ONE file · no backend"
+   },
+   {
+    "t": "SECTION 3 — HAND-OVER",
+    "hot": true
+   },
+   {
+    "t": "   asks YOUR questions first"
+   }
+  ],
+  "note": "top model + high effort — that's what changes the output",
+  "sub": "full prompt, word for word, in the pinned comment"
+ },
+ "recipe": {
+  "title": "THE RECIPE",
+  "rows": [
+   {
+    "t": "TAP THE MODEL CHIP",
+    "sub": "top model + effort HIGH"
+   },
+   {
+    "t": "ONE CRISP PROMPT",
+    "sub": "production-ready — ask me first"
+   },
+   {
+    "t": "SAME FREE DEPLOY",
+    "sub": "it answers like a human"
+   }
+  ],
+  "hwTitle": "HOMEWORK",
+  "hwLine": "Re-run yours on a better model tonight.",
+  "hwChip": "DROP YOUR LIVE LINK 👇",
+  "tease": "TOMORROW · CH 3 — YOUR NAME GOES PUBLIC",
+  "season": [
+   2,
+   6
+  ]
+ },
+ "rail": {
+  "labels": [
+   "1 DIAL",
+   "2 PROMPT",
+   "3 LIVE"
+  ],
+  "start_lines": [
+   3,
+   5,
+   9
+  ],
+  "until_line": 9
+ },
+ "pips": {
+  "answers": {
+   "src": "bc02/appB_ask2.mp4",
+   "from": 1.5,
+   "num": "",
+   "lines": [
+    "YOU TAP.",
+    "SITE ANSWERS.",
+    "IN HINGLISH."
+   ]
+  }
+ },
+ "music": "music/bed_active.mp3",
+ "music_gain_db": 1.0,
+ "header_scrim": true,
+ "outro": true,
+ "outro_src": "epbc02/outro_card.mp4",
+ "outro_dur": 0,
+ "outro_cta": "Show me your before and after — I'm reading every comment. My Claude gift is still live — first three builders, free month, link in the description. And tomorrow? Wednesday. Your name goes public where people can find you.",
+ "seo_line": "The model picker is the most ignored button in AI. Build Club Chapter 2: the same website, rebuilt by switching from the cheapest model to Opus with the effort up — it found a dead order button, asked three sharp questions, tested its own code and fixed four bugs. One prompt, no code, still free.",
+ "gift_line": "🎁 My Claude gift — the first 3 builders who use this link get a free month of Claude Pro: https://claude.ai/referral/fIQUSk0Uig?s=android (personal referral link, not sponsored)",
+ "_production_notes": {
+  "live_url": "https://anitas-tiffin.netlify.app (Opus cut LIVE since 2026-08-16)",
+  "share_prompt": "assets/bc02/SHARE-PROMPT.txt = pinned comment (crisp polish prompt)",
+  "heygen_hold": "VJ 2026-08-16: host clips on disk are stand-ins from the old script — regenerate + lipsync_visual gates ONLY after VJ locks template/frames on the board",
+  "arm": "Tue 2026-08-18 16:00 IST (10:30Z) · playlist PLIuiep7RRSGE · VJ board approval first"
+ }
+}

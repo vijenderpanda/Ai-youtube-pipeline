@@ -1,0 +1,197 @@
+[
+ {
+  "w": "SHOW",
+  "start": 0.0,
+  "end": 0.23
+ },
+ {
+  "w": "ME",
+  "start": 0.28,
+  "end": 0.35
+ },
+ {
+  "w": "YOUR",
+  "start": 0.38,
+  "end": 0.48
+ },
+ {
+  "w": "BEFORE",
+  "start": 0.52,
+  "end": 0.84
+ },
+ {
+  "w": "AND",
+  "start": 0.87,
+  "end": 0.94
+ },
+ {
+  "w": "AFTER",
+  "start": 0.99,
+  "end": 1.24
+ },
+ {
+  "w": "\u2014",
+  "start": 1.39,
+  "end": 1.56
+ },
+ {
+  "w": "I'M",
+  "start": 1.6,
+  "end": 1.75
+ },
+ {
+  "w": "READING",
+  "start": 1.8,
+  "end": 2.02
+ },
+ {
+  "w": "EVERY",
+  "start": 2.08,
+  "end": 2.26
+ },
+ {
+  "w": "COMMENT",
+  "start": 2.31,
+  "end": 2.75
+ },
+ {
+  "w": "MY",
+  "start": 3.08,
+  "end": 3.22
+ },
+ {
+  "w": "CLAUDE",
+  "start": 3.27,
+  "end": 3.54
+ },
+ {
+  "w": "GIFT",
+  "start": 3.56,
+  "end": 3.75
+ },
+ {
+  "w": "IS",
+  "start": 3.79,
+  "end": 3.84
+ },
+ {
+  "w": "STILL",
+  "start": 3.87,
+  "end": 4.03
+ },
+ {
+  "w": "LIVE",
+  "start": 4.09,
+  "end": 4.39
+ },
+ {
+  "w": "\u2014",
+  "start": 4.54,
+  "end": 4.67
+ },
+ {
+  "w": "FIRST",
+  "start": 4.7,
+  "end": 4.93
+ },
+ {
+  "w": "THREE",
+  "start": 4.97,
+  "end": 5.17
+ },
+ {
+  "w": "BUILDERS",
+  "start": 5.2,
+  "end": 5.74
+ },
+ {
+  "w": "FREE",
+  "start": 5.85,
+  "end": 6.07
+ },
+ {
+  "w": "MONTH",
+  "start": 6.13,
+  "end": 6.47
+ },
+ {
+  "w": "LINK",
+  "start": 6.59,
+  "end": 6.83
+ },
+ {
+  "w": "IN",
+  "start": 6.87,
+  "end": 6.92
+ },
+ {
+  "w": "THE",
+  "start": 6.95,
+  "end": 7.02
+ },
+ {
+  "w": "DESCRIPTION",
+  "start": 7.06,
+  "end": 7.58
+ },
+ {
+  "w": "AND",
+  "start": 7.64,
+  "end": 7.78
+ },
+ {
+  "w": "TOMORROW",
+  "start": 7.83,
+  "end": 8.34
+ },
+ {
+  "w": "WEDNESDAY",
+  "start": 8.49,
+  "end": 9.07
+ },
+ {
+  "w": "YOUR",
+  "start": 9.11,
+  "end": 9.29
+ },
+ {
+  "w": "NAME",
+  "start": 9.33,
+  "end": 9.51
+ },
+ {
+  "w": "GOES",
+  "start": 9.55,
+  "end": 9.73
+ },
+ {
+  "w": "PUBLIC",
+  "start": 9.78,
+  "end": 10.16
+ },
+ {
+  "w": "WHERE",
+  "start": 10.48,
+  "end": 10.7
+ },
+ {
+  "w": "PEOPLE",
+  "start": 10.73,
+  "end": 10.97
+ },
+ {
+  "w": "CAN",
+  "start": 11.01,
+  "end": 11.12
+ },
+ {
+  "w": "FIND",
+  "start": 11.18,
+  "end": 11.38
+ },
+ {
+  "w": "YOU",
+  "start": 11.44,
+  "end": 11.89
+ }
+]

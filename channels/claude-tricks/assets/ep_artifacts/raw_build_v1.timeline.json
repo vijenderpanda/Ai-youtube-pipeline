@@ -1,0 +1,22 @@
+{
+  "typing_start": 2.213,
+  "typing_end": 18.673,
+  "submit": 19.57,
+  "answer_start": 19.57,
+  "answer_end": 75.567,
+  "scrolls": [
+    75.646,
+    76.854,
+    78.062
+  ],
+  "duration": 79.4,
+  "first_token": 22.406,
+  "observed": {
+    "answer_selector": ".font-claude-response",
+    "answer_head": "Viewed a file, created a file\n\ue027\nViewed a file, created a file\nSingle-file HTML app, receipt/ledger design (torn paper card, big serif number, mono digits)\nTotal bill input, +/\u2212 stepper for people count, live-updating per-person amount\nDefaults to \u20b9, editable via the input field\nNo dependencies \u2014 open the file directly in a browser\nPresented file\n\ue027\nPresented file\nChange \u20b9 to another symbol \u2192 edit c",
+    "answer_chars": 559,
+    "logged_in": true,
+    "pii_blurred": null,
+    "forbidden_term": null
+  }
+}

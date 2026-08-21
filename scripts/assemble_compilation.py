@@ -306,7 +306,8 @@ def resolve_xfades(n, xfade, xfade_ramp):
 def build_compilation(segments, xfades, dim_arc, out_path, crf="19", preset="medium",
                        dim_brightness_step=None,
                        dim_tempo_step=None,
-                       dim_tempo_scope="interlude"):
+                       dim_tempo_scope="interlude",
+                       target=None):
     n = len(segments)
     paths = [s[0] for s in segments]
     durs = [s[1] for s in segments]
@@ -318,11 +319,17 @@ def build_compilation(segments, xfades, dim_arc, out_path, crf="19", preset="med
     if dim_tempo_step is None:
         dim_tempo_step = (1.0 - DIM_TEMPO_FLOOR) / spread
 
-    # Target spec: first VIDEO segment (existing masters define the house look);
-    # if the compilation is all-interlude, fall back to the 1920x1080/30 default
-    # every generator in this repo already renders interludes at.
+    # Target spec resolution, in priority order:
+    #   1. explicit `target=(W, H, fps)` — REQUIRED for long-form, where the inputs may be
+    #      9:16 Shorts and inheriting the first segment's dims would conform the whole video
+    #      VERTICAL. assemble_longform.py always passes (1920, 1080, ...). The conform below
+    #      already letterboxes/pillarboxes any-aspect input into this frame.
+    #   2. first VIDEO segment (existing masters define the house look — the Lulla path);
+    #   3. all-interlude fallback = the 1920x1080/30 every generator renders interludes at.
     video_segs = [s for s in segments if s[2] == "video"]
-    if video_segs:
+    if target is not None:
+        W, H, fps = target
+    elif video_segs:
         W, H, fps = probe_video(video_segs[0][0])
     else:
         W, H, fps = 1920, 1080, "30/1"

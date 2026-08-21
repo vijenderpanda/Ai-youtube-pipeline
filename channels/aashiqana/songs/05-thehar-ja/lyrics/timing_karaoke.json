@@ -1,0 +1,125 @@
+{
+ "_note": "lyrics — stable-ts load_faster_whisper('small').align() on the demucs vocal stem, Devanagari align text -> romanized display (1:1 by word count); onset-snap to nearest silero-VAD onset (threshold union (0.5, 0.35), speech_pad 0) within 2.5s (guarded: a snap can never cross the previous line's end; a line with no VAD onset at all is re-aligned in isolation over the remaining audio); sweep-cap e = min(aligned_e, next_s-0.2, s+6.5); MIN_LINE 0.5s. Lines in (parens) are aligned as a tail sink and NOT displayed. Times are relative to the cut start.",
+ "lines": [
+  {
+   "s": 1.31,
+   "e": 6.56,
+   "text": "Thehar ja, thehar ja, thehar ja zara"
+  },
+  {
+   "s": 7.33,
+   "e": 12.52,
+   "text": "Ye lamha na jaaye, tu paas mera"
+  },
+  {
+   "s": 13.44,
+   "e": 18.44,
+   "text": "Thehar ja, thehar ja, thehar ja zara"
+  },
+  {
+   "s": 22.4,
+   "e": 24.78,
+   "text": "Thehar ja, thehar ja, thehar ja zara"
+  },
+  {
+   "s": 36.99,
+   "e": 41.04,
+   "text": "Do cup chai, aur baatein teri"
+  },
+  {
+   "s": 42.37,
+   "e": 47.0,
+   "text": "Ye raat dhale na, chaahat meri"
+  },
+  {
+   "s": 48.13,
+   "e": 52.98,
+   "text": "Aankhon mein teri, main khud ko dhoondhu"
+  },
+  {
+   "s": 55.23,
+   "e": 58.96,
+   "text": "Tu muskuraaye, main duniya bhoolu"
+  },
+  {
+   "s": 61.34,
+   "e": 66.02,
+   "text": "Thehar ja, thehar ja, thehar ja zara"
+  },
+  {
+   "s": 66.53,
+   "e": 71.74,
+   "text": "Ye lamha na jaaye, tu paas mera"
+  },
+  {
+   "s": 74.14,
+   "e": 77.96,
+   "text": "Thehar ja, thehar ja, thehar ja zara"
+  },
+  {
+   "s": 81.54,
+   "e": 88.04,
+   "text": "Thehar ja, thehar ja, thehar ja zara"
+  },
+  {
+   "s": 107.83,
+   "e": 113.56,
+   "text": "Baahar hai duniya, andar tu aur main"
+  },
+  {
+   "s": 114.11,
+   "e": 119.45,
+   "text": "Ye pal thehar jaaye, na dhale ye shaam"
+  },
+  {
+   "s": 119.68,
+   "e": 125.09,
+   "text": "Haathon ki garmi, teri woh hansi"
+  },
+  {
+   "s": 126.59,
+   "e": 130.99,
+   "text": "Is cafe ke kone mein, basi zindagi"
+  },
+  {
+   "s": 131.81,
+   "e": 137.21,
+   "text": "Ghadi ki sui ko keh do ruk jaaye"
+  },
+  {
+   "s": 137.98,
+   "e": 143.19,
+   "text": "Tu saath ho to, waqt na jaaye"
+  },
+  {
+   "s": 143.78,
+   "e": 149.11,
+   "text": "Thehar ja, thehar ja, thehar ja zara"
+  },
+  {
+   "s": 149.47,
+   "e": 154.73,
+   "text": "Ye lamha na jaaye, tu paas mera"
+  },
+  {
+   "s": 157.12,
+   "e": 160.71,
+   "text": "Thehar ja, thehar ja, thehar ja zara"
+  },
+  {
+   "s": 165.31,
+   "e": 171.81,
+   "text": "Thehar ja, thehar ja, thehar ja zara"
+  },
+  {
+   "s": 172.57,
+   "e": 179.07,
+   "text": "Thehar ja, thehar ja, thehar ja zara"
+  },
+  {
+   "s": 185.19,
+   "e": 191.07,
+   "text": "Thehar ja... zara..."
+  }
+ ]
+}

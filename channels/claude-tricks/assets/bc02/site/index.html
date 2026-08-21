@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anita's Tiffin | Fresh Home-Cooked Meals in Indiranagar</title>
+    <meta name="description" content="Fresh ghar-ka-khana cooked daily. Rajma Chawal, Paneer Thali, Dal + Roti. Free delivery within 3 km in Indiranagar, Bengaluru.">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #faf8f6;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #d4674c 0%, #e8956e 100%);
+            padding: 60px 20px;
+            text-align: center;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(10px, 10px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            background: white;
+            color: #d4674c;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        /* Offerings Section */
+        .offerings {
+            padding: 60px 20px;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #888;
+            margin-top: -35px;
+            margin-bottom: 40px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .cards-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .card {
+            background: rgba(212, 103, 76, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 103, 76, 0.2);
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(212, 103, 76, 0.15);
+            background: rgba(212, 103, 76, 0.12);
+        }
+
+        .card-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .card-price {
+            font-size: 2rem;
+            color: #d4674c;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        /* Why Choose Me */
+        .why-choose {
+            padding: 60px 20px;
+            background: #faf8f6;
+        }
+
+        .points-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .points-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .point {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .point-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #d4674c;
+            margin-bottom: 12px;
+        }
+
+        .point-text {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* Ask Us Anything — Chat Widget */
+        .ask-section {
+            padding: 60px 20px 70px;
+            background: white;
+        }
+
+        .chat-widget {
+            max-width: 520px;
+            margin: 0 auto;
+            background: #faf8f6;
+            border: 1px solid rgba(212, 103, 76, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(212, 103, 76, 0.12);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #d4674c 0%, #e8956e 100%);
+            color: white;
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-header-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .chat-header-text .chat-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .chat-header-text .chat-status {
+            font-size: 0.78rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .chat-status .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #7ee08a;
+            display: inline-block;
+        }
+
+        .chat-messages {
+            padding: 20px;
+            max-height: 380px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+        }
+
+        .msg {
+            max-width: 82%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            animation: pop-in 0.25s ease;
+        }
+
+        @keyframes pop-in {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg.bot {
+            background: rgba(212, 103, 76, 0.1);
+            color: #3a3a3a;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg.user {
+            background: #d4674c;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+            padding: 4px 2px;
+        }
+
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #d4674c;
+            opacity: 0.5;
+            animation: bounce 1s infinite;
+        }
+
+        .typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30% { transform: translateY(-4px); opacity: 1; }
+        }
+
+        .chat-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0 20px 16px;
+        }
+
+        .chip {
+            background: white;
+            border: 1px solid rgba(212, 103, 76, 0.3);
+            color: #d4674c;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Poppins', sans-serif;
+            white-space: nowrap;
+        }
+
+        .chip:hover {
+            background: #d4674c;
+            color: white;
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 10px;
+            padding: 16px;
+            background: white;
+            border-top: 1px solid rgba(212, 103, 76, 0.15);
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 1px solid rgba(212, 103, 76, 0.25);
+            border-radius: 24px;
+            padding: 12px 18px;
+            font-size: 0.92rem;
+            font-family: 'Poppins', sans-serif;
+            outline: none;
+            background: #faf8f6;
+            color: #333;
+        }
+
+        .chat-input:focus {
+            border-color: #d4674c;
+        }
+
+        .chat-send {
+            background: #d4674c;
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .chat-send:hover {
+            transform: scale(1.08);
+            background: #c05638;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(212, 103, 76, 0.3);
+            border-radius: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #d4674c 0%, #e8956e 100%);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .footer-text {
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .whatsapp-button {
+            background: white;
+            color: #d4674c;
+            padding: 20px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .whatsapp-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .tagline {
+                font-size: 1rem;
+            }
+
+            .chat-widget {
+                border-radius: 18px;
+            }
+
+            .msg {
+                max-width: 88%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Anita's Tiffin</h1>
+            <p class="tagline">Fresh ghar-ka-khana cooked the same morning</p>
+            <a href="https://wa.me/919999999999" class="cta-button">Order Now</a>
+        </div>
+    </section>
+
+    <!-- Offerings -->
+    <section class="offerings">
+        <h2 class="section-title">What We Serve</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-name">Rajma Chawal</div>
+                <div class="card-price">₹120</div>
+            </div>
+            <div class="card">
+                <div class="card-name">Paneer Thali</div>
+                <div class="card-price">₹150</div>
+            </div>
+            <div class="card">
+                <div class="card-name">Dal + 4 Roti</div>
+                <div class="card-price">₹90</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="why-choose">
+        <h2 class="section-title">Why Choose Us</h2>
+        <div class="points-grid">
+            <div class="point">
+                <div class="point-title">🍳 Fresh Every Morning</div>
+                <div class="point-text">Cooked fresh the same morning. No leftovers, no compromise.</div>
+            </div>
+            <div class="point">
+                <div class="point-title">🚚 Free Delivery</div>
+                <div class="point-text">Free delivery within 3 km. Order by 10 AM for lunch.</div>
+            </div>
+            <div class="point">
+                <div class="point-title">❤️ Home-Cooked Taste</div>
+                <div class="point-text">Made with care for working folks and students in Indiranagar.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ask Us Anything -->
+    <section class="ask-section">
+        <h2 class="section-title">Ask Us Anything</h2>
+        <p class="section-subtitle">Type in English or Hinglish — menu, price, delivery, timing, sab kuch</p>
+
+        <div class="chat-widget">
+            <div class="chat-header">
+                <div class="chat-header-avatar">🍛</div>
+                <div class="chat-header-text">
+                    <div class="chat-title">Anita's Tiffin Assistant</div>
+                    <div class="chat-status"><span class="dot"></span> Replies instantly</div>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="msg bot">Namaste! 👋 Poochiye menu, price, delivery, ya timing ke baare mein — main turant bataungi.</div>
+            </div>
+
+            <div class="chat-chips">
+                <button class="chip" type="button" onclick="askQuick('Aaj ka menu kya hai?')">Today's menu</button>
+                <button class="chip" type="button" onclick="askQuick('Thali kitne ki hai?')">Prices</button>
+                <button class="chip" type="button" onclick="askQuick('Delivery kahan tak hoti hai?')">Delivery area</button>
+                <button class="chip" type="button" onclick="askQuick('Order kab tak karna hai?')">Timings</button>
+                <button class="chip" type="button" onclick="askQuick('Order kaise karu?')">How to order</button>
+            </div>
+
+            <div class="chat-input-row">
+                <input type="text" class="chat-input" id="chatInput" placeholder="e.g. how much is the thali?" autocomplete="off">
+                <button class="chat-send" id="chatSend" type="button" aria-label="Send">➤</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p class="footer-text">Serving Indiranagar, Bengaluru with love and taste</p>
+        <a href="https://wa.me/919999999999" class="whatsapp-button">📞 Order on WhatsApp</a>
+    </footer>
+
+    <script>
+        // ---- Knowledge base: only facts already on this page (+ clearly-marked placeholders) ----
+        const faqs = [
+            {
+                id: 'menu',
+                keywords: ['menu', 'khana', 'aaj ka', 'what do you serve', 'items', 'food options', 'kya milta', 'dishes'],
+                answer: "Today's menu:<br>🍛 Rajma Chawal — ₹120<br>🧀 Paneer Thali — ₹150<br>🥘 Dal + 4 Roti — ₹90<br>All fresh, home-cooked, 100% vegetarian."
+            },
+            {
+                id: 'price_rajma',
+                keywords: ['rajma', 'rajma chawal'],
+                answer: "Rajma Chawal is ₹120."
+            },
+            {
+                id: 'price_paneer',
+                keywords: ['paneer', 'thali', 'paneer thali'],
+                answer: "Paneer Thali is ₹150."
+            },
+            {
+                id: 'price_dal',
+                keywords: ['dal', 'roti', 'dal roti', 'dal chawal'],
+                answer: "Dal + 4 Roti is ₹90."
+            },
+            {
+                id: 'price_general',
+                keywords: ['price', 'kitna', 'kitne ka', 'rate', 'cost', 'kitne ki', 'how much'],
+                answer: "Prices: Rajma Chawal ₹120 · Paneer Thali ₹150 · Dal + 4 Roti ₹90."
+            },
+            {
+                id: 'delivery',
+                keywords: ['delivery', 'deliver', 'free delivery', '3 km', 'kitna door', 'area', 'kahan tak', 'radius'],
+                answer: "Free delivery within 3 km of Indiranagar. Outside that? Message us on WhatsApp and we'll check if we can still reach you (small extra charge may apply)."
+            },
+            {
+                id: 'timing',
+                keywords: ['time', 'timing', 'kab', 'baje', 'order by', 'deadline', 'kitne baje', 'kab tak', 'last order'],
+                answer: "Order by 10 AM for same-day lunch delivery. We currently do lunch tiffins only, Monday–Saturday."
+            },
+            {
+                id: 'how_order',
+                keywords: ['order kaise', 'how to order', 'order karu', 'book', 'booking', 'kaise mangau', 'process'],
+                answer: "Easiest way: tap 'Order Now' or the WhatsApp button below, tell us what you'd like, and we'll confirm. No app or signup needed."
+            },
+            {
+                id: 'veg',
+                keywords: ['veg', 'vegetarian', 'non veg', 'nonveg', 'meat', 'egg'],
+                answer: "We're 100% vegetarian. 🌱"
+            },
+            {
+                id: 'payment',
+                keywords: ['payment', 'pay', 'cash', 'upi', 'online payment', 'gpay', 'paytm'],
+                answer: "We accept Cash on Delivery and UPI."
+            },
+            {
+                id: 'location',
+                keywords: ['location', 'address', 'kaha', 'kahan', 'where', 'indiranagar', 'area serve'],
+                answer: "We're based in Indiranagar, Bengaluru, delivering fresh tiffins to the neighbourhood."
+            },
+            {
+                id: 'subscription',
+                keywords: ['subscription', 'monthly', 'weekly', 'plan', 'daily plan'],
+                answer: "Monthly and weekly tiffin plans are available on request — message us on WhatsApp for details."
+            },
+            {
+                id: 'contact',
+                keywords: ['contact', 'number', 'phone', 'whatsapp', 'call', 'talk to'],
+                answer: "Reach us anytime on WhatsApp using the 'Order Now' or 'Order on WhatsApp' button on this page."
+            }
+        ];
+
+        const fallback = "Hmm, not sure about that one! 🤔 Tap the WhatsApp button below and we'll answer right away.";
+
+        function findAnswer(query) {
+            const q = query.toLowerCase().trim();
+            let best = null;
+            let bestScore = 0;
+            faqs.forEach(faq => {
+                let score = 0;
+                faq.keywords.forEach(kw => {
+                    if (q.includes(kw)) score += kw.split(' ').length; // longer phrase match = higher confidence
+                });
+                if (score > bestScore) {
+                    bestScore = score;
+                    best = faq;
+                }
+            });
+            return bestScore > 0 ? best.answer : fallback;
+        }
+
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const chatSend = document.getElementById('chatSend');
+
+        function addMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = 'msg ' + sender;
+            div.innerHTML = text;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return div;
+        }
+
+        function showTyping() {
+            const div = document.createElement('div');
+            div.className = 'msg bot';
+            div.id = 'typingIndicator';
+            div.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTyping() {
+            const t = document.getElementById('typingIndicator');
+            if (t) t.remove();
+        }
+
+        function handleSend() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            addMessage(text, 'user');
+            chatInput.value = '';
+            showTyping();
+            setTimeout(() => {
+                removeTyping();
+                addMessage(findAnswer(text), 'bot');
+            }, 450);
+        }
+
+        function askQuick(text) {
+            chatInput.value = text;
+            handleSend();
+        }
+
+        chatSend.addEventListener('click', handleSend);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSend();
+        });
+    </script>
+
+</body>
+</html>

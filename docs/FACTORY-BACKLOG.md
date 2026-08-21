@@ -265,3 +265,25 @@ UPDATE scripts/assemble_music_video.py (Aashiqana Pipeline A long-form assembler
 
 - [ ] open
 
+## Create scripts/beat_audit.py — pre-render early-structure gate (proof-by-4s, no boundary idle)
+_source: analyze_and_suggest 2667b2d6-9408-4f00-ac95-347d74975b7f · 2026-08-21_
+
+**Why:** This item is already 'suggested' in the calendar since Aug-8 and this cycle's retention pull independently reproduces the exact failure it targets (a >4s setup run before the first proof beat correlates with sub-30% 15s-holds on claude-tricks) — it should move from suggested to built now that the data confirms the rule generalizes.
+
+**Interface / acceptance:**
+
+CREATE scripts/beat_audit.py, a pre-render QC gate that reads a built episode spec JSON (the `build_ep_v2.py --dry` output or the `assemble_*` segment list) and flags exactly the failure mode this analysis found repeatedly: a beat sequence that spends >4-5s on setup/problem-statement before the first demo/proof/payoff beat. Usage: `python scripts/beat_audit.py --spec path/to/spec.json [--channel claude-tricks] [--max-setup-s 4.5]`. Behavior: (1) walk the beats list, classify each beat kind (`hook`, `problem`, `demo`, `cook`, `stat`, `payoff`) via its existing `kind`/tag field; (2) sum the duration of any leading run of `problem`/`hook`-only beats before the first `demo`/`cook`/`payoff` beat; (3) fail (non-zero exit, printed reason) if that run exceeds `--max-setup-s`; (4) also flag any single beat >6s with zero caption/overlay change (a 'dead air' beat, the other half of the 15s-battle). Write findings to stdout and optionally `--json report.json`. This turns the pattern this cycle found by hand (Effort Dial 10% 15s-hold / Ask-AI-Table 26% vs Forgets-Everything 74% / SKILLS 57%, all explained by setup-before-proof timing) into an automatic pre-render check instead of a retrospective retention read.
+
+- [ ] open
+
+## Update scripts/yt_retention.py — add --attribute, joining measured drop_points to the episode's beat map
+_source: analyze_and_suggest 2667b2d6-9408-4f00-ac95-347d74975b7f · 2026-08-21_
+
+**Why:** Already flagged 'suggested' in the calendar (Aug-7) and this cycle needed exactly this join done by hand across 8 measurable videos to reach its conclusions — building it removes that manual step from every future analysis cycle.
+
+**Interface / acceptance:**
+
+UPDATE scripts/yt_retention.py to add `--attribute` mode: `python scripts/yt_retention.py --channel claude-tricks --video-id <id> --attribute --spec channels/claude-tricks/episodes/<ep>.v2.json`. It should map each returned `drop_points` timestamp onto the nearest beat boundary in the episode's built spec (reusing the same beat/segment timing `beat_audit.py` reads) and print which named beat owns each cliff, e.g. 'drop at 4.8s -> beat 2 (problem-statement, 3.2s-9.1s)'. Currently this analysis had to eyeball drop_points against beat names by hand for every video (Effort Dial's 2.2s/4.7s/5.4s drops vs Ask-AI-Table's 4.8s) — automating the join turns 'where does it bleed' from a manual cross-reference into one command's output, and lets a daily/weekly retention pass name the offending beat directly instead of just the timestamp.
+
+- [ ] open
+

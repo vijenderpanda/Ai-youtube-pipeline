@@ -1,0 +1,29 @@
+[
+ {
+  "clip": "v2_hook.mp4",
+  "status": "ok",
+  "visual_lag_ms": -400.0,
+  "corr": 0.203,
+  "face_frames_pct": 100.0,
+  "frames": 135,
+  "verdict": "FAIL"
+ },
+ {
+  "clip": "v2_wpip_answers.mp4",
+  "status": "ok",
+  "visual_lag_ms": 0.0,
+  "corr": 0.166,
+  "face_frames_pct": 100.0,
+  "frames": 138,
+  "verdict": "WARN"
+ },
+ {
+  "clip": "v2_pip_answers.mp4",
+  "status": "ok",
+  "visual_lag_ms": 120.0,
+  "corr": 0.068,
+  "face_frames_pct": 100.0,
+  "frames": 138,
+  "verdict": "FAIL"
+ }
+]

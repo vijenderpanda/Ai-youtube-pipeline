@@ -1,0 +1,125 @@
+{
+ "_note": "lyrics — stable-ts load_faster_whisper('small').align() on the demucs vocal stem, Devanagari align text -> romanized display (1:1 by word count); onset-snap to nearest silero-VAD onset (threshold union (0.5, 0.35), speech_pad 0) within 2.5s (guarded: a snap can never cross the previous line's end; a line with no VAD onset at all is re-aligned in isolation over the remaining audio); sweep-cap e = min(aligned_e, next_s-0.2, s+6.5); MIN_LINE 0.5s. Lines in (parens) are aligned as a tail sink and NOT displayed. Times are relative to the cut start.",
+ "lines": [
+  {
+   "s": 1.63,
+   "e": 7.96,
+   "text": "Tu meri, tu meri, tu meri jaan"
+  },
+  {
+   "s": 8.86,
+   "e": 14.56,
+   "text": "Tere bina adhoora, mera har armaan"
+  },
+  {
+   "s": 15.42,
+   "e": 21.38,
+   "text": "Tu meri, tu meri, tu meri jaan"
+  },
+  {
+   "s": 22.98,
+   "e": 29.48,
+   "text": "Tu meri, tu meri, tu meri jaan"
+  },
+  {
+   "s": 41.01,
+   "e": 46.33,
+   "text": "Sunehri kirno mein, tera hi noor"
+  },
+  {
+   "s": 48.35,
+   "e": 53.19,
+   "text": "Tu paas ho jitni, utna sukoon"
+  },
+  {
+   "s": 54.46,
+   "e": 60.43,
+   "text": "Har saans mein basi, teri khushboo"
+  },
+  {
+   "s": 61.18,
+   "e": 65.83,
+   "text": "Main tera deewana, tu meri aarzoo"
+  },
+  {
+   "s": 67.93,
+   "e": 74.43,
+   "text": "Tu meri, tu meri, tu meri jaan"
+  },
+  {
+   "s": 75.33,
+   "e": 81.83,
+   "text": "Tere bina adhoora, mera har armaan"
+  },
+  {
+   "s": 82.23,
+   "e": 88.41,
+   "text": "Tu meri, tu meri, tu meri jaan"
+  },
+  {
+   "s": 91.09,
+   "e": 97.59,
+   "text": "Tu meri, tu meri, tu meri jaan"
+  },
+  {
+   "s": 105.79,
+   "e": 112.29,
+   "text": "Shaam dhalti hai, teri baahon mein"
+  },
+  {
+   "s": 115.17,
+   "e": 121.19,
+   "text": "Jannat mil jaaye, teri raahon mein"
+  },
+  {
+   "s": 121.39,
+   "e": 126.07,
+   "text": "Tere ishq mein main, doobta jaaun"
+  },
+  {
+   "s": 126.27,
+   "e": 132.77,
+   "text": "Tu meri manzil, tujhi mein samaaun"
+  },
+  {
+   "s": 136.16,
+   "e": 139.55,
+   "text": "Duniya kahe kuch bhi, na sunun main"
+  },
+  {
+   "s": 140.69,
+   "e": 147.19,
+   "text": "Tu meri, bas tu meri, itna jaanun main"
+  },
+  {
+   "s": 148.79,
+   "e": 154.75,
+   "text": "Tu meri, tu meri, tu meri jaan"
+  },
+  {
+   "s": 155.31,
+   "e": 161.81,
+   "text": "Tere bina adhoora, mera har armaan"
+  },
+  {
+   "s": 162.43,
+   "e": 168.31,
+   "text": "Tu meri, tu meri, tu meri jaan"
+  },
+  {
+   "s": 169.85,
+   "e": 175.33,
+   "text": "Tu meri, tu meri, tu meri jaan"
+  },
+  {
+   "s": 176.47,
+   "e": 182.97,
+   "text": "Tu meri, tu meri, tu meri jaan"
+  },
+  {
+   "s": 192.31,
+   "e": 198.81,
+   "text": "Tu meri... jaan..."
+  }
+ ]
+}

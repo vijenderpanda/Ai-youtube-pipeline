@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+      (function() {
+        // Capture host references before any artifact code runs: Window.parent
+        // is [Replaceable] (a top-level `var parent` in artifact code would
+        // replace the accessor with a data property), and a top-level
+        // `const crypto` would shadow the global — either would otherwise
+        // silently break the bridge for artifacts that worked before.
+        const realParent = window.parent;
+        const cryptoObj = window.crypto;
+        // html-to-image is only used by takeScreenshot: fetched on first use, not as a
+        // parser-blocking tag. Native fetch, captured before the proxy override below.
+        const realFetch = typeof window.fetch === 'function' ? window.fetch.bind(window) : null;
+        const HTML_TO_IMAGE_SRC = "https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.13/html-to-image.min.js";
+        const HTML_TO_IMAGE_INTEGRITY = "sha512-iZ2ORl595Wx6miw+GuadDet4WQbdSWS3JLMoNfY8cRGoEFy6oT3G9IbcrBeL6AfkgpA51ETt/faX6yLV+/gFJg==";
+        let htmlToImageLoad = null;
+        const loadHtmlToImage = () => {
+          if (!htmlToImageLoad) {
+            htmlToImageLoad = (realFetch
+              ? realFetch(HTML_TO_IMAGE_SRC, { integrity: HTML_TO_IMAGE_INTEGRITY, credentials: 'omit', referrerPolicy: 'no-referrer' })
+              : Promise.reject(new Error('fetch unavailable'))
+            )
+              .then((res) => {
+                if (!res.ok) throw new Error('html-to-image failed to load (' + res.status + ')');
+                return res.text();
+              })
+              .then((source) => {
+                // UMD bundle: hide the artifact's AMD/CommonJS globals so it takes the
+                // window-global branch; inline script text runs synchronously on insert.
+                const hidden = ['define', 'module', 'exports'].map((k) => {
+                  const entry = { k, own: Object.prototype.hasOwnProperty.call(window, k), v: window[k] };
+                  try { window[k] = undefined; } catch (e) {}
+                  return entry;
+                });
+                try {
+                  const el = document.createElement('script');
+                  el.text = source;
+                  (document.head || document.documentElement).appendChild(el);
+                } finally {
+                  hidden.forEach(({ k, own, v }) => {
+                    try { if (own) { window[k] = v; } else { delete window[k]; } } catch (e) {}
+                  });
+                }
+                if (!window.htmlToImage) throw new Error('html-to-image unavailable after load');
+                return window.htmlToImage;
+              });
+            // A failed load may be transient; let the next screenshot retry.
+            htmlToImageLoad.catch(() => { htmlToImageLoad = null; });
+          }
+          return htmlToImageLoad;
+        };
+        // crypto.randomUUID exists only in Secure Contexts; fall back to a
+        // unique non-crypto id elsewhere (http://LAN-IP dev flows) —
+        // uniqueness is what the bridge needs, unpredictability is
+        // defense-in-depth on top of the source guards.
+        const newRequestId =
+          cryptoObj && typeof cryptoObj.randomUUID === "function"
+            ? function () { return cryptoObj.randomUUID(); }
+            : function () { return Date.now() + "-" + Math.random(); };
+        const originalConsole = window.console;
+        window.console = {
+          log: (...args) => {
+            originalConsole.log(...args);
+            realParent.postMessage({ type: 'console', message: args.join(' ') }, '*');
+          },
+          error: (...args) => {
+            originalConsole.error(...args);
+            realParent.postMessage({ type: 'console', message: 'Error: ' + args.join(' ') }, '*');
+          },
+          warn: (...args) => {
+            originalConsole.warn(...args);
+            realParent.postMessage({ type: 'console', message: 'Warning: ' + args.join(' ') }, '*');
+          }
+        };
+
+        // Bridge request ids are crypto-random (not sequential) so they
+        // cannot be predicted by other frames in the tab.
+        let callbacksMap = new Map();
+        let streamControllers = new Map();
+        
+        window.claude = {
+          complete: (prompt) => {
+            return new Promise((resolve, reject) => {
+              const id = newRequestId();
+              callbacksMap.set(id, { resolve, reject });
+              realParent.postMessage({ type: 'claudeComplete', id, prompt }, '*');
+            });
+          }
+        };
+
+        window.storage = {
+          get: (key, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = newRequestId();
+              callbacksMap.set(id, { resolve, reject });
+              realParent.postMessage({ type: 'storageGet', id, key, shared }, '*');
+            });
+          },
+          set: (key, value, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = newRequestId();
+              callbacksMap.set(id, { resolve, reject });
+              realParent.postMessage({ type: 'storageSet', id, key, value, shared }, '*');
+            });
+          },
+          delete: (key, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = newRequestId();
+              callbacksMap.set(id, { resolve, reject });
+              realParent.postMessage({ type: 'storageDelete', id, key, shared }, '*');
+            });
+          },
+          list: (prefix, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = newRequestId();
+              callbacksMap.set(id, { resolve, reject });
+              realParent.postMessage({ type: 'storageList', id, prefix, shared }, '*');
+            });
+          }
+        };
+
+        let pendingBlobs = new Map();
+        URL.createObjectURL = (blob) => {
+          // Store the blob and create an ID and URL for it
+          const blobId = `blob-${Date.now()}-${Math.random()}`;
+          pendingBlobs.set(blobId, blob);
+          return `blob-request://${blobId}`;
+        };
+
+        URL.revokeObjectURL = (url) => {
+          // Remove the blob from our store
+          const blobId = url.replace("blob-request://", "");
+          pendingBlobs.delete(blobId);
+        };
+
+        const getBlobFromURL = (url) => {
+          const blobId = url.replace("blob-request://", "");
+          return pendingBlobs.get(blobId);
+        };
+
+        // Override global fetch with streaming support
+        window.fetch = (url, init = {}) => {
+          return new Promise((resolve, reject) => {
+            const id = newRequestId();
+            const channelId = `fetch-${id}-${Date.now()}`;
+            
+            callbacksMap.set(id, { 
+              resolve: (response) => {
+                // Null-body statuses: Response(stream, {status: 204}) throws
+                // per the Fetch spec, which would escape this resolver and
+                // hang the artifact's await forever.
+                if (response.status === 204 || response.status === 205 || response.status === 304) {
+                  try {
+                    resolve(new Response(null, {
+                      status: response.status,
+                      statusText: response.statusText,
+                      headers: response.headers
+                    }));
+                  } catch (err) {
+                    // Invalid statusText/header bytes can throw here too.
+                    reject(new TypeError(
+                      'Bridge fetch: unconstructable response (status ' + response.status + ')'
+                    ));
+                  }
+                  return;
+                }
+                // Create a ReadableStream for the response body
+                const stream = new ReadableStream({
+                  start(controller) {
+                    streamControllers.set(channelId, controller);
+                  },
+                  cancel() {
+                    streamControllers.delete(channelId);
+                  }
+                });
+                
+                // Create and return the Response with the stream. Response()
+                // requires status in [200, 599]; an opaque/no-cors fetch
+                // forwards status 0, which would throw here and escape the
+                // resolver, hanging the artifact's await. Surface it as a
+                // network-error-shaped rejection instead.
+                try {
+                  resolve(new Response(stream, {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: response.headers
+                  }));
+                } catch (err) {
+                  streamControllers.delete(channelId);
+                  reject(new TypeError(
+                    'Bridge fetch: unconstructable response (status ' + response.status + ')'
+                  ));
+                }
+              },
+              reject,
+              channelId
+            });
+            
+            realParent.postMessage({
+              type: 'proxyFetch',
+              id,
+              url,
+              init,
+              channelId
+            }, '*');
+          });
+        };
+
+        window.addEventListener('message', async (event) => {
+          // Only the embedding parent may drive the bridge — sibling and
+          // nested frames can also postMessage into this window.
+          if (event.source !== realParent) return;
+          if (event.data.type === 'takeScreenshot') {
+            // Echo the request's nonce so the requester can correlate the
+            // reply to ITS request — a reply without the expected nonce
+            // (e.g. from a stale pre-remount artifact) is ignored upstream.
+            const screenshotNonce = event.data.nonce;
+            const rootElement = document.getElementById('artifacts-component-root-html');
+            if (!rootElement) {
+              realParent.postMessage({
+                type: 'screenshotError',
+                nonce: screenshotNonce,
+                error: new Error('Root element not found'),
+              }, '*');
+              return;
+            }
+            // Catch CDN load failures and toPng errors so the parent always
+            // gets a response instead of hanging forever.
+            try {
+              const htmlToImage = await loadHtmlToImage();
+              const screenshot = await htmlToImage.toPng(rootElement, {
+                imagePlaceholder:
+                  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjePDgwX8ACOQDoNsk0PMAAAAASUVORK5CYII=",
+              });
+              realParent.postMessage({
+                type: 'screenshotData',
+                nonce: screenshotNonce,
+                data: screenshot,
+              }, '*');
+            } catch (err) {
+              realParent.postMessage({
+                type: 'screenshotError',
+                nonce: screenshotNonce,
+                error: err instanceof Error ? err : new Error(String(err)),
+              }, '*');
+            }
+          } else if (event.data.type === 'claudeComplete') {
+            const callback = callbacksMap.get(event.data.id);
+            if (!callback) return;
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.completion);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'proxyFetchResponse') {
+            const callback = callbacksMap.get(event.data.id);
+            if (!callback) return;
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+              callbacksMap.delete(event.data.id);
+            } else {
+              // Initial response with headers, status, etc.
+              callback.resolve({
+                status: event.data.status,
+                statusText: event.data.statusText,
+                headers: event.data.headers
+              });
+              // Don't delete the callback yet if streaming
+              if (!event.data.body) {
+                callbacksMap.delete(event.data.id);
+              }
+            }
+          } else if (event.data.type === 'proxyFetchStream') {
+            // Handle streaming data chunks
+            const controller = streamControllers.get(event.data.channelId);
+            if (controller) {
+              if (event.data.error) {
+                controller.error(new Error(event.data.error));
+                streamControllers.delete(event.data.channelId);
+              } else if (event.data.done) {
+                controller.close();
+                streamControllers.delete(event.data.channelId);
+                // Clean up the callback
+                const callback = Array.from(callbacksMap.entries()).find(
+                  ([_, value]) => value.channelId === event.data.channelId
+                );
+                if (callback) {
+                  callbacksMap.delete(callback[0]);
+                }
+              } else if (event.data.chunk) {
+                controller.enqueue(new Uint8Array(event.data.chunk));
+              }
+            }
+          } else if (event.data.type === 'storageGet') {
+            const callback = callbacksMap.get(event.data.id);
+            if (!callback) return;
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageSet') {
+            const callback = callbacksMap.get(event.data.id);
+            if (!callback) return;
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageDelete') {
+            const callback = callbacksMap.get(event.data.id);
+            if (!callback) return;
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageList') {
+            const callback = callbacksMap.get(event.data.id);
+            if (!callback) return;
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          }
+        });
+
+        window.addEventListener('click', (event) => {
+          const isEl = event.target instanceof HTMLElement;
+          if (!isEl) return;
+    
+          // find ancestor links
+          const linkEl = event.target.closest("a");
+          if (!linkEl || !linkEl.href) return;
+    
+          event.preventDefault();
+          event.stopImmediatePropagation();
+    
+          if (linkEl.href.startsWith("blob-request:")) {
+            const blob = getBlobFromURL(linkEl.href);
+            if (!blob) return;
+            void blob.arrayBuffer().then((data) => {
+              realParent.postMessage({
+                type: "downloadFile",
+                filename: linkEl.download,
+                data,
+                mimeType: blob.type || "application/octet-stream",
+              });
+            });
+          } else if (linkEl.href.startsWith("data:")) {
+            const [header, base64Data] = linkEl.href.split(",");
+            const mimeMatch = header.match(/data:([^;]+)/);
+            const mimeType = mimeMatch ? mimeMatch[1] : "application/octet-stream";
+            const binaryString = atob(base64Data);
+            const data = Uint8Array.from(binaryString, (c) =>
+              c.charCodeAt(0),
+            ).buffer;
+            realParent.postMessage({
+              type: "downloadFile",
+              filename: linkEl.download,
+              data,
+              mimeType,
+            });
+          } else {
+            let linkUrl;
+            try {
+              linkUrl = new URL(linkEl.href);
+            } catch (error) {
+              return;
+            }
+    
+            if (linkUrl.hostname === window.location.hostname) return;
+      
+            realParent.postMessage({
+              type: 'openExternal',
+              href: linkEl.href,
+            }, '*');
+          }
+      });
+
+        const originalOpen = window.open;
+        window.open = function (url) {
+          realParent.postMessage({
+            type: "openExternal",
+            href: url,
+          }, "*");
+        };
+
+        window.addEventListener('error', (event) => {
+          realParent.postMessage({ type: 'console', message: 'Uncaught Error: ' + event.message }, '*');
+        });
+      })();
+    </script>
+  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sleep Tracker</title>
+<style>
+  :root{
+    --bg:#0f1115;
+    --card:#171a21;
+    --accent:#7c8cff;
+    --accent2:#5865f2;
+    --text:#e8e9ee;
+    --sub:#8b8f9c;
+    --line:#262a35;
+    --good:#7c8cff;
+    --low:#3a3f4d;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    display:flex;
+    justify-content:center;
+    padding:24px 16px;
+  }
+  .wrap{width:100%;max-width:420px;}
+  h1{
+    font-size:20px;
+    font-weight:700;
+    margin:0 0 20px;
+    letter-spacing:-0.02em;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:16px;
+  }
+  .row{
+    display:flex;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .field{flex:1;}
+  label{
+    display:block;
+    font-size:12px;
+    color:var(--sub);
+    margin-bottom:6px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+  input[type="time"]{
+    width:100%;
+    background:#0f1115;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:10px 12px;
+    color:var(--text);
+    font-size:16px;
+    font-variant-numeric:tabular-nums;
+  }
+  input[type="time"]::-webkit-calendar-picker-indicator{
+    filter:invert(0.6);
+  }
+  button.log{
+    width:100%;
+    padding:18px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#fff;
+    font-size:17px;
+    font-weight:700;
+    letter-spacing:0.02em;
+    cursor:pointer;
+    transition:transform 0.1s ease, opacity 0.15s ease;
+  }
+  button.log:active{transform:scale(0.98);}
+  button.log:disabled{opacity:0.5;cursor:default;}
+  .result{
+    text-align:center;
+    margin-top:12px;
+    font-size:13px;
+    color:var(--sub);
+    min-height:18px;
+  }
+  .result b{color:var(--text);}
+  .chart-title{
+    font-size:12px;
+    color:var(--sub);
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    margin-bottom:14px;
+  }
+  .bars{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    height:120px;
+    gap:8px;
+  }
+  .bar-col{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;
+    height:100%;
+  }
+  .bar{
+    width:100%;
+    max-width:32px;
+    border-radius:6px 6px 3px 3px;
+    background:var(--low);
+    position:relative;
+    transition:height 0.4s ease;
+  }
+  .bar.has-data{
+    background:linear-gradient(180deg,var(--accent),var(--accent2));
+  }
+  .bar-hours{
+    font-size:10px;
+    color:var(--sub);
+    margin-bottom:6px;
+    font-variant-numeric:tabular-nums;
+  }
+  .bar-label{
+    font-size:11px;
+    color:var(--sub);
+    margin-top:8px;
+    font-weight:600;
+  }
+  .bar-col.today .bar-label{color:var(--accent);}
+  .avg{
+    display:flex;
+    justify-content:space-between;
+    margin-top:18px;
+    padding-top:14px;
+    border-top:1px solid var(--line);
+    font-size:13px;
+    color:var(--sub);
+  }
+  .avg b{color:var(--text);font-size:15px;}
+  .loading{color:var(--sub);font-size:13px;text-align:center;padding:20px 0;}
+</style>
+</head>
+<body id="artifacts-component-root-html">
+<div class="wrap">
+  <h1>🌙 Sleep Tracker</h1>
+
+  <div class="card">
+    <div class="row">
+      <div class="field">
+        <label>Bedtime</label>
+        <input type="time" id="bedtime" value="22:30">
+      </div>
+      <div class="field">
+        <label>Wake time</label>
+        <input type="time" id="waketime" value="06:30">
+      </div>
+    </div>
+    <button class="log" id="logBtn">LOG SLEEP</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="card">
+    <div class="chart-title">Last 7 nights</div>
+    <div id="chartArea" class="loading">Loading…</div>
+    <div class="avg" id="avgRow" style="display:none;">
+      <span>7-day avg</span>
+      <span><b id="avgVal">–</b> hrs</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* EP15 host shim — claude.ai's artifact sandbox supplies window.storage via a
+   postMessage bridge to its parent frame. We host this page ourselves, so that
+   bridge has no listener and every get/set rejects: the app's own catch returns
+   [] and LAST 7 NIGHTS renders flat. This re-points window.storage at
+   localStorage (same async contract) and seeds six prior nights so there is a
+   week to draw. Injected AFTER the sandbox preamble so it wins, and inside the
+   page rather than via add_init_script for the same reason. Claude's app code
+   below is byte-for-byte untouched; today's night is still logged live by its
+   own LOG SLEEP handler, on camera. */
+(() => {
+  const K = 'sleep:entries';
+  window.storage = {
+    get: async (k) => ({ value: localStorage.getItem(k) }),
+    set: async (k, v) => { localStorage.setItem(k, v); },
+  };
+  if (!localStorage.getItem(K)) {
+    const HOURS = [7.5, 6.2, 8.0, 5.5, 7.0, 6.8];   // day-6 .. yesterday
+    const out = [];
+    for (let i = 6; i >= 1; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      out.push({ date: d.toISOString().slice(0, 10), hours: HOURS[6 - i] });
+    }
+    localStorage.setItem(K, JSON.stringify(out));
+  }
+  /* the card sits in the top half of a 9:16 frame at 1x — scale it up so the
+     payoff fills the Short instead of floating over 900px of dead black. */
+  document.documentElement.style.zoom = '1.45';
+  /* the channel header band (logo + epTag) lives in the top ~110px of the
+     1080x1920 frame and was landing ON this app's own 'Sleep Tracker'
+     title. Push the app down so the money shot's title clears it. */
+  document.addEventListener('DOMContentLoaded', () => {
+    document.body.style.paddingTop = '105px';
+  });
+})();
+
+const KEY = 'sleep:entries';
+const bedtimeEl = document.getElementById('bedtime');
+const waketimeEl = document.getElementById('waketime');
+const logBtn = document.getElementById('logBtn');
+const resultEl = document.getElementById('result');
+const chartArea = document.getElementById('chartArea');
+const avgRow = document.getElementById('avgRow');
+const avgVal = document.getElementById('avgVal');
+
+function todayStr(d = new Date()){
+  return d.toISOString().slice(0,10);
+}
+
+function dayLabel(dateStr){
+  const d = new Date(dateStr + 'T00:00:00');
+  return ['S','M','T','W','T','F','S'][d.getDay()];
+}
+
+async function loadEntries(){
+  try{
+    const res = await window.storage.get(KEY);
+    return res && res.value ? JSON.parse(res.value) : [];
+  }catch(e){
+    return [];
+  }
+}
+
+async function saveEntries(entries){
+  await window.storage.set(KEY, JSON.stringify(entries));
+}
+
+function computeHours(bedtime, wake){
+  const [bh, bm] = bedtime.split(':').map(Number);
+  const [wh, wm] = wake.split(':').map(Number);
+  let bedMinutes = bh * 60 + bm;
+  let wakeMinutes = wh * 60 + wm;
+  if (wakeMinutes <= bedMinutes){
+    wakeMinutes += 24 * 60;
+  }
+  return +((wakeMinutes - bedMinutes) / 60).toFixed(1);
+}
+
+async function renderChart(){
+  const entries = await loadEntries();
+  const map = {};
+  entries.forEach(e => map[e.date] = e);
+
+  const days = [];
+  for(let i = 6; i >= 0; i--){
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(todayStr(d));
+  }
+
+  const maxHours = Math.max(9, ...days.map(d => (map[d] ? map[d].hours : 0)));
+  const bars = days.map(date => {
+    const entry = map[date];
+    const hours = entry ? entry.hours : 0;
+    const pct = entry ? Math.max(6, (hours / maxHours) * 100) : 4;
+    const isToday = date === todayStr();
+    return `
+      <div class="bar-col ${isToday ? 'today' : ''}">
+        <div class="bar-hours">${entry ? hours : ''}</div>
+        <div class="bar ${entry ? 'has-data' : ''}" style="height:${pct}%"></div>
+        <div class="bar-label">${dayLabel(date)}</div>
+      </div>`;
+  }).join('');
+
+  chartArea.outerHTML = `<div class="bars" id="chartArea">${bars}</div>`;
+
+  const loggedDays = days.filter(d => map[d]);
+  if(loggedDays.length){
+    const avg = loggedDays.reduce((s,d) => s + map[d].hours, 0) / loggedDays.length;
+    avgVal.textContent = avg.toFixed(1);
+    avgRow.style.display = 'flex';
+  }
+}
+
+logBtn.addEventListener('click', async () => {
+  const bedtime = bedtimeEl.value;
+  const wake = waketimeEl.value;
+  if(!bedtime || !wake){
+    resultEl.textContent = 'Set both times first.';
+    return;
+  }
+  logBtn.disabled = true;
+  logBtn.textContent = 'LOGGING…';
+
+  const hours = computeHours(bedtime, wake);
+  const date = todayStr();
+
+  try{
+    const entries = await loadEntries();
+    const filtered = entries.filter(e => e.date !== date);
+    filtered.push({ date, bedtime, wake, hours });
+    filtered.sort((a,b) => a.date.localeCompare(b.date));
+    const trimmed = filtered.slice(-30);
+    await saveEntries(trimmed);
+
+    resultEl.innerHTML = `Logged: <b>${hours} hrs</b> sleep`;
+    await renderChart();
+  }catch(e){
+    resultEl.textContent = 'Could not save. Try again.';
+  }finally{
+    logBtn.disabled = false;
+    logBtn.textContent = 'LOG SLEEP';
+  }
+});
+
+renderChart();
+</script>
+</body>
+</html>

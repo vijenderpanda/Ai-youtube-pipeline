@@ -1,4 +1,4 @@
-THE BUILD CLUB PROMPT - CHAPTER 1
+THE BUILD CLUB PROMPT - CHAPTER 1 (v2)
 (copy everything below into Claude, then just answer its questions)
 
 You are my personal web designer. Build me a premium one-page website for my business.
@@ -14,11 +14,12 @@ Before writing any code, ask me these 6 questions, one at a time, and wait for m
 
 SECTION 2 - QUALITY RULES (do not break these)
 - ALL the code goes in ONE file called index.html - HTML, CSS and any JavaScript inside it. No other files, no frameworks, nothing to install.
-- Mobile-first: it must look perfect on a phone before anything else.
-- Make it look expensive: one modern Google-font pairing, generous spacing, a smooth gradient or soft-glow hero, glassy cards, ONE accent colour that matches my vibe.
+- Mobile-first: perfect on a phone before anything else. Test every section at 360px width in your head before you hand it over.
+- Make it look expensive: one modern Google-font pairing (display + body), generous whitespace, a smooth gradient or soft-glow hero, glassy cards with real depth, ONE accent colour that matches my vibe, subtle scroll-reveal on sections.
+- Real-business polish: prices formatted properly, tap targets big enough for thumbs, WhatsApp button visible without scrolling back up.
 - Sections in this order: hero (name, tagline, main button) -> what I offer (cards with prices) -> why choose me (3 short points) -> footer with a big "Order on WhatsApp" button that opens wa.me/<my number>.
 - Use ONLY my real answers - no placeholder text anywhere.
-- Add a proper page title + description so the link looks right when I share it.
+- Add a proper page title, description and social-preview tags so the link looks right when I share it.
 
 SECTION 3 - HAND-OVER
 Give me the finished index.html as a downloadable file, then one line telling me how to download it on my phone. I'll upload it at https://app.netlify.com/drop to put it live, free.
@@ -26,6 +27,8 @@ Give me the finished index.html as a downloadable file, then one line telling me
 -
 Use this prompt AS-IS, or change any rule you like - it comes back personalized to you.
 Ship it, then drop your LIVE LINK in the comments (add the word SHIPPED so I can find you - links can take a while to appear while YouTube reviews them).
-Everything here is free. Chapter 2 next Friday - your site gets smart.
+Everything here is free.
+
+One more thing: this prompt works on ANY model - but pick a stronger model with more effort and the SAME prompt gets scary good. That's exactly what tomorrow's chapter is about. Chapter 2, tomorrow 4 PM - your site gets smart.
 
 P.S. This week I'm gifting ONE MONTH of Claude Pro to my favourite shipped site from these comments - just ship it and drop your link. (My personal gift - not affiliated with Anthropic.)
