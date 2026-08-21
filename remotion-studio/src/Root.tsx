@@ -32,6 +32,7 @@ import { CareerArc, careerArcDemo } from "./cookbook/CareerArc";
 import { ProofTrace, proofTraceDemo } from "./cookbook/ProofTrace";
 import { ContextTube, contextTubeDemo, ContextTubeProps } from "./cookbook/ContextTube";
 import { FilmCanvas, CameraRig } from "./cookbook/FilmLayers";
+import { WorldCamera, Parallax } from "./cookbook/WorldCamera";
 import { CaseBullets, caseBulletsDemo } from "./cookbook/CaseBullets";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
 import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
@@ -295,6 +296,42 @@ const codeDemoProps: CodeDemoProps = {
 /* the pilot's film view: the spine component ON its canvas, under the drift —
    what the storyboard stills and the studio preview should show, because the
    component alone on black is not the film. */
+/* WorldCamera smoke test: five stations on a 3000x2400 world, three depths.
+   Not a product composition — it exists so the camera can be SEEN working. */
+const CamTestComp: React.FC = () => (
+  <FilmCanvas>
+    <WorldCamera
+      track={[
+        { t: 0, x: 540, y: 960, z: 1 },
+        { t: 2.2, x: 1600, y: 700, z: 1.5 },
+        { t: 4.2, x: 2400, y: 1500, z: 1.0 },
+        { t: 6.0, x: 1200, y: 1800, z: 2.1, dur: 1.2 },
+        { t: 8.0, x: 540, y: 960, z: 1 },
+      ]}
+      punches={[3.0, 7.0]}
+    >
+      <Parallax depth={0.35}>
+        {[...Array(24)].map((_, i) => (
+          <div key={i} style={{ position: "absolute", left: (i % 6) * 560 - 200, top: Math.floor(i / 6) * 700 - 200,
+            width: 90, height: 90, borderRadius: 45, background: "rgba(45,224,245,0.12)" }} />
+        ))}
+      </Parallax>
+      {[...Array(9)].map((_, i) => (
+        <div key={i} style={{ position: "absolute", left: (i % 3) * 1000 + 140, top: Math.floor(i / 3) * 760 + 200,
+          width: 760, height: 560, borderRadius: 28, background: "rgba(255,255,255,0.07)",
+          border: "2px solid rgba(255,255,255,0.25)", display: "flex", alignItems: "center",
+          justifyContent: "center", fontFamily: "Anton", fontSize: 220, color: "#F4F4FA" }}>{i + 1}</div>
+      ))}
+      <Parallax depth={1.5}>
+        {[...Array(12)].map((_, i) => (
+          <div key={i} style={{ position: "absolute", left: (i % 4) * 800 + 60, top: Math.floor(i / 4) * 900 + 60,
+            width: 34, height: 34, borderRadius: 17, background: "rgba(255,46,154,0.65)" }} />
+        ))}
+      </Parallax>
+    </WorldCamera>
+  </FilmCanvas>
+);
+
 const ContextTubeFilmComp: React.FC<ContextTubeProps> = (p) => (
   <FilmCanvas>
     <CameraRig>
@@ -566,6 +603,14 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={careerArcDemo}
+      />
+      <Composition
+        id="CamTest"
+        component={CamTestComp}
+        durationInFrames={9 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
       />
       <Composition
         id="ContextTubeFilm"
