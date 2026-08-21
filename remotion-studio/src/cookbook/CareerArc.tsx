@@ -41,9 +41,9 @@ import {
 
 const PLOT_L = 84;
 const PLOT_R = 996;
-const BASE_Y = 900;          // the dead line the answers hover above
-const TOP_Y = 470;           // ceiling for the highest arc node
-const HEAD_Y = 1010;         // headline block sits under the plot
+const BASE_Y = 968;          // the dead line — just ABOVE the headline block
+const TOP_Y = 330;           // ceiling — the arc climbs to the top-right corner
+const HEAD_Y = 1022;         // headline starts below the line, same field
 
 const EASE_OUT = Easing.bezier(0.16, 1, 0.3, 1);
 const OUT_E = Easing.bezier(0.16, 1, 0.3, 1);
@@ -147,7 +147,8 @@ export const CareerArc: React.FC<CareerArcProps> = ({
   // the dead baseline is OVERWRITTEN, not hidden: it dims hard on the cut
   const baseOpacity = snapped ? 0.1 : 0.4;
   // one-frame white flash on the cut — the "hit"
-  const hit = snapped ? clamp(1 - sinceSnap / (1.6 / fps)) : 0;
+  const snapFrame = Math.round((start + snapAt) * fps);
+  const hit = frame === snapFrame ? 1 : 0;
 
   const headIn = snapped ? 1 : 0;
   const preOut = snapped ? 0 : 1;
@@ -189,7 +190,7 @@ export const CareerArc: React.FC<CareerArcProps> = ({
       ) : null}
 
       <svg width={width} height={height} style={{
-        position: "absolute", inset: 0,
+        position: "absolute", inset: 0, zIndex: 2,
         transform: `translateY(${breathe + flinch + plotShiftY}px) scale(${plotScale})`,
         transformOrigin: "540px 470px",
       }}>
@@ -247,7 +248,7 @@ export const CareerArc: React.FC<CareerArcProps> = ({
 
         {hit > 0 ? (
           <rect x={0} y={0} width={width} height={height}
-                fill={rgba("#ffffff", hit * 0.13)} />
+                fill={rgba("#ffffff", hit * 0.16)} />
         ) : null}
       </svg>
 
@@ -279,12 +280,12 @@ export const CareerArc: React.FC<CareerArcProps> = ({
 
       {/* THE HEADLINE SLOT. The problem and the reframe occupy the SAME space,
           so the cut replaces one claim with the other rather than adding to it. */}
-      <div style={{ position: "absolute", left: PLOT_L - 4, top: HEAD_Y, right: 64,
+      <div style={{ position: "absolute", left: PLOT_L - 4, top: HEAD_Y, right: 64, zIndex: 1,
                     opacity: 1 - demote, transform: `translateY(${demote * -60}px)` }}>
         {preHeadline && preOut > 0 ? (
           <>
-            <div style={{ fontFamily: DISPLAY, fontSize: 168, lineHeight: "150px",
-                          color: BRAND.paper, letterSpacing: -2 }}>{preHeadline}</div>
+            <div style={{ fontFamily: DISPLAY, fontSize: 196, lineHeight: "172px",
+                          color: BRAND.paper, letterSpacing: -3 }}>{preHeadline}</div>
             {preSubhead ? (
               <div style={{ marginTop: 26, fontFamily: MONO, fontSize: 26,
                             letterSpacing: 5, color: rgba(BRAND.paper, 0.45) }}>{preSubhead}</div>
@@ -293,8 +294,8 @@ export const CareerArc: React.FC<CareerArcProps> = ({
         ) : null}
         {headline && headIn > 0 ? (
           <div>
-            <div style={{ fontFamily: DISPLAY, fontSize: 168, lineHeight: "150px",
-                          color: BRAND.paper, letterSpacing: -2 }}>{word(headline)}</div>
+            <div style={{ fontFamily: DISPLAY, fontSize: 196, lineHeight: "172px",
+                          color: BRAND.paper, letterSpacing: -3 }}>{word(headline)}</div>
             {subhead ? (
               <div style={{ marginTop: 26, fontFamily: MONO, fontSize: 26,
                             letterSpacing: 5, color: accent }}>{subhead}</div>
@@ -310,15 +311,15 @@ export const CareerArc: React.FC<CareerArcProps> = ({
 export const careerArcDemo: CareerArcProps = {
   runLabel: "YOUR LAST 2 YEARS",
   points: [
-    { label: "onboarding 6d -> 2d", lift: 0.26, at: 4.15 },
-    { label: "took on-call", lift: 0.48, at: 4.75 },
-    { label: "shipped billing", lift: 0.66, at: 5.3 },
-    { label: "trained two juniors", lift: 0.86, at: 5.75 },
+    { label: "what broke", lift: 0.24, at: 4.12 },
+    { label: "what you fixed", lift: 0.46, at: 4.58 },
+    { label: "who noticed", lift: 0.68, at: 5.06 },
+    { label: "what you taught", lift: 0.92, at: 5.54 },
   ],
-  snapAt: 6,
-  pasteAt: 2.35,
+  snapAt: 5.99,
+  pasteAt: 2.25,
   pasteText: ["You are my appraisal coach.", "Ask me ONE question at a time."],
-  demoteAt: 8.0,
+  demoteAt: 9.74,
   preHeadline: "FLAT.",
   preSubhead: "AND YOU CAN'T EXPLAIN WHY",
   headline: "NOT FLAT.",
