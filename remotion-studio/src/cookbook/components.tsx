@@ -24,6 +24,7 @@ import { SpinWheel } from "./SpinWheel";
 import { OutroGlass } from "./OutroGlass";
 import { ScreenStage } from "./ScreenStage";
 import { TapStack } from "./TapStack";
+import { CareerArc } from "./CareerArc";
 import { GenerativeUI } from "./GenerativeUI";
 
 /* =============================================================================
@@ -61,6 +62,7 @@ export const COOKBOOK_COMPONENTS: Record<string, React.FC<any>> = {
   ScreenStage,
   GenerativeUI,
   TapStack,
+  CareerArc,
 };
 
 export type CookbookBlockProps = {

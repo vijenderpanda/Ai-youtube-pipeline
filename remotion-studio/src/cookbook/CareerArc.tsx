@@ -1,0 +1,265 @@
+import React from "react";
+import {
+  AbsoluteFill,
+  Easing,
+  interpolate,
+  spring,
+  useCurrentFrame,
+  useVideoConfig,
+} from "remotion";
+import {
+  BRAND, SANS, MONO, DISPLAY, rgba, clamp, Fonts, AuroraBed, SAFE,
+} from "./kit";
+
+/* =============================================================================
+   CareerArc — the flat line that was never flat.
+
+   THE ONE FRAME THIS COMPONENT EXISTS FOR. Everything here serves a single
+   un-eased cut: scattered points SNAP into a rising arc and the dead baseline is
+   overwritten. That cut is placed on the channel's worst measured second —
+   6.00s, median -7.3pp, with 15 of 30 steepest drops falling in 4-8s — and it
+   works because three things change on one frame and the eye's travel direction
+   REVERSES: the answers have been drifting upward, and the arc reads left-to-
+   right. A viewer cannot finish parsing before the next second starts.
+
+   WHY A SNAP AND NOT A DRAW-ON. An eased path-draw is the obvious choice and it
+   is wrong here: it spreads the payoff across ~20 frames, so no single frame is
+   the event, and at 2x playback the whole reveal is over in 300ms of screen time
+   having never been a moment. A hard cut survives 2x because it is instantaneous
+   at any rate. Shorts default to muted, so the meaning has to arrive as SHAPE —
+   scatter becoming order — not as a caption.
+
+   HONESTY. This component draws no measured quantity. The points are the
+   viewer's own typed answers and the arc asserts only "these went up", which is
+   what the person said. There is deliberately NO axis, NO scale, NO numbers:
+   a y-axis would give the shape measurement grammar it has not earned, which is
+   the exact failure that killed three concepts on 2026-08-21.
+
+   Geometry is authored for 1080x1920. SAFE.headerFloor (132) owns the top and
+   the caption band owns from y=1380 down, so the plot lives in between.
+   ========================================================================== */
+
+const PLOT_L = 84;
+const PLOT_R = 996;
+const BASE_Y = 900;          // the dead line the answers hover above
+const TOP_Y = 470;           // ceiling for the highest arc node
+const HEAD_Y = 1010;         // headline block sits under the plot
+
+const EASE_OUT = Easing.bezier(0.16, 1, 0.3, 1);
+/** seeded jitter — Math.random breaks resumability, see LedgerFlow */
+const jit = (i: number) => Math.sin(i * 12.9898 + 4.1414);
+
+export type ArcPoint = {
+  /** what the viewer answered. Kept short — this is a label, not a sentence. */
+  label?: string;
+  /** 0..1 height once plotted. NOT a measurement — a relative position the
+   *  person's own answer implies. Never rendered with an axis. */
+  lift: number;
+  /** beat-local second the answer lands as a scattered dot. */
+  at: number;
+};
+
+export type CareerArcProps = {
+  points: ArcPoint[];
+  /** THE frame. Beat-local seconds of the un-eased cut. */
+  snapAt?: number;
+  /** small mono line above the plot, e.g. "YOUR LAST 2 YEARS". */
+  runLabel?: string;
+  /** the reframe, burned big under the plot after the snap. */
+  headline?: string;
+  subhead?: string;
+  /** shown BEFORE the snap — the problem, in the same slot the payoff takes. */
+  preHeadline?: string;
+  preSubhead?: string;
+  accent?: string;
+  ink?: string;
+  transparent?: boolean;
+  start?: number;
+  width?: number;
+  height?: number;
+};
+
+export const CareerArc: React.FC<CareerArcProps> = ({
+  points = [],
+  snapAt = 6,
+  runLabel,
+  headline,
+  subhead,
+  preHeadline,
+  preSubhead,
+  accent = BRAND.mag,
+  ink = BRAND.ink,
+  transparent,
+  start = 0,
+  width = 1080,
+  height = 1920,
+}) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps - start;
+  const P = (points || []).slice(0, 6);
+  const n = Math.max(P.length, 1);
+
+  // one un-eased boolean — this is the cut
+  const snapped = t >= snapAt;
+  const sinceSnap = t - snapAt;
+
+  const xFor = (i: number) => PLOT_L + ((PLOT_R - PLOT_L) * (i + 0.6)) / (n + 0.2);
+  const arcY = (p: ArcPoint) => BASE_Y - (BASE_Y - TOP_Y) * clamp(p.lift);
+  /** where a point drifts BEFORE the snap: above the line, unresolved, jittered */
+  // jit() is raw sin and is NEGATIVE for most low indices, so subtracting it
+  // pushed the answers DOWN onto (and under) the dead line — the opposite of
+  // "unresolved, hovering". Take the magnitude: every answer floats ABOVE.
+  const scatterY = (p: ArcPoint, i: number) =>
+    BASE_Y - 190 - Math.abs(jit(i)) * 250 - clamp(p.lift) * 40;
+  /** scattered answers also drift horizontally — a tidy column reads as ordered,
+   *  and "already ordered" is exactly what the snap must not look like */
+  const scatterX = (i: number) => xFor(i) + jit(i + 7) * 44;
+
+  const seatedPts = P.map((p, i) => ({ x: xFor(i), y: arcY(p) }));
+  const path = seatedPts.map((s, i) => `${i ? "L" : "M"}${s.x} ${s.y}`).join(" ");
+  const lastP = seatedPts[seatedPts.length - 1];
+  const firstP = seatedPts[0];
+  // carry the arc PAST the last node to the plot edge, so the fill closes on the
+  // frame rather than on a vertical wall under the final point
+  const fillPath = lastP && firstP
+    ? `${path} L${PLOT_R} ${lastP.y - 26} L${PLOT_R} ${BASE_Y} L${firstP.x} ${BASE_Y} Z`
+    : "";
+  const linePath = lastP ? `${path} L${PLOT_R} ${lastP.y - 26}` : path;
+
+  // after the cut the arc settles a touch — the snap is instant, the breath isn't
+  const settle = snapped
+    ? spring({ frame: frame - Math.round((start + snapAt) * fps), fps,
+               config: { damping: 17, stiffness: 150, mass: 0.9 } })
+    : 0;
+  // the dead baseline is OVERWRITTEN, not hidden: it dims hard on the cut
+  const baseOpacity = snapped ? 0.1 : 0.4;
+  // one-frame white flash on the cut — the "hit"
+  const hit = snapped ? clamp(1 - sinceSnap / (1.6 / fps)) : 0;
+
+  const headIn = snapped ? 1 : 0;
+  const preOut = snapped ? 0 : 1;
+
+  const word = (s: string, hot?: string) =>
+    s.split(" ").map((w, i) => (
+      <span key={i} style={{
+        color: hot && w.replace(/[^A-Za-z]/g, "").toUpperCase() === hot.toUpperCase()
+          ? accent : BRAND.paper,
+      }}>{w}{" "}</span>
+    ));
+
+  return (
+    <AbsoluteFill style={{ width, height, background: transparent ? undefined : ink }}>
+      <Fonts />
+      {transparent ? null : <AuroraBed t={t} accent={accent} ink={ink} opacity={0.36} />}
+
+      {runLabel ? (
+        <div style={{
+          position: "absolute", left: PLOT_L, top: SAFE.headerFloor + 54,
+          fontFamily: MONO, fontSize: 26, letterSpacing: 6,
+          color: rgba(BRAND.paper, 0.42),
+        }}>{runLabel}</div>
+      ) : null}
+
+      <svg width={width} height={height} style={{ position: "absolute", inset: 0 }}>
+        <defs>
+          <linearGradient id="ca-line" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stopColor={accent} />
+            <stop offset="62%" stopColor="#FF5FB4" />
+            <stop offset="100%" stopColor="#FFC2E4" />
+          </linearGradient>
+          <linearGradient id="ca-fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={accent} stopOpacity={0.42} />
+            <stop offset="100%" stopColor={accent} stopOpacity={0} />
+          </linearGradient>
+          <filter id="ca-glow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="14" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <filter id="ca-dot" x="-70%" y="-70%" width="240%" height="240%">
+            <feGaussianBlur stdDeviation="7" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+
+        {/* the flat, dead baseline. It is never deleted — it is overwritten,
+            so the viewer can still see what they thought was true. */}
+        <line
+          x1={PLOT_L} y1={BASE_Y} x2={PLOT_R} y2={BASE_Y}
+          stroke={rgba(BRAND.paper, baseOpacity)} strokeWidth={7}
+          strokeLinecap="round" strokeDasharray="1 26"
+        />
+
+        {snapped ? (
+          <>
+            <path d={fillPath} fill="url(#ca-fill)"
+                  opacity={interpolate(settle, [0, 1], [0.55, 1])} />
+            <path d={linePath} stroke="url(#ca-line)" strokeWidth={16} fill="none"
+                  strokeLinecap="round" strokeLinejoin="round" filter="url(#ca-glow)" />
+          </>
+        ) : null}
+
+        {P.map((p, i) => {
+          const born = clamp((t - p.at) / 0.22);
+          if (born <= 0) return null;
+          const sx = snapped ? xFor(i) : scatterX(i);
+          const sy = snapped ? arcY(p) : scatterY(p, i);
+          const r = snapped ? 15 : 13;
+          return (
+            <g key={i} opacity={born}>
+              <circle cx={sx} cy={sy} r={r}
+                      fill={snapped ? "#FFFFFF" : accent}
+                      filter="url(#ca-dot)" />
+            </g>
+          );
+        })}
+
+        {hit > 0 ? (
+          <rect x={0} y={0} width={width} height={height}
+                fill={rgba("#ffffff", hit * 0.13)} />
+        ) : null}
+      </svg>
+
+      {/* THE HEADLINE SLOT. The problem and the reframe occupy the SAME space,
+          so the cut replaces one claim with the other rather than adding to it. */}
+      <div style={{ position: "absolute", left: PLOT_L - 4, top: HEAD_Y, right: 64 }}>
+        {preHeadline && preOut > 0 ? (
+          <>
+            <div style={{ fontFamily: DISPLAY, fontSize: 168, lineHeight: "150px",
+                          color: BRAND.paper, letterSpacing: -2 }}>{preHeadline}</div>
+            {preSubhead ? (
+              <div style={{ marginTop: 26, fontFamily: MONO, fontSize: 26,
+                            letterSpacing: 5, color: rgba(BRAND.paper, 0.45) }}>{preSubhead}</div>
+            ) : null}
+          </>
+        ) : null}
+        {headline && headIn > 0 ? (
+          <div>
+            <div style={{ fontFamily: DISPLAY, fontSize: 168, lineHeight: "150px",
+                          color: BRAND.paper, letterSpacing: -2 }}>{word(headline)}</div>
+            {subhead ? (
+              <div style={{ marginTop: 26, fontFamily: MONO, fontSize: 26,
+                            letterSpacing: 5, color: accent }}>{subhead}</div>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+/* ---- canonical demo ------------------------------------------------------ */
+export const careerArcDemo: CareerArcProps = {
+  runLabel: "YOUR LAST 2 YEARS",
+  points: [
+    { label: "onboarding 6d -> 2d", lift: 0.26, at: 4.15 },
+    { label: "took on-call", lift: 0.48, at: 4.75 },
+    { label: "shipped billing", lift: 0.66, at: 5.3 },
+    { label: "trained two juniors", lift: 0.86, at: 5.75 },
+  ],
+  snapAt: 6,
+  preHeadline: "FLAT.",
+  preSubhead: "AND YOU CAN'T EXPLAIN WHY",
+  headline: "NOT FLAT.",
+  subhead: "YOU JUST NEVER PLOTTED IT",
+};

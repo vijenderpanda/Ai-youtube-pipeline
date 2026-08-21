@@ -28,7 +28,7 @@ import { SpinWheel, spinWheelDemo } from "./cookbook/SpinWheel";
 import { LedgerFlow, ledgerFlowDemo } from "./cookbook/LedgerFlow";
 import { ShareSplit, shareSplitDemo } from "./cookbook/ShareSplit";
 import { TapStack, tapStackDemo } from "./cookbook/TapStack";
-import { Fogline } from "./cookbook/Fogline";
+import { CareerArc, careerArcDemo } from "./cookbook/CareerArc";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
 import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
 import { GenerativeUI, generativeUIDemo } from "./cookbook/GenerativeUI";
@@ -533,6 +533,15 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={FOGLINE_UPI}
+      />
+      <Composition
+        id="CareerArcDemo"
+        component={CareerArc}
+        durationInFrames={9 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={careerArcDemo}
       />
       <Composition
         id="TapStackDemo"

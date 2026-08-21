@@ -20,7 +20,7 @@
   "devDependencies": {
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
-    "typescript": "^7.0.2"
+    "typescript": "^5.9.3"
   },
   "module": "dist/designsystem.js",
   "types": "dist/designsystem.d.ts",
