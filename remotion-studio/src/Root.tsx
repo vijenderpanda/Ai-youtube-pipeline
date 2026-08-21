@@ -30,6 +30,8 @@ import { ShareSplit, shareSplitDemo } from "./cookbook/ShareSplit";
 import { TapStack, tapStackDemo } from "./cookbook/TapStack";
 import { CareerArc, careerArcDemo } from "./cookbook/CareerArc";
 import { ProofTrace, proofTraceDemo } from "./cookbook/ProofTrace";
+import { ContextTube, contextTubeDemo, ContextTubeProps } from "./cookbook/ContextTube";
+import { FilmCanvas, CameraRig } from "./cookbook/FilmLayers";
 import { CaseBullets, caseBulletsDemo } from "./cookbook/CaseBullets";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
 import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
@@ -289,6 +291,17 @@ const codeDemoProps: CodeDemoProps = {
     "Fix today: presell 15 annual seats before Product Hunt.",
   ],
 };
+
+/* the pilot's film view: the spine component ON its canvas, under the drift —
+   what the storyboard stills and the studio preview should show, because the
+   component alone on black is not the film. */
+const ContextTubeFilmComp: React.FC<ContextTubeProps> = (p) => (
+  <FilmCanvas>
+    <CameraRig>
+      <ContextTube {...p} />
+    </CameraRig>
+  </FilmCanvas>
+);
 
 export const RemotionRoot: React.FC = () => {
   const input = getInputProps() as unknown as ShortProps;
@@ -553,6 +566,24 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={careerArcDemo}
+      />
+      <Composition
+        id="ContextTubeFilm"
+        component={ContextTubeFilmComp}
+        durationInFrames={36 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={contextTubeDemo}
+      />
+      <Composition
+        id="ContextTubeDemo"
+        component={ContextTube}
+        durationInFrames={36 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={contextTubeDemo}
       />
       <Composition
         id="ProofTraceDemo"

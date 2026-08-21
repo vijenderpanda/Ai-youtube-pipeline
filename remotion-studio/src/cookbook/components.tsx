@@ -26,6 +26,7 @@ import { ScreenStage } from "./ScreenStage";
 import { TapStack } from "./TapStack";
 import { CareerArc } from "./CareerArc";
 import { ProofTrace } from "./ProofTrace";
+import { ContextTube } from "./ContextTube";
 import { CaseBullets } from "./CaseBullets";
 import { GenerativeUI } from "./GenerativeUI";
 
@@ -66,6 +67,7 @@ export const COOKBOOK_COMPONENTS: Record<string, React.FC<any>> = {
   TapStack,
   CareerArc,
   ProofTrace,
+  ContextTube,
   CaseBullets,
 };
 

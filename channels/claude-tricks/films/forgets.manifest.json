@@ -1,0 +1,77 @@
+{
+  "ep": "_forgets",
+  "class": "MECHANISM",
+  "honesty": "declared-illustration",
+  "title_candidates": [
+    "Why Claude Forgets Long Chats 🧠",
+    "Your Chat Is Full — Here's What Claude Drops 🧊"
+  ],
+  "tags": "claude forgets,context window,claude ai,long chats,ai memory,chatgpt forgets,claude tips,ai for beginners,summary prompt,fresh chat,ai tools,claude tricks",
+
+  "carry": "the glass tube never leaves frame; the hot magenta block (the thing you told it) crosses every phase: in, down, out, back",
+  "plant": { "what": "the hot block arrives in the first 1.5s — the payoff's absence is its ejection", "beat": 0 },
+  "knee":  { "what": "the OVERFLOW — the tube mouth flashes and the first block is ejected out the open bottom", "anchor": "@beat1+1.2", "window": [4.0, 8.0] },
+  "payoff": { "what": "the ANSWER chip (FRI · 6 AM ✓) — the same scan that failed at 40% succeeds in the fresh tube", "anchor": "@beat7+0.9", "min_frac": 0.75 },
+  "numbers": [],
+
+  "give": {
+    "prompt": "Summarize this whole chat as a short list of everything worth keeping — decisions, facts, numbers, names. Write it so I can paste it into a new chat and continue exactly where we left off.",
+    "where": "description above the fold + pinned comment (give, don't promise)"
+  },
+
+  "lines": [
+    { "vo": "You told Claude the important thing. Right here.",
+      "subject": "the hot block", "from": "falling in from above", "to": "landed in the tube, glowing" },
+    { "vo": "But a chat only holds so much.",
+      "subject": "the tube", "from": "filling steadily", "to": "FULL — mouth flashes, first block ejected out the bottom" },
+    { "vo": "Every new message pushes the oldest ones out.",
+      "subject": "the stack", "from": "settled", "to": "each arrival shoves it down; blocks fall into the dark, one by one" },
+    { "vo": "And one of them was yours.",
+      "subject": "the hot block", "from": "sliding toward the open bottom", "to": "ejected — resting dim in the dark below the glass" },
+    { "vo": "Ask again — nothing. It isn't broken. It just can't see down there.",
+      "subject": "the scan beam", "from": "sweeping the tube top to bottom", "to": "failed — a fog reply that dissolves; the hot block visible below, outside the glass" },
+    { "vo": "So before a long chat dies, ask for a summary of everything that matters.",
+      "subject": "the summary block", "from": "sparks pulled out of every message", "to": "one bright block, formed above the tube" },
+    { "vo": "Paste it into a fresh chat. Your line is back where Claude can see it.",
+      "subject": "the fresh tube", "from": "sliding in as the full one exits", "to": "summary block landed at its top slot, inside the glass" },
+    { "vo": "Ask again — instant answer. The exact prompt is in the description.",
+      "subject": "the scan beam", "from": "sweeping the fresh tube", "to": "HIT — the summary flares and the answer chip pops above the glass" }
+  ],
+
+  "scenes": [
+    { "archetype": "A1", "comp": "ContextTube", "beats": [0], "note": "cold-open plant: blocks mid-fall at frame 1, hot block lands" },
+    { "archetype": "A3", "comp": "ContextTube", "beats": [1, 2, 3, 4], "note": "object-journey: overflow (KNEE), the loss, the failed scan" },
+    { "archetype": "A6", "comp": "ContextTube", "beats": [5, 6], "note": "before/after: full tube vs fresh tube, the summary carried across" },
+    { "archetype": "A8", "comp": "ContextTube", "beats": [7], "note": "payoff: the mirrored scan hits; then the whiteout into the give card" }
+  ],
+
+  "beats": ["cook:ContextTube#plant", "cook:ContextTube#full", "cook:ContextTube#push",
+            "cook:ContextTube#loss", "cook:ContextTube#blind", "cook:ContextTube#summary",
+            "cook:ContextTube#fresh", "cook:ContextTube#answer"],
+  "spine": ["ContextTube"],
+  "film": { "bloom_beats": [8], "driftAmp": 7 },
+
+  "cookbook": {
+    "ContextTube": {
+      "hotAt": "@beat0+0.8",
+      "overflowAt": "@beat1+1.2",
+      "hotFallAt": "@beat3+0.4",
+      "askAt": "@beat4+0.15",
+      "scanAt": "@beat4+0.8",
+      "summaryAt": "@beat5+0.3",
+      "freshAt": "@beat6+0.25",
+      "scan2At": "@beat7+0.15",
+      "answerAt": "@beat7+0.9",
+      "endAt": "@beat8",
+      "hotLines": ["flight — FRI 6 AM", "gate closes 5:30"]
+    },
+    "OutroGlass": {}
+  },
+
+  "hot_words": ["IMPORTANT", "HOLDS", "PUSHES", "OLDEST", "YOURS", "NOTHING", "BROKEN",
+                "SEE", "SUMMARY", "MATTERS", "FRESH", "PASTE", "ANSWER", "DESCRIPTION"],
+
+  "outro": { "src": "ep_forgets/outro_card.mp4",
+             "cta": "The summary prompt is in the description. Steal it before your next long chat.",
+             "q": "WHAT WOULD|CLAUDE HAVE|FORGOTTEN?" }
+}

@@ -3456,6 +3456,57 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         # lockup washes out and collides with the app's own header text.
         "headerScrim": bool(cfg.get("header_scrim")),
     }
+    # ---- MOTION-PIPELINE FILM MODE (docs/MOTION-PIPELINE.md) --------------
+    # cfg["film"] marks a motion-graphics FILM: one persistent canvas behind
+    # every scene, one camera drift over all of them, and the transcript as
+    # 1-3 word chips at a locked anchor (N1/U7) instead of the sentence
+    # caption. Chips are grouped HERE, from the measured word timings, because
+    # the grouping rules are editorial (break on pauses, cap at 3 words) and
+    # the renderer should only ever draw what it is given.
+    if cfg.get("film"):
+        _fl = cfg["film"] if isinstance(cfg["film"], dict) else {}
+        _chips, _cur = [], []
+
+        def _flush_chip():
+            if not _cur:
+                return
+            _hi = next((ii for ii, ww in enumerate(_cur) if ww.get("hot")), -1)
+            _chips.append({"t": round(_cur[0]["start"], 3),
+                           "end": round(_cur[-1]["end"] + 0.12, 3),
+                           "text": " ".join(ww["w"] for ww in _cur),
+                           "hot": _hi})
+
+        for _w in caps:
+            if _cur and (_w["start"] - _cur[-1]["end"] >= 0.25 or len(_cur) >= 3):
+                _flush_chip(); _cur = []
+            _cur.append(_w)
+        _flush_chip()
+        # a sub-0.34s chip is a strobe at 2x: merge back if the word budget
+        # allows, else hold it longer (the next chip simply starts late)
+        _mg = []
+        for _c in _chips:
+            if _mg and (_c["end"] - _c["t"]) < 0.34                and len((_mg[-1]["text"] + " " + _c["text"]).split()) <= 3:
+                _mg[-1]["text"] += " " + _c["text"]
+                _mg[-1]["end"] = _c["end"]
+                if _mg[-1]["hot"] < 0 <= _c["hot"]:
+                    _mg[-1]["hot"] = len(_mg[-1]["text"].split()) - len(_c["text"].split()) + _c["hot"]
+            else:
+                if (_c["end"] - _c["t"]) < 0.34:
+                    _c["end"] = round(_c["t"] + 0.34, 3)
+                _mg.append(_c)
+        # whiteout blooms sit ON beat boundaries, named by beat index
+        _blooms = [round(_seg_t[b], 3) for b in (_fl.get("bloom_beats") or [])
+                   if b < len(_seg_t)]
+        spec["film"] = {"chips": _mg, "blooms": _blooms,
+                        "driftAmp": _fl.get("driftAmp", 7)}
+        if _fl.get("plate"):
+            spec["film"]["plate"] = "assets/" + _fl["plate"]
+        # scenes live ON the canvas: cookbook beats render transparent so the
+        # film's single world shows through — the island behaviour ends here
+        for _sg in segments:
+            if _sg.get("kind") == "cookbook":
+                _sg["cookbook"]["transparent"] = True
+
     # v16.3: illustration hook opener REPLACES the poster cover on premium
     # episodes (VJ: a title card reads as an intro + gets scrolled past). When
     # cfg["hook"] is present we emit `hook` and drop `cover`; otherwise the

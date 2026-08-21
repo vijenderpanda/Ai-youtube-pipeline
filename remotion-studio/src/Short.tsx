@@ -14,6 +14,8 @@ import {
 import { fitFont, splitHook } from "./components/fitText";
 import { StatBars, StatBarsProps } from "./components/StatBars";
 import { CookbookBlock } from "./cookbook/components";
+import { FilmCanvas, CameraRig, WhiteoutBloom } from "./cookbook/FilmLayers";
+import { ChipCaption, Chip } from "./cookbook/ChipCaption";
 import { SlotScene, SlotBroll, SlotHost } from "./SlotScene";
 import {
   BuildRail,
@@ -99,6 +101,20 @@ export type Step = {
 export type Emphasis = { text: string; start: number; end: number };
 export type ShortProps = {
   segments: Seg[];
+  /* MOTION-PIPELINE film mode (docs/MOTION-PIPELINE.md). When present the
+     episode is a motion-graphics FILM: one persistent canvas behind every
+     scene, one camera drift over all of them, the transcript as 1-3 word
+     chips at a locked anchor (replacing the sentence caption entirely), and
+     whiteout blooms at declared boundaries. Scenes are expected to be
+     transparent cookbook beats living on the shared canvas — the island
+     behaviour this layer exists to end. */
+  film?: {
+    chips: Chip[];
+    accent?: string;
+    plate?: string;          // optional FLUX canvas plate (via ingest_plate)
+    blooms?: number[];       // film-absolute boundary seconds
+    driftAmp?: number;
+  };
   captions: Word[];
   steps?: Step[];
   vo: string;
@@ -1369,7 +1385,12 @@ export const Short: React.FC<ShortProps> = (props) => {
         @font-face { font-family: 'Anton'; src: url('${staticFile("fonts/Anton.ttf")}'); }
         @font-face { font-family: 'Playfair Display'; font-style: italic; font-weight: 400 900; src: url('${staticFile("fonts/PlayfairDisplay-Italic.ttf")}'); }
       `}</style>
-      {props.segments.map((seg, i) => {
+      {props.film ? (
+        <FilmCanvas accent={props.film.accent ?? theme.mag} ink={theme.ink}
+                    plate={props.film.plate} />
+      ) : null}
+      {(() => {
+      const segTree = props.segments.map((seg, i) => {
         const mode = news ? seg.mode ?? "split" : "full";
         if (news && mode === "host") return null; // host layer covers this beat
         return (
@@ -1437,7 +1458,15 @@ export const Short: React.FC<ShortProps> = (props) => {
             </div>
           </Sequence>
         );
-      })}
+      });
+      return props.film
+        ? <CameraRig amp={props.film.driftAmp ?? 7}>{segTree}</CameraRig>
+        : <>{segTree}</>;
+      })()}
+      {props.film?.blooms?.length ? <WhiteoutBloom at={props.film.blooms} /> : null}
+      {props.film ? (
+        <ChipCaption chips={props.film.chips} accent={props.film.accent ?? theme.mag} />
+      ) : null}
       {news && activeMode !== "full" ? (
         <div
           style={
@@ -1487,7 +1516,11 @@ export const Short: React.FC<ShortProps> = (props) => {
       {props.rail ? <BuildRail rail={props.rail} t={t} fps={fps} /> : null}
       {/* v16.3: framed-host panel caption renders through word GAPS too (it holds
           the current phrase), so it is NOT gated behind an active word. */}
-      {activeIsFramed ? (
+      {props.film ? (
+        // film mode: ChipCaption owns every word on screen — the entire legacy
+        // caption chain below is dead here, whatever kind the beat is
+        null
+      ) : activeIsFramed ? (
         // authored idea lines (kinetic) when the beat has them; else the running caption
         props.segments[Math.max(activeIdx, 0)]?.hostLines?.length ? (
           <IdeaKinetic
