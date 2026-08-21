@@ -42,7 +42,9 @@ NUM_WORDS = re.compile(
     r"\b(zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|"
     r"twenty|thirty|forty|fifty|hundred|thousand|lakh|crore|percent|\d+)\b", re.I)
 # words that read as numbers but are prose, not figures (U10 is about FIGURES)
-NUM_PROSE_OK = {"one"}
+# station ordinals are prose, not figures; scale words (hundred/lakh) still
+# catch any real figure that tries to hide behind them
+NUM_PROSE_OK = {"one", "two", "three"}
 
 
 def planned_clock(lines):

@@ -28,6 +28,7 @@ import { CareerArc } from "./CareerArc";
 import { ProofTrace } from "./ProofTrace";
 import { ContextTube } from "./ContextTube";
 import { ForgetsClay } from "./ForgetsClay";
+import { ZeroStackPaper } from "./ZeroStackPaper";
 import { CaseBullets } from "./CaseBullets";
 import { GenerativeUI } from "./GenerativeUI";
 
@@ -70,6 +71,7 @@ export const COOKBOOK_COMPONENTS: Record<string, React.FC<any>> = {
   ProofTrace,
   ContextTube,
   ForgetsClay,
+  ZeroStackPaper,
   CaseBullets,
 };
 

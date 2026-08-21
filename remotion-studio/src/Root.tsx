@@ -38,6 +38,7 @@ import { ClayOutro, clayOutroDemo } from "./cookbook/ClayOutro";
 import { TravelSprite, MorphSwap, ExposureScore, FlashCut } from "./cookbook/craft";
 import { ToyStage } from "./cookbook/Claylight";
 import { PaperStage, OctoPuppet, PaperWord, PAPER } from "./cookbook/Kaagaz";
+import { ZeroStackPaper, zeroStackPaperDemo } from "./cookbook/ZeroStackPaper";
 import { CaseBullets, caseBulletsDemo } from "./cookbook/CaseBullets";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
 import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
@@ -661,6 +662,15 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={careerArcDemo}
+      />
+      <Composition
+        id="ZeroStackPaperFilm"
+        component={ZeroStackPaper}
+        durationInFrames={35 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={zeroStackPaperDemo}
       />
       <Composition
         id="OctoTest"

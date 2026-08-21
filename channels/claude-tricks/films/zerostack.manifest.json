@@ -1,0 +1,204 @@
+{
+  "ep": "_zerostack",
+  "class": "RECIPE",
+  "honesty": "declared-illustration",
+  "world": "KAAGAZ paper (per-episode world doctrine — bills ARE paper; no ep1 assets reused)",
+  "title_candidates": [
+    "Your AC Costs ₹18 Every Hour — Fix It FREE 🔥",
+    "I Built A Bill Detective With FREE AI Tools 🔍",
+    "3 FREE AI Tools vs Your Electricity Bill ⚡"
+  ],
+  "tags": "electricity bill,ac power consumption,save electricity,free ai tools,chatgpt free,gemini free,claude free,bijli bill,ac bill,reduce electricity bill,ai for beginners,ai unpacked",
+  "carry": "the coral crumpled BILL-BALL — the only coral object; it falls through every floor and is smoothed flat at the payoff; the ₹0 paper tag rides the HUD the whole film",
+  "plant": {
+    "what": "the messy bill pile + the ₹0 tag hanging unproven at 0s",
+    "beat": 0
+  },
+  "knee": {
+    "what": "the first hatch-drop + the GEMINI table snap-out with the flash",
+    "anchor": "@beat1+1.6",
+    "window": [
+      4.0,
+      8.0
+    ]
+  },
+  "payoff": {
+    "what": "the smoothed bill + phone verdict + the ₹0 tag stamped TRUE in the film's brightest frame",
+    "anchor": "@beat6+2.2",
+    "min_frac": 0.75
+  },
+  "numbers": [
+    {
+      "value": "18",
+      "spoken": "eighteen",
+      "source": "1.5-ton non-inverter AC ~1.9 units/hr (NoBroker/Onida guides, 2026) x Mumbai tariff Rs 9.5/kWh = ~Rs 18/hr; card reads 'UP TO Rs18/HR'"
+    },
+    {
+      "value": "900",
+      "spoken": "nine hundred",
+      "source": "derived on screen: ~Rs10/hr gap (non-inverter vs 5-star inverter, same sources) x 3 hr/day x 30 days; card reads 'UP TO Rs900/MO'"
+    },
+    {
+      "value": "3",
+      "spoken": "three",
+      "source": "count of free tools used — Gemini, Claude, ChatGPT free tiers, verified live 2026-08"
+    },
+    {
+      "value": "0",
+      "spoken": "zero",
+      "source": "the premise itself: Gemini, Claude and ChatGPT free tiers, all verified live 2026-08 — the Rs0 meter measures a fact, not a wish"
+    }
+  ],
+  "give": {
+    "prompt": "My electricity bill photos are attached. Read every line, build a month-by-month table of units and amount, find which month spiked, and tell me the one appliance habit most likely causing it — with the maths shown.",
+    "where": "description above the fold + pinned comment (give, don't promise)"
+  },
+  "lines": [
+    {
+      "vo": "Bijli ka bill dekh ke shock laga? Free mein solve karte hain.",
+      "subject": "the bill pile",
+      "from": "six paper bills in a messy fan under the lamp",
+      "to": "they fold and crumple into ONE coral ball — a true path morph"
+    },
+    {
+      "vo": "Station one: Gemini. Feed it every bill photo, free.",
+      "subject": "the bill-ball",
+      "from": "wobbling at the hatch edge",
+      "to": "DROPS through the scanner arch; the flash; a clean table card snaps out"
+    },
+    {
+      "vo": "It reads every crumpled page into one clean table.",
+      "subject": "the table card",
+      "from": "rows settling",
+      "to": "one row glows hot — the spike month found"
+    },
+    {
+      "vo": "Station two: Claude. One line — find what caused this spike.",
+      "subject": "rupee droplets",
+      "from": "leaking out of the hot row",
+      "to": "falling and DRAWING the spike chart as they land"
+    },
+    {
+      "vo": "The lamp goes out. Sirf ek suspect bacha.",
+      "subject": "the frame",
+      "from": "lit paper workshop",
+      "to": "near-black breath — only the spike ember and the Rs0 tag alive; the AC silhouette fades in"
+    },
+    {
+      "vo": "Station three: ChatGPT. Your AC — up to eighteen rupees, every single hour.",
+      "subject": "the stamp press",
+      "from": "raised over the verdict card",
+      "to": "SLAMS: 'UP TO Rs18/HR' — the loudest landing in the film"
+    },
+    {
+      "vo": "One habit change. Up to nine hundred a month, wapas.",
+      "subject": "the bill-ball",
+      "from": "falling into the basement lamplight",
+      "to": "SMOOTHED FLAT by a roller into a clean sheet beside the phone verdict"
+    },
+    {
+      "vo": "Three free tools. Zero rupees. Prompt niche hai — le lo.",
+      "subject": "the Rs0 tag",
+      "from": "riding the HUD, unproven",
+      "to": "stamped into the smoothed bill in the brightest frame; composition returns home"
+    }
+  ],
+  "scenes": [
+    {
+      "archetype": "A1",
+      "comp": "ZeroStackPaper",
+      "beats": [
+        0
+      ],
+      "note": "cold open: pile alive, the crumple morph, Rs0 tag planted"
+    },
+    {
+      "archetype": "A3+A4",
+      "comp": "ZeroStackPaper",
+      "beats": [
+        1,
+        2,
+        3
+      ],
+      "note": "the fall through Gemini + Claude; droplets draw the chart; knee at the first drop"
+    },
+    {
+      "archetype": "A6",
+      "comp": "ZeroStackPaper",
+      "beats": [
+        4,
+        5
+      ],
+      "note": "the 4s breath, then the Rs18/HR stamp"
+    },
+    {
+      "archetype": "A8",
+      "comp": "ZeroStackPaper",
+      "beats": [
+        6,
+        7
+      ],
+      "note": "the smoothing, the verdict, the Rs0 stamp, loop home"
+    }
+  ],
+  "beats": [
+    "cook:ZeroStackPaper#pile",
+    "cook:ZeroStackPaper#gemini",
+    "cook:ZeroStackPaper#table",
+    "cook:ZeroStackPaper#claude",
+    "cook:ZeroStackPaper#breath",
+    "cook:ZeroStackPaper#stamp",
+    "cook:ZeroStackPaper#smooth",
+    "cook:ZeroStackPaper#zero"
+  ],
+  "spine": [
+    "ZeroStackPaper"
+  ],
+  "film": {
+    "bloom_beats": [],
+    "driftAmp": 0,
+    "chips_to": "ZeroStackPaper"
+  },
+  "cookbook": {
+    "ZeroStackPaper": {
+      "crumpleAt": "@beat0+1.4",
+      "drop1At": "@beat1+1.3",
+      "kneeAt": "@beat1+1.6",
+      "spikeAt": "@beat2+1.2",
+      "drop2At": "@beat3+0.4",
+      "chartAt": "@beat3+0.9",
+      "breathAt": "@beat4+0.2",
+      "drop3At": "@beat5+0.3",
+      "stampAt": "@beat5+1.1",
+      "drop4At": "@beat6+0.3",
+      "smoothAt": "@beat6+1.1",
+      "payoffAt": "@beat6+2.2",
+      "loopAt": "@beat7+1.4",
+      "endAt": "@beat8"
+    },
+    "OutroGlass": {}
+  },
+  "hot_words": [
+    "SHOCK",
+    "FREE",
+    "GEMINI",
+    "EVERY",
+    "TABLE",
+    "SPIKE",
+    "CLAUDE",
+    "SUSPECT",
+    "CHATGPT",
+    "EIGHTEEN",
+    "HOUR",
+    "HABIT",
+    "NINE",
+    "HUNDRED",
+    "ZERO",
+    "PROMPT"
+  ],
+  "outro": {
+    "src": "ep_zerostack/outro_card.mp4",
+    "cta": "The bill detective prompt is in the description. Free tools only — go run it on your own bill tonight.",
+    "q": "WHAT'S EATING|YOUR BIJLI|BILL?"
+  }
+}
