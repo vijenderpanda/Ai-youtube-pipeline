@@ -1,9 +1,9 @@
 import React from "react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { rgba, clamp } from "./kit";
-import { clamp01, mhash, OUT_E, IN_E } from "./motion";
+import { clamp01, mhash, OUT_E, IN_E, settle } from "./motion";
 import {
-  CLAY, ToyStage, SpriteLayer, SlabScreen, ChipClay, CounterClay, ClayChip,
+  CLAY, ToyStage, SpriteLayer, SlabScreen, ChipClay, CounterClay, ClayChip, ChatMock,
 } from "./Claylight";
 import { WorldCamera, Parallax } from "./WorldCamera";
 
@@ -25,22 +25,18 @@ import { WorldCamera, Parallax } from "./WorldCamera";
    ========================================================================== */
 
 const LIB = "assets/claylight/library";
-const BOX = { x: 400, y: 1250, h: 600, aspect: 0.828 };
+const BOX = { x: 400, y: 1250, h: 600, aspect: 0.857 };
 /* the sprite's mouth: the body's opening sits at ~0.68h of the image, so with
    the box 600 tall its rim is at boxTop + 408. Bricks live BETWEEN the full
    box sprite (back, z4) and the front-wall crop (z12): they drop into the
    mouth, their torsos hidden by the front wall, tops peeking above the rim —
    the fill is told by a rising skyline. */
 const BOX_TOP = BOX.y - BOX.h;
-const RIM_Y = BOX_TOP + BOX.h * 0.68;      // 1058
+const RIM_Y = BOX_TOP + BOX.h * 0.618;     // the trimmed sprite's front rim
 const MOUTH = { x: BOX.x, y: RIM_Y + 10 };
 
 export type ForgetsClayProps = {
-  hookCapture?: string;        // the long-chat auto-scroll on the slab
-  proofCapture?: string;       // the first-message miss, full frame
-  payoffCapture?: string;      // the summary prompt working
-  captureVideo?: boolean;
-  staged?: boolean;            // true until the final claude.ai captures land
+  staged?: boolean;
   provenance?: string;
   coralAt?: number;            // the coral brick lands
   kneeAt?: number;             // counter digit-roll + knee snap (U9, ~6.00s)
@@ -61,18 +57,14 @@ export type ForgetsClayProps = {
 };
 
 export const ForgetsClay: React.FC<ForgetsClayProps> = ({
-  hookCapture = "assets/ep_style/demo.mp4",
-  proofCapture = "assets/ep_style/demo.mp4",
-  payoffCapture = "assets/ep_style/demo.mp4",
-  captureVideo = true,
   staged = true,
-  provenance = "STAND-IN — final: claude.ai",
+  provenance = "RE-TYPESET",
   coralAt = 2.2,
   kneeAt = 6.0,
   fullAt = 8.6,
   coralOutAt = 13.9,
-  diveAt = 16.9,
-  proofAt = 17.5,
+  diveAt = 16.3,
+  proofAt = 16.9,
   pullAt = 20.6,
   payoffAt = 22.4,
   loopAt = 25.4,
@@ -95,22 +87,29 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
   {
     // each brick lands INSIDE the mouth; later bricks land higher, so the
     // skyline of peeking tops rises as the box fills
-    const n = 5;
-    for (let i = 0; i < n; i++) {
-      const tt = 0.15 + ((kneeAt - 1.2 - 0.15) * i) / (n - 1);
-      bricks.push({ t: tt, dx: -30 + (mhash(i * 3 + 1) - 0.5) * 140, by: RIM_Y + 150 - i * 24 });
-    }
+    // an opening VOLLEY — three falls inside the first second, so the hook is
+    // motion the moment the feed shows frame 1 — then the pace settles
+    const pre = [0.1, 0.55, 1.0, 2.9, 3.8, kneeAt - 1.3];
+    pre.forEach((tt, i) => {
+      bricks.push({ t: tt, dx: -30 + (mhash(i * 3 + 1) - 0.5) * 140, by: RIM_Y + 150 - i * 20 });
+    });
     bricks.push({ t: coralAt, dx: -46, by: RIM_Y + 96, coral: true });
     // the post-knee burst: the box crowds, tops jostling above the rim
     for (let i = 0; i < 4; i++) {
-      bricks.push({ t: kneeAt + 0.25 + i * 0.5, dx: -30 + (mhash(i * 7 + 11) - 0.5) * 150, by: RIM_Y + 30 - i * 18 });
+      bricks.push({ t: kneeAt + 0.25 + i * 0.5, dx: -40 + (mhash(i * 7 + 11) - 0.5) * 120, by: RIM_Y + 46 - i * 16 });
     }
   }
+  // NO ROOM, demonstrated: two late bricks find no space, glance off the pile
+  // and fall down the box's flank to the floor — the visual twin of line 4
+  const rejects = [
+    { t: kneeAt + 4.4, dx: 195 },
+    { t: kneeAt + 5.3, dx: -235 },
+  ];
 
   /* ---- camera ------------------------------------------------------------ */
-  const dive = clamp01((t - diveAt - 0.12) / 0.4);
+  const dive = clamp01((t - diveAt - 0.05) / 0.25);
   const proofOn = clamp01((t - proofAt) / 0.3);
-  const proofOff = clamp01((t - pullAt) / 0.5);
+  const proofOff = clamp01((t - pullAt) / 0.35);
   const track = [
     { t: 0, x: 540, y: 930, z: 1 },
     { t: coralAt + 0.6, x: 470, y: 980, z: 1.14 },       // shelf dolly toward the box
@@ -132,20 +131,36 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
         <WorldCamera track={track} punches={[kneeAt, coralOutAt]} punchScale={1.12}>
           {/* far shelf props — depth only, never story */}
           <Parallax depth={0.45}>
-            <SpriteLayer src={`${LIB}/jar.png`} x={118} y={470} h={200} aspect={1}
+            <SpriteLayer src={`${LIB}/jar.png`} x={118} y={470} h={220} aspect={0.69}
                          opacity={0.35} seed={9} idleAmp={1} />
           </Parallax>
 
+          {/* box + contents share one recoil when the coral is thrown out */}
+          <div style={{
+            position: "absolute", inset: 0,
+            transform: `rotate(${(settle(t, coralOutAt + 0.42, 0.55) * 2.1).toFixed(2)}deg)`,
+            transformOrigin: `${BOX.x}px ${BOX.y}px`,
+          }}>
           {/* the box BACK — the whole sprite, behind the bricks */}
           <SpriteLayer src={`${LIB}/toybox.png`} x={BOX.x} y={BOX.y} h={BOX.h}
                        aspect={BOX.aspect} state={amberBox ? "amber" : "neutral"}
                        seed={1} zIndex={4} idleAmp={0.8} />
 
+          {/* the heat: amber rising in the mouth as the limit approaches */}
+          {t > kneeAt - 2.2 && t < diveAt ? (() => {
+            const p = clamp01((t - (kneeAt - 2.2)) / 2.2);
+            return <div style={{
+              position: "absolute", left: BOX.x - 190, top: RIM_Y - 130, width: 380, height: 190,
+              borderRadius: "50%", zIndex: 5,
+              background: `radial-gradient(50% 55% at 50% 60%, ${rgba(CLAY.amber, 0.26 * p)} 0%, ${rgba(CLAY.amber, 0)} 70%)`,
+            }} />;
+          })() : null}
+
           {/* the bricks — INSIDE the mouth, torsos occluded by the front wall */}
           {bricks.map((b, i) => (
             <SpriteLayer key={i}
               src={b.coral ? `${LIB}/brick_coral.png` : `${LIB}/brick_cream.png`}
-              x={BOX.x + b.dx} y={b.by} h={b.coral ? 195 : 170} aspect={1}
+              x={BOX.x + b.dx} y={b.by} h={b.coral ? 175 : 160} aspect={b.coral ? 1.207 : 1.093}
               enterAt={b.t}
               exitAt={b.coral ? coralOutAt : undefined}
               exitStyle={b.coral ? "eject" : "fall"}
@@ -154,23 +169,46 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
             />
           ))}
 
+          {/* the rejected bricks — NO ROOM, told in physics */}
+          {rejects.map((r, i) => (
+            <SpriteLayer key={`rj${i}`} src={`${LIB}/brick_cream.png`}
+              x={BOX.x + r.dx} y={RIM_Y - 100} h={160} aspect={1.093}
+              enterAt={r.t} exitAt={r.t + 0.38} exitStyle="fall"
+              seed={30 + i} zIndex={13}
+            />
+          ))}
+
           {/* the box FRONT — the wall crop that makes the fill real */}
           <SpriteLayer src={`${LIB}/toybox_front.png`} x={BOX.x} y={BOX.y} h={BOX.h}
                        aspect={BOX.aspect} state={amberBox ? "amber" : "neutral"}
                        seed={1} zIndex={12} idleAmp={0.8} />
 
-          {/* the slab, upper right: the hook capture, then — after the pull —
-              the payoff capture (the summary prompt working), re-dropped so the
-              swap is an event rather than a jump */}
+          </div>
+
+          {/* the slab: a RE-TYPESET chat, never a raw screenshot. Hook = the
+              long-chat skeleton scrolling; after the pull it re-drops with the
+              notes exchange. The mock is the artifact, rebuilt legibly (N2). */}
           {t < pullAt ? (
-            <SlabScreen capture={hookCapture} video={captureVideo}
-                        x={772} y={664} h={400} aspect={1} zIndex={8}
-                        provenance={provenance} staged={staged} spill="#2f3540" />
+            <SlabScreen x={772} y={664} h={360} aspect={1.195} zIndex={8}
+                        provenance={provenance} staged={staged} spill="#2f3540">
+              <ChatMock scroll={-22} fontSize={22} pad={18} lines={[
+                { who: "u", bars: [0.7, 0.45] },
+                { who: "a", bars: [0.9, 0.8, 0.55] },
+                { who: "u", bars: [0.5] },
+                { who: "a", bars: [0.85, 0.6] },
+                { who: "u", bars: [0.65, 0.3] },
+                { who: "a", bars: [0.9, 0.75, 0.4] },
+              ]} />
+            </SlabScreen>
           ) : (
-            <SlabScreen capture={payoffCapture} video={captureVideo}
-                        x={772} y={664} h={400} aspect={1} zIndex={8}
+            <SlabScreen x={772} y={664} h={360} aspect={1.195} zIndex={8}
                         enterAt={pullAt + 0.25}
-                        provenance={provenance} staged={staged} spill="#2f4a40" />
+                        provenance={provenance} staged={staged} spill="#2f4a40">
+              <ChatMock fontSize={23} pad={18} lines={[
+                { who: "u", text: "Turn this chat into notes." },
+                { who: "a", bars: [0.8, 0.7, 0.75, 0.5], at: pullAt + 1.1 },
+              ]} />
+            </SlabScreen>
           )}
 
           {/* the mint pulse — the payoff EARNS its colour */}
@@ -185,7 +223,7 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
 
           {/* the jar arrives for the payoff, in the lamplight */}
           {t >= pullAt ? (
-            <SpriteLayer src={`${LIB}/jar.png`} x={780} y={1265} h={440} aspect={1}
+            <SpriteLayer src={`${LIB}/jar.png`} x={780} y={1265} h={470} aspect={0.69}
                          enterAt={pullAt + 0.5} state={t >= payoffAt ? "mint" : "neutral"}
                          seed={4} zIndex={10} />
           ) : null}
@@ -202,18 +240,22 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
         ) : null}
         {proofOn > 0 && proofOff < 1 ? (
           <div style={{
-            position: "absolute", left: 40, top: 260, width: 1000, height: 1210, zIndex: 20,
+            position: "absolute", left: 70, top: 420, width: 940, height: 850, zIndex: 20,
             opacity: proofOn * (1 - proofOff),
             transform: `scale(${(0.96 + 0.04 * OUT_E(proofOn)).toFixed(3)})`,
-            borderRadius: 26, overflow: "hidden",
+            borderRadius: 30, overflow: "hidden",
+            border: `2px solid ${rgba(CLAY.cream, 0.14)}`,
             boxShadow: `0 60px 130px -60px ${rgba("#000", 0.95)}`,
           }}>
-            <SlabProofFull capture={proofCapture} video={captureVideo} />
+            <ChatMock fontSize={40} pad={40} lines={[
+              { who: "u", text: "What was the first thing I told you?", at: proofAt + 0.05, typeAt: proofAt + 0.15 },
+              { who: "a", text: "I don't see that in this conversation anymore.",
+                at: proofAt + 1.7, typeAt: proofAt + 1.85 },
+            ]} />
             <div style={{
-              position: "absolute", left: 26, bottom: 18, fontFamily: '"IBM Plex Mono", monospace',
-              fontSize: 21, letterSpacing: 2,
-              color: staged ? rgba(CLAY.cream, 0.65) : rgba(CLAY.mint, 0.9),
-            }}>{staged ? "STAGED" : "✓ REAL CAPTURE"} · {provenance}</div>
+              position: "absolute", left: 30, bottom: 16, fontFamily: '"IBM Plex Mono", monospace',
+              fontSize: 21, letterSpacing: 2, color: rgba(CLAY.cream, 0.6),
+            }}>STAGED · {provenance}</div>
           </div>
         ) : null}
 
@@ -223,25 +265,14 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
   );
 };
 
-/* the full-frame proof media, kept dumb on purpose */
-const SlabProofFull: React.FC<{ capture: string; video?: boolean }> = ({ capture, video }) => {
-  const { OffthreadVideo, Img, staticFile } = require("remotion");
-  return video ? (
-    <OffthreadVideo src={staticFile(capture)} muted startFrom={90}
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-  ) : (
-    <Img src={staticFile(capture)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-  );
-};
-
 /* ---- canonical demo (planned clock) -------------------------------------- */
 export const forgetsClayDemo: ForgetsClayProps = {
   coralAt: 2.2,
   kneeAt: 6.0,
   fullAt: 8.6,
   coralOutAt: 13.9,
-  diveAt: 16.9,
-  proofAt: 17.5,
+  diveAt: 16.3,
+  proofAt: 16.9,
   pullAt: 20.6,
   payoffAt: 22.4,
   loopAt: 25.4,

@@ -8,75 +8,189 @@
     "Your Chat Is A Toy Box — And It's Full 🧊"
   ],
   "tags": "claude forgets,context window,claude ai,long chats,ai memory,chatgpt forgets,claude tips,ai for beginners,summary prompt,fresh chat,ai tools,claude tricks",
-
   "carry": "the toy box never leaves frame; the CORAL brick (the first thing you told it) crosses every phase: in, buried, ejected, and honestly answered-for by the jar of notes",
-  "plant": { "what": "the coral brick lands in the first 2s — the payoff's absence is its ejection", "beat": 0 },
-  "knee":  { "what": "the counter digit-rolls to the 2,00,000 limit + knee snap", "anchor": "@beat1+3.0", "window": [4.0, 8.0] },
-  "payoff": { "what": "the mint moment: the jar + the summary prompt visibly working on the slab", "anchor": "@beat6+4.2", "min_frac": 0.75 },
+  "plant": {
+    "what": "the coral brick lands in the first 2s — the payoff's absence is its ejection",
+    "beat": 0
+  },
+  "knee": {
+    "what": "the counter digit-rolls to the 2,00,000 limit + knee snap",
+    "anchor": "@beat1+3.0",
+    "window": [
+      4.0,
+      8.0
+    ]
+  },
+  "payoff": {
+    "what": "the mint moment: the jar + the summary prompt visibly working on the slab",
+    "anchor": "@beat6+4.2",
+    "min_frac": 0.75
+  },
   "numbers": [
-    { "value": "200000", "spoken": "two lakh", "source": "Anthropic documentation — Claude context window, 200K tokens" }
+    {
+      "value": "200000",
+      "spoken": "two lakh",
+      "source": "Anthropic documentation — Claude context window, 200K tokens"
+    }
   ],
-
   "give": {
     "prompt": "Before this chat gets long: summarize everything worth keeping so far — decisions, facts, numbers, names — as short notes I can paste into a fresh chat and continue exactly where we left off.",
     "where": "description above the fold + pinned comment (give, don't promise)"
   },
-
   "lines": [
-    { "vo": "Claude just forgot what you told it.",
-      "subject": "the coral brick", "from": "dropping in beside the slab's long chat", "to": "landed at the box mouth, glowing coral" },
-    { "vo": "Every message becomes a block in this box.",
-      "subject": "cream bricks", "from": "falling from above", "to": "stacking inside the mouth; the counter climbing" },
-    { "vo": "The box holds two lakh tokens. Then it's full.",
-      "subject": "the counter", "from": "climbing", "to": "digit-rolls to 2,00,000 — knee snap, box washes amber" },
-    { "vo": "New messages push the oldest ones out.",
-      "subject": "the brick skyline", "from": "settled", "to": "jostling over the rim as the burst crowds in" },
-    { "vo": "Including yours.",
-      "subject": "the coral brick", "from": "peeking at the mouth", "to": "EJECTED — up, over the back rim, blurring into the dark. Then 0.8s of silence." },
-    { "vo": "Ask about it now — Claude genuinely can't see it.",
-      "subject": "the camera", "from": "diving into the box's dark mouth", "to": "a full-frame REAL capture: the first-message miss, provenance strip on" },
-    { "vo": "The fix: before it fills, ask for notes. Paste them into a fresh chat.",
-      "subject": "the jar", "from": "revealed by the only reverse dolly of the film", "to": "standing in the lamplight; the slab now showing the summary prompt working" },
-    { "vo": "Ask again — instant answer. The exact prompt is in the description.",
-      "subject": "the composition", "from": "the mint pulse on the jar", "to": "returned to frame one — the engineered loop" }
+    {
+      "vo": "Claude just forgot what you told it.",
+      "subject": "the coral brick",
+      "from": "dropping in beside the slab's long chat",
+      "to": "landed at the box mouth, glowing coral"
+    },
+    {
+      "vo": "Every message becomes a block in this box.",
+      "subject": "cream bricks",
+      "from": "falling from above",
+      "to": "stacking inside the mouth; the counter climbing"
+    },
+    {
+      "vo": "The box holds two lakh tokens. Then it's full.",
+      "subject": "the counter",
+      "from": "climbing",
+      "to": "digit-rolls to 2,00,000 — knee snap, box washes amber"
+    },
+    {
+      "vo": "New messages push the oldest ones out.",
+      "subject": "the brick skyline",
+      "from": "settled",
+      "to": "jostling over the rim as the burst crowds in"
+    },
+    {
+      "vo": "Including yours.",
+      "subject": "the coral brick",
+      "from": "peeking at the mouth",
+      "to": "EJECTED — up, over the back rim, blurring into the dark. Then 0.8s of silence."
+    },
+    {
+      "vo": "Ask about it now — Claude genuinely can't see it.",
+      "subject": "the camera",
+      "from": "diving into the box's dark mouth",
+      "to": "a full-frame REAL capture: the first-message miss, provenance strip on"
+    },
+    {
+      "vo": "The fix: before it fills, ask for notes. Paste them into a fresh chat.",
+      "subject": "the jar",
+      "from": "revealed by the only reverse dolly of the film",
+      "to": "standing in the lamplight; the slab now showing the summary prompt working"
+    },
+    {
+      "vo": "Ask again — instant answer. The exact prompt is in the description.",
+      "subject": "the composition",
+      "from": "the mint pulse on the jar",
+      "to": "returned to frame one — the engineered loop"
+    }
   ],
-
   "scenes": [
-    { "archetype": "A1", "comp": "ForgetsClay", "beats": [0], "note": "cold-open: slab already scrolling a real chat, bricks already falling, coral lands" },
-    { "archetype": "A3+A4", "comp": "ForgetsClay", "beats": [1, 2, 3], "note": "the fill + the ONE measured number as a prop; knee at 6.0s" },
-    { "archetype": "A6", "comp": "ForgetsClay", "beats": [4, 5], "note": "the loss, then the dive to full-frame proof" },
-    { "archetype": "A8", "comp": "ForgetsClay", "beats": [6, 7], "note": "reverse dolly, jar, mint moment, loop home" }
+    {
+      "archetype": "A1",
+      "comp": "ForgetsClay",
+      "beats": [
+        0
+      ],
+      "note": "cold-open: slab already scrolling a real chat, bricks already falling, coral lands"
+    },
+    {
+      "archetype": "A3+A4",
+      "comp": "ForgetsClay",
+      "beats": [
+        1,
+        2,
+        3
+      ],
+      "note": "the fill + the ONE measured number as a prop; knee at 6.0s"
+    },
+    {
+      "archetype": "A6",
+      "comp": "ForgetsClay",
+      "beats": [
+        4,
+        5
+      ],
+      "note": "the loss, then the dive to full-frame proof"
+    },
+    {
+      "archetype": "A8",
+      "comp": "ForgetsClay",
+      "beats": [
+        6,
+        7
+      ],
+      "note": "reverse dolly, jar, mint moment, loop home"
+    }
   ],
-
-  "beats": ["cook:ForgetsClay#hook", "cook:ForgetsClay#fill", "cook:ForgetsClay#limit",
-            "cook:ForgetsClay#push", "cook:ForgetsClay#loss", "cook:ForgetsClay#proof",
-            "cook:ForgetsClay#fix", "cook:ForgetsClay#loop"],
-  "spine": ["ForgetsClay"],
-  "film": { "bloom_beats": [], "driftAmp": 0 },
-
+  "beats": [
+    "cook:ForgetsClay#hook",
+    "cook:ForgetsClay#fill",
+    "cook:ForgetsClay#limit",
+    "cook:ForgetsClay#push",
+    "cook:ForgetsClay#loss",
+    "cook:ForgetsClay#proof",
+    "cook:ForgetsClay#fix",
+    "cook:ForgetsClay#loop"
+  ],
+  "spine": [
+    "ForgetsClay"
+  ],
+  "film": {
+    "bloom_beats": [],
+    "driftAmp": 0
+  },
   "cookbook": {
     "ForgetsClay": {
-      "coralAt":    "@beat0+2.0",
-      "kneeAt":     "@beat1+3.0",
-      "fullAt":     "@beat2+2.2",
+      "coralAt": "@beat0+2.0",
+      "kneeAt": "@beat1+3.0",
+      "fullAt": "@beat2+2.2",
       "coralOutAt": "@beat4+0.55",
-      "diveAt":     "@beat5+2.4",
-      "proofAt":    "@beat5+3.1",
-      "pullAt":     "@beat6+2.4",
-      "payoffAt":   "@beat6+4.2",
-      "loopAt":     "@beat7+1.6",
-      "endAt":      "@beat8",
+      "diveAt": "@beat5+1.9",
+      "proofAt": "@beat5+2.5",
+      "pullAt": "@beat6+2.4",
+      "payoffAt": "@beat6+4.2",
+      "loopAt": "@beat7+1.6",
+      "endAt": "@beat8",
       "staged": true,
       "provenance": "STAND-IN — final: claude.ai",
-      "counterKeys": [[1.6, 31000], [5.9, 176000], [6.05, 200000]]
+      "counterKeys": [
+        [
+          1.6,
+          31000
+        ],
+        [
+          5.9,
+          176000
+        ],
+        [
+          6.05,
+          200000
+        ]
+      ]
     },
     "OutroGlass": {}
   },
-
-  "hot_words": ["FORGOT", "EVERY", "BLOCK", "LAKH", "FULL", "OLDEST", "YOURS",
-                "CAN'T", "SEE", "NOTES", "FRESH", "ANSWER", "DESCRIPTION"],
-
-  "outro": { "src": "ep_forgets/outro_card.mp4",
-             "cta": "The notes prompt is in the description. Steal it before your next long chat.",
-             "q": "WHAT WOULD|CLAUDE HAVE|FORGOTTEN?" }
+  "hot_words": [
+    "FORGOT",
+    "EVERY",
+    "BLOCK",
+    "LAKH",
+    "FULL",
+    "OLDEST",
+    "YOURS",
+    "CAN'T",
+    "SEE",
+    "NOTES",
+    "FRESH",
+    "ANSWER",
+    "DESCRIPTION"
+  ],
+  "outro": {
+    "src": "ep_forgets/outro_card.mp4",
+    "cta": "The notes prompt is in the description. Steal it before your next long chat.",
+    "q": "WHAT WOULD|CLAUDE HAVE|FORGOTTEN?"
+  }
 }

@@ -30,8 +30,18 @@ def key(im: Image.Image) -> Image.Image:
     # distance from the ground colour, normalised; the baked shadow is a darker
     # version of the ground so it keys out with it
     d = np.sqrt(((a - GROUND) ** 2).sum(-1))
-    # soft knee: fully transparent below 26, fully opaque above 90
-    alpha = np.clip((d - 26) / (90 - 26), 0, 1)
+    # The first pass keyed at 26..90 and LEFT THE ROOM VISIBLE: FLUX's ground is
+    # not flat — it carries a lit gradient and the object's soft shadow, so a
+    # low knee kept a faint rectangle of 'almost ground' around every sprite,
+    # and the camera made those rectangles read instantly. The knee now starts
+    # where the ground's own variance ends (per-image, measured off the corner
+    # patches), and edge pixels are DESPILLED toward the object so the rim does
+    # not carry a dark fringe.
+    corners = np.concatenate([
+        d[:40, :40].ravel(), d[:40, -40:].ravel(),
+        d[-40:, :40].ravel(), d[-40:, -40:].ravel()])
+    floor = float(np.percentile(corners, 99)) + 14   # above ALL ground variance
+    alpha = np.clip((d - floor) / 70, 0, 1)
     # kill isolated speckle
     am = Image.fromarray((alpha * 255).astype(np.uint8))
     am = am.filter(ImageFilter.MedianFilter(3))

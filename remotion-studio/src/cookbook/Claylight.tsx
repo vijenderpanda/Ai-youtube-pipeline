@@ -117,10 +117,12 @@ export const SpriteLayer: React.FC<SpriteProps> = ({
   const w = h * aspect;
 
   // drop-in: from the camera (big + blurred) onto its mark, 8f overshoot
-  const e = enterAt == null ? 1 : enter(t, enterAt, 0.34, 0.07);
+  const e = enterAt == null ? 1 : enter(t, enterAt, 0.42, 0.07);
   if (e <= 0.001) return null;
-  const scale = enterAt == null ? 1 : 3 - 2 * Math.min(e, 1.02);
-  const blur = enterAt == null ? 0 : Math.max(0, (1 - e) * 12);
+  // 280px of real travel — the first cut translated 40px, which read as a
+  // pop-in with blur, not as a thing FALLING into a box
+  const scale = enterAt == null ? 1 : 1.9 - 0.9 * Math.min(e, 1.02);
+  const blur = enterAt == null ? 0 : Math.max(0, (1 - e) * 10);
   // shadow arrives 4 frames AFTER contact — mass, not decal
   const shadowIn = enterAt == null ? 1 : clamp01((t - enterAt - 0.34 - 4 / fps) / 0.2);
 
@@ -162,7 +164,7 @@ export const SpriteLayer: React.FC<SpriteProps> = ({
       }} />
       <div style={{
         position: "absolute", inset: 0,
-        transform: `translate(${wob.x + fallX}px, ${wob.y + (1 - Math.min(e, 1)) * -40 + fallY}px) rotate(${wob.r + fallR}deg) scale(${scale.toFixed(3)})`,
+        transform: `translate(${wob.x + fallX}px, ${wob.y + (1 - Math.min(e, 1)) * -280 + fallY}px) rotate(${wob.r + fallR}deg) scale(${scale.toFixed(3)})`,
         opacity: Math.min(1, e * 1.4) * opacity * fade,
         filter: blur + fallBlur > 0.4 ? `blur(${(blur + fallBlur).toFixed(1)}px)` : undefined,
       }}>
@@ -180,11 +182,15 @@ export const SpriteLayer: React.FC<SpriteProps> = ({
 };
 
 /* ---- THE SLAB: real pixels, witnessed ------------------------------------ */
-const SLAB_HOLE = { x0: 0.2158, y0: 0.3398, x1: 0.749, y1: 0.7471 }; // measured on the keyed sprite
+const SLAB_HOLE = { x0: 0.0769, y0: 0.0883, x1: 0.9065, y1: 0.845 }; // measured on the trimmed sprite
 
 export type SlabProps = {
-  /** capture path relative to public/ — a REAL screen recording or still. */
-  capture: string;
+  /** capture path relative to public/ — a REAL screen recording or still.
+   *  Ignored when children are given: a ChatMock (or any re-typeset artifact)
+   *  then owns the screen. N2's actual instruction was always REBUILD the
+   *  artifact legibly, never paste raw screenshots — the raw-capture first
+   *  draft broke the world's flow, exactly as the owner said. */
+  capture?: string;
   video?: boolean;
   captureFrom?: number;
   x: number; y: number; h: number;
@@ -196,11 +202,12 @@ export type SlabProps = {
   spill?: string;
   enterAt?: number;
   zIndex?: number;
+  children?: React.ReactNode;
 };
 
 export const SlabScreen: React.FC<SlabProps> = ({
   capture, video, captureFrom = 0, x, y, h, aspect, provenance, staged,
-  spill = "#3a3f4c", enterAt, zIndex,
+  spill = "#3a3f4c", enterAt, zIndex, children,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -212,12 +219,12 @@ export const SlabScreen: React.FC<SlabProps> = ({
     left: SLAB_HOLE.x0 * w, top: SLAB_HOLE.y0 * h,
     width: (SLAB_HOLE.x1 - SLAB_HOLE.x0) * w, height: (SLAB_HOLE.y1 - SLAB_HOLE.y0) * h,
   };
-  const media = video ? (
+  const media = children ? children : video && capture ? (
     <OffthreadVideo src={staticFile(capture)} muted startFrom={Math.round(captureFrom * fps)}
                     style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-  ) : (
+  ) : capture ? (
     <Img src={staticFile(capture)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-  );
+  ) : null;
   return (
     <div style={{
       position: "absolute", left: x - w / 2, top: y - h, width: w, height: h, zIndex,
@@ -254,6 +261,91 @@ export const SlabScreen: React.FC<SlabProps> = ({
         color: staged ? rgba(CLAY.cream, 0.6) : rgba(CLAY.mint, 0.9),
       }}>
         {staged ? "STAGED" : "✓ REAL CAPTURE"} · {provenance}
+      </div>
+    </div>
+  );
+};
+
+/* ---- THE CHAT MOCK: a re-typeset artifact, not a screenshot ---------------
+   N2 from the reference grammar, applied properly this time: claims are shown
+   as LEGIBLE REBUILT artifacts — glyphs >=3% of frame height — never as raw
+   screen pixels that break the world. A mock declares itself via the slab's
+   provenance strip; nothing here imitates a product's actual chrome. Lines
+   are either real text (typed on, cursor idling) or skeleton BARS — the
+   reference trick for "a long conversation" that should read as an object,
+   not be read as words. */
+export type MockLine = {
+  who: "u" | "a";
+  text?: string;
+  /** bar widths as fractions — a greeked message. */
+  bars?: number[];
+  /** film-absolute second this line lands (slides up). */
+  at?: number;
+  /** type the text on from this film-absolute second. */
+  typeAt?: number;
+};
+
+export const ChatMock: React.FC<{
+  lines: MockLine[];
+  /** px/s downward content scroll — the "long chat" idle. */
+  scroll?: number;
+  fontSize?: number;
+  pad?: number;
+}> = ({ lines, scroll = 0, fontSize = 30, pad = 26 }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  return (
+    <div style={{
+      position: "absolute", inset: 0, background: "#241B1E",
+      overflow: "hidden", display: "flex", flexDirection: "column",
+      justifyContent: "flex-end", gap: Math.round(fontSize * 0.55),
+      padding: pad, paddingBottom: pad * 1.2,
+    }}>
+      <div style={{ transform: `translateY(${(scroll * t).toFixed(1)}px)`,
+                    display: "flex", flexDirection: "column", gap: Math.round(fontSize * 0.55) }}>
+        {lines.map((ln, i) => {
+          const on = ln.at == null ? 1 : enter(t, ln.at, 0.3, 0.04);
+          if (on <= 0.001) return null;
+          const chars = ln.typeAt == null ? (ln.text?.length ?? 0)
+            : Math.max(0, Math.floor((t - ln.typeAt) * 32));
+          const txt = ln.text ? ln.text.slice(0, chars) : "";
+          const typing = ln.typeAt != null && ln.text && chars < ln.text.length;
+          // an empty bubble waiting for its first character reads as a broken
+          // element — hold the bubble until typing is about to start
+          if (ln.text && ln.typeAt != null && t < ln.typeAt - 0.05) return null;
+          const user = ln.who === "u";
+          return (
+            <div key={i} style={{
+              alignSelf: user ? "flex-end" : "flex-start",
+              maxWidth: "82%",
+              opacity: Math.min(1, on * 1.4),
+              transform: `translateY(${(1 - Math.min(on, 1)) * 18}px)`,
+              // cream on BOTH sides — coral is the carry element's colour and
+              // nothing else's; the first cut had coral user bubbles, which put
+              // a dozen coral objects on screen and broke the film's own law
+              background: user ? rgba(CLAY.cream, 0.2) : rgba(CLAY.cream, 0.08),
+              border: `1.5px solid ${rgba(CLAY.cream, user ? 0.34 : 0.15)}`,
+              borderRadius: 18,
+              padding: `${Math.round(fontSize * 0.45)}px ${Math.round(fontSize * 0.7)}px`,
+            }}>
+              {ln.bars ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: Math.round(fontSize * 0.32) }}>
+                  {ln.bars.map((b, k) => (
+                    <div key={k} style={{ height: Math.round(fontSize * 0.42),
+                                          width: `${Math.round(b * 100)}%`, minWidth: 30,
+                                          borderRadius: 6, background: rgba(CLAY.cream, user ? 0.55 : 0.3) }} />
+                  ))}
+                </div>
+              ) : (
+                <div style={{ fontFamily: BALOO, fontWeight: 600, fontSize,
+                              lineHeight: 1.35, color: CLAY.cream }}>
+                  {txt}{typing ? <span style={{ opacity: Math.floor(t * 3) % 2 ? 1 : 0.15 }}>▍</span> : null}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
