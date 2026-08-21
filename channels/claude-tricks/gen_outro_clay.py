@@ -29,6 +29,7 @@ ap.add_argument("--prompt-dur", type=float, default=2.8)
 ap.add_argument("--comment-line", default="Comment yours 👇")
 ap.add_argument("--subscribe-line", default="Subscribe · one AI trick, every day")
 ap.add_argument("--dur", type=float, default=6.8)
+ap.add_argument("--scale", type=float, default=1.0)
 a = ap.parse_args()
 
 props = {"question": a.q, "accentWord": a.accent_word,
@@ -40,7 +41,7 @@ pj = os.path.join(CH, ".outro_clay_props.json")
 json.dump(props, open(pj, "w"))
 out = a.out if os.path.isabs(a.out) else os.path.join(CH, a.out)
 subprocess.run(["npx", "remotion", "render", "ClayOutroDemo", out,
-                f"--props={pj}", f"--frames=0-{int(a.dur * FPS) - 1}",
+                f"--props={pj}", f"--frames=0-{int(a.dur * FPS) - 1}", f"--scale={a.scale}",
                 "--crf=17", "--log=error"], cwd=STUDIO, check=True)
 os.remove(pj)
 print(f">> clay outro: {out}")
