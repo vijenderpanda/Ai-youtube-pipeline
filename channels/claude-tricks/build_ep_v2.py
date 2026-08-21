@@ -644,6 +644,133 @@ EPISODES_V2 = {
     ],
     "steps": [],   # RETIRED — empty, not absent (build_ep_v2 requires the key)
   },
+  # ===========================================================================
+  # 2026-08-21 -- the SELF-APPRAISAL episode. Two firsts.
+  #
+  # FIRST: the film has a SPINE. One line enters at frame 1 and survives every
+  # cut -- it climbs, dies into grey dots, flinches when the prompt lands,
+  # catches the answers as scattered points, SNAPS into a rising arc on one
+  # un-eased frame, then demotes to a header while the sentences hang off it.
+  # Seven beats read as one object having one continuous experience instead of
+  # seven cards cutting to each other. cfg["spine"] is what makes that possible:
+  # every beat renders in its own <Sequence> (local frame 0), so without it the
+  # line would replay its entrance seven times.
+  #
+  # SECOND: nothing here was captured. No screen recording, no user data, no
+  # emulator -- the story is carried entirely by motion graphics, which is the
+  # constraint VJ set for this slot. The honesty bar is unchanged: nothing on
+  # screen claims to be a measurement. The arc is explicitly "a relative position
+  # the person's own answer implies", drawn with NO AXIS, and the sentences are
+  # quotation cards in speech colour, never data. A part-of-whole bar or a
+  # slamming counter here would have been a lie told in grammar.
+  #
+  # The choreography was designed in Claude Design against our published
+  # cookbook and ported -- see the CareerArc commit for what came across.
+  "_appraisal": {
+    # 46 chars. The franchise verb is "typing one line"; this one says PASTING
+    # because the film's own point is that you paste a block, and a title that
+    # contradicts its video is the one kind of CTR you do not want.
+    "title": "I Built My Self-Appraisal By Pasting One Prompt",
+    "tags": "self appraisal,performance review,appraisal writing,claude ai,chatgpt prompt,"
+            "career growth,work review,ai prompt,appraisal tips,promotion,salary hike,ai tools",
+    # No hook image: beat 0 IS the hook. The line is already climbing at frame 1,
+    # so motion is running before the swipe window closes -- the thing a static
+    # hook card cannot do.
+    "outro": True,
+    "outro_dur": 0,
+    "outro_src": "ep_appraisal/outro_card.mp4",   # LOCKED Ep11-style question-CTA card
+    "outro_cta": "The full prompt is in the description. Copy it, and open your form tonight.",
+    "lines": [
+      "Appraisal due tomorrow. Still blank.",
+      "Two years. Nothing comes back.",
+      "Stop writing. Start answering.",
+      "You didn't forget the work. You never kept the proof.",
+      "It asks one question at a time \u2014 what broke, what you fixed, who noticed.",
+      "Out come the exact lines that go straight into the form.",
+      "It won't fill the form for you, or face your manager. That part's still yours.",
+    ],
+    "hot_words": ["APPRAISAL", "BLANK", "TWO", "YEARS", "NOTHING", "STOP", "WRITING",
+                  "START", "ANSWERING", "FORGET", "WORK", "NEVER", "PROOF", "ONE",
+                  "QUESTION", "TIME", "BROKE", "FIXED", "NOTICED", "EXACT", "LINES",
+                  "STRAIGHT", "FORM", "WON'T", "MANAGER", "YOURS"],
+    # ONE component owns beats 0-3 and a second owns 4-5, each on a continuous
+    # clock (see "spine" below). Same props on every beat of a stretch -- only the
+    # auto-injected `start` differs, which is what keeps the line unbroken.
+    # The #suffixes are NOT different props -- every CareerArc beat resolves to the
+    # same props block. They exist to keep the beats DISTINCT, because the segment
+    # builder merges consecutive identical beats into one, and a merged segment
+    # carries one caption for all the lines inside it: four VO lines' worth of
+    # words on screen at once, unreadable, burying the frame it sits on. Distinct
+    # beats keep one caption per spoken line; "spine" is what keeps the LINE
+    # unbroken across them. That split -- cut the captions, never cut the graphic
+    # -- is the whole point of the mechanism.
+    "beats": ["cook:CareerArc#flat",    # climbing, then dying into grey dots
+              "cook:CareerArc#paste",   # the prompt lands; the line flinches
+              "cook:CareerArc#asks",    # answers land as scattered points ABOVE it
+              "cook:CareerArc#snap",    # THE SNAP -- one un-eased frame
+              "cook:CaseBullets#pull",  # demoted to a header; sentences on tethers
+              "cook:CaseBullets#read",  # the read-sweep walks the stack
+              "cook:OutroGlass"],       # the prompt on glass -- GIVE it, don't promise it
+    # The components whose clock is FILM time, not beat time. Without this the
+    # line restarts at every cut and the snap never lands on the knee.
+    "spine": ["CareerArc", "CaseBullets"],
+    "cookbook": {
+      "CareerArc": {
+        "runLabel": "YOUR LAST 2 YEARS",
+        # Every moment is pinned to a CUT, resolved from the measured VO clock at
+        # build time -- never a hardcoded second that drifts when the read does.
+        "pasteAt": "@beat1",
+        # STAGGERED ACROSS the spoken line, not landed on it. The four answers
+        # pace the 6-8s stretch -- the measured danger window, where 15 of the 30
+        # steepest retention drops sit -- so there is a discrete arrival roughly
+        # every half-second right up to the snap, instead of one event followed
+        # by two dead seconds.
+        "points": [
+          {"label": "what broke",      "lift": 0.24, "at": "@beat2"},
+          {"label": "what you fixed",  "lift": 0.46, "at": "@beat2+0.58"},
+          {"label": "who noticed",     "lift": 0.68, "at": "@beat2+1.16"},
+          {"label": "what you taught", "lift": 0.92, "at": "@beat2+1.74"},
+        ],
+        "snapAt": "@beat3",
+        "demoteAt": "@beat4",
+        "pasteText": ["You are my appraisal coach.",
+                      "Ask me ONE question at a time."],
+        "preHeadline": "FLAT.",
+        "preSubhead": "AND YOU CAN'T EXPLAIN WHY",
+        "headline": "NOT FLAT.",
+        "subhead": "YOU JUST NEVER PLOTTED IT",
+      },
+      "CaseBullets": {
+        "runLabel": "WHAT GOES IN THE FORM",
+        # the SAME lifts CareerArc ends on, so the arc survives the hand-off
+        "points": [{"lift": 0.24}, {"lift": 0.46}, {"lift": 0.68}, {"lift": 0.92}],
+        # Mock answers, and openly so -- the viewer's own two years go here. Each
+        # is what-I-did then what-changed, which is the actual teaching point.
+        "lines": [
+          {"text": "I cut onboarding from six days to two \u2014 40 hours a month back.", "from": 0, "at": 0.5},
+          {"text": "I took on-call in March. Kept it.",     "from": 1, "at": 2.3},
+          {"text": "I shipped billing with no rollback.",   "from": 2, "at": 4.1},
+          {"text": "Two juniors now run releases alone.",   "from": 3, "at": 5.9},
+        ],
+        # the cards all land by ~6.4s of a ~10s stretch; without the sweep the
+        # frame is static for the back half, at the length that costs most
+        "sweepFrom": 6.6,
+        "sweepStep": 0.6,
+      },
+      "OutroGlass": {
+        "promptLabel": "THE PROMPT",
+        "promptHint": "PAUSE TO COPY",
+        "promptText": "You are my appraisal coach. Ask me ONE question at a time, "
+                      "and wait for my answer. Ask exactly 6 questions about my last "
+                      "two years, then give me 6 sentences I can paste straight into "
+                      "the form \u2014 what I did, then what changed because of it.",
+        # the prompt owns the whole beat; the appended card carries the CTA
+        "promptDur": "@beat7",
+        "question": "WHAT WOULD|YOU PUT|IN LINE ONE?",
+      },
+    },
+    "steps": [],   # the on-frame words are baked into the components, not chipped over them
+  },
   # Post-pivot standalone tip #3 (2026-08-20): the "paste an example" writing tip.
   # Promised by tip #2's (_habit) outro tease. prompt-teardown cluster (PIVOT-DECISION §4 #8).
   # SLATE RISK: "Stop X" abstract hooks flopped in-feed + muted text before/after is weaker than
@@ -2912,6 +3039,30 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     _seg_t = [0.0]
     for d in seg_durs:
         _seg_t.append(_seg_t[-1] + d)
+
+    # --- THE SPINE ---------------------------------------------------------
+    # Every beat renders inside its own <Sequence>, so useCurrentFrame() restarts
+    # at 0 on each cut. That is right for a beat that is its own little scene, and
+    # WRONG for a component meant to run continuously ACROSS beats: it would
+    # replay its entrance at every cut, and any absolute moment it is authored
+    # around (a snap pinned to the film's 6.00s retention knee) would never land.
+    #
+    # cfg["spine"] names the component ids that carry one unbroken timeline. For
+    # each, the beat it FIRST appears on becomes its anchor, and every later beat
+    # gets start = -(elapsed since that anchor) so the component's internal clock
+    # reads continuous film time. Offsets are computed from seg_durs -- the
+    # MEASURED VO clock -- never from planned storyboard timings, because the
+    # synthesised read is always a little longer or shorter than the plan and a
+    # hardcoded offset would show up as a jump at the cut.
+    _spine_anchor: dict = {}
+    for _si, _sb in enumerate(beats):
+        _s0 = str(_sb).split("|")[0]
+        if not _s0.startswith("cook:"):
+            continue
+        _scid = _s0[5:].split("#", 1)[0]
+        if _scid in (cfg.get("spine") or []) and _scid not in _spine_anchor:
+            _spine_anchor[_scid] = _seg_t[_si] if _si < len(_seg_t) else 0.0
+
     i = 0
     while i < len(beats):
         b = beats[i]
@@ -3111,6 +3262,50 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
             if isinstance(cid, str) and cid:
                 cb_props = cfg.get("cookbook") or {}
                 props = dict(cb_props.get(raw_cid, cb_props.get(cid, {})))
+                # a spine component's clock is film time, not beat time (see
+                # _spine_anchor above) -- so it survives the cut unbroken.
+                # NB start_i, never i: consecutive identical beats are MERGED into
+                # one segment above, and `i` has already walked to the END of that
+                # run. Offsetting by the run's last beat would drop the component
+                # into the middle of its own timeline -- CareerArc would open on
+                # the snap it is supposed to build to.
+                _anchor = _spine_anchor.get(cid, _seg_t[start_i])
+                if cid in _spine_anchor:
+                    props["start"] = round(_anchor - _seg_t[start_i], 3)
+                # "@beat<N>" resolves to the component-clock second at which beat
+                # N begins. A designed beat is authored around MOMENTS -- the flinch
+                # when the prompt lands, the snap, the demote -- and every one of
+                # those wants to sit exactly on a cut. Hardcoding them means
+                # re-timing the whole file by hand whenever the read comes back a
+                # quarter-second long, and re-timing it WRONG means the snap drifts
+                # off the cut it was written to punctuate. Resolving from seg_durs
+                # keeps the choreography nailed to the voice, whatever the voice does.
+                # "@beat<N>" or "@beat<N>+<seconds>" -- the offset form paces several
+                # moments across one spoken line, which is how a long beat is kept
+                # alive without inventing a second VO line to hang them on.
+                def _at(v):
+                    if isinstance(v, str) and v.startswith("@beat"):
+                        _spec, _off = v[5:], 0.0
+                        for _sgn in ("+", "-"):
+                            if _sgn in _spec:
+                                _spec, _o = _spec.split(_sgn, 1)
+                                try:
+                                    _off = float(_o) * (1 if _sgn == "+" else -1)
+                                except ValueError:
+                                    return v
+                                break
+                        try:
+                            n = int(_spec)
+                        except ValueError:
+                            return v
+                        return round((_seg_t[n] if n < len(_seg_t) else _seg_t[-1])
+                                     - _anchor + _off, 3)
+                    if isinstance(v, dict):
+                        return {k: _at(x) for k, x in v.items()}
+                    if isinstance(v, list):
+                        return [_at(x) for x in v]
+                    return v
+                props = {k: _at(v) for k, v in props.items()}
                 # `host: true` -> generate a HeyGen clip cut from THIS beat's own
                 # VO slice (so the lipsync matches the words spoken over it) and
                 # swap the real path in. Same path pip: beats use.

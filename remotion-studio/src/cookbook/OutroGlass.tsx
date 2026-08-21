@@ -327,7 +327,17 @@ export const OutroGlass: React.FC<OutroGlassProps> = ({
                 color: "#fff",
               }}
             >
-              {promptText}
+              {/* WORD-BY-WORD, over ~1.8s, then held. A prompt card is a reading
+                  surface -- the viewer is being asked to pause and copy it -- so
+                  it must NOT keep animating. But a card that arrives complete
+                  leaves the film's last five seconds on a frozen frame, which is
+                  the measured retention killer. Revealing then holding gets both:
+                  motion on the cut, stillness to copy from. */}
+              {String(promptText).split(" ").map((w, i, arr) => (
+                <span key={i} style={{
+                  opacity: clamp((pt - 0.22 - (i / Math.max(arr.length - 1, 1)) * 1.55) / 0.34),
+                }}>{w}{i < arr.length - 1 ? " " : ""}</span>
+              ))}
             </div>
           </div>
           {promptHint && (
@@ -340,6 +350,8 @@ export const OutroGlass: React.FC<OutroGlassProps> = ({
                 letterSpacing: 5,
                 textTransform: "uppercase",
                 color: rgba(BRAND.paper, 0.62),
+                // only once there is something to copy
+                opacity: clamp((pt - 1.85) / 0.4),
               }}
             >
               {promptHint}

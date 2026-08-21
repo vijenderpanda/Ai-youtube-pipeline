@@ -64,6 +64,12 @@ export type CareerArcProps = {
   points: ArcPoint[];
   /** THE frame. Beat-local seconds of the un-eased cut. */
   snapAt?: number;
+  /** Seconds the COLD OPEN owns. A bright line draws on, climbs, then sags dead
+   *  into the dotted baseline. Without it the component opens already-flat and
+   *  the first beat is a still frame -- which on a Short is the swipe window
+   *  spent on nothing. The flatness has to be something the viewer WATCHES
+   *  happen, not a state they arrive to. Set 0 to disable. */
+  openDur?: number;
   /** small mono line above the plot, e.g. "YOUR LAST 2 YEARS". */
   runLabel?: string;
   /** the reframe, burned big under the plot after the snap. */
@@ -82,6 +88,12 @@ export type CareerArcProps = {
   demoteAt?: number;
   accent?: string;
   ink?: string;
+  /** Sol's wide clip, shown as a small card. The upper-right of the plot is
+   *  deliberately empty until the arc climbs into it, so a host card can live
+   *  there on the early beats without ever covering the line. */
+  host?: string;
+  hostSize?: number;
+  hostAnchor?: "tl" | "tr";
   transparent?: boolean;
   start?: number;
   width?: number;
@@ -91,6 +103,7 @@ export type CareerArcProps = {
 export const CareerArc: React.FC<CareerArcProps> = ({
   points = [],
   snapAt = 6,
+  openDur = 1.5,
   runLabel,
   headline,
   subhead,
@@ -101,6 +114,9 @@ export const CareerArc: React.FC<CareerArcProps> = ({
   demoteAt,
   accent = BRAND.mag,
   ink = BRAND.ink,
+  host,
+  hostSize = 300,
+  hostAnchor = "tr",
   transparent,
   start = 0,
   width = 1080,
@@ -145,13 +161,29 @@ export const CareerArc: React.FC<CareerArcProps> = ({
                config: { damping: 17, stiffness: 150, mass: 0.9 } })
     : 0;
   // the dead baseline is OVERWRITTEN, not hidden: it dims hard on the cut
-  const baseOpacity = snapped ? 0.1 : 0.4;
+  // ---- THE COLD OPEN -----------------------------------------------------
+  // draw on, hold a beat, then collapse to the baseline and go out. `alive`
+  // lerps the climb's height toward BASE_Y so the death is the SAME line
+  // sagging, not a crossfade between two different graphics.
+  const openOn = openDur > 0 && t < openDur * 1.35;
+  const drawT = openDur > 0 ? clamp(t / (openDur * 0.40)) : 1;
+  const dieT = openDur > 0 ? clamp((t - openDur * 0.52) / (openDur * 0.48)) : 1;
+  const alive = 1 - OUT_E(dieT);
+  const openPath = P.map((p, i) => {
+    const y = BASE_Y - (BASE_Y - TOP_Y) * clamp(p.lift) * 0.62 * alive;
+    return `${i ? "L" : "M"}${xFor(i)} ${y}`;
+  }).join(" ");
+  // the dead line arrives AS the bright one dies — one hand-off, not two events
+  const baseOpacity = snapped ? 0.1 : 0.4 * (openDur > 0 ? OUT_E(dieT) : 1);
   // one-frame white flash on the cut — the "hit"
   const snapFrame = Math.round((start + snapAt) * fps);
   const hit = frame === snapFrame ? 1 : 0;
 
   const headIn = snapped ? 1 : 0;
-  const preOut = snapped ? 0 : 1;
+  // the problem statement lands AS the line dies, not before it — the viewer
+  // watches the flatline happen and THEN gets told what it means
+  const preOut = snapped ? 0
+    : (openDur > 0 ? OUT_E(clamp((t - openDur * 0.72) / (openDur * 0.5))) : 1);
 
   // ---- the spine is ALIVE, not a static rule -----------------------------
   // a line that only moves when something happens to it reads as a diagram.
@@ -221,6 +253,17 @@ export const CareerArc: React.FC<CareerArcProps> = ({
           stroke={rgba(BRAND.paper, baseOpacity)} strokeWidth={7}
           strokeLinecap="round" strokeDasharray="1 26"
         />
+
+        {openOn && !snapped ? (
+          <path
+            d={openPath} pathLength={1}
+            stroke="url(#ca-line)" strokeWidth={13} fill="none"
+            strokeLinecap="round" strokeLinejoin="round"
+            filter="url(#ca-glow)"
+            strokeDasharray={`${drawT} 1`}
+            opacity={(1 - dieT * dieT) * 0.95}
+          />
+        ) : null}
 
         {snapped ? (
           <>
@@ -303,6 +346,19 @@ export const CareerArc: React.FC<CareerArcProps> = ({
           </div>
         ) : null}
       </div>
+      {host ? (
+        <div style={{
+          position: "absolute",
+          [hostAnchor === "tl" ? "left" : "right"]: 64,
+          top: SAFE.headerFloor + 26,
+          width: hostSize, height: Math.round(hostSize * 0.5625),
+          borderRadius: 18, overflow: "hidden",
+          border: `1px solid ${rgba("#ffffff", 0.18)}`,
+          boxShadow: `0 22px 54px -26px ${rgba("#000", 0.9)}`,
+        } as React.CSSProperties}>
+          <video src={host} muted style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+      ) : null}
     </AbsoluteFill>
   );
 };
