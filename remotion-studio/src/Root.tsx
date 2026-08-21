@@ -29,6 +29,7 @@ import { LedgerFlow, ledgerFlowDemo } from "./cookbook/LedgerFlow";
 import { ShareSplit, shareSplitDemo } from "./cookbook/ShareSplit";
 import { TapStack, tapStackDemo } from "./cookbook/TapStack";
 import { CareerArc, careerArcDemo } from "./cookbook/CareerArc";
+import { CaseBullets, caseBulletsDemo } from "./cookbook/CaseBullets";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
 import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
 import { GenerativeUI, generativeUIDemo } from "./cookbook/GenerativeUI";
@@ -533,6 +534,15 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={FOGLINE_UPI}
+      />
+      <Composition
+        id="CaseBulletsDemo"
+        component={CaseBullets}
+        durationInFrames={16 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={caseBulletsDemo}
       />
       <Composition
         id="CareerArcDemo"

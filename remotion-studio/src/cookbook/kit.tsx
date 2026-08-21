@@ -121,3 +121,174 @@ export const AuroraBed: React.FC<{
     </div>
   );
 };
+
+/* =============================================================================
+   GLASS — the shared material. Extracted from OutroGlass 2026-08-20 after
+   LedgerFlow shipped rows as flat rgba fills and read visibly cheaper than the
+   glass components beside it (VJ: "not up to the mark ... like spinner wheel
+   and outro sting card").
+
+   The recipe is five layers and the order matters:
+     1. chrome     1px light border + a BIG soft drop + an INSET top highlight.
+                   OutroGlass's own note: "the inset highlight is the trick, not
+                   the blur." A panel with no inset edge reads as a grey box.
+     2. refraction the AuroraBed drawn AGAIN inside the panel, offset by the
+                   panel's own position so the bed lines up with the one behind,
+                   blown up 6% and blurred. This is what makes glass look like it
+                   is SAMPLING the world rather than sitting on it.
+     3. frost      a LIGHT wash. Go dark here and the refraction dies.
+     4. caustic    a 3px bright top edge, brightest at the centre.
+     5. specular   one slow diagonal sweep.
+
+   COST: layer 2 is a blurred full-bleed element. Fine for a handful of large
+   panels, ruinous at 22 simultaneous rows. Use <GlassInner/> for hero surfaces
+   and glassLite() for many-instance surfaces — glassLite keeps 1, 4 and a baked
+   two-stop gradient, which carries most of the perceived depth for none of the
+   fill cost.
+   ========================================================================== */
+
+/** Container chrome: border + drop + the inset edge highlights. */
+export const glassChrome = (
+  radius = 24,
+  lift = 1
+): React.CSSProperties => ({
+  borderRadius: radius,
+  overflow: "hidden",
+  border: `1px solid ${rgba("#ffffff", 0.3)}`,
+  boxShadow: `0 ${44 * lift}px ${104 * lift}px -${38 * lift}px ${rgba("#000", 0.72)}, inset 0 1px 0 ${rgba(
+    "#ffffff",
+    0.5
+  )}, inset 0 -1px 0 ${rgba("#ffffff", 0.07)}`,
+});
+
+/** Cheap glass for many-instance surfaces (ledger rows, chips, ticks).
+ *  No refraction sample — a baked gradient stands in for it. */
+export const glassLite = (
+  radius = 22,
+  tint?: string,
+  strength = 1
+): React.CSSProperties => ({
+  borderRadius: radius,
+  border: `1px solid ${rgba("#ffffff", 0.16 * strength)}`,
+  background: tint
+    ? `linear-gradient(158deg, ${rgba(tint, 0.42 * strength)} 0%, ${rgba(
+        tint,
+        0.16 * strength
+      )} 62%, ${rgba(tint, 0.28 * strength)} 100%)`
+    : `linear-gradient(158deg, ${rgba("#ffffff", 0.13 * strength)} 0%, ${rgba(
+        "#ffffff",
+        0.04 * strength
+      )} 58%, ${rgba("#ffffff", 0.08 * strength)} 100%)`,
+  boxShadow: `0 18px 40px -22px ${rgba("#000", 0.75)}, inset 0 1px 0 ${rgba(
+    "#ffffff",
+    0.34 * strength
+  )}, inset 0 -1px 0 ${rgba("#ffffff", 0.05)}`,
+});
+
+/** The inner layers of a real glass panel. Drop as the FIRST child of an
+ *  element already carrying glassChrome(). `x/y/w/h` are the panel's rect in
+ *  the design box — needed so the refraction sample aligns with the bed behind. */
+export const GlassInner: React.FC<{
+  t: number;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  accent?: string;
+  ink?: string;
+  /** 0..1 sweep position for the specular pass; omit for none. */
+  sheen?: number;
+  /** frost wash strength, 0..1. Higher = more opaque = less refraction. */
+  frost?: number;
+  stageW?: number;
+  stageH?: number;
+}> = ({
+  t,
+  x,
+  y,
+  w,
+  h,
+  accent = BRAND.mag,
+  ink = BRAND.ink,
+  sheen,
+  frost = 1,
+  stageW = 1080,
+  stageH = 1920,
+}) => (
+  <>
+    {/* 2 — baked refraction: the bed again, aligned, blown up and blurred */}
+    <div
+      style={{
+        position: "absolute",
+        left: -x * 1.06 - w * 0.03,
+        top: -y * 1.06 - h * 0.03,
+        width: stageW * 1.06,
+        height: stageH * 1.06,
+        filter: "blur(26px) saturate(200%) brightness(1.08)",
+      }}
+    >
+      <AuroraBed t={t} accent={accent} ink={ink} opacity={0.38} />
+    </div>
+    {/* 3 — frost wash, deliberately light */}
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        background: `linear-gradient(160deg, ${rgba("#0a0b12", 0.34 * frost)} 0%, ${rgba(
+          "#0a0b12",
+          0.5 * frost
+        )} 100%)`,
+      }}
+    />
+    {/* 4 — caustic top edge: the detail that sells it */}
+    <div
+      style={{
+        position: "absolute",
+        left: 0,
+        right: 0,
+        top: 0,
+        height: 3,
+        background: `linear-gradient(90deg, ${rgba("#fff", 0)} 0%, ${rgba(
+          "#fff",
+          0.7
+        )} 50%, ${rgba("#fff", 0)} 100%)`,
+      }}
+    />
+    {/* 5 — one specular pass */}
+    {sheen == null ? null : (
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: `linear-gradient(100deg, transparent 34%, ${rgba(
+            "#ffffff",
+            0.14
+          )} 50%, transparent 66%)`,
+          transform: `translateX(${-130 + sheen * 260}%)`,
+        }}
+      />
+    )}
+  </>
+);
+
+/* =============================================================================
+   SAFE — the band a cookbook component may actually draw in.
+
+   Measured against Short.tsx 2026-08-20, not guessed:
+     GlobalHeader  renders "AI UNPACKED VJ" in Anton 46 at top:40, CENTRED, and
+                   it is on for every episode (build_ep_v2 sets watermark:True).
+                   Its glyphs bottom out around y=95.
+     Caption       default sits at bottom:"12%" of 1920 with theme.cap.size 54,
+                   so the karaoke band occupies roughly y=1600 upward.
+
+   A component that ignores these does not fail in the Studio preview — it fails
+   only once composited, which is the expensive place to find out. Fogline had
+   this bug in its shipped design (runLabel at top:92, straight under the
+   wordmark) and nobody hit it because the component had never been used.
+   ========================================================================== */
+export const SAFE = {
+  /** nothing above this — the brand lockup owns the top. */
+  headerFloor: 132,
+  /** nothing below this — the karaoke caption owns the bottom. */
+  captionCeil: 1580,
+} as const;

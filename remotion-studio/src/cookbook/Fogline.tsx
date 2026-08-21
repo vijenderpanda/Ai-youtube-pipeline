@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
-import { BRAND, SANS, MONO, rgba, clamp, coverBg, Fonts } from "./kit";
+import { SAFE, BRAND, SANS, MONO, rgba, clamp, coverBg, Fonts } from "./kit";
 
 /* =============================================================================
    Fogline — an agent's PLAN shown as a lit road it is driving down. A fixed NOW
@@ -66,6 +66,21 @@ export type FoglineProps = {
   horizon?: number; // default 3
   /** fractional step index NOW starts at (>0 seeds done cards above at t=0). */
   startAt?: number; // default 1.15
+  /** Raise every card off the ink. Default 0 keeps the original values, which
+   *  measured only ~6 luminance steps above the background — the cards read as
+   *  holes rather than surfaces, and an 8s beat at YAVG 19/255 is a dead frame
+   *  in a feed. 0.5-0.7 gives the fogged cards material presence while leaving
+   *  blur = confidence intact: you can see THAT a step exists, not WHAT it says. */
+  lift?: number;
+  /** Chrome tint for COMPLETED steps. Default keeps them cold; a distinct tone
+   *  separates done from not-yet-reached, which otherwise look identical. */
+  doneTone?: string;
+  /** currency symbol for the SPEND readout. Defaults to "$" (API costs are
+   *  dollar-denominated). Set "\u20b9" for an India-facing episode — a dollar
+   *  figure in front of a 98.8%-India audience reads as someone else's video. */
+  currency?: string;
+  /** decimals on SPEND. 2 for cents; 0 when the real answer is a whole zero. */
+  spendDecimals?: number;
   accent?: string; // brand accent (defaults to Sol magenta)
   ink?: string; // base fill
   start?: number; // seconds before the road begins moving
@@ -84,6 +99,19 @@ const H_PER = 46; // extra px per dur unit
 const MAX_BLUR = 6.4;
 const OK = "#37E0B0"; // a stable success tint (semantic, not the accent)
 const COLD = "#38505E"; // the color of an un-resolved (foggy) step's chrome
+
+/** blend two #rrggbb hexes -> "#rrggbb" at t in [0,1]. Use this when the result
+ *  feeds another mix(): mix() returns "rgb(...)", so nesting it silently yields
+ *  NaN channels. Measured the hard way — a "lift" that darkened the frame. */
+const mixHex = (a: string, b: string, t: number): string => {
+  const pa = parseInt(a.replace("#", ""), 16);
+  const pb = parseInt(b.replace("#", ""), 16);
+  const l = (sa: number, sb: number) => Math.round(sa + (sb - sa) * clamp(t));
+  const r = l((pa >> 16) & 255, (pb >> 16) & 255);
+  const g = l((pa >> 8) & 255, (pb >> 8) & 255);
+  const bl = l(pa & 255, pb & 255);
+  return "#" + [r, g, bl].map((v) => v.toString(16).padStart(2, "0")).join("");
+};
 
 /** blend two #rrggbb hexes → "rgb(r,g,b)" at t∈[0,1]. */
 const mix = (a: string, b: string, t: number): string => {
@@ -111,6 +139,10 @@ export const Fogline: React.FC<FoglineProps> = ({
   perStep = 1.0,
   horizon = 3,
   startAt = 1.15,
+  lift = 0,
+  doneTone = "#0C1620",
+  currency = "$",
+  spendDecimals = 2,
   accent = BRAND.mag,
   ink = BRAND.ink,
   start = 0.3,
@@ -243,15 +275,17 @@ export const Fogline: React.FC<FoglineProps> = ({
         const showParams = (isActive || c > 0.62) && !isDone;
         const showFoot = (isActive || c > 0.84) && !isDone;
 
+        // LIFT: pull each card up off the ink so a fogged step still reads as a
+        // surface. Blur still carries confidence; luminance carries existence.
         const bg = isActive
-          ? mix("#0F1E28", accent, 0.16)
+          ? mix(mixHex("#0F1E28", "#2C4459", lift), accent, 0.16)
           : isDone
-          ? "#0C1620"
-          : mix("#0D1720", accent, c * 0.08);
+          ? mixHex(doneTone, "#26485A", lift)
+          : mix(mixHex("#0D1720", "#243B4E", lift), accent, c * 0.08);
         const border = isActive
           ? accent
           : isDone
-          ? rgba("#ffffff", 0.08)
+          ? rgba("#ffffff", 0.08 + lift * 0.16)
           : mix(COLD, accent, c * 0.5);
 
         // live progress inside the active step
@@ -487,7 +521,7 @@ export const Fogline: React.FC<FoglineProps> = ({
           position: "absolute",
           left: COL_X,
           right: COL_X,
-          top: 92,
+          top: SAFE.headerFloor + 18,
           display: "flex",
           alignItems: "center",
           gap: 20,
@@ -522,7 +556,7 @@ export const Fogline: React.FC<FoglineProps> = ({
           position: "absolute",
           left: COL_X,
           right: COL_X,
-          top: 138,
+          top: SAFE.headerFloor + 64,
           display: "flex",
           gap: 40,
           fontFamily: MONO,
@@ -531,7 +565,9 @@ export const Fogline: React.FC<FoglineProps> = ({
       >
         {[
           ["ELAPSED", fmtClock(Math.max(0, t))],
-          ["SPEND", `$${spend.toFixed(2)}`],
+          // a zero here reads as "failed to load", not as "free" — when nothing
+          // was spent, say the word instead of the numeral.
+          ["SPEND", spend <= 0 ? "FREE" : `${currency}${spend.toFixed(spendDecimals)}`],
           ["DONE", String(doneCount)],
           ["LOOKAHEAD", `${lookCount}`],
         ].map(([k, v], idx) => (

@@ -45,6 +45,7 @@ export { SpinWheel } from "./cookbook/SpinWheel";
 export { SwipeDeck } from "./cookbook/SwipeDeck";
 export { TapStack } from "./cookbook/TapStack";
 export { CareerArc } from "./cookbook/CareerArc";
+export { CaseBullets } from "./cookbook/CaseBullets";
 export { VoiceOrb } from "./cookbook/VoiceOrb";
 
 
@@ -79,6 +80,7 @@ export { spinWheelDemo } from "./cookbook/SpinWheel";
 export { swipeDeckDemo } from "./cookbook/SwipeDeck";
 export { tapStackDemo } from "./cookbook/TapStack";
 export { careerArcDemo } from "./cookbook/CareerArc";
+export { caseBulletsDemo } from "./cookbook/CaseBullets";
 export { voiceOrbDemo } from "./cookbook/VoiceOrb";
 
 /* ---- the tokens, so the design agent styles its own glue on-brand ------- */
