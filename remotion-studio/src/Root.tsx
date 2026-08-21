@@ -34,6 +34,7 @@ import { ContextTube, contextTubeDemo, ContextTubeProps } from "./cookbook/Conte
 import { FilmCanvas, CameraRig } from "./cookbook/FilmLayers";
 import { WorldCamera, Parallax } from "./cookbook/WorldCamera";
 import { ForgetsClay, forgetsClayDemo } from "./cookbook/ForgetsClay";
+import { ClayOutro, clayOutroDemo } from "./cookbook/ClayOutro";
 import { CaseBullets, caseBulletsDemo } from "./cookbook/CaseBullets";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
 import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
@@ -604,6 +605,15 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={careerArcDemo}
+      />
+      <Composition
+        id="ClayOutroDemo"
+        component={ClayOutro}
+        durationInFrames={Math.round(6.8 * FPS)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={clayOutroDemo}
       />
       <Composition
         id="ForgetsClayFilm"
