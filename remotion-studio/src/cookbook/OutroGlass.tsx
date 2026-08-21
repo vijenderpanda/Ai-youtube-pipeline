@@ -125,7 +125,14 @@ export const OutroGlass: React.FC<OutroGlassProps> = ({
   // everything the CTA card does is offset behind the prompt phase
   const st = t - start - pDur;
   const pt = t - start;                         // prompt-phase clock
-  const pIn = clamp(pt / 0.3);                  // prompt rises
+  // PRE-ROLLED by 0.25s. A frame audit of _appraisal measured 0.00% ink across
+  // the entire y132-1380 zone for ~0.2s at the cut into this beat -- a literally
+  // black frame on the CTA, the one beat that must not be missable. Ramping from
+  // zero at local frame 0 is what caused it, so the ramp now STARTS before the
+  // beat does: the panel opens at 45% and completes in 0.30s, which keeps the
+  // entrance while removing the hole. Standalone stings rendered by
+  // gen_outro_glass.py start at frame 0 too, so they get the same fix.
+  const pIn = clamp((pt + 0.42) / 0.55);       // prompt rises, already in flight
   const pOut = hasPrompt ? clamp((pt - (pDur - 0.34)) / 0.34) : 1;  // and clears
 
   // Plate 07 — slow scripted camera (no cursor in a render)
@@ -335,7 +342,12 @@ export const OutroGlass: React.FC<OutroGlassProps> = ({
                   motion on the cut, stillness to copy from. */}
               {String(promptText).split(" ").map((w, i, arr) => (
                 <span key={i} style={{
-                  opacity: clamp((pt - 0.22 - (i / Math.max(arr.length - 1, 1)) * 1.55) / 0.34),
+                  // starts ALREADY IN PROGRESS. Beginning at +0.22s with an empty
+                  // panel behind it is what left the cut into this beat reading
+                  // as a black frame even after the panel itself was pre-rolled:
+                  // the chrome alone carries almost no ink, so the words are the
+                  // content and they have to be arriving when the beat opens.
+                  opacity: clamp((pt + 0.10 - (i / Math.max(arr.length - 1, 1)) * 1.30) / 0.30),
                 }}>{w}{i < arr.length - 1 ? " " : ""}</span>
               ))}
             </div>

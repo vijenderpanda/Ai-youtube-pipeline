@@ -29,6 +29,7 @@ import { LedgerFlow, ledgerFlowDemo } from "./cookbook/LedgerFlow";
 import { ShareSplit, shareSplitDemo } from "./cookbook/ShareSplit";
 import { TapStack, tapStackDemo } from "./cookbook/TapStack";
 import { CareerArc, careerArcDemo } from "./cookbook/CareerArc";
+import { ProofTrace, proofTraceDemo } from "./cookbook/ProofTrace";
 import { CaseBullets, caseBulletsDemo } from "./cookbook/CaseBullets";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
 import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
@@ -552,6 +553,15 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={careerArcDemo}
+      />
+      <Composition
+        id="ProofTraceDemo"
+        component={ProofTrace}
+        durationInFrames={12 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={proofTraceDemo}
       />
       <Composition
         id="TapStackDemo"

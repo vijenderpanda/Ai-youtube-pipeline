@@ -25,6 +25,7 @@ import { OutroGlass } from "./OutroGlass";
 import { ScreenStage } from "./ScreenStage";
 import { TapStack } from "./TapStack";
 import { CareerArc } from "./CareerArc";
+import { ProofTrace } from "./ProofTrace";
 import { CaseBullets } from "./CaseBullets";
 import { GenerativeUI } from "./GenerativeUI";
 
@@ -64,6 +65,7 @@ export const COOKBOOK_COMPONENTS: Record<string, React.FC<any>> = {
   GenerativeUI,
   TapStack,
   CareerArc,
+  ProofTrace,
   CaseBullets,
 };
 

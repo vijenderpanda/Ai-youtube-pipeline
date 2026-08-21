@@ -678,8 +678,49 @@ EPISODES_V2 = {
     # hook card cannot do.
     "outro": True,
     "outro_dur": 0,
-    "outro_src": "ep_appraisal/outro_card.mp4",   # LOCKED Ep11-style question-CTA card
+    # gen_outro_GLASS.py, never gen_outro_card.py. The card script is retired: it
+    # drew a flat PIL still and faked motion with a Ken-Burns push, and the last
+    # three shipped episodes (_wheel, _game, _upi) all carry the real OutroGlass
+    # component instead -- the prompt itself on glass, PAUSE TO COPY, same
+    # material language as the cut. Regenerating this with the old script was a
+    # silent regression to a look the channel had already moved off.
+    #   python3 gen_outro_glass.py --out assets/ep_appraisal/outro_card.mp4 \
+    #     --q "..." --prompt-text "..." --prompt-label "THE PROMPT" \
+    #     --prompt-hint "PAUSE TO COPY" --dur <len>
+    "outro_src": "ep_appraisal/outro_card.mp4",
     "outro_cta": "The full prompt is in the description. Copy it, and open your form tonight.",
+    # GIVE the artifact, do not promise it. Four episodes of the previous
+    # franchise asked people to want a thing and handed them no way to get it.
+    # The card on screen carries a shortened prompt because 258 words will not
+    # fit on a Short; THIS is the real one, and it is the thing being claimed.
+    "desc_prompt": (
+      "\U0001F4CB THE EXACT PROMPT (copy it \u2014 works in Claude, ChatGPT or Gemini):\n\n"
+      "You are my appraisal coach. I have to write my own self-appraisal and I "
+      "can't remember my last two years.\n\n"
+      "Ask me ONE question at a time. Wait for my answer. Never ask two at once.\n\n"
+      "Ask exactly 6 questions, in this order:\n"
+      "1. My role, and what my team was struggling with two years ago\n"
+      "2. The first thing I fixed or shipped that I'd still defend today\n"
+      "3. Something I took ownership of that nobody handed me\n"
+      "4. A time someone senior noticed, or a decision changed because of me\n"
+      "5. Something I taught, unblocked or handed over to someone else\n"
+      "6. The thing I'm proudest of that isn't on any tracker\n\n"
+      "If an answer is vague, ask ONE follow-up \u2014 never more. Ask for a number, "
+      "a date or a name only if I'd genuinely know it. Never invent one.\n\n"
+      "After question 6, stop asking and give me exactly this:\n\n"
+      "GROWTH \u2014 one line per six months, showing scope going up. Mark the 3 "
+      "points where my responsibility actually jumped.\n\n"
+      "FOR THE FORM \u2014 6 sentences I can paste straight into my appraisal. Each "
+      "one: what I did, then what changed because of it. No adjectives about me. "
+      "No \"passionate\", no \"team player\". Only facts I gave you.\n\n"
+      "TO SAY OUT LOUD \u2014 the same points as 4 short lines for the appraisal "
+      "discussion, in normal spoken English.\n\n"
+      "GAPS \u2014 what my manager will ask that I couldn't answer, so I can go find "
+      "it before I submit.\n\n"
+      "Start now with question 1. Nothing else."
+    ),
+    # a question that is answerable in two seconds and does not require the video
+    "desc_cta": "What would YOUR line one be? Tell me below.",
     "lines": [
       "Appraisal due tomorrow. Still blank.",
       "Two years. Nothing comes back.",
@@ -704,41 +745,53 @@ EPISODES_V2 = {
     # beats keep one caption per spoken line; "spine" is what keeps the LINE
     # unbroken across them. That split -- cut the captions, never cut the graphic
     # -- is the whole point of the mechanism.
-    "beats": ["cook:CareerArc#flat",    # climbing, then dying into grey dots
-              "cook:CareerArc#paste",   # the prompt lands; the line flinches
-              "cook:CareerArc#asks",    # answers land as scattered points ABOVE it
-              "cook:CareerArc#snap",    # THE SNAP -- one un-eased frame
-              "cook:CaseBullets#pull",  # demoted to a header; sentences on tethers
-              "cook:CaseBullets#read",  # the read-sweep walks the stack
-              "cook:OutroGlass"],       # the prompt on glass -- GIVE it, don't promise it
+    "beats": ["cook:ProofTrace#search",   # instrument on; nothing on the record
+              "cook:ProofTrace#lose",     # the panic; three entries fall out
+              "cook:ProofTrace#answer",   # the prompt lands; four answers steady it
+              "cook:ProofTrace#reveal",   # THE un-eased frame
+              "cook:CaseBullets#pull",    # demoted to a header; sentences on tethers
+              "cook:CaseBullets#read",    # the read-sweep walks the stack
+              "cook:OutroGlass"],         # the prompt on glass -- GIVE it, don't promise it
     # The components whose clock is FILM time, not beat time. Without this the
     # line restarts at every cut and the snap never lands on the knee.
-    "spine": ["CareerArc", "CaseBullets"],
+    "spine": ["ProofTrace", "CaseBullets"],
     "cookbook": {
-      "CareerArc": {
-        "runLabel": "YOUR LAST 2 YEARS",
-        # Every moment is pinned to a CUT, resolved from the measured VO clock at
+      "ProofTrace": {
+        "runLabel":    "YOUR LAST 5 YEARS",
+        "searchLabel": "SEARCHING YOUR LAST 5 YEARS",
+        "spanLabelL":  "5 YEARS AGO",
+        "spanLabelR":  "NOW",
+        "reviewLabel": "THIS REVIEW",
+        # the form asks about two years; the career is five. On the word "Two"
+        # everything left of this dims, and the returning head wipes it off --
+        # so a copy contradiction becomes a large-area event that says something
+        # true: your career is longer than the form.
+        "reviewFrom":  0.6,
+        # Every moment is pinned to a CUT, resolved from the MEASURED VO clock at
         # build time -- never a hardcoded second that drifts when the read does.
-        "pasteAt": "@beat1",
-        # STAGGERED ACROSS the spoken line, not landed on it. The four answers
-        # pace the 6-8s stretch -- the measured danger window, where 15 of the 30
-        # steepest retention drops sit -- so there is a discrete arrival roughly
-        # every half-second right up to the snap, instead of one event followed
-        # by two dead seconds.
-        "points": [
-          {"label": "what broke",      "lift": 0.24, "at": "@beat2"},
-          {"label": "what you fixed",  "lift": 0.46, "at": "@beat2+0.58"},
-          {"label": "who noticed",     "lift": 0.68, "at": "@beat2+1.16"},
-          {"label": "what you taught", "lift": 0.92, "at": "@beat2+1.74"},
+        "panicAt":     "@beat1",          # 3.58  head snaps back, picture narrows
+        "stopAt":      "@beat2+0.04",     # 6.31  search struck; the head RETURNS
+        "pasteAt":     "@beat2+0.25",     # 6.52  card lands, the trace flinches
+        "answers": [
+          {"label": "what broke",      "at": "@beat2+0.71"},   # 6.98
+          {"label": "what you fixed",  "at": "@beat2+1.15"},   # 7.42
+          {"label": "who noticed",     "at": "@beat2+1.59"},   # 7.86
+          {"label": "what you taught", "at": "@beat2+2.03"},   # 8.30
         ],
-        "snapAt": "@beat3",
-        "demoteAt": "@beat4",
-        "pasteText": ["You are my appraisal coach.",
-                      "Ask me ONE question at a time."],
-        "preHeadline": "FLAT.",
-        "preSubhead": "AND YOU CAN'T EXPLAIN WHY",
-        "headline": "NOT FLAT.",
-        "subhead": "YOU JUST NEVER PLOTTED IT",
+        "revealAt":    "@beat3+0.16",     # 8.86  THE FRAME
+        "mergeAt":     "@beat4-0.55",     # 11.30 scanner reaches NOW
+        "demoteAt":    "@beat4-0.55",     # 11.30 geometry lerp onto CaseBullets
+        "demoteDur":   0.50,              # completes 11.80; last frame is 11.833
+        "pasteText":   ["You are my appraisal coach.",
+                        "Ask me ONE question at a time."],
+        # <= 15 chars each, or Anton overflows the 912px field
+        "verdicts": [
+          {"at": 0.62,           "text": "NO RECORD."},
+          {"at": "@beat1-1.74",  "text": "STILL NOTHING."},   # 1.84, pass-1 fails
+          {"at": "@beat1+1.08",  "text": "NONE OF IT KEPT"},  # 4.66, rules fall
+          {"at": "@beat2+0.47",  "text": "SO ANSWER."},       # 6.74
+          {"at": "@beat3+0.16",  "text": "IT'S ALL THERE"},   # 8.86, on the frame
+        ],
       },
       "CaseBullets": {
         "runLabel": "WHAT GOES IN THE FORM",
@@ -764,8 +817,13 @@ EPISODES_V2 = {
                       "and wait for my answer. Ask exactly 6 questions about my last "
                       "two years, then give me 6 sentences I can paste straight into "
                       "the form \u2014 what I did, then what changed because of it.",
-        # the prompt owns the whole beat; the appended card carries the CTA
-        "promptDur": "@beat7",
+        # LONGER than the beat on purpose. OutroGlass cross-fades the prompt out
+        # into its own question phase over the last 0.34s, and with the appended
+        # card already carrying that question the fade only produced a ghost of
+        # it printed over the prompt. Outliving the beat means the phase change
+        # never starts -- the prompt is simply the last thing on screen, and the
+        # card takes the question.
+        "promptDur": "@beat7+0.6",
         "question": "WHAT WOULD|YOU PUT|IN LINE ONE?",
       },
     },
