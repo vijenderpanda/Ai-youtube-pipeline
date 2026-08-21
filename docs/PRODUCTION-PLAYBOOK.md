@@ -81,6 +81,17 @@ The exact chain that turns quiet TTS + a music bed into a broadcast-loud, voice-
 - **Spoken figures become italic NUMERALS in captions — but ONLY runs of 2+ number words (`build_ep_v2.py`, `_upi` 2026-08-21).** The VO keeps saying the words (ElevenLabs reads digits badly, and the VO cache is keyed on the spoken text), so the collapse happens on the **caption stream only**; `KaraokeLine` italicises any token containing a digit, so this changes the words and not the style. **A lone number word is prose, not a figure:** "Six quick taps" must stay SIX and "One supermarket trip" must stay ONE — "6 quick taps" reads like a spec sheet, not like speech. "SIX THOUSAND AND SIXTY NINE" *is* a figure and becomes 6,069.
   - **A run must never cross a line boundary.** Without that guard, line 5's "five thousand nine hundred" swallowed the "Six" that opens line 6 and rendered **5,906** — a figure that was never said and does not exist in the data.
 - **A DESIGNED short (every beat a `cook:` beat) renders at 2× — 2160×3840 — by default.** Not repo-wide: measured `--scale=2` is **3.01× wall clock**, the worker's `JOB_TIMEOUT_S` is 45 min for a job already carrying VO + HeyGen + lipsync + render + concat, and per-episode output goes 40MB → 118MB. Tape and news formats gain little — their content is a 1080p screen recording that rendering the frame around it larger cannot sharpen. Designed beats are the opposite: aurora gradients and glass, exactly what bands on thin 1080p H.264, and >1080p is what moves YouTube onto the VP9/AV1 ladder. **The outro sting must be rendered at the same scale** or the last 4–7s — the part carrying the prompt and the subscribe ask — ships as a bicubic upscale, which is what `_upi` did.
+- 🔴 **THE TITLE FORMULA IS "I Built A <CONCRETE NAMEABLE THING> By Typing One Line" — the VERB and the NOUN both carry the 6x.** Measured views/hour since publish, 2026-08-21:
+
+  | title | rate |
+  |---|---|
+  | I Built A **Dinner Decider** By Typing One Line | 10.7/h |
+  | I Built A **Reaction Game** By Typing One Line | 10.5/h |
+  | I Built A **Habit Tracker** By Typing One Line | 5.4/h |
+  | I **Audited** My UPI Spending By Typing One Line | 2.8/h |
+  | I Built A **Working App** By Typing One Line | 0.29/h |
+
+  Two independent failures, and neither is about the topic. **"Working App" is an abstract noun** — nothing to want, nothing to picture; it is the worst-performing video the channel has made. **"Audited" is not "Built"**, and "My UPI Spending" is not a thing you can hold. Selection is the one lever that is proven (CTR 4.6% vs <=0.76%); spending it on a phrasing experiment costs a whole day's distribution. Read blocks of three before calling any single video — but the formula is not the thing to test.
 - Punch-in zooms on hard cuts (open ~1.08× → settle) for energy.
 - **Karaoke lyric sync (music videos, learned on Aashiqana 2026-08-03).** User rejected estimated line timings ("captions go fast, audio behind") and wanted per-word coloring. The reliable pipeline:
   1. **Isolate the vocal** — `demucs -d cpu --two-stems=vocals song.mp3` (MPS errors → force `-d cpu`; ~9min for 3.5min track). Whisper on the mixed song mis-times or drops lines; on the **clean vocal stem** it nails onsets. A cheaper first pass is a vocal-forward EQ (`pan mono, highpass 180, lowpass 6000, acompressor, +6dB`) but demucs is far better.
