@@ -3508,7 +3508,13 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
                       "hot": c["hot"] >= 0} for c in _mg]
             for _sg in segments:
                 if _sg.get("kind") == "cookbook" and _sg["cookbook"]["id"] == _chips_to:
-                    _sg["cookbook"].setdefault("props", {})["chips"] = _clay
+                    # AUTHORED chips win: a film whose storyboard was approved
+                    # with editorial chips ("5 SUSPECTS") keeps them — anchored
+                    # via @beat so they retime with the measured VO — and the
+                    # transcript grouping only fills films that authored none.
+                    _sg["cookbook"].setdefault("props", {})
+                    if not _sg["cookbook"]["props"].get("chips"):
+                        _sg["cookbook"]["props"]["chips"] = _clay
             _mg = []
         spec["film"] = {"chips": _mg, "blooms": _blooms,
                         "driftAmp": _fl.get("driftAmp", 7)}

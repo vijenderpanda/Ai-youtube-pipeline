@@ -186,7 +186,141 @@
       "circleAt": "@beat6+1.5",
       "stillAt": "@beat7+0.6",
       "promptAt": "@beat7+1.2",
-      "endAt": "@beat8"
+      "endAt": "@beat8",
+      "chips": [
+        {
+          "t": "@beat0+0.3",
+          "end": "@beat0+1.8",
+          "text": "BILL BADHTA?",
+          "hot": true
+        },
+        {
+          "t": "@beat0+1.8",
+          "end": "@beat1+0.0",
+          "text": "HAR MAHINA",
+          "hot": false
+        },
+        {
+          "t": "@beat1+0.0",
+          "end": "@beat1+1.4",
+          "text": "GHAR MEIN CHOR",
+          "hot": false
+        },
+        {
+          "t": "@beat1+1.4",
+          "end": "@beat1+2.8",
+          "text": "5 SUSPECTS",
+          "hot": true
+        },
+        {
+          "t": "@beat1+2.8",
+          "end": "@beat2+0.4",
+          "text": "FREE DETECTIVE",
+          "hot": false
+        },
+        {
+          "t": "@beat2+0.4",
+          "end": "@beat2+1.7",
+          "text": "THE CLUE",
+          "hot": false
+        },
+        {
+          "t": "@beat2+1.7",
+          "end": "@beat3+0.0",
+          "text": "SUMMER JUMP",
+          "hot": true
+        },
+        {
+          "t": "@beat3+0.0",
+          "end": "@beat3+1.33",
+          "text": "FRIDGE—BARI ✓",
+          "hot": false
+        },
+        {
+          "t": "@beat3+1.33",
+          "end": "@beat3+2.63",
+          "text": "TV·GEYSER—BARI",
+          "hot": false
+        },
+        {
+          "t": "@beat3+2.63",
+          "end": "@beat3+3.93",
+          "text": "WASHING—BARI ✓",
+          "hot": false
+        },
+        {
+          "t": "@beat3+3.93",
+          "end": "@beat4+0.0",
+          "text": "SAB BARI ✓",
+          "hot": false
+        },
+        {
+          "t": "@beat4+0.0",
+          "end": "@beat4+1.36",
+          "text": "EK BACHA",
+          "hot": true
+        },
+        {
+          "t": "@beat4+1.36",
+          "end": "@beat5+0.0",
+          "text": "PURANA AC",
+          "hot": false
+        },
+        {
+          "t": "@beat5+0.0",
+          "end": "@beat5+1.38",
+          "text": "HISAAB",
+          "hot": false
+        },
+        {
+          "t": "@beat5+1.38",
+          "end": "@beat5+2.48",
+          "text": "TEES DIN",
+          "hot": false
+        },
+        {
+          "t": "@beat5+2.48",
+          "end": "@beat5+3.6",
+          "text": "CHHE GHANTE",
+          "hot": false
+        },
+        {
+          "t": "@beat5+3.6",
+          "end": "@beat6+0.0",
+          "text": "₹18 / GHANTA",
+          "hot": true
+        },
+        {
+          "t": "@beat6+0.0",
+          "end": "@beat6+1.5",
+          "text": "MAHINA ₹3,240",
+          "hot": false
+        },
+        {
+          "t": "@beat6+1.5",
+          "end": "@beat6+2.72",
+          "text": "WAHI JUMP",
+          "hot": false
+        },
+        {
+          "t": "@beat6+2.72",
+          "end": "@beat7+1.1",
+          "text": "PROMPT PINNED",
+          "hot": false
+        },
+        {
+          "t": "@beat7+1.1",
+          "end": "@beat7+2.5",
+          "text": "STILL ₹0",
+          "hot": true
+        },
+        {
+          "t": "@beat7+2.5",
+          "end": "@beat7+3.61",
+          "text": "CHOR PAKDO",
+          "hot": false
+        }
+      ]
     },
     "OutroGlass": {}
   },

@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, Img, staticFile, useVideoConfig } from "remotion";
+import { AbsoluteFill, Img, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { rgba, clamp } from "./kit";
 import { clamp01, mhash, OUT_E, IN_E, settle, idle } from "./motion";
 import { useFilmT, FilmT } from "./filmclock";
@@ -90,8 +90,13 @@ export const BillDay: React.FC<BillDayProps> = ({
   chips = [],
   start = 0, width = 1080, height = 1920,
 }) => {
-  const t = useFilmT();
+  // BillDay IS the spine: it computes film time from its own Sequence-local
+  // frame plus the build-injected `start` offset (negative = seconds already
+  // elapsed), and PROVIDES FilmT below. Reading useFilmT() here would return
+  // beat-local time — the draft replayed the opening bars card on every cut.
+  const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
+  const t = frame / fps - start;
 
   /* ---- camera: wide -> the stack -> INTO the study -> back out ------------ */
   const track = [
@@ -257,6 +262,22 @@ export const BillDay: React.FC<BillDayProps> = ({
             </>
           );
         })() : null}
+        {/* the circle closes INSIDE the card: the multiplication sits beside
+            the JUMP tag it reproduces — dark ground, no screen-space band to
+            fight the docked rooms for. */}
+        {circleP > 0.001 ? (
+          <div style={{
+            position: "absolute", left: 60 * s, top: 170 * s, width: 330 * s,
+            opacity: Math.min(1, circleP * 1.4),
+            transform: `translateY(${(1 - circleP) * 18 * s}px)`,
+            fontFamily: MONO, fontSize: 27 * s, lineHeight: 1.45,
+            color: rgba("#F6EEDF", 0.85),
+            fontVariantNumeric: "tabular-nums" as const,
+          }}>
+            ₹18 × 6h × 30 din<br />
+            ≈ <span style={{ color: "#FFD9A0" }}>₹3,240</span> →
+          </div>
+        ) : null}
       </div>
     );
   };
@@ -392,8 +413,6 @@ export const BillDay: React.FC<BillDayProps> = ({
 
   /* ---- the study close-up dressing (visible after the push) ---------------- */
   const plateOn = OUT_E(clamp01((t - plateAt) / 0.5));
-  const mathOn = OUT_E(clamp01((t - mathAt) / 0.5));
-  const lockOn = t >= lockAt;
   const bulbSwing = Math.sin(t * 2.2) * 9 * pushP;
 
   const dressFade = 1 - clamp01((t - (circleAt - 0.2)) / 0.4);
@@ -417,59 +436,12 @@ export const BillDay: React.FC<BillDayProps> = ({
           boxShadow: cardShadow, border: `2px solid ${rgba("#4A3B28", 0.4)}`,
         }}>
           <div style={{ fontFamily: MONO, fontSize: 26, letterSpacing: 2, color: "#3A2E1E",
-                        textAlign: "center" }}>1.5 TON · NON-INVERTER · 2016</div>
-        </div>
-      ) : null}
-      {/* THE DIVISION, then the lock */}
-      {mathOn > 0.001 ? (
-        <div style={{
-          position: "absolute", left: 540 - 330, top: studyCenterY - 160, width: 660, zIndex: 18,
-          opacity: Math.min(1, mathOn * 1.4) * dressFade, textAlign: "center",
-        }}>
-          <div style={{
-            display: "inline-block",
-            fontFamily: MONO, fontSize: 38, color: "#F6EEDF",
-            background: rgba("#211A12", 0.82), borderRadius: 14,
-            padding: "8px 22px", boxShadow: cardShadow,
-            fontVariantNumeric: "tabular-nums" as const,
-          }}>
-            ₹3,400 <span style={{ color: rgba("#F6EEDF", 0.55) }}>÷ 30 din ÷ 6 ghante</span>
-          </div>
-          <div style={{
-            marginTop: 16, display: "inline-block",
-            fontFamily: DISP, fontWeight: 800, fontSize: lockOn ? 72 : 50,
-            color: lockOn ? "#FFB08F" : rgba("#F6EEDF", 0.5),
-            background: lockOn ? rgba("#000", 0.55) : undefined,
-            borderRadius: 18, padding: lockOn ? "6px 30px" : 0,
-            transform: `scale(${1 + settle(t, lockAt, 0.5) * 0.1})`,
-            textShadow: lockOn ? `0 0 34px ${rgba(DAY.coral, 0.6)}` : undefined,
-          }}>
-            {lockOn ? "= ₹18/HOUR" : "= ₹ __ /hour"}
-          </div>
-          {lockOn ? (
-            <div style={{ marginTop: 12, display: "inline-block", fontFamily: MONO, fontSize: 19,
-                          color: rgba("#F6EEDF", 0.75), background: rgba("#211A12", 0.7),
-                          borderRadius: 9, padding: "4px 14px" }}>
-              cross-check: 1.9 units/hr × ₹9.5/unit ≈ ₹18 (public specs)
-            </div>
-          ) : null}
+                        textAlign: "center", whiteSpace: "nowrap" as const }}>1.5 TON · NON-INVERTER · 2016</div>
         </div>
       ) : null}
     </>
   ) : null;
 
-  /* the circle-back annotation */
-  const circleNote = circleP > 0.001 && t < stillAt + 1.5 ? (
-    <div style={{
-      position: "absolute", left: 90, top: 1180, width: 900, zIndex: 18,
-      opacity: Math.min(1, circleP * 1.4) * (1 - clamp01((t - stillAt - 0.8) / 0.6)),
-      textAlign: "center", fontFamily: MONO, fontSize: 34,
-      color: DAY.amber, textShadow: `0 2px 10px ${rgba("#FFF", 0.6)}`,
-      fontVariantNumeric: "tabular-nums" as const,
-    }}>
-      ₹18 × 6h × 30 din ≈ <span style={{ color: "#FFD9A0" }}>₹3,240</span> — wahi jump ↑
-    </div>
-  ) : null;
 
   /* the give: the detective console rises */
   const promptOn = OUT_E(clamp01((t - promptAt) / 0.6));
@@ -504,6 +476,51 @@ export const BillDay: React.FC<BillDayProps> = ({
     </div>
   ) : null;
 
+
+  /* ---- THE DIVISION, then the lock — HUD, never world space ---------------
+     This is the detective's notebook, not furniture: inside WorldCamera the
+     z2.3 push blew the 660px pill to ~1520px and clipped it at both edges.
+     Screen space gives exact size, and the camera breath can't shake it. */
+  const mathOn = OUT_E(clamp01((t - mathAt) / 0.5));
+  const lockOn = t >= lockAt;
+  const mathFade = 1 - clamp01((t - (circleAt - 0.2)) / 0.4);
+  const mathHud = mathOn > 0.001 && mathFade > 0.01 ? (
+    <div style={{
+      position: "absolute", left: 60, top: 430, width: 960, zIndex: 22,
+      opacity: Math.min(1, mathOn * 1.4) * mathFade, textAlign: "center",
+      transform: `translateY(${(1 - mathOn) * 26}px)`,
+    }}>
+      <div style={{
+        display: "inline-block",
+        fontFamily: MONO, fontSize: 44, color: "#F6EEDF",
+        background: rgba("#211A12", 0.88), borderRadius: 16,
+        padding: "10px 28px", boxShadow: cardShadow,
+        fontVariantNumeric: "tabular-nums" as const,
+      }}>
+        ₹3,400 <span style={{ color: rgba("#F6EEDF", 0.55) }}>÷ 30 din ÷ 6 ghante</span>
+      </div>
+      <div style={{
+        marginTop: 18, display: "inline-block",
+        fontFamily: DISP, fontWeight: 800, fontSize: lockOn ? 96 : 62,
+        color: lockOn ? "#FFB08F" : rgba("#F6EEDF", 0.6),
+        background: rgba("#211A12", lockOn ? 0.9 : 0.55),
+        borderRadius: 20, padding: lockOn ? "8px 38px" : "4px 24px",
+        boxShadow: cardShadow,
+        transform: `scale(${1 + settle(t, lockAt, 0.5) * 0.1})`,
+        textShadow: lockOn ? `0 0 34px ${rgba(DAY.coral, 0.6)}` : undefined,
+      }}>
+        {lockOn ? "= ₹18/HOUR" : "= ₹ __ /hour"}
+      </div>
+      {lockOn ? (
+        <div style={{ marginTop: 14, display: "inline-block", fontFamily: MONO, fontSize: 24,
+                      color: rgba("#F6EEDF", 0.8), background: rgba("#211A12", 0.78),
+                      borderRadius: 10, padding: "5px 16px", boxShadow: cardShadow }}>
+          cross-check: 1.9 units/hr × ₹9.5/unit ≈ ₹18 (public specs)
+        </div>
+      ) : null}
+    </div>
+  ) : null;
+
   return (
     <FilmT.Provider value={t}>
     <AbsoluteFill style={{ width, height }}>
@@ -521,8 +538,8 @@ export const BillDay: React.FC<BillDayProps> = ({
 
       {verdicts}
       {dock}
+      {mathHud}
       {billCarry}
-      {circleNote}
       {consoleCard}
 
       <FlashCut at={[lineupAt, lockAt]} color="#FFE3B8" opacity={0.3} />
@@ -530,7 +547,7 @@ export const BillDay: React.FC<BillDayProps> = ({
       {/* grain + vignette on top of everything but the chips */}
       <svg style={{ position: "absolute", inset: 0, opacity: 0.05, mixBlendMode: "overlay", pointerEvents: "none" }}>
         <filter id="day-grain"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed={6} /></filter>
-        <rect width="100%" height="100%" filter="url(#noir-grain)" />
+        <rect width="100%" height="100%" filter="url(#day-grain)" />
       </svg>
       <div style={{
         position: "absolute", inset: 0, pointerEvents: "none",
