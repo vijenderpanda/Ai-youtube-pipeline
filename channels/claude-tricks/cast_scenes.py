@@ -81,12 +81,18 @@ def validate(man):
                 errs.append(f"line {i}: {k}={v!r} is a vague direction — name the OBJECT and its STATE")
 
     # -- numbers: sourced, declared, or absent ------------------------------
-    declared = {str(n.get("value")) for n in (man.get("numbers") or [])}
+    declared = set()
+    for n in (man.get("numbers") or []):
+        declared.add(str(n.get("value")).lower())
+        # a number may be SPOKEN in words ("two lakh") while declared as digits;
+        # the spoken field ties them so the honesty check matches what the VO says
+        for tok in str(n.get("spoken", "")).lower().split():
+            declared.add(tok)
     for i, ln in enumerate(lines):
         for tok in NUM_WORDS.findall(ln["vo"]):
             if tok.lower() in NUM_PROSE_OK:
                 continue
-            if tok not in declared and tok.lower() not in declared:
+            if tok.lower() not in declared:
                 errs.append(f"line {i}: spoken number {tok!r} has no numbers[] entry with a source "
                             f"(real-sourced, mechanism-illustration, or absent — no fourth option)")
     for n in (man.get("numbers") or []):

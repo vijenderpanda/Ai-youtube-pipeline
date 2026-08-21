@@ -33,6 +33,7 @@ import { ProofTrace, proofTraceDemo } from "./cookbook/ProofTrace";
 import { ContextTube, contextTubeDemo, ContextTubeProps } from "./cookbook/ContextTube";
 import { FilmCanvas, CameraRig } from "./cookbook/FilmLayers";
 import { WorldCamera, Parallax } from "./cookbook/WorldCamera";
+import { ForgetsClay, forgetsClayDemo } from "./cookbook/ForgetsClay";
 import { CaseBullets, caseBulletsDemo } from "./cookbook/CaseBullets";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
 import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
@@ -603,6 +604,15 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={careerArcDemo}
+      />
+      <Composition
+        id="ForgetsClayFilm"
+        component={ForgetsClay}
+        durationInFrames={30 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={forgetsClayDemo}
       />
       <Composition
         id="CamTest"
