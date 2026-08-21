@@ -253,14 +253,17 @@ export const SlabScreen: React.FC<SlabProps> = ({
         background: `radial-gradient(55% 45% at 50% 52%, ${spill} 0%, ${rgba("#000", 0)} 70%)`,
         opacity: 0.12, mixBlendMode: "screen", pointerEvents: "none",
       }} />
-      {/* THE PROVENANCE STRIP */}
-      <div style={{
-        position: "absolute", left: "6%", top: "101%",
-        fontFamily: PLEX, fontSize: Math.max(17, h * 0.032), letterSpacing: 2,
-        color: staged ? rgba(CLAY.cream, 0.6) : rgba(CLAY.mint, 0.9),
-      }}>
-        {staged ? "STAGED" : "✓ REAL CAPTURE"} · {provenance}
-      </div>
+      {/* THE PROVENANCE STRIP — real captures only. A mock declares itself by
+          its design language (clay chrome, skeleton bars), and a STAGED label
+          under it read as debug text in the film — VJ's storyboard note. The
+          mint tick stays the trust device for real pixels. */}
+      {!children && capture ? (
+        <div style={{
+          position: "absolute", left: "6%", top: "101%",
+          fontFamily: PLEX, fontSize: Math.max(17, h * 0.032), letterSpacing: 2,
+          color: rgba(CLAY.mint, 0.9),
+        }}>✓ REAL CAPTURE · {provenance}</div>
+      ) : null}
     </div>
   );
 };

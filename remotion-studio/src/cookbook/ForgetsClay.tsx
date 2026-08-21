@@ -257,10 +257,7 @@ export const ForgetsClay: React.FC<ForgetsClayProps> = ({
               { who: "a", text: "I don't see that in this conversation anymore.",
                 at: proofAt + 1.7, typeAt: proofAt + 1.85 },
             ]} />
-            <div style={{
-              position: "absolute", left: 30, bottom: 16, fontFamily: '"IBM Plex Mono", monospace',
-              fontSize: 21, letterSpacing: 2, color: rgba(CLAY.cream, 0.6),
-            }}>STAGED · {provenance}</div>
+
           </div>
         ) : null}
 

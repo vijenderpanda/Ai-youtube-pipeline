@@ -1,12 +1,12 @@
 {
   "_": "CLAYLIGHT v1 — the frozen style lock for the motion-Shorts lane. Changing any value here is a rebrand, not a tweak. Chosen 2026-08-21 over KAAGAZ (paper-editorial) and LATE SHIFT (desk-world) by a judged panel over hit evidence; hardened with KAAGAZ's provenance strip and LATE SHIFT's screen-embed stack. docs/MOTION-PIPELINE.md PART III.",
   "palette": {
-    "ground":  "#1A1214",
+    "ground": "#1A1214",
     "lamp_pool": "#241A1C",
-    "cream":   "#EFE3D3",
-    "coral":   "#FF6B5E",
-    "amber":   "#FFB454",
-    "mint":    "#6FD5A8",
+    "cream": "#EFE3D3",
+    "coral": "#FF6B5E",
+    "amber": "#FFB454",
+    "mint": "#6FD5A8",
     "rules": [
       "coral = the carry element ONLY; one coral object per episode; two coral = broken grammar",
       "amber = heat/cost/limit; counters and warning glow",
@@ -26,7 +26,7 @@
     "shadow": "radial ellipse, 25% black, 4:1 squash, auto-drawn by SpriteLayer — non-optional",
     "bind": "2% amber overlay + soft vignette over everything EXCEPT full-frame proof captures; frame-indexed grain ~3%",
     "slab_embed": "0.5px soften on inset capture, 4-8% sheen, blurred 103% light-wrap behind at ~15% screen-blend, dominant-hue radial spill onto adjacent clay at 10-15%, 6f crossfade on capture cuts",
-    "provenance": "Plex Mono strip under every capture: 'REAL CAPTURE · claude.ai · <date>' (mint tick) or 'STAGED' (cream 60%). The honesty bar as a visible brand asset."
+    "provenance": "Plex Mono strip under REAL captures only: '✓ REAL CAPTURE · claude.ai · <date>' (mint). Mocks carry NO strip — they declare themselves by design language (clay chrome, skeleton bars, no product UI), which is what keeps them honest without debug-text noise in the film. (VJ storyboard note, 2026-08-21.)"
   },
   "flux": {
     "suffix": ", cute soft 3D clay render, matte plastic toy, smooth handmade clay texture, single warm rim light from upper left, soft studio shadow, centered, isolated on plain dark background #1A1214, viewed from 35 degrees three-quarter angle, 15 degrees above, 50mm lens, no text, no face, no logo",
