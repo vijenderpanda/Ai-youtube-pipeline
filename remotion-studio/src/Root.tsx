@@ -35,6 +35,8 @@ import { FilmCanvas, CameraRig } from "./cookbook/FilmLayers";
 import { WorldCamera, Parallax } from "./cookbook/WorldCamera";
 import { ForgetsClay, forgetsClayDemo } from "./cookbook/ForgetsClay";
 import { ClayOutro, clayOutroDemo } from "./cookbook/ClayOutro";
+import { TravelSprite, MorphSwap, ExposureScore, FlashCut } from "./cookbook/craft";
+import { ToyStage } from "./cookbook/Claylight";
 import { CaseBullets, caseBulletsDemo } from "./cookbook/CaseBullets";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
 import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
@@ -334,6 +336,28 @@ const CamTestComp: React.FC = () => (
   </FilmCanvas>
 );
 
+/* craft smoke test: a brick travels with physics, morphs into the jar, under
+   an exposure score with a near-black breath. Not a product composition. */
+const CraftTestComp: React.FC = () => (
+  <ToyStage>
+    <ExposureScore keys={[[0, 1], [1.6, 1], [2.4, 0.18], [3.2, 1], [5.2, 0.9], [6.0, 1]]}>
+      <TravelSprite src="assets/claylight/library/brick_cream.png" aspect={1.093} h={170}
+        groundY={1100} seed={2}
+        path={[
+          { t: 0.3, x: 200, y: 1100, mode: "hold" },
+          { t: 1.3, x: 540, y: 1100, mode: "ballistic" },
+          { t: 2.6, x: 900, y: 1100, mode: "ballistic" },
+          { t: 3.4, x: 900, y: 1100, mode: "hold" },
+        ]}
+        visibleTo={4.1} />
+      <MorphSwap from={{ src: "assets/claylight/library/brick_cream.png", aspect: 1.093 }}
+                 to={{ src: "assets/claylight/library/jar.png", aspect: 0.69 }}
+                 at={4.4} x={900} y={1100} h={240} />
+      <FlashCut at={[2.4]} opacity={0.35} />
+    </ExposureScore>
+  </ToyStage>
+);
+
 const ContextTubeFilmComp: React.FC<ContextTubeProps> = (p) => (
   <FilmCanvas>
     <CameraRig>
@@ -605,6 +629,14 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={careerArcDemo}
+      />
+      <Composition
+        id="CraftTest"
+        component={CraftTestComp}
+        durationInFrames={7 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
       />
       <Composition
         id="ClayOutroDemo"
