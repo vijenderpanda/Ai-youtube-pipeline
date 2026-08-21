@@ -1,7 +1,7 @@
 {
  "_note": "COMPILED from films/forgets.manifest.json by cast_scenes.py — edit the MANIFEST, not this file.",
- "title": "Why Claude Forgets Long Chats 🧠",
- "tags": "claude forgets,context window,claude ai,long chats,ai memory,chatgpt forgets,claude tips,ai for beginners,summary prompt,fresh chat,ai tools,claude tricks",
+ "title": "Why ChatGPT & Claude Forget Long Chats 🧠",
+ "tags": "chatgpt forgets,claude forgets,why does chatgpt forget,why does claude forget,context window,claude context window,ai forgets conversation,chatgpt memory,claude memory,chatgpt long chat fix,ai unpacked",
  "outro": true,
  "outro_dur": 0,
  "outro_src": "ep_forgets/outro_card.mp4",
@@ -80,7 +80,8 @@
   },
   "OutroGlass": {}
  },
- "desc_prompt": "📋 THE EXACT PROMPT (copy it — works in Claude, ChatGPT or Gemini):\n\nBefore this chat gets long: summarize everything worth keeping so far — decisions, facts, numbers, names — as short notes I can paste into a fresh chat and continue exactly where we left off.",
- "desc_cta": "What's the one thing Claude keeps forgetting on you? Tell me below.",
+ "desc_prompt": "Your chat is a box with a fixed size — the context window. When it fills (Claude's holds ~200K tokens), the oldest messages get pushed out, and the AI genuinely can't see them anymore.\n\nThe fix — paste this BEFORE your chat gets long:\n\n\"Before this chat gets long: summarize everything worth keeping so far — decisions, facts, numbers, names — as short notes I can paste into a fresh chat and continue exactly where we left off.\"\n\nThen open a fresh chat, paste the notes, and continue where you left off. Works in ChatGPT, Claude, and Gemini.",
+ "desc_cta": "Has an AI ever forgotten something you told it? Yes or no 👇",
+ "desc_hashtags": "#chatgpt #claude #ai",
  "steps": []
 }

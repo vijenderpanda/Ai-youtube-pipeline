@@ -4,10 +4,11 @@
   "honesty": "declared-illustration",
   "world": "CLAYLIGHT (films/CLAYLIGHT.lock.json)",
   "title_candidates": [
+    "Why ChatGPT & Claude Forget Long Chats 🧠",
     "Why Claude Forgets Long Chats 🧠",
-    "Your Chat Is A Toy Box — And It's Full 🧊"
+    "ChatGPT Forgets Long Chats — Here's The Fix"
   ],
-  "tags": "claude forgets,context window,claude ai,long chats,ai memory,chatgpt forgets,claude tips,ai for beginners,summary prompt,fresh chat,ai tools,claude tricks",
+  "tags": "chatgpt forgets,claude forgets,why does chatgpt forget,why does claude forget,context window,claude context window,ai forgets conversation,chatgpt memory,claude memory,chatgpt long chat fix,ai unpacked",
   "carry": "the toy box never leaves frame; the CORAL brick (the first thing you told it) crosses every phase: in, buried, ejected, and honestly answered-for by the jar of notes",
   "plant": {
     "what": "the coral brick lands in the first 2s — the payoff's absence is its ejection",
@@ -193,5 +194,12 @@
     "src": "ep_forgets/outro_card.mp4",
     "cta": "The notes prompt is in the description. Steal it before your next long chat.",
     "q": "WHAT WOULD|CLAUDE HAVE|FORGOTTEN?"
+  },
+  "packaging": {
+    "desc_hook": "Your chat is a box with a fixed size — the context window. When it fills (Claude's holds ~200K tokens), the oldest messages get pushed out, and the AI genuinely can't see them anymore.",
+    "desc_hashtags": "#chatgpt #claude #ai",
+    "desc_cta": "Has an AI ever forgotten something you told it? Yes or no 👇",
+    "pinned_comment": "The exact prompt — copy it 👇\n\n\"Before this chat gets long: summarize everything worth keeping so far — decisions, facts, numbers, names — as short notes I can paste into a fresh chat and continue exactly where we left off.\"\n\nPaste the notes into a fresh chat and continue. Works in ChatGPT, Claude, and Gemini — free plans too.",
+    "evidence": "docs: 99.9% of Shorts views are feed; metadata = search + seed-audience matching; tags dead (8/13 hits ship zero); noun specificity is the lever; GIVE-in-desc co-occurs with the 10M outlier"
   }
 }

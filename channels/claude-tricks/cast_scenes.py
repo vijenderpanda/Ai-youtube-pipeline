@@ -159,9 +159,14 @@ def emit(man, bounds):
         "spine": man["spine"],
         "film": man["film"],
         "cookbook": man["cookbook"],
-        "desc_prompt": "\U0001F4CB THE EXACT PROMPT (copy it — works in Claude, ChatGPT or Gemini):\n\n"
-                       + man["give"]["prompt"],
-        "desc_cta": "What's the one thing Claude keeps forgetting on you? Tell me below.",
+        "desc_prompt": (man.get("packaging", {}).get("desc_hook", "") + "\n\n"
+                        "The fix — paste this BEFORE your chat gets long:\n\n"
+                        "\"" + man["give"]["prompt"] + "\"\n\n"
+                        "Then open a fresh chat, paste the notes, and continue where you left off. "
+                        "Works in ChatGPT, Claude, and Gemini.").strip(),
+        "desc_cta": man.get("packaging", {}).get("desc_cta",
+                    "What's the one thing Claude keeps forgetting on you? Tell me below."),
+        "desc_hashtags": man.get("packaging", {}).get("desc_hashtags"),
         "steps": [],
     }
     path = os.path.join(CH, "episodes", f"{man['ep']}.v2.json")

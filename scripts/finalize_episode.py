@@ -364,8 +364,14 @@ def build_description(spec, final_path):
     if entities:
         disclosure = "Not affiliated with " + ", ".join(entities) + "."
 
-    tag_line = " ".join("#" + t.strip().replace(" ", "") for t in
-                        (spec.get("tags") or "").split(",") if t.strip())
+    # 2026-08-21 metadata research: hashtag-stuffed descriptions are the outlier
+    # pattern, not the hit pattern (Fireship ships 3; both top videos ship few or
+    # none). `desc_hashtags` lets a spec pin a curated short set while the full
+    # tags list still fills the upload's tag field, where our searched-noun law
+    # lives and where they cost nothing.
+    tag_line = spec.get("desc_hashtags") or " ".join(
+        "#" + t.strip().replace(" ", "") for t in
+        (spec.get("tags") or "").split(",") if t.strip())
     # Series promise — every viewer must see there's a next episode to follow
     # (VJ directive 2026-08-13; series-follow pass). Build Club specs carry
     # the Friday promise + the week's homework instead of the daily line.
