@@ -315,3 +315,230 @@ Episode 2+ adds `ingest_plate.py` + STYLE.lock + the FLUX batch template + Pexel
 - **The UPI double-count episode as pilot** — best QUANTITY story we have, but blocked on your real-data consent; the mechanism pilot has zero dependencies.
 - **News reactions and "top 5 tools" lists in this lane** — no object, no state change; they stay in the fast host/capture format.
 - **Per-episode Suno, HeyGen host, 4K by default** — one bed per series, host-free format, 4K only on your say after finalize (standing rules).
+
+
+---
+
+# PART III — THE FRESH START (2026-08-21, same day, evening)
+
+VJ's verdict on the first pilot build, verbatim: *"only see svg cant we use elements like in
+the references, and camera motions, i feel we are restricted with our own current style
+systems, lets have a fresh start."* He was right, and the wider evidence then proved it
+quantitatively: **no hit is majority-SVG** — coded graphics cap at ~30% in every winner and
+serve as connective tissue, never as the proof.
+
+Method: 3 web-search agents found the top-performing Claude/AI Shorts; the top 6 by verified
+views (10.0M / 8.78M / 5.53M / 1.78M / 1.66M / 1.57M) were downloaded and studied
+frame-by-frame like the original references; a pattern synthesis, then three competing
+fresh style worlds (KAAGAZ paper-editorial / LATE SHIFT desk-world / CLAYLIGHT soft-3D toy),
+judged and merged. What survives from Parts I–II: the 14 laws, the gates, the manifest, the
+capture rigs, the pinned-prompt rule. What died: the obsidian/aurora/glass/magenta system on
+canvas, SVG-as-the-diet, and HeyGen-on-canvas.
+
+The frozen result: **channels/claude-tricks/films/CLAYLIGHT.lock.json**.
+
+## III.1 The hit pattern (evidence)
+
+# THE HIT PATTERN — AI/Claude Shorts (synthesis of 6 hits, 10.0M–1.57M views)
+
+Videos cited: FRACTAL (AI Code Clash, 10.0M, 6.1s) · FLOAT (Fireship, 8.78M, 54s) · VIBE (Alberta Tech, 5.53M, 51.6s) · PDF (100x Engineers, 1.78M, 58.5s) · ANTI (Wanderloots, 1.66M, 25s) · HACK (NetworkChuck, 1.57M, 58s).
+
+---
+
+## 1. ELEMENT MIX OF A HIT
+
+Measured element diet across the six (share of runtime; overlays counted separately):
+
+| Element class | FRACTAL | FLOAT | VIBE | PDF | ANTI | HACK | Verdict |
+|---|---|---|---|---|---|---|---|
+| Real captured artifact (UI, console, live code output, GitHub/PyPI, test runner) | 100% (live canvases, ~47% of pixels) | ~22% | ~20% (editor/test overlays) | ~22% | ~39% | ~35% | **20–40% in every hit. Never zero.** |
+| Human face (real host) | 0% | 0% | 100% (base) | ~26% | ~54% | ~45% | Optional — the two BIGGEST hits have no human |
+| Big type layer (captions/cards) | 100% static | ~65% (primary content) | ~90% | ~90% | ~85% | ~90% | **~85–100% overlay presence in all six** |
+| Coded/vector graphics (diagrams, icons, motion cards — our "branded SVG" class) | 0% | ~12% | 0% | ~29% | ~35% overlay (logos/cards) | ~12% | **Ceiling ≈30%. No hit is majority-SVG** |
+| Stock / generated imagery | 0% | ~13% (retro stock) | 0% | ~13% | 0% | 0% | 0–13%, optional, always ironic/cheap-on-purpose |
+| Characters/memes | 0% | ~41% | 0% | 0% | 0% | ~5% icon | Fireship-only specialty |
+
+**The correction to our 100%-branded-SVG instinct:** the evidence says the load-bearing pixels are *verifiable reality* — real syntax highlighting (VIBE 0.0s), 125k GitHub stars (PDF 29s), a real rate-limit toast (ANTI 0.5s), real `docker ps` (HACK 50s), live generative output (FRACTAL, all 6.1s). Coded graphics never exceed ~30% and serve as *connective tissue* (counters, diagrams, icon montages, transitions), never as the proof. The working formula: **base layer = real face OR real artifact; 20–40% real captured proof; type overlay ~90% of runtime; coded vector 10–30%; stock ≤13% optional.** Credibility is the aesthetic — audiences in this niche verify the pixels (VIBE's "8 Issues" DevTools chip, FLOAT's real REPLs).
+
+## 2. CAMERA LANGUAGE OF A HIT
+
+Full catalogue of camera moves observed, with frequency:
+
+| Move | Where seen | Frequency |
+|---|---|---|
+| **Nothing — locked frame, zero moves** | FRACTAL (entire), FLOAT (frame-diff-verified static, e.g. telescope 26.0s vs 27.5s), VIBE (all 3 setups, all 52s) | **3/6 — and they are the top 3 by views** |
+| Slow constant push-in on host | PDF, ANTI (per block), HACK (emphasis beats "boom" 36s) | 3/6 |
+| Punch-in/out alternation between consecutive host cuts | PDF (tighter/wider alternation), ANTI (scale jumps at caption swaps ~2–4s) | 2/6 |
+| Crop + slow pan/drift-zoom over real UI captures (post-move Ken Burns) | ANTI (captures never shown static-fullscreen), PDF (GitHub slow scroll) | 2/6 |
+| Insert panel slides/punches in from top over persistent host | HACK (top-half captures), PDF (split hook) | 2/6 |
+| Signature stylized transition (logo wipe / RGB glitch) | ANTI (Claude asterisk spin 8.5s, 19.5s), HACK (glitch-shatter on nearly every change) | 2/6 |
+| Shake, whip pan, handheld, dramatic dolly | — | **0/6. Absent from the entire corpus.** |
+
+**Minimum vocabulary separating a hit from a static explainer: zero camera, but never a static frame.** The substitution is explicit in every study: element motion replaces camera motion — swaying canvases (FRACTAL), a red decimal square jumping positions (FLOAT 36–43s), captions swapping every 0.4–0.7s (HACK), progress bars filling (PDF 1.6–3.8s), cursor motion inside captures (PDF 0–1.5s drag). If a host exists, add exactly two moves: slow push-in + punch alternation at caption swaps. If captures exist, add crop+pan. One signature transition maximum. That is the complete kit.
+
+## 3. STYLE WORLDS
+
+Both modes exist, but the split is not what it looks like:
+
+- **One-world:** FRACTAL (single composite), VIBE (zero graphics that aren't editor-real; 100% one aesthetic), ANTI (host + yellow type + product UI), HACK (magenta/purple grade + chromatic aberration applied to *everything* including the mug — the grade IS the world).
+- **Collage:** FLOAT (memes + retro stock + 3D + consoles + diagrams), PDF (celebrity keynote + stock b-roll + flat vector + real UI + host).
+
+But the two collagers each carry a **binder** that makes the collage read as one video: FLOAT binds with black-bg one-accent-color-per-card typography (65% of runtime) and recurring binary-digit motifs (4 appearances); PDF binds with a disciplined 3-palette rule (dark Claude UI / pale blue-grey graphic cards / warm host) and a reused progress-bar motif (3 appearances over different footage).
+
+**Implication for a style system:** lock the *chrome*, free the *panels*. The system should hard-lock (a) the caption/type layer, (b) a 3-zone palette, (c) one transition signature, (d) 1–2 recurring motif components reused 3+ times per video — and then allow content panels to come from any source class (capture, vector, stock, character) without breaking identity. Our instinct to lock one illustration style for all pixels was solving the wrong layer.
+
+## 4. HOOKS THAT WIN (first-2s patterns, ranked by frequency)
+
+1. **No intro, ever — frame 1 is already the content** (6/6). FRACTAL's frame is complete at 0.00s; PDF opens already split-screen mid-drag; VIBE's first caption + broken code are at 0.0s. Zero logos, zero build-ins, zero throat-clearing in the corpus.
+2. **Motion inside the frame at t=0** (6/6): swaying trees, cursor dragging PDFs, glitch tear, text popping within second one (FLOAT "0.1" at ~1.0s).
+3. **A recognizable AI brand legible before 1s** (5/6): four model names (FRACTAL f1), Claude UI (PDF f1), "claude" caption box over glitch (HACK 0.0–0.6s), Claude+Antigravity logos (ANTI 0–0.5s), code-fix prompt to an AI (VIBE). FLOAT is the exception (concept-first). Brand = instant audience self-selection.
+4. **Full title promise delivered — spoken/captioned — inside 2s** (4/6): HACK ("accidentally turned Claude into a hacker" complete by 2.0s), VIBE title card 0–7.5s, PDF thesis "Everyone… PDFs", ANTI "Hitting Rate Limits?".
+5. **The viewer's own pain/habit mirrored verbatim** (3/6): ANTI's actual "5-hour limit reached" toast, PDF's "Everyone [uploads] PDFs" accusation, VIBE's "please fix this method". Strongest form: the *literal error message the viewer saw today*.
+6. **Direct question converting viewer to judge** (3/6): "who won??" (FRACTAL), "Hitting Rate Limits?" (ANTI), title question (FLOAT).
+7. **First complete joke/gag lands by 2.0s** (2/6, both sketch/comedy): VIBE's request→"I have deleted the method" visual gag at 2.0s; FLOAT's absurdly trivial equation.
+
+Winning stack = 1+2+3 always, plus one of 4/5/6 depending on shape.
+
+## 5. VARIETY — the shapes in the winner set
+
+Six hits, six distinct shapes. An idea bucket must span all of them:
+
+| Shape | Exemplar | Skeleton | Length |
+|---|---|---|---|
+| **Comparison poll / judge-bait** | FRACTAL | same prompt → N models → legible-at-feed-size quality differences → verdict withheld forever → invisible loop | 6s |
+| **Concept-explainer comedy** | FLOAT | question title → joke → proof → name the culprit (20s) → mechanism (28–49s) → title-callback joke | 54s |
+| **Relatable sketch** | VIBE | costume-coded characters → escalating dialogue → false resolution (38s) → third-party punchline (46.6s) → mid-word loop cut | 52s |
+| **Habit-callout tool tutorial** | PDF | "everyone does X wrong" → quantify the cost (tokens counter) → tool name at exact midpoint via social-proofed real page → escalate (MCP) → indexed CTA | 58s |
+| **Optimization trailer** | ANTI | your error message → stack reveal → green-test proof frame → recipe deliberately withheld → long-form end card | 25s |
+| **Experiment/confession** | HACK | "I accidentally…" → build montage over persistent host → "boom" turn (36s) → one plain-English command produces dramatic real output (44s) → "and it's clean" reframe (50s) | 58s |
+
+Note the length bimodality: 6s loop-machine or 25–58s narrative — nothing between.
+
+## 6. WHAT THE 11 REFERENCES MISSED
+
+Deltas only — patterns present in this hit set that the reference-derived laws did not encode:
+
+1. **Payoff withheld to 100% is a legal move** — our 75% law has an exception class. FRACTAL never answers "who won??"; the verdict is outsourced to comments via an **engineered controversy gradient** (one obvious sacrificial loser — dim DeepSeek — plus a genuinely ambiguous top tier so every partisan has ammunition). 10M views on a video with no payoff at all.
+2. **A hit can have no audio stream** (FRACTAL — file literally contains none). Mute-proof isn't the ceiling; audio-optional is.
+3. **Loop engineering as a designed feature, not luck** (3/6): frame 1 ≡ frame 183 (FRACTAL), mid-swear cut "mother—" that re-motivates the first line (VIBE 50.6s), title-callback rebus ending (FLOAT 52s). At 6s, one involuntary loop = >100% retention by construction.
+4. **The false resolution** — plant a fake ending before the real one. VIBE's "Executed 61 of 61 SUCCESS / it works" at 38–43s exists to be demolished at 46.6s. None of our references did this.
+5. **Fresh face + fresh room at the ~90% mark as a retention respike** (VIBE's coworker, 46.6s) — a new visual context precisely where curves die.
+6. **Cuts are nearly irrelevant; the corpus runs 0–0.56 cuts/s.** The real metronome is the caption/event cadence: one keyword per 0.4–0.7s (HACK), one visual event per ~1.7–1.9s (ANTI, PDF). FLOAT held 8.8M viewers through a 12-second cut-free stretch because in-frame events never stopped. Our "no dead frames" law undersold how far this goes: 10–12s holds are fine if two layers are acting.
+7. **The persistent two-panel stage** — a base layer that never leaves (FLOAT's meme guy 0–20s, HACK's host under sliding top-inserts, PDF's split hook) makes long holds feel busy and lets "cuts" be panel-swaps. Corollary: **layout re-architecture is the act break** (FLOAT's half-screen→full-screen shift at exactly 20s = culprit named).
+8. **Social-proof numbers do the persuasion on screen**: 125k stars shown twice (PDF 29–32s), 564k installs (ANTI 8s), "Executed 61 of 61" (VIBE). We encoded numbers-as-props for *content* numbers, not *credibility* numbers.
+9. **Quantify the problem before the reveal so the payoff has a number to beat** — PDF spends 26s establishing 1,500–3,000/page and 70,000/doc so "millions saved" lands (44s).
+10. **Zero-human beats face-first at the top end**: the two 8M+ hits have no host. A face is a mid-tier retention tool, not a requirement — relevant given our HeyGen dependency.
+11. **Brand logos as transition devices** (ANTI: Claude asterisk spin-wipe 8.5s/19.5s) — the brand IS the edit grammar, and it doubles the brand-recognition hook mid-video.
+12. **Silence as pattern interrupt** (VIBE 22–23.8s typing, 27.3–30.8s smug wordless face — the biggest muted laugh has zero text). Our chip-cadence laws would have prohibited it.
+13. **The trailer shape violates our "give, don't promise" rule and still hit 1.66M** (ANTI withholds the full recipe to sell the long-form). Divergence to test, not adopt blindly — but the evidence exists.
+14. **One performer, N characters via costume+angle+background coding** (VIBE) — an entire cast for the price of a wardrobe change; every character switch reads as a camera move for free.
+
+## III.2 The world verdict
+
+# THE VERDICT
+
+## Scoring (5 criteria, per world)
+
+| Criterion | KAAGAZ | LATE SHIFT | CLAYLIGHT |
+|---|---|---|---|
+| Hit-evidence match | **High** — diet closest to hit table (captures 30–40%, FLUX only 8–13%) | **High** — "credibility is the aesthetic" thesis most literal; but stock plates posing as "my desk" is a quiet honesty tension the other two don't have | Med-High — sprites at 35–45% exceed the corpus generated-share (only precedent: FLOAT's 41% stylized layer, 8.78M) |
+| Pipeline producibility | High — flat FLUX illustration is easy consistency; all-deterministic materials | **Lowest** — ScreenMap homography + photoreal prop compositing + plate-library curation; hardest QC gate ("reads pasted → doesn't ship"), 4–6d build | **Highest** — stylized clay is FLUX-schnell's most repeatable register; camera designed *backwards* from what flat sprites can't do; library compounds; 2–3d build |
+| Distinct / recognizably ours | **Highest** (nobody does Indian-newspaper AI) — but it is still a flat authored-graphics world, the exact thing the owner just rejected ("only see svg") | Lowest — well-crafted version of what the niche already looks like | High — dark clay diorama + embedded real screens exists nowhere in the niche; feed-recognizable at thumbnail size |
+| Variety across shapes | 6/6 mapped | 6/6 mapped | 6/6 mapped (incl. prompt-injection, the best unmade video on the backlog) |
+| Cost/episode | ~$0, low time | ~$0 cash, highest time (1.5–2h) + fragile QC | ~$0, **lowest** (3–5 min GPU, sprite library amortizes) |
+
+## RECOMMENDED WORLD
+
+**CLAYLIGHT, primary and only, hardened with two transplants: KAAGAZ's provenance strip and LATE SHIFT's screen-embedding craft (spill + soften + light-wrap) applied to the SlabScreen.** Rationale: the owner's verbatim complaint is against flat authored vector — KAAGAZ, despite the best cultural identity of the three, is still a 2D graphics world with better texture, and recommending it risks "this is still cards." LATE SHIFT matches the references most literally but scores lowest on distinctiveness, highest on build/QC fragility, and its core fiction (stock plates as "my desk") sits uneasily against our honesty bar. CLAYLIGHT is the only spec that simultaneously delivers what the owner actually asked for (dimensional elements, true parallax camera motion), is engineered honestly around its own limits (hard orbit caps, no turntables), compounds in cost, and stays dark-ground feed-legible. Its one evidence gap — generated-sprite share above the corpus norm — is patched by clamping the diet (below) and by stealing the two mechanisms that made the other specs' credibility cases: every capture carries a KAAGAZ provenance strip, and the slab is embedded with LATE SHIFT's optical craft so the real pixels read *witnessed*, not pasted. One world, one builder, no second build at launch. A bonus the specs missed: Baloo 2 is an Ek Type family with harmonized Devanagari — KAAGAZ's Hinglish-chip rule ports into CLAYLIGHT natively, zero extra fonts.
+
+## STYLE.lock — CLAYLIGHT v1
+
+**Palette (frozen):**
+- `#1A1214` Espresso ground (radial vignette to `#241A1C` lamplight pool center)
+- `#EFE3D3` Clay cream — object bodies + primary type ink
+- `#FF6B5E` Toy coral — **carry element ONLY; one coral object per episode; two coral = broken grammar**
+- `#FFB454` Lamp amber — heat/cost/limit; counters, warning glow
+- `#6FD5A8` Proof mint — **capture-adjacent only; mint on a toy alone is illegal**
+- Zone rule: toys live in ground+cream+coral+amber; **real captures keep native colors, never retinted**; type layer = cream + coral pills only.
+
+**Type (frozen):**
+- Display/chips: Baloo 2 ExtraBold, uppercase, tracked +2%, 1–3 words; punch chip = cream-on-coral pill. Chips ≥64px.
+- Devanagari (transplant): max ONE Devanagari word per episode, chips only, Baloo 2 Devanagari — only when it's the word an Indian viewer would actually think. (Owner call #3 to enable.)
+- Counters: IBM Plex Mono Medium, amber, tabular — **renders ONLY measured numbers**. Mono on an invented number is a QC fail.
+- Whisper line: Baloo 2 SemiBold, 60% size, cream @70%.
+- ALL type on a flat 2D layer above the 3D world. Type never enters perspective.
+
+**Materials (frozen):**
+- Baked warm rim light from upper-left in every sprite prompt; shadow ellipse (radial, 25% black, 4:1 squash) auto-drawn by `SpriteLayer` — non-optional.
+- Global bind: 2% amber overlay + soft vignette over everything EXCEPT full-frame proof captures; frame-indexed grain ~3%.
+- SlabScreen embed stack (LATE SHIFT transplant): 0.5px soften on the inset capture · 4–8% sheen · blurred 103% light-wrap behind at ~15% screen-blend · dominant-hue radial spill onto adjacent clay at 10–15% screen-blend, crossfading 6f on capture cuts.
+- Provenance strip (KAAGAZ transplant): Plex Mono strip under every capture — `REAL CAPTURE · claude.ai · <date>` (mint tick) / `STAGED` (cream 60%) for any mock. The honesty bar is now a visible brand asset.
+- Brand lockup: clay badge, top zone, static. Nothing load-bearing below y≈1590.
+
+**FLUX-schnell recipe (frozen):**
+- Suffix, immutable: `", cute soft 3D clay render, matte plastic toy, smooth handmade clay texture, single warm rim light from upper left, soft studio shadow, centered, isolated on plain dark background #1A1214, viewed from 35 degrees three-quarter angle, 15 degrees above, 50mm lens, no text, no face, no logo"`
+- steps 4 · 1536×1536 · seed family base `331100`, object *i* = `331100+i` · 3 candidates (seed / +1000 / +2000), elect 1, commit forever to `assets/claylight/library/` · rembg + 1px alpha erode + faint inner shadow · generate on stage-matched bg.
+- ONE canonical angle per object. Carry element gets 3 lighting *states* (neutral/amber/mint), never angles. Mirror only symmetric props. No faces/googly eyes ever — props, not characters.
+
+## CAMERA SYSTEM SPEC
+
+Rig: `<div style={{perspective: 1200}}>` → WORLD group; all motion = frame-interpolated `camZ/camX/rotY/scale` tracks on the group. Layer depths fixed: FAR −600 · MID −300 · HERO 0 · FORE +150. Parallax is free.
+
+1. **SHELF DOLLY** (default): camZ 0→220 over the full beat (8–14s), strictly linear. Frame never static.
+2. **COUNTERWEIGHT PAN**: world translateX −60→+60px per beat; toys shelf-arranged; chip fires as each crosses center.
+3. **KNEE SNAP**: 6f ease-out, scale 1.0→1.18 + rotateX 0→2°. Reserved for the knee event + ≤2 emphasis beats.
+4. **ZOOM-THROUGH** (signature, ≤2/ep): ease-in dolly into a foreground sprite's dark center (sprite →~8×, scene A opacity dies at 60%), radial mask reveals scene B. Through-object = the coral carry element when possible — the brand IS the edit.
+5. **ORBIT NOD**: world rotateY sine ±6°, ~5s period, for holds. **Hard cap ±8°, compiled into the rig.**
+6. **DROP-IN**: sprite from camera, scale 3→1, 8f overshoot, blur 12px→0 (per-frame deterministic), shadow fades in 4f AFTER contact. One drop-in per VO sentence in setup beats.
+
+Banned (compiled, not advisory): shake, whip pan, handheld noise, non-constant-rate dolly, per-sprite Y rotation (=0 always), effective sprite scale >1.4× native, turntable of any single object, dynamic sprite lighting, cross-Z physical contact, camera-tracked cast shadows.
+
+## ELEMENT DIET TARGET (QC eye, per episode)
+
+- **Real captures: 30–35%** (clamped UP from the spec's 25% floor to close the evidence gap). Proof beats: slab flat 0°, ≥85% frame width. Never zero. Provenance strip mandatory.
+- **Clay sprites: 35–40%** (clamped DOWN from 45%).
+- **Type overlay presence: ~90%**; event cadence one per 0.4–0.7s hot, ≤1.9s in holds; ≥2 layers acting every frame.
+- **Code SVG/TSX: 15–25%** — shadows, dotted lines, counters, glow, masks. Connective tissue only, never the proof.
+- **Pexels stock: 0–10%**, retinted warm, ironic only. Skippable.
+- **Human face: 0%.**
+
+## PILOT RE-SKIN PLAN — "Why Claude Forgets Long Chats" (~34s)
+
+Toy box = context window · clay bricks = messages · amber overflow glow = the limit · **coral brick = your first message** (carry element).
+
+| Beat | Time | Action | Camera |
+|---|---|---|---|
+| HOOK | 0–1.6s | Frame 1 complete: slab tilted 6° playing a REAL long claude.ai chat auto-scrolling (brand <1s, motion at t=0, provenance strip on); toy box beside it, bricks dropping; coral brick faint at bottom. Chip: **"IT FORGOT."** No burned caption before 1.6s. | Drift only |
+| SETUP | 1.6–6.0s | One DROP-IN brick per VO sentence; amber mono counter ticks REAL token figures from an actual chat export. At **exactly 6.00s**: threshold digit roll + micro KNEE SNAP (the 6s worst-second fix). | Shelf dolly |
+| MECHANISM | 6–14s | Box fills, bricks compress, amber glow rises; counter + settling bricks = two layers always acting through the 4–8s kill zone. Chips ~1.8s: `128K` → `FULL` → `NO ROOM`. | Orbit nod |
+| KNEE | ~14s | KNEE SNAP → coral brick (chip: **"YOUR FIRST MESSAGE"**) tips over the back rim, falls out of the lamplight, blurs below FAR. Then **0.8s total silence** — no VO, no chip. | Snap + element motion |
+| PROOF | 14–22s | ZOOM-THROUGH the box's dark mouth → full-frame REAL capture: "what was the first thing I said?" — Claude visibly missing it. Slab flat, ≥85% width, provenance strip, spill on. | Zoom-through |
+| PAYOFF (~75%) | 22–30s | Only backwards dolly of the episode: pull back reveals clay JAR, chip **"NOTES."** Real capture of the summarize-before-overflow prompt working; **mint** chip `IT REMEMBERS` beside the real screen — mint earned. | Reverse dolly |
+| LOOP + CTA | 30–34s | Coral brick rolls back to frame-1 position; final composition ≡ opening (engineered loop). Indexed CTA chip answerable in 2s; exact prompt in pinned comment (standing rule). | — |
+
+**Asset list:**
+- FLUX (RTX 3060 queue, seed family, 3 candidates each): toy box ×1 · clay brick ×1 (instanced; neutral/amber/mint-coral states via lighting-clause swaps) · slab frame ×1 · notes jar ×1 → ~12–15 generations ≈ 3–5 min GPU + one rembg batch.
+- Captures (existing rigs, dark mode, 2x): ① long chat auto-scroll ② first-message miss ③ summary prompt working → 3 sessions.
+- Code/TSX: counter, chips, shadow ellipses, GlowPulse, zoom-through mask, provenance strip.
+- Leonardo: 0 (optional 1 cover still). Pexels: 0. Cash: $0 + optional VO.
+
+**Build-once (2–3 days):** `ToyStage` · `SpriteLayer` · `SlabScreen` (with embed stack + provenance) · `ZoomThrough` · `ChipLayer` · `GlowPulse` · `scripts/claylight_sprite.py`. All registered via the existing cookbook pattern (`cook:<Id>` beats).
+
+## WHAT DIES
+
+- **Obsidian/aurora bed, glass grammar, magenta-on-canvas** — retired from this channel's motion shorts. (#E91E63's survival in off-canvas branding = owner call #4.)
+- **Branded-SVG-as-the-diet** — demoted permanently to ≤25% connective tissue; never the proof.
+- **HeyGen/Sol on canvas** — zero-human world; the HeyGen line item goes to $0 for this format (owner call #2).
+- **KaraokeLine caption layer** — replaced by the chip system.
+- **KAAGAZ and LATE SHIFT as worlds** — parked, but harvested: provenance strip + Devanagari-chip restraint (KAAGAZ), spill/soften/light-wrap embed stack + proof-color discipline (LATE SHIFT).
+
+**What survives:** the 14 grammar laws, capture rigs, cookbook registry, ~34s target, 6.00s digit break, contact-sheet + feed-size QC, pinned-prompt rule, both caption ceilings, honesty bar — now upgraded from a disclaimer to a visible branded device.
+
+## OPEN CALLS FOR THE OWNER
+
+1. **VO or silent-first?** The corpus proves audio-optional; ElevenLabs is the only remaining per-episode cash cost. Ship the pilot silent+bed, or voiced?
+2. **Retire Sol on-canvas entirely?** Zero-human is the top of the hit table, but Sol is the channel's current face — full retirement vs. reserve for occasional formats is identity, not craft.
+3. **Enable the Hinglish chip rule?** One Devanagari word per episode (India-first asset, IN 1270/US 15) vs. all-English for global reach.
+4. **Magenta's fate off-canvas** — keep #E91E63 in avatar/thumbnails or full rebrand to coral/espresso?
+5. **KAAGAZ reserve clause** — park permanently, or hold as the designated skin for the `_upi`/ledger confession episode later (accepting a second build)?
+6. **Debut episode** — pilot re-skin (mechanism story, full kit test) vs. the 6–8s "4 AIs pack the same box" judge-bait loop (cheapest live test of the world's feed performance)?

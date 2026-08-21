@@ -1,0 +1,62 @@
+{
+  "_": "CLAYLIGHT v1 — the frozen style lock for the motion-Shorts lane. Changing any value here is a rebrand, not a tweak. Chosen 2026-08-21 over KAAGAZ (paper-editorial) and LATE SHIFT (desk-world) by a judged panel over hit evidence; hardened with KAAGAZ's provenance strip and LATE SHIFT's screen-embed stack. docs/MOTION-PIPELINE.md PART III.",
+  "palette": {
+    "ground":  "#1A1214",
+    "lamp_pool": "#241A1C",
+    "cream":   "#EFE3D3",
+    "coral":   "#FF6B5E",
+    "amber":   "#FFB454",
+    "mint":    "#6FD5A8",
+    "rules": [
+      "coral = the carry element ONLY; one coral object per episode; two coral = broken grammar",
+      "amber = heat/cost/limit; counters and warning glow",
+      "mint = capture-adjacent proof ONLY; mint on a toy alone is illegal",
+      "real captures keep native colors, never retinted"
+    ]
+  },
+  "type": {
+    "display": "Baloo 2 ExtraBold, uppercase, tracked +2%, chips 1-3 words, >=64px; punch chip = cream-on-coral pill",
+    "counters": "IBM Plex Mono Medium, amber, tabular — renders ONLY measured numbers; mono on an invented number is a QC fail",
+    "whisper": "Baloo 2 SemiBold, 60% size, cream @70%",
+    "devanagari": "Baloo 2 Devanagari, max ONE word per episode, chips only — pending VJ call",
+    "rule": "ALL type on a flat 2D layer above the 3D world; type never enters perspective"
+  },
+  "materials": {
+    "sprite_light": "baked warm rim light from upper-left in every prompt",
+    "shadow": "radial ellipse, 25% black, 4:1 squash, auto-drawn by SpriteLayer — non-optional",
+    "bind": "2% amber overlay + soft vignette over everything EXCEPT full-frame proof captures; frame-indexed grain ~3%",
+    "slab_embed": "0.5px soften on inset capture, 4-8% sheen, blurred 103% light-wrap behind at ~15% screen-blend, dominant-hue radial spill onto adjacent clay at 10-15%, 6f crossfade on capture cuts",
+    "provenance": "Plex Mono strip under every capture: 'REAL CAPTURE · claude.ai · <date>' (mint tick) or 'STAGED' (cream 60%). The honesty bar as a visible brand asset."
+  },
+  "flux": {
+    "suffix": ", cute soft 3D clay render, matte plastic toy, smooth handmade clay texture, single warm rim light from upper left, soft studio shadow, centered, isolated on plain dark background #1A1214, viewed from 35 degrees three-quarter angle, 15 degrees above, 50mm lens, no text, no face, no logo",
+    "params": "steps 4, 1536x1536, seed family base 331100 (object i = base+i), 3 candidates (seed/+1000/+2000), elect 1, commit forever to assets/claylight/library/",
+    "post": "rembg + 1px alpha erode + faint inner shadow; generate on stage-matched bg",
+    "rules": [
+      "ONE canonical angle per object — never promise rotation flat sprites cannot render",
+      "carry element gets 3 lighting STATES (neutral/amber/mint), never angles",
+      "mirror only symmetric props",
+      "no faces, no googly eyes — props, not characters"
+    ]
+  },
+  "camera": {
+    "rig": "perspective 1200; WORLD group; depths FAR -600 / MID -300 / HERO 0 / FORE +150",
+    "moves": {
+      "shelf_dolly": "camZ 0->220 over the full beat, strictly linear — the default; frame never static",
+      "counterweight_pan": "world translateX -60->+60px per beat; chip fires as each toy crosses center",
+      "knee_snap": "6f ease-out, scale 1.0->1.18 + rotateX 0->2deg; the knee + <=2 emphasis beats",
+      "zoom_through": "<=2/ep; ease-in dolly into a foreground sprite's dark center, radial mask reveals next scene; through-object = the coral carry when possible",
+      "orbit_nod": "world rotateY sine +-6deg, ~5s period, for holds; HARD CAP +-8deg",
+      "drop_in": "sprite from camera, scale 3->1, 8f overshoot, blur 12->0, shadow fades in 4f AFTER contact"
+    },
+    "banned": "shake, whip pan, handheld noise, non-constant-rate dolly, per-sprite Y rotation, sprite scale >1.4x native, turntables, dynamic sprite lighting, cross-Z contact, camera-tracked cast shadows"
+  },
+  "diet": {
+    "real_captures": "30-35% — proof beats slab-flat >=85% width; NEVER zero; provenance strip mandatory",
+    "clay_sprites": "35-40%",
+    "type_overlay_presence": "~90%; a chip event every 0.4-0.7s hot, <=1.9s in holds; >=2 layers acting every frame",
+    "code_svg": "15-25% — connective tissue only (counters, shadows, masks, glow), never the proof",
+    "stock": "0-10%, retinted warm, ironic only",
+    "human_face": "0%"
+  }
+}
