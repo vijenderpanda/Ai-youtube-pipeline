@@ -37,6 +37,7 @@ import { ForgetsClay, forgetsClayDemo } from "./cookbook/ForgetsClay";
 import { ClayOutro, clayOutroDemo } from "./cookbook/ClayOutro";
 import { TravelSprite, MorphSwap, ExposureScore, FlashCut } from "./cookbook/craft";
 import { ToyStage } from "./cookbook/Claylight";
+import { PaperStage, OctoPuppet, PaperWord, PAPER } from "./cookbook/Kaagaz";
 import { CaseBullets, caseBulletsDemo } from "./cookbook/CaseBullets";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
 import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
@@ -338,6 +339,37 @@ const CamTestComp: React.FC = () => (
 
 /* craft smoke test: a brick travels with physics, morphs into the jar, under
    an exposure score with a near-black breath. Not a product composition. */
+/* the character test VJ asked for: the paper octopus, alive. ~9s. */
+const OctoTestComp: React.FC = () => (
+  <PaperStage>
+    <OctoPuppet
+      enterAt={0.2}
+      poses={[
+        { t: 0.2, x: 540, y: 980, s: 0.9, all: { curl: 0.9, reach: 0.5 } },
+        { t: 0.9, s: 1, all: { curl: 0.1, reach: 1 } },
+        { t: 2.2, lookX: -1, tilt: -4 },
+        { t: 3.0, lookX: 1, tilt: 4 },
+        { t: 3.9, mood: "glare", all: { curl: 0.75, reach: 0.85 }, tilt: 0, s: 0.96, lookX: 0 },
+        { t: 5.0, mood: "wide", all: { curl: -0.35, reach: 1.18 }, s: 1.06 },
+        { t: 6.4, mood: "calm", all: { curl: 0.12, reach: 1 }, s: 1,
+          arms: { 2: { curl: -0.15, reach: 1.85, swing: -18 } } },
+        { t: 8.2, all: { curl: 0.15, reach: 1 } },
+      ]}
+    />
+    <div style={{
+      position: "absolute", left: 700, top: 490, zIndex: 6,
+      background: PAPER.green, color: "#F6EFE3",
+      fontFamily: '"Fraunces", Georgia, serif', fontWeight: 700, fontSize: 40,
+      padding: "18px 40px", borderRadius: 60,
+      boxShadow: "0 8px 0 #2C4C41, 4px 12px 18px rgba(60,45,30,0.35)",
+    }}>{"\u20B90 \u00B7 free"}</div>
+    <PaperWord at={5.1} until={8.6} y={300} size={92} parts={[
+      { text: "TEN" }, { text: "arms.", italic: true, color: PAPER.green },
+      { text: "ZERO" }, { text: "rupees.", italic: true, color: PAPER.coralDeep },
+    ]} />
+  </PaperStage>
+);
+
 const CraftTestComp: React.FC = () => (
   <ToyStage>
     <ExposureScore keys={[[0, 1], [1.6, 1], [2.4, 0.18], [3.2, 1], [5.2, 0.9], [6.0, 1]]}>
@@ -629,6 +661,14 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={careerArcDemo}
+      />
+      <Composition
+        id="OctoTest"
+        component={OctoTestComp}
+        durationInFrames={9 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
       />
       <Composition
         id="CraftTest"
