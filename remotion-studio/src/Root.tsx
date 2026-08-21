@@ -39,6 +39,7 @@ import { TravelSprite, MorphSwap, ExposureScore, FlashCut } from "./cookbook/cra
 import { ToyStage } from "./cookbook/Claylight";
 import { PaperStage, OctoPuppet, PaperWord, PAPER } from "./cookbook/Kaagaz";
 import { ZeroStackPaper, zeroStackPaperDemo } from "./cookbook/ZeroStackPaper";
+import { BillNoir, billNoirDemo } from "./cookbook/BillNoir";
 import { CaseBullets, caseBulletsDemo } from "./cookbook/CaseBullets";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
 import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
@@ -662,6 +663,15 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={careerArcDemo}
+      />
+      <Composition
+        id="BillNoirFilm"
+        component={BillNoir}
+        durationInFrames={33 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={billNoirDemo}
       />
       <Composition
         id="ZeroStackPaperFilm"
