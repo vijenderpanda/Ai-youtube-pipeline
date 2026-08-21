@@ -169,7 +169,7 @@ export const BillDay: React.FC<BillDayProps> = ({
           const isJun = i === 2;
           // the circle: June's TOP SEGMENT (the jump) lights coral
           const jump = isJun ? circleP : 0;
-          const jumpH = (285 - 160) * s;   // the delta segment
+          const jumpH = (285 - 150) * s;   // the delta = June minus the April baseline
           return (
             <div key={i} style={{ position: "absolute", left: bx, bottom: 76 * s, width: 170 * s }}>
               <div style={{
@@ -216,18 +216,45 @@ export const BillDay: React.FC<BillDayProps> = ({
             </>
           );
         })() : null}
-        {/* the delta box */}
+        {/* THE JUMP, measured — a dimension bracket on the June bar with a
+            solid tag on a leader line. The first version was a translucent
+            amber box that BLENDED with the amber bar (VJ's catch); annotation
+            grammar never sits on what it annotates. */}
         {t >= deltaAt ? (() => {
-          const on = OUT_E(clamp01((t - deltaAt) / 0.4));
+          const on = OUT_E(clamp01((t - deltaAt) / 0.45));
+          const draw = OUT_E(clamp01((t - deltaAt) / 0.6));
+          const junTopY = (482 - 285) * s;         // June bar's top
+          const segH = (285 - 150) * s;            // the delta segment
+          const bx = 828 * s;                      // bracket x, clear of the bar
           return (
-            <div style={{
-              position: "absolute", right: 40 * s, top: 120 * s,
-              opacity: on, transform: `scale(${0.9 + on * 0.1 + settle(t, deltaAt + 0.4, 0.4) * 0.05})`,
-              background: rgba(DAY.amber, 0.14), border: `2.5px solid ${DAY.amber}`,
-              borderRadius: 14 * s, padding: `${10 * s}px ${20 * s}px`,
-              fontFamily: MONO, fontSize: 40 * s, color: DAY.amber,
-              fontVariantNumeric: "tabular-nums" as const,
-            }}>JUMP ≈ ₹3,400</div>
+            <>
+              <svg width={900 * s} height={558 * s}
+                   style={{ position: "absolute", left: 0, top: 0, pointerEvents: "none" }}>
+                {/* the bracket: ticks + spine, drawn on */}
+                <g stroke="#FFD9A0" strokeWidth={3 * s} opacity={on}>
+                  <line x1={bx} y1={junTopY} x2={bx} y2={junTopY + segH * draw} />
+                  <line x1={bx - 12 * s} y1={junTopY} x2={bx + 12 * s} y2={junTopY} />
+                  {draw > 0.95 ? (
+                    <line x1={bx - 12 * s} y1={junTopY + segH} x2={bx + 12 * s} y2={junTopY + segH} />
+                  ) : null}
+                </g>
+                {/* the leader: tag -> bracket top */}
+                <polyline
+                  points={`${628 * s},${218 * s} ${740 * s},${218 * s} ${bx - 14 * s},${junTopY + 6 * s}`}
+                  fill="none" stroke={rgba("#FFD9A0", 0.75)} strokeWidth={2.5 * s}
+                  strokeDasharray={`${6 * s} ${5 * s}`} opacity={draw} />
+              </svg>
+              <div style={{
+                position: "absolute", left: 408 * s, top: 188 * s,
+                opacity: Math.min(1, on * 1.4),
+                transform: `scale(${0.9 + on * 0.1 + settle(t, deltaAt + 0.45, 0.4) * 0.05})`,
+                background: rgba("#211A12", 0.94), border: `2px solid ${rgba("#FFD9A0", 0.7)}`,
+                borderRadius: 12 * s, padding: `${8 * s}px ${18 * s}px`,
+                fontFamily: MONO, fontSize: 36 * s, color: "#FFD9A0",
+                boxShadow: cardShadow,
+                fontVariantNumeric: "tabular-nums" as const,
+              }}>JUMP ≈ ₹3,400</div>
+            </>
           );
         })() : null}
       </div>
