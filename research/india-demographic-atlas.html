@@ -95,12 +95,12 @@ details summary{cursor:pointer;font-weight:500;color:var(--teal-4)}
 </header>
 
 <div class="heroRow">
-  <div class="tile"><div class="v">8.23B</div><div class="l">World population</div><div class="s">UN WPP, 2025</div></div>
-  <div class="tile"><div class="v">5.56B</div><div class="l">World internet users</div><div class="s">ITU / DataReportal, Jan 2025</div></div>
-  <div class="tile"><div class="v">5.24B</div><div class="l">World social-media identities</div><div class="s">DataReportal, Jan 2025</div></div>
-  <div class="tile"><div class="v">1.46B</div><div class="l">India population — world's largest</div><div class="s">UN WPP, 2025</div></div>
-  <div class="tile"><div class="v">~900M</div><div class="l">India internet subscriptions</div><div class="s">TRAI, 2024</div></div>
-  <div class="tile"><div class="v">~491M</div><div class="l">India active social-media users</div><div class="s">DataReportal, Jan 2025</div></div>
+  <div class="tile"><div class="v">8.23B</div><div class="l">World population · <span class="num">823 crore</span></div><div class="s">UN WPP, 2025</div></div>
+  <div class="tile"><div class="v">5.56B</div><div class="l">World internet users · <span class="num">556 crore</span></div><div class="s">ITU / DataReportal, Jan 2025</div></div>
+  <div class="tile"><div class="v">5.24B</div><div class="l">World social-media identities · <span class="num">524 crore</span></div><div class="s">DataReportal, Jan 2025</div></div>
+  <div class="tile"><div class="v">1.46B</div><div class="l">India population — world's largest · <span class="num">146 crore</span></div><div class="s">UN WPP, 2025</div></div>
+  <div class="tile"><div class="v">~900M</div><div class="l">India internet subscriptions · <span class="num">~90 crore</span></div><div class="s">TRAI, 2024</div></div>
+  <div class="tile"><div class="v">~491M</div><div class="l">India active social-media users · <span class="num">~49 crore</span></div><div class="s">DataReportal, Jan 2025</div></div>
 </div>
 
 <section>
@@ -153,6 +153,56 @@ details summary{cursor:pointer;font-weight:500;color:var(--teal-4)}
     (WeChat, Douyin) are domestic, which makes India the largest open-platform audience on earth.</p>
   </div>
   <div class="card" id="worldCard"></div>
+</section>
+
+<section>
+  <div class="secHead">
+    <h2>Lakhs &amp; crores, deciphered</h2>
+    <p>Global reports count in millions and billions; we think in lakhs and crores. Quick reference,
+    plus a live converter for money figures (US$ at ≈ ₹87, RBI reference rate, mid-2025).</p>
+  </div>
+  <div class="cols">
+    <div class="card">
+      <h2 style="font-size:18px">Counting people</h2>
+      <div class="tblWrap"><table>
+        <thead><tr><th>Western</th><th>Indian</th></tr></thead>
+        <tbody>
+          <tr><td>1 million</td><td>10 lakh</td></tr>
+          <tr><td>10 million</td><td>1 crore</td></tr>
+          <tr><td>100 million</td><td>10 crore</td></tr>
+          <tr><td>1 billion</td><td>100 crore</td></tr>
+          <tr><td>India: 1.46 billion</td><td>146 crore</td></tr>
+          <tr><td>UP alone: 241 million</td><td>24.1 crore</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h2 style="font-size:18px">Converting money · $ → ₹</h2>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0">
+        <input id="usdIn" type="number" value="1" min="0" step="any" aria-label="US dollar amount"
+          style="font:inherit;font-family:'IBM Plex Mono',monospace;width:110px;padding:6px 8px;border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink)">
+        <select id="usdUnit" aria-label="Unit"
+          style="font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink)">
+          <option value="1">US$ (plain)</option>
+          <option value="1e6" selected>US$ million</option>
+          <option value="1e9">US$ billion</option>
+        </select>
+        <span style="color:var(--muted)">=</span>
+        <strong id="usdOut" class="num" style="font-size:17px"></strong>
+      </div>
+      <div class="tblWrap"><table>
+        <thead><tr><th>Dollars</th><th>Rupees (≈ ₹87/$)</th></tr></thead>
+        <tbody>
+          <tr><td>$100,000</td><td>₹87 lakh</td></tr>
+          <tr><td>$1 million</td><td>₹8.7 crore</td></tr>
+          <tr><td>$10 million</td><td>₹87 crore</td></tr>
+          <tr><td>$100 million</td><td>₹870 crore</td></tr>
+          <tr><td>$1 billion</td><td>₹8,700 crore</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note">Rule of thumb: <strong>$1M ≈ ₹8.7 crore</strong> and <strong>$1B ≈ ₹8,700 crore</strong>. Rate moves; re-check before quoting.</div>
+    </div>
+  </div>
 </section>
 
 <section>
@@ -231,6 +281,12 @@ const WORLD = [
  ["Indonesia",139],["Russia",106],["Japan",96],["Mexico",94],["Philippines",87],["Vietnam",76]
 ];
 
+// v in millions → lakh/crore string
+function lc(v){
+ if(v>=10) return (v/10).toFixed(v>=100?0:1).replace(/\.0$/,"")+" crore";
+ if(v>=0.1) return (v*10).toFixed(v>=1?0:1).replace(/\.0$/,"")+" lakh";
+ return Math.round(v*1e6).toLocaleString("en-IN");
+}
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const svg = document.getElementById("map"), NS = "http://www.w3.org/2000/svg";
 let metric = METRICS[0], selected = "Uttar Pradesh";
@@ -273,9 +329,9 @@ GEO.features.forEach(f=>{
  p.addEventListener("mousemove",e=>{
   const t=document.getElementById("tooltip"),st=S[name];
   const extra = metric.k==="pop" ? `Online: <span class="tv">${st.online}%</span>`
-   : `Population: <span class="tv">${st.pop>=1?st.pop.toFixed(0)+"M":(st.pop*1000)+"k"}</span> · Online: <span class="tv">${st.online}%</span>`;
+   : `Population: <span class="tv">${st.pop>=1?st.pop.toFixed(0)+"M":(st.pop*1000)+"k"}</span> (${lc(st.pop)}) · Online: <span class="tv">${st.online}%</span>`;
   t.innerHTML=`<strong>${st.d||name}</strong><br>
-   ${metric.n}: <span class="tv">${metric.fmt(st[metric.k])}</span><br>${extra}`;
+   ${metric.n}: <span class="tv">${metric.fmt(st[metric.k])}</span>${metric.u==="M"?` (${lc(st[metric.k])})`:""}<br>${extra}`;
   t.style.opacity=1;
   t.style.left=Math.min(e.clientX+14,innerWidth-260)+"px"; t.style.top=(e.clientY+14)+"px";
  });
@@ -306,25 +362,25 @@ const NET_TOTAL=900;
 function drill(){
  const st=S[selected], d=st.d||selected;
  const share=st.net/NET_TOTAL;
- const est=n=>{const v=n*share; return v>=1?v.toFixed(0)+"M":(v*1000).toFixed(0)+"k";};
+ const est=n=>lc(n*share);
  const popStr=st.pop>=1?st.pop.toFixed(0)+"M":(st.pop*1000).toFixed(0)+"k";
  document.getElementById("drill").innerHTML=`
   <h3>${d}</h3>
   <div class="hint">Click any state on the map to switch. Figures are latest available official data.</div>
   <dl class="kv">
    <div class="grp" style="display:contents"><dt class="grp">People</dt></div>
-   <dt>Population (2024 proj.)</dt><dd>${popStr}</dd>
+   <dt>Population (2024 proj.)</dt><dd>${popStr} · ${lc(st.pop)}</dd>
    <dt>Sex ratio (NFHS-5)</dt><dd>${st.sr} F / 1000 M</dd>
    <dt>Urban share</dt><dd>${st.urb}%</dd>
    <dt>Literacy</dt><dd>${st.lit}%</dd>
    <div style="display:contents"><dt class="grp">Work &amp; study</dt></div>
    <dt>Working (worker-population ratio)</dt><dd>${st.wpr}%</dd>
-   <dt>Est. people earning</dt><dd>~${(st.pop*st.wpr/100).toFixed(1)}M</dd>
+   <dt>Est. people earning</dt><dd>~${lc(st.pop*st.wpr/100)}</dd>
    <div style="display:contents"><dt class="grp">Online</dt></div>
-   <dt>Internet subscriptions</dt><dd>${st.net>=1?st.net.toFixed(0)+"M":(st.net*1000)+"k"}</dd>
+   <dt>Internet subscriptions</dt><dd>${st.net>=1?st.net.toFixed(0)+"M":(st.net*1000)+"k"} · ${lc(st.net)}</dd>
    <dt>Share of population online</dt><dd>${st.online}%</dd>
    <div style="display:contents"><dt class="grp">Estimated age split (national rates × state pop.)</dt></div>
-   ${NAT.age.map(([l,p])=>`<dt>${l}</dt><dd>~${(st.pop*p/100).toFixed(1)}M</dd>`).join("")}
+   ${NAT.age.map(([l,p])=>`<dt>${l}</dt><dd>~${lc(st.pop*p/100)}</dd>`).join("")}
    <div style="display:contents"><dt class="grp">Modeled platform reach (state share of internet base)</dt></div>
    <dt>WhatsApp</dt><dd>~${est(530)}</dd>
    <dt>YouTube</dt><dd>~${est(476)}</dd>
@@ -376,15 +432,28 @@ document.getElementById("worldCard").innerHTML =
  hundreds of millions who are online only via WhatsApp/YouTube light usage — its addressable audience is far larger.</div>`;
 
 // table view
-const cols=["State","Pop (M)","Online %","Internet (M)","Literacy %","Urban %","Sex ratio","WPR %"];
+const cols=["State","Pop (M)","Pop (lakh/crore)","Online %","Internet (M)","Literacy %","Urban %","Sex ratio","WPR %"];
 document.getElementById("stateTable").innerHTML =
  "<thead><tr>"+cols.map(c=>`<th>${c}</th>`).join("")+"</tr></thead><tbody>"+
  Object.entries(S).sort((a,b)=>b[1].pop-a[1].pop).map(([k,s])=>
-  `<tr><td>${s.d||k}</td><td>${s.pop}</td><td>${s.online}</td><td>${s.net}</td><td>${s.lit}</td><td>${s.urb}</td><td>${s.sr}</td><td>${s.wpr}</td></tr>`).join("")+
+  `<tr><td>${s.d||k}</td><td>${s.pop}</td><td>${lc(s.pop)}</td><td>${s.online}</td><td>${s.net}</td><td>${s.lit}</td><td>${s.urb}</td><td>${s.sr}</td><td>${s.wpr}</td></tr>`).join("")+
  "</tbody>";
 
 paint(); drill();
 const mq=matchMedia("(prefers-color-scheme: dark)");
 mq.addEventListener?.("change",paint);
 new MutationObserver(paint).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+
+const usdIn=document.getElementById("usdIn"),usdUnit=document.getElementById("usdUnit"),usdOut=document.getElementById("usdOut");
+const RATE=87;
+function inr(){
+ const usd=(parseFloat(usdIn.value)||0)*parseFloat(usdUnit.value);
+ const r=usd*RATE;
+ let s;
+ if(r>=1e7) s="₹"+(r/1e7).toLocaleString("en-IN",{maximumFractionDigits:2})+" crore";
+ else if(r>=1e5) s="₹"+(r/1e5).toLocaleString("en-IN",{maximumFractionDigits:2})+" lakh";
+ else s="₹"+Math.round(r).toLocaleString("en-IN");
+ usdOut.textContent=s;
+}
+usdIn.addEventListener("input",inr); usdUnit.addEventListener("change",inr); inr();
 </script>
