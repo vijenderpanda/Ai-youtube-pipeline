@@ -145,98 +145,148 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
      in-hand is still a real object, and the gap is a fresher's package */
   const brickOn = OUT_E(clamp01((t - brickAt) / 0.6)) * (1 - clamp01((t - creditAt + 0.1) / 0.4));
 
-  /* THE SALARY CAKE (VJ's A/B pick): the celebration object itself. Each
-     knife hit scales it DOWN with a settle bounce + a white cut-line sweep;
-     the wedge leaves on its own dessert plate. */
-  const cakeScale = 1 - choppedFrac * (1 / 0.38) * 0.45;
+  /* THE SALARY CAKE v2 (VJ's board note): an ISOLATED sprite composited
+     straight onto the canvas — no photo card, no baked table. It sits on
+     the desk with its own contact shadow, and its CUT STATE persists:
+     full -> one wedge gone -> quarter gone -> half, per the knife hits. */
+  const staticLanded = cutAts.slice(0, 6).filter((a) => t >= a).length;
+  const ladderLanded = ladderAts.filter((a) => t >= a).length;
+  const cakeState = staticLanded >= 3 || ladderLanded >= 1 ? "seq_cut3" : staticLanded >= 1 ? "seq_cut1" : "seq_full";
+  const cakeScale = 1 - (staticLanded * 0.02 + ladderLanded * 0.015);
   const lastHit = Math.max(-10, ...[...cutAts.slice(0, 6), ...ladderAts].filter((a) => t >= a));
   const hitP = clamp01((t - lastHit) / 0.4);
-  const cutSweep = t - lastHit < 0.3 ? (t - lastHit) / 0.3 : -1;
+  const CAKE_W = 620, CAKE_BOT = 1560;
   const brick = brickOn > 0.01 ? (
-    <div style={{ position: "absolute", left: 540 - 330, top: BRICK_BOT - 640, width: 660,
-      height: 660, opacity: brickOn, zIndex: 12,
+    <div style={{ position: "absolute", left: 540 - CAKE_W / 2, top: CAKE_BOT - CAKE_W, width: CAKE_W,
+      height: CAKE_W, opacity: brickOn, zIndex: 12,
       transformOrigin: "bottom center",
-      transform: `translateY(${(1 - brickOn) * 80}px) scale(${cakeScale * (1 + (1 - OUT_E(hitP)) * 0.05)}) rotate(${Math.floor(choppedFrac * 20) * 3}deg)` }}>
-      <Img src={P("cake_hero_a.png")} style={{ width: "100%", height: "100%", objectFit: "cover",
-        borderRadius: 24, boxShadow: cardShadow }} />
-      {/* the cut-line: a bright sweep across the cake at the moment of the cut */}
-      {cutSweep >= 0 ? (
-        <div style={{ position: "absolute", left: "6%", top: `${18 + cutSweep * 58}%`, width: "88%",
-          height: 5, background: `linear-gradient(90deg, transparent, ${rgba("#FFF", 0.95)}, transparent)`,
-          boxShadow: `0 0 18px ${rgba("#FFF", 0.8)}` }} />
-      ) : null}
+      transform: `translateY(${(1 - brickOn) * 80}px) scale(${cakeScale * (1 + (1 - OUT_E(hitP)) * 0.06)})` }}>
+      {/* contact shadow grounds it on the desk */}
+      <div style={{ position: "absolute", left: "8%", bottom: -18, width: "84%", height: 56,
+        borderRadius: "50%", background: `radial-gradient(ellipse, ${rgba("#3A2C18", 0.38)} 0%, transparent 70%)` }} />
+      <Img src={P(`sprites/${cakeState}.png`)} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
     </div>
   ) : null;
   const brickTag = brickOn > 0.01 ? (
-    <div style={{ position: "absolute", left: 540 + 240, top: BRICK_BOT - 640 * cakeScale - 30,
+    <div style={{ position: "absolute", left: 540 + CAKE_W / 2 - 70, top: CAKE_BOT - CAKE_W * cakeScale - 10,
       opacity: brickOn, zIndex: 13, fontFamily: MONO, fontSize: 19,
       border: `1.5px solid ${rgba(W3.ink, 0.5)}`, borderRadius: 6, padding: "2px 10px",
       color: rgba(W3.ink, 0.65), background: rgba("#FFF", 0.6) }}>DEMO</div>
   ) : null;
 
-  /* ------------------------------------------- flying chunks + the cart --- */  /* ------------------------------------------- flying chunks + the cart --- */
-  const cart = (() => {
-    const cartOn = OUT_E(clamp01((t - varpayAt - 0.9) / 0.5));
-    if (cartOn < 0.01) return null;
-    const lineUp = OUT_E(clamp01((t - gapAt) / 0.6));
-    return (
-      <div style={{ position: "absolute", left: 30 - lineUp * 0, top: 1210, width: 1020,
-        opacity: cartOn * (1 - clamp01((t - giveAt + 0.2) / 0.4)), zIndex: 14 }}>
-
-        {/* chunks stack on the cart as they are cut; at the gap they LINE UP */}
-        {CUTS.map((c, i) => {
-          const isTax = c.key === "tax";
-          const cutT = isTax ? taxStampAt : cutAts[i];
-          if (t < cutT) return null;
-          const fly = OUT_E(clamp01((t - cutT) / 0.6));
-          const isBig = i === 0 || isTax;
-          const restX = 620 + (i % 2) * 205, restY = -10 - Math.floor(i / 2) * 100;
-          const lineX = 8 + i * 146, lineY = 40;
-          const x = BRICK_X + 200 + (restX - BRICK_X - 200) * fly + (lineX - restX) * lineUp;
-          const y = -400 + (restY + 400) * fly + (lineY - restY) * lineUp;
-          const bob = fly >= 0.99 && lineUp < 0.01 ? Math.sin(t * 2.1 + i * 1.7) * 4 : 0;
-          const isBigSlice = i === 0 || isTax;
-          const pw = isBigSlice ? 200 : 150;
-          return (
-            <div key={c.key} style={{ position: "absolute", left: x, top: y + bob,
-              transform: `rotate(${(1 - fly) * 24 - 3 + lineUp * 3}deg)`, zIndex: 15 }}>
-              {/* the wedge slice on its own plate — the expense, kept */}
-              <Img src={P("cake_slice_plate.png")} style={{
-                width: pw, height: pw * 0.62, objectFit: "cover", borderRadius: 10,
-                boxShadow: cardShadow,
-                filter: isTax ? "sepia(0.5) hue-rotate(-30deg) saturate(2.2)" : undefined }} />
-              <div style={{ position: "absolute", left: -6, bottom: -14,
-                background: isTax ? `linear-gradient(180deg, ${W3.red}, #A93A22)` : rgba("#211A12", 0.92),
-                borderRadius: 8, padding: "4px 10px", boxShadow: cardShadow }}>
-                <span style={{ fontFamily: MONO, fontSize: 15, color: "#FFF6EC", letterSpacing: 1 }}>{c.label} </span>
-                <span style={{ fontFamily: DISP, fontSize: 19, color: "#FFF6EC" }}>{c.amt}</span>
-              </div>
-            </div>
-          );
-        })}
-        {/* the gap, split honestly: what comes back vs what never does */}
-        {lineUp > 0.6 ? (
-          <div style={{ position: "absolute", left: 60, top: 150, opacity: (lineUp - 0.6) / 0.4 }}>
-            <div style={{ fontFamily: MONO, fontSize: 27, color: "#F6EEDF",
-              background: rgba("#211A12", 0.92), borderRadius: 12, padding: "8px 20px",
-              boxShadow: cardShadow, fontVariantNumeric: "tabular-nums" as const }}>
-              GAP = ₹12,91,568 / YEAR — <span style={{ color: "#FFB08F" }}>a whole fresher's salary</span>
-            </div>
-            <div style={{ display: "flex", gap: 12, marginTop: 10 }}>
-              <div style={{ fontFamily: MONO, fontSize: 21, color: "#D9F2E2",
-                background: rgba("#1E5B38", 0.92), borderRadius: 10, padding: "6px 14px" }}>
-                COMES BACK* ₹9,01,816
-              </div>
-              <div style={{ fontFamily: MONO, fontSize: 21, color: "#FFE0D8",
-                background: rgba("#7A2515", 0.92), borderRadius: 10, padding: "6px 14px" }}>
-                GONE FOREVER ₹3,89,752
-              </div>
-            </div>
-          </div>
-        ) : null}
+  /* ------------------------------------------- flying chunks + the cart --- */  /* ------------------------------------------- flying chunks + the cart --- */  /* ------------------------------------------- flying chunks + the cart --- */
+  /* THE EXPENSE PIE (VJ's board note): every cut wedge flies UP and lands
+     as a segment of a donut chart building in the upper zone — the stats,
+     shaped like what they were cut from. Tax builds in six slab steps and
+     is the only red. IN-HAND closes the ring green at the gap beat. */
+  const PIE_CX = 540, PIE_CY = 500, R_OUT = 280, R_IN = 148;
+  const FR = 1 / 3400000;
+  type Seg = { key: string; label: string; amt: number; color: string; landAt: number };
+  const SEGS: Seg[] = [
+    { key: "varpay", label: "HOLD", amt: 510000, color: "#5F7A52", landAt: cutAts[0] + 0.9 },
+    { key: "epf", label: "EMPLR PF", amt: 163200, color: "#7A9A6C", landAt: cutAts[1] + 0.9 },
+    { key: "grat", label: "GRATUITY", amt: 65416, color: "#93AC82", landAt: cutAts[2] + 0.9 },
+    { key: "ins", label: "INSUR", amt: 25000, color: "#A9BC98", landAt: cutAts[3] + 0.9 },
+    { key: "mypf", label: "MY PF", amt: 163200, color: "#86A375", landAt: cutAts[4] + 0.9 },
+    { key: "ptax", label: "PT", amt: 2400, color: "#B8C7A8", landAt: cutAts[5] + 0.9 },
+    ...TAX_STEPS.map((st, j) => ({ key: `tax${j}`, label: j === 5 ? "TAX+CESS" : `TAX ${st.pct}`,
+      amt: st.amt, color: W3.red, landAt: ladderAts[j] + 0.35 })),
+    { key: "inhand", label: "IN-HAND", amt: 2108432, color: W3.green, landAt: gapAt + 0.3 },
+  ];
+  const arc = (a0: number, a1: number, ro: number, ri: number) => {
+    const P = (r: number, a: number) => [PIE_CX + r * Math.cos(a), PIE_CY + r * Math.sin(a)];
+    const [x0, y0] = P(ro, a0), [x1, y1] = P(ro, a1), [x2, y2] = P(ri, a1), [x3, y3] = P(ri, a0);
+    const lg = a1 - a0 > Math.PI ? 1 : 0;
+    return `M ${x0} ${y0} A ${ro} ${ro} 0 ${lg} 1 ${x1} ${y1} L ${x2} ${y2} A ${ri} ${ri} 0 ${lg} 0 ${x3} ${y3} Z`;
+  };
+  const pieOn = OUT_E(clamp01((t - cutAts[0] - 0.5) / 0.5)) * (1 - clamp01((t - giveAt + 0.2) / 0.4));
+  const pieDock = OUT_E(clamp01((t - (creditAt - 0.4)) / 0.5)) * (1 - OUT_E(clamp01((t - gapAt) / 0.5)));
+  let gonePct = 0;
+  SEGS.forEach((sg) => { if (sg.key !== "inhand" && t >= sg.landAt) gonePct += sg.amt * FR; });
+  const cart = pieOn > 0.01 ? (
+    <div style={{ position: "absolute", inset: 0, zIndex: 20, opacity: pieOn,
+      transformOrigin: `${PIE_CX}px ${PIE_CY}px`,
+      transform: `scale(${1 - pieDock * 0.5}) translate(${pieDock * -560}px, ${pieDock * -240}px)` }}>
+      <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+        {/* faint full ring = the whole CTC, waiting to be accounted */}
+        <path d={arc(-Math.PI / 2 + 0.001, -Math.PI / 2 + Math.PI * 2 - 0.001, R_OUT, R_IN)}
+          fill={rgba("#211A12", 0.07)} />
+        {(() => {
+          let a0 = -Math.PI / 2;
+          return SEGS.map((sg) => {
+            const span = sg.amt * FR * Math.PI * 2;
+            const grow = sg.key === "inhand" ? OUT_E(clamp01((t - sg.landAt) / 0.8)) : OUT_E(clamp01((t - sg.landAt) / 0.35));
+            const seg = grow > 0.001 ? (
+              <g key={sg.key}>
+                <path d={arc(a0, a0 + span * grow, R_OUT, R_IN)} fill={sg.color}
+                  stroke={rgba("#FFF", 0.6)} strokeWidth={2}
+                  opacity={0.96} />
+                {/* land blink */}
+                {t - sg.landAt < 0.18 ? (
+                  <path d={arc(a0, a0 + span * grow, R_OUT + 6, R_IN - 6)} fill={rgba("#FFF", 0.5 * (1 - (t - sg.landAt) / 0.18))} />
+                ) : null}
+                {/* leader label for readable spans */}
+                {sg.amt * FR > 0.017 && grow > 0.9 ? (() => {
+                  const mid = a0 + span / 2;
+                  const lx = PIE_CX + Math.cos(mid) * (R_OUT + 34), ly = PIE_CY + Math.sin(mid) * (R_OUT + 34);
+                  const anchor = Math.cos(mid) >= 0 ? "start" : "end";
+                  return (
+                    <g>
+                      <line x1={PIE_CX + Math.cos(mid) * (R_OUT + 4)} y1={PIE_CY + Math.sin(mid) * (R_OUT + 4)}
+                        x2={lx} y2={ly} stroke={rgba(W3.ink, 0.5)} strokeWidth={2} />
+                      <text x={lx + (anchor === "start" ? 6 : -6)} y={ly + 7} textAnchor={anchor}
+                        fontFamily="'JetBrains Mono', monospace" fontSize={23} fontWeight={700}
+                        fill={sg.key.startsWith("tax") ? "#A93A22" : W3.ink}>
+                        {sg.label} ₹{sg.amt.toLocaleString("en-IN")}
+                      </text>
+                    </g>
+                  );
+                })() : null}
+              </g>
+            ) : null;
+            a0 += span;
+            return seg;
+          });
+        })()}
+      </svg>
+      {/* the centre stat */}
+      <div style={{ position: "absolute", left: PIE_CX - 130, top: PIE_CY - 56, width: 260,
+        textAlign: "center", fontVariantNumeric: "tabular-nums" as const }}>
+        {t < gapAt + 0.3 ? (
+          <>
+            <div style={{ fontFamily: MONO, fontSize: 22, color: rgba(W3.ink, 0.6), letterSpacing: 2 }}>CTC GONE</div>
+            <div style={{ fontFamily: DISP, fontSize: 62, color: W3.ink }}>{Math.round(gonePct * 100)}%</div>
+          </>
+        ) : (
+          <>
+            <div style={{ fontFamily: MONO, fontSize: 21, color: rgba(W3.ink, 0.6), letterSpacing: 2 }}>GAP / YEAR</div>
+            <div style={{ fontFamily: DISP, fontSize: 44, color: "#A93A22" }}>₹12,91,568</div>
+            <div style={{ fontFamily: MONO, fontSize: 19, color: "#3E5A33", marginTop: 2 }}>a fresher's salary</div>
+          </>
+        )}
       </div>
-    );
-  })();
+      {/* wedge flights: cake -> segment centroid, spin + crush */}
+      {SEGS.filter((sg) => sg.key !== "inhand").map((sg) => {
+        const dep = sg.landAt - 0.55;
+        const fp = clamp01((t - dep) / 0.55);
+        if (fp <= 0 || fp >= 1) return null;
+        let a0 = -Math.PI / 2;
+        for (const q of SEGS) { if (q.key === sg.key) break; a0 += q.amt * FR * Math.PI * 2; }
+        const mid = a0 + sg.amt * FR * Math.PI;
+        const tx = PIE_CX + Math.cos(mid) * (R_OUT - 70), ty = PIE_CY + Math.sin(mid) * (R_OUT - 70);
+        const e = OUT_E(fp);
+        const x = 540 + (tx - 540) * e, y = 1080 + (ty - 1080) * e - Math.sin(e * Math.PI) * 190;
+        const crush = fp > 0.85 ? (fp - 0.85) / 0.15 : 0;
+        return (
+          <div key={sg.key} style={{ position: "absolute", left: x - 70, top: y - 45, width: 140,
+            transform: `rotate(${e * 300}deg) scale(${(1 - e * 0.35) * (1 + crush * 0.4)}, ${(1 - e * 0.35) * (1 - crush * 0.6)})` }}>
+            <Img src={P("sprites/seq_wedge.png")} style={{ width: "100%",
+              filter: sg.key.startsWith("tax") ? "sepia(0.5) hue-rotate(-30deg) saturate(2.4)" : undefined }} />
+          </div>
+        );
+      })}
+    </div>
+  ) : null;
 
   /* --------------------------------------------------- the offer letter --- */
   const offerFold = IN_E(clamp01((t - brickAt + 0.4) / 0.6));
@@ -341,7 +391,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
   const holeOn = OUT_E(clamp01((t - creditAt - 1.0) / 0.4));
   const creditMath = t >= creditAt - 0.5 && t < giveAt ? (
     <div style={{ position: "absolute", left: 0, right: 0, top: 560, textAlign: "center", zIndex: 29,
-      opacity: expectOn * (1 - clamp01((t - giveAt + 0.3) / 0.3)) }}>
+      opacity: expectOn * (1 - clamp01((t - gapAt) / 0.4)) }}>
       <div style={{ display: "inline-block", fontFamily: MONO, fontSize: 34, color: W3.ink,
         background: rgba("#FFF", 0.85), borderRadius: 14, padding: "10px 24px", boxShadow: cardShadow,
         fontVariantNumeric: "tabular-nums" as const, position: "relative" }}>

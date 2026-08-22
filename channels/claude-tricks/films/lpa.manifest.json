@@ -456,6 +456,81 @@
       "#ai",
       "#salary",
       "#ctc"
+    ],
+    "sfx": [
+      {
+        "at": 6.0,
+        "name": "digit_slam",
+        "note": "the 6.00s emboss crack"
+      },
+      {
+        "at": "@beat1+2.25",
+        "name": "knife_cut",
+        "note": "variable pay — the first, hardest cut"
+      },
+      {
+        "at": "@beat3+1.05",
+        "name": "knife_cut"
+      },
+      {
+        "at": "@beat3+1.85",
+        "name": "knife_cut"
+      },
+      {
+        "at": "@beat3+2.55",
+        "name": "knife_cut"
+      },
+      {
+        "at": "@beat3+3.15",
+        "name": "knife_cut"
+      },
+      {
+        "at": "@beat3+3.65",
+        "name": "knife_cut"
+      },
+      {
+        "at": "@beat2+0.5",
+        "name": "whoosh_up",
+        "note": "first wedge flies to the pie"
+      },
+      {
+        "at": "@beat4+1.95",
+        "name": "tax_tick"
+      },
+      {
+        "at": "@beat4+2.75",
+        "name": "tax_tick"
+      },
+      {
+        "at": "@beat5+0.65",
+        "name": "tax_tick"
+      },
+      {
+        "at": "@beat5+1.35",
+        "name": "tax_tick"
+      },
+      {
+        "at": "@beat5+1.95",
+        "name": "tax_tick"
+      },
+      {
+        "at": "@beat5+2.55",
+        "name": "tax_tick_hard",
+        "note": "30%+cess"
+      },
+      {
+        "at": "@beat6+0.8",
+        "name": "credit_chime",
+        "note": "SMS unblurs"
+      },
+      {
+        "at": "@beat7+0.5",
+        "name": "ring_close",
+        "note": "IN-HAND sweeps the pie shut"
+      },
+      {
+        "_note": "mixed at build stage (build_ep_v2 master pass); pie land-snaps ride the knife cuts +0.9s"
+      }
     ]
   },
   "give": {
