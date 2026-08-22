@@ -224,10 +224,11 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
   const pieDock = OUT_E(clamp01((t - (creditAt - 0.4)) / 0.5)) * (1 - OUT_E(clamp01((t - gapAt) / 0.5)));
   let gonePct = 0;
   SEGS.forEach((sg) => { if (sg.key !== "inhand" && t >= sg.landAt) gonePct += sg.amt * FR; });
+  const spinP = clamp01((t - gapAt - 1.2) / 0.6);
   const cart = pieOn > 0.01 ? (
     <div style={{ position: "absolute", inset: 0, zIndex: 20, opacity: pieOn,
       transformOrigin: `${PIE_CX}px ${PIE_CY}px`,
-      transform: `scale(${1 - pieDock * 0.5}) translate(${pieDock * -560}px, ${pieDock * -240}px)` }}>
+      transform: `scale(${(1 - pieDock * 0.5) * (1 + Math.sin(t * 1.1) * 0.008 * spinP)}) translate(${pieDock * -560}px, ${pieDock * -240}px) rotate(${spinP * (t - gapAt - 1.2) * 4}deg)` }}>
       <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
         <defs>
           {(() => {
@@ -349,7 +350,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
             {B.map((b, i) => (
               <div key={i} style={{ fontFamily: MONO, fontSize: 21, color: b.fg, background: b.bg,
                 borderRadius: 12, padding: "8px 14px", boxShadow: cardShadow,
-                transform: `translateY(${(1 - OUT_E(clamp01((t - gapAt - 0.8 - i * 0.15) / 0.4))) * 40}px)` }}>
+                transform: `translateY(${(1 - OUT_E(clamp01((t - gapAt - 0.8 - i * 0.15) / 0.4))) * 40 + Math.sin(t * 1.8 + i * 2.1) * 4}px)` }}>
                 {b.t1}<div style={{ fontSize: 15, opacity: 0.78 }}>{b.t2}</div>
               </div>
             ))}
@@ -446,7 +447,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
     <div style={{ position: "absolute", left: credited ? 150 : smsX, top: credited ? 830 : smsY,
       width: credited ? 780 : 640, zIndex: 30, opacity: smsIn * (1 - clamp01((t - giveAt + 0.2) / 0.4)),
       transformOrigin: "top left",
-      transform: `translateX(${(1 - smsIn) * 300}px) scale(${credited ? 1.05 : smsScale})` }}>
+      transform: `translateX(${(1 - smsIn) * 300}px) scale(${credited ? 1.05 * (1 + Math.sin(t * 2.4) * 0.008) : smsScale})` }}>
       <div style={{ background: "#FFFFFF", borderRadius: 18, padding: "18px 24px",
         boxShadow: cardShadow, border: `1px solid ${rgba("#8A8A8A", 0.35)}` }}>
         <div style={{ fontFamily: MONO, fontSize: 20, color: "#6B6B6B", display: "flex",
@@ -459,7 +460,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
             fontFamily: DISP, fontSize: credited ? 128 : 34, color: credited ? W3.moneyDeep : "#2B2B2B",
             filter: credited ? undefined : "blur(9px)",
             display: credited ? "block" : "inline",
-            textShadow: credited ? `0 0 30px ${rgba(W3.money, 0.8)}` : undefined,
+            textShadow: credited ? `0 0 ${26 + Math.sin(t * 3.1) * 10}px ${rgba(W3.money, 0.85)}` : undefined,
             fontVariantNumeric: "tabular-nums" as const,
             transform: credited ? `scale(${1 + creditPop * 0.05})` : undefined,
           }}>₹1,75,702</span>

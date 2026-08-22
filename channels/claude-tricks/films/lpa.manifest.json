@@ -17,7 +17,7 @@
   },
   "payoff": {
     "what": "the SMS unblurs: ₹1,75,702 CREDITED at ~40% frame width",
-    "anchor": "@beat6+0.8",
+    "anchor": "@beat6+2.4",
     "min_frac": 0.75
   },
   "lines": [
@@ -28,51 +28,51 @@
       "to": "the bank SMS slides in, amount blurred — visibly too short"
     },
     {
-      "vo": "So why is the SMS this small? Cut the brick — step by step.",
-      "subject": "the salary brick",
-      "from": "the letter folds down onto the desk",
-      "to": "the CTC as a physical brick; VARIABLE PAY cleaver falls ~4.5s; the emboss cracks at 6.00s"
+      "vo": "Why is the SMS this small? Lights off. Cut the cake.",
+      "subject": "lights-out + the cake",
+      "from": "the cream world dims to the dark stage",
+      "to": "the money cake on its pedestal — the celebration object itself"
     },
     {
-      "vo": "First cut: variable pay. Five lakh ten thousand — on hold.",
-      "subject": "the biggest chop named",
-      "from": "the chunk mid-flight",
-      "to": "−₹5,10,000 carted off on the trolley"
+      "vo": "First cut: variable pay. Five point one lakhs, on hold.",
+      "subject": "the biggest slice named",
+      "from": "the knife sinks into the top tier",
+      "to": "the slice flies up and becomes the first GOLD piece of the pie"
     },
     {
-      "vo": "Then both PFs, gratuity, insurance, professional tax — line by line.",
+      "vo": "Then both PFs, gratuity, insurance, professional tax — slice after slice.",
       "subject": "the cascade",
-      "from": "five quick cleavers, accelerating",
-      "to": "chunks stacking on the cart: ₹1,63,200 ×2, ₹65,416, ₹25,000, ₹2,400"
+      "from": "five quick cuts, accelerating",
+      "to": "blue slices land in the pie one by one; the counter card updates each time"
     },
     {
-      "vo": "Now the boss: income tax. The first four lakh? Zero.",
-      "subject": "the boss cleaver",
-      "from": "the huge RED cleaver winds up",
-      "to": "first swing BOUNCES — FIRST ₹4L TAX ₹0 (slab 1, new regime)"
+      "vo": "Now the boss: income tax. First four lakhs? Untouched.",
+      "subject": "the boss knife",
+      "from": "the big RED knife winds up",
+      "to": "the first swing BOUNCES — slab one is zero percent"
     },
     {
-      "vo": "Then it climbs slab by slab — ten, twenty, thirty percent. Plus cess.",
+      "vo": "Then slab by slab — ten, twenty, thirty percent. Plus cess.",
       "subject": "the tax ladder",
-      "from": "six accelerating chops, each labeled",
-      "to": "the ladder card fills row by row; TOTAL −₹3,62,352 stamps (4% cess — tax on tax)"
+      "from": "six accelerating cuts, each labeled",
+      "to": "the red fan grows in the pie; TOTAL −₹3,62,352 stamps"
     },
     {
-      "vo": "Left: one seventy five a month. That SMS.",
+      "vo": "What's left: one seventy five, seven zero two.",
       "subject": "the lock",
-      "from": "the wafer drops into the SMS bubble",
+      "from": "the last piece drops into the SMS bubble",
       "to": "blur snaps off: ₹1,75,702 CREDITED"
     },
     {
-      "vo": "The gap? A whole fresher's salary.",
+      "vo": "The gap? Thirteen lakhs — a whole fresher's salary.",
       "subject": "the circle",
-      "from": "the cart's chunks line up",
-      "to": "GAP ₹12,91,568 split honestly: COMES BACK* ₹9,01,816 vs GONE FOREVER ₹3,89,752"
+      "from": "the remaining cake lifts into the chart — the pie completes",
+      "to": "three buckets: comes back later, on hold, gone forever"
     },
     {
-      "vo": "Prompt's pinned. Your CTC, your truth. Free.",
+      "vo": "Prompt's pinned. Drop your CTC, get your breakdown. Free.",
       "subject": "the give + loop",
-      "from": "CTC-decoder prompt complete + static, PINNED ✓",
+      "from": "CTC-decoder prompt complete + static, PINNED ✓, the reply chart draws",
       "to": "loop-out to the offer letter + SMS — frame 0 composition"
     }
   ],
@@ -144,7 +144,7 @@
     },
     {
       "value": "510000",
-      "spoken": "five lakh ten thousand",
+      "spoken": "five point one lakhs",
       "source": "DEMO structure: variable pay 15% of CTC — typical senior band"
     },
     {
@@ -184,12 +184,12 @@
     },
     {
       "value": "175702",
-      "spoken": "one seventy five",
+      "spoken": "one seventy five seven zero two",
       "source": "derived on screen: (26,36,384 − 3,62,352 − 1,63,200 − 2,400 = 21,08,432)/12 — VO speaks the round 'pauney do lakh', the exact figure is on the SMS"
     },
     {
       "value": "1291568",
-      "spoken": "",
+      "spoken": "thirteen lakhs",
       "source": "derived on screen: 34,00,000 − 21,08,432 — equals the carted chunks to the rupee; VO rounds to 'terah lakh'"
     },
     {
@@ -249,23 +249,22 @@
     }
   ],
   "hot_words": [
-    "THIRTY",
-    "FOUR",
     "LAKH",
     "PACKAGE",
     "SMS",
     "SMALL",
+    "LIGHTS",
     "CUT",
+    "CAKE",
     "VARIABLE",
     "HOLD",
     "PF",
     "GRATUITY",
     "BOSS",
     "TAX",
-    "ZERO",
+    "FOUR",
     "SLAB",
-    "TWENTY",
-    "PERCENT",
+    "THIRTY",
     "CESS",
     "CREDITED",
     "GAP",
@@ -297,10 +296,10 @@
         "@beat5+2.2"
       ],
       "taxStampAt": "@beat5+2.9",
-      "creditAt": "@beat6+0.8",
+      "creditAt": "@beat6+2.4",
       "gapAt": "@beat7+0.4",
       "giveAt": "@beat8+0.2",
-      "endAt": "@beat8+3.3",
+      "endAt": "@beat8+4.0",
       "chips": [
         {
           "t": "@beat0+0.3",
@@ -309,112 +308,168 @@
           "hot": true
         },
         {
-          "t": "@beat0+1.7",
-          "end": "@beat1+0.3",
-          "text": "WHY SO SMALL?"
+          "t": "@beat0+1.6",
+          "end": "@beat1+0.4",
+          "text": "SMS SO SMALL?",
+          "hot": false
         },
         {
           "t": "@beat1+0.4",
-          "end": "@beat1+1.5",
-          "text": "CTC = BRICK"
+          "end": "@beat1+1.6",
+          "text": "LIGHTS OFF",
+          "hot": false
         },
         {
           "t": "@beat1+1.6",
           "end": "@beat1+3.0",
-          "text": "FIRST CUT",
+          "text": "CUT THE CAKE",
           "hot": true
         },
         {
+          "t": "@beat1+3.0",
+          "end": "@beat2+0.2",
+          "text": "KNIFE READY",
+          "hot": false
+        },
+        {
           "t": "@beat2+0.2",
-          "end": "@beat2+1.7",
+          "end": "@beat2+1.6",
           "text": "VARIABLE −₹5,10,000",
           "hot": true,
           "big": true
         },
         {
-          "t": "@beat2+1.8",
-          "end": "@beat3+0.3",
-          "text": "ON HOLD"
+          "t": "@beat2+1.6",
+          "end": "@beat2+2.9",
+          "text": "ON HOLD",
+          "hot": false
+        },
+        {
+          "t": "@beat2+2.9",
+          "end": "@beat3+0.4",
+          "text": "FIRST SLICE ↑",
+          "hot": false
         },
         {
           "t": "@beat3+0.4",
-          "end": "@beat3+1.1",
-          "text": "EMPLOYER PF ✂"
+          "end": "@beat3+1.2",
+          "text": "EMPLOYER PF ✂",
+          "hot": false
         },
         {
           "t": "@beat3+1.2",
-          "end": "@beat3+1.8",
-          "text": "GRATUITY ✂"
+          "end": "@beat3+1.9",
+          "text": "GRATUITY ✂",
+          "hot": false
         },
         {
           "t": "@beat3+1.9",
-          "end": "@beat3+2.4",
-          "text": "INSURANCE ✂"
+          "end": "@beat3+2.5",
+          "text": "INSURANCE ✂",
+          "hot": false
         },
         {
           "t": "@beat3+2.5",
-          "end": "@beat3+2.9",
-          "text": "EMPLOYEE PF ✂"
+          "end": "@beat3+3.1",
+          "text": "MY PF ✂",
+          "hot": false
         },
         {
-          "t": "@beat3+3.0",
-          "end": "@beat4+0.2",
-          "text": "PROF TAX ✂"
+          "t": "@beat3+3.1",
+          "end": "@beat3+3.8",
+          "text": "PROF TAX ✂",
+          "hot": false
         },
         {
-          "t": "@beat4+0.3",
-          "end": "@beat4+1.5",
+          "t": "@beat3+3.8",
+          "end": "@beat3+5.0",
+          "text": "5 SLICES GONE",
+          "hot": false
+        },
+        {
+          "t": "@beat3+5.0",
+          "end": "@beat4+0.1",
+          "text": "ONE LEFT →",
+          "hot": false
+        },
+        {
+          "t": "@beat4+0.1",
+          "end": "@beat4+1.6",
           "text": "NOW: TAX",
           "hot": true
         },
         {
           "t": "@beat4+1.6",
           "end": "@beat4+2.9",
-          "text": "FIRST ₹4L FREE"
+          "text": "FIRST ₹4L FREE",
+          "hot": false
+        },
+        {
+          "t": "@beat4+2.9",
+          "end": "@beat5+0.3",
+          "text": "IT BOUNCED!",
+          "hot": false
         },
         {
           "t": "@beat5+0.3",
-          "end": "@beat5+1.5",
-          "text": "SLAB BY SLAB"
+          "end": "@beat5+1.6",
+          "text": "SLAB BY SLAB",
+          "hot": false
         },
         {
           "t": "@beat5+1.6",
-          "end": "@beat5+2.8",
+          "end": "@beat5+2.9",
           "text": "30% + CESS",
           "hot": true
         },
         {
           "t": "@beat5+2.9",
-          "end": "@beat6+0.3",
+          "end": "@beat5+4.2",
           "text": "TAX −₹3,62,352",
           "hot": true,
           "big": true
         },
         {
-          "t": "@beat6+0.4",
-          "end": "@beat6+0.7",
-          "text": "WHAT'S LEFT?"
+          "t": "@beat5+4.2",
+          "end": "@beat6+0.2",
+          "text": "CESS TOO.",
+          "hot": false
         },
         {
-          "t": "@beat6+0.8",
-          "end": "@beat6+2.3",
+          "t": "@beat6+0.2",
+          "end": "@beat6+1.5",
+          "text": "WHAT'S LEFT?",
+          "hot": false
+        },
+        {
+          "t": "@beat6+1.5",
+          "end": "@beat6+2.4",
+          "text": "COUNTING…",
+          "hot": false
+        },
+        {
+          "t": "@beat6+2.4",
+          "end": "@beat7+0.4",
           "text": "₹1,75,702 CREDITED",
           "hot": true
         },
         {
-          "t": "@beat6+2.4",
-          "end": "@beat7+0.3",
-          "text": "₹1.75L / MONTH"
-        },
-        {
           "t": "@beat7+0.4",
           "end": "@beat7+1.7",
-          "text": "GAP: ₹12,91,568"
+          "text": "GAP: ₹12,91,568",
+          "hot": false
         },
         {
-          "t": "@beat7+1.8",
-          "end": "@beat8+0.1",
-          "text": "A FRESHER'S SALARY"
+          "t": "@beat7+1.7",
+          "end": "@beat7+3.0",
+          "text": "A FRESHER'S SALARY",
+          "hot": false
+        },
+        {
+          "t": "@beat7+3.0",
+          "end": "@beat8+0.2",
+          "text": "3 BUCKETS",
+          "hot": false
         },
         {
           "t": "@beat8+0.2",
@@ -423,9 +478,16 @@
           "hot": true
         },
         {
-          "t": "@beat8+1.7",
-          "end": "@beat8+3.2",
-          "text": "RUN YOUR NUMBERS"
+          "t": "@beat8+1.6",
+          "end": "@beat8+3.0",
+          "text": "RUN YOUR NUMBERS",
+          "hot": false
+        },
+        {
+          "t": "@beat8+3.0",
+          "end": "@beat8+4.4",
+          "text": "COPY-PASTE-RUN",
+          "hot": false
         }
       ],
       "pings": [
@@ -540,8 +602,8 @@
   "outro": {
     "q": "CTC − IN-HAND|YOUR GAP|HOW MUCH?",
     "accent_word": "HOW MUCH?",
-    "cta": "The CTC-decoder prompt is pinned and in the description. Drop your CTC — get your truth. Free.",
-    "host_pip": "circle pip, outfit_11 Sol, HeyGen clip generated at build (gen_outro flow); storyboard uses the center.jpg still"
+    "cta": "The CTC-decoder prompt is pinned and in the description. Drop your CTC — get your real breakdown. Free.",
+    "src": "ep_lpa/outro_card.mp4"
   },
   "title_candidates": [
     "I Asked AI Where My 34 LPA Actually Goes 💸",
