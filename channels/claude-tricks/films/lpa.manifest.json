@@ -17,60 +17,60 @@
   },
   "payoff": {
     "what": "the SMS unblurs: ₹1,75,702 CREDITED at ~40% frame width",
-    "anchor": "@beat6+0.4",
+    "anchor": "@beat6+0.8",
     "min_frac": 0.75
   },
   "lines": [
     {
-      "vo": "Chauntees lakh ka package! Ghar mein party.",
+      "vo": "Thirty four lakh package! Family's celebrating.",
       "subject": "the offer-letter moment",
       "from": "embossed CTC ₹34,00,000 + confetti + family chat sliding up",
       "to": "the bank SMS slides in, amount blurred — visibly too short"
     },
     {
-      "vo": "SMS itna chhota kyun? Brick kaato — step by step.",
+      "vo": "So why is the SMS this small? Cut the brick — step by step.",
       "subject": "the salary brick",
       "from": "the letter folds down onto the desk",
-      "to": "the CTC as a physical brick; VARIABLE PAY cleaver falls at ~4.6s; the emboss cracks at 6.00s"
+      "to": "the CTC as a physical brick; VARIABLE PAY cleaver falls ~4.5s; the emboss cracks at 6.00s"
     },
     {
-      "vo": "Pehla cut: variable pay — paanch lakh das hazaar, hold pe.",
+      "vo": "First cut: variable pay. Five lakh ten thousand — on hold.",
       "subject": "the biggest chop named",
       "from": "the chunk mid-flight",
-      "to": "−₹5,10,000 carted off on the thela"
+      "to": "−₹5,10,000 carted off on the trolley"
     },
     {
-      "vo": "Phir dono PF, gratuity, insurance, professional tax — line se.",
+      "vo": "Then both PFs, gratuity, insurance, professional tax — line by line.",
       "subject": "the cascade",
       "from": "five quick cleavers, accelerating",
-      "to": "employer PF ₹1,63,200, gratuity ₹65,416, insurance ₹25,000, employee PF ₹1,63,200, prof tax ₹2,400 — chunks stacking"
+      "to": "chunks stacking on the cart: ₹1,63,200 ×2, ₹65,416, ₹25,000, ₹2,400"
     },
     {
-      "vo": "Ab boss: income tax. Sabse bada cleaver. Pehle chaar lakh pe — zero.",
+      "vo": "Now the boss: income tax. The first four lakh? Zero.",
       "subject": "the boss cleaver",
       "from": "the huge RED cleaver winds up",
-      "to": "first swing BOUNCES — PEHLE ₹4L TAX ₹0 (slab 1, naya regime)"
+      "to": "first swing BOUNCES — FIRST ₹4L TAX ₹0 (slab 1, new regime)"
     },
     {
-      "vo": "Phir slab pe slab upar chadhta hai — das, bees, tees. Aur cess alag.",
+      "vo": "Then it climbs slab by slab — ten, twenty, thirty percent. Plus cess.",
       "subject": "the tax ladder",
-      "from": "six accelerating chops, each labeled 5/10/15/20/25/30%",
-      "to": "the ladder card fills row by row; TOTAL −₹3,62,352 stamps (4% cess included — tax pe bhi tax)"
+      "from": "six accelerating chops, each labeled",
+      "to": "the ladder card fills row by row; TOTAL −₹3,62,352 stamps (4% cess — tax on tax)"
     },
     {
-      "vo": "Bacha: pauney do lakh. Wahi SMS.",
+      "vo": "Left: one seventy five a month. That SMS.",
       "subject": "the lock",
       "from": "the wafer drops into the SMS bubble",
       "to": "blur snaps off: ₹1,75,702 CREDITED"
     },
     {
-      "vo": "Gap? Terah lakh — fresher ka package.",
+      "vo": "The gap? A whole fresher's salary.",
       "subject": "the circle",
       "from": "the cart's chunks line up",
-      "to": "GAP ₹12,91,568 split honestly: WAPAS MILEGA* ₹9,01,816 vs KABHI NAHI ₹3,89,752"
+      "to": "GAP ₹12,91,568 split honestly: COMES BACK* ₹9,01,816 vs GONE FOREVER ₹3,89,752"
     },
     {
-      "vo": "Prompt pinned — apna CTC, apna hisaab. Free.",
+      "vo": "Prompt's pinned. Your CTC, your truth. Free.",
       "subject": "the give + loop",
       "from": "CTC-decoder prompt complete + static, PINNED ✓",
       "to": "loop-out to the offer letter + SMS — frame 0 composition"
@@ -139,12 +139,12 @@
   "numbers": [
     {
       "value": "3400000",
-      "spoken": "chauntees lakh",
+      "spoken": "thirty four lakh",
       "source": "DECLARED ILLUSTRATION — representative 34 LPA CTC (DEMO tag from beat 1, never frame 0); basic assumed 40% = 13,60,000"
     },
     {
       "value": "510000",
-      "spoken": "paanch lakh das hazaar",
+      "spoken": "five lakh ten thousand",
       "source": "DEMO structure: variable pay 15% of CTC — typical senior band"
     },
     {
@@ -169,12 +169,12 @@
     },
     {
       "value": "4",
-      "spoken": "chaar",
+      "spoken": "four",
       "source": "REAL-SOURCED: new regime FY 2025-26 slab 1 — first ₹4,00,000 taxed at 0% (verified 2026-08-22: tax2win.in/guide/section-87a, taxclue.in/new-tax-regime-2025-26, bajajfinserv.in income-tax-slabs)"
     },
     {
       "value": "30",
-      "spoken": "tees",
+      "spoken": "thirty",
       "source": "REAL-SOURCED: top applied slab 30% above ₹24L taxable (same sources); spoken as 'tees percent'"
     },
     {
@@ -184,12 +184,12 @@
     },
     {
       "value": "175702",
-      "spoken": "pauney do lakh",
+      "spoken": "one seventy five",
       "source": "derived on screen: (26,36,384 − 3,62,352 − 1,63,200 − 2,400 = 21,08,432)/12 — VO speaks the round 'pauney do lakh', the exact figure is on the SMS"
     },
     {
       "value": "1291568",
-      "spoken": "terah lakh",
+      "spoken": "",
       "source": "derived on screen: 34,00,000 − 21,08,432 — equals the carted chunks to the rupee; VO rounds to 'terah lakh'"
     },
     {
@@ -209,12 +209,12 @@
     },
     {
       "value": "10",
-      "spoken": "das",
+      "spoken": "ten",
       "source": "REAL-SOURCED: slab rate 10% (₹8-12L) — same sources"
     },
     {
       "value": "20",
-      "spoken": "bees",
+      "spoken": "twenty",
       "source": "REAL-SOURCED: slab rate 20% (₹16-20L) — same sources"
     },
     {
@@ -249,27 +249,29 @@
     }
   ],
   "hot_words": [
-    "CHAUNTEES",
+    "THIRTY",
+    "FOUR",
     "LAKH",
     "PACKAGE",
     "SMS",
-    "CHHOTA",
+    "SMALL",
+    "CUT",
     "VARIABLE",
     "HOLD",
     "PF",
     "GRATUITY",
     "BOSS",
     "TAX",
-    "CHAAR",
     "ZERO",
     "SLAB",
-    "TEES",
+    "TWENTY",
+    "PERCENT",
     "CESS",
-    "PAUNEY",
     "CREDITED",
+    "GAP",
     "FRESHER",
     "PINNED",
-    "HISAAB"
+    "FREE"
   ],
   "carry": "the SALARY BRICK — chopped step by step; the wafer becomes the SMS amount; the cart accumulates every chunk and its lineup IS the circle-close (WAPAS vs KABHI NAHI).",
   "cookbook": {
@@ -295,7 +297,7 @@
         "@beat5+2.2"
       ],
       "taxStampAt": "@beat5+2.9",
-      "creditAt": "@beat6+0.4",
+      "creditAt": "@beat6+0.8",
       "gapAt": "@beat7+0.4",
       "giveAt": "@beat8+0.2",
       "endAt": "@beat8+3.3",
@@ -309,7 +311,7 @@
         {
           "t": "@beat0+1.7",
           "end": "@beat1+0.3",
-          "text": "SMS ITNA CHHOTA?"
+          "text": "WHY SO SMALL?"
         },
         {
           "t": "@beat1+0.4",
@@ -319,7 +321,7 @@
         {
           "t": "@beat1+1.6",
           "end": "@beat1+3.0",
-          "text": "PEHLA CUT",
+          "text": "FIRST CUT",
           "hot": true
         },
         {
@@ -332,7 +334,7 @@
         {
           "t": "@beat2+1.8",
           "end": "@beat3+0.3",
-          "text": "HOLD PE GAYA"
+          "text": "ON HOLD"
         },
         {
           "t": "@beat3+0.4",
@@ -362,18 +364,18 @@
         {
           "t": "@beat4+0.3",
           "end": "@beat4+1.5",
-          "text": "AB BOSS: TAX",
+          "text": "NOW: TAX",
           "hot": true
         },
         {
           "t": "@beat4+1.6",
           "end": "@beat4+2.9",
-          "text": "PEHLE ₹4L FREE"
+          "text": "FIRST ₹4L FREE"
         },
         {
           "t": "@beat5+0.3",
           "end": "@beat5+1.5",
-          "text": "SLAB PE SLAB"
+          "text": "SLAB BY SLAB"
         },
         {
           "t": "@beat5+1.6",
@@ -390,14 +392,19 @@
         },
         {
           "t": "@beat6+0.4",
-          "end": "@beat6+1.9",
+          "end": "@beat6+0.7",
+          "text": "WHAT'S LEFT?"
+        },
+        {
+          "t": "@beat6+0.8",
+          "end": "@beat6+2.3",
           "text": "₹1,75,702 CREDITED",
           "hot": true
         },
         {
-          "t": "@beat6+2.0",
+          "t": "@beat6+2.4",
           "end": "@beat7+0.3",
-          "text": "PAUNEY DO LAKH"
+          "text": "₹1.75L / MONTH"
         },
         {
           "t": "@beat7+0.4",
@@ -407,7 +414,7 @@
         {
           "t": "@beat7+1.8",
           "end": "@beat8+0.1",
-          "text": "FRESHER KA PACKAGE"
+          "text": "A FRESHER'S SALARY"
         },
         {
           "t": "@beat8+0.2",
@@ -418,26 +425,26 @@
         {
           "t": "@beat8+1.7",
           "end": "@beat8+3.2",
-          "text": "APNA HISAAB LO"
+          "text": "RUN YOUR NUMBERS"
         }
       ],
       "pings": [
         {
           "at": "@beat4+2.5",
           "kind": "like",
-          "tip": "tax bacha? like banta ✨",
+          "tip": "worth a like? hit it ✨",
           "dur": 2.0
         },
         {
           "at": "@beat7+0.6",
           "kind": "comment",
-          "tip": "apna gap 👇",
+          "tip": "drop your gap 👇",
           "dur": 2.0
         },
         {
           "at": "@beat8+1.4",
           "kind": "subscribe",
-          "tip": "aage ka hisaab 🔔",
+          "tip": "more of this 🔔",
           "dur": 2.0
         }
       ]
@@ -456,9 +463,9 @@
     "where": "description above the fold + pinned comment"
   },
   "outro": {
-    "q": "CTC − IN-HAND|TUMHARA GAP|KITNA?",
-    "accent_word": "KITNA?",
-    "cta": "The CTC-decoder prompt is pinned and in the description. Apna CTC daalo — apna sach nikaalo. Free.",
+    "q": "CTC − IN-HAND|YOUR GAP|HOW MUCH?",
+    "accent_word": "HOW MUCH?",
+    "cta": "The CTC-decoder prompt is pinned and in the description. Drop your CTC — get your truth. Free.",
     "host_pip": "circle pip, outfit_11 Sol, HeyGen clip generated at build (gen_outro flow); storyboard uses the center.jpg still"
   },
   "title_candidates": [

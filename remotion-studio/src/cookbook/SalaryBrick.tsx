@@ -240,16 +240,16 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
             <div style={{ fontFamily: MONO, fontSize: 27, color: "#F6EEDF",
               background: rgba("#211A12", 0.92), borderRadius: 12, padding: "8px 20px",
               boxShadow: cardShadow, fontVariantNumeric: "tabular-nums" as const }}>
-              GAP = ₹12,91,568 / SAAL — <span style={{ color: "#FFB08F" }}>ek fresher ka package</span>
+              GAP = ₹12,91,568 / YEAR — <span style={{ color: "#FFB08F" }}>a whole fresher's salary</span>
             </div>
             <div style={{ display: "flex", gap: 12, marginTop: 10 }}>
               <div style={{ fontFamily: MONO, fontSize: 21, color: "#D9F2E2",
                 background: rgba("#1E5B38", 0.92), borderRadius: 10, padding: "6px 14px" }}>
-                WAPAS MILEGA* ₹9,01,816
+                COMES BACK* ₹9,01,816
               </div>
               <div style={{ fontFamily: MONO, fontSize: 21, color: "#FFE0D8",
                 background: rgba("#7A2515", 0.92), borderRadius: 10, padding: "6px 14px" }}>
-                KABHI NAHI ₹3,89,752
+                GONE FOREVER ₹3,89,752
               </div>
             </div>
           </div>
@@ -306,7 +306,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
         boxShadow: cardShadow, border: `1px solid ${rgba("#7BA05B", 0.4)}` }}>
         <div style={{ fontFamily: MONO, fontSize: 20, color: "#4A6B35", fontWeight: 700 }}>Family ❤ · Papa</div>
         <div style={{ fontFamily: MONO, fontSize: 27, color: "#2C3E1F", marginTop: 4 }}>
-          Beta 34 lakh package! 🎉🎉
+          34 lakh package! So proud! 🎉🎉
         </div>
       </div>
     </div>
@@ -347,7 +347,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
       {!credited && t < brickAt ? (
         <div style={{ marginTop: 10, textAlign: "center", fontFamily: MONO, fontSize: 24,
           color: W3.ink, opacity: clamp01((t - 1.8) / 0.4) }}>
-          itna chhota kyun? 🤔
+          why so small? 🤔
         </div>
       ) : null}
     </div>
@@ -374,7 +374,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
           color: "#FFF6EC", background: rgba("#7A2515", 0.95), borderRadius: 14,
           padding: "6px 26px", boxShadow: cardShadow, opacity: holeOn,
           transform: `scale(${0.9 + holeOn * 0.1})`, fontVariantNumeric: "tabular-nums" as const }}>
-          −₹1,07,631 / MAHINA
+          −₹1,07,631 / MONTH
         </div>
       ) : null}
     </div>
@@ -428,9 +428,9 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
       transform: `scale(${0.85 + shieldOn * 0.15 + settle(t, bounceAt, 0.5) * 0.08})` }}>
       <div style={{ display: "inline-block", background: rgba("#211A12", 0.93), borderRadius: 18,
         padding: "14px 30px", boxShadow: cardShadow, border: `3px solid ${W3.green}` }}>
-        <div style={{ fontFamily: DISP, fontSize: 52, color: W3.green }}>PEHLE ₹4L — TAX ₹0</div>
+        <div style={{ fontFamily: DISP, fontSize: 52, color: W3.green }}>FIRST ₹4L — TAX ₹0</div>
         <div style={{ fontFamily: MONO, fontSize: 22, color: "#F6EEDF", marginTop: 4 }}>
-          naya regime FY25-26 · slab 1
+          new regime FY25-26 · slab 1
         </div>
       </div>
     </div>
@@ -544,7 +544,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
                 );
               })}
               <div style={{ marginTop: 10, fontFamily: MONO, fontSize: 20, color: rgba("#D9F2E2", 0.85) }}>
-                yehi breakup, ek line mein — copy · paste · run
+                this exact breakup, one line — copy · paste · run
               </div>
             </div>
           );
@@ -662,32 +662,32 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
 /* ---- canonical demo (planned clock) -------------------------------------- */
 export const salaryBrickDemo: SalaryBrickProps = {
   pings: [
-    { at: 17.6, kind: "like", tip: "tax bacha? like banta ✨" },
-    { at: 27.8, kind: "comment", tip: "apna gap 👇" },
-    { at: 30.9, kind: "subscribe", tip: "aage ka hisaab 🔔" },
+    { at: 17.6, kind: "like", tip: "worth a like? hit it ✨" },
+    { at: 27.8, kind: "comment", tip: "drop your gap 👇" },
+    { at: 30.9, kind: "subscribe", tip: "more of this 🔔" },
   ],
   chips: [
     { t: 0.3, end: 1.6, text: "34 LAKH? 🎉", hot: true },
-    { t: 1.7, end: 3.3, text: "SMS ITNA CHHOTA?" },
+    { t: 1.7, end: 3.3, text: "WHY SO SMALL?" },
     { t: 3.4, end: 4.5, text: "CTC = BRICK" },
-    { t: 4.6, end: 6.0, text: "PEHLA CUT", hot: true },
+    { t: 4.6, end: 6.0, text: "FIRST CUT", hot: true },
     { t: 6.1, end: 8.4, text: "VARIABLE −₹5,10,000", hot: true, big: true },
-    { t: 8.5, end: 10.8, text: "HOLD PE GAYA" },
+    { t: 8.5, end: 10.8, text: "ON HOLD" },
     { t: 10.9, end: 11.6, text: "EMPLOYER PF ✂" },
     { t: 11.7, end: 12.3, text: "GRATUITY ✂" },
     { t: 12.4, end: 12.9, text: "INSURANCE ✂" },
     { t: 13.0, end: 13.5, text: "EMPLOYEE PF ✂" },
     { t: 13.6, end: 14.9, text: "PROF TAX ✂" },
-    { t: 15.0, end: 15.9, text: "AB BOSS: TAX", hot: true },
-    { t: 16.0, end: 17.4, text: "PEHLE ₹4L FREE" },
-    { t: 17.5, end: 18.8, text: "SLAB PE SLAB" },
+    { t: 15.0, end: 15.9, text: "NOW: TAX", hot: true },
+    { t: 16.0, end: 17.4, text: "FIRST ₹4L FREE" },
+    { t: 17.5, end: 18.8, text: "SLAB BY SLAB" },
     { t: 18.9, end: 20.1, text: "30% + CESS", hot: true },
     { t: 20.2, end: 22.0, text: "TAX −₹3,62,352", hot: true, big: true },
-    { t: 22.1, end: 24.5, text: "TAX PE BHI TAX" },
-    { t: 24.6, end: 25.9, text: "AUR BACHA?" },
+    { t: 22.1, end: 24.5, text: "TAX ON TAX" },
+    { t: 24.6, end: 25.9, text: "WHAT'S LEFT?" },
     { t: 26.0, end: 27.5, text: "₹1,75,702 CREDITED", hot: true },
     { t: 27.6, end: 28.7, text: "GAP: ₹12,91,568" },
     { t: 28.8, end: 30.6, text: "PROMPT PINNED", hot: true },
-    { t: 30.7, end: 33.1, text: "APNA HISAAB LO" },
+    { t: 30.7, end: 33.1, text: "RUN YOUR NUMBERS" },
   ],
 };

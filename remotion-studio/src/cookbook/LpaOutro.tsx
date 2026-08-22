@@ -37,8 +37,8 @@ export type LpaOutroProps = {
 };
 
 export const LpaOutro: React.FC<LpaOutroProps> = ({
-  q = "CTC − IN-HAND|TUMHARA GAP|KITNA?",
-  accentWord = "KITNA?",
+  q = "CTC − IN-HAND|YOUR GAP|HOW MUCH?",
+  accentWord = "HOW MUCH?",
   promptText = "Break my CTC of ₹____ into real monthly in-hand (new regime FY25-26). List every deduction step by step, which lines come back, and the ONE line to negotiate.",
   promptDur = 3.4,
   hostSrc,
@@ -114,7 +114,7 @@ export const LpaOutro: React.FC<LpaOutroProps> = ({
             justifyContent: "center", gap: 20, opacity: OUT_E(clamp01((bT - 0.7) / 0.5)) }}>
             <div style={{ fontFamily: BOLD, fontSize: 34, color: "#FFF6EC", background: W3.coral,
               borderRadius: 30, padding: "10px 30px", boxShadow: cardShadow }}>
-              Comment: tumhara gap? 👇
+              Comment: your gap? 👇
             </div>
           </div>
 

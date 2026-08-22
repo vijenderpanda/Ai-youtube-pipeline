@@ -44,7 +44,7 @@ NUM_WORDS = re.compile(
 # words that read as numbers but are prose, not figures (U10 is about FIGURES)
 # station ordinals are prose, not figures; scale words (hundred/lakh) still
 # catch any real figure that tries to hide behind them
-NUM_PROSE_OK = {"one", "two", "three"}
+NUM_PROSE_OK = {"one", "two", "three", "percent"}
 
 
 def planned_clock(lines):
