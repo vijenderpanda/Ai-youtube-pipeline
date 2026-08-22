@@ -1,409 +1,402 @@
 {
- "_note": "COMPILED from films/lpa.manifest.json by cast_scenes.py — edit the MANIFEST, not this file.",
- "title": "I Asked AI Where My 34 LPA Actually Goes 💸",
- "tags": [
-  "ctc vs in hand",
-  "salary breakup",
-  "34 lpa in hand",
-  "income tax slabs 2025",
-  "ai",
-  "claude"
- ],
- "outro": true,
- "outro_dur": 0,
- "outro_src": "ep_lpa/outro_card.mp4",
- "outro_cta": "The CTC-decoder prompt is pinned and in the description. Drop your CTC — get your real breakdown. Free.",
- "lines": [
-  "Thirty four LPA! Family's celebrating.",
-  "But the bank credited way less. Let's cut the cake.",
-  "First cut: variable pay. Five point one LPA — on hold.",
-  "Then both PFs, gratuity, insurance, professional tax — slice after slice.",
-  "Now the boss: income tax. The first four? Untouched.",
-  "Then slab by slab — ten, twenty, thirty percent. Plus cess.",
-  "What's left: one seventy five, seven zero two.",
-  "The gap? Almost thirteen LPA — a fresher's entire package.",
-  "Prompt's pinned. Drop your CTC, get your breakdown. Free."
- ],
- "hot_words": [
-  "LAKH",
-  "PACKAGE",
-  "SMS",
-  "SMALL",
-  "LIGHTS",
-  "CUT",
-  "CAKE",
-  "VARIABLE",
-  "HOLD",
-  "PF",
-  "GRATUITY",
-  "BOSS",
-  "TAX",
-  "FOUR",
-  "SLAB",
-  "THIRTY",
-  "CESS",
-  "CREDITED",
-  "GAP",
-  "FRESHER",
-  "PINNED",
-  "FREE"
- ],
- "beats": [
-  "cook:SalaryBrick#offer",
-  "cook:SalaryBrick#brick",
-  "cook:SalaryBrick#varpay",
-  "cook:SalaryBrick#cascade",
-  "cook:SalaryBrick#taxboss",
-  "cook:SalaryBrick#ladder",
-  "cook:SalaryBrick#credit",
-  "cook:SalaryBrick#gap",
-  "cook:SalaryBrick#give"
- ],
- "spine": [
-  "SalaryBrick"
- ],
- "film": {
-  "chips_to": "SalaryBrick",
-  "desc_hashtags": [
-   "#ai",
-   "#salary",
-   "#ctc"
+  "_note": "COMPILED from films/lpa.manifest.json by cast_scenes.py — edit the MANIFEST, not this file.",
+  "title": "I Asked AI Where My 34 LPA Actually Goes 💸",
+  "tags": "ctc vs in hand, salary breakup, 34 lpa in hand, income tax slabs 2025, ai, claude",
+  "outro": true,
+  "outro_dur": 0,
+  "outro_src": "ep_lpa/outro_card.mp4",
+  "outro_cta": "The CTC-decoder prompt is pinned and in the description. Drop your CTC — get your real breakdown. Free.",
+  "lines": [
+    "Thirty four LPA! Family's celebrating.",
+    "But the bank credited way less. Let's cut the cake.",
+    "First cut: variable pay. Five point one LPA — on hold.",
+    "Then both PFs, gratuity, insurance, professional tax — slice after slice.",
+    "Now the boss: income tax. The first four? Untouched.",
+    "Then slab by slab — ten, twenty, thirty percent. Plus cess.",
+    "What's left: one seventy five, seven zero two.",
+    "The gap? Almost thirteen LPA — a fresher's entire package.",
+    "Prompt's pinned. Drop your CTC, get your breakdown. Free."
   ],
-  "sfx": [
-   {
-    "at": 6.0,
-    "name": "digit_slam",
-    "note": "the 6.00s emboss crack"
-   },
-   {
-    "at": "@beat1+2.25",
-    "name": "knife_cut",
-    "note": "variable pay — the first, hardest cut"
-   },
-   {
-    "at": "@beat3+1.05",
-    "name": "knife_cut"
-   },
-   {
-    "at": "@beat3+1.85",
-    "name": "knife_cut"
-   },
-   {
-    "at": "@beat3+2.55",
-    "name": "knife_cut"
-   },
-   {
-    "at": "@beat3+3.15",
-    "name": "knife_cut"
-   },
-   {
-    "at": "@beat3+3.65",
-    "name": "knife_cut"
-   },
-   {
-    "at": "@beat2+0.5",
-    "name": "whoosh_up",
-    "note": "first wedge flies to the pie"
-   },
-   {
-    "at": "@beat4+1.95",
-    "name": "tax_tick"
-   },
-   {
-    "at": "@beat4+2.75",
-    "name": "tax_tick"
-   },
-   {
-    "at": "@beat5+0.65",
-    "name": "tax_tick"
-   },
-   {
-    "at": "@beat5+1.35",
-    "name": "tax_tick"
-   },
-   {
-    "at": "@beat5+1.95",
-    "name": "tax_tick"
-   },
-   {
-    "at": "@beat5+2.55",
-    "name": "tax_tick_hard",
-    "note": "30%+cess"
-   },
-   {
-    "at": "@beat6+0.8",
-    "name": "credit_chime",
-    "note": "SMS unblurs"
-   },
-   {
-    "at": "@beat7+0.5",
-    "name": "ring_close",
-    "note": "IN-HAND sweeps the pie shut"
-   },
-   {
-    "_note": "mixed at build stage (build_ep_v2 master pass); pie land-snaps ride the knife cuts +0.9s"
-   }
-  ]
- },
- "cookbook": {
-  "SalaryBrick": {
-   "brickAt": "@beat1+0.4",
-   "varpayAt": "@beat1+1.6",
-   "crackAt": 6.0,
-   "cascadeAts": [
-    "@beat3+0.4",
-    "@beat3+1.2",
-    "@beat3+1.9",
-    "@beat3+2.5",
-    "@beat3+3.0"
-   ],
-   "taxAt": "@beat4+0.3",
-   "bounceAt": "@beat4+0.7",
-   "ladderAts": [
-    "@beat4+1.6",
-    "@beat4+2.4",
-    "@beat5+0.3",
-    "@beat5+1.0",
-    "@beat5+1.6",
-    "@beat5+2.2"
-   ],
-   "taxStampAt": "@beat5+2.9",
-   "creditAt": "@beat6+2.85",
-   "gapAt": "@beat7+0.4",
-   "giveAt": "@beat8+0.2",
-   "endAt": "@beat8+4.0",
-   "chips": [
-    {
-     "t": "@beat0+0.3",
-     "end": "@beat0+1.6",
-     "text": "34 LAKH? 🎉",
-     "hot": true
-    },
-    {
-     "t": "@beat0+1.6",
-     "end": "@beat1+0.4",
-     "text": "BANK GOT LESS",
-     "hot": false
-    },
-    {
-     "t": "@beat1+0.4",
-     "end": "@beat1+1.6",
-     "text": "WAY LESS?",
-     "hot": false
-    },
-    {
-     "t": "@beat1+1.6",
-     "end": "@beat1+3.0",
-     "text": "CUT THE CAKE",
-     "hot": true
-    },
-    {
-     "t": "@beat1+3.0",
-     "end": "@beat2+0.2",
-     "text": "KNIFE READY",
-     "hot": false
-    },
-    {
-     "t": "@beat2+0.2",
-     "end": "@beat2+1.6",
-     "text": "VARIABLE −₹5,10,000",
-     "hot": true,
-     "big": true
-    },
-    {
-     "t": "@beat2+1.6",
-     "end": "@beat2+2.9",
-     "text": "ON HOLD",
-     "hot": false
-    },
-    {
-     "t": "@beat2+2.9",
-     "end": "@beat2+4.3",
-     "text": "FIRST SLICE ↑",
-     "hot": false
-    },
-    {
-     "t": "@beat2+4.3",
-     "end": "@beat3+0.3",
-     "text": "GOLD PIECE ✓",
-     "hot": false
-    },
-    {
-     "t": "@beat3+0.3",
-     "end": "@beat3+1.2",
-     "text": "EMPLOYER PF ✂",
-     "hot": false
-    },
-    {
-     "t": "@beat3+1.2",
-     "end": "@beat3+1.9",
-     "text": "GRATUITY ✂",
-     "hot": false
-    },
-    {
-     "t": "@beat3+1.9",
-     "end": "@beat3+2.5",
-     "text": "INSURANCE ✂",
-     "hot": false
-    },
-    {
-     "t": "@beat3+2.5",
-     "end": "@beat3+3.1",
-     "text": "MY PF ✂",
-     "hot": false
-    },
-    {
-     "t": "@beat3+3.1",
-     "end": "@beat3+3.8",
-     "text": "PROF TAX ✂",
-     "hot": false
-    },
-    {
-     "t": "@beat3+3.8",
-     "end": "@beat3+5.0",
-     "text": "5 SLICES GONE",
-     "hot": false
-    },
-    {
-     "t": "@beat3+5.0",
-     "end": "@beat4+0.1",
-     "text": "ONE LEFT →",
-     "hot": false
-    },
-    {
-     "t": "@beat4+0.1",
-     "end": "@beat4+1.6",
-     "text": "NOW: TAX",
-     "hot": true
-    },
-    {
-     "t": "@beat4+1.6",
-     "end": "@beat4+2.9",
-     "text": "FIRST ₹4L FREE",
-     "hot": false
-    },
-    {
-     "t": "@beat4+2.9",
-     "end": "@beat5+0.3",
-     "text": "IT BOUNCED!",
-     "hot": false
-    },
-    {
-     "t": "@beat5+0.3",
-     "end": "@beat5+1.6",
-     "text": "SLAB BY SLAB",
-     "hot": false
-    },
-    {
-     "t": "@beat5+1.6",
-     "end": "@beat5+2.9",
-     "text": "30% + CESS",
-     "hot": true
-    },
-    {
-     "t": "@beat5+2.9",
-     "end": "@beat5+4.2",
-     "text": "TAX −₹3,62,352",
-     "hot": true,
-     "big": true
-    },
-    {
-     "t": "@beat5+4.2",
-     "end": "@beat6+0.2",
-     "text": "CESS TOO.",
-     "hot": false
-    },
-    {
-     "t": "@beat6+0.2",
-     "end": "@beat6+1.5",
-     "text": "WHAT'S LEFT?",
-     "hot": false
-    },
-    {
-     "t": "@beat6+1.5",
-     "end": "@beat6+2.4",
-     "text": "COUNTING…",
-     "hot": false
-    },
-    {
-     "t": "@beat6+2.4",
-     "end": "@beat7+0.4",
-     "text": "₹1,75,702 CREDITED",
-     "hot": true
-    },
-    {
-     "t": "@beat7+0.4",
-     "end": "@beat7+1.7",
-     "text": "GAP: ₹12,91,568",
-     "hot": false
-    },
-    {
-     "t": "@beat7+1.7",
-     "end": "@beat7+3.0",
-     "text": "A FRESHER'S SALARY",
-     "hot": false
-    },
-    {
-     "t": "@beat7+3.0",
-     "end": "@beat7+4.3",
-     "text": "3 BUCKETS",
-     "hot": false
-    },
-    {
-     "t": "@beat7+4.3",
-     "end": "@beat8+0.2",
-     "text": "SEE THE SPLIT",
-     "hot": false
-    },
-    {
-     "t": "@beat8+0.2",
-     "end": "@beat8+1.6",
-     "text": "PROMPT PINNED",
-     "hot": true
-    },
-    {
-     "t": "@beat8+1.6",
-     "end": "@beat8+2.3",
-     "text": "RUN YOUR NUMBERS",
-     "hot": false
-    },
-    {
-     "t": "@beat8+2.3",
-     "end": "@beat8+3.0",
-     "text": "IT'S FREE",
-     "hot": false
-    },
-    {
-     "t": "@beat8+3.0",
-     "end": "@beat8+4.4",
-     "text": "COPY-PASTE-RUN",
-     "hot": false
+  "hot_words": [
+    "LAKH",
+    "PACKAGE",
+    "SMS",
+    "SMALL",
+    "LIGHTS",
+    "CUT",
+    "CAKE",
+    "VARIABLE",
+    "HOLD",
+    "PF",
+    "GRATUITY",
+    "BOSS",
+    "TAX",
+    "FOUR",
+    "SLAB",
+    "THIRTY",
+    "CESS",
+    "CREDITED",
+    "GAP",
+    "FRESHER",
+    "PINNED",
+    "FREE"
+  ],
+  "beats": [
+    "cook:SalaryBrick#offer",
+    "cook:SalaryBrick#brick",
+    "cook:SalaryBrick#varpay",
+    "cook:SalaryBrick#cascade",
+    "cook:SalaryBrick#taxboss",
+    "cook:SalaryBrick#ladder",
+    "cook:SalaryBrick#credit",
+    "cook:SalaryBrick#gap",
+    "cook:SalaryBrick#give"
+  ],
+  "spine": [
+    "SalaryBrick"
+  ],
+  "film": {
+    "chips_to": "SalaryBrick",
+    "desc_hashtags": [
+      "#ai",
+      "#salary",
+      "#ctc"
+    ],
+    "sfx": [
+      {
+        "at": 6.0,
+        "name": "digit_slam",
+        "note": "the 6.00s emboss crack"
+      },
+      {
+        "at": "@beat1+2.25",
+        "name": "knife_cut",
+        "note": "variable pay — the first, hardest cut"
+      },
+      {
+        "at": "@beat3+1.05",
+        "name": "knife_cut"
+      },
+      {
+        "at": "@beat3+1.85",
+        "name": "knife_cut"
+      },
+      {
+        "at": "@beat3+2.55",
+        "name": "knife_cut"
+      },
+      {
+        "at": "@beat3+3.15",
+        "name": "knife_cut"
+      },
+      {
+        "at": "@beat3+3.65",
+        "name": "knife_cut"
+      },
+      {
+        "at": "@beat2+0.5",
+        "name": "whoosh_up",
+        "note": "first wedge flies to the pie"
+      },
+      {
+        "at": "@beat4+1.95",
+        "name": "tax_tick"
+      },
+      {
+        "at": "@beat4+2.75",
+        "name": "tax_tick"
+      },
+      {
+        "at": "@beat5+0.65",
+        "name": "tax_tick"
+      },
+      {
+        "at": "@beat5+1.35",
+        "name": "tax_tick"
+      },
+      {
+        "at": "@beat5+1.95",
+        "name": "tax_tick"
+      },
+      {
+        "at": "@beat5+2.55",
+        "name": "tax_tick_hard",
+        "note": "30%+cess"
+      },
+      {
+        "at": "@beat6+0.8",
+        "name": "credit_chime",
+        "note": "SMS unblurs"
+      },
+      {
+        "at": "@beat7+0.5",
+        "name": "ring_close",
+        "note": "IN-HAND sweeps the pie shut"
+      },
+      {
+        "_note": "mixed at build stage (build_ep_v2 master pass); pie land-snaps ride the knife cuts +0.9s"
+      }
+    ]
+  },
+  "cookbook": {
+    "SalaryBrick": {
+      "brickAt": "@beat1+0.4",
+      "varpayAt": "@beat1+1.6",
+      "crackAt": 6.0,
+      "cascadeAts": [
+        "@beat3+0.4",
+        "@beat3+1.2",
+        "@beat3+1.9",
+        "@beat3+2.5",
+        "@beat3+3.0"
+      ],
+      "taxAt": "@beat4+0.3",
+      "bounceAt": "@beat4+0.7",
+      "ladderAts": [
+        "@beat4+1.6",
+        "@beat4+2.4",
+        "@beat5+0.3",
+        "@beat5+1.0",
+        "@beat5+1.6",
+        "@beat5+2.2"
+      ],
+      "taxStampAt": "@beat5+2.9",
+      "creditAt": "@beat6+2.85",
+      "gapAt": "@beat7+0.4",
+      "giveAt": "@beat8+0.2",
+      "endAt": "@beat8+4.0",
+      "chips": [
+        {
+          "t": "@beat0+0.3",
+          "end": "@beat0+1.6",
+          "text": "34 LAKH? 🎉",
+          "hot": true
+        },
+        {
+          "t": "@beat0+1.6",
+          "end": "@beat1+0.4",
+          "text": "BANK GOT LESS",
+          "hot": false
+        },
+        {
+          "t": "@beat1+0.4",
+          "end": "@beat1+1.6",
+          "text": "WAY LESS?",
+          "hot": false
+        },
+        {
+          "t": "@beat1+1.6",
+          "end": "@beat1+3.0",
+          "text": "CUT THE CAKE",
+          "hot": true
+        },
+        {
+          "t": "@beat1+3.0",
+          "end": "@beat2+0.2",
+          "text": "KNIFE READY",
+          "hot": false
+        },
+        {
+          "t": "@beat2+0.2",
+          "end": "@beat2+1.6",
+          "text": "VARIABLE −₹5,10,000",
+          "hot": true,
+          "big": true
+        },
+        {
+          "t": "@beat2+1.6",
+          "end": "@beat2+2.9",
+          "text": "ON HOLD",
+          "hot": false
+        },
+        {
+          "t": "@beat2+2.9",
+          "end": "@beat2+4.3",
+          "text": "FIRST SLICE ↑",
+          "hot": false
+        },
+        {
+          "t": "@beat2+4.3",
+          "end": "@beat3+0.3",
+          "text": "GOLD PIECE ✓",
+          "hot": false
+        },
+        {
+          "t": "@beat3+0.3",
+          "end": "@beat3+1.2",
+          "text": "EMPLOYER PF ✂",
+          "hot": false
+        },
+        {
+          "t": "@beat3+1.2",
+          "end": "@beat3+1.9",
+          "text": "GRATUITY ✂",
+          "hot": false
+        },
+        {
+          "t": "@beat3+1.9",
+          "end": "@beat3+2.5",
+          "text": "INSURANCE ✂",
+          "hot": false
+        },
+        {
+          "t": "@beat3+2.5",
+          "end": "@beat3+3.1",
+          "text": "MY PF ✂",
+          "hot": false
+        },
+        {
+          "t": "@beat3+3.1",
+          "end": "@beat3+3.8",
+          "text": "PROF TAX ✂",
+          "hot": false
+        },
+        {
+          "t": "@beat3+3.8",
+          "end": "@beat3+5.0",
+          "text": "5 SLICES GONE",
+          "hot": false
+        },
+        {
+          "t": "@beat3+5.0",
+          "end": "@beat4+0.1",
+          "text": "ONE LEFT →",
+          "hot": false
+        },
+        {
+          "t": "@beat4+0.1",
+          "end": "@beat4+1.6",
+          "text": "NOW: TAX",
+          "hot": true
+        },
+        {
+          "t": "@beat4+1.6",
+          "end": "@beat4+2.9",
+          "text": "FIRST ₹4L FREE",
+          "hot": false
+        },
+        {
+          "t": "@beat4+2.9",
+          "end": "@beat5+0.3",
+          "text": "IT BOUNCED!",
+          "hot": false
+        },
+        {
+          "t": "@beat5+0.3",
+          "end": "@beat5+1.6",
+          "text": "SLAB BY SLAB",
+          "hot": false
+        },
+        {
+          "t": "@beat5+1.6",
+          "end": "@beat5+2.9",
+          "text": "30% + CESS",
+          "hot": true
+        },
+        {
+          "t": "@beat5+2.9",
+          "end": "@beat5+4.2",
+          "text": "TAX −₹3,62,352",
+          "hot": true,
+          "big": true
+        },
+        {
+          "t": "@beat5+4.2",
+          "end": "@beat6+0.2",
+          "text": "CESS TOO.",
+          "hot": false
+        },
+        {
+          "t": "@beat6+0.2",
+          "end": "@beat6+1.5",
+          "text": "WHAT'S LEFT?",
+          "hot": false
+        },
+        {
+          "t": "@beat6+1.5",
+          "end": "@beat6+2.4",
+          "text": "COUNTING…",
+          "hot": false
+        },
+        {
+          "t": "@beat6+2.4",
+          "end": "@beat7+0.4",
+          "text": "₹1,75,702 CREDITED",
+          "hot": true
+        },
+        {
+          "t": "@beat7+0.4",
+          "end": "@beat7+1.7",
+          "text": "GAP: ₹12,91,568",
+          "hot": false
+        },
+        {
+          "t": "@beat7+1.7",
+          "end": "@beat7+3.0",
+          "text": "A FRESHER'S SALARY",
+          "hot": false
+        },
+        {
+          "t": "@beat7+3.0",
+          "end": "@beat7+4.3",
+          "text": "3 BUCKETS",
+          "hot": false
+        },
+        {
+          "t": "@beat7+4.3",
+          "end": "@beat8+0.2",
+          "text": "SEE THE SPLIT",
+          "hot": false
+        },
+        {
+          "t": "@beat8+0.2",
+          "end": "@beat8+1.6",
+          "text": "PROMPT PINNED",
+          "hot": true
+        },
+        {
+          "t": "@beat8+1.6",
+          "end": "@beat8+2.3",
+          "text": "RUN YOUR NUMBERS",
+          "hot": false
+        },
+        {
+          "t": "@beat8+2.3",
+          "end": "@beat8+3.0",
+          "text": "IT'S FREE",
+          "hot": false
+        },
+        {
+          "t": "@beat8+3.0",
+          "end": "@beat8+4.4",
+          "text": "COPY-PASTE-RUN",
+          "hot": false
+        }
+      ],
+      "pings": [
+        {
+          "at": "@beat4+2.5",
+          "kind": "like",
+          "tip": "worth a like? hit it ✨",
+          "dur": 2.0
+        },
+        {
+          "at": "@beat7+0.6",
+          "kind": "comment",
+          "tip": "drop your gap 👇",
+          "dur": 2.0
+        },
+        {
+          "at": "@beat8+1.4",
+          "kind": "subscribe",
+          "tip": "more of this 🔔",
+          "dur": 2.0
+        }
+      ]
     }
-   ],
-   "pings": [
-    {
-     "at": "@beat4+2.5",
-     "kind": "like",
-     "tip": "worth a like? hit it ✨",
-     "dur": 2.0
-    },
-    {
-     "at": "@beat7+0.6",
-     "kind": "comment",
-     "tip": "drop your gap 👇",
-     "dur": 2.0
-    },
-    {
-     "at": "@beat8+1.4",
-     "kind": "subscribe",
-     "tip": "more of this 🔔",
-     "dur": 2.0
-    }
-   ]
-  }
- },
- "desc_prompt": "The fix — paste this BEFORE your chat gets long:\n\n\"Break my CTC of ₹____ into real monthly in-hand (new tax regime FY 2025-26). List EVERY deduction step by step — variable pay held, employer PF, employee PF, gratuity, insurance, professional tax, then income tax slab by slab with cess. End with: which lines come back to me later, which never do, and the ONE line to negotiate in my next offer.\"\n\nThen open a fresh chat, paste the notes, and continue where you left off. Works in ChatGPT, Claude, and Gemini.",
- "desc_cta": "What's the one thing Claude keeps forgetting on you? Tell me below.",
- "desc_hashtags": null,
- "steps": []
+  },
+  "desc_prompt": "The fix — paste this BEFORE your chat gets long:\n\n\"Break my CTC of ₹____ into real monthly in-hand (new tax regime FY 2025-26). List EVERY deduction step by step — variable pay held, employer PF, employee PF, gratuity, insurance, professional tax, then income tax slab by slab with cess. End with: which lines come back to me later, which never do, and the ONE line to negotiate in my next offer.\"\n\nThen open a fresh chat, paste the notes, and continue where you left off. Works in ChatGPT, Claude, and Gemini.",
+  "desc_cta": "What's the one thing Claude keeps forgetting on you? Tell me below.",
+  "desc_hashtags": null,
+  "steps": []
 }

@@ -559,6 +559,38 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
     </div>
   ) : null;
 
+  /* THE SUPER-POSTER (VJ: the reaction game's WAIT frame): frame 0 is a
+     full-bleed challenge poster — giant figure, blurred answer, blinking
+     GUESS — then it rips away into the celebration hook. Thumb = this frame. */
+  const posterRip = IN_E(clamp01((t - 0.9) / 0.35));
+  const poster = t < 1.35 ? (
+    <div style={{ position: "absolute", inset: 0, zIndex: 60,
+      transform: `translateY(${-posterRip * 1980}px)`,
+      background: `radial-gradient(130% 90% at 50% 30%, #1C2130 0%, #0D1017 60%, #080A0F 100%)` }}>
+      <div style={{ position: "absolute", left: -180, top: 200, width: 800, height: 1000,
+        background: `radial-gradient(ellipse, ${rgba("#E8B84B", 0.16)} 0%, transparent 65%)` }} />
+      <div style={{ position: "absolute", left: 0, right: 0, top: 430, textAlign: "center" }}>
+        <div style={{ fontFamily: MONO, fontSize: 40, letterSpacing: 8, color: rgba("#F2EFE6", 0.75) }}>MY PACKAGE</div>
+        <div style={{ fontFamily: DISP, fontSize: 250, lineHeight: 1.0, color: DK.gold,
+          textShadow: `0 0 80px ${rgba(DK.gold, 0.4)}, 0 6px 0 ${rgba("#000", 0.55)}`,
+          transform: `scale(${0.94 + OUT_E(clamp01(t / 0.35)) * 0.06})` }}>34<span style={{ fontSize: 120 }}> LPA</span></div>
+        <div style={{ marginTop: 46, fontFamily: MONO, fontSize: 52, color: "#F2EFE6" }}>
+          IN-HAND = <span style={{ filter: "blur(14px)", color: DK.green }}>₹1,75,702</span>
+        </div>
+        <div style={{ marginTop: 56, display: "inline-block", fontFamily: DISP, fontSize: 66,
+          color: "#FFF6EC", background: "#E8302A", borderRadius: 22, padding: "10px 44px",
+          boxShadow: `0 0 ${30 + Math.sin(t * 18) * 18}px ${rgba("#E8302A", 0.8)}`,
+          opacity: Math.sin(t * 16) > -0.6 ? 1 : 0.35,
+          transform: `scale(${1 + Math.sin(t * 8) * 0.03})` }}>GUESS 👇</div>
+      </div>
+      <div style={{ position: "absolute", right: 60, top: 70, display: "flex", gap: 10, alignItems: "center",
+        background: rgba("#211A12", 0.9), borderRadius: 12, padding: "8px 16px" }}>
+        <span style={{ fontSize: 24 }}>✳</span>
+        <span style={{ fontFamily: MONO, fontSize: 22, color: "#F6EEDF", letterSpacing: 2 }}>FREE AI</span>
+      </div>
+    </div>
+  ) : null;
+
   /* ---- brand inside 1s (law 3) ---- */
   const brandOn = OUT_E(clamp01((t - 0.45) / 0.4));
   const brand = (
@@ -833,6 +865,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
         <div style={{ position: "absolute", inset: 0, pointerEvents: "none",
           background: `radial-gradient(130% 95% at 50% 42%, transparent 55%, ${rgba("#4A3B26", 0.26)} 100%)` }} />
         {chipEl}
+        {poster}
         {pings.map((pg, i) => <EngagePing key={i} t={t} ping={pg} />)}
       </AbsoluteFill>
     </FilmT.Provider>
