@@ -68,6 +68,12 @@ export const EngagePing: React.FC<{ t?: number; ping: Ping }> = ({ t: tProp, pin
      with a spring overshoot, then breathes gently */
   const grow = 0.55 + OUT_E(clamp01(local / 0.28)) * 0.45 + settle(t, at + 0.28, 0.35) * 0.08;
   const pulse = grow * (1 + Math.sin(local * 7) * 0.04);
+  /* FILL + BLINK (VJ: outlines don't catch the eye): the shape is SOLID and
+     hard-blinks ~5x in the first second (square wave), then holds a strong
+     pulse for the rest of the ping */
+  const blinkO = local < 1.0
+    ? (Math.sin(local * 30) > 0 ? 0.95 : 0.12)
+    : 0.72 + Math.sin(local * 8) * 0.22;
   const fid = `ep-glow-${ping.kind}`;
 
   /* the shape, drawn 3 ways: wide red bloom, red mid, white-hot core —
@@ -97,6 +103,9 @@ export const EngagePing: React.FC<{ t?: number; ping: Ping }> = ({ t: tProp, pin
             <feGaussianBlur stdDeviation="5" />
           </filter>
         </defs>
+        {/* SOLID blinking fill — the attention grabber */}
+        <path d={sh.d} fill={HOT} opacity={blinkO} filter={`url(#${fid})`} />
+        <path d={sh.d} fill={HOT} opacity={blinkO} />
         {/* red bloom */}
         <path d={sh.d} fill="none" stroke={HOT} strokeWidth={8} filter={`url(#${fid})`} opacity={0.95}
           strokeLinejoin="round" />
