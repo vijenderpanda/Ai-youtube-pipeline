@@ -679,7 +679,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="SalaryBrickFilm"
         component={SalaryBrick}
-        durationInFrames={Math.round(32.5 * FPS)}
+        durationInFrames={Math.round(36.2 * FPS)}
         fps={FPS}
         width={1080}
         height={1920}

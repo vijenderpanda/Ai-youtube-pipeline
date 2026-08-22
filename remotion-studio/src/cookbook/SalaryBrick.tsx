@@ -6,7 +6,7 @@ import { FilmT } from "./filmclock";
 import { ExposureScore, FlashCut } from "./craft";
 
 /* =============================================================================
-   SALARY BRICK — ep3 "I Asked AI Where My 12 LPA Actually Goes".
+   SALARY BRICK — ep3 "I Asked AI Where My 34 LPA Actually Goes".
 
    Spine (VJ-picked, judge score 45/50):
    0.0  POV offer-letter moment: embossed CTC ₹12,00,000, confetti mid-fall,
@@ -48,9 +48,10 @@ export type Chip = { t: number; end?: number; text: string; hot?: boolean; big?:
 export type SalaryBrickProps = {
   start?: number; width?: number; height?: number;
   brickAt?: number; varpayAt?: number; crackAt?: number;
-  cascadeAts?: number[];              // employer PF, gratuity, insurance
-  taxAt?: number; bounceAt?: number;
-  empfAt?: number; ptaxAt?: number;
+  cascadeAts?: number[];              // employer PF, gratuity, insurance, employee PF, prof tax
+  taxAt?: number; bounceAt?: number;  // the red cleaver's windup + the ₹4L bounce
+  ladderAts?: number[];               // six slab chops, accelerating
+  taxStampAt?: number;                // the total lands on the cart
   creditAt?: number; gapAt?: number;
   giveAt?: number; endAt?: number;
   chips?: Chip[];
@@ -59,12 +60,19 @@ export type SalaryBrickProps = {
 /* the cut list drives brick height + cart contents; amounts in ₹/yr */
 type Cut = { key: string; label: string; amt: string; frac: number };
 const CUTS: Cut[] = [
-  { key: "varpay", label: "VARIABLE PAY", amt: "−₹1,80,000", frac: 0.15 },
-  { key: "epf", label: "EMPLOYER PF", amt: "−₹57,600", frac: 0.048 },
-  { key: "grat", label: "GRATUITY", amt: "−₹23,088", frac: 0.019 },
-  { key: "ins", label: "INSURANCE", amt: "−₹15,000", frac: 0.013 },
-  { key: "mypf", label: "EMPLOYEE PF", amt: "−₹57,600", frac: 0.048 },
-  { key: "ptax", label: "PROF TAX", amt: "−₹2,400", frac: 0.002 },
+  { key: "varpay", label: "VARIABLE PAY", amt: "−₹5,10,000", frac: 0.15 },
+  { key: "epf", label: "EMPLOYER PF", amt: "−₹1,63,200", frac: 0.048 },
+  { key: "grat", label: "GRATUITY", amt: "−₹65,416", frac: 0.0192 },
+  { key: "ins", label: "INSURANCE", amt: "−₹25,000", frac: 0.0074 },
+  { key: "mypf", label: "EMPLOYEE PF", amt: "−₹1,63,200", frac: 0.048 },
+  { key: "ptax", label: "PROF TAX", amt: "−₹2,400", frac: 0.0007 },
+  { key: "tax", label: "INCOME TAX", amt: "−₹3,62,352", frac: 0 },
+];
+/* the tax is chopped SLAB BY SLAB (VJ: step by step, realistic at 34 LPA);
+   ladder slice amounts in ₹, cess folded into the last swing */
+const TAX_STEPS = [
+  { pct: "5%", amt: 20000 }, { pct: "10%", amt: 40000 }, { pct: "15%", amt: 60000 },
+  { pct: "20%", amt: 80000 }, { pct: "25%", amt: 100000 }, { pct: "30%+cess", amt: 62352 },
 ];
 
 /* one falling cleaver: windup above, accelerating fall, hit shake + dust.
@@ -101,9 +109,9 @@ const Cleaver: React.FC<{
 export const SalaryBrick: React.FC<SalaryBrickProps> = ({
   start = 0, width = 1080, height = 1920,
   brickAt = 3.4, varpayAt = 4.6, crackAt = 6.0,
-  cascadeAts = [11.3, 12.7, 13.9], taxAt = 16.1, bounceAt = 17.4,
-  empfAt = 20.9, ptaxAt = 22.2,
-  creditAt = 24.9, gapAt = 26.7, giveAt = 28.5, endAt = 32.4,
+  cascadeAts = [10.9, 11.7, 12.4, 13.0, 13.6], taxAt = 15.0, bounceAt = 15.4,
+  ladderAts = [16.0, 16.8, 17.5, 18.3, 18.9, 19.5], taxStampAt = 20.2,
+  creditAt = 26.0, gapAt = 27.6, giveAt = 28.8, endAt = 33.1,
   chips = [],
 }) => {
   const frame = useCurrentFrame();
@@ -111,26 +119,26 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
   const t = frame / fps - start;
 
   /* ---------------------------------------------------------- shake ------- */
-  const cutTimes = [varpayAt + 0.65, cascadeAts[0] + 0.65, cascadeAts[1] + 0.65,
-    cascadeAts[2] + 0.65, empfAt + 0.65, ptaxAt + 0.65];
+  const cutTimes = [varpayAt + 0.65, ...cascadeAts.map((a) => a + 0.65),
+    ...ladderAts.map((a) => a + 0.3)];
   let shake = 0;
   for (const [i, ct] of cutTimes.entries()) {
     const d = t - ct;
-    if (d > 0 && d < 0.45) shake = Math.max(shake, Math.sin(d * 40) * (1 - d / 0.45) * (i === 0 ? 14 : 7));
+    if (d > 0 && d < 0.45) shake = Math.max(shake, Math.sin(d * 40) * (1 - d / 0.45) * (i === 0 ? 14 : 6));
   }
   const bShake = t > bounceAt && t < bounceAt + 0.5 ? Math.sin((t - bounceAt) * 34) * (1 - (t - bounceAt) / 0.5) * 10 : 0;
   shake += bShake;
 
   /* -------------------------------------------------- brick geometry ------ */
   /* how much of the brick has been chopped by time t */
-  const cutAts = [varpayAt + 0.65, cascadeAts[0] + 0.65, cascadeAts[1] + 0.65,
-    cascadeAts[2] + 0.65, empfAt + 0.65, ptaxAt + 0.65];
+  const cutAts = [varpayAt + 0.65, ...cascadeAts.map((a) => a + 0.65), taxStampAt];
   let choppedFrac = 0;
-  CUTS.forEach((c, i) => { if (t >= cutAts[i]) choppedFrac += c.frac; });
+  CUTS.forEach((c, i) => { if (i < 6 && t >= cutAts[i]) choppedFrac += c.frac; });
+  TAX_STEPS.forEach((st, i) => { if (t >= ladderAts[i] + 0.3) choppedFrac += st.amt / 3400000; });
   const BRICK_X = 190, BRICK_BOT = 1180, BRICK_W = 700, BRICK_H0 = 560;
-  const brickH = BRICK_H0 * (1 - choppedFrac * (1 / 0.28) * 0.72);
-  /* frac sums to .28 of CTC; the wafer keeps ~28% visual height so the
-     surviving in-hand still reads as a real object, not a sliver */
+  const brickH = BRICK_H0 * (1 - choppedFrac * (1 / 0.38) * 0.62);
+  /* cuts sum to ~.38 of CTC; the wafer keeps ~38% visual height — the
+     in-hand is still a real object, and the gap is a fresher's package */
   const brickOn = OUT_E(clamp01((t - brickAt) / 0.6)) * (1 - clamp01((t - creditAt + 0.1) / 0.4));
 
   const brick = brickOn > 0.01 ? (
@@ -171,31 +179,44 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
           transform: `translateX(${(1 - cartOn) * 200}px)` }} />
         {/* chunks stack on the cart as they are cut; at the gap they LINE UP */}
         {CUTS.map((c, i) => {
-          const cutT = cutAts[i];
+          const isTax = c.key === "tax";
+          const cutT = isTax ? taxStampAt : cutAts[i];
           if (t < cutT) return null;
           const fly = OUT_E(clamp01((t - cutT) / 0.6));
-          const isBig = i === 0;
+          const isBig = i === 0 || isTax;
           const restX = 600 + (i % 2) * 200, restY = -22 - Math.floor(i / 2) * 66;
-          const lineX = 8 + i * 168, lineY = 40;
+          const lineX = 8 + i * 146, lineY = 40;
           const x = BRICK_X + 200 + (restX - BRICK_X - 200) * fly + (lineX - restX) * lineUp;
           const y = -400 + (restY + 400) * fly + (lineY - restY) * lineUp;
           return (
             <div key={c.key} style={{ position: "absolute", left: x, top: y,
               transform: `rotate(${(1 - fly) * 14 - 4 + lineUp * 4}deg) scale(${isBig ? 0.9 : 0.64})`,
-              background: `linear-gradient(180deg, ${W3.money}, ${W3.moneyDeep})`,
+              background: isTax ? `linear-gradient(180deg, ${W3.red}, #A93A22)` :
+                `linear-gradient(180deg, ${W3.money}, ${W3.moneyDeep})`,
               borderRadius: 10, padding: "8px 14px", boxShadow: cardShadow, zIndex: 15 }}>
               <div style={{ fontFamily: MONO, fontSize: 19, color: "#FFF6EC", letterSpacing: 1 }}>{c.label}</div>
               <div style={{ fontFamily: DISP, fontSize: 26, color: "#FFF6EC" }}>{c.amt}</div>
             </div>
           );
         })}
-        {/* the gap total materializes when the chunks line up */}
+        {/* the gap, split honestly: what comes back vs what never does */}
         {lineUp > 0.6 ? (
-          <div style={{ position: "absolute", left: 170, top: 150, fontFamily: MONO, fontSize: 34,
-            color: "#F6EEDF", background: rgba("#211A12", 0.92), borderRadius: 12,
-            padding: "8px 22px", boxShadow: cardShadow, opacity: (lineUp - 0.6) / 0.4,
-            fontVariantNumeric: "tabular-nums" as const }}>
-            GAP = ₹3,35,688 / SAAL — poora hisaab ✓
+          <div style={{ position: "absolute", left: 60, top: 150, opacity: (lineUp - 0.6) / 0.4 }}>
+            <div style={{ fontFamily: MONO, fontSize: 27, color: "#F6EEDF",
+              background: rgba("#211A12", 0.92), borderRadius: 12, padding: "8px 20px",
+              boxShadow: cardShadow, fontVariantNumeric: "tabular-nums" as const }}>
+              GAP = ₹12,91,568 / SAAL — <span style={{ color: "#FFB08F" }}>ek fresher ka package</span>
+            </div>
+            <div style={{ display: "flex", gap: 12, marginTop: 10 }}>
+              <div style={{ fontFamily: MONO, fontSize: 21, color: "#D9F2E2",
+                background: rgba("#1E5B38", 0.92), borderRadius: 10, padding: "6px 14px" }}>
+                WAPAS MILEGA* ₹9,01,816
+              </div>
+              <div style={{ fontFamily: MONO, fontSize: 21, color: "#FFE0D8",
+                background: rgba("#7A2515", 0.92), borderRadius: 10, padding: "6px 14px" }}>
+                KABHI NAHI ₹3,89,752
+              </div>
+            </div>
           </div>
         ) : null}
       </div>
@@ -219,7 +240,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
         <div style={{ marginTop: 8, fontFamily: DISP, fontSize: 96, color: W3.ink, letterSpacing: 2,
           textShadow: `0 1px 0 ${rgba("#FFF", 0.9)}, 0 -1px 0 ${rgba("#000", 0.25)}`,
           fontVariantNumeric: "tabular-nums" as const,
-          opacity: 1 - crackP, transform: `scale(${1 - crackP * 0.06})` }}>₹12,00,000</div>
+          opacity: 1 - crackP, transform: `scale(${1 - crackP * 0.06})` }}>₹34,00,000</div>
         {/* the crack: six deduction labels burst out of the numerals */}
         {crackP > 0.01 ? (
           <div style={{ position: "absolute", left: 40, top: 150, width: 820, display: "flex",
@@ -250,7 +271,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
         boxShadow: cardShadow, border: `1px solid ${rgba("#7BA05B", 0.4)}` }}>
         <div style={{ fontFamily: MONO, fontSize: 20, color: "#4A6B35", fontWeight: 700 }}>Family ❤ · Papa</div>
         <div style={{ fontFamily: MONO, fontSize: 27, color: "#2C3E1F", marginTop: 4 }}>
-          Beta 12 lakh package! 🎉🎉
+          Beta 34 lakh package! 🎉🎉
         </div>
       </div>
     </div>
@@ -284,7 +305,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
             textShadow: credited ? `0 0 30px ${rgba(W3.money, 0.8)}` : undefined,
             fontVariantNumeric: "tabular-nums" as const,
             transform: credited ? `scale(${1 + creditPop * 0.05})` : undefined,
-          }}>₹72,026</span>
+          }}>₹1,75,702</span>
           {credited ? <span style={{ fontFamily: MONO, fontSize: 24, color: "#6B6B6B" }}>a/c XX4021 · 1st of month</span> : null}
         </div>
       </div>
@@ -324,20 +345,49 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
 
   /* -------------------------------------------------- the tax bounce ------ */
   const shieldOn = OUT_E(clamp01((t - bounceAt) / 0.35));
-  const shield = t >= bounceAt && t < empfAt + 0.4 ? (
-    <div style={{ position: "absolute", left: 140, top: 640, width: 800, zIndex: 26,
-      textAlign: "center", opacity: shieldOn * (1 - clamp01((t - empfAt - 0.0) / 0.4)),
+  const shield = t >= bounceAt && t < ladderAts[1] ? (
+    <div style={{ position: "absolute", left: 200, top: 620, width: 680, zIndex: 26,
+      textAlign: "center", opacity: shieldOn * (1 - clamp01((t - ladderAts[0] - 0.5) / 0.4)),
       transform: `scale(${0.85 + shieldOn * 0.15 + settle(t, bounceAt, 0.5) * 0.08})` }}>
-      <div style={{ display: "inline-block", background: rgba("#211A12", 0.93), borderRadius: 20,
-        padding: "18px 34px", boxShadow: cardShadow, border: `3px solid ${W3.green}` }}>
-        <div style={{ fontFamily: DISP, fontSize: 64, color: W3.green }}>TAX = ₹0</div>
-        <div style={{ fontFamily: MONO, fontSize: 25, color: "#F6EEDF", marginTop: 6 }}>
-          naya regime FY25-26 · ₹12L tak rebate
-        </div>
-        <div style={{ fontFamily: MONO, fontSize: 19, color: rgba("#F6EEDF", 0.65), marginTop: 4 }}>
-          taxable ₹8,49,312 &lt; ₹12,00,000 → s87A ✓
+      <div style={{ display: "inline-block", background: rgba("#211A12", 0.93), borderRadius: 18,
+        padding: "14px 30px", boxShadow: cardShadow, border: `3px solid ${W3.green}` }}>
+        <div style={{ fontFamily: DISP, fontSize: 52, color: W3.green }}>PEHLE ₹4L — TAX ₹0</div>
+        <div style={{ fontFamily: MONO, fontSize: 22, color: "#F6EEDF", marginTop: 4 }}>
+          naya regime FY25-26 · slab 1
         </div>
       </div>
+    </div>
+  ) : null;
+
+  /* the ladder counter: slab rows land as the cleaver chops — step by step */
+  const ladderOn = OUT_E(clamp01((t - ladderAts[0]) / 0.4));
+  const ladder = t >= ladderAts[0] && t < creditAt ? (
+    <div style={{ position: "absolute", right: 46, top: 560, width: 400, zIndex: 26,
+      opacity: ladderOn * (1 - clamp01((t - creditAt + 0.4) / 0.4)),
+      background: rgba("#211A12", 0.93), borderRadius: 18, padding: "16px 22px",
+      boxShadow: cardShadow, border: `2px solid ${rgba(W3.red, 0.6)}` }}>
+      <div style={{ fontFamily: MONO, fontSize: 21, letterSpacing: 2, color: "#FFB0A0" }}>TAX · SLAB BY SLAB</div>
+      {TAX_STEPS.map((st, i) => {
+        const on = OUT_E(clamp01((t - ladderAts[i] - 0.25) / 0.3));
+        if (on < 0.01) return null;
+        return (
+          <div key={i} style={{ display: "flex", justifyContent: "space-between", marginTop: 8,
+            fontFamily: MONO, fontSize: 24, color: "#F6EEDF", opacity: on,
+            transform: `translateX(${(1 - on) * 40}px)`,
+            fontVariantNumeric: "tabular-nums" as const }}>
+            <span style={{ color: rgba("#F6EEDF", 0.6) }}>{st.pct}</span>
+            <span>−₹{st.amt.toLocaleString("en-IN")}</span>
+          </div>
+        );
+      })}
+      {t >= taxStampAt ? (
+        <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1.5px solid ${rgba("#FFF", 0.25)}`,
+          display: "flex", justifyContent: "space-between", fontFamily: DISP, fontSize: 30,
+          color: "#FFB0A0", transform: `scale(${1 + settle(t, taxStampAt, 0.4) * 0.08})`,
+          fontVariantNumeric: "tabular-nums" as const }}>
+          <span>TOTAL</span><span>−₹3,62,352</span>
+        </div>
+      ) : null}
     </div>
   ) : null;
 
@@ -379,7 +429,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
         <div style={{ position: "absolute", left: 0, right: 0, top: 1290, textAlign: "center", zIndex: 40,
           opacity: pop, transform: `scale(${0.92 + 0.08 * pop + settle(t, cur.t, 0.4) * 0.05})` }}>
           <span style={{ fontFamily: DISP, fontSize: 78, color: "#FFF6EC",
-            background: cur.text.includes("TAX ₹0") ? "#1E5B38" : W3.red,
+            background: cur.text.startsWith("TAX") ? W3.red : rgba("#211A12", 0.94),
             padding: "6px 32px", borderRadius: 20, boxShadow: cardShadow }}>{cur.text}</span>
         </div>
       );
@@ -409,12 +459,18 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
     <>
       <Cleaver t={t} at={varpayAt} x={250} topY={BRICK_BOT - brickH} scale={1.25} label="VARIABLE PAY" />
       <Cleaver t={t} at={cascadeAts[0]} x={320} topY={BRICK_BOT - brickH} label="EMPLOYER PF" />
-      <Cleaver t={t} at={cascadeAts[1]} x={420} topY={BRICK_BOT - brickH} scale={0.9} label="GRATUITY" />
-      <Cleaver t={t} at={cascadeAts[2]} x={360} topY={BRICK_BOT - brickH} scale={0.82} label="INSURANCE" />
+      <Cleaver t={t} at={cascadeAts[1]} x={420} topY={BRICK_BOT - brickH} scale={0.88} label="GRATUITY" />
+      <Cleaver t={t} at={cascadeAts[2]} x={360} topY={BRICK_BOT - brickH} scale={0.8} label="INSURANCE" />
+      <Cleaver t={t} at={cascadeAts[3]} x={300} topY={BRICK_BOT - brickH} scale={0.95} label="EMPLOYEE PF" />
+      <Cleaver t={t} at={cascadeAts[4]} x={440} topY={BRICK_BOT - brickH} scale={0.66} label="PROF TAX" />
+      {/* the boss: winds up huge, BOUNCES on the first 4L, then chops the
+          ladder — each swing faster, the LAST one the hardest (30% + cess) */}
       <Cleaver t={t} at={taxAt} x={200} topY={BRICK_BOT - brickH} scale={1.55} label="INCOME TAX" red
         bounce bounceAt={bounceAt} />
-      <Cleaver t={t} at={empfAt} x={340} topY={BRICK_BOT - brickH} scale={0.9} label="EMPLOYEE PF" />
-      <Cleaver t={t} at={ptaxAt} x={430} topY={BRICK_BOT - brickH} scale={0.7} label="PROF TAX" />
+      {ladderAts.map((a, i) => (
+        <Cleaver key={i} t={t} at={a} x={230 + (i % 2) * 60} topY={BRICK_BOT - brickH}
+          scale={0.8 + i * 0.06} label={`TAX ${TAX_STEPS[i].pct}`} red />
+      ))}
     </>
   );
 
@@ -443,6 +499,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
           {chat}
           {sms}
           {shield}
+          {ladder}
           {brand}
           {give}
         </AbsoluteFill>
@@ -462,22 +519,27 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
 /* ---- canonical demo (planned clock) -------------------------------------- */
 export const salaryBrickDemo: SalaryBrickProps = {
   chips: [
-    { t: 0.3, end: 1.6, text: "12 LAKH? 🎉", hot: true },
+    { t: 0.3, end: 1.6, text: "34 LAKH? 🎉", hot: true },
     { t: 1.7, end: 3.3, text: "SMS ITNA CHHOTA?" },
-    { t: 3.4, end: 4.9, text: "CTC = BRICK" },
-    { t: 5.0, end: 6.0, text: "CLEAVERS READY" },
-    { t: 6.1, end: 8.0, text: "VARIABLE PAY −₹1.8L", hot: true, big: true },
-    { t: 8.1, end: 11.2, text: "CART PE GAYA" },
-    { t: 11.3, end: 12.6, text: "EMPLOYER PF ✂" },
-    { t: 12.7, end: 13.8, text: "GRATUITY ✂" },
-    { t: 13.9, end: 15.7, text: "INSURANCE ✂" },
-    { t: 16.1, end: 17.3, text: "AB TAX…", hot: true },
-    { t: 17.4, end: 20.8, text: "BOUNCE! TAX ₹0", hot: true, big: true },
-    { t: 20.9, end: 22.1, text: "EMPLOYEE PF ✂" },
-    { t: 22.2, end: 24.8, text: "PROF TAX ✂" },
-    { t: 24.9, end: 26.6, text: "₹72,026 CREDITED", hot: true },
-    { t: 26.7, end: 28.4, text: "GAP = ₹3,35,688" },
-    { t: 28.5, end: 30.4, text: "PROMPT PINNED", hot: true },
-    { t: 30.5, end: 32.4, text: "APNA HISAAB LO" },
+    { t: 3.4, end: 4.5, text: "CTC = BRICK" },
+    { t: 4.6, end: 6.0, text: "PEHLA CUT", hot: true },
+    { t: 6.1, end: 8.4, text: "VARIABLE −₹5,10,000", hot: true, big: true },
+    { t: 8.5, end: 10.8, text: "HOLD PE GAYA" },
+    { t: 10.9, end: 11.6, text: "EMPLOYER PF ✂" },
+    { t: 11.7, end: 12.3, text: "GRATUITY ✂" },
+    { t: 12.4, end: 12.9, text: "INSURANCE ✂" },
+    { t: 13.0, end: 13.5, text: "EMPLOYEE PF ✂" },
+    { t: 13.6, end: 14.9, text: "PROF TAX ✂" },
+    { t: 15.0, end: 15.9, text: "AB BOSS: TAX", hot: true },
+    { t: 16.0, end: 17.4, text: "PEHLE ₹4L FREE" },
+    { t: 17.5, end: 18.8, text: "SLAB PE SLAB" },
+    { t: 18.9, end: 20.1, text: "30% + CESS", hot: true },
+    { t: 20.2, end: 22.0, text: "TAX −₹3,62,352", hot: true, big: true },
+    { t: 22.1, end: 24.5, text: "TAX PE BHI TAX" },
+    { t: 24.6, end: 25.9, text: "AUR BACHA?" },
+    { t: 26.0, end: 27.5, text: "₹1,75,702 CREDITED", hot: true },
+    { t: 27.6, end: 28.7, text: "GAP: ₹12,91,568" },
+    { t: 28.8, end: 30.6, text: "PROMPT PINNED", hot: true },
+    { t: 30.7, end: 33.1, text: "APNA HISAAB LO" },
   ],
 };
