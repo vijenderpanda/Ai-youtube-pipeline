@@ -153,9 +153,14 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
         height: BRICK_H0 + 120, objectFit: "cover" }} />
       {/* the cut face: raw paper edge where the last cleaver landed */}
       {choppedFrac > 0.001 ? (
-        <div style={{ position: "absolute", left: 0, top: 0, width: "100%", height: 14,
-          background: `linear-gradient(180deg, ${W3.band}, ${rgba(W3.band, 0)})`,
-          borderTop: `3px solid ${rgba("#FFF", 0.7)}` }} />
+        <div style={{ position: "absolute", left: 0, top: 0, width: "100%", height: 26 }}>
+          {/* the cross-section: exposed paper edges, row by row — a REAL slice */}
+          <div style={{ position: "absolute", inset: 0,
+            background: `repeating-linear-gradient(90deg, ${W3.band} 0 26px, #E2D6B8 26px 30px)`,
+            borderTop: `3px solid ${rgba("#FFF", 0.85)}`,
+            borderBottom: `2px solid ${rgba("#000", 0.18)}`,
+            boxShadow: `inset 0 -4px 8px ${rgba("#000", 0.12)}` }} />
+        </div>
       ) : null}
     </div>
   ) : null;
@@ -188,14 +193,31 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
           const lineX = 8 + i * 146, lineY = 40;
           const x = BRICK_X + 200 + (restX - BRICK_X - 200) * fly + (lineX - restX) * lineUp;
           const y = -400 + (restY + 400) * fly + (lineY - restY) * lineUp;
+          const bob = fly >= 0.99 && lineUp < 0.01 ? Math.sin(t * 2.1 + i * 1.7) * 4 : 0;
+          const sliceW = isBig ? 250 : 170, sliceH = isBig ? 96 : 64;
           return (
-            <div key={c.key} style={{ position: "absolute", left: x, top: y,
-              transform: `rotate(${(1 - fly) * 14 - 4 + lineUp * 4}deg) scale(${isBig ? 0.9 : 0.64})`,
-              background: isTax ? `linear-gradient(180deg, ${W3.red}, #A93A22)` :
-                `linear-gradient(180deg, ${W3.money}, ${W3.moneyDeep})`,
-              borderRadius: 10, padding: "8px 14px", boxShadow: cardShadow, zIndex: 15 }}>
-              <div style={{ fontFamily: MONO, fontSize: 19, color: "#FFF6EC", letterSpacing: 1 }}>{c.label}</div>
-              <div style={{ fontFamily: DISP, fontSize: 26, color: "#FFF6EC" }}>{c.amt}</div>
+            <div key={c.key} style={{ position: "absolute", left: x, top: y + bob,
+              transform: `rotate(${(1 - fly) * 14 - 4 + lineUp * 4}deg)`, zIndex: 15 }}>
+              {/* the slice itself: a cropped band of the brick with paper-edge
+                  cut faces top and bottom — it visibly CAME OFF the block */}
+              <div style={{ width: sliceW, height: sliceH, borderRadius: 8, overflow: "hidden",
+                boxShadow: cardShadow, position: "relative",
+                filter: isTax ? "sepia(0.5) hue-rotate(-30deg) saturate(2.2)" : undefined }}>
+                <Img src={P("note_brick.png")} style={{ position: "absolute", left: -30,
+                  top: -140 - i * 40, width: sliceW + 60, height: 420, objectFit: "cover" }} />
+                <div style={{ position: "absolute", left: 0, top: 0, width: "100%", height: 10,
+                  background: `repeating-linear-gradient(90deg, ${W3.band} 0 18px, #E2D6B8 18px 21px)`,
+                  borderBottom: `1.5px solid ${rgba("#000", 0.2)}` }} />
+                <div style={{ position: "absolute", left: 0, bottom: 0, width: "100%", height: 10,
+                  background: `repeating-linear-gradient(90deg, ${W3.band} 0 18px, #E2D6B8 18px 21px)`,
+                  borderTop: `1.5px solid ${rgba("#000", 0.2)}` }} />
+              </div>
+              <div style={{ position: "absolute", left: -8, bottom: -14,
+                background: isTax ? `linear-gradient(180deg, ${W3.red}, #A93A22)` : rgba("#211A12", 0.92),
+                borderRadius: 8, padding: "4px 10px", boxShadow: cardShadow }}>
+                <span style={{ fontFamily: MONO, fontSize: 15, color: "#FFF6EC", letterSpacing: 1 }}>{c.label} </span>
+                <span style={{ fontFamily: DISP, fontSize: 19, color: "#FFF6EC" }}>{c.amt}</span>
+              </div>
             </div>
           );
         })}
@@ -235,8 +257,8 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
       transformOrigin: "bottom center" }}>
       <div style={{ background: "linear-gradient(180deg, #FBF6EA, #EFE7D2)", borderRadius: 22,
         padding: "44px 50px 38px", boxShadow: cardShadow, border: `1px solid ${rgba("#B9AC8E", 0.6)}` }}>
-        <div style={{ fontFamily: MONO, fontSize: 24, letterSpacing: 5, color: rgba(W3.ink, 0.55) }}>OFFER LETTER</div>
-        <div style={{ marginTop: 14, fontFamily: MONO, fontSize: 27, color: rgba(W3.ink, 0.75) }}>CTC · COST TO COMPANY</div>
+        <div style={{ fontFamily: MONO, fontSize: 24, letterSpacing: 5, color: "#6B5636", fontWeight: 700 }}>OFFER LETTER</div>
+        <div style={{ marginTop: 14, fontFamily: MONO, fontSize: 27, color: W3.ink, fontWeight: 700 }}>CTC · COST TO COMPANY</div>
         <div style={{ marginTop: 8, fontFamily: DISP, fontSize: 96, color: W3.ink, letterSpacing: 2,
           textShadow: `0 1px 0 ${rgba("#FFF", 0.9)}, 0 -1px 0 ${rgba("#000", 0.25)}`,
           fontVariantNumeric: "tabular-nums" as const,
@@ -318,6 +340,48 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
     </div>
   ) : null;
 
+  /* credit beat dressing: 34L ÷ 12 = the EXPECTED month, struck through as
+     the real credit lands; the monthly hole named; the surviving wafer drops
+     INTO the SMS so the payoff frame is never still */
+  const expectOn = OUT_E(clamp01((t - creditAt + 0.5) / 0.4));
+  const strike = clamp01((t - creditAt - 0.5) / 0.4);
+  const holeOn = OUT_E(clamp01((t - creditAt - 1.0) / 0.4));
+  const creditMath = t >= creditAt - 0.5 && t < giveAt ? (
+    <div style={{ position: "absolute", left: 0, right: 0, top: 560, textAlign: "center", zIndex: 29,
+      opacity: expectOn * (1 - clamp01((t - giveAt + 0.3) / 0.3)) }}>
+      <div style={{ display: "inline-block", fontFamily: MONO, fontSize: 34, color: W3.ink,
+        background: rgba("#FFF", 0.85), borderRadius: 14, padding: "10px 24px", boxShadow: cardShadow,
+        fontVariantNumeric: "tabular-nums" as const, position: "relative" }}>
+        34 LAKH ÷ 12 = ₹2,83,333
+        <div style={{ position: "absolute", left: "4%", top: "52%", height: 4, borderRadius: 2,
+          width: `${strike * 92}%`, background: W3.red }} />
+      </div>
+      {holeOn > 0.01 ? (
+        <div style={{ marginTop: 14, display: "inline-block", fontFamily: DISP, fontSize: 44,
+          color: "#FFF6EC", background: rgba("#7A2515", 0.95), borderRadius: 14,
+          padding: "6px 26px", boxShadow: cardShadow, opacity: holeOn,
+          transform: `scale(${0.9 + holeOn * 0.1})`, fontVariantNumeric: "tabular-nums" as const }}>
+          −₹1,07,631 / MAHINA
+        </div>
+      ) : null}
+    </div>
+  ) : null;
+  /* the wafer: the last piece of the brick arcs into the SMS */
+  const waferP = clamp01((t - creditAt + 0.15) / 0.5);
+  const wafer = t >= creditAt - 0.15 && waferP < 1 ? (() => {
+    const e = OUT_E(waferP);
+    const x0 = BRICK_X + 180, y0 = BRICK_BOT - 80, x1 = 480, y1 = 900;
+    return (
+      <div style={{ position: "absolute", left: x0 + (x1 - x0) * e,
+        top: y0 + (y1 - y0) * e - Math.sin(e * Math.PI) * 160,
+        width: 220, height: 60, borderRadius: 8, overflow: "hidden", zIndex: 31,
+        transform: `rotate(${e * -14}deg)`, boxShadow: cardShadow }}>
+        <Img src={P("note_brick.png")} style={{ position: "absolute", left: -20, top: -200,
+          width: 260, height: 400, objectFit: "cover" }} />
+      </div>
+    );
+  })() : null;
+
   /* ---- brand inside 1s (law 3) ---- */
   const brandOn = OUT_E(clamp01((t - 0.45) / 0.4));
   const brand = (
@@ -359,6 +423,33 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
     </div>
   ) : null;
 
+  /* dead-space fill on the ladder beat: the taxable base on the left, and a
+     red sliver flying brick->card on every swing */
+  const taxableOn = OUT_E(clamp01((t - taxAt) / 0.4));
+  const taxablePanel = t >= taxAt && t < creditAt ? (
+    <div style={{ position: "absolute", left: 46, top: 560, zIndex: 26,
+      opacity: taxableOn * (1 - clamp01((t - creditAt + 0.4) / 0.4)),
+      background: rgba("#211A12", 0.9), borderRadius: 14, padding: "12px 18px", boxShadow: cardShadow }}>
+      <div style={{ fontFamily: MONO, fontSize: 19, letterSpacing: 2, color: rgba("#F6EEDF", 0.6) }}>TAXABLE BASE</div>
+      <div style={{ fontFamily: DISP, fontSize: 34, color: "#F6EEDF", fontVariantNumeric: "tabular-nums" as const }}>₹25,61,384</div>
+      <div style={{ fontFamily: MONO, fontSize: 16, color: rgba("#F6EEDF", 0.55), marginTop: 2 }}>gross − ₹75,000 std ded</div>
+    </div>
+  ) : null;
+  const slivers = ladderAts.map((a, i) => {
+    const pr = clamp01((t - a - 0.15) / 0.35);
+    if (pr <= 0 || pr >= 1) return null;
+    const x0 = BRICK_X + 300, y0 = BRICK_BOT - brickH + 20;
+    const x1 = 700, y1 = 620 + 40 * i;
+    const e = OUT_E(pr);
+    return (
+      <div key={i} style={{ position: "absolute", left: x0 + (x1 - x0) * e,
+        top: y0 + (y1 - y0) * e - Math.sin(e * Math.PI) * 90,
+        width: 54, height: 20, borderRadius: 5, zIndex: 27,
+        background: `linear-gradient(180deg, ${W3.red}, #A93A22)`,
+        transform: `rotate(${e * 220}deg)`, boxShadow: `0 3px 8px ${rgba("#000", 0.4)}` }} />
+    );
+  });
+
   /* the ladder counter: slab rows land as the cleaver chops — step by step */
   const ladderOn = OUT_E(clamp01((t - ladderAts[0]) / 0.4));
   const ladder = t >= ladderAts[0] && t < creditAt ? (
@@ -394,9 +485,9 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
   /* ------------------------------------------------------------- give ----- */
   const PROMPT = "Break my CTC of ₹____ into real monthly in-hand (new regime FY25-26). List every deduction — PF ×2, gratuity, variable held, prof tax, income tax after 87A. Then: the ONE line to negotiate, and its per-month worth.";
   const giveP = OUT_E(clamp01((t - giveAt) / 0.5));
-  const typed = Math.floor(clamp01((t - giveAt - 0.2) / 1.0) * PROMPT.length);
+  const typed = Math.floor(clamp01((t - giveAt - 0.1) / 0.9) * PROMPT.length);
   const give = t >= giveAt ? (
-    <div style={{ position: "absolute", left: 70, top: 560, width: 940, zIndex: 32,
+    <div style={{ position: "absolute", left: 70, top: 380, width: 940, zIndex: 32,
       opacity: giveP * (1 - clamp01((t - (endAt - 0.9)) / 0.5)) }}>
       <div style={{ background: "linear-gradient(180deg, #14231A, #0D1811)", borderRadius: 20,
         padding: "24px 28px", boxShadow: cardShadow, border: `1.5px solid ${rgba(W3.green, 0.35)}` }}>
@@ -407,10 +498,44 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
             opacity: typed >= PROMPT.length ? 1 : 0.25 }}>PINNED ✓ COPY KARO</span>
         </div>
         <div style={{ marginTop: 14, fontFamily: MONO, fontSize: 27, lineHeight: 1.55,
-          color: "#D9F2E2", minHeight: 240 }}>
+          color: "#D9F2E2", minHeight: 180 }}>
           {"> "}{PROMPT.slice(0, typed)}
           {typed < PROMPT.length ? <span style={{ opacity: Math.sin(t * 9) > 0 ? 1 : 0 }}>▌</span> : null}
         </div>
+        {/* the reply: what the viewer GETS when they paste the line */}
+        {(() => {
+          const rOn = OUT_E(clamp01((t - giveAt - 1.5) / 0.5));
+          if (rOn < 0.01) return null;
+          const BARS = [
+            { l: "CTC", v: 3400000, c: W3.money },
+            { l: "HOLD", v: 510000, c: "#5F7A52" },
+            { l: "PF+SAATHI", v: 419216, c: "#5F7A52" },
+            { l: "TAX", v: 362352, c: W3.red },
+            { l: "IN-HAND", v: 2108432, c: W3.green },
+          ];
+          return (
+            <div style={{ marginTop: 14, opacity: rOn }}>
+              <div style={{ fontFamily: MONO, fontSize: 20, color: "#4ADE80", letterSpacing: 2 }}>✳ CLAUDE:</div>
+              {BARS.map((b, i) => {
+                const w = (b.v / 3400000) * 100;
+                const grow = OUT_E(clamp01((t - giveAt - 1.6 - i * 0.16) / 0.4));
+                return (
+                  <div key={b.l} style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 7 }}>
+                    <span style={{ fontFamily: MONO, fontSize: 17, color: rgba("#D9F2E2", 0.8),
+                      width: 118, textAlign: "right" as const }}>{b.l}</span>
+                    <div style={{ height: 24, width: `${w * grow * 0.62}%`, borderRadius: 5,
+                      background: b.c, boxShadow: `0 2px 5px ${rgba("#000", 0.4)}` }} />
+                    <span style={{ fontFamily: MONO, fontSize: 16, color: rgba("#D9F2E2", 0.65),
+                      opacity: grow, fontVariantNumeric: "tabular-nums" as const }}>₹{b.v.toLocaleString("en-IN")}</span>
+                  </div>
+                );
+              })}
+              <div style={{ marginTop: 10, fontFamily: MONO, fontSize: 20, color: rgba("#D9F2E2", 0.85) }}>
+                yehi breakup, ek line mein — copy · paste · run
+              </div>
+            </div>
+          );
+        })()}
         <div style={{ marginTop: 10, fontFamily: MONO, fontSize: 21, color: rgba("#D9F2E2", 0.6) }}>
           model: fable-5 ✓ · cost: ₹0
         </div>
@@ -498,7 +623,11 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
           </ExposureScore>
           {chat}
           {sms}
+          {creditMath}
+          {wafer}
           {shield}
+          {taxablePanel}
+          {slivers}
           {ladder}
           {brand}
           {give}

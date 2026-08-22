@@ -216,6 +216,36 @@
       "value": "20",
       "spoken": "bees",
       "source": "REAL-SOURCED: slab rate 20% (₹16-20L) — same sources"
+    },
+    {
+      "value": "283333",
+      "spoken": "",
+      "source": "derived on screen: 34,00,000 ÷ 12 — the naive expected month, struck through as the credit lands"
+    },
+    {
+      "value": "107631",
+      "spoken": "",
+      "source": "derived on screen: 2,83,333 − 1,75,702 (= 12,91,568 ÷ 12) — the monthly hole"
+    },
+    {
+      "value": "2561384",
+      "spoken": "",
+      "source": "derived on screen: cash gross 26,36,384 − 75,000 standard deduction — the taxable-base panel"
+    },
+    {
+      "value": "75000",
+      "spoken": "",
+      "source": "REAL-SOURCED: standard deduction, new regime FY 2025-26 (same sources as the slabs)"
+    },
+    {
+      "value": "419216",
+      "spoken": "",
+      "source": "derived: the reply-chart PF+SAATHI bar = employer PF 1,63,200 + employee PF 1,63,200 + gratuity 65,416 + insurance 25,000 + prof tax 2,400"
+    },
+    {
+      "value": "2108432",
+      "spoken": "",
+      "source": "derived: annual in-hand 26,36,384 − 3,62,352 − 1,63,200 − 2,400"
     }
   ],
   "hot_words": [
