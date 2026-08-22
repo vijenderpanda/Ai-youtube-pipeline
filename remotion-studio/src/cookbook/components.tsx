@@ -30,6 +30,7 @@ import { ContextTube } from "./ContextTube";
 import { ForgetsClay } from "./ForgetsClay";
 import { ZeroStackPaper } from "./ZeroStackPaper";
 import { BillDay } from "./BillDay";
+import { MeterChor } from "./MeterChor";
 import { CaseBullets } from "./CaseBullets";
 import { GenerativeUI } from "./GenerativeUI";
 
@@ -74,6 +75,7 @@ export const COOKBOOK_COMPONENTS: Record<string, React.FC<any>> = {
   ForgetsClay,
   ZeroStackPaper,
   BillDay,
+  MeterChor,
   CaseBullets,
 };
 
