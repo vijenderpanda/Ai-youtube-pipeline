@@ -508,7 +508,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
           ];
           return (
             <div style={{ marginTop: 14, opacity: rOn }}>
-              <div style={{ fontFamily: MONO, fontSize: 20, color: "#4ADE80", letterSpacing: 2 }}>✳ CLAUDE:</div>
+              <div style={{ fontFamily: MONO, fontSize: 20, color: "#4ADE80", letterSpacing: 2 }}>✳ CLAUDE: · figures per YEAR</div>
               {BARS.map((b, i) => {
                 const w = (b.v / 3400000) * 100;
                 const grow = OUT_E(clamp01((t - giveAt - 1.6 - i * 0.16) / 0.4));
@@ -523,7 +523,10 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
                   </div>
                 );
               })}
-              <div style={{ marginTop: 10, fontFamily: MONO, fontSize: 20, color: rgba("#D9F2E2", 0.85) }}>
+              <div style={{ marginTop: 10, fontFamily: MONO, fontSize: 20, color: "#D9F2E2" }}>
+                in-hand ₹21,08,432 ÷ 12 = <span style={{ color: W3.green, fontWeight: 700 }}>₹1,75,702/month</span> — matches your SMS ✓
+              </div>
+              <div style={{ marginTop: 6, fontFamily: MONO, fontSize: 19, color: rgba("#D9F2E2", 0.7) }}>
                 this exact breakup, one line — copy · paste · run
               </div>
             </div>
