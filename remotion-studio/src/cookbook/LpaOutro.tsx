@@ -58,12 +58,14 @@ export const LpaOutro: React.FC<LpaOutroProps> = ({
   return (
     <AbsoluteFill style={{ width, height }}>
       <AbsoluteFill style={{
-        background: `radial-gradient(120% 85% at 50% 40%, ${W3.ground2} 0%, ${W3.ground} 60%, #D5C9B2 100%)`,
+        background: `radial-gradient(130% 90% at 50% 34%, #161B26 0%, #0D1017 55%, #080A0F 100%)`,
       }} />
+      <div style={{ position: "absolute", left: -200, top: 300, width: 700, height: 900,
+        background: `radial-gradient(ellipse, ${rgba("#E8B84B", 0.10)} 0%, transparent 65%)` }} />
       <Img src={staticFile("assets/lpa/desk_scene.png")} style={{
         position: "absolute", left: -60, top: 980, width: 1200, height: 750,
-        objectFit: "cover", opacity: 0.55, borderRadius: 24,
-        filter: "brightness(0.8)",
+        objectFit: "cover", opacity: 0.14, borderRadius: 24,
+        filter: "brightness(0.5)",
         transform: `scale(${1.02 + Math.sin(t * 0.6) * 0.008})`,
       }} />
 
@@ -98,7 +100,7 @@ export const LpaOutro: React.FC<LpaOutroProps> = ({
             transform: `translateY(${(1 - qOn) * 60}px) scale(${0.96 + qOn * 0.04})` }}>
             <div style={{ background: "linear-gradient(180deg, #2B241C, #1C160F)", borderRadius: 26,
               padding: "60px 50px", boxShadow: cardShadow, textAlign: "center",
-              border: `1px solid ${rgba("#FFF", 0.08)}` }}>
+              border: `1px solid ${rgba("#FFF", 0.16)}` }}>
               {lines.map((ln, i) => (
                 <div key={i} style={{ fontFamily: DISP, fontWeight: 800, fontSize: 88, lineHeight: 1.16,
                   color: ln.trim() === accentWord ? W3.coral : "#F2E8D8" }}>{ln}</div>

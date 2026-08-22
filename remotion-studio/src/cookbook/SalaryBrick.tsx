@@ -37,7 +37,14 @@ import { EngagePing, Ping } from "./EngagePing";
 const W3 = {
   ground: "#F1EADB", ground2: "#F8F3E7", ink: "#2C261C",
   money: "#8FAF7E", moneyDeep: "#6E9160", band: "#EFE6CF",
-  steel: "#7A828C", red: "#D9482B", green: "#4ADE80", amber: "#C77F14",
+  steel: "#9AA4B0", red: "#E8485C", green: "#43E97B", amber: "#C77F14",
+};
+/* the DARK STAGE (VJ's "Flat to Not Flat" world): the lights fall when the
+   knife comes out. Gold = HOLD, blue = PF family, red = tax, green = in-hand. */
+const DK = {
+  top: "#0D1017", mid: "#161B26", low: "#1E2430",
+  gold: "#F5C518", blue: "#6BA6E8", red: "#E8485C", green: "#43E97B",
+  text: "#F2EFE6", dim: "#8A93A5",
 };
 const MONO = "'JetBrains Mono', 'Courier New', monospace";
 const DISP = "'Archivo Black', 'Arial Black', sans-serif";
@@ -103,7 +110,7 @@ const Cleaver: React.FC<{
         <path d="M 8 44 L 256 40 L 256 47 L 10 50 Z" fill={rgba("#FFF", 0.35)} />
       </svg>
       <div style={{ position: "absolute", left: 26, top: 8, fontFamily: MONO, fontSize: 22,
-        letterSpacing: 1, color: "#FFF6EC", fontWeight: 700, background: rgba("#211A12", 0.85),
+        letterSpacing: 1, color: "#211A05", fontWeight: 700, background: rgba("#F5C518", 0.95),
         borderRadius: 7, padding: "2px 10px",
         textShadow: `0 1px 3px ${rgba("#000", 0.5)}` }}>{label}</div>
     </div>
@@ -143,39 +150,52 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
   const brickH = BRICK_H0 * (1 - choppedFrac * (1 / 0.38) * 0.62);
   /* cuts sum to ~.38 of CTC; the wafer keeps ~38% visual height — the
      in-hand is still a real object, and the gap is a fresher's package */
-  const cakeLift = OUT_E(clamp01((t - (gapAt + 0.1)) / 0.7));
-  const brickOn = OUT_E(clamp01((t - brickAt) / 0.6)) * (1 - cakeLift);
-
-  /* THE SALARY CAKE v2 (VJ's board note): an ISOLATED sprite composited
-     straight onto the canvas — no photo card, no baked table. It sits on
-     the desk with its own contact shadow, and its CUT STATE persists:
-     full -> one wedge gone -> quarter gone -> half, per the knife hits. */
+  /* THE SALARY CAKE v3 — the Leonardo plates ARE the stage (VJ: renders
+     first). Full-width plates anchored to the bottom of frame, their baked
+     golden-rim/teal light continuous with the dark canvas above; states
+     crossfade as the knife works, and the KNIFE PLATES take the two big
+     hits (variable pay + the tax boss). */
   const staticLanded = cutAts.slice(0, 6).filter((a) => t >= a).length;
   const ladderLanded = ladderAts.filter((a) => t >= a).length;
-  const cakeState = staticLanded >= 3 || ladderLanded >= 1 ? "seq_cut3" : staticLanded >= 1 ? "seq_cut1" : "seq_full";
-  const cakeScale = 1 - (staticLanded * 0.02 + ladderLanded * 0.015);
+  const cakeState = staticLanded >= 3 || ladderLanded >= 1 ? "leo_cut3_a" : staticLanded >= 1 ? "leo_cut1_a" : "leo_hero_0";
+  const prevState = staticLanded >= 4 || ladderLanded >= 1 ? "leo_cut3_a" : staticLanded >= 2 ? "leo_cut1_a" : "leo_hero_0";
   const lastHit = Math.max(-10, ...[...cutAts.slice(0, 6), ...ladderAts].filter((a) => t >= a));
   const hitP = clamp01((t - lastHit) / 0.4);
-  const CAKE_W = 620, CAKE_BOT = 1560;
+  const knifeWin = (t >= varpayAt + 0.15 && t < varpayAt + 1.0) ? "leo_knife_a"
+    : (t >= taxAt && t < bounceAt + 0.7) ? "leo_knife_b" : null;
+  const cakeLift = OUT_E(clamp01((t - (gapAt + 0.1)) / 0.7));
+  const brickOn = OUT_E(clamp01((t - brickAt) / 0.6)) * (1 - cakeLift);
+  const PL_W = 1080, PL_TOP = 812;
+  const plate = (src: string, o: number) => (
+    <Img key={src + o} src={staticFile(`assets/lpa/leo/${src}.jpg`)} style={{
+      position: "absolute", left: 0, top: PL_TOP, width: PL_W, height: PL_W,
+      objectFit: "cover", opacity: o,
+    }} />
+  );
   const brick = brickOn > 0.01 ? (
-    <div style={{ position: "absolute", left: 540 - CAKE_W / 2, top: CAKE_BOT - CAKE_W, width: CAKE_W,
-      height: CAKE_W, opacity: brickOn, zIndex: 12,
-      transformOrigin: "bottom center",
-      transform: `translateY(${(1 - OUT_E(clamp01((t - brickAt) / 0.6))) * 80 - cakeLift * 620}px) scale(${cakeScale * (1 + (1 - OUT_E(hitP)) * 0.06) * (1 - cakeLift * 0.45)})` }}>
-      {/* contact shadow grounds it on the desk */}
-      <div style={{ position: "absolute", left: "8%", bottom: -18, width: "84%", height: 56,
-        borderRadius: "50%", background: `radial-gradient(ellipse, ${rgba("#3A2C18", 0.38)} 0%, transparent 70%)` }} />
-      <Img src={P(`sprites/${cakeState}.png`)} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+    <div style={{ position: "absolute", inset: 0, opacity: brickOn, zIndex: 12,
+      transformOrigin: "50% 90%",
+      transform: `translateY(${cakeLift * -560}px) scale(${(1 + (1 - OUT_E(hitP)) * 0.03) * (1 - cakeLift * 0.5)})` }}>
+      {plate(prevState, 1)}
+      {plate(cakeState, OUT_E(clamp01((t - lastHit) / 0.3)) || 1)}
+      {knifeWin ? plate(knifeWin, OUT_E(clamp01((t - (knifeWin === "leo_knife_a" ? varpayAt + 0.15 : taxAt)) / 0.25))) : null}
+      {/* feather the plate's top edge into the stage darkness */}
+      <div style={{ position: "absolute", left: 0, top: PL_TOP - 4, width: PL_W, height: 240,
+        background: `linear-gradient(180deg, ${DK.top} 0%, ${rgba(DK.top, 0)} 100%)` }} />
+      <div style={{ position: "absolute", left: 0, top: PL_TOP, width: 90, height: PL_W,
+        background: `linear-gradient(90deg, #080A0F 0%, transparent 100%)` }} />
+      <div style={{ position: "absolute", right: 0, top: PL_TOP, width: 90, height: PL_W,
+        background: `linear-gradient(270deg, #080A0F 0%, transparent 100%)` }} />
     </div>
   ) : null;
   const brickTag = brickOn > 0.01 ? (
-    <div style={{ position: "absolute", left: 540 + CAKE_W / 2 - 70, top: CAKE_BOT - CAKE_W * cakeScale - 10,
+    <div style={{ position: "absolute", right: 70, top: PL_TOP + 130,
       opacity: brickOn, zIndex: 13, fontFamily: MONO, fontSize: 19,
-      border: `1.5px solid ${rgba(W3.ink, 0.5)}`, borderRadius: 6, padding: "2px 10px",
-      color: rgba(W3.ink, 0.65), background: rgba("#FFF", 0.6) }}>DEMO</div>
+      border: `1.5px solid ${rgba(DK.text, 0.4)}`, borderRadius: 6, padding: "2px 10px",
+      color: rgba(DK.text, 0.6), background: rgba("#0D1017", 0.5) }}>DEMO</div>
   ) : null;
 
-  /* ------------------------------------------- flying chunks + the cart --- */  /* ------------------------------------------- flying chunks + the cart --- */  /* ------------------------------------------- flying chunks + the cart --- */
+  /* ------------------------------------------- flying chunks + the cart --- */  /* ------------------------------------------- flying chunks + the cart --- */  /* ------------------------------------------- flying chunks + the cart --- */  /* ------------------------------------------- flying chunks + the cart --- */
   /* THE EXPENSE PIE (VJ's board note): every cut wedge flies UP and lands
      as a segment of a donut chart building in the upper zone — the stats,
      shaped like what they were cut from. Tax builds in six slab steps and
@@ -184,15 +204,15 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
   const FR = 1 / 3400000;
   type Seg = { key: string; label: string; amt: number; color: string; landAt: number };
   const SEGS: Seg[] = [
-    { key: "varpay", label: "HOLD", amt: 510000, color: "#5F7A52", landAt: cutAts[0] + 0.9 },
-    { key: "epf", label: "EMPLR PF", amt: 163200, color: "#7A9A6C", landAt: cutAts[1] + 0.9 },
-    { key: "grat", label: "GRATUITY", amt: 65416, color: "#93AC82", landAt: cutAts[2] + 0.9 },
-    { key: "ins", label: "INSUR", amt: 25000, color: "#A9BC98", landAt: cutAts[3] + 0.9 },
-    { key: "mypf", label: "MY PF", amt: 163200, color: "#86A375", landAt: cutAts[4] + 0.9 },
-    { key: "ptax", label: "PT", amt: 2400, color: "#B8C7A8", landAt: cutAts[5] + 0.9 },
+    { key: "varpay", label: "HOLD", amt: 510000, color: DK.gold, landAt: cutAts[0] + 0.9 },
+    { key: "epf", label: "EMPLR PF", amt: 163200, color: DK.blue, landAt: cutAts[1] + 0.9 },
+    { key: "grat", label: "GRATUITY", amt: 65416, color: "#4E7FB5", landAt: cutAts[2] + 0.9 },
+    { key: "ins", label: "INSUR", amt: 25000, color: "#3E6D9E", landAt: cutAts[3] + 0.9 },
+    { key: "mypf", label: "MY PF", amt: 163200, color: "#5B95CF", landAt: cutAts[4] + 0.9 },
+    { key: "ptax", label: "PT", amt: 2400, color: "#365F8A", landAt: cutAts[5] + 0.9 },
     ...TAX_STEPS.map((st, j) => ({ key: `tax${j}`, label: j === 5 ? "TAX+CESS" : `TAX ${st.pct}`,
-      amt: st.amt, color: W3.red, landAt: ladderAts[j] + 0.35 })),
-    { key: "inhand", label: "IN-HAND", amt: 2108432, color: W3.green, landAt: gapAt + 0.3 },
+      amt: st.amt, color: DK.red, landAt: ladderAts[j] + 0.35 })),
+    { key: "inhand", label: "IN-HAND", amt: 2108432, color: DK.green, landAt: gapAt + 0.3 },
   ];
   const arc = (a0: number, a1: number, ro: number, ri: number) => {
     const P = (r: number, a: number) => [PIE_CX + r * Math.cos(a), PIE_CY + r * Math.sin(a)];
@@ -245,13 +265,12 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
             return (
               <g key={sg.key}>
                 {/* the slice: a piece of the SAME top-view cake render */}
-                <image href={P("cake_topview_b.png")}
-                  x={PIE_CX - (502 / 324) * R_OUT} y={PIE_CY - (522 / 324) * R_OUT}
-                  width={(1024 / 324) * R_OUT} height={(1024 / 324) * R_OUT}
+                <image href={staticFile("assets/lpa/leo/leo_topview.jpg")}
+                  x={PIE_CX - (463 / 440) * R_OUT} y={PIE_CY - (466 / 440) * R_OUT}
+                  width={(1024 / 440) * R_OUT} height={(1024 / 440) * R_OUT}
                   clipPath={`url(#sec-${sg.key})`} preserveAspectRatio="none" />
                 {/* tint: tax red, in-hand green, others natural */}
-                {isTaxSeg ? <path d={edge} fill={rgba("#C43A20", 0.48)} /> : null}
-                {sg.key === "inhand" ? <path d={edge} fill={rgba("#2E7D4F", 0.26)} /> : null}
+                <path d={edge} fill={rgba(sg.color, sg.key === "inhand" ? 0.30 : isTaxSeg ? 0.52 : 0.42)} />
                 {/* cut lines between slices */}
                 <path d={edge} fill="none" stroke={rgba("#FFF", 0.9)} strokeWidth={3} />
                 {t - sg.landAt < 0.18 ? <path d={edge} fill={rgba("#FFF", 0.5 * (1 - (t - sg.landAt) / 0.18))} /> : null}
@@ -263,7 +282,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
                   return (
                     <g>
                       <line x1={PIE_CX + Math.cos(mid) * (R_OUT + 4)} y1={PIE_CY + Math.sin(mid) * (R_OUT + 4)}
-                        x2={lx} y2={ly} stroke={rgba(W3.ink, 0.5)} strokeWidth={2} />
+                        x2={lx} y2={ly} stroke={rgba("#FFF", 0.4)} strokeWidth={2} />
                       <text x={lx + (anchor === "start" ? 6 : -6)} y={ly + 7} textAnchor={anchor}
                         fontFamily="'JetBrains Mono', monospace" fontSize={23} fontWeight={700}
                         fill={isTaxSeg ? "#A93A22" : W3.ink}>
@@ -277,25 +296,66 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
           });
         })()}
         {/* donut hole: a small cream disc keeps the centre stat readable */}
-        <circle cx={PIE_CX} cy={PIE_CY} r={122} fill="#F5EEDF" opacity={0.97} />
-        <circle cx={PIE_CX} cy={PIE_CY} r={122} fill="none" stroke={rgba("#211A12", 0.15)} strokeWidth={2} />
+        <circle cx={PIE_CX} cy={PIE_CY} r={122} fill="#12151D" opacity={0.97} />
+        <circle cx={PIE_CX} cy={PIE_CY} r={122} fill="none" stroke={rgba("#FFF", 0.22)} strokeWidth={2} />
       </svg>
       {/* the centre stat */}      {/* the centre stat */}
       <div style={{ position: "absolute", left: PIE_CX - 130, top: PIE_CY - 56, width: 260,
         textAlign: "center", fontVariantNumeric: "tabular-nums" as const }}>
         {t < gapAt + 0.3 ? (
           <>
-            <div style={{ fontFamily: MONO, fontSize: 22, color: rgba(W3.ink, 0.6), letterSpacing: 2 }}>CTC GONE</div>
-            <div style={{ fontFamily: DISP, fontSize: 62, color: W3.ink }}>{Math.round(gonePct * 100)}%</div>
+            <div style={{ fontFamily: MONO, fontSize: 22, color: DK.dim, letterSpacing: 2 }}>CTC GONE</div>
+            <div style={{ fontFamily: DISP, fontSize: 62, color: DK.text }}>{Math.round(gonePct * 100)}%</div>
           </>
         ) : (
           <>
-            <div style={{ fontFamily: MONO, fontSize: 21, color: rgba(W3.ink, 0.6), letterSpacing: 2 }}>GAP / YEAR</div>
-            <div style={{ fontFamily: DISP, fontSize: 44, color: "#A93A22" }}>₹12,91,568</div>
-            <div style={{ fontFamily: MONO, fontSize: 19, color: "#3E5A33", marginTop: 2 }}>a fresher's salary</div>
+            <div style={{ fontFamily: MONO, fontSize: 21, color: DK.dim, letterSpacing: 2 }}>GAP / YEAR</div>
+            <div style={{ fontFamily: DISP, fontSize: 44, color: DK.red }}>₹12,91,568</div>
+            <div style={{ fontFamily: MONO, fontSize: 19, color: DK.green, marginTop: 2 }}>a fresher's salary</div>
           </>
         )}
       </div>
+      {/* the counter card — the latest landed slice, prototype-style */}
+      {(() => {
+        let cur: any = null;
+        for (const sg of SEGS) if (sg.key !== "inhand" && t >= sg.landAt) cur = sg;
+        if (!cur) return null;
+        const on = OUT_E(clamp01((t - cur.landAt) / 0.3));
+        return (
+          <div style={{ position: "absolute", left: 56, top: 132, zIndex: 26,
+            display: "flex", gap: 12, alignItems: "center",
+            background: rgba("#0D1017", 0.92), borderRadius: 12, padding: "8px 16px",
+            border: `2px solid ${rgba(cur.color, 0.8)}`, boxShadow: cardShadow,
+            transform: `scale(${0.92 + on * 0.08 + settle(t, cur.landAt, 0.35) * 0.06})`,
+            transformOrigin: "left center" }}>
+            <span style={{ fontFamily: MONO, fontSize: 27, color: DK.text,
+              fontVariantNumeric: "tabular-nums" as const }}>₹{cur.amt.toLocaleString("en-IN")}</span>
+            <span style={{ fontFamily: DISP, fontSize: 25, color: cur.color }}>
+              {(cur.amt / 3400000 * 100).toFixed(1)}%</span>
+          </div>
+        );
+      })()}
+      {/* THREE BUCKETS at the gap — prototype's honest split */}
+      {t >= gapAt + 0.8 ? (() => {
+        const on = OUT_E(clamp01((t - gapAt - 0.8) / 0.5)) * (1 - clamp01((t - giveAt + 0.2) / 0.4));
+        const B = [
+          { t1: "WAPAS ₹3,91,816", t2: "comes back later", bg: rgba("#1E5B38", 0.94), fg: "#D9F2E2" },
+          { t1: "HOLD ₹5,10,000", t2: "if targets hit", bg: rgba(DK.gold, 0.95), fg: "#211A05" },
+          { t1: "KABHI NAHI ₹3,89,752", t2: "gone forever", bg: rgba("#7A2515", 0.94), fg: "#FFE0D8" },
+        ];
+        return (
+          <div style={{ position: "absolute", left: 0, right: 0, top: 1120, display: "flex",
+            justifyContent: "center", gap: 12, zIndex: 28, opacity: on }}>
+            {B.map((b, i) => (
+              <div key={i} style={{ fontFamily: MONO, fontSize: 21, color: b.fg, background: b.bg,
+                borderRadius: 12, padding: "8px 14px", boxShadow: cardShadow,
+                transform: `translateY(${(1 - OUT_E(clamp01((t - gapAt - 0.8 - i * 0.15) / 0.4))) * 40}px)` }}>
+                {b.t1}<div style={{ fontSize: 15, opacity: 0.78 }}>{b.t2}</div>
+              </div>
+            ))}
+          </div>
+        );
+      })() : null}
       {/* wedge flights: cake -> segment centroid, spin + crush */}
       {SEGS.filter((sg) => sg.key !== "inhand").map((sg) => {
         const dep = sg.landAt - 0.55;
@@ -311,7 +371,8 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
         return (
           <div key={sg.key} style={{ position: "absolute", left: x - 70, top: y - 45, width: 140,
             transform: `rotate(${e * 300}deg) scale(${(1 - e * 0.35) * (1 + crush * 0.4)}, ${(1 - e * 0.35) * (1 - crush * 0.6)})` }}>
-            <Img src={P("sprites/seq_wedge.png")} style={{ width: "100%",
+            <Img src={staticFile("assets/lpa/leo/leo_wedge_a.jpg")} style={{ width: "100%",
+              borderRadius: 18, boxShadow: `0 8px 26px ${rgba("#000", 0.6)}`,
               filter: sg.key.startsWith("tax") ? "sepia(0.5) hue-rotate(-30deg) saturate(2.4)" : undefined }} />
           </div>
         );
@@ -683,11 +744,23 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
           background: `radial-gradient(120% 85% at 50% 40%, ${W3.ground2} 0%, ${W3.ground} 60%, #D5C9B2 100%)`,
           transform: `translate(${shake * 0.7}px, ${shake}px)`,
         }}>
+          {/* LIGHTS OUT: the dark stage fades over the cream world as the
+              letter folds — the cutting happens in VJ's prototype world */}
+          <AbsoluteFill style={{
+            opacity: OUT_E(clamp01((t - (brickAt - 0.5)) / 0.7)),
+            background: `radial-gradient(130% 90% at 50% 34%, ${DK.mid} 0%, ${DK.top} 55%, #080A0F 100%)`,
+          }}>
+            {/* warm gold + teal stage hints, matching the renders' light */}
+            <div style={{ position: "absolute", left: -200, top: 300, width: 700, height: 900,
+              background: `radial-gradient(ellipse, ${rgba("#E8B84B", 0.10)} 0%, transparent 65%)` }} />
+            <div style={{ position: "absolute", right: -220, top: 700, width: 700, height: 900,
+              background: `radial-gradient(ellipse, ${rgba("#2E6E7E", 0.12)} 0%, transparent 65%)` }} />
+          </AbsoluteFill>
           {/* the desk world */}
           <Img src={P("desk_scene.png")} style={{
             position: "absolute", left: -60, top: 980, width: 1200, height: 750,
-            objectFit: "cover", opacity: 0.9, borderRadius: 24,
-            filter: `brightness(${t >= giveAt ? 0.5 : t >= brickAt ? 0.92 : 1})`,
+            objectFit: "cover", borderRadius: 24,
+            opacity: 0.9 * (1 - OUT_E(clamp01((t - (brickAt - 0.5)) / 0.6))),
             transform: `scale(${1.02 + Math.sin(t * 0.7) * 0.008})`,
           }} />
           <ExposureScore keys={expo}>

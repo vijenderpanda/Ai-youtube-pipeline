@@ -1,7 +1,7 @@
 {
   "ep": "_lpa",
   "class": "MECHANISM",
-  "world": "OFFER-LETTER DESK — papercraft desk world, cream ground, SAGE-GREEN money, steel cleavers; RED spent ONLY on income tax (the boss cleaver + its ladder + its cart chunk).",
+  "world": "DARK STAGE (VJ's 'Flat to Not Flat' prototype world): Leonardo NB2 money-cake plates with baked golden-rim/teal stage light ARE the set; the cream offer-letter hook gets LIGHTS-OUT as the knife appears. Grammar: gold=HOLD, blue=PF family, red=TAX, green=IN-HAND. The pie is the cake rebuilt from above (sectors clipped from leo_topview).",
   "honesty": "declared-illustration",
   "plant": {
     "what": "the bank credit SMS with its amount BLURRED — visibly too short for ₹34,00,000",
@@ -193,9 +193,9 @@
       "source": "derived on screen: 34,00,000 − 21,08,432 — equals the carted chunks to the rupee; VO rounds to 'terah lakh'"
     },
     {
-      "value": "901816",
+      "value": "391816",
       "spoken": "",
-      "source": "derived: variable 5,10,000 + PF 1,63,200×2 + gratuity 65,416 — the comes-back(*variable if paid) bucket"
+      "source": "derived: the WAPAS bucket = employer PF 1,63,200 + employee PF 1,63,200 + gratuity 65,416 (comes back later); HOLD 5,10,000 shown as its own bucket (if targets hit) — VJ's three-bucket split"
     },
     {
       "value": "389752",
