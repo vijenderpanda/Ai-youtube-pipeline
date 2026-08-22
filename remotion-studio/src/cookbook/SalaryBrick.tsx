@@ -796,7 +796,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
             <div style={{ position: "absolute", left: -200, top: 300, width: 700, height: 900,
               background: `radial-gradient(ellipse, ${rgba("#E8B84B", 0.10)} 0%, transparent 65%)` }} />
             <div style={{ position: "absolute", right: -220, top: 700, width: 700, height: 900,
-              background: `radial-gradient(ellipse, ${rgba("#2E7A6E", 0.12)} 0%, transparent 65%)` }} />
+              background: `radial-gradient(ellipse, ${rgba("#2E6E80", 0.12)} 0%, transparent 65%)` }} />
           </AbsoluteFill>
           {/* the desk world */}
           <Img src={P("desk_scene.png")} style={{
