@@ -143,7 +143,8 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
   const brickH = BRICK_H0 * (1 - choppedFrac * (1 / 0.38) * 0.62);
   /* cuts sum to ~.38 of CTC; the wafer keeps ~38% visual height — the
      in-hand is still a real object, and the gap is a fresher's package */
-  const brickOn = OUT_E(clamp01((t - brickAt) / 0.6)) * (1 - clamp01((t - creditAt + 0.1) / 0.4));
+  const cakeLift = OUT_E(clamp01((t - (gapAt + 0.1)) / 0.7));
+  const brickOn = OUT_E(clamp01((t - brickAt) / 0.6)) * (1 - cakeLift);
 
   /* THE SALARY CAKE v2 (VJ's board note): an ISOLATED sprite composited
      straight onto the canvas — no photo card, no baked table. It sits on
@@ -160,7 +161,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
     <div style={{ position: "absolute", left: 540 - CAKE_W / 2, top: CAKE_BOT - CAKE_W, width: CAKE_W,
       height: CAKE_W, opacity: brickOn, zIndex: 12,
       transformOrigin: "bottom center",
-      transform: `translateY(${(1 - brickOn) * 80}px) scale(${cakeScale * (1 + (1 - OUT_E(hitP)) * 0.06)})` }}>
+      transform: `translateY(${(1 - OUT_E(clamp01((t - brickAt) / 0.6))) * 80 - cakeLift * 620}px) scale(${cakeScale * (1 + (1 - OUT_E(hitP)) * 0.06) * (1 - cakeLift * 0.45)})` }}>
       {/* contact shadow grounds it on the desk */}
       <div style={{ position: "absolute", left: "8%", bottom: -18, width: "84%", height: 56,
         borderRadius: "50%", background: `radial-gradient(ellipse, ${rgba("#3A2C18", 0.38)} 0%, transparent 70%)` }} />
@@ -208,26 +209,55 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
       transformOrigin: `${PIE_CX}px ${PIE_CY}px`,
       transform: `scale(${1 - pieDock * 0.5}) translate(${pieDock * -560}px, ${pieDock * -240}px)` }}>
       <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
-        {/* faint full ring = the whole CTC, waiting to be accounted */}
-        <path d={arc(-Math.PI / 2 + 0.001, -Math.PI / 2 + Math.PI * 2 - 0.001, R_OUT, R_IN)}
-          fill={rgba("#211A12", 0.07)} />
+        <defs>
+          {(() => {
+            let a0 = -Math.PI / 2;
+            return SEGS.map((sg) => {
+              const span = sg.amt * FR * Math.PI * 2;
+              const grow = sg.key === "inhand" ? OUT_E(clamp01((t - sg.landAt) / 0.8)) : OUT_E(clamp01((t - sg.landAt) / 0.35));
+              const a1 = a0 + span * grow;
+              const Px = (r: number, ang: number) => `${PIE_CX + r * Math.cos(ang)} ${PIE_CY + r * Math.sin(ang)}`;
+              const lg = a1 - a0 > Math.PI ? 1 : 0;
+              const el = (
+                <clipPath key={sg.key} id={`sec-${sg.key}`}>
+                  <path d={`M ${PIE_CX} ${PIE_CY} L ${Px(R_OUT, a0)} A ${R_OUT} ${R_OUT} 0 ${lg} 1 ${Px(R_OUT, a1)} Z`} />
+                </clipPath>
+              );
+              a0 += span;
+              return el;
+            });
+          })()}
+        </defs>
+        {/* faint waiting ring */}
+        <circle cx={PIE_CX} cy={PIE_CY} r={R_OUT} fill={rgba("#211A12", 0.06)} />
         {(() => {
           let a0 = -Math.PI / 2;
           return SEGS.map((sg) => {
             const span = sg.amt * FR * Math.PI * 2;
             const grow = sg.key === "inhand" ? OUT_E(clamp01((t - sg.landAt) / 0.8)) : OUT_E(clamp01((t - sg.landAt) / 0.35));
-            const seg = grow > 0.001 ? (
+            const myA0 = a0; a0 += span;
+            if (grow < 0.001) return null;
+            const a1 = myA0 + span * grow;
+            const Px = (r: number, ang: number) => `${PIE_CX + r * Math.cos(ang)} ${PIE_CY + r * Math.sin(ang)}`;
+            const lg = a1 - myA0 > Math.PI ? 1 : 0;
+            const edge = `M ${PIE_CX} ${PIE_CY} L ${Px(R_OUT, myA0)} A ${R_OUT} ${R_OUT} 0 ${lg} 1 ${Px(R_OUT, a1)} Z`;
+            const isTaxSeg = sg.key.startsWith("tax");
+            return (
               <g key={sg.key}>
-                <path d={arc(a0, a0 + span * grow, R_OUT, R_IN)} fill={sg.color}
-                  stroke={rgba("#FFF", 0.6)} strokeWidth={2}
-                  opacity={0.96} />
-                {/* land blink */}
-                {t - sg.landAt < 0.18 ? (
-                  <path d={arc(a0, a0 + span * grow, R_OUT + 6, R_IN - 6)} fill={rgba("#FFF", 0.5 * (1 - (t - sg.landAt) / 0.18))} />
-                ) : null}
+                {/* the slice: a piece of the SAME top-view cake render */}
+                <image href={P("cake_topview_b.png")}
+                  x={PIE_CX - (502 / 324) * R_OUT} y={PIE_CY - (522 / 324) * R_OUT}
+                  width={(1024 / 324) * R_OUT} height={(1024 / 324) * R_OUT}
+                  clipPath={`url(#sec-${sg.key})`} preserveAspectRatio="none" />
+                {/* tint: tax red, in-hand green, others natural */}
+                {isTaxSeg ? <path d={edge} fill={rgba("#C43A20", 0.48)} /> : null}
+                {sg.key === "inhand" ? <path d={edge} fill={rgba("#2E7D4F", 0.26)} /> : null}
+                {/* cut lines between slices */}
+                <path d={edge} fill="none" stroke={rgba("#FFF", 0.9)} strokeWidth={3} />
+                {t - sg.landAt < 0.18 ? <path d={edge} fill={rgba("#FFF", 0.5 * (1 - (t - sg.landAt) / 0.18))} /> : null}
                 {/* leader label for readable spans */}
                 {sg.amt * FR > 0.017 && grow > 0.9 ? (() => {
-                  const mid = a0 + span / 2;
+                  const mid = myA0 + span / 2;
                   const lx = PIE_CX + Math.cos(mid) * (R_OUT + 34), ly = PIE_CY + Math.sin(mid) * (R_OUT + 34);
                   const anchor = Math.cos(mid) >= 0 ? "start" : "end";
                   return (
@@ -236,20 +266,21 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
                         x2={lx} y2={ly} stroke={rgba(W3.ink, 0.5)} strokeWidth={2} />
                       <text x={lx + (anchor === "start" ? 6 : -6)} y={ly + 7} textAnchor={anchor}
                         fontFamily="'JetBrains Mono', monospace" fontSize={23} fontWeight={700}
-                        fill={sg.key.startsWith("tax") ? "#A93A22" : W3.ink}>
+                        fill={isTaxSeg ? "#A93A22" : W3.ink}>
                         {sg.label} ₹{sg.amt.toLocaleString("en-IN")}
                       </text>
                     </g>
                   );
                 })() : null}
               </g>
-            ) : null;
-            a0 += span;
-            return seg;
+            );
           });
         })()}
+        {/* donut hole: a small cream disc keeps the centre stat readable */}
+        <circle cx={PIE_CX} cy={PIE_CY} r={122} fill="#F5EEDF" opacity={0.97} />
+        <circle cx={PIE_CX} cy={PIE_CY} r={122} fill="none" stroke={rgba("#211A12", 0.15)} strokeWidth={2} />
       </svg>
-      {/* the centre stat */}
+      {/* the centre stat */}      {/* the centre stat */}
       <div style={{ position: "absolute", left: PIE_CX - 130, top: PIE_CY - 56, width: 260,
         textAlign: "center", fontVariantNumeric: "tabular-nums" as const }}>
         {t < gapAt + 0.3 ? (
