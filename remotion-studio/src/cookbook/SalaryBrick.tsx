@@ -137,7 +137,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
     const d = t - ct;
     if (d > 0 && d < 0.45) shake = Math.max(shake, Math.sin(d * 40) * (1 - d / 0.45) * (i === 0 ? 14 : 6));
   }
-  const bShake = t > bounceAt && t < bounceAt + 0.5 ? Math.sin((t - bounceAt) * 34) * (1 - (t - bounceAt) / 0.5) * 10 : 0;
+  const bShake = t > bounceAt - 0.4 && t < bounceAt + 0.5 ? Math.sin((t - bounceAt + 0.4) * 34) * (1 - Math.abs(t - bounceAt) / 0.6) * 10 : 0;
   shake += bShake;
 
   /* -------------------------------------------------- brick geometry ------ */
@@ -175,7 +175,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
   const brick = brickOn > 0.01 ? (
     <div style={{ position: "absolute", inset: 0, opacity: brickOn, zIndex: 12,
       transformOrigin: "50% 90%",
-      transform: `translateY(${cakeLift * -560}px) scale(${(1 + (1 - OUT_E(hitP)) * 0.03) * (1 - cakeLift * 0.5)})` }}>
+      transform: `translateY(${cakeLift * -560 + Math.sin(t * 1.15) * 4}px) scale(${(1 + (1 - OUT_E(hitP)) * 0.03) * (1 - cakeLift * 0.5) * (1 + Math.sin(t * 0.85) * 0.007)}) rotate(${Math.sin(t * 0.6) * 0.5}deg)` }}>
       {plate(prevState, 1)}
       {plate(cakeState, OUT_E(clamp01((t - lastHit) / 0.3)) || 1)}
       {knifeWin ? plate(knifeWin, OUT_E(clamp01((t - (knifeWin === "leo_knife_a" ? varpayAt + 0.15 : taxAt)) / 0.25))) : null}
@@ -589,7 +589,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
   const shield = t >= bounceAt && t < ladderAts[1] ? (
     <div style={{ position: "absolute", left: 200, top: 620, width: 680, zIndex: 26,
       textAlign: "center", opacity: shieldOn * (1 - clamp01((t - ladderAts[0] - 0.5) / 0.4)),
-      transform: `scale(${0.85 + shieldOn * 0.15 + settle(t, bounceAt, 0.5) * 0.08})` }}>
+      transform: `scale(${(0.85 + shieldOn * 0.15 + settle(t, bounceAt, 0.5) * 0.08) * (1 + Math.sin(t * 2.8) * 0.015)})` }}>
       <div style={{ display: "inline-block", background: rgba("#211A12", 0.93), borderRadius: 18,
         padding: "14px 30px", boxShadow: cardShadow, border: `3px solid ${W3.green}` }}>
         <div style={{ fontFamily: DISP, fontSize: 52, color: W3.green }}>FIRST ₹4L — TAX ₹0</div>

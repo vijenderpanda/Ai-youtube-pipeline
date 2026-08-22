@@ -28,8 +28,8 @@
       "to": "the bank SMS slides in, amount blurred — visibly too short"
     },
     {
-      "vo": "Why is the SMS this small? Lights off. Cut the cake.",
-      "subject": "lights-out + the cake",
+      "vo": "But the bank credited way less. Let's cut the cake.",
+      "subject": "the gap named + the command",
       "from": "the cream world dims to the dark stage",
       "to": "the money cake on its pedestal — the celebration object itself"
     },
@@ -310,13 +310,13 @@
         {
           "t": "@beat0+1.6",
           "end": "@beat1+0.4",
-          "text": "SMS SO SMALL?",
+          "text": "BANK GOT LESS",
           "hot": false
         },
         {
           "t": "@beat1+0.4",
           "end": "@beat1+1.6",
-          "text": "LIGHTS OFF",
+          "text": "WAY LESS?",
           "hot": false
         },
         {
@@ -346,12 +346,18 @@
         },
         {
           "t": "@beat2+2.9",
-          "end": "@beat3+0.4",
+          "end": "@beat2+4.3",
           "text": "FIRST SLICE ↑",
           "hot": false
         },
         {
-          "t": "@beat3+0.4",
+          "t": "@beat2+4.3",
+          "end": "@beat3+0.3",
+          "text": "GOLD PIECE ✓",
+          "hot": false
+        },
+        {
+          "t": "@beat3+0.3",
           "end": "@beat3+1.2",
           "text": "EMPLOYER PF ✂",
           "hot": false
@@ -467,8 +473,14 @@
         },
         {
           "t": "@beat7+3.0",
-          "end": "@beat8+0.2",
+          "end": "@beat7+4.3",
           "text": "3 BUCKETS",
+          "hot": false
+        },
+        {
+          "t": "@beat7+4.3",
+          "end": "@beat8+0.2",
+          "text": "SEE THE SPLIT",
           "hot": false
         },
         {
@@ -479,8 +491,14 @@
         },
         {
           "t": "@beat8+1.6",
-          "end": "@beat8+3.0",
+          "end": "@beat8+2.3",
           "text": "RUN YOUR NUMBERS",
+          "hot": false
+        },
+        {
+          "t": "@beat8+2.3",
+          "end": "@beat8+3.0",
+          "text": "IT'S FREE",
           "hot": false
         },
         {
