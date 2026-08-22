@@ -95,14 +95,16 @@ const Cleaver: React.FC<{
   return (
     <div style={{ position: "absolute", left: x, top: y, transform: `rotate(${rot}deg) scale(${scale})`,
       transformOrigin: "left bottom", opacity: Math.max(0, fade), zIndex: 24 }}>
-      <svg width={300} height={150} viewBox="0 0 300 150">
-        <rect x={192} y={24} width={104} height={24} rx={10} fill="#5A4632" />
-        <path d="M 10 40 L 210 40 L 210 120 Q 110 132 22 112 Z"
+      <svg width={330} height={110} viewBox="0 0 330 110">
+        {/* a long cake knife: slim blade, wooden handle */}
+        <rect x={252} y={34} width={74} height={26} rx={12} fill="#5A4632" />
+        <path d="M 8 44 L 256 40 L 256 62 Q 120 76 16 60 Z"
           fill={red ? W3.red : W3.steel} stroke={rgba("#000", 0.25)} strokeWidth={2} />
-        <path d="M 10 40 L 210 40 L 210 52 L 10 52 Z" fill={rgba("#FFF", 0.3)} />
+        <path d="M 8 44 L 256 40 L 256 47 L 10 50 Z" fill={rgba("#FFF", 0.35)} />
       </svg>
-      <div style={{ position: "absolute", left: 20, top: 52, fontFamily: MONO, fontSize: 22,
-        letterSpacing: 1, color: "#FFF6EC", fontWeight: 700,
+      <div style={{ position: "absolute", left: 26, top: 8, fontFamily: MONO, fontSize: 22,
+        letterSpacing: 1, color: "#FFF6EC", fontWeight: 700, background: rgba("#211A12", 0.85),
+        borderRadius: 7, padding: "2px 10px",
         textShadow: `0 1px 3px ${rgba("#000", 0.5)}` }}>{label}</div>
     </div>
   );
@@ -143,47 +145,30 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
      in-hand is still a real object, and the gap is a fresher's package */
   const brickOn = OUT_E(clamp01((t - brickAt) / 0.6)) * (1 - clamp01((t - creditAt + 0.1) / 0.4));
 
+  /* THE SALARY CAKE (VJ's A/B pick): the celebration object itself. Each
+     knife hit scales it DOWN with a settle bounce + a white cut-line sweep;
+     the wedge leaves on its own dessert plate. */
+  const cakeScale = 1 - choppedFrac * (1 / 0.38) * 0.45;
+  const lastHit = Math.max(-10, ...[...cutAts.slice(0, 6), ...ladderAts].filter((a) => t >= a));
+  const hitP = clamp01((t - lastHit) / 0.4);
+  const cutSweep = t - lastHit < 0.3 ? (t - lastHit) / 0.3 : -1;
   const brick = brickOn > 0.01 ? (
-    <div style={{ position: "absolute", left: BRICK_X, top: BRICK_BOT - brickH, width: BRICK_W,
-      height: brickH, opacity: brickOn, zIndex: 12, overflow: "hidden", borderRadius: 14,
-      transform: `translateY(${(1 - brickOn) * 80}px)`,
-      boxShadow: cardShadow }}>
-      {/* THE REAL CUT (VJ: 'satisfying cut feel'): at every impact the brick
-          swaps through three FLUX renders — the blade buried in the stack,
-          then the top slab cleanly offset, then the whole brick again. The
-          hit-shake + flash carry the continuity between plates. */}
-      {(() => {
-        const hits = [...cutAts.slice(0, 6), ...ladderAts.map((a) => a + 0.0)];
-        let phase = "base", ph = 0;
-        for (const h of hits) {
-          const d = t - h;
-          if (d >= 0 && d < 0.28) { phase = "blade"; ph = d / 0.28; }
-          else if (d >= 0.28 && d < 0.75) { phase = "sliced"; ph = (d - 0.28) / 0.47; }
-        }
-        const src = phase === "blade" ? "brick_blade_a.png" : phase === "sliced" ? "brick_sliced_a.png" : "note_brick.png";
-        const zoom = phase === "blade" ? 1.28 : phase === "sliced" ? 1.18 : 1.0;
-        const shiftY = phase === "blade" ? -30 : phase === "sliced" ? -10 : 0;
-        return (
-          <Img src={P(src)} style={{
-            position: "absolute", left: -40 - (zoom - 1) * 200, top: brickH - BRICK_H0 - 60 + shiftY,
-            width: (BRICK_W + 80) * zoom, height: (BRICK_H0 + 120) * zoom, objectFit: "cover" }} />
-        );
-      })()}
-      {/* the cut face: raw paper edge where the last cleaver landed */}
-      {choppedFrac > 0.001 ? (
-        <div style={{ position: "absolute", left: 0, top: 0, width: "100%", height: 26 }}>
-          {/* the cross-section: exposed paper edges, row by row — a REAL slice */}
-          <div style={{ position: "absolute", inset: 0,
-            background: `repeating-linear-gradient(90deg, ${W3.band} 0 26px, #E2D6B8 26px 30px)`,
-            borderTop: `3px solid ${rgba("#FFF", 0.85)}`,
-            borderBottom: `2px solid ${rgba("#000", 0.18)}`,
-            boxShadow: `inset 0 -4px 8px ${rgba("#000", 0.12)}` }} />
-        </div>
+    <div style={{ position: "absolute", left: 540 - 330, top: BRICK_BOT - 640, width: 660,
+      height: 660, opacity: brickOn, zIndex: 12,
+      transformOrigin: "bottom center",
+      transform: `translateY(${(1 - brickOn) * 80}px) scale(${cakeScale * (1 + (1 - OUT_E(hitP)) * 0.05)}) rotate(${Math.floor(choppedFrac * 20) * 3}deg)` }}>
+      <Img src={P("cake_hero_a.png")} style={{ width: "100%", height: "100%", objectFit: "cover",
+        borderRadius: 24, boxShadow: cardShadow }} />
+      {/* the cut-line: a bright sweep across the cake at the moment of the cut */}
+      {cutSweep >= 0 ? (
+        <div style={{ position: "absolute", left: "6%", top: `${18 + cutSweep * 58}%`, width: "88%",
+          height: 5, background: `linear-gradient(90deg, transparent, ${rgba("#FFF", 0.95)}, transparent)`,
+          boxShadow: `0 0 18px ${rgba("#FFF", 0.8)}` }} />
       ) : null}
     </div>
   ) : null;
   const brickTag = brickOn > 0.01 ? (
-    <div style={{ position: "absolute", left: BRICK_X + BRICK_W - 90, top: BRICK_BOT - brickH - 40,
+    <div style={{ position: "absolute", left: 540 + 240, top: BRICK_BOT - 640 * cakeScale - 30,
       opacity: brickOn, zIndex: 13, fontFamily: MONO, fontSize: 19,
       border: `1.5px solid ${rgba(W3.ink, 0.5)}`, borderRadius: 6, padding: "2px 10px",
       color: rgba(W3.ink, 0.65), background: rgba("#FFF", 0.6) }}>DEMO</div>
@@ -197,9 +182,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
     return (
       <div style={{ position: "absolute", left: 30 - lineUp * 0, top: 1210, width: 1020,
         opacity: cartOn * (1 - clamp01((t - giveAt + 0.2) / 0.4)), zIndex: 14 }}>
-        <Img src={P("hand_cart.png")} style={{ position: "absolute", left: 620, top: -60,
-          width: 400, height: 260, objectFit: "contain",
-          transform: `translateX(${(1 - cartOn) * 200}px)` }} />
+
         {/* chunks stack on the cart as they are cut; at the gap they LINE UP */}
         {CUTS.map((c, i) => {
           const isTax = c.key === "tax";
@@ -207,25 +190,22 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
           if (t < cutT) return null;
           const fly = OUT_E(clamp01((t - cutT) / 0.6));
           const isBig = i === 0 || isTax;
-          const restX = 600 + (i % 2) * 200, restY = -22 - Math.floor(i / 2) * 66;
+          const restX = 620 + (i % 2) * 205, restY = -10 - Math.floor(i / 2) * 100;
           const lineX = 8 + i * 146, lineY = 40;
           const x = BRICK_X + 200 + (restX - BRICK_X - 200) * fly + (lineX - restX) * lineUp;
           const y = -400 + (restY + 400) * fly + (lineY - restY) * lineUp;
           const bob = fly >= 0.99 && lineUp < 0.01 ? Math.sin(t * 2.1 + i * 1.7) * 4 : 0;
-          const sliceW = isBig ? 250 : 170, sliceH = isBig ? 96 : 64;
+          const isBigSlice = i === 0 || isTax;
+          const pw = isBigSlice ? 200 : 150;
           return (
             <div key={c.key} style={{ position: "absolute", left: x, top: y + bob,
-              transform: `rotate(${(1 - fly) * 14 - 4 + lineUp * 4}deg)`, zIndex: 15 }}>
-              {/* the slice itself: a cropped band of the brick with paper-edge
-                  cut faces top and bottom — it visibly CAME OFF the block */}
-              <div style={{ width: sliceW, height: sliceH, borderRadius: 8, overflow: "hidden",
-                boxShadow: cardShadow, position: "relative",
-                filter: isTax ? "sepia(0.5) hue-rotate(-30deg) saturate(2.2)" : undefined }}>
-                {/* the rendered slice slab — a piece that visibly came off */}
-                <Img src={P("slice_piece_a.png")} style={{ position: "absolute", left: -sliceW * 0.12,
-                  top: -sliceH * 0.55, width: sliceW * 1.25, height: sliceH * 2.1, objectFit: "cover" }} />
-              </div>
-              <div style={{ position: "absolute", left: -8, bottom: -14,
+              transform: `rotate(${(1 - fly) * 24 - 3 + lineUp * 3}deg)`, zIndex: 15 }}>
+              {/* the wedge slice on its own plate — the expense, kept */}
+              <Img src={P("cake_slice_plate.png")} style={{
+                width: pw, height: pw * 0.62, objectFit: "cover", borderRadius: 10,
+                boxShadow: cardShadow,
+                filter: isTax ? "sepia(0.5) hue-rotate(-30deg) saturate(2.2)" : undefined }} />
+              <div style={{ position: "absolute", left: -6, bottom: -14,
                 background: isTax ? `linear-gradient(180deg, ${W3.red}, #A93A22)` : rgba("#211A12", 0.92),
                 borderRadius: 8, padding: "4px 10px", boxShadow: cardShadow }}>
                 <span style={{ fontFamily: MONO, fontSize: 15, color: "#FFF6EC", letterSpacing: 1 }}>{c.label} </span>
@@ -389,8 +369,8 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
         top: y0 + (y1 - y0) * e - Math.sin(e * Math.PI) * 160,
         width: 220, height: 60, borderRadius: 8, overflow: "hidden", zIndex: 31,
         transform: `rotate(${e * -14}deg)`, boxShadow: cardShadow }}>
-        <Img src={P("note_brick.png")} style={{ position: "absolute", left: -20, top: -200,
-          width: 260, height: 400, objectFit: "cover" }} />
+        <Img src={P("cake_slice_plate.png")} style={{ position: "absolute", left: -10, top: -40,
+          width: 240, height: 150, objectFit: "cover" }} />
       </div>
     );
   })() : null;
@@ -595,18 +575,18 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
   /* cleavers rack: which cleaver hangs where over the brick */
   const cleavers = (
     <>
-      <Cleaver t={t} at={varpayAt} x={250} topY={BRICK_BOT - brickH} scale={1.25} label="VARIABLE PAY" />
-      <Cleaver t={t} at={cascadeAts[0]} x={320} topY={BRICK_BOT - brickH} label="EMPLOYER PF" />
-      <Cleaver t={t} at={cascadeAts[1]} x={420} topY={BRICK_BOT - brickH} scale={0.88} label="GRATUITY" />
-      <Cleaver t={t} at={cascadeAts[2]} x={360} topY={BRICK_BOT - brickH} scale={0.8} label="INSURANCE" />
-      <Cleaver t={t} at={cascadeAts[3]} x={300} topY={BRICK_BOT - brickH} scale={0.95} label="EMPLOYEE PF" />
-      <Cleaver t={t} at={cascadeAts[4]} x={440} topY={BRICK_BOT - brickH} scale={0.66} label="PROF TAX" />
+      <Cleaver t={t} at={varpayAt} x={250} topY={BRICK_BOT - 620 * (1 - choppedFrac * (1 / 0.38) * 0.45)} scale={1.25} label="VARIABLE PAY" />
+      <Cleaver t={t} at={cascadeAts[0]} x={320} topY={BRICK_BOT - 620 * (1 - choppedFrac * (1 / 0.38) * 0.45)} label="EMPLOYER PF" />
+      <Cleaver t={t} at={cascadeAts[1]} x={420} topY={BRICK_BOT - 620 * (1 - choppedFrac * (1 / 0.38) * 0.45)} scale={0.88} label="GRATUITY" />
+      <Cleaver t={t} at={cascadeAts[2]} x={360} topY={BRICK_BOT - 620 * (1 - choppedFrac * (1 / 0.38) * 0.45)} scale={0.8} label="INSURANCE" />
+      <Cleaver t={t} at={cascadeAts[3]} x={300} topY={BRICK_BOT - 620 * (1 - choppedFrac * (1 / 0.38) * 0.45)} scale={0.95} label="EMPLOYEE PF" />
+      <Cleaver t={t} at={cascadeAts[4]} x={440} topY={BRICK_BOT - 620 * (1 - choppedFrac * (1 / 0.38) * 0.45)} scale={0.66} label="PROF TAX" />
       {/* the boss: winds up huge, BOUNCES on the first 4L, then chops the
           ladder — each swing faster, the LAST one the hardest (30% + cess) */}
-      <Cleaver t={t} at={taxAt} x={200} topY={BRICK_BOT - brickH} scale={1.55} label="INCOME TAX" red
+      <Cleaver t={t} at={taxAt} x={200} topY={BRICK_BOT - 620 * (1 - choppedFrac * (1 / 0.38) * 0.45)} scale={1.55} label="INCOME TAX" red
         bounce bounceAt={bounceAt} />
       {ladderAts.map((a, i) => (
-        <Cleaver key={i} t={t} at={a} x={230 + (i % 2) * 60} topY={BRICK_BOT - brickH}
+        <Cleaver key={i} t={t} at={a} x={230 + (i % 2) * 60} topY={BRICK_BOT - 620 * (1 - choppedFrac * (1 / 0.38) * 0.45)}
           scale={0.8 + i * 0.06} label={`TAX ${TAX_STEPS[i].pct}`} red />
       ))}
     </>
