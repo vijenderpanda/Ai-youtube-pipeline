@@ -2849,7 +2849,7 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     sig = hashlib.sha256(vo_txt.encode("utf-8")).hexdigest()[:16]
     prev = open(vo_sig_p).read().strip() if os.path.exists(vo_sig_p) else None
     if not os.path.exists(vo):
-        synth(load_key(), ELEVEN_VOICE, vo_txt, vo, speed=1.0, style=STYLE)
+        synth(load_key(), ELEVEN_VOICE, vo_txt, vo, speed=float(os.environ.get("VO_SPEED", "1.0")), style=STYLE)
     elif prev is None:
         # An episode built before this guard existed. Adopt the cached VO rather
         # than re-spending (and re-cutting an already-shipped master's audio);
@@ -2857,7 +2857,7 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         print(f">> vo_v2.sig absent for ep{ep} — adopting cached VO, guarding future edits")
     elif prev != sig:
         print(f">> SCRIPT CHANGED ({prev} -> {sig}) — re-synthesizing VO and all host clips")
-        synth(load_key(), ELEVEN_VOICE, vo_txt, vo, speed=1.0, style=STYLE)
+        synth(load_key(), ELEVEN_VOICE, vo_txt, vo, speed=float(os.environ.get("VO_SPEED", "1.0")), style=STYLE)
         # host clips are cut from VO slices, so changed line timings invalidate them
         os.environ["FACTORY_REBUILD_HOSTS"] = "1"
     open(vo_sig_p, "w").write(sig)
