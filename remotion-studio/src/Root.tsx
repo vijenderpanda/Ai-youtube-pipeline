@@ -41,6 +41,7 @@ import { PaperStage, OctoPuppet, PaperWord, PAPER } from "./cookbook/Kaagaz";
 import { ZeroStackPaper, zeroStackPaperDemo } from "./cookbook/ZeroStackPaper";
 import { BillDay, billDayDemo } from "./cookbook/BillDay";
 import { MeterChor, meterChorDemo } from "./cookbook/MeterChor";
+import { SalaryBrick, salaryBrickDemo } from "./cookbook/SalaryBrick";
 import { DayOutro, dayOutroDemo } from "./cookbook/DayOutro";
 import { CaseBullets, caseBulletsDemo } from "./cookbook/CaseBullets";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
@@ -674,6 +675,15 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={dayOutroDemo}
+      />
+      <Composition
+        id="SalaryBrickFilm"
+        component={SalaryBrick}
+        durationInFrames={Math.round(32.5 * FPS)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={salaryBrickDemo}
       />
       <Composition
         id="MeterChorFilm"

@@ -31,6 +31,7 @@ import { ForgetsClay } from "./ForgetsClay";
 import { ZeroStackPaper } from "./ZeroStackPaper";
 import { BillDay } from "./BillDay";
 import { MeterChor } from "./MeterChor";
+import { SalaryBrick } from "./SalaryBrick";
 import { CaseBullets } from "./CaseBullets";
 import { GenerativeUI } from "./GenerativeUI";
 
@@ -76,6 +77,7 @@ export const COOKBOOK_COMPONENTS: Record<string, React.FC<any>> = {
   ZeroStackPaper,
   BillDay,
   MeterChor,
+  SalaryBrick,
   CaseBullets,
 };
 

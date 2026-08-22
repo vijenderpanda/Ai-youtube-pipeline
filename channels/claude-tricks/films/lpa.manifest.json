@@ -1,0 +1,347 @@
+{
+  "ep": "_lpa",
+  "class": "MECHANISM",
+  "world": "OFFER-LETTER DESK — papercraft desk world, cream ground, SAGE-GREEN money (note bundles), steel cleavers; RED spent ONLY on the tax cleaver (the trap that bounces). New world, no ep1/ep2 assets.",
+  "honesty": "declared-illustration",
+  "plant": {
+    "what": "the bank credit SMS with its amount BLURRED — and the blur visibly too short for ₹12,00,000",
+    "beat": 0
+  },
+  "knee": {
+    "what": "the VARIABLE PAY cleaver — the biggest chop, ₹1,80,000 wheeled off on a hand-cart (loudest event); at exactly 6.00s the embossed ₹12,00,000 CRACKS digit-by-digit into the six deduction labels",
+    "anchor": 6.0,
+    "window": [
+      4.0,
+      8.0
+    ]
+  },
+  "payoff": {
+    "what": "the SMS unblurs: ₹72,026 CREDITED at ~40% frame width — the wafer that survived the cleavers",
+    "anchor": "@beat6+0.4",
+    "min_frac": 0.75
+  },
+  "lines": [
+    {
+      "vo": "Barah lakh ka package! Ghar mein party.",
+      "subject": "the offer-letter moment",
+      "from": "embossed CTC ₹12,00,000 + confetti mid-fall + family chat bubble sliding up",
+      "to": "the bank SMS slides in, amount blurred — visibly too short"
+    },
+    {
+      "vo": "Par bank SMS itna chhota kyun? Chalo, brick kaat te hain.",
+      "subject": "the salary brick",
+      "from": "the letter folds down onto the desk",
+      "to": "the CTC as a physical brick of note bundles, cleavers racked above"
+    },
+    {
+      "vo": "Sabse pehla cleaver: variable pay. Woh poora milta nahi.",
+      "subject": "the biggest chop",
+      "from": "brick whole",
+      "to": "VARIABLE PAY cleaver falls hardest — ₹1,80,000 chunk carted off on the thela; the emboss cracks into six labels at 6.00s"
+    },
+    {
+      "vo": "Phir PF, gratuity, insurance — line se apna hissa le gaye.",
+      "subject": "the cascade",
+      "from": "three quick cleavers in accelerating rhythm",
+      "to": "employer PF ₹57,600, gratuity ₹23,088, insurance ₹15,000 — chunks stacking on the cart"
+    },
+    {
+      "vo": "Ab aata hai tax ka cleaver. Ruko… yeh toh bounce ho gaya?!",
+      "subject": "THE TWIST",
+      "from": "the biggest, reddest cleaver winds up over the shrunken brick",
+      "to": "it BOUNCES off a shield stamp — barah lakh tak naya regime, tax ZERO. Sach."
+    },
+    {
+      "vo": "Bacha employee PF aur professional tax — chhote cut.",
+      "subject": "the last chops",
+      "from": "two small clean chops",
+      "to": "employee PF ₹57,600, professional tax ₹2,400 — a thin wafer remains"
+    },
+    {
+      "vo": "Aur wahi wafer bana tumhara SMS: bahattar hazaar chhabbis.",
+      "subject": "the lock + circle",
+      "from": "the wafer drops into the SMS bubble",
+      "to": "blur snaps off: ₹72,026 CREDITED; the cart's chunks line up = ₹3,35,688 — the gap, to the rupee"
+    },
+    {
+      "vo": "Prompt pinned hai. Apna CTC daalo, apna hisaab lo. Free.",
+      "subject": "the give + loop",
+      "from": "console types the CTC-decoder prompt, complete + static, PINNED ✓",
+      "to": "camera returns to the offer letter + SMS — frame 0 composition, loop-adjacent"
+    }
+  ],
+  "beats": [
+    "cook:SalaryBrick#offer",
+    "cook:SalaryBrick#brick",
+    "cook:SalaryBrick#varpay",
+    "cook:SalaryBrick#cascade",
+    "cook:SalaryBrick#taxbounce",
+    "cook:SalaryBrick#lastcuts",
+    "cook:SalaryBrick#credit",
+    "cook:SalaryBrick#give"
+  ],
+  "spine": [
+    "SalaryBrick"
+  ],
+  "scenes": [
+    {
+      "archetype": "A1",
+      "comp": "SalaryBrick",
+      "beats": [
+        0
+      ],
+      "note": "situation hook: celebration vs a blurred SMS that is too short — both can't be true"
+    },
+    {
+      "archetype": "A3",
+      "comp": "SalaryBrick",
+      "beats": [
+        1,
+        2
+      ],
+      "note": "brick materializes; variable-pay chop = knee; 6.00s emboss crack digit-break"
+    },
+    {
+      "archetype": "A4",
+      "comp": "SalaryBrick",
+      "beats": [
+        3
+      ],
+      "note": "cleaver cascade, accelerating, chunks carted"
+    },
+    {
+      "archetype": "A7",
+      "comp": "SalaryBrick",
+      "beats": [
+        4
+      ],
+      "note": "THE TRAP INVERTED: the red tax cleaver bounces — verified FY25-26 rebate fact"
+    },
+    {
+      "archetype": "A5",
+      "comp": "SalaryBrick",
+      "beats": [
+        5,
+        6,
+        7
+      ],
+      "note": "last cuts, SMS unblur at 75%, exact-gap circle, give, loop"
+    }
+  ],
+  "numbers": [
+    {
+      "value": "1200000",
+      "spoken": "barah lakh",
+      "source": "DECLARED ILLUSTRATION — representative 12 LPA CTC structure (DEMO tag from beat 1, never frame 0)"
+    },
+    {
+      "value": "180000",
+      "spoken": "",
+      "source": "DEMO structure: variable pay 15% of CTC — typical Indian IT/services band"
+    },
+    {
+      "value": "57600",
+      "spoken": "",
+      "source": "DEMO structure: PF = 12% of basic (basic ₹4,80,000 = 40% of CTC) — statutory rate, applied twice (employer + employee)"
+    },
+    {
+      "value": "23088",
+      "spoken": "",
+      "source": "DEMO structure: gratuity accrual 4.81% of basic — statutory formula"
+    },
+    {
+      "value": "15000",
+      "spoken": "",
+      "source": "DEMO structure: group insurance premium — typical band"
+    },
+    {
+      "value": "2400",
+      "spoken": "",
+      "source": "professional tax — statutory (most states ₹200/mo)"
+    },
+    {
+      "value": "0",
+      "spoken": "zero",
+      "source": "REAL-SOURCED: new regime FY 2025-26 — taxable ₹8,49,312 after ₹75k standard deduction < ₹12,00,000 rebate threshold (s87A ₹60,000, Budget 2025) → tax NIL. Verified 2026-08-22: tax2win.in/guide/section-87a, taxclue.in/new-tax-regime-2025-26"
+    },
+    {
+      "value": "72026",
+      "spoken": "bahattar hazaar chhabbis",
+      "source": "derived on screen: (12,00,000 − 1,80,000 − 57,600 − 23,088 − 15,000 = 9,24,312 cash gross) − 57,600 employee PF − 2,400 PT − 0 tax = 8,64,312/yr ÷ 12"
+    },
+    {
+      "value": "335688",
+      "spoken": "",
+      "source": "derived on screen: sum of the carted chunks 1,80,000+57,600+57,600+23,088+15,000+2,400 — closes to the rupee"
+    },
+    {
+      "value": "12",
+      "spoken": "barah",
+      "source": "the rebate threshold in lakh — real-sourced (see tax 0 entry)"
+    }
+  ],
+  "hot_words": [
+    "BARAH",
+    "LAKH",
+    "PACKAGE",
+    "SMS",
+    "CHHOTA",
+    "CLEAVER",
+    "VARIABLE",
+    "PF",
+    "GRATUITY",
+    "TAX",
+    "BOUNCE",
+    "ZERO",
+    "BAHATTAR",
+    "HAZAAR",
+    "CREDITED",
+    "PINNED",
+    "HISAAB"
+  ],
+  "carry": "the SALARY BRICK itself — whole at beat 1, chopped smaller every beat, the surviving wafer becomes the SMS amount; secondary carry = the hand-cart accumulating the chunks (its lineup IS the circle-close).",
+  "cookbook": {
+    "SalaryBrick": {
+      "brickAt": "@beat1+0.4",
+      "varpayAt": "@beat1+1.6",
+      "crackAt": 6.0,
+      "cascadeAts": [
+        "@beat3+0.0",
+        "@beat3+1.4",
+        "@beat3+2.6"
+      ],
+      "taxAt": "@beat4+0.3",
+      "bounceAt": "@beat4+1.6",
+      "empfAt": "@beat5+0.2",
+      "ptaxAt": "@beat5+1.5",
+      "creditAt": "@beat6+0.4",
+      "gapAt": "@beat6+2.2",
+      "giveAt": "@beat7+0.2",
+      "endAt": "@beat7+4.0",
+      "chips": [
+        {
+          "t": "@beat0+0.3",
+          "end": "@beat0+1.6",
+          "text": "12 LAKH? 🎉",
+          "hot": true
+        },
+        {
+          "t": "@beat0+1.7",
+          "end": "@beat1+0.3",
+          "text": "SMS ITNA CHHOTA?"
+        },
+        {
+          "t": "@beat1+0.4",
+          "end": "@beat1+1.9",
+          "text": "CTC = BRICK"
+        },
+        {
+          "t": "@beat1+2.0",
+          "end": "@beat2+0.5",
+          "text": "CLEAVERS READY"
+        },
+        {
+          "t": "@beat2+0.6",
+          "end": "@beat2+2.0",
+          "text": "VARIABLE PAY −₹1.8L",
+          "hot": true,
+          "big": true
+        },
+        {
+          "t": "@beat2+2.1",
+          "end": "@beat3+0.0",
+          "text": "CART PE GAYA"
+        },
+        {
+          "t": "@beat3+0.1",
+          "end": "@beat3+1.3",
+          "text": "EMPLOYER PF ✂"
+        },
+        {
+          "t": "@beat3+1.4",
+          "end": "@beat3+2.5",
+          "text": "GRATUITY ✂"
+        },
+        {
+          "t": "@beat3+2.6",
+          "end": "@beat4+0.2",
+          "text": "INSURANCE ✂"
+        },
+        {
+          "t": "@beat4+0.3",
+          "end": "@beat4+1.5",
+          "text": "AB TAX…",
+          "hot": true
+        },
+        {
+          "t": "@beat4+1.6",
+          "end": "@beat5+0.1",
+          "text": "BOUNCE! TAX ₹0",
+          "hot": true,
+          "big": true
+        },
+        {
+          "t": "@beat5+0.2",
+          "end": "@beat5+1.4",
+          "text": "EMPLOYEE PF ✂"
+        },
+        {
+          "t": "@beat5+1.5",
+          "end": "@beat6+0.3",
+          "text": "PROF TAX ✂"
+        },
+        {
+          "t": "@beat6+0.4",
+          "end": "@beat6+2.1",
+          "text": "₹72,026 CREDITED",
+          "hot": true
+        },
+        {
+          "t": "@beat6+2.2",
+          "end": "@beat7+0.1",
+          "text": "GAP = ₹3,35,688"
+        },
+        {
+          "t": "@beat7+0.2",
+          "end": "@beat7+1.6",
+          "text": "PROMPT PINNED",
+          "hot": true
+        },
+        {
+          "t": "@beat7+1.7",
+          "end": "@beat7+3.9",
+          "text": "APNA HISAAB LO"
+        }
+      ]
+    }
+  },
+  "film": {
+    "chips_to": "SalaryBrick",
+    "desc_hashtags": [
+      "#ai",
+      "#salary",
+      "#ctc"
+    ]
+  },
+  "give": {
+    "prompt": "Break my CTC of ₹____ into real monthly in-hand (new tax regime FY 2025-26). List EVERY deduction as a line item — employer PF, employee PF, gratuity, variable pay held back, professional tax, income tax after standard deduction and 87A rebate. Then tell me the ONE line I should negotiate in my next offer, and what it is worth per month.",
+    "where": "description above the fold + pinned comment"
+  },
+  "outro": {
+    "q": "CTC MINUS IN-HAND|TUMHARA GAP|KITNA?",
+    "accent_word": "KITNA?",
+    "cta": "The CTC-decoder prompt is pinned and in the description. Apna CTC daalo — apna sach nikaalo. Free."
+  },
+  "title_candidates": [
+    "I Asked AI Where My 12 LPA Actually Goes 💸",
+    "12 Lakh Package, ₹72,026 In Hand — AI Explains 💸",
+    "Your CTC Is Lying — I Made AI Prove It 💸"
+  ],
+  "tags": [
+    "ctc vs in hand",
+    "salary breakup",
+    "12 lpa in hand",
+    "ai",
+    "claude"
+  ]
+}
