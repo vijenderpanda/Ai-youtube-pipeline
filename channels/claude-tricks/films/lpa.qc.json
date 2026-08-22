@@ -2,47 +2,47 @@
  "vo_phrases": [
   {
    "t0": 0.0,
-   "t1": 2.66,
-   "text": "Thirty four lakh package! Family's celebrating."
+   "t1": 2.21,
+   "text": "Thirty four LPA! Family's celebrating."
   },
   {
-   "t0": 3.16,
-   "t1": 6.46,
+   "t0": 2.69,
+   "t1": 5.57,
    "text": "Why is the SMS this small? Lights off. Cut the cake."
   },
   {
-   "t0": 7.02,
-   "t1": 10.44,
-   "text": "First cut: variable pay. Five point one lakhs, on hold."
+   "t0": 6.04,
+   "t1": 9.74,
+   "text": "First cut: variable pay. Five point one LPA — on hold."
   },
   {
-   "t0": 10.95,
-   "t1": 15.99,
+   "t0": 10.24,
+   "t1": 14.57,
    "text": "Then both PFs, gratuity, insurance, professional tax — slice after slice."
   },
   {
-   "t0": 16.44,
-   "t1": 20.12,
-   "text": "Now the boss: income tax. First four lakhs? Untouched."
+   "t0": 15.04,
+   "t1": 18.17,
+   "text": "Now the boss: income tax. The first four? Untouched."
   },
   {
-   "t0": 20.62,
-   "t1": 25.05,
+   "t0": 18.68,
+   "t1": 22.04,
    "text": "Then slab by slab — ten, twenty, thirty percent. Plus cess."
   },
   {
-   "t0": 25.52,
-   "t1": 28.62,
+   "t0": 22.57,
+   "t1": 25.17,
    "text": "What's left: one seventy five, seven zero two."
   },
   {
-   "t0": 29.12,
-   "t1": 32.47,
-   "text": "The gap? Thirteen lakhs — a whole fresher's salary."
+   "t0": 25.62,
+   "t1": 29.43,
+   "text": "The gap? Almost thirteen LPA — a fresher's entire package."
   },
   {
-   "t0": 32.95,
-   "t1": 37.1,
+   "t0": 29.96,
+   "t1": 33.72,
    "text": "Prompt's pinned. Drop your CTC, get your breakdown. Free."
   }
  ],
@@ -56,123 +56,123 @@
    "text": "SMS SO SMALL?"
   },
   {
-   "t": 3.56,
+   "t": 3.09,
    "text": "LIGHTS OFF"
   },
   {
-   "t": 4.76,
+   "t": 4.29,
    "text": "CUT THE CAKE"
   },
   {
-   "t": 6.16,
+   "t": 5.69,
    "text": "KNIFE READY"
   },
   {
-   "t": 7.22,
+   "t": 6.24,
    "text": "VARIABLE −₹5,10,000"
   },
   {
-   "t": 8.62,
+   "t": 7.64,
    "text": "ON HOLD"
   },
   {
-   "t": 9.92,
+   "t": 8.94,
    "text": "FIRST SLICE ↑"
   },
   {
-   "t": 11.35,
+   "t": 10.64,
    "text": "EMPLOYER PF ✂"
   },
   {
-   "t": 12.15,
+   "t": 11.44,
    "text": "GRATUITY ✂"
   },
   {
-   "t": 12.85,
+   "t": 12.14,
    "text": "INSURANCE ✂"
   },
   {
-   "t": 13.45,
+   "t": 12.74,
    "text": "MY PF ✂"
   },
   {
-   "t": 14.05,
+   "t": 13.34,
    "text": "PROF TAX ✂"
   },
   {
-   "t": 14.75,
+   "t": 14.04,
    "text": "5 SLICES GONE"
   },
   {
-   "t": 15.95,
+   "t": 15.24,
    "text": "ONE LEFT →"
   },
   {
-   "t": 16.54,
+   "t": 15.14,
    "text": "NOW: TAX"
   },
   {
-   "t": 18.04,
+   "t": 16.64,
    "text": "FIRST ₹4L FREE"
   },
   {
-   "t": 19.34,
+   "t": 17.94,
    "text": "IT BOUNCED!"
   },
   {
-   "t": 20.92,
+   "t": 18.98,
    "text": "SLAB BY SLAB"
   },
   {
-   "t": 22.22,
+   "t": 20.28,
    "text": "30% + CESS"
   },
   {
-   "t": 23.52,
+   "t": 21.58,
    "text": "TAX −₹3,62,352"
   },
   {
-   "t": 24.82,
+   "t": 22.88,
    "text": "CESS TOO."
   },
   {
-   "t": 25.72,
+   "t": 22.77,
    "text": "WHAT'S LEFT?"
   },
   {
-   "t": 27.02,
+   "t": 24.07,
    "text": "COUNTING…"
   },
   {
-   "t": 27.92,
+   "t": 24.97,
    "text": "₹1,75,702 CREDITED"
   },
   {
-   "t": 29.52,
+   "t": 26.02,
    "text": "GAP: ₹12,91,568"
   },
   {
-   "t": 30.82,
+   "t": 27.32,
    "text": "A FRESHER'S SALARY"
   },
   {
-   "t": 32.12,
+   "t": 28.62,
    "text": "3 BUCKETS"
   },
   {
-   "t": 33.15,
+   "t": 30.16,
    "text": "PROMPT PINNED"
   },
   {
-   "t": 34.55,
+   "t": 31.56,
    "text": "RUN YOUR NUMBERS"
   },
   {
-   "t": 35.95,
+   "t": 32.96,
    "text": "COPY-PASTE-RUN"
   }
  ],
- "payoff_first_at": 27.92,
+ "payoff_first_at": 25.42,
  "carry": [
   {
    "t": 0.0,

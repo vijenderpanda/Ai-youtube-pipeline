@@ -14,14 +14,14 @@
  "outro_src": "ep_lpa/outro_card.mp4",
  "outro_cta": "The CTC-decoder prompt is pinned and in the description. Drop your CTC — get your real breakdown. Free.",
  "lines": [
-  "Thirty four lakh package! Family's celebrating.",
+  "Thirty four LPA! Family's celebrating.",
   "Why is the SMS this small? Lights off. Cut the cake.",
-  "First cut: variable pay. Five point one lakhs, on hold.",
+  "First cut: variable pay. Five point one LPA — on hold.",
   "Then both PFs, gratuity, insurance, professional tax — slice after slice.",
-  "Now the boss: income tax. First four lakhs? Untouched.",
+  "Now the boss: income tax. The first four? Untouched.",
   "Then slab by slab — ten, twenty, thirty percent. Plus cess.",
   "What's left: one seventy five, seven zero two.",
-  "The gap? Thirteen lakhs — a whole fresher's salary.",
+  "The gap? Almost thirteen LPA — a fresher's entire package.",
   "Prompt's pinned. Drop your CTC, get your breakdown. Free."
  ],
  "hot_words": [
@@ -168,7 +168,7 @@
     "@beat5+2.2"
    ],
    "taxStampAt": "@beat5+2.9",
-   "creditAt": "@beat6+2.4",
+   "creditAt": "@beat6+2.85",
    "gapAt": "@beat7+0.4",
    "giveAt": "@beat8+0.2",
    "endAt": "@beat8+4.0",

@@ -41,7 +41,7 @@ export const LpaOutro: React.FC<LpaOutroProps> = ({
   accentWord = "HOW MUCH?",
   promptText = "Break my CTC of ₹____ into real monthly in-hand (new regime FY25-26). List every deduction step by step, which lines come back, and the ONE line to negotiate.",
   promptDur = 3.4,
-  hostSrc,
+  hostSrc = "assets/ep_lpa/host_pip.mp4",
   width = 1080, height = 1920,
 }) => {
   const frame = useCurrentFrame();
@@ -79,7 +79,7 @@ export const LpaOutro: React.FC<LpaOutroProps> = ({
               <span style={{ fontFamily: MONO, fontSize: 23, color: W3.green, letterSpacing: 2 }}>✳ CTC DECODER</span>
               <span style={{ fontFamily: MONO, fontSize: 21, color: "#0D1811", background: W3.green,
                 borderRadius: 8, padding: "4px 12px", fontWeight: 700,
-                opacity: typed >= promptText.length ? 1 : 0.25 }}>PINNED ✓ COPY KARO</span>
+                opacity: typed >= promptText.length ? 1 : 0.25 }}>PINNED ✓ COPY IT</span>
             </div>
             <div style={{ marginTop: 14, fontFamily: MONO, fontSize: 28, lineHeight: 1.55,
               color: "#D9F2E2", minHeight: 250 }}>
@@ -88,7 +88,7 @@ export const LpaOutro: React.FC<LpaOutroProps> = ({
             </div>
             <div style={{ marginTop: 12, textAlign: "center", fontFamily: MONO, fontSize: 22,
               letterSpacing: 4, color: rgba("#D9F2E2", 0.55),
-              opacity: typed >= promptText.length ? 1 : 0 }}>PAUSE · COPY KARO</div>
+              opacity: typed >= promptText.length ? 1 : 0 }}>PAUSE · COPY IT</div>
           </div>
         </div>
       ) : null}
@@ -96,7 +96,7 @@ export const LpaOutro: React.FC<LpaOutroProps> = ({
       {/* phase B: the question card + the host pip */}
       {phaseB ? (
         <>
-          <div style={{ position: "absolute", left: 70, top: 480, width: 940, opacity: qOn,
+          <div style={{ position: "absolute", left: 70, top: 560, width: 940, opacity: qOn,
             transform: `translateY(${(1 - qOn) * 60}px) scale(${0.96 + qOn * 0.04})` }}>
             <div style={{ background: "linear-gradient(180deg, #2B241C, #1C160F)", borderRadius: 26,
               padding: "60px 50px", boxShadow: cardShadow, textAlign: "center",
@@ -120,30 +120,34 @@ export const LpaOutro: React.FC<LpaOutroProps> = ({
             </div>
           </div>
 
-          {/* THE HOST PIP — circular, ring animated, talking head */}
-          <div style={{ position: "absolute", right: 64, top: 190, width: 300, height: 300,
+          {/* THE HOST PIP v2 — top-centre, 380px, HeyGen clip (muted: the
+              build overlays the same CTA audio; startFrom seeks the clip to
+              phase B so the lips line up with the spoken CTA) */}
+          <div style={{ position: "absolute", left: 540 - 190, top: 96, width: 380, height: 380,
             opacity: pipOn, transform: `scale(${0.8 + pipOn * 0.2 + settle(t, promptDur + 0.3, 0.5) * 0.06})
               translateY(${Math.sin(t * 1.4) * 5}px)` }}>
             {/* rotating dashed ring */}
-            <svg width={300} height={300} viewBox="0 0 300 300" style={{ position: "absolute", inset: 0 }}>
-              <circle cx={150} cy={150} r={143} fill="none" stroke={W3.coral} strokeWidth={5}
-                strokeDasharray="34 18" strokeLinecap="round"
-                transform={`rotate(${t * 40} 150 150)`} />
-              <circle cx={150} cy={150} r={132} fill="none" stroke={rgba("#FFF", 0.5)} strokeWidth={2} />
+            <svg width={380} height={380} viewBox="0 0 380 380" style={{ position: "absolute", inset: 0 }}>
+              <circle cx={190} cy={190} r={182} fill="none" stroke={W3.coral} strokeWidth={6}
+                strokeDasharray="40 20" strokeLinecap="round"
+                transform={`rotate(${t * 40} 190 190)`} />
+              <circle cx={190} cy={190} r={168} fill="none" stroke={rgba("#FFF", 0.5)} strokeWidth={2} />
             </svg>
             {/* breathing glow */}
-            <div style={{ position: "absolute", inset: -22, borderRadius: "50%",
+            <div style={{ position: "absolute", inset: -26, borderRadius: "50%",
               background: `radial-gradient(circle, transparent 55%, ${rgba(W3.coral, 0.24 + Math.sin(t * 3) * 0.1)} 72%, transparent 82%)` }} />
-            <div style={{ position: "absolute", inset: 14, borderRadius: "50%", overflow: "hidden",
-              boxShadow: cardShadow, background: "#1C160F" }}>
+            <div style={{ position: "absolute", inset: 16, borderRadius: "50%", overflow: "hidden",
+              boxShadow: cardShadow, background: "#12151D" }}>
               {hostSrc ? (
-                <Video src={staticFile(hostSrc)} style={{ width: "100%", height: "100%", objectFit: "cover" }} muted={false} />
+                <Video src={staticFile(hostSrc)} muted startFrom={Math.round(promptDur * fps)}
+                  style={{ width: "175%", height: "175%", marginLeft: "-37.5%", marginTop: "-16%",
+                    objectFit: "cover" }} />
               ) : (
                 <Img src={staticFile("assets/character/host_library/outfit_11_sol_magenta/center.jpg")}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 12%" }} />
+                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 8%" }} />
               )}
             </div>
-            {/* name tag */}
+          {/* name tag */}
             <div style={{ position: "absolute", left: "50%", bottom: -14, transform: "translateX(-50%)",
               fontFamily: MONO, fontSize: 20, letterSpacing: 2, color: "#FFF6EC",
               background: rgba("#211A12", 0.94), borderRadius: 9, padding: "3px 14px",

@@ -43,7 +43,7 @@ const W3 = {
    knife comes out. Gold = HOLD, blue = PF family, red = tax, green = in-hand. */
 const DK = {
   top: "#0D1017", mid: "#161B26", low: "#1E2430",
-  gold: "#F5C518", blue: "#6BA6E8", red: "#E8485C", green: "#43E97B",
+  gold: "#EFAF2A", blue: "#6BA6E8", red: "#E8485C", green: "#43E97B",
   text: "#F2EFE6", dim: "#8A93A5",
 };
 const MONO = "'JetBrains Mono', 'Courier New', monospace";
@@ -228,7 +228,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
   const cart = pieOn > 0.01 ? (
     <div style={{ position: "absolute", inset: 0, zIndex: 20, opacity: pieOn,
       transformOrigin: `${PIE_CX}px ${PIE_CY}px`,
-      transform: `scale(${(1 - pieDock * 0.5) * (1 + Math.sin(t * 1.1) * 0.008 * spinP)}) translate(${pieDock * -560}px, ${pieDock * -240}px) rotate(${spinP * (t - gapAt - 1.2) * 4}deg)` }}>
+      transform: `scale(${(1 - pieDock * 0.5) * (1 + Math.sin(t * 1.1) * 0.008 * spinP)}) translate(${pieDock * -560}px, ${pieDock * -240}px) rotate(${spinP * (t - gapAt - 1.2) * 4 + pieDock * Math.sin(t * 1.7) * 2.2}deg)` }}>
       <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
         <defs>
           {(() => {
@@ -327,7 +327,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
             display: "flex", gap: 12, alignItems: "center",
             background: rgba("#0D1017", 0.92), borderRadius: 12, padding: "8px 16px",
             border: `2px solid ${rgba(cur.color, 0.8)}`, boxShadow: cardShadow,
-            transform: `scale(${0.92 + on * 0.08 + settle(t, cur.landAt, 0.35) * 0.06})`,
+            transform: `scale(${0.92 + on * 0.08 + settle(t, cur.landAt, 0.35) * 0.06}) translateY(${Math.sin(t * 1.9) * 3}px)`,
             transformOrigin: "left center" }}>
             <span style={{ fontFamily: MONO, fontSize: 27, color: DK.text,
               fontVariantNumeric: "tabular-nums" as const }}>₹{cur.amt.toLocaleString("en-IN")}</span>
@@ -438,16 +438,20 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
   /* the SMS: slides in at 1.0s, amount blurred and TOO SHORT; unblurs at credit */
   const smsIn = OUT_E(clamp01((t - 1.0) / 0.6));
   const credited = t >= creditAt;
+  const approach = OUT_E(clamp01((t - (creditAt - 2.3)) / 1.8));
   const creditPop = OUT_E(clamp01((t - creditAt) / 0.4));
   const smsDock = IN_E(clamp01((t - brickAt) / 0.6)) * (1 - OUT_E(clamp01((t - creditAt + 0.5) / 0.5)));
   /* full-size at the hook, docks small top-right during the chopping, returns big for the credit */
   const smsScale = 1 - smsDock * 0.45 + (credited ? settle(t, creditAt, 0.5) * 0.06 : 0);
   const smsX = 330 + smsDock * 340, smsY = 1490 - smsDock * 1330 - (credited ? 640 : 0);
   const sms = t >= 1.0 ? (
-    <div style={{ position: "absolute", left: credited ? 150 : smsX, top: credited ? 830 : smsY,
-      width: credited ? 780 : 640, zIndex: 30, opacity: smsIn * (1 - clamp01((t - giveAt + 0.2) / 0.4)),
+    <div style={{ position: "absolute",
+      left: credited ? 150 : smsX + (150 - smsX) * approach,
+      top: credited ? 830 : smsY + (830 - smsY) * approach,
+      width: credited ? 780 : 640 + 140 * approach, zIndex: 30,
+      opacity: smsIn * (1 - clamp01((t - giveAt + 0.2) / 0.4)),
       transformOrigin: "top left",
-      transform: `translateX(${(1 - smsIn) * 300}px) scale(${credited ? 1.05 * (1 + Math.sin(t * 2.4) * 0.008) : smsScale})` }}>
+      transform: `translateX(${(1 - smsIn) * 300}px) rotate(${approach * (1 - (credited ? 1 : 0)) * Math.sin(t * 11) * 1.6}deg) scale(${credited ? 1.05 * (1 + Math.sin(t * 2.4) * 0.008) : smsScale + approach * (1.05 - smsScale)})` }}>
       <div style={{ background: "#FFFFFF", borderRadius: 18, padding: "18px 24px",
         boxShadow: cardShadow, border: `1px solid ${rgba("#8A8A8A", 0.35)}` }}>
         <div style={{ fontFamily: MONO, fontSize: 20, color: "#6B6B6B", display: "flex",
@@ -517,6 +521,43 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
       </div>
     );
   })() : null;
+
+  /* THE 6.00s CRACK, on the dark stage: the CTC figure floats gold above
+     the cake and shatters into the deduction labels — the knee's loudest
+     event lives where the eyes are, not on the folded letter */
+  const embOn = OUT_E(clamp01((t - (brickAt + 0.5)) / 0.5)) * (1 - clamp01((t - crackAt - 1.3) / 0.5));
+  const crackP2 = OUT_E(clamp01((t - crackAt) / 0.5));
+  const emboss = t >= brickAt + 0.5 && t < crackAt + 1.9 ? (
+    <div style={{ position: "absolute", left: 0, right: 0, top: 610, textAlign: "center",
+      zIndex: 23, opacity: embOn }}>
+      {crackP2 < 0.02 ? (
+        <div style={{ fontFamily: DISP, fontSize: 104, color: DK.gold, letterSpacing: 2,
+          textShadow: `0 0 44px ${rgba(DK.gold, 0.45)}, 0 4px 0 ${rgba("#000", 0.5)}`,
+          transform: `scale(${1 + Math.sin(t * 2.6) * 0.012})`,
+          fontVariantNumeric: "tabular-nums" as const }}>₹34,00,000</div>
+      ) : (
+        <div style={{ position: "relative", height: 130 }}>
+          {"₹34,00,000".split("").map((ch, i) => (
+            <span key={i} style={{ fontFamily: DISP, fontSize: 104, color: DK.gold,
+              display: "inline-block",
+              transform: `translate(${(i - 4.5) * crackP2 * 34}px, ${crackP2 * (i % 3 === 0 ? -70 : 60) * (0.5 + (i % 4) * 0.3)}px) rotate(${(i % 2 ? 1 : -1) * crackP2 * 28}deg)`,
+              opacity: 1 - crackP2 * 0.9,
+              textShadow: `0 0 30px ${rgba(DK.gold, 0.4)}` }}>{ch}</span>
+          ))}
+          <div style={{ position: "absolute", left: 0, right: 0, top: 26, display: "flex",
+            flexWrap: "wrap" as const, gap: 10, justifyContent: "center" }}>
+            {CUTS.map((c, i) => (
+              <span key={c.key} style={{ fontFamily: MONO, fontSize: 24, color: DK.text,
+                background: rgba("#0D1017", 0.92), borderRadius: 8, padding: "4px 12px",
+                border: `1.5px solid ${rgba(c.key === "tax" ? DK.red : DK.gold, 0.6)}`,
+                opacity: Math.min(1, crackP2 * 1.8),
+                transform: `translateY(${(1 - OUT_E(clamp01((t - crackAt - i * 0.05) / 0.4))) * 50}px)` }}>{c.label}</span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  ) : null;
 
   /* ---- brand inside 1s (law 3) ---- */
   const brandOn = OUT_E(clamp01((t - 0.45) / 0.4));
@@ -631,7 +672,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
           <span style={{ fontFamily: MONO, fontSize: 22, color: W3.green, letterSpacing: 2 }}>✳ CTC DECODER</span>
           <span style={{ fontFamily: MONO, fontSize: 20, color: "#0D1811", background: W3.green,
             borderRadius: 8, padding: "4px 12px", fontWeight: 700,
-            opacity: typed >= PROMPT.length ? 1 : 0.25 }}>PINNED ✓ COPY KARO</span>
+            opacity: typed >= PROMPT.length ? 1 : 0.25 }}>PINNED ✓ COPY IT</span>
         </div>
         <div style={{ marginTop: 14, fontFamily: MONO, fontSize: 27, lineHeight: 1.55,
           color: "#D9F2E2", minHeight: 180 }}>
@@ -755,7 +796,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
             <div style={{ position: "absolute", left: -200, top: 300, width: 700, height: 900,
               background: `radial-gradient(ellipse, ${rgba("#E8B84B", 0.10)} 0%, transparent 65%)` }} />
             <div style={{ position: "absolute", right: -220, top: 700, width: 700, height: 900,
-              background: `radial-gradient(ellipse, ${rgba("#2E6E7E", 0.12)} 0%, transparent 65%)` }} />
+              background: `radial-gradient(ellipse, ${rgba("#2E7A6E", 0.12)} 0%, transparent 65%)` }} />
           </AbsoluteFill>
           {/* the desk world */}
           <Img src={P("desk_scene.png")} style={{
@@ -775,6 +816,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
           {chat}
           {sms}
           {creditMath}
+          {emboss}
           {wafer}
           {shield}
           {taxablePanel}
@@ -783,7 +825,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
           {brand}
           {give}
         </AbsoluteFill>
-        <FlashCut at={[varpayAt + 0.65, bounceAt, creditAt]} color="#FFE9C4" opacity={0.3} />
+        <FlashCut at={[varpayAt + 0.65, crackAt, bounceAt, creditAt]} color="#FFE9C4" opacity={0.3} />
         <svg style={{ position: "absolute", inset: 0, opacity: 0.05, mixBlendMode: "overlay", pointerEvents: "none" }}>
           <filter id="sb-grain"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed={9} /></filter>
           <rect width="100%" height="100%" filter="url(#sb-grain)" />
