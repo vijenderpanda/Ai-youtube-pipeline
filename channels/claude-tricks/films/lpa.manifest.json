@@ -420,6 +420,26 @@
           "end": "@beat8+3.2",
           "text": "APNA HISAAB LO"
         }
+      ],
+      "pings": [
+        {
+          "at": "@beat4+2.5",
+          "kind": "like",
+          "tip": "tax bacha? like banta ✨",
+          "dur": 2.0
+        },
+        {
+          "at": "@beat7+0.6",
+          "kind": "comment",
+          "tip": "apna gap 👇",
+          "dur": 2.0
+        },
+        {
+          "at": "@beat8+1.4",
+          "kind": "subscribe",
+          "tip": "aage ka hisaab 🔔",
+          "dur": 2.0
+        }
       ]
     }
   },
@@ -436,9 +456,10 @@
     "where": "description above the fold + pinned comment"
   },
   "outro": {
-    "q": "CTC MINUS IN-HAND|TUMHARA GAP|KITNA?",
+    "q": "CTC − IN-HAND|TUMHARA GAP|KITNA?",
     "accent_word": "KITNA?",
-    "cta": "The CTC-decoder prompt is pinned and in the description. Apna CTC daalo — apna sach nikaalo. Free."
+    "cta": "The CTC-decoder prompt is pinned and in the description. Apna CTC daalo — apna sach nikaalo. Free.",
+    "host_pip": "circle pip, outfit_11 Sol, HeyGen clip generated at build (gen_outro flow); storyboard uses the center.jpg still"
   },
   "title_candidates": [
     "I Asked AI Where My 34 LPA Actually Goes 💸",

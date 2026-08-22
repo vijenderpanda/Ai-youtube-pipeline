@@ -4,6 +4,7 @@ import { rgba } from "./kit";
 import { clamp01, OUT_E, IN_E, settle } from "./motion";
 import { FilmT } from "./filmclock";
 import { ExposureScore, FlashCut } from "./craft";
+import { EngagePing, Ping } from "./EngagePing";
 
 /* =============================================================================
    SALARY BRICK — ep3 "I Asked AI Where My 34 LPA Actually Goes".
@@ -55,6 +56,7 @@ export type SalaryBrickProps = {
   creditAt?: number; gapAt?: number;
   giveAt?: number; endAt?: number;
   chips?: Chip[];
+  pings?: Ping[];
 };
 
 /* the cut list drives brick height + cart contents; amounts in ₹/yr */
@@ -112,7 +114,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
   cascadeAts = [10.9, 11.7, 12.4, 13.0, 13.6], taxAt = 15.0, bounceAt = 15.4,
   ladderAts = [16.0, 16.8, 17.5, 18.3, 18.9, 19.5], taxStampAt = 20.2,
   creditAt = 26.0, gapAt = 27.6, giveAt = 28.8, endAt = 33.1,
-  chips = [],
+  chips = [], pings = [],
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -146,11 +148,27 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
       height: brickH, opacity: brickOn, zIndex: 12, overflow: "hidden", borderRadius: 14,
       transform: `translateY(${(1 - brickOn) * 80}px)`,
       boxShadow: cardShadow }}>
-      {/* the FLUX brick plate, pinned to the container bottom so every chop
-          removes height from the TOP — the cut always reads as taken off */}
-      <Img src={P("note_brick.png")} style={{
-        position: "absolute", left: -40, top: brickH - BRICK_H0 - 60, width: BRICK_W + 80,
-        height: BRICK_H0 + 120, objectFit: "cover" }} />
+      {/* THE REAL CUT (VJ: 'satisfying cut feel'): at every impact the brick
+          swaps through three FLUX renders — the blade buried in the stack,
+          then the top slab cleanly offset, then the whole brick again. The
+          hit-shake + flash carry the continuity between plates. */}
+      {(() => {
+        const hits = [...cutAts.slice(0, 6), ...ladderAts.map((a) => a + 0.0)];
+        let phase = "base", ph = 0;
+        for (const h of hits) {
+          const d = t - h;
+          if (d >= 0 && d < 0.28) { phase = "blade"; ph = d / 0.28; }
+          else if (d >= 0.28 && d < 0.75) { phase = "sliced"; ph = (d - 0.28) / 0.47; }
+        }
+        const src = phase === "blade" ? "brick_blade_a.png" : phase === "sliced" ? "brick_sliced_a.png" : "note_brick.png";
+        const zoom = phase === "blade" ? 1.28 : phase === "sliced" ? 1.18 : 1.0;
+        const shiftY = phase === "blade" ? -30 : phase === "sliced" ? -10 : 0;
+        return (
+          <Img src={P(src)} style={{
+            position: "absolute", left: -40 - (zoom - 1) * 200, top: brickH - BRICK_H0 - 60 + shiftY,
+            width: (BRICK_W + 80) * zoom, height: (BRICK_H0 + 120) * zoom, objectFit: "cover" }} />
+        );
+      })()}
       {/* the cut face: raw paper edge where the last cleaver landed */}
       {choppedFrac > 0.001 ? (
         <div style={{ position: "absolute", left: 0, top: 0, width: "100%", height: 26 }}>
@@ -203,14 +221,9 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
               <div style={{ width: sliceW, height: sliceH, borderRadius: 8, overflow: "hidden",
                 boxShadow: cardShadow, position: "relative",
                 filter: isTax ? "sepia(0.5) hue-rotate(-30deg) saturate(2.2)" : undefined }}>
-                <Img src={P("note_brick.png")} style={{ position: "absolute", left: -30,
-                  top: -140 - i * 40, width: sliceW + 60, height: 420, objectFit: "cover" }} />
-                <div style={{ position: "absolute", left: 0, top: 0, width: "100%", height: 10,
-                  background: `repeating-linear-gradient(90deg, ${W3.band} 0 18px, #E2D6B8 18px 21px)`,
-                  borderBottom: `1.5px solid ${rgba("#000", 0.2)}` }} />
-                <div style={{ position: "absolute", left: 0, bottom: 0, width: "100%", height: 10,
-                  background: `repeating-linear-gradient(90deg, ${W3.band} 0 18px, #E2D6B8 18px 21px)`,
-                  borderTop: `1.5px solid ${rgba("#000", 0.2)}` }} />
+                {/* the rendered slice slab — a piece that visibly came off */}
+                <Img src={P("slice_piece_a.png")} style={{ position: "absolute", left: -sliceW * 0.12,
+                  top: -sliceH * 0.55, width: sliceW * 1.25, height: sliceH * 2.1, objectFit: "cover" }} />
               </div>
               <div style={{ position: "absolute", left: -8, bottom: -14,
                 background: isTax ? `linear-gradient(180deg, ${W3.red}, #A93A22)` : rgba("#211A12", 0.92),
@@ -640,6 +653,7 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
         <div style={{ position: "absolute", inset: 0, pointerEvents: "none",
           background: `radial-gradient(130% 95% at 50% 42%, transparent 55%, ${rgba("#4A3B26", 0.26)} 100%)` }} />
         {chipEl}
+        {pings.map((pg, i) => <EngagePing key={i} t={t} ping={pg} />)}
       </AbsoluteFill>
     </FilmT.Provider>
   );
@@ -647,6 +661,11 @@ export const SalaryBrick: React.FC<SalaryBrickProps> = ({
 
 /* ---- canonical demo (planned clock) -------------------------------------- */
 export const salaryBrickDemo: SalaryBrickProps = {
+  pings: [
+    { at: 17.6, kind: "like", tip: "tax bacha? like banta ✨" },
+    { at: 27.8, kind: "comment", tip: "apna gap 👇" },
+    { at: 30.9, kind: "subscribe", tip: "aage ka hisaab 🔔" },
+  ],
   chips: [
     { t: 0.3, end: 1.6, text: "34 LAKH? 🎉", hot: true },
     { t: 1.7, end: 3.3, text: "SMS ITNA CHHOTA?" },
