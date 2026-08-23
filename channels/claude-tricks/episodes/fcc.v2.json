@@ -1,0 +1,410 @@
+{
+  "_note": "OPTION A (2026-08-23) — 'This Repo Gives You Claude Code FREE'. WEB-TOUR template + the approved wtdemo host-PIP look (Sol bottom-left over the tour, per-line karaoke beside him). Tape = tapes/fcc_tape.mp4 (31.2s, github.com/Alishahryar1/free-claude-code, dark, desktop, recorded 2026-08-23 via rec_web_tour.py tours/fcc.json). Camera centers/zooms and selection rects are the TRUED numbers from tapes/fcc_tape.tour.json; `from` per beat re-orders the tape (tour=title/stars/tagline, catch=free-tier note, install=curl line, cta=stars again). Camera `at` values are COMPONENT-CLOCK seconds and are provisional until VO is measured — the KNEE LAW needs the stars punch at ABSOLUTE 6.00s; true `tour.from`/`camera[].at` after the first VO timing. Honesty: real page only, never retimed; provenance strip ON; 'free TIERS' + 'you bring a key' spoken out loud; page's own caveat line is the catch sweep. caption_from=1.6 keeps the burned caption off the cold-open (HeroDrop's own type carries it). SFX via top-level `sfx` (NOT film mode — film mode would replace the karaoke look). Bed bed_webtour (G2 pad).",
+  "title": "This Repo Gives You Claude Code FREE 👀",
+  "tags": "claude code,free claude code,claude code free,free ai coding,anthropic,claude,github repo,ai coding agent,openrouter,groq,nvidia nim,ai tools 2026,ai unpacked,claude code tutorial,free ai tools",
+  "lines": [
+    "This GitHub repo lets you run Claude Code. For free.",
+    "Forty-seven thousand people already starred it. Look at that counter.",
+    "One point three billion free tokens a month. From forty-nine providers.",
+    "Your Claude Code stays exactly the same. Only the bill moves. To free tiers.",
+    "The catch: you bring a free key. NVIDIA, Groq, OpenRouter. The limits are theirs, not mine.",
+    "One line in your terminal installs it. Watch it type.",
+    "That's it. The exact line is pinned below.",
+    "Follow, I tour one AI repo every day. Which one should I open next?"
+  ],
+  "hot_words": [
+    "FREE",
+    "47,000",
+    "LOOK",
+    "1.3",
+    "BILLION",
+    "49",
+    "SAME",
+    "BILL",
+    "FREE",
+    "TIERS",
+    "CATCH",
+    "FREE",
+    "KEY",
+    "NVIDIA",
+    "GROQ",
+    "OPENROUTER",
+    "THEIRS",
+    "ONE",
+    "LINE",
+    "WATCH",
+    "PINNED",
+    "FOLLOW",
+    "EVERY",
+    "DAY",
+    "NEXT"
+  ],
+  "beats": [
+    "cook:HeroDrop#hook",
+    "cook:WebTour#tour",
+    "cook:WebTour#tour",
+    "cook:VsTable#why",
+    "cook:WebTour#catch",
+    "cook:TermRun#how",
+    "cook:WebTour#install",
+    "cook:WebTour#cta"
+  ],
+  "caption_from": "@beat1",
+  "music": "music/bed_webtour.mp3",
+  "cookbook": {
+    "HeroDrop#hook": {
+      "emoji": "🔓",
+      "onSrc": "tapes/fcc_hero.jpg",
+      "caption": {
+        "parts": [
+          {
+            "t": "Claude Code.",
+            "face": "sans"
+          },
+          {
+            "t": "for free.",
+            "face": "serif",
+            "accent": true
+          }
+        ]
+      },
+      "dropAt": 0.1,
+      "size": 400,
+      "_note": "onSrc = tapes/fcc_hero.jpg: the tape's own 1.0s frame composed at the WebTour card geometry (1016x572 @ 32,602 on ink) so the padlock lands on the REAL page and the cut into the live tour is continuous. Burned karaoke held off until @beat1 (HeroDrop's own caption carries the claim)."
+    },
+    "WebTour#tour": {
+      "src": "tapes/fcc_tape.mp4",
+      "url": "https://github.com/Alishahryar1/free-claude-code",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 7.0,
+      "_camera_note": "from=7.0: tape stars-focus hold is 7.64-10.04 so the KNEE punch at beat+2.15 (tape 9.15) still frames the counter; tape scroll 10.6-12.4 = beat 3.6-5.4 (pull-back); tagline select at tape 13.38 = beat+6.38 inside line 3. TRUE after VO: beat1 must start at 3.85 so 3.85+2.15 = 6.00 abs — if VO measures differently, shift camera[1].at (and sfx 6.0 stays absolute).",
+      "camera": [
+        {
+          "at": 0.3,
+          "dur": 0.6,
+          "center": [
+            0.5,
+            0.38
+          ],
+          "zoom": 1.22,
+          "hold": 1.3
+        },
+        {
+          "at": 2.15,
+          "dur": 0.5,
+          "center": [
+            0.947,
+            0.142
+          ],
+          "zoom": 2.3,
+          "hold": 1.6
+        },
+        {
+          "at": 4.2,
+          "dur": 0.6,
+          "center": [
+            0.5,
+            0.5
+          ],
+          "zoom": 1.0,
+          "hold": 1.2
+        },
+        {
+          "at": 6.0,
+          "dur": 0.55,
+          "center": [
+            0.247,
+            0.779
+          ],
+          "zoom": 1.9,
+          "hold": 2.0
+        }
+      ],
+      "selections": [
+        {
+          "at": 6.38,
+          "rects": [
+            [
+              0.0758,
+              0.7664,
+              0.4183,
+              0.7914
+            ]
+          ],
+          "scrollTop": 1053,
+          "hold": 2.0,
+          "sweep": "ltr"
+        }
+      ],
+      "host": true,
+      "hostSize": 360
+    },
+    "VsTable#why": {
+      "title": "what changes",
+      "colA": "Claude Code today",
+      "colB": "With this repo",
+      "rows": [
+        {
+          "label": "your terminal",
+          "a": "same",
+          "b": "same",
+          "verdict": "none"
+        },
+        {
+          "label": "the agent",
+          "a": "Claude Code",
+          "b": "Claude Code",
+          "verdict": "none"
+        },
+        {
+          "label": "who pays",
+          "a": "your card",
+          "b": "free tiers",
+          "verdict": "b"
+        },
+        {
+          "label": "you bring",
+          "a": "a login",
+          "b": "a free key",
+          "verdict": "b"
+        }
+      ],
+      "rowStagger": 0.55
+    },
+    "WebTour#catch": {
+      "src": "tapes/fcc_tape.mp4",
+      "url": "https://github.com/Alishahryar1/free-claude-code",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 17.9,
+      "camera": [
+        {
+          "at": 0.3,
+          "dur": 0.6,
+          "center": [
+            0.274,
+            0.751
+          ],
+          "zoom": 1.9,
+          "hold": 3.6
+        }
+      ],
+      "selections": [
+        {
+          "at": 0.85,
+          "rects": [
+            [
+              0.0508,
+              0.7386,
+              0.498,
+              0.7636
+            ]
+          ],
+          "scrollTop": 1473,
+          "hold": 3.4,
+          "sweep": "ltr"
+        }
+      ],
+      "host": true,
+      "hostSize": 360
+    },
+    "TermRun#how": {
+      "cmd": "curl -fsSL \"https://raw.githubusercontent.com/Alishahryar1/free-claude-code/main/scripts/install.sh\" | sh",
+      "typeStart": 0.4,
+      "charsPerSec": 34,
+      "promptLabel": "~",
+      "response": [
+        {
+          "t": "free-claude-code · installer",
+          "tone": "info"
+        },
+        {
+          "t": "pick an agent → Claude Code",
+          "tone": "ok"
+        },
+        {
+          "t": "next: add ONE free provider key",
+          "tone": "accent"
+        }
+      ],
+      "lineStagger": 0.22
+    },
+    "WebTour#install": {
+      "src": "tapes/fcc_tape.mp4",
+      "url": "https://github.com/Alishahryar1/free-claude-code",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 24.2,
+      "camera": [
+        {
+          "at": 0.3,
+          "dur": 0.55,
+          "center": [
+            0.361,
+            0.397
+          ],
+          "zoom": 1.6,
+          "hold": 3.2
+        }
+      ],
+      "selections": [
+        {
+          "at": 1.2,
+          "rects": [
+            [
+              0.5814,
+              0.3845,
+              0.735,
+              0.4067
+            ]
+          ],
+          "scrollTop": 2351,
+          "hold": 2.6,
+          "sweep": "ltr"
+        }
+      ],
+      "host": true,
+      "hostSize": 360
+    },
+    "WebTour#cta": {
+      "src": "tapes/fcc_tape.mp4",
+      "url": "https://github.com/Alishahryar1/free-claude-code",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 6.9,
+      "camera": [
+        {
+          "at": 0.2,
+          "dur": 0.6,
+          "center": [
+            0.947,
+            0.142
+          ],
+          "zoom": 2.0,
+          "hold": 1.6
+        },
+        {
+          "at": 2.4,
+          "dur": 0.7,
+          "center": [
+            0.5,
+            0.5
+          ],
+          "zoom": 1.0,
+          "hold": 3.0
+        }
+      ],
+      "selections": [],
+      "host": true,
+      "hostSize": 360
+    }
+  },
+  "sfx": [
+    {
+      "at": "@beat0",
+      "name": "riser",
+      "note": "under the padlock fall"
+    },
+    {
+      "at": "@beat0+1.2",
+      "name": "pop",
+      "note": "HeroDrop landing"
+    },
+    {
+      "at": "@beat1",
+      "name": "whoosh_up",
+      "note": "into the tour"
+    },
+    {
+      "at": 6.0,
+      "name": "pop",
+      "gain_db": 2,
+      "note": "KNEE: stars punch lands here (absolute)"
+    },
+    {
+      "at": "@beat1+4.2",
+      "name": "whoosh_down",
+      "note": "pull back + scroll to README"
+    },
+    {
+      "at": "@beat1+6.4",
+      "name": "pop",
+      "note": "tagline sweep ON content"
+    },
+    {
+      "at": "@beat2",
+      "name": "whoosh_up",
+      "note": "into VsTable"
+    },
+    {
+      "at": "@beat2+1.7",
+      "name": "pop",
+      "gain_db": -3,
+      "note": "who-pays verdict"
+    },
+    {
+      "at": "@beat2+2.3",
+      "name": "pop",
+      "gain_db": -3,
+      "note": "you-bring verdict"
+    },
+    {
+      "at": "@beat3",
+      "name": "whoosh_down",
+      "note": "into the catch"
+    },
+    {
+      "at": "@beat3+0.85",
+      "name": "pop",
+      "note": "caveat-line sweep"
+    },
+    {
+      "at": "@beat4",
+      "name": "whoosh_up",
+      "note": "into the terminal"
+    },
+    {
+      "at": "@beat4+0.4",
+      "name": "keys",
+      "note": "TermRun typeStart"
+    },
+    {
+      "at": "@beat4+3.6",
+      "name": "pop",
+      "gain_db": -3,
+      "note": "installer lines stream"
+    },
+    {
+      "at": "@beat4+4.0",
+      "name": "riser",
+      "note": "riser into the payoff (ends ~beat6; minus-anchors unsupported)"
+    },
+    {
+      "at": "@beat5+1.2",
+      "name": "pop",
+      "note": "payoff: the curl line selected on the REAL page"
+    },
+    {
+      "at": "@beat5+2.6",
+      "name": "slam",
+      "note": "THE stop-and-slam (~85%) — duck window ends here"
+    },
+    {
+      "at": "@beat6",
+      "name": "whoosh_up",
+      "note": "into the CTA"
+    },
+    {
+      "at": "@beat6+0.8",
+      "name": "credit_chime",
+      "gain_db": -4,
+      "note": "stars counter echo"
+    }
+  ],
+  "duck": "@beat5+2.46,@beat5+2.60",
+  "desc_cta": "Which repo should I open next? Tell me below.",
+  "desc_prompt": "📋 THE EXACT LINE (macOS/Linux — read the installer first if you like):\n\ncurl -fsSL \"https://raw.githubusercontent.com/Alishahryar1/free-claude-code/main/scripts/install.sh\" | sh\n\nThen add ONE free provider key (NVIDIA NIM · Groq · OpenRouter). Free tiers have limits set by each provider.",
+  "steps": [],
+  "_sfx_note": "@beatN = PROPS SEGMENT index (post-merge: 0 hero,1 tour[lines 2+3],2 VsTable,3 catch,4 TermRun,5 install,6 cta), NOT the lines index."
+}

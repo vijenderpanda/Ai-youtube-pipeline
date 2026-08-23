@@ -3540,6 +3540,13 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     # episodes (VJ: a title card reads as an intro + gets scrolled past). When
     # cfg["hook"] is present we emit `hook` and drop `cover`; otherwise the
     # legacy poster cover is emitted exactly as before.
+    # no burned caption before cfg["caption_from"] seconds (2x-playback +
+    # tap-to-mute rule: the cold-open's own designed type carries 0-1.6s)
+    if cfg.get("caption_from"):
+        _cf = cfg["caption_from"]
+        if isinstance(_cf, str) and _cf.startswith("@beat"):
+            _cf = _seg_t[min(int(_cf[5:]), len(_seg_t) - 1)]   # line-index clock
+        spec["captionFrom"] = round(float(_cf), 3)
     if cfg.get("hook"):
         hk = dict(cfg["hook"])
         if not hk["image"].startswith(("assets/", "http")):
@@ -3836,10 +3843,19 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     # AUTO-SFX (the ship-gap fix): lpa v1 armed SILENT because sfx_mix was a
     # separate manual step. When the spec authors film.sfx, run it here — and a
     # failed SFX pass must NEVER kill a build: warn loudly, ship the un-sfx file.
+    # SFX WITHOUT FILM MODE (2026-08-23, Option A / web-tour): cfg["film"] forces
+    # chip captions + transparent cook beats, which kills the approved karaoke-
+    # beside-Sol look (wtdemo). A top-level cfg["sfx"] (+ optional cfg["duck"])
+    # carries the same event grammar without switching the renderer into a film.
+    _sfx_cfg = None
     if isinstance(cfg.get("film"), dict) and cfg["film"].get("sfx"):
+        _sfx_cfg = cfg["film"]
+    elif cfg.get("sfx"):
+        _sfx_cfg = {"sfx": cfg["sfx"], **({"duck": cfg["duck"]} if cfg.get("duck") else {})}
+    if _sfx_cfg:
         try:
             mf = os.path.join(REPO, "renders_out", f"sfx_man_ep{ep}_{tag}.json")
-            json.dump({"film": cfg["film"]}, open(mf, "w"))
+            json.dump({"film": _sfx_cfg}, open(mf, "w"))
             sfx_out = os.path.splitext(out)[0] + "_sfx.mp4"
             run([sys.executable, os.path.join(CH, "sfx_mix.py"), "--manifest", mf,
                  "--props", sp, "--video", out, "--out", sfx_out])

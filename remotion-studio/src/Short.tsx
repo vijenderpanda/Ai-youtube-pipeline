@@ -116,6 +116,8 @@ export type ShortProps = {
     driftAmp?: number;
   };
   captions: Word[];
+  /* no burned caption before this many seconds (cold-open rule) */
+  captionFrom?: number;
   steps?: Step[];
   vo: string;
   music?: string;
@@ -1559,6 +1561,7 @@ export const Short: React.FC<ShortProps> = (props) => {
         // smaller + not all-caps here so it doesn't fight the #NN callout/desc).
         <PanelCaption words={beatWords} t={t} top={1772} bottom={38} size={theme.cap.plain} chunk={6} plain />
       ) : activeIsCookbook && beatWords.length ? (
+        (props.captionFrom && t < props.captionFrom) ? null :
         <KaraokeLine words={lineWords} t={t} fps={fps} left={cookHostInset} />
       ) : activeCaption ? (
         activeIsPip ? (
