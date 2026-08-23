@@ -366,7 +366,7 @@
   "_outro_note": "VJ 2026-08-23: the CTA is the OUTRO STING (OutroGlass card) with Sol in a ~300px TALKING circle disc — host clip for THIS beat only via EchoMimic on the 3060 worker (scripts/avatar_render.py --track echomimic_local; HeyGen = fallback), cut from assets/epfcc/outro_cta.wav. Card rendered by gen_outro_glass.py at EXACTLY 0.45 + cta_dur + 0.8 s with --avatar <clip> --avatar-size 300 --avatar-delay 0.45 so build_ep_v2's outro retime ratio is 1 (a retimed talking disc would desync). Body ends on the payoff slam; line 8 moved here.",
   "music_gain_db": 2.0,
   "music_fade_in": 0.25,
-  "_bed_note": "VJ 2026-08-23 'opening sounds cold': bed_active's first ~30s is a quiet intro (-13.5 dB RMS) and its drop lands at ~31s (-8 dB, +5.5 dB). music_offset=31.5 starts the bed ON the drop; gain trimmed 3->2 dB since the drop section is hotter; fade-in 0.25. Opening hit: pop at 0.02 so frame 0 has an attack (riser alone was soft).",
+  "_bed_note": "VJ 2026-08-23 'opening sounds cold': bed_active's first ~30s is a quiet intro (-13.5 dB RMS) and its drop lands at ~31s (-8 dB, +5.5 dB). bed_active in-point 31.5s is now the CHANNEL DEFAULT in build_ep_v2 (BED_DEFAULT_OFFSET); gain trimmed 3->2 dB since the drop section is hotter; fade-in 0.25. Opening hit: pop at 0.02 so frame 0 has an attack (riser alone was soft).",
   "pings": [
     {
       "at": "@beat1+6.5",
@@ -420,6 +420,5 @@
     "from": "@beat1",
     "y": 300
   },
-  "_rail_note": "TourRail (VJ 2026-08-23): fills the void between header and card — hairline + beat dots + gliding comet + current label; hidden on the hero, lit from the tour; the payoff dot breathes ahead (open loop). Stops on the merged-segment clock.",
-  "music_offset": 31.5
+  "_rail_note": "TourRail (VJ 2026-08-23): fills the void between header and card — hairline + beat dots + gliding comet + current label; hidden on the hero, lit from the tour; the payoff dot breathes ahead (open loop). Stops on the merged-segment clock."
 }

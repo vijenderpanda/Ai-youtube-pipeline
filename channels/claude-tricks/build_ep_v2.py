@@ -3740,8 +3740,16 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     # ~30s is its quiet intro (-13.5 dB RMS) and the full-energy drop lands at
     # ~31s (-8 dB) — looping from 0 put the hook on the intro (VJ 2026-08-23:
     # "opening sounds cold"). Seeks the bed input; the loop still wraps to 0.
-    _moff = float(cfg.get("music_offset", 0) or 0)
+    # CHANNEL DEFAULT (VJ 2026-08-23): bed_active starts ON its drop. Any other
+    # bed keeps 0 unless the spec says otherwise; an explicit music_offset wins.
+    BED_DEFAULT_OFFSET = {"bed_active.mp3": 31.5}
+    _moff = cfg.get("music_offset")
+    if _moff is None:
+        _moff = BED_DEFAULT_OFFSET.get(os.path.basename(music), 0)
+    _moff = float(_moff or 0)
     _mss = ["-ss", str(_moff)] if _moff else []
+    if _moff:
+        print(f">> bed in-point {_moff}s ({os.path.basename(music)})")
     run(["ffmpeg", "-y", "-i", raw, "-stream_loop", "-1", *_mss, "-i", music,
          "-filter_complex", fc, "-map", "0:v", "-map", "[a]",
          "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", out])
