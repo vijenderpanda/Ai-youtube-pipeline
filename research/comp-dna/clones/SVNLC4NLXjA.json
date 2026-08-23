@@ -1,100 +1,146 @@
 {
-  "title": "SVNLC4NLXjA · The file you can't upload",
-  "theme": "cream",
-  "accent": "#3E8C74",
-  "blocks": [
-    {
-      "id": "SplitHead",
-      "beat": "hook",
-      "seconds": 3,
-      "props": {
-        "kicker": "Next time this happens",
-        "label": "You open a document and think",
-        "line": "AI could help but I can't upload this file",
-        "punch": "upload",
-        "align": "left",
-        "size": "lg",
-        "underline": "bar"
-      },
-      "caption": "AI could help — but I can't upload this"
-    },
-    {
-      "id": "KineticQuote",
-      "beat": "reframe",
-      "seconds": 3,
-      "props": {
-        "kicker": "Reframe the question",
-        "parts": [
-          { "text": "What does the" },
-          { "text": "MODEL", "hot": true },
-          { "text": "actually need to" },
-          { "text": "SEE", "hot": true },
-          { "text": "— and where?" }
-        ],
-        "highlight": "bar"
-      },
-      "caption": "What does the model actually need to see"
-    },
-    {
-      "id": "FlowTree",
-      "beat": "step/insight",
-      "seconds": 3,
-      "props": {
-        "title": "Is smaller copy allowed?",
-        "direction": "down",
-        "nodes": [
-          { "id": "root", "label": "The file", "icon": "📄", "state": "done" },
-          { "id": "a", "label": "Full upload", "parent": "root", "icon": "🚫", "state": "todo" },
-          { "id": "b", "label": "Smaller copy", "parent": "root", "icon": "✂️", "state": "active" },
-          { "id": "b1", "label": "Just the part it needs", "parent": "b", "state": "done" }
-        ]
-      },
-      "caption": "Is that smaller copy even allowed"
-    },
-    {
-      "id": "SplitHead",
-      "beat": "step",
-      "seconds": 3,
-      "props": {
-        "label": "You shouldn't need to be",
-        "line": "A privacy engineer before lunch just to get your work done",
-        "punch": "privacy engineer",
-        "align": "left",
-        "size": "md",
-        "underline": "line"
-      },
-      "caption": "You shouldn't need to become a privacy engineer"
-    },
-    {
-      "id": "KineticQuote",
-      "beat": "payoff/thesis",
-      "seconds": 3,
-      "props": {
-        "kicker": "The thesis",
-        "parts": [
-          { "text": "AI made" },
-          { "text": "INTELLIGENCE", "hot": true },
-          { "text": "frictionless." },
-          { "text": "Intelligence needs" },
-          { "text": "INFORMATION.", "hot": true }
-        ],
-        "footer": "And safety has to travel with it.",
-        "highlight": "bar"
-      },
-      "caption": "AI made intelligence frictionless — it needs information"
-    },
-    {
-      "id": "BrandBumper",
-      "beat": "cta/closer",
-      "seconds": 3,
-      "props": {
-        "name": "Safety = Convenience",
-        "tagline": "Same path, every time",
-        "glyph": "orbit",
-        "mode": "close",
-        "cta": "Follow for more"
-      },
-      "caption": "Safety has to live in the same path as convenience"
-    }
-  ]
+ "title": "SVNLC4NLXjA \u00b7 The file you can't upload",
+ "theme": "night",
+ "accent": "#e8e13a",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 3,
+   "props": {
+    "kicker": "Next time this happens",
+    "label": "You open a document and think",
+    "line": "AI could help but I can't upload this file",
+    "punch": "upload",
+    "align": "left",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "AI could help \u2014 but I can't upload this"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "reframe",
+   "seconds": 3,
+   "props": {
+    "kicker": "Reframe the question",
+    "parts": [
+     {
+      "text": "What does the"
+     },
+     {
+      "text": "MODEL",
+      "hot": true
+     },
+     {
+      "text": "actually need to"
+     },
+     {
+      "text": "SEE",
+      "hot": true
+     },
+     {
+      "text": "\u2014 and where?"
+     }
+    ],
+    "highlight": "bar"
+   },
+   "caption": "What does the model actually need to see"
+  },
+  {
+   "id": "FlowTree",
+   "beat": "step/insight",
+   "seconds": 3,
+   "props": {
+    "title": "Is smaller copy allowed?",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "The file",
+      "icon": "\ud83d\udcc4",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "Full upload",
+      "parent": "root",
+      "icon": "\ud83d\udeab",
+      "state": "todo"
+     },
+     {
+      "id": "b",
+      "label": "Smaller copy",
+      "parent": "root",
+      "icon": "\u2702\ufe0f",
+      "state": "active"
+     },
+     {
+      "id": "b1",
+      "label": "Just the part it needs",
+      "parent": "b",
+      "state": "done"
+     }
+    ]
+   },
+   "caption": "Is that smaller copy even allowed"
+  },
+  {
+   "id": "SplitHead",
+   "beat": "step",
+   "seconds": 3,
+   "props": {
+    "label": "You shouldn't need to be",
+    "line": "A privacy engineer before lunch just to get your work done",
+    "punch": "privacy engineer",
+    "align": "left",
+    "size": "md",
+    "underline": "line"
+   },
+   "caption": "You shouldn't need to become a privacy engineer"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "payoff/thesis",
+   "seconds": 3,
+   "props": {
+    "kicker": "The thesis",
+    "parts": [
+     {
+      "text": "AI made"
+     },
+     {
+      "text": "INTELLIGENCE",
+      "hot": true
+     },
+     {
+      "text": "frictionless."
+     },
+     {
+      "text": "Intelligence needs"
+     },
+     {
+      "text": "INFORMATION.",
+      "hot": true
+     }
+    ],
+    "footer": "And safety has to travel with it.",
+    "highlight": "bar"
+   },
+   "caption": "AI made intelligence frictionless \u2014 it needs information"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta/closer",
+   "seconds": 3,
+   "props": {
+    "name": "Safety = Convenience",
+    "tagline": "Same path, every time",
+    "glyph": "orbit",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "caption": "Safety has to live in the same path as convenience"
+  }
+ ]
 }

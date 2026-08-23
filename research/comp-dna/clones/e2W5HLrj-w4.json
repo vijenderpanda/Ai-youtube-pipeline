@@ -1,158 +1,205 @@
 {
-  "title": "e2W5HLrj-w4 · Does the harness matter more than the model?",
-  "theme": "cream",
-  "accent": "#3E8C74",
-  "blocks": [
-    {
-      "id": "SplitHead",
-      "beat": "hook",
-      "seconds": 2.5,
-      "props": {
-        "kicker": "Hot take",
-        "line": "Are open harnesses as important as the model?",
-        "punch": "harnesses",
-        "align": "center",
-        "size": "lg",
-        "underline": "bar"
-      },
-      "caption": "Yeah, I'd say so."
+ "title": "e2W5HLrj-w4 \u00b7 Does the harness matter more than the model?",
+ "theme": "paperYellow",
+ "accent": "#F5D400",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "Hot take",
+    "line": "Are open harnesses as important as the model?",
+    "punch": "harnesses",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "Yeah, I'd say so."
+  },
+  {
+   "id": "AppWindow",
+   "beat": "proof/citation",
+   "seconds": 2.5,
+   "props": {
+    "title": "arXiv paper",
+    "body": {
+     "kind": "lines",
+     "lines": [
+      "The Harness Matters More",
+      "Than The Model",
+      "\u2014 arXiv, 2026"
+     ]
     },
-    {
-      "id": "AppWindow",
-      "beat": "proof/citation",
-      "seconds": 2.5,
-      "props": {
-        "title": "arXiv paper",
-        "body": {
-          "kind": "lines",
-          "lines": [
-            "The Harness Matters More",
-            "Than The Model",
-            "— arXiv, 2026"
-          ]
-        },
-        "cursor": false,
-        "shadow": true,
-        "tilt": true,
-        "dark": false
-      },
-      "caption": "It's a real academic debate."
+    "cursor": false,
+    "shadow": true,
+    "tilt": true,
+    "dark": false
+   },
+   "caption": "It's a real academic debate."
+  },
+  {
+   "id": "ChipRow",
+   "beat": "reference/authority",
+   "seconds": 2.0,
+   "props": {
+    "eyebrow": "Even they weighed in",
+    "chips": [
+     {
+      "text": "Sam Altman",
+      "kind": "authority",
+      "icon": "\ud83d\udde3\ufe0f"
+     },
+     {
+      "text": "Elon Musk",
+      "kind": "authority",
+      "icon": "\ud83d\udde3\ufe0f"
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "stagger": 0.3
+   },
+   "caption": "You've seen Sam Altman, Elon Musk say it too."
+  },
+  {
+   "id": "AppWindow",
+   "beat": "proof/example",
+   "seconds": 2.0,
+   "props": {
+    "title": "Grok Build",
+    "body": {
+     "kind": "lines",
+     "lines": [
+      "Grok Build is Now",
+      "Open Source"
+     ]
     },
-    {
-      "id": "ChipRow",
-      "beat": "reference/authority",
-      "seconds": 2.0,
-      "props": {
-        "eyebrow": "Even they weighed in",
-        "chips": [
-          { "text": "Sam Altman", "kind": "authority", "icon": "🗣️" },
-          { "text": "Elon Musk", "kind": "authority", "icon": "🗣️" }
-        ],
-        "align": "center",
-        "size": "md",
-        "wrap": true,
-        "stagger": 0.3
-      },
-      "caption": "You've seen Sam Altman, Elon Musk say it too."
-    },
-    {
-      "id": "AppWindow",
-      "beat": "proof/example",
-      "seconds": 2.0,
-      "props": {
-        "title": "Grok Build",
-        "body": {
-          "kind": "lines",
-          "lines": [
-            "Grok Build is Now",
-            "Open Source"
-          ]
-        },
-        "cursor": false,
-        "shadow": true,
-        "tilt": true,
-        "dark": false
-      },
-      "caption": "They're open sourcing the Grok build."
-    },
-    {
-      "id": "TermRun",
-      "beat": "proof/example2",
-      "seconds": 2.5,
-      "props": {
-        "cmd": "git clone github.com/openai/codex",
-        "promptLabel": "~/harness",
-        "response": [
-          { "t": "● cloning openai/codex…", "tone": "info" },
-          { "t": "✓ the harness is the real IP", "tone": "accent" },
-          { "t": "✓ not fully open", "tone": "ok" }
-        ],
-        "cursor": true
-      },
-      "caption": "People don't realize Codex's source is the harness."
-    },
-    {
-      "id": "KineticQuote",
-      "beat": "complication",
-      "seconds": 2.5,
-      "props": {
-        "kicker": "The twist",
-        "parts": [
-          { "text": "But it's" },
-          { "text": "not fully", "hot": true },
-          { "text": "open." },
-          { "text": "Then it" },
-          { "text": "leaked.", "hot": true }
-        ],
-        "footer": "That's why people care.",
-        "highlight": "bar"
-      },
-      "caption": "The only reason people even know — there was a leak."
-    },
-    {
-      "id": "VsTable",
-      "beat": "proof/example3",
-      "seconds": 2.5,
-      "props": {
-        "title": "The reverse-engineered clones",
-        "colA": "openclaude",
-        "colB": "claurst",
-        "rows": [
-          { "label": "origin", "a": "leaked harness", "b": "leaked harness", "verdict": "a" },
-          { "label": "status", "a": "live on GitHub", "b": "live on GitHub", "verdict": "b" }
-        ],
-        "rowStagger": 0.5
-      },
-      "caption": "Now Claude Code's harness is cloned, reversed, out there."
-    },
-    {
-      "id": "ChipRow",
-      "beat": "cta/payoff",
-      "seconds": 2.0,
-      "props": {
-        "eyebrow": "Watch next",
-        "chips": [
-          { "text": "Hermes Agent", "kind": "video", "icon": "▶" },
-          { "text": "Kimi K3", "kind": "video", "icon": "▶" }
-        ],
-        "align": "center",
-        "size": "md",
-        "wrap": true,
-        "stagger": 0.3
-      },
-      "caption": "So yeah — I'd use open harnesses."
-    },
-    {
-      "id": "BrandBumper",
-      "beat": "close",
-      "seconds": 1.5,
-      "props": {
-        "name": "AI Unpacked",
-        "glyph": "spark",
-        "mode": "close",
-        "cta": "Follow for more"
-      },
-      "caption": "Together."
-    }
-  ]
+    "cursor": false,
+    "shadow": true,
+    "tilt": true,
+    "dark": false
+   },
+   "caption": "They're open sourcing the Grok build."
+  },
+  {
+   "id": "TermRun",
+   "beat": "proof/example2",
+   "seconds": 2.5,
+   "props": {
+    "cmd": "git clone github.com/openai/codex",
+    "promptLabel": "~/harness",
+    "response": [
+     {
+      "t": "\u25cf cloning openai/codex\u2026",
+      "tone": "info"
+     },
+     {
+      "t": "\u2713 the harness is the real IP",
+      "tone": "accent"
+     },
+     {
+      "t": "\u2713 not fully open",
+      "tone": "ok"
+     }
+    ],
+    "cursor": true
+   },
+   "caption": "People don't realize Codex's source is the harness."
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "complication",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "The twist",
+    "parts": [
+     {
+      "text": "But it's"
+     },
+     {
+      "text": "not fully",
+      "hot": true
+     },
+     {
+      "text": "open."
+     },
+     {
+      "text": "Then it"
+     },
+     {
+      "text": "leaked.",
+      "hot": true
+     }
+    ],
+    "footer": "That's why people care.",
+    "highlight": "bar"
+   },
+   "caption": "The only reason people even know \u2014 there was a leak."
+  },
+  {
+   "id": "VsTable",
+   "beat": "proof/example3",
+   "seconds": 2.5,
+   "props": {
+    "title": "The reverse-engineered clones",
+    "colA": "openclaude",
+    "colB": "claurst",
+    "rows": [
+     {
+      "label": "origin",
+      "a": "leaked harness",
+      "b": "leaked harness",
+      "verdict": "a"
+     },
+     {
+      "label": "status",
+      "a": "live on GitHub",
+      "b": "live on GitHub",
+      "verdict": "b"
+     }
+    ],
+    "rowStagger": 0.5
+   },
+   "caption": "Now Claude Code's harness is cloned, reversed, out there."
+  },
+  {
+   "id": "ChipRow",
+   "beat": "cta/payoff",
+   "seconds": 2.0,
+   "props": {
+    "eyebrow": "Watch next",
+    "chips": [
+     {
+      "text": "Hermes Agent",
+      "kind": "video",
+      "icon": "\u25b6"
+     },
+     {
+      "text": "Kimi K3",
+      "kind": "video",
+      "icon": "\u25b6"
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "stagger": 0.3
+   },
+   "caption": "So yeah \u2014 I'd use open harnesses."
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "close",
+   "seconds": 1.5,
+   "props": {
+    "name": "AI Unpacked",
+    "glyph": "spark",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "caption": "Together."
+  }
+ ]
 }

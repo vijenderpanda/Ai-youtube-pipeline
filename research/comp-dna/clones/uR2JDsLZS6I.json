@@ -1,122 +1,171 @@
 {
-  "title": "uR2JDsLZS6I · How Much Water AI Consumes",
-  "theme": "cream",
-  "accent": "#3E8C74",
-  "blocks": [
-    {
-      "id": "StatCloser",
-      "beat": "hook",
-      "seconds": 2.5,
-      "props": {
-        "value": 2400,
-        "suffix": " L",
-        "label": "Water per AI image",
-        "sub": "that's *2,400 litres* — for one picture",
-        "compare": { "label": "and it costs", "value": 3000, "prefix": "$" },
-        "theme": "cream"
-      },
-      "caption": "One AI image drinks 2,400 litres"
+ "title": "uR2JDsLZS6I \u00b7 How Much Water AI Consumes",
+ "theme": "cream",
+ "accent": "#1c6fd6",
+ "blocks": [
+  {
+   "id": "StatCloser",
+   "beat": "hook",
+   "seconds": 2.5,
+   "props": {
+    "value": 2400,
+    "suffix": " L",
+    "label": "Water per AI image",
+    "sub": "that's *2,400 litres* \u2014 for one picture",
+    "compare": {
+     "label": "and it costs",
+     "value": 3000,
+     "prefix": "$"
     },
-    {
-      "id": "VsTable",
-      "beat": "proof/build — training vs scaling",
-      "seconds": 3,
-      "props": {
-        "title": "Model size vs. water cost",
-        "colA": "GPT-3 class",
-        "colB": "GPT-5 class",
-        "rows": [
-          { "label": "training water", "a": "700,000 L", "b": "2,000,000+ L", "verdict": "b" },
-          { "label": "images generated", "a": "94,000", "b": "2 billion", "verdict": "b" }
-        ],
-        "rowStagger": 0.5
-      },
-      "caption": "Bigger models scale the water bill too"
+    "theme": "cream"
+   },
+   "caption": "One AI image drinks 2,400 litres"
+  },
+  {
+   "id": "VsTable",
+   "beat": "proof/build \u2014 training vs scaling",
+   "seconds": 3,
+   "props": {
+    "title": "Model size vs. water cost",
+    "colA": "GPT-3 class",
+    "colB": "GPT-5 class",
+    "rows": [
+     {
+      "label": "training water",
+      "a": "700,000 L",
+      "b": "2,000,000+ L",
+      "verdict": "b"
+     },
+     {
+      "label": "images generated",
+      "a": "94,000",
+      "b": "2 billion",
+      "verdict": "b"
+     }
+    ],
+    "rowStagger": 0.5
+   },
+   "caption": "Bigger models scale the water bill too"
+  },
+  {
+   "id": "AppWindow",
+   "beat": "proof/screenshot",
+   "seconds": 2,
+   "props": {
+    "theme": "cream",
+    "title": "ChatGPT",
+    "sidebar": [
+     "New chat",
+     "Sunflowers x100",
+     "History"
+    ],
+    "activeIndex": 1,
+    "body": {
+     "kind": "lines",
+     "lines": [
+      "Generate a hundred sunflowers",
+      "\u2192 100x the water of one image",
+      "\u2192 roughly a bathtub, per request"
+     ]
     },
-    {
-      "id": "AppWindow",
-      "beat": "proof/screenshot",
-      "seconds": 2,
-      "props": {
-        "theme": "cream",
-        "title": "ChatGPT",
-        "sidebar": ["New chat", "Sunflowers x100", "History"],
-        "activeIndex": 1,
-        "body": {
-          "kind": "lines",
-          "lines": [
-            "Generate a hundred sunflowers",
-            "→ 100x the water of one image",
-            "→ roughly a bathtub, per request"
-          ]
-        },
-        "cursor": true,
-        "shadow": true,
-        "tilt": true
-      },
-      "caption": "A hundred sunflowers, a hundred times the cost"
+    "cursor": true,
+    "shadow": true,
+    "tilt": true
+   },
+   "caption": "A hundred sunflowers, a hundred times the cost"
+  },
+  {
+   "id": "BentoGrid",
+   "beat": "proof/step \u2014 the data center",
+   "seconds": 3,
+   "props": {
+    "heading": "One data center, one year",
+    "tiles": [
+     {
+      "title": "Water used",
+      "value": "65B L",
+      "note": "per year, one facility",
+      "span": "2x1",
+      "accent": true,
+      "icon": "\ud83d\udca7"
+     },
+     {
+      "title": "States affected",
+      "value": "2",
+      "icon": "\ud83d\udccd"
+     },
+     {
+      "title": "Times more local",
+      "value": "10-18x",
+      "note": "vs national average",
+      "icon": "\u2197"
+     }
+    ],
+    "stagger": 0.12
+   },
+   "caption": "It's not the AI \u2014 it's the location"
+  },
+  {
+   "id": "StatCloser",
+   "beat": "payoff stat",
+   "seconds": 2.5,
+   "props": {
+    "value": 1.9,
+    "decimals": 1,
+    "suffix": " L",
+    "label": "Water per ChatGPT question",
+    "sub": "about *65 AI images* worth, every day",
+    "compare": {
+     "label": "a bottle of water",
+     "value": 1,
+     "decimals": 0,
+     "suffix": " L"
     },
-    {
-      "id": "BentoGrid",
-      "beat": "proof/step — the data center",
-      "seconds": 3,
-      "props": {
-        "heading": "One data center, one year",
-        "tiles": [
-          { "title": "Water used", "value": "65B L", "note": "per year, one facility", "span": "2x1", "accent": true, "icon": "💧" },
-          { "title": "States affected", "value": "2", "icon": "📍" },
-          { "title": "Times more local", "value": "10-18x", "note": "vs national average", "icon": "↗" }
-        ],
-        "stagger": 0.12
-      },
-      "caption": "It's not the AI — it's the location"
-    },
-    {
-      "id": "StatCloser",
-      "beat": "payoff stat",
-      "seconds": 2.5,
-      "props": {
-        "value": 1.9,
-        "decimals": 1,
-        "suffix": " L",
-        "label": "Water per ChatGPT question",
-        "sub": "about *65 AI images* worth, every day",
-        "compare": { "label": "a bottle of water", "value": 1, "decimals": 0, "suffix": " L" },
-        "theme": "cream"
-      },
-      "caption": "Every question costs almost two litres"
-    },
-    {
-      "id": "KineticQuote",
-      "beat": "reframe/twist",
-      "seconds": 2,
-      "props": {
-        "kicker": "But remember",
-        "parts": [
-          { "text": "It's not the" },
-          { "text": "MODEL,", "hot": true },
-          { "text": "it's the" },
-          { "text": "DATA CENTER.", "hot": true }
-        ],
-        "footer": "Location decides the real cost.",
-        "highlight": "bar",
-        "stagger": 0.14
-      },
-      "caption": "It's about where the data center sits"
-    },
-    {
-      "id": "BrandBumper",
-      "beat": "cta",
-      "seconds": 1.5,
-      "props": {
-        "name": "AI Unpacked",
-        "tagline": "the real cost of every prompt",
-        "glyph": "spark",
-        "mode": "close",
-        "cta": "Follow for more",
-        "theme": "cream"
-      },
-      "caption": "Follow for the real cost of AI"
-    }
-  ]
+    "theme": "cream"
+   },
+   "caption": "Every question costs almost two litres"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "reframe/twist",
+   "seconds": 2,
+   "props": {
+    "kicker": "But remember",
+    "parts": [
+     {
+      "text": "It's not the"
+     },
+     {
+      "text": "MODEL,",
+      "hot": true
+     },
+     {
+      "text": "it's the"
+     },
+     {
+      "text": "DATA CENTER.",
+      "hot": true
+     }
+    ],
+    "footer": "Location decides the real cost.",
+    "highlight": "bar",
+    "stagger": 0.14
+   },
+   "caption": "It's about where the data center sits"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta",
+   "seconds": 1.5,
+   "props": {
+    "name": "AI Unpacked",
+    "tagline": "the real cost of every prompt",
+    "glyph": "spark",
+    "mode": "close",
+    "cta": "Follow for more",
+    "theme": "cream"
+   },
+   "caption": "Follow for the real cost of AI"
+  }
+ ]
 }

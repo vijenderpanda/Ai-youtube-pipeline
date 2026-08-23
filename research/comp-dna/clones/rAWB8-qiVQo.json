@@ -1,105 +1,167 @@
 {
-  "title": "rAWB8-qiVQo · Your AI clone already regrets this",
-  "theme": "cream",
-  "accent": "#3E8C74",
-  "blocks": [
-    {
-      "id": "SplitHead",
-      "beat": "hook",
-      "seconds": 2.5,
-      "props": {
-        "kicker": "Cold open",
-        "label": "Wes's",
-        "line": "Digital avatar already regrets this",
-        "punch": "regrets",
-        "align": "left",
-        "size": "lg",
-        "underline": "bar"
-      },
-      "caption": "Wes's digital avatar already regrets this"
-    },
-    {
-      "id": "FlowTree",
-      "beat": "setup",
-      "seconds": 3,
-      "props": {
-        "title": "One 15-second clip",
-        "direction": "down",
-        "nodes": [
-          { "id": "root", "label": "15-sec recording", "icon": "🎥", "state": "done" },
-          { "id": "a", "label": "AI clone trained", "parent": "root", "icon": "🤖", "state": "done" },
-          { "id": "b", "label": "Efficient version of you", "parent": "a", "icon": "✨", "state": "active" }
-        ]
-      },
-      "caption": "One recorded clip made an efficient version of you"
-    },
-    {
-      "id": "VsTable",
-      "beat": "proof-tension",
-      "seconds": 3.5,
-      "props": {
-        "title": "Coup or workflow?",
-        "colA": "Identity",
-        "colB": "Workflow optimization",
-        "rows": [
-          { "label": "lights & setup", "a": "hours", "b": "skipped", "verdict": "b" },
-          { "label": "retakes", "a": "endless", "b": "none", "verdict": "b" },
-          { "label": "who's on camera", "a": "you", "b": "your clone", "verdict": "a" }
-        ],
-        "rowStagger": 0.4
-      },
-      "caption": "Not a coup — it's workflow optimization, he argues"
-    },
-    {
-      "id": "ChipRow",
-      "beat": "escalation",
-      "seconds": 2.5,
-      "props": {
-        "eyebrow": "The rant, rapid-fire",
-        "chips": [
-          { "text": "forgotten humans", "kind": "objection", "struck": true },
-          { "text": "psychoanalyze HeyGen", "kind": "objection", "struck": true },
-          { "text": "ship faster", "kind": "toggle", "hot": true },
-          { "text": "deliver short", "kind": "toggle", "hot": true }
-        ],
-        "align": "center",
-        "size": "md",
-        "wrap": true,
-        "stagger": 0.22
-      },
-      "caption": "Forgotten humans? Or just shipping faster?"
-    },
-    {
-      "id": "KineticQuote",
-      "beat": "payoff-stance",
-      "seconds": 2.5,
-      "props": {
-        "kicker": "The stance",
-        "parts": [
-          { "text": "It's" },
-          { "text": "not" },
-          { "text": "REPLACING", "hot": true },
-          { "text": "the creator." },
-          { "text": "It's a" },
-          { "text": "TOOL.", "hot": true }
-        ],
-        "footer": "What can't it do? Still figuring that out.",
-        "highlight": "bar"
-      },
-      "caption": "Not replacing the creator — it's a tool, he says"
-    },
-    {
-      "id": "BrandBumper",
-      "beat": "cta-close",
-      "seconds": 2.5,
-      "props": {
-        "name": "HeyGen",
-        "tagline": "the sponsor woven into the rant",
-        "glyph": "spark",
-        "mode": "close",
-        "cta": "Clone your script — build faster"
-      },
-      "caption": "Sponsor: HeyGen — build your twin, script faster"
-    }
-  ]
+ "title": "rAWB8-qiVQo \u00b7 Your AI clone already regrets this",
+ "theme": "cream",
+ "accent": "#1a1a2e",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "Cold open",
+    "label": "Wes's",
+    "line": "Digital avatar already regrets this",
+    "punch": "regrets",
+    "align": "left",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "Wes's digital avatar already regrets this"
+  },
+  {
+   "id": "FlowTree",
+   "beat": "setup",
+   "seconds": 3,
+   "props": {
+    "title": "One 15-second clip",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "15-sec recording",
+      "icon": "\ud83c\udfa5",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "AI clone trained",
+      "parent": "root",
+      "icon": "\ud83e\udd16",
+      "state": "done"
+     },
+     {
+      "id": "b",
+      "label": "Efficient version of you",
+      "parent": "a",
+      "icon": "\u2728",
+      "state": "active"
+     }
+    ]
+   },
+   "caption": "One recorded clip made an efficient version of you"
+  },
+  {
+   "id": "VsTable",
+   "beat": "proof-tension",
+   "seconds": 3.5,
+   "props": {
+    "title": "Coup or workflow?",
+    "colA": "Identity",
+    "colB": "Workflow optimization",
+    "rows": [
+     {
+      "label": "lights & setup",
+      "a": "hours",
+      "b": "skipped",
+      "verdict": "b"
+     },
+     {
+      "label": "retakes",
+      "a": "endless",
+      "b": "none",
+      "verdict": "b"
+     },
+     {
+      "label": "who's on camera",
+      "a": "you",
+      "b": "your clone",
+      "verdict": "a"
+     }
+    ],
+    "rowStagger": 0.4
+   },
+   "caption": "Not a coup \u2014 it's workflow optimization, he argues"
+  },
+  {
+   "id": "ChipRow",
+   "beat": "escalation",
+   "seconds": 2.5,
+   "props": {
+    "eyebrow": "The rant, rapid-fire",
+    "chips": [
+     {
+      "text": "forgotten humans",
+      "kind": "objection",
+      "struck": true
+     },
+     {
+      "text": "psychoanalyze HeyGen",
+      "kind": "objection",
+      "struck": true
+     },
+     {
+      "text": "ship faster",
+      "kind": "toggle",
+      "hot": true
+     },
+     {
+      "text": "deliver short",
+      "kind": "toggle",
+      "hot": true
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "stagger": 0.22
+   },
+   "caption": "Forgotten humans? Or just shipping faster?"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "payoff-stance",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "The stance",
+    "parts": [
+     {
+      "text": "It's"
+     },
+     {
+      "text": "not"
+     },
+     {
+      "text": "REPLACING",
+      "hot": true
+     },
+     {
+      "text": "the creator."
+     },
+     {
+      "text": "It's a"
+     },
+     {
+      "text": "TOOL.",
+      "hot": true
+     }
+    ],
+    "footer": "What can't it do? Still figuring that out.",
+    "highlight": "bar"
+   },
+   "caption": "Not replacing the creator \u2014 it's a tool, he says"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta-close",
+   "seconds": 2.5,
+   "props": {
+    "name": "HeyGen",
+    "tagline": "the sponsor woven into the rant",
+    "glyph": "spark",
+    "mode": "close",
+    "cta": "Clone your script \u2014 build faster"
+   },
+   "caption": "Sponsor: HeyGen \u2014 build your twin, script faster"
+  }
+ ]
 }

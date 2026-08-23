@@ -79,3 +79,6 @@ ds-bundle/
 .design-sync/.cache/
 .design-sync/learnings/
 .design-sync/node_modules
+
+# scratch stderr from scout runs
+scout*.err

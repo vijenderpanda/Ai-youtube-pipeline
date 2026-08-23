@@ -51,16 +51,37 @@ export const CREAM = {
   sage: "#3E8C74",
   mint: "#5FBFA0",
 } as const;
-export type CookTheme = "brand" | "cream";
-/** Resolve the four tokens every comp-dna component draws with. */
+/* PALETTE FAMILIES — extracted from the 22-short comp-dna scout (research/comp-dna/
+   TAXONOMY.md). The library is NOT paper-only: the winning talking-head accent is a
+   hot YELLOW, and 4/22 refs run on a near-black canvas. Each preset is a full token
+   set so any comp-dna component can wear any family; `accent`/`bg` still override. */
+export const PALETTES = {
+  // design-flex, host-free kinetic (Greg Isenberg lane) — terracotta OR sage
+  cream: { bg: "#EAE7E0", bgDeep: "#DEDAD1", ink: "#1F1F1D", mute: "#7A776F", line: "#D2CEC4", card: "#F4F2EC", accent: "#E8623D" },
+  // talking-head, high-contrast caption pop (Varun Mayya lane) — off-white + hot yellow
+  paperYellow: { bg: "#ECE7DB", bgDeep: "#DED8C8", ink: "#1A1A18", mute: "#78736A", line: "#CFC9BA", card: "#F6F2E8", accent: "#F5C400" },
+  // night-news / hot-take, cheapest to shoot (Nate B Jones / Ishan lane) — near-black + yellow
+  night: { bg: "#0F0F0E", bgDeep: "#000000", ink: "#F4F2EC", mute: "#9A968C", line: "#2A2A26", card: "#1A1A18", accent: "#F5E642" },
+  // dark editorial variant — deep slate + pink (rkbacGroezI / product-news)
+  midnight: { bg: "#141821", bgDeep: "#0A0D14", ink: "#EEF0F4", mute: "#8790A0", line: "#262C38", card: "#1C222E", accent: "#FF2E6B" },
+  // urgency / claim poster (be10X, doc-news) — clean white + red
+  cleanRed: { bg: "#FFFFFF", bgDeep: "#F1F1F1", ink: "#171717", mute: "#6E6E6E", line: "#E2E2E2", card: "#FAFAFA", accent: "#D8352A" },
+} as const;
+export type CookTheme = "brand" | "cream" | "paperYellow" | "night" | "midnight" | "cleanRed";
+/** true when the theme's canvas is dark (ink text on dark bg). */
+export const isDarkTheme = (t: CookTheme | undefined): boolean => t === "night" || t === "midnight";
+/** Resolve the six tokens every comp-dna component draws with. */
 export const themeTokens = (
   theme: CookTheme | undefined,
   accent?: string,
   bg?: string,
-): { bg: string; ink: string; mute: string; accent: string; card: string; line: string } =>
-  theme === "cream"
-    ? { bg: bg ?? CREAM.bg, ink: CREAM.ink, mute: CREAM.mute, accent: accent ?? CREAM.terracotta, card: CREAM.card, line: CREAM.line }
-    : { bg: bg ?? BRAND.ink, ink: BRAND.paper, mute: BRAND.mute, accent: accent ?? BRAND.mag, card: "#16161E", line: "#2A2A36" };
+): { bg: string; ink: string; mute: string; accent: string; card: string; line: string } => {
+  if (theme && theme !== "brand" && (PALETTES as unknown as Record<string, typeof PALETTES.cream>)[theme]) {
+    const p = (PALETTES as unknown as Record<string, typeof PALETTES.cream>)[theme];
+    return { bg: bg ?? p.bg, ink: p.ink, mute: p.mute, accent: accent ?? p.accent, card: p.card, line: p.line };
+  }
+  return { bg: bg ?? BRAND.ink, ink: BRAND.paper, mute: BRAND.mute, accent: accent ?? BRAND.mag, card: "#16161E", line: "#2A2A36" };
+};
 
 /* font stacks. Body/UI text uses the system sans so headless Chromium never
    blocks on a web font; DISPLAY (Anton) + SERIF (Playfair) load via <Fonts/>. */

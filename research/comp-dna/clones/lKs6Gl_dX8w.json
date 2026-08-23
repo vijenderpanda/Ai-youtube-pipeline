@@ -1,125 +1,158 @@
 {
-  "title": "lKs6Gl_dX8w · OpenAI researcher quit to build telepathy",
-  "theme": "cream",
-  "accent": "#E8623D",
-  "blocks": [
-    {
-      "id": "SplitHead",
-      "beat": "hook",
-      "seconds": 2,
-      "props": {
-        "kicker": "breaking",
-        "label": "News",
-        "line": "OpenAI researcher just quit",
-        "punch": "quit",
-        "align": "center",
-        "size": "lg",
-        "underline": "bar"
-      },
-      "caption": "An OpenAI researcher just quit"
-    },
-    {
-      "id": "KineticQuote",
-      "beat": "hook/setup",
-      "seconds": 2.5,
-      "props": {
-        "kicker": "to identify a",
-        "parts": [
-          { "text": "strange" },
-          { "text": "neural" },
-          { "text": "headset.", "hot": true }
-        ]
-      },
-      "caption": "To build a strange neural headset"
-    },
-    {
-      "id": "BrandBumper",
-      "beat": "setup",
-      "seconds": 2,
-      "props": {
-        "name": "Conduit",
-        "tagline": "the startup she's building",
-        "glyph": "orbit",
-        "mode": "open"
-      },
-      "caption": "The startup is called Conduit"
-    },
-    {
-      "id": "ChipRow",
-      "beat": "setup",
-      "seconds": 2.5,
-      "props": {
-        "eyebrow": "What it does",
-        "chips": [
-          { "text": "Reads brainwaves", "kind": "model" },
-          { "text": "Types the words", "kind": "model" },
-          { "text": "No typing", "kind": "toggle", "hot": true }
-        ],
-        "align": "center",
-        "size": "md",
-        "wrap": true,
-        "stagger": 0.24
-      },
-      "caption": "It reads your thoughts and types them"
-    },
-    {
-      "id": "TermRun",
-      "beat": "proof-setup",
-      "seconds": 3,
-      "props": {
-        "cmd": "thought → \"I need more coffee\"",
-        "typeStart": 0.6,
-        "charsPerSec": 26,
-        "response": [
-          { "t": "● reading neural signal…", "tone": "info" },
-          { "t": "✓ decoded to text", "tone": "ok" },
-          { "t": "\"I need more coffee\"", "tone": "accent" }
-        ],
-        "lineStagger": 0.2,
-        "promptLabel": "~/headset"
-      },
-      "caption": "Just think it, and it's typed"
-    },
-    {
-      "id": "StatCloser",
-      "beat": "proof",
-      "seconds": 3,
-      "props": {
-        "value": 10000,
-        "suffix": " hrs",
-        "label": "Brain data collected",
-        "sub": "from a *non-invasive* headband",
-        "theme": "cream"
-      },
-      "caption": "Ten thousand hours of brain data"
-    },
-    {
-      "id": "KineticQuote",
-      "beat": "pivot/quote",
-      "seconds": 2.5,
-      "props": {
-        "kicker": "her words",
-        "parts": [
-          { "text": "\"Why I'm leaving" },
-          { "text": "OpenAI to build" },
-          { "text": "telepathy.\"", "hot": true }
-        ],
-        "footer": "the pull-quote that started it all"
-      },
-      "caption": "Why I'm leaving OpenAI to build telepathy"
-    },
-    {
-      "id": "BrandBumper",
-      "beat": "closer/cta",
-      "seconds": 2,
-      "props": {
-        "name": "Conduit",
-        "tagline": "thought-to-text, decoded",
-        "glyph": "spark",
-        "mode": "close",
-        "cta": "Follow for more"
-      },
-      "caption": "Follow for more mind-reading tech"
-    }
-  ]
+ "title": "lKs6Gl_dX8w \u00b7 OpenAI researcher quit to build telepathy",
+ "theme": "cream",
+ "accent": "#7A1F1F",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 2,
+   "props": {
+    "kicker": "breaking",
+    "label": "News",
+    "line": "OpenAI researcher just quit",
+    "punch": "quit",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "An OpenAI researcher just quit"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "hook/setup",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "to identify a",
+    "parts": [
+     {
+      "text": "strange"
+     },
+     {
+      "text": "neural"
+     },
+     {
+      "text": "headset.",
+      "hot": true
+     }
+    ]
+   },
+   "caption": "To build a strange neural headset"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "setup",
+   "seconds": 2,
+   "props": {
+    "name": "Conduit",
+    "tagline": "the startup she's building",
+    "glyph": "orbit",
+    "mode": "open"
+   },
+   "caption": "The startup is called Conduit"
+  },
+  {
+   "id": "ChipRow",
+   "beat": "setup",
+   "seconds": 2.5,
+   "props": {
+    "eyebrow": "What it does",
+    "chips": [
+     {
+      "text": "Reads brainwaves",
+      "kind": "model"
+     },
+     {
+      "text": "Types the words",
+      "kind": "model"
+     },
+     {
+      "text": "No typing",
+      "kind": "toggle",
+      "hot": true
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "stagger": 0.24
+   },
+   "caption": "It reads your thoughts and types them"
+  },
+  {
+   "id": "TermRun",
+   "beat": "proof-setup",
+   "seconds": 3,
+   "props": {
+    "cmd": "thought \u2192 \"I need more coffee\"",
+    "typeStart": 0.6,
+    "charsPerSec": 26,
+    "response": [
+     {
+      "t": "\u25cf reading neural signal\u2026",
+      "tone": "info"
+     },
+     {
+      "t": "\u2713 decoded to text",
+      "tone": "ok"
+     },
+     {
+      "t": "\"I need more coffee\"",
+      "tone": "accent"
+     }
+    ],
+    "lineStagger": 0.2,
+    "promptLabel": "~/headset"
+   },
+   "caption": "Just think it, and it's typed"
+  },
+  {
+   "id": "StatCloser",
+   "beat": "proof",
+   "seconds": 3,
+   "props": {
+    "value": 10000,
+    "suffix": " hrs",
+    "label": "Brain data collected",
+    "sub": "from a *non-invasive* headband",
+    "theme": "cream"
+   },
+   "caption": "Ten thousand hours of brain data"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "pivot/quote",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "her words",
+    "parts": [
+     {
+      "text": "\"Why I'm leaving"
+     },
+     {
+      "text": "OpenAI to build"
+     },
+     {
+      "text": "telepathy.\"",
+      "hot": true
+     }
+    ],
+    "footer": "the pull-quote that started it all"
+   },
+   "caption": "Why I'm leaving OpenAI to build telepathy"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "closer/cta",
+   "seconds": 2,
+   "props": {
+    "name": "Conduit",
+    "tagline": "thought-to-text, decoded",
+    "glyph": "spark",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "caption": "Follow for more mind-reading tech"
+  }
+ ]
 }
