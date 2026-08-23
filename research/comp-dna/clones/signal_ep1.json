@@ -1,44 +1,146 @@
 {
- "title": "SIGNAL ep1 · Your Claude Problem Isn't The Model",
+ "title": "SIGNAL ep1 \u00b7 Your Claude Problem Isn't The Model",
  "theme": "night",
  "accent": "#F5E642",
+ "hostSrc": "hosts/sol_center.jpg",
+ "hostDefault": "pip",
+ "hostPos": "bl",
  "blocks": [
   {
-   "id": "SplitHead", "beat": "cold-open-claim", "seconds": 3,
-   "props": { "label": "THE REAL REASON", "line": "Claude isn't dumb. Your setup is.", "punch": "setup", "align": "left", "size": "lg" },
+   "id": "SplitHead",
+   "beat": "cold-open-claim",
+   "seconds": 3,
+   "host": "full",
+   "props": {
+    "label": "THE REAL REASON",
+    "line": "Claude isn't dumb. Your setup is.",
+    "punch": "setup",
+    "align": "left",
+    "size": "lg"
+   },
    "caption": ""
   },
   {
-   "id": "KineticQuote", "beat": "setup", "seconds": 3,
-   "props": { "kicker": "HERE'S THE THING", "parts": [{"text": "Everyone swaps "}, {"text": "models."}, {"text": " Almost nobody fixes "}, {"text": "the harness.", "hot": true}], "highlight": "bar" },
+   "id": "KineticQuote",
+   "beat": "setup",
+   "seconds": 3,
+   "props": {
+    "kicker": "HERE'S THE THING",
+    "parts": [
+     {
+      "text": "Everyone swaps "
+     },
+     {
+      "text": "models."
+     },
+     {
+      "text": " Almost nobody fixes "
+     },
+     {
+      "text": "the harness.",
+      "hot": true
+     }
+    ],
+    "highlight": "bar"
+   },
    "caption": "Everyone blames the model."
   },
   {
-   "id": "FlowTree", "beat": "proof-harness", "seconds": 5,
-   "props": { "title": "Same model, two setups", "direction": "down", "nodes": [
-     { "id": "p", "label": "Your prompt" },
-     { "id": "bare", "label": "Bare prompt", "parent": "p", "state": "todo", "icon": "😵" },
-     { "id": "harness", "label": "CLAUDE.md + tools + memory", "parent": "p", "state": "active", "icon": "⚙️" },
-     { "id": "vague", "label": "Vague output", "parent": "bare", "state": "todo" },
-     { "id": "sharp", "label": "Sharp output", "parent": "harness", "state": "done" }
-   ] },
+   "id": "FlowTree",
+   "beat": "proof-harness",
+   "seconds": 5,
+   "props": {
+    "title": "Same model, two setups",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "p",
+      "label": "Your prompt"
+     },
+     {
+      "id": "bare",
+      "label": "Bare prompt",
+      "parent": "p",
+      "state": "todo",
+      "icon": "\ud83d\ude35"
+     },
+     {
+      "id": "harness",
+      "label": "CLAUDE.md + tools + memory",
+      "parent": "p",
+      "state": "active",
+      "icon": "\u2699\ufe0f"
+     },
+     {
+      "id": "vague",
+      "label": "Vague output",
+      "parent": "bare",
+      "state": "todo"
+     },
+     {
+      "id": "sharp",
+      "label": "Sharp output",
+      "parent": "harness",
+      "state": "done"
+     }
+    ]
+   },
    "caption": "Same model. The harness decides."
   },
   {
-   "id": "AppWindow", "beat": "proof-files", "seconds": 4,
-   "props": { "title": "your-project", "dark": true, "sidebar": ["CLAUDE.md", "tools/", "memory/", "examples/"], "activeIndex": 0,
-     "body": { "kind": "lines", "lines": ["# CLAUDE.md", "- what the project is", "- how you work", "- the commands that matter", "→ the model reads this first"] }, "cursor": true },
+   "id": "AppWindow",
+   "beat": "proof-files",
+   "seconds": 4,
+   "props": {
+    "title": "your-project",
+    "dark": true,
+    "sidebar": [
+     "CLAUDE.md",
+     "tools/",
+     "memory/",
+     "examples/"
+    ],
+    "activeIndex": 0,
+    "body": {
+     "kind": "lines",
+     "lines": [
+      "# CLAUDE.md",
+      "- what the project is",
+      "- how you work",
+      "- the commands that matter",
+      "\u2192 the model reads this first"
+     ]
+    },
+    "cursor": true
+   },
    "caption": "Four files change everything."
   },
   {
-   "id": "StatCloser", "beat": "payoff", "seconds": 4,
-   "props": { "value": 3, "suffix": "×", "label": "SAME MODEL", "sub": "fewer retries with a real harness", "source": "your own runs" },
+   "id": "StatCloser",
+   "beat": "payoff",
+   "seconds": 4,
+   "props": {
+    "value": 3,
+    "suffix": "\u00d7",
+    "label": "SAME MODEL",
+    "sub": "fewer retries with a real harness",
+    "source": "your own runs"
+   },
    "caption": "Same model, 3x fewer retries."
   },
   {
-   "id": "BrandBumper", "beat": "cta", "seconds": 2,
-   "props": { "name": "AI UNPACKED", "tagline": "one AI trick a day", "glyph": "bolt", "mode": "close", "cta": "Follow for more" },
-   "caption": ""
+   "id": "BrandBumper",
+   "beat": "cta",
+   "seconds": 2,
+   "props": {
+    "name": "AI UNPACKED",
+    "tagline": "one AI trick a day",
+    "glyph": "bolt",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "caption": "",
+   "host": "none"
   }
  ]
 }
