@@ -64,7 +64,12 @@
       },
       "dropAt": 0.1,
       "size": 400,
-      "_note": "onSrc = tapes/fcc_hero.jpg: the tape's own 1.0s frame composed at the WebTour card geometry (1016x572 @ 32,602 on ink) so the padlock lands on the REAL page and the cut into the live tour is continuous. Burned karaoke held off until @beat1 (HeroDrop's own caption carries the claim)."
+      "_note": "onSrc = tapes/fcc_hero.jpg: the tape's own 1.0s frame composed at the WebTour card geometry (1016x572 @ 32,602 on ink) so the padlock lands on the REAL page and the cut into the live tour is continuous. Burned karaoke held off until @beat1 (HeroDrop's own caption carries the claim).",
+      "partAt": [
+        1.9,
+        3.05
+      ],
+      "_twin_note": "U2 visual twins in the hook (measured VO): padlock lands ~0.9s; 'Claude Code.' lands at 1.90 ON the word; 'for free.' pops at 3.05 ON the word."
     },
     "WebTour#tour": {
       "src": "tapes/fcc_tape.mp4",

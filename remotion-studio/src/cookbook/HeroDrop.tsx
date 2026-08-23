@@ -44,6 +44,8 @@ export type HeroDropProps = {
     parts: Array<{ t: string; face?: "sans" | "serif" | "display"; accent?: boolean }>;
   };
   dropAt?: number; // seconds (component clock) the drop begins (default 0.15)
+  captionAt?: number; // seconds the caption lands (default impact+0.25) — set it ON the spoken word (U2)
+  partAt?: number[]; // per-part land times (component clock); overrides captionAt for that part — e.g. the accent word lands ON its VO word
   size?: number; // hero box px, square, asset contained (default 420)
   start?: number; // seconds before the component clock begins
   accent?: string; // caption accent word tint (magenta default; pass gold for crown/CTA)
@@ -88,6 +90,8 @@ export const HeroDrop: React.FC<HeroDropProps> = ({
   onSrc,
   caption,
   dropAt = 0.15,
+  captionAt,
+  partAt,
   size = 420,
   start = 0,
   accent = BRAND.mag,
@@ -143,12 +147,17 @@ export const HeroDrop: React.FC<HeroDropProps> = ({
     rot = 3 * Math.exp(-(tt - tImpact) * 10) + settle(tt, tImpact, 0.5) * 3;
   }
 
-  const wob = idle(tt, 3, tt >= tImpact ? 1.8 : 0.8); // hold = life, never freeze
+  // hold = life, never freeze. VJ 2026-08-23 (fcc 0-3s audit): 1.8px read as a
+  // freeze at feed size — the hold now FLOATS (slow sine hover, ±7px) on top of
+  // the idle wobble, and the backdrop push-in below is a visible 2%/s.
+  const held = tt >= tImpact ? clamp01((tt - tImpact - 0.55) / 0.6) : 0;
+  const wob0 = idle(tt, 3, tt >= tImpact ? 2.2 : 0.8);
+  const wob = { ...wob0, y: wob0.y + Math.sin((tt - tImpact) * 2.4) * 7 * held };
   const alt = clamp01((landBottom - (topY + size)) / Math.max(dist, 1)); // 1 = high up
 
   // ---- caption fit (single line, mirrors SerifCap math) --------------------
   const capParts = (caption?.parts ?? []).slice(0, 8);
-  const capAt = tImpact + 0.25; // lands while the squash is still settling
+  const capAt = captionAt ?? tImpact + 0.25; // default: lands while the squash is still settling
   const sideSafe = 72;
   const colW = width - sideSafe * 2;
   const capEm = capParts.reduce(
@@ -177,7 +186,7 @@ export const HeroDrop: React.FC<HeroDropProps> = ({
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              transform: `scale(${(1.02 + Math.min(tBed * 0.004, 0.05)).toFixed(3)})`,
+              transform: `scale(${(1.02 + Math.min(tBed * 0.02, 0.1)).toFixed(3)})`,
             }}
           />
           {/* scrim: keeps the hero + caption legible over any still */}
@@ -211,6 +220,22 @@ export const HeroDrop: React.FC<HeroDropProps> = ({
         }}
       />
 
+      {/* post-landing bloom behind the asset — breathes so the hold never sits dead */}
+      {tt >= tImpact ? (
+        <div
+          style={{
+            position: "absolute",
+            left: cx - size * 0.9,
+            top: topY - size * 0.4,
+            width: size * 1.8,
+            height: size * 1.8,
+            borderRadius: "50%",
+            opacity: held * (0.28 + Math.sin((tt - tImpact) * 3.1) * 0.14),
+            background: `radial-gradient(50% 50% at 50% 50%, ${rgba(accent, 0.55)} 0%, ${rgba(accent, 0)} 68%)`,
+            filter: "blur(6px)",
+          }}
+        />
+      ) : null}
       {/* the hero asset (or giant emoji) — bottom-origin so squash reads as impact */}
       <div
         style={{
@@ -291,10 +316,12 @@ export const HeroDrop: React.FC<HeroDropProps> = ({
           }}
         >
           {capParts.map((part, i) => {
-            const appear = capAt + i * 0.07;
+            const appear = partAt?.[i] ?? capAt + i * 0.07;
             const prog = enter(tt, appear, 0.44, 0.08);
             const op = clamp01((tt - appear) / 0.16);
             const hot = i === accentIdx;
+            // the accent word POPS on arrival (scale overshoot) — a visual twin of its VO word
+            const popS = hot ? 1 + (1 - settle(tt, appear, 0.5)) * 0 + Math.max(0, 0.18 - (tt - appear) * 0.6) : 1;
             return (
               <span
                 key={i}
@@ -303,7 +330,8 @@ export const HeroDrop: React.FC<HeroDropProps> = ({
                   display: "inline-block",
                   color: hot ? accent : PAPER,
                   opacity: op,
-                  transform: `translateY(${((1 - prog) * 40).toFixed(1)}px)`,
+                  transform: `translateY(${((1 - prog) * 40).toFixed(1)}px) scale(${(tt >= appear ? popS : 1).toFixed(3)})`,
+                  transformOrigin: "50% 100%",
                   textShadow: hot
                     ? `0 6px 30px ${rgba(accent, 0.5)}, 0 4px 14px ${rgba("#000", 0.5)}`
                     : `0 4px 14px ${rgba("#000", 0.5)}, 0 12px 40px ${rgba("#000", 0.42)}`,
