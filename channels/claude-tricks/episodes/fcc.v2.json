@@ -9,8 +9,7 @@
     "Your Claude Code stays exactly the same. Only the bill moves. To free tiers.",
     "The catch: you bring a free key. NVIDIA, Groq, OpenRouter. The limits are theirs, not mine.",
     "One line in your terminal installs it. Watch it type.",
-    "That's it. The exact line is pinned below.",
-    "Follow, I tour one AI repo every day. Which one should I open next?"
+    "That's it. The exact line is pinned below."
   ],
   "hot_words": [
     "FREE",
@@ -33,11 +32,7 @@
     "ONE",
     "LINE",
     "WATCH",
-    "PINNED",
-    "FOLLOW",
-    "EVERY",
-    "DAY",
-    "NEXT"
+    "PINNED"
   ],
   "beats": [
     "cook:HeroDrop#hook",
@@ -46,8 +41,7 @@
     "cook:VsTable#why",
     "cook:WebTour#catch",
     "cook:TermRun#how",
-    "cook:WebTour#install",
-    "cook:WebTour#cta"
+    "cook:WebTour#install"
   ],
   "caption_from": "@beat1",
   "music": "music/bed_webtour.mp3",
@@ -266,38 +260,6 @@
       ],
       "host": true,
       "hostSize": 360
-    },
-    "WebTour#cta": {
-      "src": "tapes/fcc_tape.mp4",
-      "url": "https://github.com/Alishahryar1/free-claude-code",
-      "tourW": 1920,
-      "tourH": 1080,
-      "from": 6.9,
-      "camera": [
-        {
-          "at": 0.2,
-          "dur": 0.6,
-          "center": [
-            0.947,
-            0.142
-          ],
-          "zoom": 2.0,
-          "hold": 1.6
-        },
-        {
-          "at": 2.4,
-          "dur": 0.7,
-          "center": [
-            0.5,
-            0.5
-          ],
-          "zoom": 1.0,
-          "hold": 3.0
-        }
-      ],
-      "selections": [],
-      "host": true,
-      "hostSize": 360
     }
   },
   "sfx": [
@@ -389,22 +351,15 @@
       "at": "@beat5+2.6",
       "name": "slam",
       "note": "THE stop-and-slam (~85%) — duck window ends here"
-    },
-    {
-      "at": "@beat6",
-      "name": "whoosh_up",
-      "note": "into the CTA"
-    },
-    {
-      "at": "@beat6+0.8",
-      "name": "credit_chime",
-      "gain_db": -4,
-      "note": "stars counter echo"
     }
   ],
   "duck": "@beat5+2.46,@beat5+2.60",
   "desc_cta": "Which repo should I open next? Tell me below.",
   "desc_prompt": "📋 THE EXACT LINE (macOS/Linux — read the installer first if you like):\n\ncurl -fsSL \"https://raw.githubusercontent.com/Alishahryar1/free-claude-code/main/scripts/install.sh\" | sh\n\nThen add ONE free provider key (NVIDIA NIM · Groq · OpenRouter). Free tiers have limits set by each provider.",
   "steps": [],
-  "_sfx_note": "@beatN = PROPS SEGMENT index (post-merge: 0 hero,1 tour[lines 2+3],2 VsTable,3 catch,4 TermRun,5 install,6 cta), NOT the lines index."
+  "_sfx_note": "@beatN = PROPS SEGMENT index (post-merge: 0 hero,1 tour[lines 2+3],2 VsTable,3 catch,4 TermRun,5 install,6 cta), NOT the lines index.",
+  "outro": true,
+  "outro_src": "epfcc/outro_card.mp4",
+  "outro_cta": "Follow, I tour one AI repo every day. Which one should I open next?",
+  "_outro_note": "VJ 2026-08-23: the CTA is the OUTRO STING (OutroGlass card) with Sol in a ~300px TALKING circle disc — host clip for THIS beat only via EchoMimic on the 3060 worker (scripts/avatar_render.py --track echomimic_local; HeyGen = fallback), cut from assets/epfcc/outro_cta.wav. Card rendered by gen_outro_glass.py at EXACTLY 0.45 + cta_dur + 0.8 s with --avatar <clip> --avatar-size 300 --avatar-delay 0.45 so build_ep_v2's outro retime ratio is 1 (a retimed talking disc would desync). Body ends on the payoff slam; line 8 moved here."
 }
