@@ -1,0 +1,19 @@
+This GitHub repo lets you run Claude Code. For free.
+
+📋 THE EXACT LINE (macOS/Linux — read the installer first if you like):
+
+curl -fsSL "https://raw.githubusercontent.com/Alishahryar1/free-claude-code/main/scripts/install.sh" | sh
+
+Then add ONE free provider key (NVIDIA NIM · Groq · OpenRouter). Free tiers have limits set by each provider.
+
+Which repo should I open next? Tell me below.
+
+One 30-second Claude trick, every day.
+
+AI Unpacked — no hype, just what actually works.
+
+Repo shown: github.com/Alishahryar1/free-claude-code — an independent open-source project (MIT), not mine; star the author. Screen recording is real (github.com, 23 Aug 2026); the presenter is an AI-animated host. Made with AI, checked by a human.
+
+Not affiliated with Anthropic or GitHub.
+
+#claudecode #freeclaudecode #claudecodefree #freeaicoding #anthropic #claude #githubrepo #aicodingagent #openrouter #groq #nvidianim #aitools2026 #aiunpacked #claudecodetutorial #freeaitools

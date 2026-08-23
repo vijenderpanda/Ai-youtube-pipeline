@@ -90,6 +90,14 @@ def measure_lufs(path):
         return None
 
 
+def measure_tp(path):
+    """Input true peak (dBTP) via ffmpeg loudnorm summary; None if unreadable."""
+    r = subprocess.run(["ffmpeg", "-i", path, "-af", "loudnorm=I=-14:TP=-1:LRA=11:print_format=summary",
+                        "-f", "null", "-"], capture_output=True, text=True)
+    m = re.search(r"Input True Peak:\s*([-+]?[0-9.]+)", r.stderr)
+    return float(m.group(1)) if m else None
+
+
 def qc_gate(final_path):
     """Verify the mastered file meets the channel's shipped-quality bar.
     Returns (ok, [issues])."""
@@ -583,10 +591,31 @@ def main():
     final = os.path.join(CH, "renders", f"ep{a.ep}_{a.tag}.mp4")
     # build_ep_v2 optionally writes ep{ep}_{tag}_outro.mp4 or a _cta variant when
     # cfg carries endcard/outro. If either exists, prefer it as the "final".
-    for stem in (f"ep{a.ep}_{a.tag}_outro.mp4", f"ep{a.ep}_{a.tag}_cta.mp4"):
+    # ORDER MATTERS — later wins. The SFX pass (build_ep_v2 AUTO-SFX) writes
+    # ep{ep}_{tag}_outro_sfx.mp4 and that is the ship file; before 2026-08-23
+    # this list stopped at _outro.mp4 and would have armed fcc WITHOUT its SFX
+    # (the lpa-armed-silent gap, again, one layer up).
+    for stem in (f"ep{a.ep}_{a.tag}_cta.mp4", f"ep{a.ep}_{a.tag}_outro.mp4",
+                 f"ep{a.ep}_{a.tag}_outro_sfx.mp4"):
         alt = os.path.join(CH, "renders", stem)
         if os.path.exists(alt):
             final = alt
+    print(f">> final candidate: {os.path.basename(final)}")
+
+    # TRUE-PEAK SAFETY: the SFX mix can overshoot (fcc v2 measured +0.6 dBTP).
+    # Spec is <= -1 dBTP. Limit once, re-measure, ship the limited copy.
+    try:
+        _tp = measure_tp(final)
+        if _tp is not None and _tp > -1.0:
+            lim = final.replace(".mp4", "_tp.mp4")
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", final, "-c:v", "copy",
+                            "-af", "alimiter=limit=0.85:attack=3:release=60:level=false",
+                            "-c:a", "aac", "-b:a", "192k", lim], check=True)
+            print(f">> true-peak {_tp:+.1f} dBTP > -1 -> limited -> {os.path.basename(lim)} "
+                  f"({measure_tp(lim):+.1f} dBTP)")
+            final = lim
+    except Exception as e:
+        print(f"!! true-peak pass skipped ({e})")
 
     # 3) QC GATE
     ok, issues = qc_gate(final)
