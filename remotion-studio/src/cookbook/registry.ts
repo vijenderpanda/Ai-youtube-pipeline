@@ -52,7 +52,8 @@ export type DataShape =
   | "ledger" // many homogeneous records that must be read, filtered and grouped
   | "part-whole" // one figure and the larger figure it is a share of
   | "alerts" // a set of short notifications
-  | "utterance"; // a spoken line -> live transcript
+  | "utterance" // a spoken line -> live transcript
+  | "table"; // rows of label + A-value vs B-value — a comparison matrix with a winner
 
 export type CookbookEntry = {
   id: string; // component export name (also the file basename)
@@ -256,6 +257,47 @@ export const COOKBOOK: CookbookEntry[] = [
     keywords: ["signup", "capture", "cta", "form", "input", "field", "submit", "join", "subscribe", "one field", "morph", "enter email", "waitlist"],
     transparentCapable: true, wow: 4, density: "low",
     useWhen: "Show a one-field ask as a single object morphing: a button opens into an input, accepts a typed value, then confirms. For CTA / capture beats.",
+  },
+  // ---- Web-tour set (channels/claude-tricks/WEB-TOUR-TEMPLATE.md) ----
+  {
+    id: "WebTour", demoId: "WebTourDemo", title: "Toured web recording",
+    role: "layout", beats: ["demo", "process", "context"], needs: "steps",
+    keywords: ["web", "website", "page", "repo", "github", "docs", "tour", "recording",
+               "screen", "tape", "camera", "zoom", "punch", "selection", "highlight", "real", "proof"],
+    transparentCapable: true, wow: 5, density: "med",
+    gist: "A REAL rec_web_tour.py tape staged as a glass browser card with a scripted camera that pans/zooms INTO the page — punches to the manifest's focus boxes, caret-led browser-style selection sweeps glued to the tape pixels by one shared transform. Pixels never altered or retimed; provenance strip on by default. ScreenStage frames a recording; WebTour films inside one.",
+  },
+  {
+    id: "SerifCap", demoId: "SerifCapDemo", title: "Mixed-register caption",
+    role: "typography", beats: ["hook", "punchline", "cta", "context"], needs: "phrase",
+    keywords: ["caption", "serif", "italic", "editorial", "statement", "line", "quote",
+               "elegant", "mixed", "register", "overlay"],
+    transparentCapable: true, wow: 4, density: "low",
+    useWhen: "The web-tour template's signature caption plate: sans-800 / Playfair-serif-italic / Anton small-caps registers mixed in one line, ONE accent word, word-cluster rise + settle, bottom-anchored and growing UP. Overlay it over a WebTour tape or run it standalone.",
+  },
+  {
+    id: "HeroDrop", demoId: "HeroDropDemo", title: "Hero-asset physics drop",
+    role: "layout", beats: ["hook", "punchline"], needs: "phrase",
+    keywords: ["hero", "drop", "crown", "fall", "impact", "physics", "logo", "emoji",
+               "cold open", "gravity", "squash", "landing", "mascot"],
+    transparentCapable: true, wow: 5, density: "low",
+    gist: "The crown moment: an asset (image or giant emoji) gathers, plunges with gravity + smear, lands with squash/overshoot and a rationed ≤12-particle gold dust burst, then a mixed-register caption rises 0.25s after impact. TravelSprite physics as a registered cold-open — motion is already on screen at frame 1.",
+  },
+  {
+    id: "VsTable", demoId: "VsTableDemo", title: "A-vs-B verdict table",
+    role: "layout", beats: ["comparison", "stat", "context"], needs: "table",
+    keywords: ["versus", "vs", "compare", "comparison", "table", "columns", "rows",
+               "winner", "verdict", "difference", "by hand", "with", "without"],
+    transparentCapable: true, wow: 4, density: "high",
+    gist: "A two-column comparison table on a glass hero panel: rows reveal top-down, each verdict lights the winning cell in accent with a one-shot pulse while the loser fades, then the losing COLUMN dims 60% and the winning header takes an accent underline wipe. Max 5 rows, hard-capped.",
+  },
+  {
+    id: "TermRun", demoId: "TermRunDemo", title: "Terminal one-liner run",
+    role: "app-ui", beats: ["demo", "process"], needs: "steps",
+    keywords: ["terminal", "command", "cli", "shell", "type", "typing", "prompt",
+               "claude", "run", "output", "console", "one line", "one command"],
+    transparentCapable: true, wow: 4, density: "med",
+    gist: "A 1080x1920-native dark-glass terminal: the command types char-by-char with a solid block cursor, thinks on a 2Hz blink, then response lines stream in with tone colors (ok mint / accent gold / warn / info). Ends held on a fresh blinking prompt. CodeDemo's typing math, cookbook-native and full-frame.",
   },
 ];
 

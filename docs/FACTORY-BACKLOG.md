@@ -287,3 +287,14 @@ UPDATE scripts/yt_retention.py to add `--attribute` mode: `python scripts/yt_ret
 
 - [ ] open
 
+## Create scripts/sustain_gate.py -- machine-check the 0-15s sustain rule instead of eyeballing it
+_source: analyze_and_suggest 57f075e5-647f-43a6-98c4-93d751b2d34b · 2026-08-24_
+
+**Why:** Three episodes measured this cycle across two channels (claude-tricks' three 'Typing One Line' shorts, already-happening's one measured short) independently violated the playbook's own 0-15s sustain rule by 12-18pp in the identical 5-9s window, showing the rule is currently enforced by eye and missed repeatedly rather than checked mechanically.
+
+**Interface / acceptance:**
+
+CREATE scripts/sustain_gate.py, a network-scope CLI: `python scripts/sustain_gate.py --channel KEY [--days 30] [--fail-on-cliff PP] [--json out.json]`. It wraps yt_retention.py's per-video drop_points and applies the playbook's own locked doctrine (docs/PRODUCTION-PLAYBOOK.md, retention-is-a-sustain-problem entry) as a rule instead of a read: for every video with real data, flag any drop_point inside the 3-15s window steeper than a threshold (default 10pp) as a CLIFF, and separately report the 15s-hold value against the channel's own trailing-3-episode median so a new episode's sustain can be judged relative, not absolute. Print a table: video | steepest 3-15s drop | 15s hold | verdict (OK / CLIFF / insufficient_data). `--fail-on-cliff` exits non-zero so a produce_short finalize step can gate a scheduled draft on it before arming, closing the exact gap the playbook flags elsewhere (Ep25 shipping the wrong cut) for the sustain metric specifically. Add to the generator catalog as network scope; docstring notes it is a POST-publish, PRE-next-brief tool (reads Analytics, does not touch the render).
+
+- [ ] open
+

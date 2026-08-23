@@ -1,0 +1,92 @@
+[
+ {
+  "w": "THE",
+  "start": 0.0,
+  "end": 0.15
+ },
+ {
+  "w": "CTC-DECODER",
+  "start": 0.2,
+  "end": 1.17
+ },
+ {
+  "w": "PROMPT",
+  "start": 1.29,
+  "end": 1.65
+ },
+ {
+  "w": "IS",
+  "start": 1.71,
+  "end": 1.79
+ },
+ {
+  "w": "PINNED",
+  "start": 1.87,
+  "end": 2.14
+ },
+ {
+  "w": "AND",
+  "start": 2.18,
+  "end": 2.26
+ },
+ {
+  "w": "IN",
+  "start": 2.32,
+  "end": 2.38
+ },
+ {
+  "w": "THE",
+  "start": 2.42,
+  "end": 2.48
+ },
+ {
+  "w": "DESCRIPTION",
+  "start": 2.54,
+  "end": 3.1
+ },
+ {
+  "w": "DROP",
+  "start": 3.22,
+  "end": 3.46
+ },
+ {
+  "w": "YOUR",
+  "start": 3.51,
+  "end": 3.6
+ },
+ {
+  "w": "CTC",
+  "start": 3.63,
+  "end": 4.09
+ },
+ {
+  "w": "\u2014",
+  "start": 4.26,
+  "end": 4.32
+ },
+ {
+  "w": "GET",
+  "start": 4.39,
+  "end": 4.56
+ },
+ {
+  "w": "YOUR",
+  "start": 4.61,
+  "end": 4.71
+ },
+ {
+  "w": "REAL",
+  "start": 4.75,
+  "end": 4.91
+ },
+ {
+  "w": "BREAKDOWN",
+  "start": 4.96,
+  "end": 5.5
+ },
+ {
+  "w": "FREE",
+  "start": 5.65,
+  "end": 6.27
+ }
+]

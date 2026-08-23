@@ -1,0 +1,111 @@
+{
+  "tool": "rec_web_tour.py",
+  "view": {
+    "w": 1280,
+    "h": 720,
+    "dsf": 2
+  },
+  "fps": 30,
+  "url": "https://github.com/anthropics/claude-code",
+  "captured_at": "2026-08-23T06:57:14+00:00",
+  "dark": true,
+  "duration": 25.4,
+  "events": [
+    {
+      "t": 10.365,
+      "kind": "scroll_start",
+      "scroll_top": 0
+    },
+    {
+      "t": 12.171,
+      "kind": "scroll_end",
+      "scroll_top": 1012
+    },
+    {
+      "t": 15.804,
+      "kind": "scroll_start",
+      "scroll_top": 1012
+    },
+    {
+      "t": 17.312,
+      "kind": "scroll_end",
+      "scroll_top": 1712
+    },
+    {
+      "t": 18.419,
+      "kind": "scroll_start",
+      "scroll_top": 1712
+    },
+    {
+      "t": 20.22,
+      "kind": "scroll_end",
+      "scroll_top": 553
+    }
+  ],
+  "focus": [
+    {
+      "t": 4.004,
+      "hold": 2.0,
+      "label": "repo-title",
+      "box": [
+        0.1266,
+        0.1264,
+        0.2172,
+        0.1583
+      ],
+      "center": [
+        0.172,
+        0.142
+      ],
+      "zoom": 1.9
+    },
+    {
+      "t": 7.537,
+      "hold": 2.2,
+      "label": "stars",
+      "box": [
+        0.9319,
+        0.1278,
+        0.9648,
+        0.1556
+      ],
+      "center": [
+        0.948,
+        0.142
+      ],
+      "zoom": 2.2
+    },
+    {
+      "t": 20.934,
+      "hold": 2.2,
+      "label": "file-row",
+      "box": [
+        0.0586,
+        0.416,
+        0.1221,
+        0.4396
+      ],
+      "center": [
+        0.09,
+        0.428
+      ],
+      "zoom": 1.6
+    }
+  ],
+  "selections": [
+    {
+      "t": 13.081,
+      "hold": 2.0,
+      "label": "an agentic coding tool that lives in your terminal",
+      "rects": [
+        [
+          0.1396,
+          0.2772,
+          0.4096,
+          0.3022
+        ]
+      ],
+      "scroll_top": 1012
+    }
+  ]
+}

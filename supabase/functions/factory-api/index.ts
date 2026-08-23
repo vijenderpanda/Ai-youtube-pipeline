@@ -124,6 +124,12 @@ const COOKBOOK_CATALOG: { id: string; label: string; role: string; needs: string
   { id: "LedgerFlow", role: "transformation", needs: "ledger", beats: ["hook","demo","process","stat"] },
   { id: "ShareSplit", label: "Part-of-whole split", role: "dataviz", needs: "part-whole" },
   { id: "SpinWheel", label: "Decision wheel (spins)", role: "interaction", needs: "options" },
+  // web-tour set (channels/claude-tricks/WEB-TOUR-TEMPLATE.md), registered 2026-08-23
+  { id: "WebTour", label: "Toured web recording", role: "layout", needs: "steps" },
+  { id: "SerifCap", label: "Mixed-register caption", role: "typography", needs: "phrase" },
+  { id: "HeroDrop", label: "Hero-asset physics drop", role: "layout", needs: "phrase" },
+  { id: "VsTable", label: "A-vs-B verdict table", role: "layout", needs: "table" },
+  { id: "TermRun", label: "Terminal one-liner run", role: "app-ui", needs: "steps" },
 ];
 const COOKBOOK_IDS = new Set(COOKBOOK_CATALOG.map((c) => c.id));
 // The 6 spatial layout ids (remotion-studio/src/layouts.ts) a slot/spatial block
@@ -1250,7 +1256,7 @@ async function handlePost(body: any): Promise<Response> {
     // never post a free-form instruction to a worker.
     case "build_cookbook_component": {
       const BEAT_KINDS = new Set(["hook","context","stat","process","comparison","demo","punchline","cta","social-proof"]);
-      const DATA_SHAPES = new Set(["series","metrics","single-number","facts","before-after","steps","options","dialogue","phrase","query-results","hub-spokes","ledger","part-whole","alerts","utterance"]);
+      const DATA_SHAPES = new Set(["series","metrics","single-number","facts","before-after","steps","options","dialogue","phrase","query-results","hub-spokes","ledger","part-whole","alerts","utterance","table"]);
       const beat = String(body.beat ?? "").trim();
       const needs = String(body.needs ?? "").trim();
       const shows = String(body.shows ?? "").trim().slice(0, 400);

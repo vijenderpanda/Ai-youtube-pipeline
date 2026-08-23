@@ -76,6 +76,23 @@ stacks, `rgba()`, `clamp()`, `coverBg()`, and the `<Fonts/>` loader.
 | **HoloCard** | hero / depth-without-3D | One subject as a floating artifact: four layers (glow, rings, emblem, type) parallax at four depths on a slow SCRIPTED camera orbit, assembling from depth on entry. Solid-3D feel, no renderer. The low-density hero spotlight (vs. BentoGrid's dense grid). |
 | **GlassPanel** | material / liquid-glass | A frosted, REFRACTIVE panel over a live color bed, carrying one hero figure + supporting rows. The refraction is BAKED (the bed re-drawn, clipped, scaled + blurred) so it survives a headless render where `backdrop-filter` can't be trusted; `transparent` mode falls back to real backdrop blur for overlay use. The 2026 "style" flex. |
 | **MorphField** | interaction / CTA | One object, three states: a CTA button widens into an input field, accepts a typed value, then collapses into a confirmed pill with a drawn checkmark — no hard cuts. The single-element morph for a one-field ask (signup/capture). |
+| **WebTour** | real footage / toured camera | A REAL `rec_web_tour.py` tape in a glass browser card with a scripted camera that pans/zooms INTO the page: settle-bezier punches to the manifest's focus boxes, caret-led browser-style selection sweeps glued to the tape pixels by one shared transform, provenance strip on by default. Pixels never altered, never retimed. ScreenStage frames a recording; WebTour films inside one. |
+| **SerifCap** | typography / mixed registers | The web-tour caption plate: sans-800 / Playfair-serif-italic / Anton-small-caps registers mixed inside one line, ONE accent word max, word-cluster rise + settle entries, bottom-anchored block that grows UP from `anchorY`. Overlay (`transparent`) over a WebTour tape or standalone. |
+| **HeroDrop** | hero / physics drop | The crown moment: an asset (image or giant emoji) gathers, plunges with gravity + smear, lands with squash/overshoot and a ≤12-particle gold dust burst, then a mixed-register caption rises 0.25s after impact. TravelSprite physics as a registered cold-open — motion on screen at frame 1. |
+| **VsTable** | layout / verdict table | A two-column A-vs-B table on a glass hero panel: rows reveal top-down, each verdict lights the winning cell in accent with a one-shot pulse while the loser fades; after the last row the losing COLUMN dims 60% and the winning header takes an accent underline wipe. Hard-capped at 5 rows. |
+| **TermRun** | app-ui / terminal | A 1080×1920-native dark-glass terminal: the command types char-by-char with a solid block cursor, "thinks" on a 2Hz blink, response lines stream with tone colors (ok mint / accent gold / warn / info), ends held on a fresh blinking prompt. CodeDemo's typing math, cookbook-native and full-frame. |
+
+### The Web-tour set
+
+Five components built together for the claude-tricks **web-tour** template
+(`channels/claude-tricks/WEB-TOUR-TEMPLATE.md`): motion-graphics shorts over
+REAL recorded web pages. `WebTour` is the spine (a `rec_web_tour.py` capture,
+toured by a camera that is allowed to pan/zoom into the tape but never to
+retime or alter it); `HeroDrop` opens cold, `SerifCap` carries the claim lines,
+`VsTable` lands the comparison, `TermRun` shows the one command. Capture tapes
+live in `public/tapes/` with a `.tour.json` manifest beside each (focus boxes,
+selection rects and scroll events, normalized to the tape frame) — author
+`camera`/`selections` props FROM the manifest, don't eyeball them.
 
 ### Preview
 
@@ -102,8 +119,8 @@ beat instead of guessing. Every entry is tagged on four axes:
   `comparison`, `demo`, `punchline`, `cta`, `social-proof`.
 - **needs** — the data shape it requires (the planner must supply this):
   `series`, `metrics`, `single-number`, `facts`, `before-after`, `steps`,
-  `options`, `dialogue`, `phrase`, `query-results`, `hub-spokes`, `alerts`,
-  `utterance`.
+  `options`, `dialogue`, `phrase`, `query-results`, `hub-spokes`, `ledger`,
+  `part-whole`, `alerts`, `utterance`, `table`.
 - plus **keywords**, **wow** (1–5), **density**, and `transparentCapable`
   (can it overlay a host/b-roll).
 
@@ -142,6 +159,9 @@ Selection cheat-sheet by data shape:
 | a punchy statement | `phrase` | KineticQuote |
 | results piling up | `alerts` | NotificationStack |
 | a spoken prompt | `utterance` | VoiceOrb |
+| rows of A-vs-B with a winner | `table` | VsTable |
+| a real web page to tour | `steps` | WebTour (real tape; ScreenStage for un-toured footage) |
+| a command + its output | `steps` | TermRun |
 
 ## Adding a component
 

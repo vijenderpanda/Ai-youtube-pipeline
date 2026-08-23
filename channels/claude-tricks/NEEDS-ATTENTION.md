@@ -1,4 +1,4 @@
-# Needs attention — AI Unpacked (`claude-tricks`) — 2026-08-21 06:37
+# Needs attention — AI Unpacked (`claude-tricks`) — 2026-08-23 06:37
 
 Empty guarded publish slots: **2026-08-24**
 

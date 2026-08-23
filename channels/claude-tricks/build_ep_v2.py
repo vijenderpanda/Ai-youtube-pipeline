@@ -3823,6 +3823,19 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
              "-pix_fmt", "yuv420p", outc])
         print(f">> ENDCARD {ec['in_s']}s -> last frame (over the sting)", outc)
         out = outc
+    # AUTO-SFX (the ship-gap fix): lpa v1 armed SILENT because sfx_mix was a
+    # separate manual step. When the spec authors film.sfx, run it here — and a
+    # failed SFX pass must NEVER kill a build: warn loudly, ship the un-sfx file.
+    if isinstance(cfg.get("film"), dict) and cfg["film"].get("sfx"):
+        try:
+            mf = os.path.join(REPO, "renders_out", f"sfx_man_ep{ep}_{tag}.json")
+            json.dump({"film": cfg["film"]}, open(mf, "w"))
+            sfx_out = os.path.splitext(out)[0] + "_sfx.mp4"
+            run([sys.executable, os.path.join(CH, "sfx_mix.py"), "--manifest", mf,
+                 "--props", sp, "--video", out, "--out", sfx_out])
+            out = sfx_out
+        except Exception as e:
+            print(f"!! SFX PASS FAILED ({e}) — SHIPPING WITHOUT SFX: {out}")
     _flush_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
     _flush_sequence_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
     return out

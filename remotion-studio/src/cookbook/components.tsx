@@ -34,6 +34,11 @@ import { MeterChor } from "./MeterChor";
 import { SalaryBrick } from "./SalaryBrick";
 import { CaseBullets } from "./CaseBullets";
 import { GenerativeUI } from "./GenerativeUI";
+import { WebTour } from "./WebTour";
+import { SerifCap } from "./SerifCap";
+import { HeroDrop } from "./HeroDrop";
+import { VsTable } from "./VsTable";
+import { TermRun } from "./TermRun";
 
 /* =============================================================================
    COOKBOOK render dispatch — the id -> component map.
@@ -79,6 +84,11 @@ export const COOKBOOK_COMPONENTS: Record<string, React.FC<any>> = {
   MeterChor,
   SalaryBrick,
   CaseBullets,
+  WebTour,
+  SerifCap,
+  HeroDrop,
+  VsTable,
+  TermRun,
 };
 
 export type CookbookBlockProps = {

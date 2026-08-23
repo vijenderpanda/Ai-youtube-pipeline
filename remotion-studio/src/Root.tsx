@@ -48,6 +48,11 @@ import { CaseBullets, caseBulletsDemo } from "./cookbook/CaseBullets";
 import { OutroGlass, outroGlassDemo } from "./cookbook/OutroGlass";
 import { ScreenStage, screenStageDemo } from "./cookbook/ScreenStage";
 import { GenerativeUI, generativeUIDemo } from "./cookbook/GenerativeUI";
+import { WebTour, webTourDemo } from "./cookbook/WebTour";
+import { SerifCap, serifCapDemo } from "./cookbook/SerifCap";
+import { HeroDrop, heroDropDemo } from "./cookbook/HeroDrop";
+import { VsTable, vsTableDemo } from "./cookbook/VsTable";
+import { TermRun, termRunDemo } from "./cookbook/TermRun";
 
 const FPS = 30;
 
@@ -595,6 +600,52 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={reactionMeterDemo}
+      />
+      {/* ---- Web-tour set (channels/claude-tricks/WEB-TOUR-TEMPLATE.md) ---- */}
+      <Composition
+        id="WebTourDemo"
+        component={WebTour}
+        durationInFrames={12 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={webTourDemo}
+      />
+      <Composition
+        id="SerifCapDemo"
+        component={SerifCap}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={serifCapDemo}
+      />
+      <Composition
+        id="HeroDropDemo"
+        component={HeroDrop}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={heroDropDemo}
+      />
+      <Composition
+        id="VsTableDemo"
+        component={VsTable}
+        durationInFrames={8 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={vsTableDemo}
+      />
+      <Composition
+        id="TermRunDemo"
+        component={TermRun}
+        durationInFrames={8 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={termRunDemo}
       />
       <Composition
         id="UpiRushDemo"

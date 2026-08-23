@@ -298,3 +298,15 @@
   https://techcrunch.com/2026/08/21/starcloud-raises-200-million-for-orbital-data-centers-as-launch-options-dry-up/
 - [ ] A third of web pages published since ChatGPT launched were written by AI, study finds
   https://techcrunch.com/2026/08/20/a-third-of-webpages-published-since-chatgpts-launch-show-signs-of-ai-authorship-study-finds/
+
+## Radar 2026-08-22 06:42
+- [ ] Anthropic’s Opus 4.6 is a smut-machine
+  https://techcrunch.com/2026/08/21/anthropics-opus-4-6-is-a-smut-machine/
+
+## Radar 2026-08-22 22:34
+- [ ] OpenAI says California should strengthen its AI safety bill
+  https://techcrunch.com/2026/08/22/openai-says-california-should-strengthen-its-ai-safety-bill/
+
+## Radar 2026-08-23 01:34
+- [ ] Inherent, founded by DeepMind alumni, says its AI &#8216;teammate&#8217; just outperformed Anthropic and OpenAI at replicating research
+  https://techcrunch.com/2026/08/22/inherent-founded-by-deepmind-alumni-says-its-ai-teammate-just-outperformed-anthropic-and-openai-at-replicating-research/

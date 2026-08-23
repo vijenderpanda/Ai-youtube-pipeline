@@ -25,6 +25,11 @@ import { foglineDemo } from "./Fogline";
 import { holoCardDemo } from "./HoloCard";
 import { glassPanelDemo } from "./GlassPanel";
 import { morphFieldDemo } from "./MorphField";
+import { webTourDemo } from "./WebTour";
+import { serifCapDemo } from "./SerifCap";
+import { heroDropDemo } from "./HeroDrop";
+import { vsTableDemo } from "./VsTable";
+import { termRunDemo } from "./TermRun";
 
 // deno-lint-ignore no-explicit-any
 export const COOKBOOK_DEMOS: Record<string, any> = {
@@ -45,4 +50,9 @@ export const COOKBOOK_DEMOS: Record<string, any> = {
   HoloCard: holoCardDemo,
   GlassPanel: glassPanelDemo,
   MorphField: morphFieldDemo,
+  WebTour: webTourDemo,
+  SerifCap: serifCapDemo,
+  HeroDrop: heroDropDemo,
+  VsTable: vsTableDemo,
+  TermRun: termRunDemo,
 };
