@@ -13,12 +13,12 @@ Two Shorts/day, ≥6h apart, English audio/titles (both slots):
 | ep | title | slot | status | link |
 |---|---|---|---|---|
 | ep1 `fcc` | This Repo Gives You Claude Code FREE 👀 | 00:30 IST Aug 24 (2026-08-23T19:00Z) | **ARMED** | youtu.be/BEqvWkT5B5g |
-| ep2 `academy` | Anthropic's Free AI Course Gives You A Badge 🎓 | 18:30 IST Aug 24 (2026-08-24T13:00Z) | **rendering v8 / arm pending** | calendar f2bf395d |
+| ep2 `academy` | Anthropic's Free AI Course Gives You A Badge 🎓 | 18:30 IST Aug 24 (2026-08-24T13:00Z) | **ARMED** | youtu.be/1PUZa8U-8Rw |
 
-**ep2 NEXT STEP:** confirm v8 gates all PASS → `finalize_episode.py --ep academy --tag v8
---schedule 2026-08-24T13:00:00Z --calendar-id f2bf395d-a528-409e-9979-739c888edb44`
-(thumb `renders/thumb_epacademy.jpg` already exists). Then pin the comment (academy.claude.com +
-"do the 7-min one first; sign in only to save progress"). API can't pin — manual.
+**Both Aug-24 slots ARMED.** Pin ep2's comment: academy.claude.com + "do the 7-min one first; sign in only to save progress" (API can't pin — manual).
+
+## TEMPLATE LOCKED
+**NIGHTWATCH** (`templates/NIGHTWATCH.LOCKED.md`) = the frozen web-tour template for the **00:30 IST slot only** — self-contained cookbook kit, no Comp-DNA/Claude-Design assets. The 18:30 IST (India) template is a SEPARATE template VJ sets up elsewhere. When VJ says "let's plan next", follow the LOCKED plan-next protocol: propose 2–3 scored ideas → capture tape + storyboard → render.
 
 ## The web-tour template (how to make the next one)
 1. Pick topic (see backlog). Different searched noun each time (no cannibalising).
