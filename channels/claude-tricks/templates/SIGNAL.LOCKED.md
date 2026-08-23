@@ -43,6 +43,18 @@ Beat components, all `theme`-aware (accent = the palette's yellow unless a red/p
 - **BrandBumper** (`mode:"close"`) — "AI Unpacked · follow for more" CTA sting.
 - Captions: yellow word-highlight karaoke (the family-B convention), bottom-third, off the low 25%.
 
+## Host placement — LOCKED to the cutaway grammar (research-backed, auto-assigned)
+From the 8-ref host-track analysis (`research/comp-dna/HOST-PLACEMENT.md`), **cutaway won** — it holds
+the entire top-5 by views/day; PIP and hybrid underperformed. So SIGNAL never uses a persistent corner
+PIP. **`scripts/assign_host.py` sets host per beat automatically** — no manual placement:
+- **Host FULL-frame** on spoken-card beats (SplitHead claim, KineticQuote turn) + hook/close → the
+  talking-head IS the shot, the caption/claim overlays on top (yellow karaoke in real render).
+- **Host ABSENT** (graphic full-frame, hard cutaway) on every proof beat (FlowTree/AppWindow/TermRun/
+  StatCloser/VsTable/…). The graphic is the shot.
+- Cadence: don't hold host static >~8s without a graphic or a graphic >~8s without returning to host.
+- Host-visible % is content-driven, not fixed (graphics-heavy 7% and talk-heavy 82% both win). Run
+  `python scripts/assign_host.py <spec>.json --in-place` after building the block spec.
+
 ## Locked beat grammar (~30–40s, knee trued to 6.00s)
 1. **Cold-open claim (0–~2s)** — Sol full/pip + SplitHead states the whole hot-take as a caption on
    frame 1. NO logo-motion intro. Digit/pattern break lands at **exactly 6.00s** (retention law).

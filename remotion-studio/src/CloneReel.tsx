@@ -34,12 +34,30 @@ export type CloneReelProps = {
   hostPos?: "bl" | "br"; // pip corner (default "bl")
 };
 
-const HostPip: React.FC<{ src: string; mode: "full" | "pip"; pos: "bl" | "br"; accent: string; bg: string }> = ({ src, mode, pos, accent, bg }) => {
-  const w = mode === "full" ? 560 : 360;
-  const h = Math.round(w * 1.34);
+/* Host render per the cutaway grammar (research/comp-dna/HOST-PLACEMENT.md):
+   - "full" = the dominant talking-head shot (host fills the lower frame, text overlays above);
+     stands in for the real HeyGen Sol clip that composites at full render.
+   - "pip"  = a small corner window (dev-tips variant only).
+   The graphic beats pass host:"none" → nothing renders (hard cutaway to graphic-full). */
+const HostShot: React.FC<{ src: string; mode: "full" | "pip"; pos: "bl" | "br"; accent: string; bg: string }> = ({ src, mode, pos, accent, bg }) => {
+  if (mode === "full") {
+    // talking-head fills the lower ~62% of frame, bottom-anchored, with a bg-scrim so overlay text stays legible
+    return (
+      <>
+        <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 1200, width: 1080,
+          display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
+          <Img src={staticFile(src)} style={{ height: 1180, objectFit: "cover", objectPosition: "top center",
+            maskImage: "linear-gradient(180deg, transparent 0%, #000 16%)", WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 16%)" }} />
+        </div>
+        <div style={{ position: "absolute", left: 40, bottom: 40, padding: "6px 16px", borderRadius: 999,
+          background: accent, color: "#111", fontFamily: SANS, fontWeight: 800, fontSize: 26, letterSpacing: 1 }}>SOL · live</div>
+      </>
+    );
+  }
+  const w = 360, h = Math.round(w * 1.34);
   const side = pos === "bl" ? { left: 48 } : { right: 48 };
   return (
-    <div style={{ position: "absolute", bottom: mode === "full" ? 40 : 300, ...side, width: w, height: h,
+    <div style={{ position: "absolute", bottom: 300, ...side, width: w, height: h,
       borderRadius: 28, overflow: "hidden", border: `4px solid ${accent}`,
       boxShadow: `0 24px 60px -20px ${rgba("#000", 0.7)}, 0 0 0 10px ${rgba(bg, 0.6)}` }}>
       <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center" }} />
@@ -67,9 +85,12 @@ export const CloneReel: React.FC<CloneReelProps> = ({ title, theme = "cream", ac
         return (
           <Sequence key={i} from={from} durationInFrames={dur} layout="none">
             <AbsoluteFill>
+              {hostSrc && (b.host ?? hostDefault) === "full" ? (
+                <HostShot src={hostSrc} mode="full" pos={hostPos} accent={T.accent} bg={T.bg} />
+              ) : null}
               <CookbookBlock id={b.id} props={props} transparent={b.transparent ?? true} />
-              {hostSrc && (b.host ?? hostDefault) !== "none" ? (
-                <HostPip src={hostSrc} mode={(b.host ?? hostDefault) as "full" | "pip"} pos={hostPos} accent={T.accent} bg={T.bg} />
+              {hostSrc && (b.host ?? hostDefault) === "pip" ? (
+                <HostShot src={hostSrc} mode="pip" pos={hostPos} accent={T.accent} bg={T.bg} />
               ) : null}
               {b.caption ? (
                 <div

@@ -43,7 +43,8 @@
     ],
     "highlight": "bar"
    },
-   "caption": "Everyone blames the model."
+   "caption": "Everyone blames the model.",
+   "host": "full"
   },
   {
    "id": "FlowTree",
@@ -85,7 +86,8 @@
      }
     ]
    },
-   "caption": "Same model. The harness decides."
+   "caption": "Same model. The harness decides.",
+   "host": "none"
   },
   {
    "id": "AppWindow",
@@ -113,7 +115,8 @@
     },
     "cursor": true
    },
-   "caption": "Four files change everything."
+   "caption": "Four files change everything.",
+   "host": "none"
   },
   {
    "id": "StatCloser",
@@ -126,7 +129,8 @@
     "sub": "fewer retries with a real harness",
     "source": "your own runs"
    },
-   "caption": "Same model, 3x fewer retries."
+   "caption": "Same model, 3x fewer retries.",
+   "host": "none"
   },
   {
    "id": "BrandBumper",
@@ -142,5 +146,6 @@
    "caption": "",
    "host": "none"
   }
- ]
+ ],
+ "hostGrammar": "cutaway"
 }
