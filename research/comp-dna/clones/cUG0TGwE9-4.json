@@ -1,0 +1,191 @@
+{
+ "title": "cUG0TGwE9-4 \u00b7 Design beautiful UI/UX with Weavy AI",
+ "theme": "cream",
+ "accent": "#E8623D",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "Prototype",
+    "label": "One prompt",
+    "line": "A whole design system from one prompt",
+    "punch": "design system",
+    "align": "left",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "A whole design system from one prompt.",
+   "beat": "b1"
+  },
+  {
+   "id": "FlowTree",
+   "seconds": 3,
+   "props": {
+    "title": "One prompt, one pipeline",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "Prototype",
+      "icon": "\ud83e\udde9",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "References",
+      "parent": "root",
+      "icon": "\ud83d\uddbc\ufe0f",
+      "state": "done"
+     },
+     {
+      "id": "b",
+      "label": "Personality",
+      "parent": "root",
+      "icon": "\u2728",
+      "state": "active"
+     },
+     {
+      "id": "c",
+      "label": "Flux2 pro",
+      "parent": "b",
+      "state": "active"
+     },
+     {
+      "id": "d",
+      "label": "Anchor",
+      "parent": "c",
+      "state": "todo"
+     },
+     {
+      "id": "e",
+      "label": "Figma refine",
+      "parent": "d",
+      "state": "todo"
+     }
+    ]
+   },
+   "caption": "Here's the system, step by step.",
+   "beat": "b2"
+  },
+  {
+   "id": "AppWindow",
+   "seconds": 2.5,
+   "props": {
+    "title": "Prompt",
+    "dark": true,
+    "cursor": true,
+    "shadow": true,
+    "tilt": true,
+    "cps": 34,
+    "body": {
+     "kind": "lines",
+     "lines": [
+      "Build an audio journaling prototype",
+      "with recording, playback & History only.",
+      "Ignore design."
+     ]
+    }
+   },
+   "caption": "First: just make it work.",
+   "beat": "b3"
+  },
+  {
+   "id": "ChipRow",
+   "seconds": 2,
+   "props": {
+    "eyebrow": "Proof of function",
+    "chips": [
+     {
+      "text": "Logic",
+      "kind": "toggle",
+      "hot": true
+     },
+     {
+      "text": "Functionality",
+      "kind": "toggle",
+      "hot": true
+     },
+     {
+      "text": "Design polish",
+      "kind": "objection",
+      "struck": true
+     }
+    ],
+    "align": "center",
+    "size": "lg"
+   },
+   "caption": "Logic and functionality, checked.",
+   "beat": "b4"
+  },
+  {
+   "id": "KineticQuote",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "Aesthetic direction",
+    "parts": [
+     {
+      "text": "Now give it"
+     },
+     {
+      "text": "a"
+     },
+     {
+      "text": "PERSONALITY.",
+      "hot": true
+     }
+    ],
+    "footer": "the \u2014 ful"
+   },
+   "caption": "Now give it a personality.",
+   "beat": "b5"
+  },
+  {
+   "id": "DiffReveal",
+   "seconds": 3,
+   "props": {
+    "filename": "design-brief.txt",
+    "kicker": "CONSTRAINTS",
+    "title": "Rule out the ugly before you rule in the good.",
+    "lines": [
+     {
+      "text": "gradients",
+      "kind": "del"
+     },
+     {
+      "text": "3D bevels",
+      "kind": "del"
+     },
+     {
+      "text": "glow effects",
+      "kind": "del"
+     },
+     {
+      "text": "corporate look",
+      "kind": "del"
+     },
+     {
+      "text": "minimal flat vector logo",
+      "kind": "add"
+     }
+    ],
+    "footer": "Negative prompts are still prompts."
+   },
+   "caption": "No gradients, no 3D, no glow.",
+   "beat": "b6"
+  },
+  {
+   "id": "BrandBumper",
+   "seconds": 2,
+   "props": {
+    "name": "Prototype",
+    "tagline": "Good morning \u2014 ready to capture your thoughts?",
+    "glyph": "spark",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "caption": "Good morning. Ready to capture your thoughts?",
+   "beat": "b7"
+  }
+ ]
+}

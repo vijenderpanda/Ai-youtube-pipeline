@@ -1,0 +1,178 @@
+{
+ "title": "yJK5GueSHmU \u00b7 Claude Code + Obsidian in under 1 minute",
+ "theme": "cream",
+ "accent": "#5FBFA0",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "If you take notes",
+    "label": "Claude becomes",
+    "line": "Your best thinking partner",
+    "punch": "thinking partner",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar",
+    "theme": "cream"
+   },
+   "caption": "If you take notes, Claude can think with you",
+   "beat": "hook"
+  },
+  {
+   "id": "TermRun",
+   "seconds": 2.5,
+   "props": {
+    "cmd": "claude mcp add obsidian-mcp-tools",
+    "typeStart": 0.4,
+    "charsPerSec": 30,
+    "response": [
+     {
+      "t": "\u25cf connecting to vault\u2026",
+      "tone": "info"
+     },
+     {
+      "t": "\u2713 8 notes found",
+      "tone": "ok"
+     },
+     {
+      "t": "\u2713 links + graph indexed",
+      "tone": "ok"
+     },
+     {
+      "t": "connected in 3s",
+      "tone": "accent"
+     }
+    ],
+    "lineStagger": 0.16,
+    "promptLabel": "~/vault"
+   },
+   "caption": "First, connect Claude to your notes app",
+   "beat": "proof_setup"
+  },
+  {
+   "id": "OrbitNodes",
+   "seconds": 2.5,
+   "props": {
+    "hub": {
+     "label": "Your Notes",
+     "icon": "\ud83e\udde0"
+    },
+    "nodes": [
+     {
+      "label": "Meeting Notes"
+     },
+     {
+      "label": "Project Notes"
+     },
+     {
+      "label": "Ideas"
+     },
+     {
+      "label": "Goals"
+     }
+    ],
+    "spin": 3
+   },
+   "caption": "Claude reads your whole vault as one web",
+   "beat": "notes_web"
+  },
+  {
+   "id": "TermRun",
+   "seconds": 2.5,
+   "props": {
+    "cmd": "/today",
+    "typeStart": 0.4,
+    "charsPerSec": 30,
+    "response": [
+     {
+      "t": "\u25cf reading Calendar\u2026",
+      "tone": "info"
+     },
+     {
+      "t": "\u2713 Tasks pulled in",
+      "tone": "ok"
+     },
+     {
+      "t": "\u2713 Notes linked",
+      "tone": "ok"
+     },
+     {
+      "t": "your day, built",
+      "tone": "accent"
+     }
+    ],
+    "lineStagger": 0.16,
+    "promptLabel": "~/vault"
+   },
+   "caption": "Ask it to build custom commands like /today",
+   "beat": "command_today"
+  },
+  {
+   "id": "TermRun",
+   "seconds": 2.5,
+   "props": {
+    "cmd": "/emerge",
+    "typeStart": 0.4,
+    "charsPerSec": 30,
+    "response": [
+     {
+      "t": "\u25cf scanning vault\u2026",
+      "tone": "info"
+     },
+     {
+      "t": "\u2713 8 notes never named",
+      "tone": "ok"
+     },
+     {
+      "t": "surfaced \u2014 but never named",
+      "tone": "accent"
+     }
+    ],
+    "lineStagger": 0.16,
+    "promptLabel": "~/vault"
+   },
+   "caption": "Or /emerge \u2014 finds notes you never named",
+   "beat": "command_emerge"
+  },
+  {
+   "id": "KineticQuote",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "The real unlock",
+    "parts": [
+     {
+      "text": "Claude"
+     },
+     {
+      "text": "connects the"
+     },
+     {
+      "text": "DOTS",
+      "hot": true
+     },
+     {
+      "text": "for you."
+     }
+    ],
+    "footer": "An entire web of how you actually think.",
+    "highlight": "bar"
+   },
+   "caption": "Claude connects the dots for you",
+   "beat": "closer"
+  },
+  {
+   "id": "BrandBumper",
+   "seconds": 2,
+   "props": {
+    "name": "Claude Code",
+    "tagline": "your notes, connected",
+    "glyph": "orbit",
+    "mode": "close",
+    "cta": "Try it with your vault"
+   },
+   "caption": "Try Claude Code with your own vault",
+   "beat": "bumper"
+  }
+ ]
+}

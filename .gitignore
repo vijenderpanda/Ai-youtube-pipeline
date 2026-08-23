@@ -50,6 +50,7 @@ renders_test/
 research/learning-assets/
 research/comp-dna/*/raw.*
 research/comp-dna/*/contact_sheet.*
+research/comp-dna/clones/out/
 
 # ─────────────────────────────────────────────────────────────
 # Runtime / caches / vendored deps

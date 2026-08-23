@@ -53,6 +53,7 @@ import { SerifCap, serifCapDemo } from "./cookbook/SerifCap";
 import { HeroDrop, heroDropDemo } from "./cookbook/HeroDrop";
 import { VsTable, vsTableDemo } from "./cookbook/VsTable";
 import { TermRun, termRunDemo } from "./cookbook/TermRun";
+import { CloneReel, cloneReelDemo, cloneReelDuration } from "./CloneReel";
 import { PhoneMock, phoneMockDemo } from "./cookbook/PhoneMock";
 import { FlowTree, flowTreeDemo } from "./cookbook/FlowTree";
 import { StatCloser, statCloserDemo } from "./cookbook/StatCloser";
@@ -716,6 +717,16 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={appWindowDemo}
+      />
+      <Composition
+        id="CloneReel"
+        component={CloneReel}
+        durationInFrames={9 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={cloneReelDemo}
+        calculateMetadata={({ props }) => ({ durationInFrames: cloneReelDuration(props, FPS) })}
       />
       <Composition
         id="UpiRushDemo"

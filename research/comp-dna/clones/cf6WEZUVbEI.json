@@ -1,0 +1,167 @@
+{
+ "title": "cf6WEZUVbEI \u00b7 How to use Claude Code to launch 100+ Facebook ads",
+ "theme": "cream",
+ "accent": "#3E8C74",
+ "blocks": [
+  {
+   "id": "TermRun",
+   "seconds": 3,
+   "props": {
+    "cmd": "claude \"launch 100 facebook ads for my coffee brand\"",
+    "typeStart": 0.4,
+    "charsPerSec": 30,
+    "promptLabel": "~/ads",
+    "response": [
+     {
+      "t": "\u25cf reading brand brief\u2026",
+      "tone": "info"
+     },
+     {
+      "t": "\u2713 14 ad variants drafted",
+      "tone": "ok"
+     },
+     {
+      "t": "\u2713 objections pulled from comments",
+      "tone": "ok"
+     },
+     {
+      "t": "publishing via Facebook API\u2026",
+      "tone": "accent"
+     }
+    ],
+    "lineStagger": 0.16
+   },
+   "caption": "You even use Claude Code for this?",
+   "beat": "hook_term"
+  },
+  {
+   "id": "SplitHead",
+   "seconds": 2,
+   "props": {
+    "kicker": "Step 1",
+    "label": "First,",
+    "line": "Brand, product, audience, offer",
+    "punch": "offer",
+    "sub": "One brief in \u2014 the brief is the whole prompt.",
+    "align": "left",
+    "size": "md",
+    "underline": "bar"
+   },
+   "caption": "First, feed it the brand brief",
+   "beat": "brief_step"
+  },
+  {
+   "id": "FlowTree",
+   "seconds": 2.5,
+   "props": {
+    "title": "Comments become ad angles",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "Comments",
+      "icon": "\ud83d\udcac",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "Too bitter",
+      "parent": "root",
+      "icon": "\u2615",
+      "state": "done"
+     },
+     {
+      "id": "b",
+      "label": "Low quality",
+      "parent": "root",
+      "icon": "\u26a0\ufe0f",
+      "state": "active"
+     },
+     {
+      "id": "c",
+      "label": "Not smooth",
+      "parent": "root",
+      "icon": "\ud83d\udca7",
+      "state": "todo"
+     },
+     {
+      "id": "a1",
+      "label": "Bitter \u2192 Better",
+      "parent": "a",
+      "state": "done"
+     }
+    ]
+   },
+   "caption": "It reads the comments for pain points",
+   "beat": "objections_flow"
+  },
+  {
+   "id": "ChipRow",
+   "seconds": 2,
+   "props": {
+    "eyebrow": "Every ad, tagged",
+    "chips": [
+     {
+      "text": "High CTR",
+      "kind": "toggle",
+      "hot": true
+     },
+     {
+      "text": "More Conversions",
+      "kind": "toggle",
+      "hot": true
+     },
+     {
+      "text": "Say Goodbye to Bitter Coffee",
+      "kind": "platform"
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "y": 760,
+    "stagger": 0.22
+   },
+   "caption": "Each ad ships with the outcome it hit",
+   "beat": "results_chips"
+  },
+  {
+   "id": "Odometer",
+   "seconds": 2,
+   "props": {
+    "value": 96,
+    "label": "Variants published via Facebook API",
+    "delta": "+46 today",
+    "group": false
+   },
+   "caption": "Then it just publishes \u2014 all of them",
+   "beat": "publish_scale"
+  },
+  {
+   "id": "StatCloser",
+   "seconds": 2.5,
+   "props": {
+    "value": 1279,
+    "prefix": "$",
+    "label": "Ad spend",
+    "sub": "*200 ads* \u2192 285 conversions, 8% avg CTR",
+    "theme": "cream"
+   },
+   "caption": "200 ads, 285 conversions, 8% CTR",
+   "beat": "dashboard_proof"
+  },
+  {
+   "id": "BrandBumper",
+   "seconds": 2,
+   "props": {
+    "name": "Claude Code",
+    "tagline": "100+ ads. One prompt.",
+    "glyph": "bolt",
+    "mode": "close",
+    "cta": "Try it yourself"
+   },
+   "caption": "...to simply polish the end product",
+   "beat": "close_bumper"
+  }
+ ]
+}

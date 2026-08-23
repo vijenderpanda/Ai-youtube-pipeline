@@ -1,0 +1,206 @@
+{
+ "title": "IFBBmwsGpUw \u00b7 Mastering Claude Is Worth 1 Crore+",
+ "theme": "cream",
+ "accent": "#E8623D",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "seconds": 2.2,
+   "props": {
+    "kicker": "The 5-level ladder",
+    "label": "Mastering",
+    "line": "Claude in 2026 is worth 1 Crore+",
+    "punch": "1 Crore+",
+    "sub": "Most people stop at level one.",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "This skill is worth 1 crore+",
+   "beat": "hook"
+  },
+  {
+   "id": "FlowTree",
+   "seconds": 3.4,
+   "props": {
+    "title": "The 5 levels",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "Level 1: Research",
+      "icon": "\ud83d\udd0d",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "Level 2: Connect tools",
+      "parent": "root",
+      "icon": "\ud83d\udd17",
+      "state": "done"
+     },
+     {
+      "id": "b",
+      "label": "Level 3: Skills",
+      "parent": "root",
+      "icon": "\ud83e\udde9",
+      "state": "active"
+     },
+     {
+      "id": "c",
+      "label": "Level 4: Build apps",
+      "parent": "root",
+      "icon": "\ud83d\udee0\ufe0f",
+      "state": "todo"
+     },
+     {
+      "id": "d",
+      "label": "Level 5: AI employee",
+      "parent": "root",
+      "icon": "\ud83e\udd16",
+      "state": "todo"
+     }
+    ]
+   },
+   "caption": "Most people stop at level one",
+   "beat": "ladder"
+  },
+  {
+   "id": "ChipRow",
+   "seconds": 2.4,
+   "props": {
+    "eyebrow": "Level 2 \u00b7 connect the boring data",
+    "chips": [
+     {
+      "text": "Gmail",
+      "kind": "platform",
+      "icon": "\u2709\ufe0f",
+      "hot": true
+     },
+     {
+      "text": "Drive",
+      "kind": "platform",
+      "icon": "\ud83d\udcc1",
+      "hot": true
+     },
+     {
+      "text": "Excel",
+      "kind": "platform",
+      "icon": "\ud83d\udcca",
+      "hot": true
+     },
+     {
+      "text": "Workflows",
+      "kind": "toggle",
+      "hot": true
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "y": 700,
+    "stagger": 0.22
+   },
+   "caption": "Connect Claude to Gmail, Drive, Excel",
+   "beat": "tools"
+  },
+  {
+   "id": "TermRun",
+   "seconds": 2.6,
+   "props": {
+    "cmd": "claude \"build me an app\"",
+    "typeStart": 0.4,
+    "charsPerSec": 30,
+    "response": [
+     {
+      "t": "\u25cf reading your idea\u2026",
+      "tone": "info"
+     },
+     {
+      "t": "\u2713 app scaffolded",
+      "tone": "ok"
+     },
+     {
+      "t": "\u2713 zero lines of code written by you",
+      "tone": "accent"
+     }
+    ],
+    "lineStagger": 0.16,
+    "promptLabel": "level 4"
+   },
+   "caption": "Level four \u2014 build apps without code",
+   "beat": "buildapps"
+  },
+  {
+   "id": "StatCloser",
+   "seconds": 2.4,
+   "props": {
+    "value": 24,
+    "suffix": "/7",
+    "label": "Level 5: your AI employee",
+    "sub": "Works while you sleep \u2014 *complex workflows, done*",
+    "theme": "cream"
+   },
+   "caption": "It works for you 24/7",
+   "beat": "employee"
+  },
+  {
+   "id": "VsTable",
+   "seconds": 2.6,
+   "props": {
+    "title": "You have 2 options",
+    "colA": "YouTube videos",
+    "colB": "3-hour workshop",
+    "rows": [
+     {
+      "label": "time",
+      "a": "1 year of scattered videos",
+      "b": "3 hours, all 5 levels",
+      "verdict": "b"
+     },
+     {
+      "label": "cost",
+      "a": "lakhs on courses",
+      "b": "free",
+      "verdict": "b"
+     },
+     {
+      "label": "proof",
+      "a": "no certificate",
+      "b": "certificate included",
+      "verdict": "b"
+     }
+    ],
+    "rowStagger": 0.4
+   },
+   "caption": "Two options \u2014 pick the smart one",
+   "beat": "options"
+  },
+  {
+   "id": "Odometer",
+   "seconds": 2.2,
+   "props": {
+    "value": 0,
+    "prefix": "\u20b9",
+    "label": "Workshop price",
+    "delta": "-2000 today",
+    "accent2": "#3E8C74"
+   },
+   "caption": "Two thousand, five hundred, free",
+   "beat": "price"
+  },
+  {
+   "id": "BrandBumper",
+   "seconds": 2.0,
+   "props": {
+    "name": "Claude Workshop",
+    "tagline": "Register now \u2014 limited seats",
+    "glyph": "spark",
+    "mode": "close",
+    "cta": "Click the link, register free"
+   },
+   "caption": "Register now, it's free",
+   "beat": "cta"
+  }
+ ]
+}
