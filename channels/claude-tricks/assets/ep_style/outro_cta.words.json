@@ -1,0 +1,77 @@
+[
+ {
+  "w": "THAT'S",
+  "start": 0.0,
+  "end": 0.27
+ },
+ {
+  "w": "THE",
+  "start": 0.3,
+  "end": 0.37
+ },
+ {
+  "w": "WHOLE",
+  "start": 0.41,
+  "end": 0.6
+ },
+ {
+  "w": "TRICK",
+  "start": 0.64,
+  "end": 1.02
+ },
+ {
+  "w": "FOLLOW",
+  "start": 1.2,
+  "end": 1.5
+ },
+ {
+  "w": "FOR",
+  "start": 1.54,
+  "end": 1.65
+ },
+ {
+  "w": "MORE",
+  "start": 1.71,
+  "end": 1.87
+ },
+ {
+  "w": "SIMPLE",
+  "start": 1.92,
+  "end": 2.25
+ },
+ {
+  "w": "FAST",
+  "start": 2.29,
+  "end": 2.55
+ },
+ {
+  "w": "AI",
+  "start": 2.6,
+  "end": 2.79
+ },
+ {
+  "w": "TOOLS",
+  "start": 2.82,
+  "end": 3.04
+ },
+ {
+  "w": "YOU",
+  "start": 3.08,
+  "end": 3.15
+ },
+ {
+  "w": "CAN",
+  "start": 3.18,
+  "end": 3.27
+ },
+ {
+  "w": "ACTUALLY",
+  "start": 3.31,
+  "end": 3.58
+ },
+ {
+  "w": "USE",
+  "start": 3.63,
+  "end": 4.23
+ }
+]

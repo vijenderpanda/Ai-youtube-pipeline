@@ -1,0 +1,72 @@
+[
+ {
+  "w": "THE",
+  "start": 0.0,
+  "end": 0.15
+ },
+ {
+  "w": "FULL",
+  "start": 0.22,
+  "end": 0.4
+ },
+ {
+  "w": "PROMPT",
+  "start": 0.45,
+  "end": 0.76
+ },
+ {
+  "w": "IS",
+  "start": 0.8,
+  "end": 0.88
+ },
+ {
+  "w": "IN",
+  "start": 0.94,
+  "end": 0.99
+ },
+ {
+  "w": "THE",
+  "start": 1.02,
+  "end": 1.09
+ },
+ {
+  "w": "DESCRIPTION",
+  "start": 1.13,
+  "end": 1.7
+ },
+ {
+  "w": "COPY",
+  "start": 1.81,
+  "end": 2.16
+ },
+ {
+  "w": "IT",
+  "start": 2.21,
+  "end": 2.36
+ },
+ {
+  "w": "AND",
+  "start": 2.39,
+  "end": 2.52
+ },
+ {
+  "w": "OPEN",
+  "start": 2.58,
+  "end": 2.75
+ },
+ {
+  "w": "YOUR",
+  "start": 2.79,
+  "end": 2.88
+ },
+ {
+  "w": "FORM",
+  "start": 2.91,
+  "end": 3.13
+ },
+ {
+  "w": "TONIGHT",
+  "start": 3.18,
+  "end": 3.85
+ }
+]

@@ -23,7 +23,9 @@ export default function ChallengeBlock({
   busy,
 }) {
   const [expanded, setExpanded] = useState(false)
+  const [whyOpen, setWhyOpen] = useState(false)
   const longBrief = String(challenger.brief || '').trim().length > 110
+  const longWhy = String(challenger.why_not || '').trim().length > 150
 
   return (
     <div className="challenge" onClick={(e) => e.stopPropagation()}>
@@ -31,7 +33,20 @@ export default function ChallengeBlock({
         <span aria-hidden="true">⚠</span> AI challenge
       </div>
 
-      {challenger.why_not && <div className="challenge-why">{challenger.why_not}</div>}
+      {challenger.why_not && (
+        <div className="challenge-why">
+          {whyOpen ? challenger.why_not : excerpt(challenger.why_not, 150)}
+          {longWhy && (
+            <button
+              type="button"
+              className="link link-btn challenge-expand"
+              onClick={() => setWhyOpen((v) => !v)}
+            >
+              {whyOpen ? 'less' : 'more'}
+            </button>
+          )}
+        </div>
+      )}
 
       <div className="challenge-compare">
         <div className="challenge-col">

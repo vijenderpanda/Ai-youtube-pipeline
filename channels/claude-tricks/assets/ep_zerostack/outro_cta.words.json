@@ -1,0 +1,97 @@
+[
+ {
+  "w": "THE",
+  "start": 0.0,
+  "end": 0.14
+ },
+ {
+  "w": "DETECTIVE",
+  "start": 0.2,
+  "end": 0.6
+ },
+ {
+  "w": "PROMPT",
+  "start": 0.63,
+  "end": 0.93
+ },
+ {
+  "w": "IS",
+  "start": 0.99,
+  "end": 1.08
+ },
+ {
+  "w": "PINNED",
+  "start": 1.2,
+  "end": 1.5
+ },
+ {
+  "w": "AND",
+  "start": 1.65,
+  "end": 1.88
+ },
+ {
+  "w": "IN",
+  "start": 1.94,
+  "end": 2.0
+ },
+ {
+  "w": "THE",
+  "start": 2.03,
+  "end": 2.1
+ },
+ {
+  "w": "DESCRIPTION",
+  "start": 2.15,
+  "end": 2.71
+ },
+ {
+  "w": "APNE",
+  "start": 2.91,
+  "end": 3.2
+ },
+ {
+  "w": "BILL",
+  "start": 3.24,
+  "end": 3.37
+ },
+ {
+  "w": "KE",
+  "start": 3.44,
+  "end": 3.51
+ },
+ {
+  "w": "NUMBERS",
+  "start": 3.58,
+  "end": 3.91
+ },
+ {
+  "w": "DAALO",
+  "start": 3.96,
+  "end": 4.23
+ },
+ {
+  "w": "\u2014",
+  "start": 4.27,
+  "end": 4.41
+ },
+ {
+  "w": "FREE",
+  "start": 4.53,
+  "end": 4.71
+ },
+ {
+  "w": "MEIN",
+  "start": 4.75,
+  "end": 4.85
+ },
+ {
+  "w": "CHOR",
+  "start": 4.9,
+  "end": 5.05
+ },
+ {
+  "w": "PAKDO",
+  "start": 5.11,
+  "end": 5.76
+ }
+]

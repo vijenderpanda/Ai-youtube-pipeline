@@ -1,0 +1,17 @@
+/* The two brand faces the cookbook renders with. kit.tsx loads them inside a
+   Remotion render via staticFile(); on a web page they need real @font-face
+   rules or every card silently falls back to a system font — and nothing
+   downstream catches that. */
+@font-face {
+  font-family: "Anton";
+  src: url("./Anton.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Playfair Display";
+  src: url("./PlayfairDisplay-Italic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 400 900;
+  font-display: swap;
+}

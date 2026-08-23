@@ -1,0 +1,27 @@
+{
+  "typing_start": 3.398,
+  "typing_end": 8.897,
+  "submit": 9.673,
+  "answer_start": 9.673,
+  "answer_end": 24.723,
+  "scrolls": [
+    24.756,
+    26.017,
+    27.348
+  ],
+  "duration": 30.2,
+  "composer_box": [
+    0.39140625,
+    0.43732638888888886,
+    0.7000244140625,
+    0.4956597222222222
+  ],
+  "observed": {
+    "answer_selector": null,
+    "answer_head": "",
+    "answer_chars": 0,
+    "logged_in": null,
+    "pii_blurred": null,
+    "forbidden_term": null
+  }
+}

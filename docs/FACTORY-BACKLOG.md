@@ -177,3 +177,124 @@ scripts/finalize_already_happening.py currently has no beat-duration assertion o
 
 - [ ] open
 
+## Create scripts/retention_cliff_scan.py -- network-wide early-cliff scanner
+_source: analyze_and_suggest 0aba33e2-b68b-4bf2-8c18-d2493d169222 · 2026-08-15_
+
+**Why:** Today's yt_retention.py pull independently found the SAME 4-9s early-cliff pattern on three unrelated channels in one sitting (claude-tricks 4.7-6.7s across four episodes, already-happening -19pp@8.8s, aashiqana's full-length Aaja Ve -32pp@4.3s) -- a pattern currently only caught by a human re-running yt_retention.py by hand each planning cycle, which is exactly the kind of recurring mechanical failure PRODUCTION-PLAYBOOK.md section 10 says belongs in a gate, not a reviewer's catch.
+
+**Interface / acceptance:**
+
+Create scripts/retention_cliff_scan.py: a thin network CLI that loops channels/*/channel.json (same iteration pattern as scripts/daily_check.py), calls scripts/yt_retention.py --channel <key> --days 30 --summary --json for each, and flags any video whose steepest measured drop_point exceeds 10pp and falls inside a 4-10s window (the recurring 'sustain, not hook' failure documented in PRODUCTION-PLAYBOOK.md section 13). Output: a single ranked docs/RETENTION-CLIFFS.md (video, channel, drop pp, timestamp, 15s-hold) refreshed on each run, plus a non-zero exit when a NEW video crosses the threshold (so it can hook into the existing com.aiunpacked.dailycheck launchd cadence without adding a second plist, per the §10 'one plist' rule). Read-and-report only, matching daily_check.py's doctrine -- no upload/retitle/reschedule. This is distinct from the already-suggested scripts/yt_retention.py --cohort (84230efd, per-channel drop-point clustering, not yet built): this scan is cross-channel and threshold-gated for the automation loop, --cohort is an interactive per-channel clustering view for a human session; build both, this one first since it plugs into the automation channels/daily_check already runs.
+
+- [ ] open
+
+## Add --rank-by-hold to scripts/yt_retention.py
+_source: analyze_and_suggest d1680ad6-9b34-4928-b22c-ecfa31c9e64f · 2026-08-16_
+
+**Why:** e35312bc had to manually rank four episodes by 15s/end-hold instead of avg_view_pct to fix a real segment-selection bug this cycle -- codifying that ranking into the script removes the need to re-derive it by hand on every future long-form/compilation decision.
+
+**Interface / acceptance:**
+
+scripts/yt_retention.py --summary currently prints per-video 15s-hold/end-hold/drop-points but leaves ranking to the human. This cycle's e35312bc suggestion had to hand-derive a '(15s hold, end hold) not avg_view_pct' ranking to select and order segments for a long-form compilation, explicitly because avg_view_pct hides the early cliff that matters. Add a `--rank-by-hold` flag to scripts/yt_retention.py that outputs videos sorted by (15s_hold desc, end_hold desc) instead of publish order, with a one-line flag on any video whose worst single-second drop exceeds 6pp inside the first 8s (the exact threshold this playbook's §edits already use). This turns a repeated manual analysis step into a reusable one for every future compilation/season-recap decision.
+
+- [ ] open
+
+## Add --lint-brief to scripts/host_outfit.py
+_source: analyze_and_suggest d1680ad6-9b34-4928-b22c-ecfa31c9e64f · 2026-08-16_
+
+**Why:** This exact bug (a brief instructing host_canonical.jpg instead of the pinned wardrobe) had to be found by manual audit this cycle (ab39705f) despite being documented as fixed on 2026-08-06 -- a mechanical lint on brief text closes the gap between 'fixed in the pipeline' and 'still possible in a hand-written or AI-drafted brief'.
+
+**Interface / acceptance:**
+
+PLAYBOOK §6 documents host_canonical.jpg as a fixed, found-and-fixed wardrobe bug (2026-08-06) -- yet this cycle's own audit (ab39705f replacing 6d0b019e) found a fresh brief in the same 08-16..30 queue still instructing 'host_canonical.jpg' for a hook clip, contradicting every sibling brief. Add a `--lint-brief <path-or-stdin>` mode to scripts/host_outfit.py that greps a draft brief/suggestion text for literal 'host_canonical' and exits non-zero with the PLAYBOOK §6 citation if found, so this class of regression is caught mechanically instead of by a manual audit pass every few days.
+
+- [ ] open
+
+## Build scripts/hook_qc.py -- flag any produced Short whose first 3s doesn't state the core claim
+_source: analyze_and_suggest 60c7a3ec-ca7a-4676-a1f4-ce2004a6b195 · 2026-08-18_
+
+**Why:** yt_retention.py --channel claude-tricks --days 30 shows a recurring 8-15pp drop clustered at 4.5-6s across most videos with a slow-build hook, while the channel's best-retention video states its problem in <3s. This is a repeatable, checkable pattern (not a one-off), so it belongs in a script gate rather than relying on manual QC every episode.
+
+**Interface / acceptance:**
+
+Create scripts/hook_qc.py: given a finished master mp4 + its line-timing sidecar (from eleven_vo.py's *.alignment.json), check whether the FIRST spoken line lands entirely within the first 3.0s and contains no scene-setting words (a small stoplist: 'so', 'today', 'in this video', 'let me show you'). Exit non-zero with a printed offending line if the hook line starts late or reads as preamble. Wire as an optional pre-flight check callable from build_ep_v2.py --dry (report-only, non-blocking) before it becomes a hard gate. This directly operationalizes the retention finding below so future episodes get checked automatically instead of caught after upload.
+
+- [ ] open
+
+## Build scripts/hook_qc.py -- automated proof-by-4s retention gate
+_source: analyze_and_suggest 38964421-fc50-4355-a801-cb3b58c6cb34 · 2026-08-18_
+
+**Why:** The latest claude-tricks insight explicitly proposes 'consider the hook_qc.py factory gate' after finding the same fast-hook-vs-slow-setup pattern by hand across multiple episodes -- this converts that recurring manual check into an automated one.
+
+**Interface / acceptance:**
+
+Create scripts/hook_qc.py: a pre-render QC gate for claude-tricks (and reusable by already-happening) that reads a built episode's spec JSON (from build_ep_v2.py --dry) plus its eleven_vo.py alignment sidecar, and asserts the FIRST on-screen payoff/proof beat (the segment kind that shows the fix/finding, not the cold-open hook card) starts at or before 4.0s of spoken audio. Exit non-zero with the measured timestamp if the proof beat starts later, mirroring the pattern of scripts/probe_frames.py (measure the real artifact, don't trust the brief's prose) and scripts/verify_uploads.py (non-zero exit, mandatory last-mile gate). This automates a lesson the insights cycle currently re-derives by hand every run: every recent brief manually cites 'proof by 4.0s' or 'cliff window 5.3-5.8s' against yt_retention.py pulls; a script makes it a build-time assertion instead of a copy-pasted paragraph.
+
+- [ ] open
+
+## Update daily_check.py -- flag double-challenged calendar slots
+_source: analyze_and_suggest 38964421-fc50-4355-a801-cb3b58c6cb34 · 2026-08-18_
+
+**Why:** This audit's own claude-tricks insight risk list names exactly this failure mode ('two live suggested rows both pointing replaces_id at each other... worth a human pass') as an unresolved risk with no current tooling catching it.
+
+**Interface / acceptance:**
+
+Extend scripts/daily_check.py (the existing network-wide daily publish-slot guard) with a new check: query factory calendar rows with status='suggested' and non-null replaces_id, build the reverse-lookup graph, and flag any pair where two 'suggested' rows point replaces_id at EACH OTHER (a mutual/circular challenge) with no third row resolving it. Print the pair's ids + titles + planned_date to the existing daily_check output/log so it surfaces on the next automated run, exactly like its existing slot-collision and duplicate-title checks -- read-only, no auto-resolution (a human picks the winner, per the channel's own suggestion_reason convention).
+
+- [ ] open
+
+## UPDATE scripts/build_ep_v2.py -- add a hook-cold-open preflight check
+_source: analyze_and_suggest 41c7ba4a-7da6-4f3c-8b91-a2f58158adcb · 2026-08-20_
+
+**Why:** The 4-10s cliff pattern repeats across at least 6 of the channel's 9 analytics-eligible episodes this month regardless of topic, which is a structural/timing defect the two best-performing episodes don't share -- a build-time check turns 'remember to front-load the hook' into an enforced gate instead of a per-writer judgment call.
+
+**Interface / acceptance:**
+
+UPDATE scripts/build_ep_v2.py (claude-tricks Shorts assembler) to add a preflight validation step that fails the build (non-zero exit, printed diagnostic) if the first spoken word or word-card timestamp lands later than 1.5s into the cut. Retention data across the last 30 days shows a recurring attention cliff clustered at 4-10s in nearly every claude-tricks episode regardless of topic (Ask AI For a Table -8pp@4.8s; Effort Dial -14pp@4.7s and -10pp@2.2s; I Built an AI Factory -14pp@6.7s and -10pp@6.4s; The Best AI Just Got Cheaper -11pp@9.2s; Claude Just Got Skills -10pp@5.8s; You Type The Same Prompt -11pp@5.3s), while the two episodes with the best 15s-hold ('Claude Code Forgets Everything' 74%, '6 Claude Commands' 68%) both land their payoff inside 2s. Implementation: read the existing captions/timing JSON build_ep_v2.py already produces, compute the first non-silence word timestamp, compare against a --max-hook-delay 1.5 (default) CLI flag, and print the offending timestamp plus the script segment responsible so the writer can move the cold-open line earlier rather than discovering the problem 48h later in analytics. Do not auto-edit the script; just gate the build with a clear failure so it becomes a repeatable check every episode passes through instead of a one-off note.
+
+- [ ] open
+
+## UPDATE scripts/assemble_music_video.py -- add a chant-first cold-open mode
+_source: analyze_and_suggest 41c7ba4a-7da6-4f3c-8b91-a2f58158adcb · 2026-08-20_
+
+**Why:** The flagship long-form cut loses 27pp at the 4.3s instrumental open while the channel's single best-holding video skips that delay entirely (60% 15s-hold), and three upcoming calendar briefs already request the 'chant-first' pattern by name with no generator that implements it yet.
+
+**Interface / acceptance:**
+
+UPDATE scripts/assemble_music_video.py (Aashiqana Pipeline A long-form assembler) to add a --cold-open-mode chant flag that cuts straight to the chorus/hook line (no instrumental intro, no establishing shot) for the first 3-4s before falling back to the full arrangement. The flagship long-form cut 'Aaja Ve' loses 27pp of viewers at 4.3s during its instrumental-led open, while the direct-address Short 'Woh insaan jise tum chhod hi nahi paate' (no instrumental delay, hero line in frame immediately) holds 60% at 15s -- the highest 15s-hold of any Aashiqana video with sufficient sample. The upcoming Unki Kahani Ch.3-5 briefs already call for 'chant-first' and 'chorus in 8s' cuts by name (calendar items 9af56f0d, 29112758) but no generator currently implements the cut pattern, so each editor re-derives it by hand per song. Implementation: accept the existing song's beat-map/lyric-timing JSON, detect the first vocal-chorus window, and render that window as the opening 3-4s before cutting to the verse/instrumental build, reusing the existing crossfade/motion-clip pipeline assemble_music_video.py already has.
+
+- [ ] open
+
+## Create scripts/beat_audit.py — pre-render early-structure gate (proof-by-4s, no boundary idle)
+_source: analyze_and_suggest 2667b2d6-9408-4f00-ac95-347d74975b7f · 2026-08-21_
+
+**Why:** This item is already 'suggested' in the calendar since Aug-8 and this cycle's retention pull independently reproduces the exact failure it targets (a >4s setup run before the first proof beat correlates with sub-30% 15s-holds on claude-tricks) — it should move from suggested to built now that the data confirms the rule generalizes.
+
+**Interface / acceptance:**
+
+CREATE scripts/beat_audit.py, a pre-render QC gate that reads a built episode spec JSON (the `build_ep_v2.py --dry` output or the `assemble_*` segment list) and flags exactly the failure mode this analysis found repeatedly: a beat sequence that spends >4-5s on setup/problem-statement before the first demo/proof/payoff beat. Usage: `python scripts/beat_audit.py --spec path/to/spec.json [--channel claude-tricks] [--max-setup-s 4.5]`. Behavior: (1) walk the beats list, classify each beat kind (`hook`, `problem`, `demo`, `cook`, `stat`, `payoff`) via its existing `kind`/tag field; (2) sum the duration of any leading run of `problem`/`hook`-only beats before the first `demo`/`cook`/`payoff` beat; (3) fail (non-zero exit, printed reason) if that run exceeds `--max-setup-s`; (4) also flag any single beat >6s with zero caption/overlay change (a 'dead air' beat, the other half of the 15s-battle). Write findings to stdout and optionally `--json report.json`. This turns the pattern this cycle found by hand (Effort Dial 10% 15s-hold / Ask-AI-Table 26% vs Forgets-Everything 74% / SKILLS 57%, all explained by setup-before-proof timing) into an automatic pre-render check instead of a retrospective retention read.
+
+- [ ] open
+
+## Update scripts/yt_retention.py — add --attribute, joining measured drop_points to the episode's beat map
+_source: analyze_and_suggest 2667b2d6-9408-4f00-ac95-347d74975b7f · 2026-08-21_
+
+**Why:** Already flagged 'suggested' in the calendar (Aug-7) and this cycle needed exactly this join done by hand across 8 measurable videos to reach its conclusions — building it removes that manual step from every future analysis cycle.
+
+**Interface / acceptance:**
+
+UPDATE scripts/yt_retention.py to add `--attribute` mode: `python scripts/yt_retention.py --channel claude-tricks --video-id <id> --attribute --spec channels/claude-tricks/episodes/<ep>.v2.json`. It should map each returned `drop_points` timestamp onto the nearest beat boundary in the episode's built spec (reusing the same beat/segment timing `beat_audit.py` reads) and print which named beat owns each cliff, e.g. 'drop at 4.8s -> beat 2 (problem-statement, 3.2s-9.1s)'. Currently this analysis had to eyeball drop_points against beat names by hand for every video (Effort Dial's 2.2s/4.7s/5.4s drops vs Ask-AI-Table's 4.8s) — automating the join turns 'where does it bleed' from a manual cross-reference into one command's output, and lets a daily/weekly retention pass name the offending beat directly instead of just the timestamp.
+
+- [ ] open
+
+## Create scripts/sustain_gate.py -- machine-check the 0-15s sustain rule instead of eyeballing it
+_source: analyze_and_suggest 57f075e5-647f-43a6-98c4-93d751b2d34b · 2026-08-24_
+
+**Why:** Three episodes measured this cycle across two channels (claude-tricks' three 'Typing One Line' shorts, already-happening's one measured short) independently violated the playbook's own 0-15s sustain rule by 12-18pp in the identical 5-9s window, showing the rule is currently enforced by eye and missed repeatedly rather than checked mechanically.
+
+**Interface / acceptance:**
+
+CREATE scripts/sustain_gate.py, a network-scope CLI: `python scripts/sustain_gate.py --channel KEY [--days 30] [--fail-on-cliff PP] [--json out.json]`. It wraps yt_retention.py's per-video drop_points and applies the playbook's own locked doctrine (docs/PRODUCTION-PLAYBOOK.md, retention-is-a-sustain-problem entry) as a rule instead of a read: for every video with real data, flag any drop_point inside the 3-15s window steeper than a threshold (default 10pp) as a CLIFF, and separately report the 15s-hold value against the channel's own trailing-3-episode median so a new episode's sustain can be judged relative, not absolute. Print a table: video | steepest 3-15s drop | 15s hold | verdict (OK / CLIFF / insufficient_data). `--fail-on-cliff` exits non-zero so a produce_short finalize step can gate a scheduled draft on it before arming, closing the exact gap the playbook flags elsewhere (Ep25 shipping the wrong cut) for the sustain metric specifically. Add to the generator catalog as network scope; docstring notes it is a POST-publish, PRE-next-brief tool (reads Analytics, does not touch the render).
+
+- [ ] open
+

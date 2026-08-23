@@ -1,0 +1,14 @@
+{
+ "_note": "Metadata mirror for finalize_episode.py (title/tags/lines only). The FULL render config lives in EPISODES_V2['_habit'] in build_ep_v2.py, which shadows this JSON for RENDERING (build_ep_v2 checks the dict first) — but finalize reads THIS file for the YouTube title/description/tags. Post-pivot standalone tip #2 — the Habit Tracker short.",
+ "title": "I Built A Habit Tracker By Typing One Line 🔥",
+ "tags": "claude artifacts,habit tracker,build app with ai,no code,claude ai,ai for beginners,vibe coding,ai tools,ai tips",
+ "lines": [
+  "I typed one line — and Claude built me this habit tracker. No code.",
+  "Empty chat, one sentence, an app that counts my streak. Watch.",
+  "In Claude, I type one line: build me a weekly habit tracker.",
+  "A few seconds later, it's built — seven days, tap to check one off.",
+  "Monday to Friday done — a five-day streak. It actually keeps count.",
+  "That's Artifacts. Ask for a tool, and Claude builds the working thing, right there.",
+  "One line of plain English — and you've got a habit tracker that works."
+ ]
+}

@@ -1,0 +1,12 @@
+BUILD CLUB · CHAPTER 2 — FIRST tap the model chip: pick the top model and push the effort up (that dial is the whole chapter). THEN copy everything below into Claude and attach your site's index.html
+
+SECTION 1 — THE ONE MOVE
+My website is one index.html file (attached). Make it PRODUCTION-READY with a premium polish pass, and add an "Ask us anything" question box on the page that INSTANTLY answers my customers' common questions — menu, prices, delivery, timings, how to order — using only the information already on the page. It must understand casual questions in English and Hinglish (e.g. "aaj ka menu kya hai?", "how much is the thali?").
+
+SECTION 2 — QUALITY RULES
+Everything stays in this ONE file — pure HTML/CSS/JS, no backend, no signup, no API keys, works on a free host. Match my site's existing style and colors exactly. Mobile-first. Make it look expensive — this is the front door of a real business. The box should feel like chatting, with the site replying instantly.
+
+SECTION 3 — HAND-OVER
+Before you build: ask me up to 3 short questions — only the ones that matter most to get this business production-ready, one at a time. Then hand back the COMPLETE updated index.html, ready to deploy as-is.
+
+Ship your before/after and drop your LIVE LINK with the word SHIPPED. Tomorrow: Chapter 3 — your name goes public.

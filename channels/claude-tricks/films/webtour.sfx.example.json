@@ -1,0 +1,31 @@
+{
+  "ep": "_webtour_EXAMPLE",
+  "_note": "WEB-TOUR SFX GRAMMAR — worked example, derived from the measured reference cue map (53s Ruflow-style tour). Laws: a whoosh or pop lands every 2-4s WITHOUT exception; whooshes sit in VO edit-gaps (transitions), pops land ON content (highlights); ONE stop-and-slam at ~85% runtime (140ms duck then the loudest hit of the video); keys only under a terminal beat. Copy this file to films/<ep>.manifest.json, re-anchor to your episode's beats, and delete these _note rows or leave them (the mixer skips any event carrying _note).",
+  "_beats": "Assumed ~34s skeleton: beat0 cold-open 0-1.6 (HeroDrop) · beat1 claim 1.6-6 (SerifCap + first punch) · beat2 tour 6-14 (scroll/focus/selections) · beat3 VsTable 14-20 · beat4 TermRun 20-26 · beat5 payoff 26-30 · beat6 outro 30-34. @beatN resolves against the MEASURED props clock, so these offsets survive VO_SPEED changes.",
+  "_levels": "sfx_mix --gain_db -9 (default) is the whole layer's ride under the -14 LUFS VO spine. Per-event gain_db is an OFFSET vs kit level (default 0); the mix is peak-normalized to the loudest event, which must stay the slam.",
+  "film": {
+    "duck": "@beat5+2.76,@beat5+2.90",
+    "_duck_note": "the 140ms dead-stop: video audio (VO+bed) drops to 0.06x, window ENDS exactly on the slam (reference 45.65-45.79s -> slam 45.8). Also settable per-run via sfx_mix --duck 't0,t1'.",
+    "sfx": [
+      { "at": "@beat0", "name": "riser", "note": "opening riser under the HeroDrop fall (ref 0.1s) — riser is 1.2s and carries NO impact" },
+      { "at": "@beat0+1.2", "name": "pop", "note": "HeroDrop impact: the riser resolves into this hit" },
+      { "at": "@beat1", "name": "whoosh_up", "note": "hook transition into the claim caption (ref 2.8s hard whoosh) — sits in the VO gap" },
+      { "at": 6.0, "name": "pop", "gain_db": 2, "note": "KNEE LAW: absolute 6.00s, the hardest zoom-punch of the video lands WITH this pop (worst retention second; +2 dB over kit)" },
+      { "at": "@beat2+2.6", "name": "whoosh_up", "note": "tour scroll transition (cadence: every 2-4s, in a VO gap)" },
+      { "at": "@beat2+4.2", "name": "pop", "note": "selection sweep #1 lands — pop ON content, never in a gap (ref 13.6/14.8 pops)" },
+      { "at": "@beat2+6.4", "name": "whoosh_down", "note": "scroll settles / camera falls back to fit-width (ref 9.9 whoosh -> 10.5 low thud pairing)" },
+      { "at": "@beat2+7.4", "name": "pop", "note": "selection sweep #2" },
+      { "at": "@beat3", "name": "whoosh_up", "note": "into VsTable (ref 15.9s)" },
+      { "at": "@beat3+1.0", "name": "pop", "gain_db": -3, "note": "first winning-cell pulse (row verdict; -3 dB, it's a minor hit)" },
+      { "at": "@beat3+3.2", "name": "pop", "gain_db": -3, "note": "later row verdict — keeps the 2-4s cadence through the table" },
+      { "at": "@beat4", "name": "whoosh_down", "note": "falling transition into the calm terminal beat" },
+      { "at": "@beat4+0.4", "name": "keys", "note": "TermRun typeStart: 5-hit typing cluster over ~1.2s, 5th hit broadband-capped (ref 25.3-26.9s)" },
+      { "at": "@beat4+2.2", "name": "pop", "gain_db": -3, "note": "command returns / response lines stream" },
+      { "at": "@beat4+4.8", "name": "riser", "note": "riser into the payoff — 1.2s, ends exactly on beat5" },
+      { "at": "@beat5+0.2", "name": "pop", "note": "payoff selection sweep (U8: the withheld reveal)" },
+      { "at": "@beat5+2.9", "name": "slam", "note": "THE stop-and-slam at ~85% runtime (28.9/34s): hardest hit of the video, duck window ends here. Exactly ONE slam per episode." },
+      { "at": "@beat6", "name": "whoosh_up", "note": "into the outro card (ref 46.8s)" },
+      { "at": "@beat6+0.6", "name": "credit_chime", "gain_db": -4, "note": "gold CTA pill lands (existing kit sound, rationed like the gold accent)" }
+    ]
+  }
+}

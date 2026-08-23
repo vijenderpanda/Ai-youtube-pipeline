@@ -37,6 +37,11 @@ export default function PlanContentModal({ channels = [], onClose, onCreated }) 
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const { toast, show } = useToast()
+  // S7 (mockup): flip Autopilot at plan time — the piece then auto-produces with
+  // minimal review (still stops at the arm gate). Persisted on the calendar row.
+  const [autoMode, setAutoMode] = useState(false)
+  // P3 (mockup): format is the hero choice — Shorts (9:16) vs Long-form (16:9).
+  const [format, setFormat] = useState('short')
 
   useEffect(() => {
     if (!form.channel_key && channels.length > 0) {
@@ -53,6 +58,15 @@ export default function PlanContentModal({ channels = [], onClose, onCreated }) 
     setError('')
     try {
       const item = await createCalendarItem(form)
+      // create doesn't take format/auto_mode; set them on the row in a follow-up.
+      const patch = {}
+      if (format && format !== 'short') patch.format = format
+      if (autoMode) patch.auto_mode = true
+      if (item && item.id && Object.keys(patch).length) {
+        try {
+          await api.post({ action: 'update_calendar_item', id: item.id, patch })
+        } catch { /* leave on defaults */ }
+      }
       onCreated(item)
     } catch (err) {
       setError(err.message)
@@ -63,6 +77,34 @@ export default function PlanContentModal({ channels = [], onClose, onCreated }) 
   return (
     <Modal title="Plan Content" onClose={onClose} width={560}>
       <form className="form" onSubmit={submit}>
+        <div className="field">
+          <span className="field-label">Format</span>
+          <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
+            {[
+              { v: 'short', t: 'Shorts', s: '9:16 · daily cadence' },
+              { v: 'longform', t: 'Long-form', s: '16:9 · weekly' },
+            ].map((o) => {
+              const sel = format === o.v
+              return (
+                <button
+                  key={o.v}
+                  type="button"
+                  onClick={() => setFormat(o.v)}
+                  aria-pressed={sel}
+                  style={{
+                    flex: 1, textAlign: 'left', cursor: 'pointer', borderRadius: 10, padding: '11px 13px',
+                    border: sel ? '1px solid var(--accent, #e4c56b)' : '1px solid var(--border)',
+                    background: sel ? 'var(--accent-soft, rgba(228,197,107,.14))' : 'var(--input-bg, #101116)',
+                    color: 'inherit',
+                  }}
+                >
+                  <div style={{ fontWeight: 700, fontSize: 14 }}>{o.t}</div>
+                  <div className="dim small" style={{ marginTop: 2 }}>{o.s}</div>
+                </button>
+              )
+            })}
+          </div>
+        </div>
         <div className="form-row">
           <label className="field">
             <span className="field-label">Channel</span>
@@ -104,7 +146,7 @@ export default function PlanContentModal({ channels = [], onClose, onCreated }) 
           <input
             value={form.title}
             onChange={set('title')}
-            placeholder="What should get produced that day?"
+            placeholder="The video's title — e.g. I Built An App By Typing One Line"
             required
           />
         </label>
@@ -158,6 +200,20 @@ export default function PlanContentModal({ channels = [], onClose, onCreated }) 
             />
           </div>
         </div>
+        <label className="field" style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+          <input
+            type="checkbox"
+            checked={autoMode}
+            onChange={(e) => setAutoMode(e.target.checked)}
+            style={{ marginTop: 3 }}
+          />
+          <span>
+            <span className="field-label" style={{ display: 'block' }}>Autopilot</span>
+            <span className="dim small">
+              Produce every beat with minimal review — still stops at the arm gate for your go.
+            </span>
+          </span>
+        </label>
         {error && <div className="form-error">{error}</div>}
         <div className="form-actions">
           <button type="button" className="btn btn-ghost" onClick={onClose}>

@@ -1,0 +1,38 @@
+{
+  "typing_start": 2.664,
+  "typing_end": 7.396,
+  "submit": 8.425,
+  "answer_start": 8.425,
+  "answer_end": 25.862,
+  "scrolls": [
+    25.931,
+    26.642
+  ],
+  "duration": 30.567,
+  "first_token": 14.426,
+  "scroll_start": 25.916,
+  "scroll_end": 30.482,
+  "stream_25": 16.467,
+  "stream_50": 17.594,
+  "stream_75": 18.711,
+  "composer_box": [
+    0.07592592592592592,
+    0.27760416666666665,
+    0.9351851851851852,
+    0.2984375
+  ],
+  "answer_box": [
+    0.08148148148148149,
+    0.175,
+    0.9185185185185185,
+    0.8083333333333333
+  ],
+  "observed": {
+    "answer_selector": ".font-claude-response",
+    "answer_head": "Do your research \u2013 know market rate for your role/experience (Glassdoor, Levels.fyi, peer benchmarks)\nDocument your impact \u2013 list concrete wins, metrics, expanded responsibilities since your last raise\nPick the right timing \u2013 after a big win, before budget cycles, or at your review \u2014 avoid stressful/low-budget periods\nRequest a private meeting \u2013 don't ambush your boss; say \"I'd like to discuss my ",
+    "answer_chars": 889,
+    "logged_in": true,
+    "pii_blurred": 0,
+    "forbidden_term": null
+  }
+}

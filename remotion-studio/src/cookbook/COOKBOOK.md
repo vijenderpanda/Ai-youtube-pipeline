@@ -70,6 +70,29 @@ stacks, `rgba()`, `clamp()`, `coverBg()`, and the `<Fonts/>` loader.
 | **DynamicIsland** | device-ui / live activity | An iOS Dynamic Island pill morphs wide into a live-activity card, advances an AI task through phases with a progress bar, then pops to a checkmark "done" state. |
 | **VoiceOrb** | device-ui / voice | A living glass assistant orb with a radial equalizer + sound rings; a spoken prompt transcribes in word-by-word, then the orb calms and a "got it" pill confirms. |
 | **SwipeDeck** | interaction / decision | A Tinder-style option deck: weak cards fling off with a "NOPE" stamp, the winner warms to accent, scales up, and a rotated "PICKED" badge slams in. The decision reads in motion. |
+| **ReactionMeter** | dataviz / measurement | WAIT → a hard snap to GREEN → a number that **arrives**: the ring draws via `stroke-dashoffset`, the digits rotate up on a 26ms stagger, then an average-human marker turns the readout into a challenge the viewer can answer. The library's Plate 09 block. |
+| **SpinWheel** | interaction / chance | A decision wheel that really spins: accelerates, smears at speed, eases onto the chosen wedge, then lands with a ring flare, a wedge pop and a result pill. The cookbook's **motion-hook** — continuous movement for the swipe window. |
+| **Fogline** | invented agent-UI / foresight | An agent's whole PLAN as a lit road it drives down. A fixed NOW line; steps rise out of the fog (future), sharpen as the headlights reach them, EXECUTE at NOW, recede done into the mirror. **Render fidelity is bound to confidence** — blur/dimness/detail = `1 − distance/horizon`, so the picture can't look more certain than the plan is. HEIGHT is duration; LIGHT is the present. Sibling to DynamicIsland: that's one task in the present, this is the whole future. |
+| **HoloCard** | hero / depth-without-3D | One subject as a floating artifact: four layers (glow, rings, emblem, type) parallax at four depths on a slow SCRIPTED camera orbit, assembling from depth on entry. Solid-3D feel, no renderer. The low-density hero spotlight (vs. BentoGrid's dense grid). |
+| **GlassPanel** | material / liquid-glass | A frosted, REFRACTIVE panel over a live color bed, carrying one hero figure + supporting rows. The refraction is BAKED (the bed re-drawn, clipped, scaled + blurred) so it survives a headless render where `backdrop-filter` can't be trusted; `transparent` mode falls back to real backdrop blur for overlay use. The 2026 "style" flex. |
+| **MorphField** | interaction / CTA | One object, three states: a CTA button widens into an input field, accepts a typed value, then collapses into a confirmed pill with a drawn checkmark — no hard cuts. The single-element morph for a one-field ask (signup/capture). |
+| **WebTour** | real footage / toured camera | A REAL `rec_web_tour.py` tape in a glass browser card with a scripted camera that pans/zooms INTO the page: settle-bezier punches to the manifest's focus boxes, caret-led browser-style selection sweeps glued to the tape pixels by one shared transform, provenance strip on by default. Pixels never altered, never retimed. ScreenStage frames a recording; WebTour films inside one. |
+| **SerifCap** | typography / mixed registers | The web-tour caption plate: sans-800 / Playfair-serif-italic / Anton-small-caps registers mixed inside one line, ONE accent word max, word-cluster rise + settle entries, bottom-anchored block that grows UP from `anchorY`. Overlay (`transparent`) over a WebTour tape or standalone. |
+| **HeroDrop** | hero / physics drop | The crown moment: an asset (image or giant emoji) gathers, plunges with gravity + smear, lands with squash/overshoot and a ≤12-particle gold dust burst, then a mixed-register caption rises 0.25s after impact. TravelSprite physics as a registered cold-open — motion on screen at frame 1. |
+| **VsTable** | layout / verdict table | A two-column A-vs-B table on a glass hero panel: rows reveal top-down, each verdict lights the winning cell in accent with a one-shot pulse while the loser fades; after the last row the losing COLUMN dims 60% and the winning header takes an accent underline wipe. Hard-capped at 5 rows. |
+| **TermRun** | app-ui / terminal | A 1080×1920-native dark-glass terminal: the command types char-by-char with a solid block cursor, "thinks" on a 2Hz blink, response lines stream with tone colors (ok mint / accent gold / warn / info), ends held on a fresh blinking prompt. CodeDemo's typing math, cookbook-native and full-frame. |
+
+### The Web-tour set
+
+Five components built together for the claude-tricks **web-tour** template
+(`channels/claude-tricks/WEB-TOUR-TEMPLATE.md`): motion-graphics shorts over
+REAL recorded web pages. `WebTour` is the spine (a `rec_web_tour.py` capture,
+toured by a camera that is allowed to pan/zoom into the tape but never to
+retime or alter it); `HeroDrop` opens cold, `SerifCap` carries the claim lines,
+`VsTable` lands the comparison, `TermRun` shows the one command. Capture tapes
+live in `public/tapes/` with a `.tour.json` manifest beside each (focus boxes,
+selection rects and scroll events, normalized to the tape frame) — author
+`camera`/`selections` props FROM the manifest, don't eyeball them.
 
 ### Preview
 
@@ -96,8 +119,8 @@ beat instead of guessing. Every entry is tagged on four axes:
   `comparison`, `demo`, `punchline`, `cta`, `social-proof`.
 - **needs** — the data shape it requires (the planner must supply this):
   `series`, `metrics`, `single-number`, `facts`, `before-after`, `steps`,
-  `options`, `dialogue`, `phrase`, `query-results`, `hub-spokes`, `alerts`,
-  `utterance`.
+  `options`, `dialogue`, `phrase`, `query-results`, `hub-spokes`, `ledger`,
+  `part-whole`, `alerts`, `utterance`, `table`.
 - plus **keywords**, **wow** (1–5), **density**, and `transparentCapable`
   (can it overlay a host/b-roll).
 
@@ -126,29 +149,72 @@ Selection cheat-sheet by data shape:
 | a few % / progress values | `metrics` | RingGauge |
 | 3-6 facts to recap | `facts` | BentoGrid |
 | a messy→clean rewrite | `before-after` | DiffReveal |
-| a task running in phases | `steps` | DynamicIsland |
+| a task running in phases | `steps` | DynamicIsland (one task, present) · Fogline (whole plan, future) |
 | options to sift & pick | `options` | SwipeDeck |
+| a choice left to chance | `options` | SpinWheel |
+| a single measured number as the payoff | `ms` | ReactionMeter |
 | an AI conversation | `dialogue` | ChatApp |
 | a command / search | `query-results` | CommandPalette |
 | one idea → many uses | `hub-spokes` | OrbitNodes |
 | a punchy statement | `phrase` | KineticQuote |
 | results piling up | `alerts` | NotificationStack |
 | a spoken prompt | `utterance` | VoiceOrb |
+| rows of A-vs-B with a winner | `table` | VsTable |
+| a real web page to tour | `steps` | WebTour (real tape; ScreenStage for un-toured footage) |
+| a command + its output | `steps` | TermRun |
 
 ## Adding a component
 
 1. Copy the shape of an existing file; keep the three exports.
 2. Prefer a **novel** idea over a copy of an existing UI — the brief wants
    "wait, a card/button can be made like *this*?" invention.
-3. Add a row to the Catalog above, register a `<Name>Demo` in `Root.tsx`, **and
-   add a `registry.ts` entry** (role / beats / needs / keywords) so the planner
-   can select it.
+3. **Register it in FOUR places, or it is invisible.** This list has been wrong
+   twice, and both times a finished component sat unusable:
+
+   | # | file | miss it and… |
+   |---|------|--------------|
+   | 1 | `src/cookbook/<Name>.tsx` | nothing exists |
+   | 2 | `src/cookbook/components.tsx` — the id→component render map | a locked block renders a loud placeholder |
+   | 3 | `src/cookbook/registry.ts` — role / beats / needs / keywords | `pickCookbook` never proposes it |
+   | 4 | `supabase/functions/factory-api/index.ts` — `COOKBOOK_CATALOG` | **it ranks and renders perfectly and NOBODY CAN CHOOSE IT** |
+
+   Number 4 is the one that gets forgotten, because nothing fails: `OutroGlass`
+   was written to replace the flat PIL outro sting, and the flat sting kept
+   shipping for a day while OutroGlass sat there working. Also add a row to the
+   Catalog above and a `<Name>Demo` composition in `Root.tsx`.
+
+   **Verify, do not assume:**
+
+   ```bash
+   python3 scripts/check_cookbook_sync.py    # fails if the lists disagree
+   ```
+
 4. Render a still at a representative frame; confirm nothing clips at 1080×1920
    and the point lands inside the first 15s of a real beat.
+5. **Then look at it in MOTION.** A component that compiles, typechecks and
+   renders a clean still can still be dead on screen — the `_style` short was
+   frozen for 14 of its 39 seconds and passed every automated check. Use
+   `scripts/probe_frames.py` for a contact sheet and judge the motion, not the
+   frame.
 
-## Next (wiring — see the vision doc)
+## Wiring — DONE (Sprint 5, 2026-08)
 
-These are **inert demos** today (previewable, not yet selectable by the builder).
-The path from here: formalize the composition as a typed **block sequence** so a
-cookbook component is a block type with per-block config → the designer UI →
-`lock → produce_preview` adheres (extends the cast/template-version system).
+These are no longer inert demos. The full path exists: a composition is a typed
+**block sequence**, a cookbook component is a block type with per-block config,
+the designer UI edits a draft, and `lock → produce_preview` adheres to it.
+
+Since 2026-08-20 the loop also runs the other way. The planner emits a **beat
+skeleton** per idea (`beat` / `shows` / `needs` / `keywords`), Make ranks each
+beat through the same `pickCookbook` and shows which component would take it
+*before* the money gate, accepting an idea auto-composes those picks into a
+draft look, and a beat that nothing scores for offers **"build one"** — which
+queues a component-build job carrying that beat's intent.
+
+Two things that are still true and easy to trip over:
+
+- **`sequence_mode`.** `augment` (the default) appends the sequence as b-roll
+  AFTER the classic beats. `replace` makes the sequence *be* the short, and
+  `build_ep_v2` then derives the timeline 1:1 from each scene's VO `line` — so
+  `replace` is only honest once real script lines exist.
+- **`outro_source`.** The look's `outro_sting` frame and a sequence scene can
+  both supply an outro. Declare which wins, or you ship two.

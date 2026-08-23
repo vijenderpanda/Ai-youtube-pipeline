@@ -1,0 +1,173 @@
+{
+ "vo_phrases": [
+  {
+   "t0": 0.0,
+   "t1": 2.46,
+   "text": "Bijli ka bill har mahina badh raha hai?"
+  },
+  {
+   "t0": 3.0,
+   "t1": 6.05,
+   "text": "Ghar mein koi bijli kha raha hai. Case free AI ko do."
+  },
+  {
+   "t0": 6.59,
+   "t1": 9.61,
+   "text": "Clue: jump wahi se shuru, jahan se summer shuru."
+  },
+  {
+   "t0": 11.27,
+   "t1": 14.95,
+   "text": "Fridge — bari. TV, geyser, washing machine — sab bari."
+  },
+  {
+   "t0": 16.64,
+   "t1": 19.28,
+   "text": "Ek bacha. Study room ka purana AC."
+  },
+  {
+   "t0": 19.92,
+   "t1": 24.06,
+   "text": "Hisaab: chauntees sau ka jump, tees din, chhe ghante — eighteen rupaye ghanta."
+  },
+  {
+   "t0": 24.58,
+   "t1": 27.12,
+   "text": "Wahi eighteen, mahine ke teen hazaar. Ab toh pata hai."
+  },
+  {
+   "t0": 27.6,
+   "t1": 31.21,
+   "text": "Prompt pinned hai. Apne numbers daalo, apna chor pakdo. Free."
+  }
+ ],
+ "chips": [
+  {
+   "t": 0.3,
+   "text": "BILL BADHTA?"
+  },
+  {
+   "t": 1.8,
+   "text": "HAR MAHINA"
+  },
+  {
+   "t": 3.0,
+   "text": "GHAR MEIN CHOR"
+  },
+  {
+   "t": 4.4,
+   "text": "5 SUSPECTS"
+  },
+  {
+   "t": 5.8,
+   "text": "FREE DETECTIVE"
+  },
+  {
+   "t": 6.99,
+   "text": "THE CLUE"
+  },
+  {
+   "t": 8.29,
+   "text": "SUMMER JUMP"
+  },
+  {
+   "t": 11.27,
+   "text": "FRIDGE—BARI ✓"
+  },
+  {
+   "t": 12.6,
+   "text": "TV·GEYSER—BARI"
+  },
+  {
+   "t": 13.9,
+   "text": "WASHING—BARI ✓"
+  },
+  {
+   "t": 15.2,
+   "text": "SAB BARI ✓"
+  },
+  {
+   "t": 16.64,
+   "text": "EK BACHA"
+  },
+  {
+   "t": 18.0,
+   "text": "PURANA AC"
+  },
+  {
+   "t": 19.92,
+   "text": "HISAAB"
+  },
+  {
+   "t": 21.3,
+   "text": "TEES DIN"
+  },
+  {
+   "t": 22.4,
+   "text": "CHHE GHANTE"
+  },
+  {
+   "t": 23.52,
+   "text": "₹18 / GHANTA"
+  },
+  {
+   "t": 24.58,
+   "text": "MAHINA ₹3,240"
+  },
+  {
+   "t": 26.08,
+   "text": "WAHI JUMP"
+  },
+  {
+   "t": 27.3,
+   "text": "PROMPT PINNED"
+  },
+  {
+   "t": 28.7,
+   "text": "STILL ₹0"
+  },
+  {
+   "t": 30.1,
+   "text": "CHOR PAKDO"
+  }
+ ],
+ "payoff_first_at": 23.52,
+ "carry": [
+  {
+   "t": 0.0,
+   "bbox": [
+    0.1,
+    0.3,
+    0.8,
+    0.28
+   ]
+  },
+  {
+   "t": 5.0,
+   "bbox": [
+    0.1,
+    0.3,
+    0.8,
+    0.28
+   ]
+  },
+  {
+   "t": 6.2,
+   "bbox": [
+    0.5,
+    0.03,
+    0.45,
+    0.13
+   ]
+  },
+  {
+   "t": 31.2,
+   "bbox": [
+    0.5,
+    0.03,
+    0.45,
+    0.13
+   ]
+  }
+ ]
+}

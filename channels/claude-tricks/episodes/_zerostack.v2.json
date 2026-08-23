@@ -1,0 +1,218 @@
+{
+ "_note": "COMPILED from films/zerostack.manifest.json by cast_scenes.py — edit the MANIFEST, not this file.",
+ "title": "Your Bill Jumped ₹3,400 — A FREE AI Found Why 🔍",
+ "tags": "electricity bill,bijli bill,ac power consumption,save electricity,free ai,chatgpt free,ai detective,reduce electricity bill,inverter ac,ai for beginners,bill analysis,ai unpacked",
+ "outro": true,
+ "outro_dur": 0,
+ "outro_src": "ep_zerostack/outro_card.mp4",
+ "outro_cta": "The detective prompt is pinned and in the description. Apne bill ke numbers daalo — free mein chor pakdo.",
+ "lines": [
+  "Bijli ka bill har mahina badh raha hai?",
+  "Ghar mein koi bijli kha raha hai. Case free AI ko do.",
+  "Clue: jump wahi se shuru, jahan se summer shuru.",
+  "Fridge — bari. TV, geyser, washing machine — sab bari.",
+  "Ek bacha. Study room ka purana AC.",
+  "Hisaab: chauntees sau ka jump, tees din, chhe ghante — eighteen rupaye ghanta.",
+  "Wahi eighteen, mahine ke teen hazaar. Ab toh pata hai.",
+  "Prompt pinned hai. Apne numbers daalo, apna chor pakdo. Free."
+ ],
+ "hot_words": [
+  "BILL",
+  "BADHTA",
+  "CHOR",
+  "FREE",
+  "CLUE",
+  "SUMMER",
+  "JUMP",
+  "BARI",
+  "CLEARED",
+  "PURANA",
+  "EIGHTEEN",
+  "GHANTA",
+  "HAZAAR",
+  "PINNED",
+  "PAKDO"
+ ],
+ "beats": [
+  "cook:BillDay#bars",
+  "cook:BillDay#lineup",
+  "cook:BillDay#clue",
+  "cook:BillDay#cleared",
+  "cook:BillDay#study",
+  "cook:BillDay#conviction",
+  "cook:BillDay#circle",
+  "cook:BillDay#give"
+ ],
+ "spine": [
+  "BillDay"
+ ],
+ "film": {
+  "bloom_beats": [],
+  "driftAmp": 0,
+  "chips_to": "BillDay"
+ },
+ "cookbook": {
+  "BillDay": {
+   "bar2At": "@beat0+1.0",
+   "bar3At": "@beat0+1.9",
+   "lineupAt": "@beat1+1.4",
+   "kneeAt": "@beat1+1.4",
+   "caseAt": "@beat1+2.6",
+   "clueAt": "@beat2+0.5",
+   "deltaAt": "@beat2+1.8",
+   "clearAts": [
+    "@beat3+0.6",
+    "@beat3+1.5",
+    "@beat3+2.4",
+    "@beat3+3.3"
+   ],
+   "pushAt": "@beat4+0.4",
+   "plateAt": "@beat4+1.6",
+   "mathAt": "@beat5+0.3",
+   "lockAt": "@beat5+3.6",
+   "circleAt": "@beat6+1.5",
+   "stillAt": "@beat7+0.6",
+   "promptAt": "@beat7+1.2",
+   "endAt": "@beat8",
+   "chips": [
+    {
+     "t": "@beat0+0.3",
+     "end": "@beat0+1.8",
+     "text": "BILL BADHTA?",
+     "hot": true
+    },
+    {
+     "t": "@beat0+1.8",
+     "end": "@beat1+0.0",
+     "text": "HAR MAHINA",
+     "hot": false
+    },
+    {
+     "t": "@beat1+0.0",
+     "end": "@beat1+1.4",
+     "text": "GHAR MEIN CHOR",
+     "hot": false
+    },
+    {
+     "t": "@beat1+1.4",
+     "end": "@beat1+2.8",
+     "text": "5 SUSPECTS",
+     "hot": true
+    },
+    {
+     "t": "@beat1+2.8",
+     "end": "@beat2+0.4",
+     "text": "FREE DETECTIVE",
+     "hot": false
+    },
+    {
+     "t": "@beat2+0.4",
+     "end": "@beat2+1.7",
+     "text": "THE CLUE",
+     "hot": false
+    },
+    {
+     "t": "@beat2+1.7",
+     "end": "@beat3+0.0",
+     "text": "SUMMER JUMP",
+     "hot": true
+    },
+    {
+     "t": "@beat3+0.0",
+     "end": "@beat3+1.33",
+     "text": "FRIDGE—BARI ✓",
+     "hot": false
+    },
+    {
+     "t": "@beat3+1.33",
+     "end": "@beat3+2.63",
+     "text": "TV·GEYSER—BARI",
+     "hot": false
+    },
+    {
+     "t": "@beat3+2.63",
+     "end": "@beat3+3.93",
+     "text": "WASHING—BARI ✓",
+     "hot": false
+    },
+    {
+     "t": "@beat3+3.93",
+     "end": "@beat4+0.0",
+     "text": "SAB BARI ✓",
+     "hot": false
+    },
+    {
+     "t": "@beat4+0.0",
+     "end": "@beat4+1.36",
+     "text": "EK BACHA",
+     "hot": true
+    },
+    {
+     "t": "@beat4+1.36",
+     "end": "@beat5+0.0",
+     "text": "PURANA AC",
+     "hot": false
+    },
+    {
+     "t": "@beat5+0.0",
+     "end": "@beat5+1.38",
+     "text": "HISAAB",
+     "hot": false
+    },
+    {
+     "t": "@beat5+1.38",
+     "end": "@beat5+2.48",
+     "text": "TEES DIN",
+     "hot": false
+    },
+    {
+     "t": "@beat5+2.48",
+     "end": "@beat5+3.6",
+     "text": "CHHE GHANTE",
+     "hot": false
+    },
+    {
+     "t": "@beat5+3.6",
+     "end": "@beat6+0.0",
+     "text": "₹18 / GHANTA",
+     "hot": true
+    },
+    {
+     "t": "@beat6+0.0",
+     "end": "@beat6+1.5",
+     "text": "MAHINA ₹3,240",
+     "hot": false
+    },
+    {
+     "t": "@beat6+1.5",
+     "end": "@beat6+2.72",
+     "text": "WAHI JUMP",
+     "hot": false
+    },
+    {
+     "t": "@beat6+2.72",
+     "end": "@beat7+1.1",
+     "text": "PROMPT PINNED",
+     "hot": false
+    },
+    {
+     "t": "@beat7+1.1",
+     "end": "@beat7+2.5",
+     "text": "STILL ₹0",
+     "hot": true
+    },
+    {
+     "t": "@beat7+2.5",
+     "end": "@beat7+3.61",
+     "text": "CHOR PAKDO",
+     "hot": false
+    }
+   ]
+  },
+  "OutroGlass": {}
+ },
+ "desc_prompt": "The fix — paste this BEFORE your chat gets long:\n\n\"Mere ghar ka bijli bill zyada aa raha hai. Detective bano: yeh mere last 3 months ke bill amounts hain — [April ___, May ___, June ___]. Appliances: AC (inverter/non-inverter?) __ hrs/day, fridge 24 hrs, geyser __ hrs, washing machine __ hrs, TV __ hrs. Mera rate: Rs __ per unit (bill par likha hota hai). 1) Seasonal jump nikaalo aur batao kaunsa appliance sabse bada culprit hai, maths ke saath. 2) Uska kharcha kam karne ke 3 FREE tareeke do — naya appliance kharide bina.\"\n\nThen open a fresh chat, paste the notes, and continue where you left off. Works in ChatGPT, Claude, and Gemini.",
+ "desc_cta": "What's the one thing Claude keeps forgetting on you? Tell me below.",
+ "desc_hashtags": null,
+ "steps": []
+}

@@ -14,6 +14,8 @@ import {
 import { fitFont, splitHook } from "./components/fitText";
 import { StatBars, StatBarsProps } from "./components/StatBars";
 import { CookbookBlock } from "./cookbook/components";
+import { FilmCanvas, CameraRig, WhiteoutBloom } from "./cookbook/FilmLayers";
+import { ChipCaption, Chip } from "./cookbook/ChipCaption";
 import { SlotScene, SlotBroll, SlotHost } from "./SlotScene";
 import {
   BuildRail,
@@ -99,6 +101,20 @@ export type Step = {
 export type Emphasis = { text: string; start: number; end: number };
 export type ShortProps = {
   segments: Seg[];
+  /* MOTION-PIPELINE film mode (docs/MOTION-PIPELINE.md). When present the
+     episode is a motion-graphics FILM: one persistent canvas behind every
+     scene, one camera drift over all of them, the transcript as 1-3 word
+     chips at a locked anchor (replacing the sentence caption entirely), and
+     whiteout blooms at declared boundaries. Scenes are expected to be
+     transparent cookbook beats living on the shared canvas — the island
+     behaviour this layer exists to end. */
+  film?: {
+    chips: Chip[];
+    accent?: string;
+    plate?: string;          // optional FLUX canvas plate (via ingest_plate)
+    blooms?: number[];       // film-absolute boundary seconds
+    driftAmp?: number;
+  };
   captions: Word[];
   steps?: Step[];
   vo: string;
@@ -253,7 +269,7 @@ export const THEMES: Record<ShortStyle, Theme> = {
     accent: ACCENT,    // #22D3EE
     gradBg: GRAD_BG_CLASSIC,
     cap: {
-      size: 78, ls: 1, weight: 900, panel: 100, plain: 38,
+      size: 54, ls: 1, weight: 900, panel: 100, plain: 38,
       stroke: "0 3px 0 #000, 0 -3px 0 #000, 3px 0 0 #000, -3px 0 0 #000, 0 6px 18px rgba(0,0,0,0.85)",
       panelStroke: "0 3px 0 #000, 0 -3px 0 #000, 3px 0 0 #000, -3px 0 0 #000, 0 8px 22px rgba(0,0,0,0.85)",
       plainShadow: "0 2px 10px rgba(0,0,0,0.9)",
@@ -276,7 +292,7 @@ export const THEMES: Record<ShortStyle, Theme> = {
       "radial-gradient(88% 58% at 84% 94%, rgba(44,233,255,0.18) 0%, rgba(14,14,20,0) 52%)," +
       "linear-gradient(178deg, #23122a 0%, #150d1a 42%, #0E0E14 80%)",
     cap: {
-      size: 90, ls: 2, weight: 900, panel: 112, plain: 42,
+      size: 62, ls: 2, weight: 900, panel: 112, plain: 42,
       stroke: "0 4px 0 #000, 0 -4px 0 #000, 4px 0 0 #000, -4px 0 0 #000, 0 8px 24px rgba(0,0,0,0.9)",
       panelStroke: "0 4px 0 #000, 0 -4px 0 #000, 4px 0 0 #000, -4px 0 0 #000, 0 10px 26px rgba(0,0,0,0.9)",
       plainShadow: "0 2px 12px rgba(0,0,0,0.95)",
@@ -300,7 +316,7 @@ export const THEMES: Record<ShortStyle, Theme> = {
       "radial-gradient(85% 55% at 84% 94%, rgba(34,211,238,0.05) 0%, rgba(14,14,20,0) 52%)," +
       "linear-gradient(178deg, #17121c 0%, #121016 42%, #0E0E14 80%)",
     cap: {
-      size: 70, ls: 0.5, weight: 700, panel: 88, plain: 34,
+      size: 50, ls: 0.5, weight: 700, panel: 88, plain: 34,
       stroke: "0 2px 10px rgba(0,0,0,0.82), 0 6px 26px rgba(0,0,0,0.6)",
       panelStroke: "0 2px 12px rgba(0,0,0,0.82), 0 8px 28px rgba(0,0,0,0.55)",
       plainShadow: "0 1px 8px rgba(0,0,0,0.8)",
@@ -326,7 +342,7 @@ const Caption: React.FC<{ word: Word; fps: number; y?: string | number; size?: n
     <div
       style={{
         position: "absolute",
-        bottom: y ?? "21%",
+        bottom: y ?? "12%",   // VJ 2026-08-19: sit lower
         width: "100%",
         display: "flex",
         justifyContent: "center",
@@ -346,6 +362,104 @@ const Caption: React.FC<{ word: Word; fps: number; y?: string | number; size?: n
       >
         {word.w}
       </div>
+    </div>
+  );
+};
+
+
+/* KaraokeLine (2026-08-21) — the caption treatment VJ locked in conversation and
+   that was never actually in the renderer.
+
+   What was shipping instead: <Caption/>, ONE all-caps Anton word at a time,
+   magenta if hot. The locked style is different in four ways, all of them his
+   words: the whole line is ALREADY THERE and only the hot word pops ("frames
+   have the caption ready but only gets popped the hot word in karaoke style");
+   hot words are set BIGGER in small-caps while the rest sit smaller and white
+   ("use small cases and bigger small case for hotwords"); figures are italic
+   NUMERALS, never spelled ("for number figures rather have them in number
+   italic"); and the whole thing is "a lil smaller and sleek".
+
+   Why a line beats a word: a single word gives a muted viewer no sentence to
+   read, and Shorts now play at 2x with tap-to-mute — a word authored for 0.3s
+   is exposed for 0.15s. A standing line survives both.
+
+   It never crosses capSafe: the last frame used to bury its own text. */
+const NUMERIC = /[0-9]/;
+const KaraokeLine: React.FC<{
+  words: Word[]; t: number; fps: number; size?: number; bottom?: number;
+}> = ({ words, t, fps, size, bottom = 360 }) => {
+  const theme = useTheme();
+  const frame = useCurrentFrame();
+  if (!words.length) return null;
+  // HONOUR THE THEME, THEN FIT THE BAND. A hardcoded 58 silently discarded
+  // theme.cap.size (54 / 62 / 50 across the three themes), so the vaibhav
+  // theme's locked 62px caption quietly became 58 on every beat.
+  //
+  // Then shrink to fit: the band is bounded BELOW by YouTube's own furniture
+  // (~330px of @handle/title/rail) and ABOVE by the cookbook components' own
+  // SAFE_BOTTOM of 1460. That is 1460 -> 1560, and a long line at full size
+  // wants three rows (~200px) and climbs onto the graphic. Estimate the rows
+  // and scale down until it fits rather than growing upward without limit.
+  const base = size ?? Math.round(theme.cap.size * 0.94);
+  const BAND = 1560 - 1460 + 96;          // the 100px band, plus the headroom
+                                          // the designed beats actually leave
+  const CPR = 968 / (base * 0.46);        // chars per row at the hot-word size
+  const chars = words.reduce((a, w) => a + w.w.length + 1, 0);
+  const rows = Math.max(1, Math.ceil(chars / CPR));
+  const fit = Math.min(1, BAND / (rows * base * 1.04));
+  const sz = Math.max(38, Math.round(base * Math.max(fit, 0.72)));
+  let ai = words.findIndex((w) => t >= w.start && t <= w.end);
+  if (ai < 0) {
+    for (let i = 0; i < words.length; i++) if (t >= words[i].start) ai = i;
+  }
+  return (
+    <div style={{
+      // TWO CEILINGS, NOT ONE. kit.tsx SAFE.captionCeil (1580) keeps our own
+      // components off the caption -- but YOUTUBE paints its own furniture over
+      // the bottom ~330px of a Short: the @handle, the title, the Scheduled
+      // line, and the like/comment/share rail. Anchored at bottom:104 the line
+      // rendered perfectly and was then buried by the player itself, which no
+      // amount of internal safe-area respects.
+      // So the band is 1517 (LedgerFlow's SAFE_BOTTOM + margin) to ~1560, and
+      // the block bottom sits at 1920-360 = 1560 and grows UP into frame space
+      // the designed beats deliberately leave empty.
+      position: "absolute", left: 56, right: 56, bottom,
+      maxHeight: 1560 - 1380,
+      display: "flex", flexWrap: "wrap", alignItems: "baseline",
+      justifyContent: "center", gap: "0 12px",
+    }}>
+      {words.map((w, i) => {
+        const isNum = NUMERIC.test(w.w);
+        const spoken = i <= ai;
+        const active = i === ai;
+        // only the ACTIVE word springs — the rest of the line is already set,
+        // so the eye tracks one moving thing instead of a bouncing sentence
+        const sp = active
+          ? spring({ frame: frame - w.start * fps, fps,
+                     config: { damping: 13, stiffness: 220, mass: 0.7 } })
+          : 1;
+        const lift = active ? (1 - sp) * -16 : 0;
+        const scale = active ? 1 + (1 - sp) * 0.12 : 1;
+        const hot = w.hot || isNum;
+        return (
+          <span key={i} style={{
+            display: "inline-block",
+            fontFamily: hot ? "Anton, Arial Black, sans-serif"
+                            : '"Helvetica Neue", Helvetica, Arial, sans-serif',
+            fontWeight: hot ? theme.cap.weight : 600,
+            fontSize: hot ? sz : sz * 0.62,
+            fontStyle: isNum ? "italic" : "normal",
+            fontVariant: hot && !isNum ? "small-caps" : "normal",
+            letterSpacing: hot ? theme.cap.ls : 0.5,
+            textTransform: hot && !isNum ? "lowercase" : "none",
+            color: active ? theme.mag : "#FFFFFF",
+            opacity: spoken ? 1 : 0.34,
+            transform: `translateY(${lift}px) scale(${scale})`,
+            textShadow: theme.cap.stroke,
+            lineHeight: 1.04,
+          }}>{w.w}</span>
+        );
+      })}
     </div>
   );
 };
@@ -379,7 +493,65 @@ const PanelCaption: React.FC<{ words: Word[]; t: number; top?: number; bottom?: 
   );
 };
 
-/* ---------- step marker: “STEP 1/3” chip, top-left, slides in ---------- */
+/* IdeaKinetic (2026-08-19) — the framed-host "THE IDEA" panel, as AUTHORED text
+   with Plate 03 motion instead of a running karaoke caption.
+
+   VJ: "have idea component with kinetic plate of wow mechanics artifact and put
+   some text which aligns with vo but not captions". The panel used to echo the
+   VO word-for-word via PanelCaption, which produced broken half-phrases
+   ("WANT SHOW IT ONE REAL EXAMPLE"). `hostLines` has been emitted by
+   build_ep_v2 (from the spec's host_panels) since v16.3 but was never rendered.
+   Now it is: short authored lines that AGREE with the VO without transcribing it.
+
+   Motion is Plate 03 "Kinetic type" from the Wow Mechanics study (artifact
+   b9570dbc): per-word stagger 26ms, rotateX(-82deg)->0, scaleX 1.7->1 (fakes a
+   variable width axis). It holds fully readable, which is the whole point of the
+   plate — "still fully readable a quarter-second later". */
+const IdeaKinetic: React.FC<{ lines: string[]; hot?: string; startF: number; fps: number; size: number }> = ({ lines, hot, startF, fps, size }) => {
+  const theme = useTheme();
+  const frame = useCurrentFrame();
+  let wi = 0;
+  return (
+    <div style={{ position: "absolute", left: 72, right: 72, top: 924, bottom: 196, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", perspective: 900 }}>
+      {lines.map((ln, li) => (
+        <div key={li} style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0 16px" }}>
+          {ln.split(" ").map((w) => {
+            const d = 0.12 + wi++ * 0.026; // 26ms stagger, per the plate
+            const sp = spring({ frame: frame - startF - Math.round(d * fps), fps, config: { damping: 15, mass: 0.7, stiffness: 130 } });
+            const isHot = !!hot && w.toUpperCase().replace(/[^A-Z0-9']/g, "") === hot.toUpperCase();
+            return (
+              <span
+                key={w + wi}
+                style={{
+                  display: "inline-block",
+                  fontFamily: "Anton, Arial Black, sans-serif",
+                  fontSize: size,
+                  lineHeight: 1.08,
+                  letterSpacing: theme.cap.ls,
+                  textTransform: "uppercase",
+                  color: isHot ? theme.mag : "white",
+                  textShadow: theme.cap.panelStroke,
+                  opacity: Math.max(0, Math.min(1, sp * 1.5)),
+                  transformOrigin: "50% 100%",
+                  transform: `rotateX(${interpolate(sp, [0, 1], [-82, 0])}deg) scaleX(${interpolate(sp, [0, 1], [1.7, 1])})`,
+                }}
+              >
+                {w}
+              </span>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/* ---------- step marker: “STEP 1/3” chip, top-left, slides in ----------
+   DEPRECATED 2026-08-19 (VJ: "remove the steps chips and retire them"). Kept
+   ONLY so already-shipped episodes still reproduce byte-identically. Do not
+   add `steps` to a new episode spec — the authored IdeaKinetic panel carries
+   the through-line now, and these chips narrated what the frame already
+   showed while permanently risking a collision with the content. */
 // Modern status-chip: dark glass, hairline border, a magenta accent dot and a
 // medium tracked sans label — no fat Anton block or thick brand border. Shared
 // design language with the outro CTAs (gen_outro.py).
@@ -1196,9 +1368,11 @@ export const Short: React.FC<ShortProps> = (props) => {
   const activeCaption = props.captions.find(
     (w) => t >= w.start && t <= w.end && w.start >= beatStart - 1e-3 && w.start < beatEnd
   );
-  const beatWords = (activeIsFramed || activeIsSplit || activeCapLow)
-    ? props.captions.filter((w) => w.start >= beatStart - 1e-3 && w.start < beatEnd)
-    : [];
+  const beatWords = props.captions.filter(
+    (w) => w.start >= beatStart - 1e-3 && w.start < beatEnd);
+  // an all-cookbook episode is never framed/split/capLow, so it used to fall
+  // through to the single-word <Caption/> and lose the locked line treatment
+  const activeIsCookbook = props.segments[Math.max(activeIdx, 0)]?.kind === "cookbook";
   const paneFor = (mode: NonNullable<Seg["mode"]>): React.CSSProperties =>
     mode === "split"
       ? { position: "absolute", top: 0, left: 0, width: "100%", height: "55%", overflow: "hidden" }
@@ -1211,14 +1385,33 @@ export const Short: React.FC<ShortProps> = (props) => {
         @font-face { font-family: 'Anton'; src: url('${staticFile("fonts/Anton.ttf")}'); }
         @font-face { font-family: 'Playfair Display'; font-style: italic; font-weight: 400 900; src: url('${staticFile("fonts/PlayfairDisplay-Italic.ttf")}'); }
       `}</style>
-      {props.segments.map((seg, i) => {
+      {props.film ? (
+        <FilmCanvas accent={props.film.accent ?? theme.mag} ink={theme.ink}
+                    plate={props.film.plate} />
+      ) : null}
+      {(() => {
+      const segTree = props.segments.map((seg, i) => {
         const mode = news ? seg.mode ?? "split" : "full";
         if (news && mode === "host") return null; // host layer covers this beat
         return (
           <Sequence
             key={i}
             from={Math.round(segStarts[i] * fps)}
-            durationInFrames={Math.round(seg.dur * fps)}
+            /* End this beat exactly where the NEXT one begins.
+               Rounding `from` off the cumulative start but `durationInFrames` off
+               this beat's own duration is inconsistent: round(a) + round(b) is not
+               always round(a + b). When it fell one short the frame between two
+               beats was covered by NEITHER sequence and rendered BLANK — a visible
+               one-frame dropout at the cut (caught on _game at 14.52s, and latent
+               in every episode this comp has ever rendered). When it ran one long,
+               two beats drew on top of each other instead. Deriving the end from
+               the next beat's rounded start makes the timeline exactly contiguous. */
+            durationInFrames={
+              (i + 1 < props.segments.length
+                ? Math.round(segStarts[i + 1] * fps)
+                : Math.round((segStarts[i] + seg.dur) * fps)) -
+              Math.round(segStarts[i] * fps)
+            }
           >
             <div style={paneFor(mode)}>
               {seg.kind === "pipCallout" ? (
@@ -1265,7 +1458,15 @@ export const Short: React.FC<ShortProps> = (props) => {
             </div>
           </Sequence>
         );
-      })}
+      });
+      return props.film
+        ? <CameraRig amp={props.film.driftAmp ?? 7}>{segTree}</CameraRig>
+        : <>{segTree}</>;
+      })()}
+      {props.film?.blooms?.length ? <WhiteoutBloom at={props.film.blooms} /> : null}
+      {props.film ? (
+        <ChipCaption chips={props.film.chips} accent={props.film.accent ?? theme.mag} />
+      ) : null}
       {news && activeMode !== "full" ? (
         <div
           style={
@@ -1315,13 +1516,30 @@ export const Short: React.FC<ShortProps> = (props) => {
       {props.rail ? <BuildRail rail={props.rail} t={t} fps={fps} /> : null}
       {/* v16.3: framed-host panel caption renders through word GAPS too (it holds
           the current phrase), so it is NOT gated behind an active word. */}
-      {activeIsFramed ? (
-        <PanelCaption words={beatWords} t={t} size={theme.cap.panel} />
+      {props.film ? (
+        // film mode: ChipCaption owns every word on screen — the entire legacy
+        // caption chain below is dead here, whatever kind the beat is
+        null
+      ) : activeIsFramed ? (
+        // authored idea lines (kinetic) when the beat has them; else the running caption
+        props.segments[Math.max(activeIdx, 0)]?.hostLines?.length ? (
+          <IdeaKinetic
+            lines={props.segments[Math.max(activeIdx, 0)]!.hostLines!}
+            hot={props.segments[Math.max(activeIdx, 0)]!.hostHot}
+            startF={Math.round(beatStart * fps)}
+            fps={fps}
+            size={theme.cap.panel}
+          />
+        ) : (
+          <PanelCaption words={beatWords} t={t} size={theme.cap.panel} />
+        )
       ) : activeIsSplit || activeCapLow ? (
         // v16.4: split/recording beats get the running VO caption as a small,
         // sentence-case strip low on the frame (VJ: captions on every frame,
         // smaller + not all-caps here so it doesn't fight the #NN callout/desc).
         <PanelCaption words={beatWords} t={t} top={1772} bottom={38} size={theme.cap.plain} chunk={6} plain />
+      ) : activeIsCookbook && beatWords.length ? (
+        <KaraokeLine words={beatWords} t={t} fps={fps} />
       ) : activeCaption ? (
         activeIsPip ? (
           // v16.2: small running captions with hot-word highlight in the bottom

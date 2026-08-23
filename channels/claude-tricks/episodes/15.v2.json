@@ -1,0 +1,97 @@
+{
+ "_note": "FRANCHISE ENTRY #5 (2026-08-20) — the Sleep Tracker. WHY THIS ANGLE: Habit Tracker (Ag9tBHbyrbo) pulled 213 views day one against Working App (pTXcKAw9qj4) at 19 — same franchise, back-to-back days. The delta is not the format, it is that the thing built is PERSONALLY USEFUL. Everybody sleeps. Templated from 12.v2.json (single-tip): no `num` anywhere, so Short.tsx auto-hides the ranking rail. NO template_version pin here: this job's calendar pins cast 7b5d2d13-74aa-4c5b-872c-d43a2026c830, and forcing the archived EP15's ai-unpacked-v16 v1 pin (see episodes/15.pasteexample.v2.json) tripped build_ep_v2's CAST PIN DIVERGENCE refusal. The owner's calendar pin is deliberate — let it bind.",
+ "title": "I Built A Sleep Tracker By Typing One Line 😴",
+ "tags": "claude artifacts,sleep tracker,build app with ai,no code,claude ai,ai for beginners,vibe coding,ai tools,ai tips,one line app,claude ai tips,ai shorts",
+ "epTag": "EP15 · ONE LINE APP",
+ "host_panels": [
+  {
+   "lines": [
+    "I TYPED",
+    "ONE LINE",
+    "NO CODE"
+   ],
+   "hot": "ONE"
+  },
+  {
+   "lines": [
+    "EVERYONE SLEEPS.",
+    "NOBODY",
+    "TRACKS IT."
+   ],
+   "hot": "SLEEPS"
+  }
+ ],
+ "lines": [
+  "I typed one line — and Claude built me a sleep tracker. No code.",
+  "Everyone sleeps. Almost nobody tracks it. Empty chat, one sentence, watch.",
+  "In Claude I type one line: build me a sleep tracker with a seven-day strip.",
+  "It writes the whole app itself — the time pickers, the maths, the chart.",
+  "Last night, ten-thirty to six-thirty. I tap log — eight hours, and my week fills in.",
+  "That's Artifacts. Ask for a tool, and Claude builds the working thing.",
+  "One line of plain English — and a sleep tracker you'll actually open tomorrow."
+ ],
+ "hot_words": [
+  "TYPED",
+  "ONE",
+  "LINE",
+  "CLAUDE",
+  "SLEEP",
+  "TRACKER",
+  "CODE",
+  "EVERYONE",
+  "SLEEPS",
+  "NOBODY",
+  "TRACKS",
+  "EMPTY",
+  "SENTENCE",
+  "WATCH",
+  "TYPE",
+  "SEVEN",
+  "STRIP",
+  "WRITES",
+  "WHOLE",
+  "APP",
+  "PICKERS",
+  "MATHS",
+  "CHART",
+  "TAP",
+  "LOG",
+  "EIGHT",
+  "HOURS",
+  "WEEK",
+  "FILLS",
+  "ARTIFACTS",
+  "TOOL",
+  "WORKING",
+  "THING",
+  "ENGLISH",
+  "TOMORROW"
+ ],
+ "beats": [
+  "host",
+  "host",
+  "rec:ep15/raw_capture.mp4@11",
+  "rec:ep15/raw_capture.mp4@38",
+  "rec:ep15/hold_app.mp4@1.2",
+  "host2",
+  "host2"
+ ],
+ "steps": [],
+ "music": "music/bed_active.mp3",
+ "endcard": null,
+ "outro": true,
+ "outro_dur": 0,
+ "outro_src": "ep15/outro_card.mp4",
+ "outro_cta": "auto",
+ "hook": {
+  "image": "ep15/still_result.png",
+  "lines": [
+   "I BUILT THIS",
+   "BY TYPING ONE LINE"
+  ],
+  "hot": "ONE",
+  "kicker": "one line · a real sleep tracker",
+  "until": 2.2,
+  "baked": true
+ }
+}

@@ -51,6 +51,16 @@ const RENDER_ORIGINS = ["job", "historical"];
 const CALENDAR_KINDS = ["content", "factory"];
 // v6: cheap uuid shape check so bad ids get a 400 instead of a pg error
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const GENERATABLE: Record<string, string[]> = { outro_card_gen: ["q", "pill"] };
+
+/* Pin a job to one machine. The claim RPC treats a pinned job as ALWAYS eligible
+   and lets it override the worker's own accept_types (013_workers.sql:80-92), so
+   a pin is a deliberate override, not a hint -- the UI has to say so. Returns
+   undefined for "any free machine". */
+function pinnedWorker(v: unknown): string | undefined {
+  const s = String(v ?? "").trim();
+  return s ? s : undefined;
+}
 // v19: ?r=suggestions reads this many candidate rows before the evidence guard
 // runs, so `limit` counts suggestions that actually SHIP, not rows dropped for
 // having no citations. Comfortably above the live standalone-suggestion count.
@@ -96,6 +106,30 @@ const COOKBOOK_CATALOG: { id: string; label: string; role: string; needs: string
   { id: "DynamicIsland", label: "Live-activity island", role: "device-ui", needs: "steps" },
   { id: "VoiceOrb", label: "Voice assistant orb", role: "device-ui", needs: "utterance" },
   { id: "SwipeDeck", label: "Decision swipe deck", role: "interaction", needs: "options" },
+  // wow-mechanics (registry.ts adds these; the render map COOKBOOK_COMPONENTS and
+  // this validator must carry them too or set_template_version_block 400s a valid id
+  // OR a loud placeholder renders — keep all three in sync, this list never leads).
+  { id: "Fogline", label: "Agent plan / lit road", role: "app-ui", needs: "steps" },
+  { id: "HoloCard", label: "Holographic hero card", role: "layout", needs: "facts" },
+  { id: "GlassPanel", label: "Liquid-glass stat panel", role: "device-ui", needs: "single-number" },
+  { id: "MorphField", label: "Button → field → confirm", role: "interaction", needs: "steps" },
+  // 2026-08-20: these five existed in registry.ts AND in the render map, but not
+  // here -- so the designer could not offer them and OutroGlass, written to
+  // replace the flat PIL sting, was unofferable. That is the same three-way
+  // drift as before, re-opened. scripts/check_cookbook_sync.py now fails on it.
+  { id: "GenerativeUI", label: "Prompt in, components land", role: "app-ui", needs: "steps" },
+  { id: "ScreenStage", label: "Staged screen recording", role: "layout", needs: "steps" },
+  { id: "OutroGlass", label: "Glass question-CTA outro", role: "layout", needs: "phrase" },
+  { id: "ReactionMeter", label: "Reaction time (measured)", role: "dataviz", needs: "value" },
+  { id: "LedgerFlow", role: "transformation", needs: "ledger", beats: ["hook","demo","process","stat"] },
+  { id: "ShareSplit", label: "Part-of-whole split", role: "dataviz", needs: "part-whole" },
+  { id: "SpinWheel", label: "Decision wheel (spins)", role: "interaction", needs: "options" },
+  // web-tour set (channels/claude-tricks/WEB-TOUR-TEMPLATE.md), registered 2026-08-23
+  { id: "WebTour", label: "Toured web recording", role: "layout", needs: "steps" },
+  { id: "SerifCap", label: "Mixed-register caption", role: "typography", needs: "phrase" },
+  { id: "HeroDrop", label: "Hero-asset physics drop", role: "layout", needs: "phrase" },
+  { id: "VsTable", label: "A-vs-B verdict table", role: "layout", needs: "table" },
+  { id: "TermRun", label: "Terminal one-liner run", role: "app-ui", needs: "steps" },
 ];
 const COOKBOOK_IDS = new Set(COOKBOOK_CATALOG.map((c) => c.id));
 // The 6 spatial layout ids (remotion-studio/src/layouts.ts) a slot/spatial block
@@ -355,6 +389,10 @@ async function handleGet(url: URL): Promise<Response> {
     // Phase 1 — Studio "Assets" board: brand-asset versions + their locks.
     // versions ordered asset_type asc, version desc; optional ?channel= filter.
     // Mirrors the "templates" single-table read + the "jobs" channel filter.
+    // GENERATABLE mirrors regen_asset.py's GENERATORS table and is read by BOTH
+    // sides: regenerate_asset refuses an unwired slot here rather than queueing a
+    // job that exits 2 on the worker, and ?r=assets returns the key list so the
+    // app can stop offering a button that cannot work.
     case "assets": {
       let vq = db.from("factory_asset_versions").select("*")
         .order("asset_type", { ascending: true })
@@ -371,7 +409,8 @@ async function handleGet(url: URL): Promise<Response> {
       ]);
       if (versions.error) return json({ error: versions.error.message }, 500);
       if (locks.error) return json({ error: locks.error.message }, 500);
-      return json({ versions: versions.data, locks: locks.data });
+      return json({ versions: versions.data, locks: locks.data,
+                    generatable: Object.keys(GENERATABLE) });
     }
 
     // Phase 4 — the Template Composer. factory_templates names the PIPELINE;
@@ -973,7 +1012,7 @@ async function handleGet(url: URL): Promise<Response> {
       if (!calendarId || !UUID_RE.test(calendarId)) {
         return json({ error: "calendar_id (uuid) required" }, 400);
       }
-      const [item, assets, jobs, provenance] = await Promise.all([
+      const [item, assets, jobs, provenance, blocksUsed, beatReview] = await Promise.all([
         db.from("factory_calendar").select("*").eq("id", calendarId).maybeSingle(),
         db.from("factory_assets").select("*").eq("calendar_id", calendarId)
           .order("created_at", { ascending: false }),
@@ -996,12 +1035,35 @@ async function handleGet(url: URL): Promise<Response> {
           .select("asset_type, version_id, build_ref, resolved_from, build_tag, created_at")
           .eq("calendar_id", calendarId)
           .order("created_at", { ascending: false }),
+        // S4 · block reconciliation — the SEQUENCE twin of the cast provenance
+        // above: which block played at each position per build
+        // (factory_episode_blocks_used), so the produced piece can be diffed
+        // against its locked composition._sequence and a silent block drop/swap
+        // is legible. Non-critical (bookkeeping) like provenance — degrade to [].
+        db.from("factory_episode_blocks_used")
+          .select("position, block_type, layout, ref, rendered, resolved_from, build_tag, created_at")
+          .eq("calendar_id", calendarId)
+          .order("created_at", { ascending: false }),
+        // S5 · per-beat REVIEW state (factory_episode_beat_review) — swap/regen/
+        // confidence/notes the operator set per scene. Non-critical + additive like
+        // the two provenance reads above: degrade to [] so the board keeps working
+        // if migration 025 hasn't applied yet (deploy-order safe).
+        db.from("factory_episode_beat_review")
+          .select("position, block_ref, swap_asset_key, regen_kind, confidence, note, updated_at")
+          .eq("calendar_id", calendarId)
+          .order("position", { ascending: true }),
       ]);
       const err = item.error || assets.error || jobs.error;
       if (err) return json({ error: err.message }, 500);
       if (!item.data) return json({ error: "calendar item not found" }, 404);
+      // S5 · generation manifest rides on the calendar row (select * above), so no
+      // second version-row select — one-select resolve stays intact. null until the
+      // build composes it, which keeps the classic path byte-identical.
       return json({ item: item.data, assets: assets.data, jobs: jobs.data,
-                    provenance: provenance.data || [] });
+                    provenance: provenance.data || [],
+                    sequence: blocksUsed.data || [],
+                    manifest: item.data.generation_manifest ?? null,
+                    beat_review: beatReview.data || [] });
     }
 
     case "events": {
@@ -1179,6 +1241,238 @@ async function handlePost(body: any): Promise<Response> {
     // v14: edit a worker's dashboard-owned routing config. Accepts any of:
     //   name (string), paused (bool), accept_types (string[]|null = all types),
     //   max_parallel (int, advisory). worker_id is required and must exist.
+    // One Desk · Machines: run a committed maintenance script on a box.
+    //
+    // The client sends an ID from this list — never a path. shell_script jobs
+    // execute whatever meta.script_path names, so accepting a path from the
+    // browser would turn the shared factory token into "run anything in the
+    // repo". The allow-list keeps the surface to the handful of operations that
+    // are genuinely useful from the app, and `os` stops PowerShell being sent
+    // to the Mac (where it can only fail).
+    // A planned beat that no component fits is the signal that grew Fogline,
+    // SpinWheel, ReactionMeter and OutroGlass. This turns that gap into a build
+    // request. The BROWSER names the beat; the prompt is composed HERE, so the
+    // three-place registration contract lives in one place and a client can
+    // never post a free-form instruction to a worker.
+    case "build_cookbook_component": {
+      const BEAT_KINDS = new Set(["hook","context","stat","process","comparison","demo","punchline","cta","social-proof"]);
+      const DATA_SHAPES = new Set(["series","metrics","single-number","facts","before-after","steps","options","dialogue","phrase","query-results","hub-spokes","ledger","part-whole","alerts","utterance","table"]);
+      const beat = String(body.beat ?? "").trim();
+      const needs = String(body.needs ?? "").trim();
+      const shows = String(body.shows ?? "").trim().slice(0, 400);
+      const kws = Array.isArray(body.keywords)
+        ? body.keywords.map((k: unknown) => String(k).trim()).filter(Boolean).slice(0, 8)
+        : [];
+      const ck = String(body.channel_key ?? "").trim();
+      if (!BEAT_KINDS.has(beat)) return json({ error: "beat must be one of: " + [...BEAT_KINDS].join(" | ") }, 400);
+      if (!DATA_SHAPES.has(needs)) return json({ error: "needs must be one of: " + [...DATA_SHAPES].join(" | ") }, 400);
+      if (!shows) return json({ error: "shows (what is on screen) required" }, 400);
+      if (!ck) return json({ error: "channel_key required" }, 400);
+
+      // Code-writing jobs go to a machine that is allowed to edit the repo. The
+      // Windows worker is RUN + REPORT only (CLAUDE.md), so pin to a Darwin box.
+      const { data: macs } = await db.from("factory_workers")
+        .select("worker_id, os, paused, last_seen").eq("os", "Darwin").eq("paused", false);
+      const mac = (macs ?? [])[0];
+      if (!mac) {
+        return json({ error: "no Mac worker is available — the Windows box may run scripts and report, but not edit the repo" }, 409);
+      }
+
+      const prompt = [
+        "Build ONE new Remotion cookbook component for a planned beat that nothing in the library fits.",
+        "",
+        "THE BEAT:",
+        `  beat kind : ${beat}`,
+        `  data shape: ${needs}`,
+        `  on screen : ${shows}`,
+        `  keywords  : ${kws.join(", ") || "(none given)"}`,
+        `  channel   : ${ck}`,
+        "",
+        "READ FIRST: remotion-studio/src/cookbook/COOKBOOK.md for the house rules, and one",
+        "recent component (SpinWheel.tsx, ReactionMeter.tsx or OutroGlass.tsx) for the shape.",
+        "Use the shared kit (./kit: BRAND, SANS, MONO, DISPLAY, rgba, clamp, Fonts, AuroraBed) —",
+        "never hardcode brand colours or re-implement easing that kit already gives you.",
+        "",
+        "IT MUST BE REGISTERED IN THREE PLACES OR IT IS INVISIBLE:",
+        "  1. remotion-studio/src/cookbook/<Name>.tsx — the component + an exported demo props const",
+        "  2. remotion-studio/src/cookbook/components.tsx — import + add to the id -> component map",
+        "  3. remotion-studio/src/cookbook/registry.ts — the metadata entry (id, demoId, title,",
+        "     role, beats, needs, keywords, transparentCapable, wow, density, gist/useWhen)",
+        "  4. supabase/functions/factory-api/index.ts — COOKBOOK_CATALOG (id,label,role,needs)",
+        "Miss (4) and it renders and ranks fine but NOBODY CAN CHOOSE IT. That exact drift left",
+        "OutroGlass unusable for a day.",
+        "",
+        "THEN VERIFY, and do not report success without it:",
+        "  python3 scripts/check_cookbook_sync.py     (must print: all three lists agree)",
+        "  cd remotion-studio && npx tsc --noEmit     (must typecheck)",
+        "",
+        "RULES: create ONE new component; do not modify any existing component's behaviour;",
+        "no fabricated data or numbers in the demo props — use the beat's own subject.",
+        "It must hold a readable END STATE (a Short gets rewatched, frozen frames kill retention).",
+        "Do NOT commit. Report the component name, what it shows, and the verification output.",
+      ].join("\n");
+
+      const { data: job, error: bErr } = await db.from("factory_jobs")
+        .insert({
+          channel_key: ck,
+          type: "custom",
+          title: `Build a component — ${shows.slice(0, 48)}`,
+          prompt,
+          model: "claude-opus-5",
+          effort: "high",
+          status: "queued",
+          target_worker: mac.worker_id,
+          meta: { kind: "cookbook_build", beat, needs, keywords: kws, shows },
+        })
+        .select().single();
+      if (bErr) return json({ error: bErr.message }, 500);
+      await logEvent("cookbook_build_queued", `New component requested for a ${beat} beat`, { job_id: job.id, beat, needs });
+      return json({ ok: true, job });
+    }
+
+    case "run_maintenance": {
+      // One action id resolves to a different script per OS, so the app can offer
+      // "Free up disk" on either box without the client ever naming a path. An OS
+      // simply missing from by_os means we have not written that script yet — the
+      // 409 below says so instead of sending PowerShell somewhere it cannot run.
+      const MAINTENANCE: Record<string, {
+        label: string; destructive?: boolean; runs_on?: string; needs_mac?: boolean;
+        by_os: Record<string, { script_path: string; script_args: string[] }>;
+      }> = {
+        disk_report: {
+          label: "Disk report (reads only)",
+          by_os: {
+            Windows: { script_path: "deploy/gpu/disk_maint.ps1", script_args: [] },
+            Darwin:  { script_path: "deploy/mac/disk_maint.sh",  script_args: [] },
+          },
+        },
+        disk_clean: {
+          label: "Free up disk", destructive: true,
+          by_os: {
+            Windows: { script_path: "deploy/gpu/disk_maint.ps1", script_args: ["-Clean"] },
+            Darwin:  { script_path: "deploy/mac/disk_maint.sh",  script_args: ["--clean"] },
+          },
+        },
+        disk_deep: {
+          label: "Deep clean", destructive: true,
+          by_os: {
+            Darwin: { script_path: "deploy/mac/disk_maint.sh", script_args: ["--deep"] },
+          },
+        },
+        docker_reclaim: {
+          label: "Reclaim Docker disk", destructive: true,
+          by_os: {
+            Darwin: { script_path: "deploy/mac/disk_maint.sh", script_args: ["--docker"] },
+          },
+        },
+        update_worker: {
+          label: "Update + check",
+          by_os: {
+            Windows: { script_path: "deploy/gpu/update_worker.ps1", script_args: [] },
+          },
+        },
+        restart_worker: {
+          label: "Restart the worker",
+          // A pull alone changes nothing: factory_worker.py is imported once at
+          // start. Separate from the update so a restart is never implicit.
+          by_os: {
+            Windows: { script_path: "deploy/worker-ctl.ps1", script_args: ["restart"] },
+          },
+        },
+        enable_wol: {
+          label: "Enable wake-on-LAN",
+          by_os: {
+            Windows: { script_path: "deploy/gpu/enable_wol.ps1", script_args: [] },
+          },
+        },
+        wake_worker: {
+          label: "Wake it up",
+          // Runs on a DIFFERENT machine: a sleeping box cannot run the script that
+          // wakes it. The peer must share its LAN to broadcast the magic packet.
+          runs_on: "peer",
+          needs_mac: true,
+          // Keyed by the OS of the machine that SENDS the packet, not the one
+          // being woken. Only the Mac relay exists today.
+          by_os: {
+            Darwin: { script_path: "deploy/mac/wake_worker.sh", script_args: [] },
+          },
+        },
+        keep_awake: {
+          label: "Stop it sleeping",
+          by_os: {
+            Windows: { script_path: "deploy/gpu/keep_awake.ps1", script_args: [] },
+            Darwin:  { script_path: "deploy/mac/keep_awake.sh",  script_args: [] },
+          },
+        },
+        schedule_maint: {
+          label: "Weekly auto-cleanup",
+          by_os: {
+            Windows: { script_path: "deploy/gpu/schedule_maint.ps1", script_args: [] },
+            Darwin:  { script_path: "deploy/mac/schedule_maint.sh",  script_args: [] },
+          },
+        },
+      };
+      const actionId = String(body.maintenance ?? "");
+      const spec = MAINTENANCE[actionId];
+      if (!spec) {
+        return json({ error: "unknown maintenance action — one of: " + Object.keys(MAINTENANCE).join(", ") }, 400);
+      }
+      const worker_id = String(body.worker_id ?? "").trim();
+      if (!worker_id) return json({ error: "worker_id required" }, 400);
+      const { data: w, error: wErr } = await db.from("factory_workers")
+        .select("worker_id, os, name, meta").eq("worker_id", worker_id).maybeSingle();
+      if (wErr) return json({ error: wErr.message }, 500);
+      if (!w) return json({ error: "machine not found" }, 404);
+      // Normally the script runs on the machine it acts on. A relay action is the
+      // exception: a sleeping box cannot run the script that wakes it, so the job
+      // goes to another machine on its network and the variant is chosen from THAT
+      // machine's OS.
+      let runner = worker_id;
+      let runnerOs = String(w.os ?? "");
+      let runnerName = w.name;
+      if (spec.runs_on === "peer") {
+        const cutoff = new Date(Date.now() - 5 * 60_000).toISOString();
+        const { data: peers } = await db.from("factory_workers")
+          .select("worker_id, name, os, last_seen, paused")
+          .neq("worker_id", worker_id).gte("last_seen", cutoff).eq("paused", false);
+        const peer = (peers ?? []).find((p) => spec.by_os[String(p.os ?? "")]);
+        if (!peer) {
+          return json({ error: `Nothing is awake to send the wake signal. ${w.name} can only be ` +
+            `woken by another machine on the same network, and none is online right now.` }, 409);
+        }
+        runner = peer.worker_id; runnerOs = String(peer.os ?? ""); runnerName = peer.name;
+      }
+      const variant = spec.by_os[runnerOs];
+      if (!variant) {
+        return json({ error: `${spec.label} has no script for ${runnerName} (${runnerOs}) yet — ` +
+          `it exists for ${Object.keys(spec.by_os).join(", ")}` }, 409);
+      }
+      let args = [...variant.script_args];
+      if (spec.needs_mac) {
+        const mac = ((w.meta ?? {}) as Record<string, unknown>).mac;
+        if (!mac) {
+          return json({ error: `We do not know ${w.name}'s network address yet. Run ` +
+            `"Enable wake-on-LAN" on it once while it is awake — that reports the address.` }, 409);
+        }
+        args = [String(mac), ...args];
+      }
+      const { data: job, error: jErr } = await db.from("factory_jobs")
+        .insert({
+          channel_key: "claude-tricks",
+          type: "shell_script",
+          title: spec.label + " — " + w.name,
+          status: "queued",
+          target_worker: runner,
+          meta: { script_path: variant.script_path, script_args: args, maintenance: actionId,
+                  acts_on: worker_id },
+        })
+        .select().single();
+      if (jErr) return json({ error: jErr.message }, 500);
+      await logEvent("maintenance_queued", `${spec.label} queued on ${w.name}`,
+        { job_id: job.id, worker_id, maintenance: actionId });
+      return json({ ok: true, job });
+    }
+
     case "update_worker": {
       const { worker_id } = body;
       if (!worker_id) return json({ error: "worker_id required" }, 400);
@@ -1186,6 +1480,12 @@ async function handlePost(body: any): Promise<Response> {
       if (body.name !== undefined) patch.name = body.name;
       if (body.paused !== undefined) patch.paused = Boolean(body.paused);
       if (body.max_parallel !== undefined) patch.max_parallel = body.max_parallel;
+      if (body.meta !== undefined) {
+        if (body.meta === null || typeof body.meta !== "object" || Array.isArray(body.meta)) {
+          return json({ error: "meta must be an object" }, 400);
+        }
+        patch.meta = body.meta;
+      }
       if (body.accept_types !== undefined) {
         // null / [] => accept ALL types; else validate each against JOB_TYPES
         const at = body.accept_types;
@@ -1253,7 +1553,7 @@ async function handlePost(body: any): Promise<Response> {
     }
 
     case "create_calendar_item": {
-      const { channel_key, planned_date, title, brief, type, model, effort, ultracode } = body;
+      const { channel_key, planned_date, title, brief, type, model, effort, ultracode, format } = body;
       if (!channel_key || !planned_date || !title) {
         return json({ error: "channel_key, planned_date and title required" }, 400);
       }
@@ -1275,6 +1575,15 @@ async function handlePost(body: any): Promise<Response> {
       if (model !== undefined) row.model = model;
       if (effort !== undefined) row.effort = effort;
       if (ultracode !== undefined) row.ultracode = Boolean(ultracode);
+      // Long-form is a real production path, and update_calendar_item has always
+      // allowed `format` -- but create did not, so a long-form piece could only be
+      // planned by creating a Short and then patching it.
+      if (format !== undefined) {
+        if (format !== "short" && format !== "longform") {
+          return json({ error: "format must be short | longform" }, 400);
+        }
+        row.format = format;
+      }
       const { data, error } = await db.from("factory_calendar").insert(row).select().single();
       if (error) return json({ error: error.message }, 500);
       await logEvent(
@@ -1290,7 +1599,7 @@ async function handlePost(body: any): Promise<Response> {
       if (!id || !patch || typeof patch !== "object") {
         return json({ error: "id and patch required" }, 400);
       }
-      const allowed = ["planned_date", "title", "brief", "type", "model", "effort", "ultracode", "status"];
+      const allowed = ["planned_date", "title", "brief", "type", "model", "effort", "ultracode", "status", "auto_mode", "format"];
       const clean: Record<string, unknown> = {};
       for (const k of allowed) if (k in patch) clean[k] = patch[k];
       if (Object.keys(clean).length === 0) {
@@ -2057,6 +2366,10 @@ async function handlePost(body: any): Promise<Response> {
     // and is threaded to finalize via the job's meta so both agree.
     case "produce_preview": {
       const { calendar_id } = body;
+      // S4 (Sprint 5) auto-mode: run all beats with minimal review. Persisted to
+      // the calendar row + job.meta so the worker honours it; the ARM GATE stays a
+      // human go — finalize_episode / arm_post NEVER read this flag.
+      const auto_mode = body.auto_mode === true;
       let ep = body.ep === undefined || body.ep === null ? "" : String(body.ep).trim();
       if (!calendar_id || !UUID_RE.test(String(calendar_id))) {
         return json({ error: "calendar_id (uuid) required" }, 400);
@@ -2086,6 +2399,29 @@ async function handlePost(body: any): Promise<Response> {
       if (liveJobs && liveJobs.length > 0) {
         return json({ error: "a preview job for this item is already " + liveJobs[0].status }, 409);
       }
+      // S4 · deliverable #1 — stamp the active composition version at QUEUE time so
+      // this calendar/Studio-driven produce reproduces the SAME locked
+      // composition._sequence at finalize. finalize_episode.py re-cuts the MASTER
+      // via build_ep_v2 --calendar-id, which binds rank-4 =
+      // factory_calendar.template_version_id; if that column is null it falls back
+      // to whatever the channel's active version is AT FINALIZE TIME — so a lock
+      // swap between preview approval and finalize would arm a master built from a
+      // DIFFERENT sequence than the reviewer approved. Mirrors produce_channel's
+      // activeVersion stamp. Seed from item.template_version_id FIRST so an
+      // existing deliberate pin is written back unchanged (a no-op equal to
+      // itself) and the rank-4 divergence guard in _bind_template_version stays
+      // satisfied; only a null pin is filled with the current active version.
+      let activeVersionId: string | null = item.template_version_id ?? null;
+      if (!activeVersionId) {
+        const { data: tplChan } = await db.from("factory_channels")
+          .select("template").eq("key", item.channel_key).maybeSingle();
+        const tplKey = tplChan?.template ?? null;
+        if (tplKey) {
+          const { data: tplActive } = await db.from("factory_templates")
+            .select("active_version_id").eq("key", tplKey).maybeSingle();
+          activeVersionId = tplActive?.active_version_id ?? null;
+        }
+      }
       const { data: job, error: jobErr } = await db.from("factory_jobs")
         .insert({
           channel_key: item.channel_key,
@@ -2096,14 +2432,21 @@ async function handlePost(body: any): Promise<Response> {
           effort: item.effort,
           ultracode: item.ultracode,
           status: "queued",
-          meta: { calendar_id: item.id, ep },
+          // The run that actually spends money and takes ~25 minutes could not be
+          // aimed at a machine, while idea-generation could. The column and the
+          // claim RPC have supported it since 013_workers.sql.
+          target_worker: pinnedWorker(body.target_worker),
+          meta: { calendar_id: item.id, ep, template_version_id: activeVersionId, auto_mode },
         })
         .select().single();
       if (jobErr) return json({ error: jobErr.message }, 500);
       // direct mode + queued so the Studio index (?r=staged) surfaces it once
-      // its first asset lands; keep job_id pointing at the preview job.
+      // its first asset lands; keep job_id pointing at the preview job. The
+      // template_version_id write makes the pin DURABLE on the calendar row so
+      // finalize's --calendar-id resolves it (no-op when a pin was already set).
       const { data: updated, error: updErr } = await db.from("factory_calendar")
-        .update({ status: "queued", production_mode: "direct", job_id: job.id })
+        .update({ status: "queued", production_mode: "direct", job_id: job.id,
+                  template_version_id: activeVersionId, auto_mode })
         .eq("id", calendar_id).select().single();
       if (updErr) return json({ error: updErr.message }, 500);
       await logEvent(
@@ -2198,6 +2541,10 @@ async function handlePost(body: any): Promise<Response> {
           type: "shell_script",
           title: "Finalize & arm — " + item.title,
           status: "queued",
+          // The upload is the one genuinely separate job in a piece's life, so
+          // it is the one thing that can run on a different machine than the
+          // produce did.
+          target_worker: pinnedWorker(body.target_worker),
           meta: {
             calendar_id,
             ep,
@@ -2574,9 +2921,15 @@ async function handlePost(body: any): Promise<Response> {
         return json({ error: "from_version_id must be a uuid" }, 400);
       }
       let seedRows: { asset_type: string; asset_version_id: string; position: number; note?: string }[] = [];
+      // S4 · deliverable #3 — a fork must carry the composition SEQUENCE too, not
+      // just the cast. Without this, forking a designed+locked version to redesign
+      // it silently opens an EMPTY Sequence designer (the Sprint-3 work is lost),
+      // while edit-in-place (unlock) preserves it — so fork was the broken half of
+      // "boilerplate vs redesign-from-existing".
+      let seedBlocks: { position: number; block_type: string; layout: string | null; config: unknown }[] = [];
       if (from_version_id) {
         const { data: base, error: bErr } = await db.from("factory_template_versions")
-          .select("id, channel_key").eq("id", from_version_id).maybeSingle();
+          .select("id, channel_key, composition").eq("id", from_version_id).maybeSingle();
         if (bErr) return json({ error: bErr.message }, 500);
         if (!base) return json({ error: "from_version_id not found" }, 404);
         if (base.channel_key !== channel_key) {
@@ -2587,6 +2940,31 @@ async function handlePost(body: any): Promise<Response> {
           .eq("template_version_id", from_version_id);
         if (bsErr) return json({ error: bsErr.message }, 500);
         seedRows = baseSlots ?? [];
+        // Blocks: prefer the editable DRAFT rows — they persist even when the
+        // source is locked (lock freezes into _sequence but never deletes them).
+        // Fall back to the frozen composition._sequence when a locked source has
+        // had its editable rows retired. Position is preserved verbatim (a fresh
+        // version id keeps UNIQUE(template_version_id, position) satisfied).
+        const { data: baseBlocks, error: bbErr } = await db.from("factory_template_blocks")
+          .select("position, block_type, layout, config")
+          .eq("template_version_id", from_version_id).order("position", { ascending: true });
+        if (bbErr) return json({ error: bbErr.message }, 500);
+        if (baseBlocks && baseBlocks.length > 0) {
+          seedBlocks = baseBlocks.map((b) => ({
+            position: b.position, block_type: b.block_type,
+            layout: b.layout ?? null, config: b.config ?? {},
+          }));
+        } else {
+          const frozenSeq = Array.isArray(base.composition?._sequence)
+            ? base.composition._sequence : [];
+          seedBlocks = frozenSeq
+            .filter((e: Record<string, unknown>) =>
+              Number.isInteger(e?.position) && typeof e?.block_type === "string")
+            .map((e: Record<string, unknown>) => ({
+              position: e.position as number, block_type: e.block_type as string,
+              layout: (e.layout as string | null) ?? null, config: e.config ?? {},
+            }));
+        }
       } else if (body.seed_from_locks !== false) {
         const { data: lockRows, error: lkErr } = await db.from("factory_asset_locks")
           .select("asset_type, locked_version_id").eq("channel_key", channel_key);
@@ -2638,14 +3016,31 @@ async function handlePost(body: any): Promise<Response> {
         );
         if (seedErr) return json({ error: seedErr.message }, 500);
       }
+      // S4 · deliverable #3 — seed the forked SEQUENCE (mirrors the cast seed
+      // above). A fresh version id means UNIQUE(template_version_id, position)
+      // holds; the new draft re-freezes its own _sequence at lock. Empty for a
+      // seed_from_locks fork (no source sequence exists) — a valid blank start.
+      if (seedBlocks.length > 0) {
+        const { error: sbErr } = await db.from("factory_template_blocks").insert(
+          seedBlocks.map((b) => ({
+            template_version_id: created!.id,
+            position: b.position,
+            block_type: b.block_type,
+            layout: b.layout,
+            config: b.config ?? {},
+          })),
+        );
+        if (sbErr) return json({ error: sbErr.message }, 500);
+      }
       const { data: slots } = await db.from("factory_template_assets")
         .select("*").eq("template_version_id", created.id)
         .order("asset_type", { ascending: true }).order("position", { ascending: true });
       await logEvent("template_version_created",
-        `${template_key} v${created.version} forked as a draft (${seedRows.length} slots)`,
+        `${template_key} v${created.version} forked as a draft (${seedRows.length} slots, ${seedBlocks.length} blocks)`,
         {
           template_key, channel_key, template_version_id: created.id,
-          version: created.version, from_version_id, seeded: seedRows.length,
+          version: created.version, from_version_id,
+          seeded: seedRows.length, seeded_blocks: seedBlocks.length,
         });
       return json({ version: created, assets: slots ?? [] });
     }
@@ -2820,7 +3215,6 @@ async function handlePost(body: any): Promise<Response> {
     // wired generator is refused HERE with the honest reason, rather than
     // queueing a job that would exit 2 on the worker minutes later.
     case "regenerate_asset": {
-      const GENERATABLE: Record<string, string[]> = { outro_card_gen: ["q", "pill"] };
       const channel_key = String(body.channel_key ?? "").trim();
       const asset_type = String(body.asset_type ?? "").trim();
       const from_version_id = String(body.from_version_id ?? "").trim();
@@ -3240,6 +3634,14 @@ async function handlePost(body: any): Promise<Response> {
     case "plan_content": {
       const { channel_key } = body;
       if (!channel_key) return json({ error: "channel_key required" }, 400);
+      // One Desk · Make: the owner can paste numbers straight out of YouTube
+      // Studio before asking for ideas. The app's own analytics lag ~48h and a
+      // 1-3 day old Short has no API data at all, so this paste is the FRESHEST
+      // source there is — it rides in job.meta and the prompt says to trust it
+      // over the stored context. `target_worker` pins the run to one machine.
+      const fresh_numbers = typeof body.fresh_numbers === "string"
+        ? body.fresh_numbers.slice(0, 4000).trim() : "";
+      const target_worker = body.target_worker ? String(body.target_worker) : null;
       const { data: live, error: lErr } = await db.from("factory_jobs")
         .select("id, status").eq("type", "plan_content").eq("channel_key", channel_key)
         .in("status", ["queued", "running"]).limit(1);
@@ -3252,6 +3654,8 @@ async function handlePost(body: any): Promise<Response> {
           channel_key, type: "plan_content",
           model: "sonnet", effort: "medium",
           title: "Content ideas: " + channel_key, status: "queued",
+          meta: fresh_numbers ? { fresh_numbers } : {},
+          ...(target_worker ? { target_worker } : {}),
         })
         .select().single();
       if (error) return json({ error: error.message }, 500);

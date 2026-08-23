@@ -22,7 +22,231 @@ STYLE = 0.4
 BREAK = '<break time="0.4s" />'
 MUSIC = "assets/music/bed_active.mp3"   # relative to remotion public/
 
+
+# =============================================================================
+# _upi cookbook props. Numbers are LOADED, never retyped — R3 in the shooting
+# spec: the same figure lives in the VO, two prop sets, the lane counter, the
+# hook still, the mirror JSON and the description, and one numeral edit
+# re-synths the whole VO cache. One file owns them.
+# =============================================================================
+def _upi_numbers():
+    import json as _json
+    with open(os.path.join(CH, "assets", "ep_upi", "locked_numbers.json")) as f:
+        return _json.load(f)
+
+def _build_upi_cookbook():
+    n = _upi_numbers()
+    hero, whole, sched = n["hero"], n["whole"], n["digit_schedule"]
+    lanes = [
+        {"key": "blinkit", "label": "BLINKIT", "emoji": "\U0001F6F5", "tint": "#F8CB46"},
+        {"key": "other", "label": "OTHER APPS", "emoji": "\U0001F4F1", "tint": "#5FA82C"},
+        {"key": "food", "label": "FOOD", "emoji": "\U0001F37D", "tint": "#E23744"},
+        {"key": "shop", "label": "SHOPPING", "emoji": "\U0001F6CD", "tint": "#FF9900"},
+    ]
+    # Every row is a transaction that ACTUALLY APPEARS in the source recording.
+    # masked rows carry merchant "" — the identity is absent from the props.
+    rows = [
+        {"id": "u01", "merchant": "Blinkit", "amount": 560, "day": "18 AUG", "cat": "blinkit", "counted": False},
+        {"id": "u02", "merchant": "Zomato", "amount": 1072, "day": "18 AUG", "cat": "food", "counted": True},
+        {"id": "u03", "merchant": "Zomato", "amount": 897, "day": "18 AUG", "cat": "food", "counted": True},
+        {"id": "u04", "merchant": "Amazon", "amount": 1414, "day": "18 AUG", "cat": "shop", "counted": True},
+        {"id": "u05", "merchant": "", "amount": 100, "day": "18 AUG", "masked": True},
+        {"id": "u06", "merchant": "Blinkit", "amount": 710, "day": "17 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u07", "merchant": "Blinkit", "amount": 649, "day": "17 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u08", "merchant": "Snabbit", "amount": 399, "day": "17 AUG", "cat": "other", "counted": True},
+        {"id": "u09", "merchant": "DMart", "amount": 5931, "day": "17 AUG", "cat": "shop", "counted": True},
+        {"id": "u10", "merchant": "Blinkit", "amount": 1843, "day": "16 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u11", "merchant": "", "amount": 2800, "day": "16 AUG", "masked": True},
+        {"id": "u12", "merchant": "Maestro", "amount": 199, "day": "15 AUG", "cat": "other", "counted": True},
+        {"id": "u13", "merchant": "Gas Bill", "amount": 1500, "day": "14 AUG", "cat": "other", "counted": True},
+        {"id": "u14", "merchant": "Box8", "amount": 372, "day": "12 AUG", "cat": "food", "counted": True},
+        {"id": "u15", "merchant": "Snabbit", "amount": 248, "day": "12 AUG", "cat": "other", "counted": True},
+        {"id": "u16", "merchant": "", "amount": 250, "day": "12 AUG", "masked": True},
+        {"id": "u17", "merchant": "Snabbit", "amount": 323, "day": "09 AUG", "cat": "other", "counted": True},
+        {"id": "u18", "merchant": "Blinkit", "amount": 923, "day": "03 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u19", "merchant": "Blinkit", "amount": 1215, "day": "03 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u20", "merchant": "Blinkit", "amount": 841, "day": "02 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u21", "merchant": "Blinkit", "amount": 598, "day": "02 AUG", "cat": "blinkit", "counted": True},
+        {"id": "u22", "merchant": "Zepto", "amount": 1560, "day": "02 AUG", "cat": "other", "counted": True},
+    ]
+    hud = {"label": "BLINKIT SO FAR", "value": hero["total"], "prefix": "\u20b9 "}
+    # ---- beat 0: the designed hook (TapStack) ------------------------------
+    # Replaces the pick.mp4 gallery tape. VJ 2026-08-20: "for 0-3s hook i dont
+    # want my phone screenshots ... lets create some animation which stands on
+    # our existing shorts where creating hooks was our forte".
+    #
+    # WHY A GRAPHIC IS SAFE HERE: it never claims to BE the input. It says the
+    # provenance in words ("FROM MY OWN SCREENSHOTS"), and it recedes to an
+    # EMPTY container that beat 1's real tape fills — a graphic may hand off a
+    # container, never an artifact. The actual upload is still demonstrated on
+    # real tape at 2.55s (ask.mp4), which is where provenance is proven.
+    #
+    # It also cannot spoil the payoff: TapStack has no HUD, no tally and no
+    # digit plate, so the withheld Rs 7,339 keeps its shape until 20.43s. Only
+    # 3 of the 8 Blinkit addends are ever on screen (710/649/1843 = 3,202), so
+    # the total is not derivable from the hook.
+    _tap_cat = {"blinkit": "grocery", "food": "food", "shop": "shopping",
+                "other": "other"}
+    tap_cards = []
+    for r in rows[1:13]:   # u02-u13 — 12 arrivals is what fits 2.55s without strobing
+        c = {"id": r["id"], "merchant": r["merchant"], "amount": r["amount"],
+             "day": r["day"]}
+        if r.get("masked"):
+            c["masked"] = True
+        elif r.get("cat"):
+            c["cat"] = _tap_cat[r["cat"]]
+        if r["id"] == "u09":
+            c["hot"] = True     # the DMart Rs 5,931 the six taps beat by Rs 138
+        tap_cards.append(c)
+    base = {"rows": rows, "lanes": lanes, "scrollFrom": 0, "scrollTo": 0}
+    br = {b["beat"]: b for b in sched["breaks"]}
+    return {
+        # --- designed hook (beat 0) -----------------------------------------
+        "TapStack": {
+            "cards": tap_cards,
+            # front-loaded then floored at 4 frames: contraction is spent before
+            # 0.8s (where relativeRetentionPerformance first samples) and the
+            # floor is the densest rate that still resolves at 2x playback.
+            "gaps": [0, 0.3, 0.5, 0.667, 0.8, 0.933, 1.067, 1.2,
+                     1.333, 1.467, 1.6, 1.733],
+            "provenance": "FROM MY OWN SCREENSHOTS",
+            "unitLabel": "ONE TAP",       # the denominator line 6 completes at 20.43s
+            "claimLines": ["I SCREENSHOTTED", "MY UPI HISTORY"],
+            "claimHot": "UPI", "claimAt": 0.467, "claimOut": 1.8,
+            "debt": "I NEVER ADDED THEM UP", "debtHot": "NEVER", "debtAt": 1.933,
+            "handoffAt": 2.2,
+        },
+        # --- real tape ------------------------------------------------------
+        # pick.mp4 is RETIRED — beat 0 is TapStack. Left here unreferenced would
+        # be dead config, so it is gone; tape_lengths_needed in
+        # locked_numbers.json no longer asks for it.
+        "ScreenStage#ask":    {"src": "assets/ep_upi/ask.mp4",    "chip": "NO CONNECTOR \u00b7 NO LOGIN",
+                               "host": True, "hostSize": 300},
+        "ScreenStage#answer": {"src": "assets/ep_upi/answer.mp4", "chip": "WHAT IT SENT BACK"},
+        # --- designed -------------------------------------------------------
+        "LedgerFlow#rush": dict(base, phase="rush", ingest={"count": 3, "at": 0}, scrollTo=14,
+                                hud=dict(hud, revealed=br["rush"]["revealed"], revealAt=br["rush"]["revealAt"]),
+                                tally={"label": "ROWS READ", "from": 0, "to": 22},
+                                # claimLines RETIRED: TapStack burns this line at
+                                # 0.467s. Repeating it at 5.91s reads as a loop,
+                                # and its words are line 0's, not line 2's.
+                                contentStart=0.37),
+        "LedgerFlow#floor": dict(base, phase="floor", scrollFrom=8, scrollTo=8,
+                                 hud=dict(hud, revealed=br["floor"]["revealed"], revealAt=br["floor"]["revealAt"]),
+                                 bracket={"from": 2, "to": 12, "label": "WHAT THE SHOTS SHOWED",
+                                          "ghostLabel": "NOT IN THE PICTURES"},
+                                 skipLabel="DUPLICATE \u2014 SKIPPED",
+                                 footNote="FREE CHATS TRAIN THE MODEL \u2014 TURN IT OFF IN SETTINGS"),
+        "LedgerFlow#sort": dict(base, phase="sort", scrollFrom=6, scrollTo=6,
+                                hud=dict(hud, revealed=br["sort"]["revealed"], revealAt=br["sort"]["revealAt"]),
+                                ghostGuess={"value": 5931, "label": "ONE SUPERMARKET TRIP",
+                                            "killAt": 2.21, "prefix": "\u20b9"},
+                                # the rows have departed by mid-beat, so mid-left is a genuine
+                                # void — a small corner card there would waste half the frame
+                                host=True, hostSize=470, hostAnchor="ml"),
+        "LedgerFlow#grow": dict(base, phase="grow", scrollFrom=6, scrollTo=6, focusLane="blinkit",
+                                hud=dict(hud, revealed=br["grow"]["revealed"], revealAt=br["grow"]["revealAt"]),
+                                spill={"atPct": 0.78, "releaseAt": 1.4},
+                                counter={"label": "BLINKIT ORDERS", "to": hero["orders"], "at": 0, "roll": 0.7},
+                                handoff={"w": 750, "h": 930, "at": 0.6}),
+        "ShareSplit": {
+            "runLabel": "FROM MY OWN SCREENSHOTS",
+            "meta": [{"k": "ROWS READ", "v": str(n["rows"]["in_props"])},
+                     {"k": "SKIPPED", "v": str(n["rows"]["excluded_failed"])},
+                     {"k": "ORDERS", "v": str(hero["orders"])}, {"k": "COST", "v": "FREE"}],
+            "total": {"value": hero["total"], "label": "BLINKIT",
+                      "sub": "%d orders \u00b7 \u20b9%d a tap" % (hero["orders"], hero["average"])},
+            "whole": {"value": whole["value"], "label": whole["label"]},
+            "atoms": hero["orders"],
+            "shareLabel": whole["share_words"],
+            "openFrost": {"w": 750, "h": 930, "dur": 0.5},
+            "splitAt": 1.15,
+            "capSafe": 1200,
+            "atLeast": {"at": 3.5, "word": "",
+                        "note": "A FLOOR \u2014 NOT A STATEMENT"},
+            "ghostBars": 5,
+            # WHAT THE REMAINDER IS MADE OF. Without this the grey side is an
+            # anonymous block: the viewer learns "the part is big" and never what
+            # it BEAT. DMart Rs 5,931 sitting second inside the remainder is the
+            # beat-6 payoff restated as one image. The liquor Rs 1,000 is folded
+            # into REST — counted, never labelled (redaction masks the name, not
+            # the money). Values come from locked_numbers.json, not retyped.
+            "wholeParts": whole["parts"],
+            # top-right: the hero figure owns y700-950 on the LEFT
+            "host": True, "hostSize": 420, "hostAnchor": "tr",
+        },
+    }
+
+_UPI_COOKBOOK = _build_upi_cookbook()
+
 EPISODES_V2 = {
+  # ===========================================================================
+  # _upi — "I Audited My UPI Spending By Typing One Line" (2026-08-20)
+  #
+  # THE FIRST TIER-0 EPISODE: zero setup, no connector, no login. The viewer
+  # screenshots their own UPI history and uploads it. Everything Claude does
+  # here it does to PICTURES THE USER SENT — never a feed, never a live account.
+  #
+  # CUT BACKWARDS FROM ONE FACT: across 10 real retention curves this channel's
+  # worst single second is 6s (median -7.3pp) and 15 of 30 steepest drops fall
+  # in 4-8s. There is no 15s cliff. So the masked-HUD digit schedule pays its
+  # FIRST digit at exactly 6.00s absolute — the most-abandoned second becomes
+  # the first second the viewer is paid. It costs zero runtime; it is a prop.
+  #
+  # NUMBERS ARE LOCKED IN assets/ep_upi/locked_numbers.json. Blinkit Rs 7,339
+  # across 6 orders = Rs 1,012 a tap, against Rs 22,234 of merchant spend visible
+  # in the shots (more than a quarter). Change them THERE, never here first — they
+  # appear in seven places and one numeral re-synths the whole VO cache.
+  #
+  # HONESTY, structural not editorial: person-to-person rows carry merchant:""
+  # and masked:true, so no name enters the props at all. The Rs 5,931 "ghost"
+  # at beat 6 is NOT a remembered guess (VJ never gave one, and inventing it
+  # after seeing the answer would fabricate the beat) — it is the biggest real
+  # single purchase in the same data, which the eight small taps beat.
+  # ===========================================================================
+  "_upi": {
+    "title": "I Audited My UPI Spending By Typing One Line \U0001F4B8",
+    "tags": ("upi,upi spending,phonepe,gpay,blinkit,expense tracker,where my money went,claude ai,"
+             "ai for beginners,screenshot,money saving india,spending tracker,ai tips"),
+    # NO `hook` BLOCK — TapStack *is* the hook. HookCard renders full-frame over
+    # beat 0, so it would cover the receipt during the exact 0-0.3s window the
+    # receipt has to be recognised in, and burn the same headline twice (its own
+    # at 0.0s, TapStack's again at 0.467s). `baked: true` exists to guarantee a
+    # legible frame 0; TapStack does that natively, with motion instead of a
+    # 0.3s freeze. build_ep_v2 opens straight on beat 0 when neither hook nor
+    # cover is set.
+    "outro": True,
+    "outro_dur": 0,
+    "outro_src": "ep_upi/outro_card.mp4",
+    "outro_cta": "Screenshot your own month and ask the same line. Which app eats your money? Tell me below.",
+    "lines": [
+      "Screenshots of my UPI history.",
+      "One line in Claude. Nothing connected.",
+      "It read every row I'd forgotten.",
+      "It only saw the pictures. And threw out the doubles.",
+      "Here's what it sent back. Grouped by where it went.",
+      "One supermarket trip: five thousand nine hundred.",
+      "Six quick taps cost more. Six thousand and sixty nine.",
+      "More than a quarter of what I spent. Nobody spends money badly - we just never add it up.",
+    ],
+    "hot_words": ["SCREENSHOTS", "UPI", "HISTORY", "ONE", "LINE", "CLAUDE", "NOTHING", "CONNECTED", "READ", "EVERY", "ROW", "FORGOTTEN", "ONLY", "PICTURES", "THREW", "DOUBLES", "SENT", "BACK", "GROUPED", "WENT", "SUPERMARKET", "TRIP", "THOUSAND", "HUNDRED", "SIX", "QUICK", "TAPS", "MORE", "QUARTER", "SPENT", "BADLY", "ADD", "UP"],
+    # 8 lines : 8 beats. Real tape carries beats 0, 1 and 4 — the previous cut
+    # was 5-of-7 motion graphics, which is how a designed number ends up
+    # asserting something the tool cannot guarantee.
+    "beats": ["cook:TapStack",             # 0.0-2.55 DESIGNED HOOK, LEGIBLE AT FRAME 0
+              "cook:ScreenStage#ask",      # 3.0-5.0  the line lands, send tapped (Sol PIP)
+              "cook:LedgerFlow#rush",      # 5.0-8.0  DIGIT 1 BREAKS AT 6.00s ABSOLUTE
+              "cook:LedgerFlow#floor",     # 8.0-12.0 the blind spot admitted + digit 2
+              "cook:ScreenStage#answer",   # 12.0-17.0 the REAL grouped reply, scrolling
+              "cook:LedgerFlow#sort",      # 17.0-22.0 the big single buy loses + digit 3
+              "cook:LedgerFlow#grow",      # 22.0-27.0 Blinkit overflows + FINAL digit 24.5s
+              "cook:ShareSplit"],          # 27.0-34.0 the one un-eased cut, then the >= twist
+    "steps": [],   # RETIRED — empty, not absent (build_ep_v2 requires the key)
+    "epTag": "",
+    "header_scrim": True,   # claude.ai mobile is a cream column; the lockup would vanish
+    "cookbook": _UPI_COOKBOOK,
+  },
+
   # First fill for the post-pivot standalone-tips slot (PIVOT-DECISION.md, 2026-08-18):
   # the Artifacts short. Reverse hook = the finished Rs400 app in frame 0 (hook_art.png),
   # then rebuild it live. Footage: rec_artifacts_app.py capture (type->build->card) +
@@ -109,6 +333,585 @@ EPISODES_V2 = {
       ("STEP 2/3 — CLAUDE BUILDS IT", 3, 3, "bl"),
       ("STEP 3/3 — IT KEEPS YOUR STREAK", 4, 4, "tl"),
     ],
+  },
+  # FRANCHISE ENTRY #3 (2026-08-20) — the Spin-The-Wheel dinner picker.
+  # WHY THIS EXISTS: tip #3 (_style) failed frame-by-frame QC — ~14 of 39s were two
+  # FROZEN SCREENSHOTS sitting in the 3-15s sustain window, because a *text* payoff
+  # has nothing that appears. VJ called it: the format capped the wow. This returns to
+  # the proven form (_artifacts 30.4% stayed; _habit 213 views / 38.6% AVP): a real
+  # thing MATERIALIZES. Upgrade over both: the payoff is no longer a baked still-hold
+  # — rec_wheel_app.py films the artifact OPENED AND RUNNING, so the wheel physically
+  # spins on camera. Continuous motion is the direct lever on Shorts-feed selection
+  # (22.9%, mid-typical), which is the measured ceiling. Every beat below is real tape.
+  "_wheel": {
+    "title": "I Built A Dinner Decider By Typing One Line 🎰",
+    "tags": "claude artifacts,dinner decider,what to eat,spin the wheel,decision wheel,build app with ai,no code,claude ai,ai for beginners,vibe coding,ai tools,ai tips",
+    # VJ 2026-08-19: "for hook start with spin wheel not static". `until` is now
+    # only long enough to own frame 0 (the feed thumbnail keeps the burned claim);
+    # by 0.3s we are on the SpinWheel, already mid-spin.
+    # baked=True is MANDATORY: HookCard ramps headline opacity over frames 2-12,
+    # so without it frame 0 ships with the claim text BLANK — and this channel
+    # cannot set a custom thumbnail, so frame 0 IS the thumbnail everywhere.
+    # headTop 96 aligns this headline with SpinWheel's own claim (also top 96) so
+    # the 0.3s cross-dissolve doesn't show two offset ghost copies of the words.
+    "hook": {"image": "ep_wheel/hook.png", "until": 0.3, "baked": True, "headTop": 96,
+             "lines": ["I BUILT THIS", "BY TYPING ONE LINE"], "hot": "ONE"},
+    "outro": True,
+    "outro_dur": 0,
+    "outro_src": "ep_wheel/outro_card.mp4",
+    "outro_cta": "That's the exact prompt. Follow for more simple, fast AI tools you can actually use.",
+    "lines": [
+      "I typed one line — and Claude built me this.",
+      "Can't decide what to eat? Empty chat, one sentence, a real app.",
+      "In Claude, I type one line: build me a spin-the-wheel dinner picker.",
+      "It writes the whole app itself — every slice, the spin, the result.",
+      "I tap SPIN, and it actually spins. Real animation, not a picture.",
+      "Biryani it is. Dinner decided — by an app that didn't exist a minute ago.",
+      "One line of plain English — and you've got a real app you can use.",
+    ],
+    "hot_words": ["TYPED", "ONE", "LINE", "CLAUDE", "BUILT", "WATCH", "SPIN", "SPINS",
+                  "DECIDE", "EAT", "EMPTY", "SENTENCE", "REAL", "APP", "TYPE", "WHEEL",
+                  "DINNER", "PICKER", "WRITES", "WHOLE", "SLICE", "RESULT", "TAP",
+                  "ACTUALLY", "ANIMATION", "PICTURE", "BIRYANI", "DECIDED", "MINUTE",
+                  "ENGLISH", "USE", "FOLLOW", "SKILL", "DAY"],
+    # Beat 0 is the NEW cookbook component SpinWheel (invented for this episode):
+    # designed, on-brand motion for the swipe window — a wheel that accelerates,
+    # smears, eases onto the winner and lands with a flare. Its options and winner
+    # MIRROR THE REAL APP EXACTLY (same six dishes, same Biryani result), so it is a
+    # stylized restatement of what the tape then proves, never a fabricated result.
+    # Beats 2-5 are ALL REAL TAPE — timings verified frame-by-frame. The proof is
+    # never a graphic (COOKBOOK.md honesty bar).
+    "beats": ["cook:SpinWheel",                      # DESIGNED motion in the swipe window (see cookbook note below)
+              "host",
+              "cook:GenerativeUI",                   # the ASK, Plate 08 style: components land, not prose
+              "cook:ScreenStage#code",              # REAL Claude writing the app — code STREAMS (the evidence)
+              # app_shift.mp4 = tape[115..127] raised ~100px so the app's result pill
+              # clears the karaoke caption band (the caption was landing ON "Biryani
+              # it is!"); the same crop also removes claude's top chrome. 0s == t115.
+              "cook:ScreenStage#spin",              # SPIN #1 — REAL tape, staged (Plates 01/05/07)
+              "cook:ScreenStage#result",            # SPIN #2 — REAL tape, lands "Biryani it is!"
+              "host2"],
+    "cookbook": {
+      # GenerativeUI — Plate 08 ("tool call -> component, NOT tokens -> prose").
+      # This is the ILLUSTRATIVE beat: the one-line ask, then the built thing
+      # LANDING as UI objects (spec card -> preview tile -> action row). The
+      # earlier chat-bubble version was the wrong port — bubbles are prose, i.e.
+      # the fallback, not the interface. The tile image is a REAL frame of the
+      # real app, and the next two beats are real tape, so evidence is untouched.
+      "GenerativeUI": {
+        "promptLabel": "ONE LINE",
+        "prompt": "build me a spin-the-wheel dinner picker",
+        "items": [
+          {"kind": "spec", "title": "Dinner wheel", "chips": ["6 OPTIONS", "SPIN BUTTON", "SINGLE FILE"]},
+          {"kind": "tile", "media": "assets/ep_wheel/hook.png", "title": "Ready to run",
+           "subtitle": "HTML \u00b7 NO SETUP", "mediaHeight": 440},
+          {"kind": "action", "title": "Open it", "value": "\u21b3"},
+        ],
+        "start": 0.1,
+        "promptHold": 0.7,
+        "perItem": 0.5,
+      },
+      # ScreenStage — the REAL recording, staged with the plates that port to a
+      # frame clock (07 depth-without-3D on a scripted camera, 01 glass bezel,
+      # 05 bounding-box morph). The pixels inside are untouched evidence; only
+      # the presentation changes. Instance #1 travels in from an inset card;
+      # #2 is already hero so the payoff never re-animates its own frame.
+      "ScreenStage#code": {
+        "src": "assets/ep_wheel/raw_capture.mp4",
+        "from": 68,
+        "morph": False,          # already hero — the writing shouldn't re-animate its frame
+        "sheen": False,
+        "heroAspect": 1.62,      # the chat view is content-light; a shorter card crops the dead space
+        "host": True,            # VJ: host PIP on the Claude code beat ONLY — the payoff stays clean
+      },
+      "ScreenStage#spin": {
+        "src": "assets/ep_wheel/app_shift.mp4",
+        "from": 4,
+        "label": "REAL SCREEN RECORDING",
+        "morph": True,
+        "morphStart": 0.15,
+        "morphDur": 0.85,
+        "insetScale": 0.66,
+      },
+      "ScreenStage#result": {
+        "src": "assets/ep_wheel/app_shift.mp4",
+        "from": 14,
+        "morph": False,
+        "sheen": False,
+      },
+      "SpinWheel": {
+        "kicker": "",   # the burned claim already says this; keeping both collided
+        "title": "What's for dinner?",
+        "options": [
+          {"label": "Biryani", "emoji": "🍛"},
+          {"label": "Pizza", "emoji": "🍕"},
+          {"label": "Pasta", "emoji": "🍝"},
+          {"label": "Tacos", "emoji": "🌮"},
+          {"label": "Sushi", "emoji": "🍣"},
+          {"label": "Burger", "emoji": "🍔"},
+        ],
+        "winner": 0,                # Biryani — exactly what the real app landed on
+        "resultPrefix": "Tonight:",
+        "spinStart": 0.05,          # already spinning when the 0.3s hook clears
+        "claimLines": ["I BUILT THIS", "BY TYPING ONE LINE"],
+        "claimHot": "ONE",
+        "claimHold": 2.4,   # readable over the motion instead of flashing past
+        "contentStart": 0.32,  # wait for the 0.3s hook to clear — else the hook's
+                               # headline and this claim ghost as two offset copies
+        "spinDur": 2.7,
+        "turns": 5,
+      },
+    },
+    # authored idea lines — they AGREE with the VO without transcribing it, and
+    # render through IdeaKinetic (Plate 03) instead of the running caption
+    "host_panels": [
+      {"lines": ["CAN'T DECIDE", "WHAT TO EAT?", "ONE LINE."], "hot": "ONE"},
+      {"lines": ["ONE LINE", "OF ENGLISH", "= A REAL APP"], "hot": "REAL"},
+    ],
+    "steps": [],   # RETIRED — empty, not absent (build_ep_v2 requires the key)
+    # STEP CHIPS RETIRED (VJ, 2026-08-19). The "STEP n/3 — ..." chips are gone:
+    # they narrated what the frame already showed, they were a standing collision
+    # risk with the content (the reason `pos` corners existed at all), and the
+    # authored IdeaKinetic panel now carries the through-line. No `steps` key =
+    # no chips. Do NOT reintroduce them on new episodes.
+  },
+  # ===========================================================================
+  # Franchise entry #4 (2026-08-20): the PLAYABLE reaction test.
+  #
+  # Why a game, and why THIS game. The build franchise wins distribution (median
+  # 228 views) but bleeds retention — tip #2 held 39.8% AVP against a 50.9% tip
+  # median — and two builds in a row drew ZERO comments on 218 views. A reaction
+  # test is the one build shape that attacks both at once:
+  #   · RETENTION — the payoff is a NUMBER the viewer waits for. The measured
+  #     killer on tip #2 was the 0:15–0:25 drop-off, which mapped exactly onto
+  #     two FROZEN STILL-HOLDS. Every beat here is live motion; nothing freezes.
+  #   · COMMENTS — "what should I build next?" is homework, and it returned
+  #     nothing. "What's your reaction time?" is answerable in two seconds and
+  #     the viewer already has the answer in their hand.
+  #
+  # HONESTY NOTE (important, read before re-capturing). The capture script taps
+  # by polling the artifact frame's computed background colour, which detects
+  # green in ~36ms — faster than any human can be (physiological floor ~100ms,
+  # the well-known benchmark ~250ms). A 36ms readout makes a CORRECTLY WORKING
+  # app look broken, and reporting it as a personal score would be a false claim.
+  # rec_game_app.py therefore waits --tap-delay before tapping, and this episode's
+  # VO never brags a reflex: it says what the app MEASURES ("it clocks you to the
+  # millisecond") and hands the number to the viewer as a challenge. The three
+  # rounds on tape are real and unedited: 231ms, 271ms, 269ms.
+  "_game": {
+    "title": "I Built A Reaction Game By Typing One Line ⚡",
+    "tags": "claude artifacts,reaction time game,reaction game,build app with ai,no code,claude ai,ai for beginners,vibe coding,reaction time test,ai tools,ai tips",
+    # frame 0 IS the thumbnail everywhere (this channel cannot set a custom one),
+    # so baked=True is mandatory — without it HookCard ramps the headline in over
+    # frames 2-12 and ships a blank claim. hook.png is the REAL 231ms result frame
+    # with a top scrim, so the claim reads on near-black over full-bleed red.
+    "hook": {"image": "ep_game/hook.png", "until": 0.3, "baked": True, "headTop": 96,
+             "lines": ["I BUILT THIS", "BY TYPING ONE LINE"], "hot": "ONE"},
+    "outro": True,
+    "outro_dur": 0,
+    "outro_src": "ep_game/outro_card.mp4",
+    # the ask is answerable in two seconds — that is the whole point of this episode
+    "outro_cta": "Drop your reaction time in the comments. Follow for more simple, fast AI tools you can actually use.",
+    "lines": [
+      "I typed one line — and Claude built me a reaction test. Can you beat it?",
+      "Red means wait. Green means tap. It clocks you to the millisecond.",
+      "In Claude, I type one line — the whole game, described in plain English.",
+      "It writes the whole thing itself — the timer, the colours, the score.",
+      "Open it, tap to start, and wait. The screen holds on red…",
+      "Green. Tap. Two hundred and sixty nine milliseconds, measured live.",
+      "One line of plain English — and you've got a real game you can play.",
+    ],
+    "hot_words": ["TYPED", "ONE", "LINE", "CLAUDE", "BUILT", "REACTION", "TEST",
+                  "BEAT", "RED", "WAIT", "GREEN", "TAP", "CLOCKS", "MILLISECOND",
+                  "TYPE", "GAME", "FULL", "SCREEN", "WRITES", "WHOLE", "TIMER",
+                  "COLOURS", "SCORE", "OPEN", "START", "HOLDS", "SIXTY", "NINE", "PLAIN",
+                  "MILLISECONDS", "MEASURED", "LIVE", "ENGLISH", "REAL", "PLAY",
+                  "FOLLOW", "SKILL", "DAY"],
+    # Beat 0 is the NEW cookbook component ReactionMeter (invented for this
+    # episode): the library's Plate 09 block — WAIT, a hard snap to GREEN, then a
+    # number that ARRIVES on a drawn ring. It mirrors the real app EXACTLY (same
+    # 231ms, same red/green grammar), so it is a stylized restatement of what the
+    # tape then proves, never a fabricated result.
+    # Beats 3-5 are ALL REAL TAPE from one continuous 80s recording — timings
+    # verified frame-by-frame against a colour-transition scan of take4.mp4:
+    #   49.23s app opens fullscreen | 58.03-58.33 green #1 -> 231ms (held to 65.47)
+    #   65.47 green #2 -> 271ms     | 73.00 green #3 -> 269ms (held to 80.47 end)
+    "beats": ["cook:ReactionMeter",          # DESIGNED motion in the swipe window
+              "host",
+              "cook:GenerativeUI",           # the ASK, Plate 08: components land, not prose
+              "cook:ScreenStage#code",       # REAL Claude writing the app — code STREAMS
+              "cook:ScreenStage#play",       # REAL: red hold -> GREEN -> the tap
+              "cook:ScreenStage#score",      # REAL: 231ms, same unbroken hold (no rewind)
+              "host2"],
+    "cookbook": {
+      "ReactionMeter": {
+        "kicker": "",   # the burned claim already says this; keeping both collided
+        "title": "How fast are you?",
+        "ms": 269,                  # EXACTLY what the real app measured on round 3 (the round on tape)
+        "avgMs": 250,
+        "challenge": "CAN YOU BEAT IT?",
+        "start": 0.05,              # already running when the 0.3s hook clears
+        # WAIT breathes, so a longer wait keeps the beat ALIVE and shrinks the
+        # static tail after the number lands (QC: 1.15 left ~3s of held readout)
+        "waitDur": 1.9,
+        "greenDur": 0.45,
+        "claimLines": ["I BUILT THIS", "BY TYPING ONE LINE"],
+        "claimHot": "ONE",
+        "claimHold": 2.4,   # readable over the motion instead of flashing past
+        "contentStart": 0.32,  # wait for the 0.3s hook to clear — else the hook's
+                               # headline and this claim ghost as two offset copies
+      },
+      # GenerativeUI — Plate 08 ("tool call -> component, NOT tokens -> prose").
+      "GenerativeUI": {
+        "promptLabel": "ONE LINE",
+        # THE REAL TYPED PROMPT, verbatim. The earlier short paraphrase was a
+        # FABRICATED QUOTATION: the tape 4s later shows this long text in the
+        # prompt bubble and the outro brands it "THE EXACT PROMPT", so the cut
+        # contradicted itself — in the flattering direction, making the result
+        # look cheaper to get than it was.
+        "prompt": 'Build me a reaction time game that fills the whole screen edge to edge - no borders, no header, just colour. Red means wait, green means tap, and show my reaction time in milliseconds in huge numbers.',
+        "items": [
+          {"kind": "spec", "title": "Reaction game", "chips": ["FULL BLEED", "RANDOM DELAY", "SINGLE FILE"]},
+          {"kind": "tile", "media": "assets/ep_game/ready.png", "title": "Ready to play",
+           "subtitle": "HTML · NO SETUP", "mediaHeight": 300},
+          {"kind": "action", "title": "Open it", "value": "↳"},
+        ],
+        "start": 0.1,
+        "promptHold": 0.7,
+        "perItem": 0.5,
+      },
+      # ScreenStage — the REAL recording, staged with the plates that port to a
+      # frame clock (07 depth, 01 glass bezel, 05 bounding-box morph). The pixels
+      # inside are untouched evidence; only the presentation changes.
+      "ScreenStage#code": {
+        "src": "assets/ep_game/app_clean.mp4",
+        # 34.6-35.8 is the ONLY sustained WRITING motion in the tape: the spec
+        # bullets stream in one by one, then the file card lands. src 29 looked
+        # like code but was a FROZEN, already-finished block (YAVG locked, message
+        # stamped "just now", idle composer) — 3.6s of a still under a VO saying
+        # "It writes the whole thing itself", and at 32.7 the block vanished so a
+        # caption landed on an empty panel. The streamed bullets also happen to
+        # name the timer, the colours and the score, which is the line verbatim.
+        "from": 34.0,
+        "morph": False,          # already hero — the writing shouldn't re-animate its frame
+        "sheen": False,
+        "heroAspect": 1.62,      # the chat view is content-light; crop the dead space
+        "host": True,            # VJ: host PIP on the Claude code beat ONLY
+      },
+      "ScreenStage#play": {
+        "src": "assets/ep_game/app_clean.mp4",
+        # VO: "Open it, tap to start, and wait. The screen holds on red." The app's
+        # own idle screen literally reads "WAIT / Tap to start" and is up from 49.23
+        # to the first arm — so this window matches the line word for word AND is
+        # long enough (round 3's armed wait is only 4.05s, shorter than this beat,
+        # which forced the green into this beat and stranded it before the word).
+        "from": 49.3,
+        "label": "REAL SCREEN RECORDING",
+        "morph": True,
+        "morphStart": 0.15,
+        "morphDur": 0.85,
+        "insetScale": 0.66,
+      },
+      "ScreenStage#score": {
+        # ROUND 3 IS THE ONLY ROUND WITH A LONG TAIL. Round 1's 231ms is on screen
+        # for just 3.2s (58.33 -> ~61.5, when the script arms round 2), so the first
+        # cut ran the payoff beat straight into round 2 and showed 271ms under a VO
+        # saying "two hundred and thirty one". Round 3's 269ms holds 73.27 -> 80.47
+        # (7.2s, to the end of tape). Picks up later in that same unbroken hold, so
+        # the payoff never rewinds onto moving footage.
+        "src": "assets/ep_game/app_clean.mp4",
+        # Green is only 267ms long (73.000-73.267). At from=73.45 the beat opened
+        # AFTER it, so "Green. Tap." was narrated over the red result and the magenta
+        # caption GREEN sat on a bright red screen — reading as a caption-sync bug.
+        # Beat 6 starts at master 23.30 and the word GREEN is spoken 23.30-23.78, so
+        # from=72.90 puts the flash at master 23.40 — inside the word.
+        "from": 72.90,
+        "morph": False,
+        # sheen ON. The app's result screen is a FLAT COLOUR that genuinely does not
+        # move, so without it the payoff sits near-static for seconds — the exact
+        # still-hold pattern that cost tip #2 its retention. The sheen and the deeper
+        # parallax drift are chrome AROUND the evidence; the recording's own pixels
+        # are untouched.
+        "sheen": True,
+        "drift": 24,
+      },
+    },
+    # authored idea lines — they AGREE with the VO without transcribing it, and
+    # render through IdeaKinetic (Plate 03) instead of the running caption
+    "host_panels": [
+      {"lines": ["RED = WAIT", "GREEN = TAP", "IT CLOCKS YOU"], "hot": "GREEN"},
+      {"lines": ["ONE LINE", "OF ENGLISH", "= A REAL GAME"], "hot": "REAL"},
+    ],
+    "steps": [],   # RETIRED — empty, not absent (build_ep_v2 requires the key)
+  },
+  # ===========================================================================
+  # 2026-08-21 -- the SELF-APPRAISAL episode. Two firsts.
+  #
+  # FIRST: the film has a SPINE. One line enters at frame 1 and survives every
+  # cut -- it climbs, dies into grey dots, flinches when the prompt lands,
+  # catches the answers as scattered points, SNAPS into a rising arc on one
+  # un-eased frame, then demotes to a header while the sentences hang off it.
+  # Seven beats read as one object having one continuous experience instead of
+  # seven cards cutting to each other. cfg["spine"] is what makes that possible:
+  # every beat renders in its own <Sequence> (local frame 0), so without it the
+  # line would replay its entrance seven times.
+  #
+  # SECOND: nothing here was captured. No screen recording, no user data, no
+  # emulator -- the story is carried entirely by motion graphics, which is the
+  # constraint VJ set for this slot. The honesty bar is unchanged: nothing on
+  # screen claims to be a measurement. The arc is explicitly "a relative position
+  # the person's own answer implies", drawn with NO AXIS, and the sentences are
+  # quotation cards in speech colour, never data. A part-of-whole bar or a
+  # slamming counter here would have been a lie told in grammar.
+  #
+  # The choreography was designed in Claude Design against our published
+  # cookbook and ported -- see the CareerArc commit for what came across.
+  "_appraisal": {
+    # 46 chars. The franchise verb is "typing one line"; this one says PASTING
+    # because the film's own point is that you paste a block, and a title that
+    # contradicts its video is the one kind of CTR you do not want.
+    "title": "I Built My Self-Appraisal By Pasting One Prompt",
+    "tags": "self appraisal,performance review,appraisal writing,claude ai,chatgpt prompt,"
+            "career growth,work review,ai prompt,appraisal tips,promotion,salary hike,ai tools",
+    # No hook image: beat 0 IS the hook. The line is already climbing at frame 1,
+    # so motion is running before the swipe window closes -- the thing a static
+    # hook card cannot do.
+    "outro": True,
+    "outro_dur": 0,
+    # gen_outro_GLASS.py, never gen_outro_card.py. The card script is retired: it
+    # drew a flat PIL still and faked motion with a Ken-Burns push, and the last
+    # three shipped episodes (_wheel, _game, _upi) all carry the real OutroGlass
+    # component instead -- the prompt itself on glass, PAUSE TO COPY, same
+    # material language as the cut. Regenerating this with the old script was a
+    # silent regression to a look the channel had already moved off.
+    #   python3 gen_outro_glass.py --out assets/ep_appraisal/outro_card.mp4 \
+    #     --q "..." --prompt-text "..." --prompt-label "THE PROMPT" \
+    #     --prompt-hint "PAUSE TO COPY" --dur <len>
+    "outro_src": "ep_appraisal/outro_card.mp4",
+    "outro_cta": "The full prompt is in the description. Copy it, and open your form tonight.",
+    # GIVE the artifact, do not promise it. Four episodes of the previous
+    # franchise asked people to want a thing and handed them no way to get it.
+    # The card on screen carries a shortened prompt because 258 words will not
+    # fit on a Short; THIS is the real one, and it is the thing being claimed.
+    "desc_prompt": (
+      "\U0001F4CB THE EXACT PROMPT (copy it \u2014 works in Claude, ChatGPT or Gemini):\n\n"
+      "You are my appraisal coach. I have to write my own self-appraisal and I "
+      "can't remember my last two years.\n\n"
+      "Ask me ONE question at a time. Wait for my answer. Never ask two at once.\n\n"
+      "Ask exactly 6 questions, in this order:\n"
+      "1. My role, and what my team was struggling with two years ago\n"
+      "2. The first thing I fixed or shipped that I'd still defend today\n"
+      "3. Something I took ownership of that nobody handed me\n"
+      "4. A time someone senior noticed, or a decision changed because of me\n"
+      "5. Something I taught, unblocked or handed over to someone else\n"
+      "6. The thing I'm proudest of that isn't on any tracker\n\n"
+      "If an answer is vague, ask ONE follow-up \u2014 never more. Ask for a number, "
+      "a date or a name only if I'd genuinely know it. Never invent one.\n\n"
+      "After question 6, stop asking and give me exactly this:\n\n"
+      "GROWTH \u2014 one line per six months, showing scope going up. Mark the 3 "
+      "points where my responsibility actually jumped.\n\n"
+      "FOR THE FORM \u2014 6 sentences I can paste straight into my appraisal. Each "
+      "one: what I did, then what changed because of it. No adjectives about me. "
+      "No \"passionate\", no \"team player\". Only facts I gave you.\n\n"
+      "TO SAY OUT LOUD \u2014 the same points as 4 short lines for the appraisal "
+      "discussion, in normal spoken English.\n\n"
+      "GAPS \u2014 what my manager will ask that I couldn't answer, so I can go find "
+      "it before I submit.\n\n"
+      "Start now with question 1. Nothing else."
+    ),
+    # a question that is answerable in two seconds and does not require the video
+    "desc_cta": "What would YOUR line one be? Tell me below.",
+    "lines": [
+      "Appraisal due tomorrow. Still blank.",
+      "Two years. Nothing comes back.",
+      "Stop writing. Start answering.",
+      "You didn't forget the work. You never kept the proof.",
+      "It asks one question at a time \u2014 what broke, what you fixed, who noticed.",
+      "Out come the exact lines that go straight into the form.",
+      "It won't fill the form for you, or face your manager. That part's still yours.",
+    ],
+    "hot_words": ["APPRAISAL", "BLANK", "TWO", "YEARS", "NOTHING", "STOP", "WRITING",
+                  "START", "ANSWERING", "FORGET", "WORK", "NEVER", "PROOF", "ONE",
+                  "QUESTION", "TIME", "BROKE", "FIXED", "NOTICED", "EXACT", "LINES",
+                  "STRAIGHT", "FORM", "WON'T", "MANAGER", "YOURS"],
+    # ONE component owns beats 0-3 and a second owns 4-5, each on a continuous
+    # clock (see "spine" below). Same props on every beat of a stretch -- only the
+    # auto-injected `start` differs, which is what keeps the line unbroken.
+    # The #suffixes are NOT different props -- every CareerArc beat resolves to the
+    # same props block. They exist to keep the beats DISTINCT, because the segment
+    # builder merges consecutive identical beats into one, and a merged segment
+    # carries one caption for all the lines inside it: four VO lines' worth of
+    # words on screen at once, unreadable, burying the frame it sits on. Distinct
+    # beats keep one caption per spoken line; "spine" is what keeps the LINE
+    # unbroken across them. That split -- cut the captions, never cut the graphic
+    # -- is the whole point of the mechanism.
+    "beats": ["cook:ProofTrace#search",   # instrument on; nothing on the record
+              "cook:ProofTrace#lose",     # the panic; three entries fall out
+              "cook:ProofTrace#answer",   # the prompt lands; four answers steady it
+              "cook:ProofTrace#reveal",   # THE un-eased frame
+              "cook:CaseBullets#pull",    # demoted to a header; sentences on tethers
+              "cook:CaseBullets#read",    # the read-sweep walks the stack
+              "cook:OutroGlass"],         # the prompt on glass -- GIVE it, don't promise it
+    # The components whose clock is FILM time, not beat time. Without this the
+    # line restarts at every cut and the snap never lands on the knee.
+    "spine": ["ProofTrace", "CaseBullets"],
+    "cookbook": {
+      "ProofTrace": {
+        "runLabel":    "YOUR LAST 5 YEARS",
+        "searchLabel": "SEARCHING YOUR LAST 5 YEARS",
+        "spanLabelL":  "5 YEARS AGO",
+        "spanLabelR":  "NOW",
+        "reviewLabel": "THIS REVIEW",
+        # the form asks about two years; the career is five. On the word "Two"
+        # everything left of this dims, and the returning head wipes it off --
+        # so a copy contradiction becomes a large-area event that says something
+        # true: your career is longer than the form.
+        "reviewFrom":  0.6,
+        # Every moment is pinned to a CUT, resolved from the MEASURED VO clock at
+        # build time -- never a hardcoded second that drifts when the read does.
+        "panicAt":     "@beat1",          # 3.58  head snaps back, picture narrows
+        "stopAt":      "@beat2+0.04",     # 6.31  search struck; the head RETURNS
+        "pasteAt":     "@beat2+0.25",     # 6.52  card lands, the trace flinches
+        "answers": [
+          {"label": "what broke",      "at": "@beat2+0.71"},   # 6.98
+          {"label": "what you fixed",  "at": "@beat2+1.15"},   # 7.42
+          {"label": "who noticed",     "at": "@beat2+1.59"},   # 7.86
+          {"label": "what you taught", "at": "@beat2+2.03"},   # 8.30
+        ],
+        "revealAt":    "@beat3+0.16",     # 8.86  THE FRAME
+        "mergeAt":     "@beat4-0.55",     # 11.30 scanner reaches NOW
+        "demoteAt":    "@beat4-0.55",     # 11.30 geometry lerp onto CaseBullets
+        "demoteDur":   0.50,              # completes 11.80; last frame is 11.833
+        "pasteText":   ["You are my appraisal coach.",
+                        "Ask me ONE question at a time."],
+        # <= 15 chars each, or Anton overflows the 912px field
+        "verdicts": [
+          {"at": 0.62,           "text": "NO RECORD."},
+          {"at": "@beat1-1.74",  "text": "STILL NOTHING."},   # 1.84, pass-1 fails
+          {"at": "@beat1+1.08",  "text": "NONE OF IT KEPT"},  # 4.66, rules fall
+          {"at": "@beat2+0.47",  "text": "SO ANSWER."},       # 6.74
+          {"at": "@beat3+0.16",  "text": "IT'S ALL THERE"},   # 8.86, on the frame
+        ],
+      },
+      "CaseBullets": {
+        "runLabel": "WHAT GOES IN THE FORM",
+        # the SAME lifts CareerArc ends on, so the arc survives the hand-off
+        "points": [{"lift": 0.24}, {"lift": 0.46}, {"lift": 0.68}, {"lift": 0.92}],
+        # Mock answers, and openly so -- the viewer's own two years go here. Each
+        # is what-I-did then what-changed, which is the actual teaching point.
+        "lines": [
+          {"text": "I cut onboarding from six days to two \u2014 40 hours a month back.", "from": 0, "at": 0.5},
+          {"text": "I took on-call in March. Kept it.",     "from": 1, "at": 2.3},
+          {"text": "I shipped billing with no rollback.",   "from": 2, "at": 4.1},
+          {"text": "Two juniors now run releases alone.",   "from": 3, "at": 5.9},
+        ],
+        # the cards all land by ~6.4s of a ~10s stretch; without the sweep the
+        # frame is static for the back half, at the length that costs most
+        "sweepFrom": 6.6,
+        "sweepStep": 0.6,
+      },
+      "OutroGlass": {
+        "promptLabel": "THE PROMPT",
+        "promptHint": "PAUSE TO COPY",
+        "promptText": "You are my appraisal coach. Ask me ONE question at a time, "
+                      "and wait for my answer. Ask exactly 6 questions about my last "
+                      "two years, then give me 6 sentences I can paste straight into "
+                      "the form \u2014 what I did, then what changed because of it.",
+        # LONGER than the beat on purpose. OutroGlass cross-fades the prompt out
+        # into its own question phase over the last 0.34s, and with the appended
+        # card already carrying that question the fade only produced a ghost of
+        # it printed over the prompt. Outliving the beat means the phase change
+        # never starts -- the prompt is simply the last thing on screen, and the
+        # card takes the question.
+        "promptDur": "@beat7+0.6",
+        "question": "WHAT WOULD|YOU PUT|IN LINE ONE?",
+      },
+    },
+    "steps": [],   # the on-frame words are baked into the components, not chipped over them
+  },
+  # Post-pivot standalone tip #3 (2026-08-20): the "paste an example" writing tip.
+  # Promised by tip #2's (_habit) outro tease. prompt-teardown cluster (PIVOT-DECISION §4 #8).
+  # SLATE RISK: "Stop X" abstract hooks flopped in-feed + muted text before/after is weaker than
+  # an app-appears. MITIGATION: proof-first CONTRAST hook (generic vs distinct, side by side),
+  # BEFORE state legible early, real single-tape proof (chatgpt no-login, describe->paste-example).
+  "_style": {
+    "title": "Stop DESCRIBING The Style — Paste 1 Example 🎯",
+    "tags": "chatgpt tips,ai writing,prompt tips,writing style,ai for beginners,better ai answers,paste example,ai tools,ai tips",
+    # HOOK SHORTENED 2.4 -> 1.6 (2026-08-19 analytics): on tip #2 (Ag9tBHbyrbo) AVP
+    # 38.6% was ABOVE typical but Shorts-feed selection 22.9% only mid-typical — i.e.
+    # the ceiling is the swipe window, not retention. The static contrast frame states
+    # the claim fast; beat 0 then ANIMATES it (cook:DiffReveal) so motion lands by ~1.6s.
+    "hook": {"image": "ep_style/hook.png", "until": 1.6, "baked": True,
+             "lines": ["SAME ASK.", "ONE PASTED LINE"], "hot": "ONE"},
+    "outro": True,
+    "outro_dur": 0,
+    "outro_src": "ep_style/outro_card.mp4",   # LOCKED Ep11-style question-CTA card (gen_outro_card.py)
+    "outro_cta": "That's the whole trick. Follow for more simple, fast AI tools you can actually use.",
+    "lines": [
+      "Same request to the same AI — but one pasted line changes everything. Watch.",
+      "Don't describe the style — show it one example.",
+      "First, I describe it — bold, punchy, modern. I get this: generic, every-brand copy.",
+      "So I paste one line in the exact voice I want, and ask for the same thing.",
+      "Now it's a real voice — punchy and specific. It copied my example, not my adjectives.",
+      "Describing a style makes AI guess. Give it one real example, and it nails the voice.",
+      "Stop describing the vibe — paste one line that already has it.",
+    ],
+    "hot_words": ["SAME", "REQUEST", "ONE", "PASTED", "LINE", "CHANGES", "WATCH",
+                  "DESCRIBE", "STYLE", "SHOW", "EXAMPLE", "BOLD", "PUNCHY", "MODERN",
+                  "GENERIC", "COPY", "PASTE", "EXACT", "VOICE", "SPECIFIC",
+                  "COPIED", "ADJECTIVES", "GUESS", "NAILS", "STOP", "VIBE",
+                  "FOLLOW", "SKILL", "DAY"],
+    # FIRST PRODUCTION USE OF THE VISUAL COOKBOOK (2026-08-19). The library was
+    # "inert demos" until now; `cook:<id>` beats + cfg["cookbook"][id] props are the
+    # wired path (build_ep_v2 -> Short.tsx CookbookBlock). Two components earn their
+    # place here (honesty bar — each serves the beat, neither replaces real proof):
+    #   beat 0 DiffReveal  — MOTION in the swipe window; animates the very thing the
+    #                        episode is about (vague in -> sharp out) using the REAL
+    #                        before/after text verbatim. Fixes the feed-selection ceiling.
+    #   beat 6 KineticQuote— the takeaway lands as designed typography, not a 3rd host card.
+    # Beats 2-4 stay REAL TAPE — the proof is never a graphic.
+    "beats": ["cook:DiffReveal", "host",
+              "rec:ep_style/demo.mp4@16",   # describe -> generic answer (the fail: "your new coffee obsession has officially arrived")
+              "rec:ep_style/demo.mp4@29",   # paste ONE example line + ask again
+              "rec:ep_style/matched_hold.mp4@0.0",  # matched, distinct voice held (the fix/proof: "no weak brews... rocket fuel") — still-hold for the ~5s payoff line
+              "host2", "cook:KineticQuote"],
+    # props for the cook: beats above, keyed by component id (JSON-safe only)
+    "cookbook": {
+      "DiffReveal": {
+        "filename": "brand-copy.txt",
+        "kicker": "SAME ASK · ONE PASTED LINE",
+        "title": "Describe the style, and AI guesses.",
+        "lines": [
+          {"text": "# launch my coffee brand", "kind": "same"},
+          {"text": "Wake up to bold. Sip something unforgettable.", "kind": "del"},
+          {"text": "Your new coffee obsession has officially arrived.", "kind": "del"},
+          {"text": "No weak brews. No sleepy mornings.", "kind": "add"},
+          {"text": "Just a punch of dark-roasted rocket fuel", "kind": "add"},
+          {"text": "that makes 6 a.m. flinch.", "kind": "add"},
+        ],
+        # footer auto-truncates around ~30 chars — keep it short or it renders "…"
+        "footer": "Show it. Don't describe it.",
+        # hold the BEFORE state a beat longer so the generic copy reads before it melts
+        "start": 0.5,
+      },
+      "KineticQuote": {
+        "kicker": "The whole trick",
+        "parts": [
+          {"text": "Don't describe"},
+          {"text": "the vibe."},
+          {"text": "PASTE ONE LINE", "hot": True},
+          {"text": "that already"},
+          {"text": "HAS IT.", "hot": True},
+        ],
+        # no footer — the outro card already says "one AI trick, every single day"
+        "highlight": "bar",
+      },
+    },
+    "host_panels": [
+      {"lines": ["SAME ASK", "ONE PASTED", "LINE — WATCH"], "hot": "ONE"},
+      {"lines": ["DESCRIBE =", "A GUESS —", "EXAMPLE = VOICE"], "hot": "EXAMPLE"},
+    ],
+    "steps": [],   # RETIRED 2026-08-19 (empty, not absent — build requires the key)
   },
   "20": {
     "title": "The Effort Dial Nobody Uses (Deeper Answers, Free) 🧠",
@@ -1306,6 +2109,24 @@ def run(cmd, **kw):
     print("+", " ".join(str(c) for c in cmd))
     subprocess.run(cmd, check=True, **kw)
 
+# The outro sting is rendered at the composition's native 1080x1920. When the
+# body is rendered at a scale factor the two no longer match and concat refuses
+# ("Input link parameters do not match"), so the card is scaled to the body.
+def _render_scale():
+    """The active render multiple. Read at CALL time, not import time — reading it
+    at import bound audition_outro_cta.py (which imports this module) to whatever
+    the env happened to be, so a harness could build a filtergraph for a scale its
+    own inputs were never rendered at."""
+    try:
+        return float(os.environ.get("FACTORY_REMOTION_SCALE", 1) or 1)
+    except (TypeError, ValueError):
+        return 1.0
+
+
+def _body_dims():
+    return int(1080 * _render_scale()), int(1920 * _render_scale())
+
+
 def outro_fc(pre, fst, ratio=None, gain_db=None):
     """Filtergraph for the outro concat (inputs: 0=mastered body, 1=outro card,
     2=music bed looped, 3=CTA wav — 3 only in the spoken-CTA variant).
@@ -1315,11 +2136,14 @@ def outro_fc(pre, fst, ratio=None, gain_db=None):
     master chain. Module-level so audition_outro_cta.py exercises the SAME
     graph the builder ships — a test harness with its own copy would drift."""
     if gain_db is None:
-        return ("[1:v]fps=30,format=yuv420p[ov];"
+        _ow, _oh = _body_dims()
+        return (f"[1:v]fps=30,scale={_ow}:{_oh}:flags=lanczos,format=yuv420p[ov];"
                 f"[2:a]{pre}volume=0.30,afade=t=out:st={fst}:d=1.2,apad[oa];"
                 "[0:v][0:a][ov][oa]concat=n=2:v=1:a=1[v][a]")
-    ov = (f"[1:v]setpts={ratio:.5f}*PTS,fps=30,format=yuv420p[ov];"
-          if ratio and ratio > 1.001 else "[1:v]fps=30,format=yuv420p[ov];")
+    _ow, _oh = _body_dims()
+    ov = (f"[1:v]setpts={ratio:.5f}*PTS,fps=30,scale={_ow}:{_oh}:flags=lanczos,format=yuv420p[ov];"
+          if ratio and ratio > 1.001 else
+          f"[1:v]fps=30,scale={_ow}:{_oh}:flags=lanczos,format=yuv420p[ov];")
     return (ov +
             f"[2:a]{pre}volume=0.30,afade=t=out:st={fst}:d=1.2[bed];"
             "[3:a]aformat=channel_layouts=stereo,"
@@ -1340,6 +2164,11 @@ CHANNEL_KEY_FOR_PROV = "claude-tricks"
 # factory_asset_versions.id behind each pick (keyed by (source, asset_type)).
 _RESOLVED = []
 _VERSION_ID_BY = {}
+# S4 block reconciliation: what THIS build rendered for each locked _sequence
+# block (position, block_type, layout, ref, rendered). The SEQUENCE twin of
+# _RESOLVED — flushed to factory_episode_blocks_used so a produced Short can be
+# diffed against its locked composition._sequence.
+_RESOLVED_BLOCKS = []
 
 
 class CastUnrenderable(Exception):
@@ -1606,12 +2435,44 @@ def _seq_segment(block):
     # any block whose config carries a cookbook payload (e.g. block_type "broll")
     cb = conf.get("cookbook")
     if isinstance(cb, dict) and isinstance(cb.get("id"), str) and cb.get("id"):
+        # A COOKBOOK BLOCK WITH NO PROPS IS NOT RENDERABLE. Cookbook components
+        # read their data straight off props (LineReveal does `points.length`,
+        # RingGauge `metrics`, Odometer `value`), so an empty payload does not
+        # degrade to a blank card -- it throws mid-render and kills the whole
+        # episode. _upi died at frame 762 on an augment-mode LineReveal block
+        # frozen with props {}. Drop it here instead: the caller already records
+        # every dropped block as a sequence divergence, so it surfaces in the
+        # reconciliation card rather than vanishing silently.
+        if not (cb.get("props") or {}):
+            print(f"!! sequence block '{cb['id']}' has EMPTY props — dropped "
+                  f"(a cookbook component cannot render without data)")
+            return None
         seg = {"kind": "cookbook", "dur": dur,
                "cookbook": {"id": cb["id"], "props": cb.get("props") or {}}}
         if "transparent" in cb:
             seg["cookbook"]["transparent"] = cb["transparent"]
         return seg
     return None
+
+
+def _block_ref(block):
+    """A stable identity string for a locked _sequence block — WHAT filled it: the
+    cookbook/broll component id, else the host label/id, else the layout, else the
+    block_type. The build_ref analog for sequence provenance, so the app can diff
+    built.ref against the same identity derived from the locked block's config."""
+    if not isinstance(block, dict):
+        return "—"
+    conf = block.get("config") or {}
+    cb = conf.get("cookbook")
+    if isinstance(cb, dict) and isinstance(cb.get("id"), str) and cb.get("id"):
+        return cb["id"]
+    broll = conf.get("broll")
+    if isinstance(broll, dict) and broll.get("id"):
+        return str(broll["id"])
+    host = conf.get("host") or {}
+    if host.get("label") or host.get("id"):
+        return "host:" + str(host.get("label") or host.get("id"))
+    return conf.get("layout") or block.get("layout") or block.get("block_type") or "—"
 
 
 def resolve_locked(asset_type, default, ch="claude-tricks", cfg=None):
@@ -1727,8 +2588,198 @@ def _flush_provenance(ch, ep, tag, calendar_id):
         print(f"!! provenance not recorded ({e}) — render is unaffected")
 
 
+def _flush_sequence_provenance(ch, ep, tag, calendar_id):
+    """Record the composition SEQUENCE this build actually rendered — the block
+    twin of _flush_provenance (S4 block reconciliation). One row per locked
+    _sequence block, in play order, carrying whether it produced a segment: a
+    locked block that renders NOTHING is a real divergence the reviewer must see,
+    so dropped blocks are recorded too (rendered=False), not skipped.
+
+    Never raises (bookkeeping must not fail a successful render). A re-cut of the
+    same (calendar, tag) replaces its own rows, so re-running does not double."""
+    if not _RESOLVED_BLOCKS:
+        return
+    try:
+        by_pos = {b["position"]: b for b in _RESOLVED_BLOCKS}   # last write per position wins
+        rows = [{"calendar_id": calendar_id, "channel_key": ch, "ep": str(ep),
+                 "build_tag": tag, "position": pos,
+                 "block_type": b.get("block_type"), "layout": b.get("layout"),
+                 "ref": b.get("ref"), "rendered": bool(b.get("rendered")),
+                 "resolved_from": "template"}
+                for pos, b in sorted(by_pos.items())]
+        sp = _supa()
+        if calendar_id:
+            # Supa has no delete(); go straight at PostgREST with its own headers.
+            import requests
+            requests.delete(
+                f"{sp.url}/rest/v1/factory_episode_blocks_used"
+                f"?calendar_id=eq.{calendar_id}&build_tag=eq.{tag}",
+                headers=sp.headers, timeout=30)
+        sp.insert("factory_episode_blocks_used", rows)
+        drops = sum(1 for r in rows if not r["rendered"])
+        note = f", {drops} rendered nothing" if drops else ""
+        print(f">> sequence provenance: {len(rows)} block(s) recorded{note}")
+    except Exception as e:
+        print(f"!! sequence provenance not recorded ({e}) — render is unaffected")
+
+
+def _sequence_mode():
+    """The bound composition's sequence_mode from its frozen _settings: 'replace'
+    (the composed _sequence IS the whole short — its scenes supply the VO script and
+    the segments) or 'augment' (default — the sequence adds b-roll AFTER the classic
+    beats). Absent / unbound => 'augment', so the classic path is byte-for-byte
+    unchanged (Sprint-5, VJ per-composition decision 2026-08-19)."""
+    try:
+        _tpl_lookup(CHANNEL_KEY_FOR_PROV, "__seq_probe__")   # populate _TPL_SETTINGS if a version is bound
+    except Exception:
+        pass
+    s = _TPL_SETTINGS or {}
+    m = s.get("sequence_mode")
+    return m if m in ("replace", "augment") else "augment"
+
+
+def _outro_source():
+    """WHO OWNS THE OUTRO: the look's outro_sting FILE ('sting', the default) or a
+    scene in the composed sequence ('sequence').
+
+    Both currently claim it. cfg["outro"] appends the flat question-CTA card that
+    gen_outro_card.py bakes, while an augment sequence appends its scenes after
+    the classic beats -- so dropping a cook:OutroGlass scene into a look today
+    ships TWO outros, one after the other.
+
+    It is DECLARED, not sniffed. The alternative was inferring it from the
+    component (OutroGlass registers beats ["cta","punchline"]), but that registry
+    is TypeScript and this is Python: the inference would have to be duplicated
+    and would silently rot the moment a new outro component landed. A setting the
+    designer sets is one fact in one place, and 'sting' by default keeps every
+    existing look byte-for-byte unchanged.
+
+    NOTE when you switch a look to 'sequence': cfg["outro_cta"] -- Sol speaking
+    the CTA over the card -- rides the classic filtergraph, so it goes with it.
+    The sequence scene has to carry its own words.
+    """
+    try:
+        _tpl_lookup(CHANNEL_KEY_FOR_PROV, "__seq_probe__")   # populate _TPL_SETTINGS
+    except Exception:
+        pass
+    v = (_TPL_SETTINGS or {}).get("outro_source")
+    _src = v if v in ("sting", "sequence") else "sting"
+    # A SEQUENCE THAT RENDERS NOTHING MUST NOT OWN THE OUTRO. The look can
+    # declare outro_source="sequence", but if every block in that sequence is
+    # dropped (e.g. frozen with empty props) the classic sting is skipped AND
+    # nothing replaces it -- the episode ships with no question card and no
+    # spoken CTA, silently. _upi hit exactly this. Fall back to the sting and
+    # say so out loud.
+    if _src == "sequence" and not any(
+            _seq_segment(_b) is not None for _b in _composed_sequence(CHANNEL_KEY_FOR_PROV)):
+        print("!! look says outro_source=sequence but the sequence renders NOTHING "
+              "— falling back to the classic sting so the episode keeps its outro")
+        return "sting"
+    return _src
+
+
+def _emit_manifest(ep, tag, cfg, replace_scenes, calendar_id, quiet=False):
+    """Sprint-5 --manifest: build the pre-render GENERATION MANIFEST for REVIEW and
+    (when calendar_id) persist it to factory_calendar.generation_manifest — WITHOUT
+    rendering or spending on VO/HeyGen. Lists every asset the build WILL make, each
+    linked to its scene(s), tagged free|paid, low-confidence flagged. Cast resolve is
+    IDENTITY-ONLY (resolve_locked/resolve_cast look up which asset, they don't
+    generate), so this is a read pass. Never raises on the persist (bookkeeping)."""
+    lines = cfg.get("lines") or []
+    n = len(lines)
+    assets, low_conf, host_scenes = [], [], []
+
+    # VO is the clock; captions derive from its word-timings.
+    assets.append({"type": "vo", "engine": "elevenlabs", "cost": "paid",
+                   "scenes": list(range(n)), "detail": f"{n} line(s)"})
+    assets.append({"type": "captions", "cost": "free", "scenes": list(range(n)),
+                   "detail": "derived from VO word-timings"})
+
+    if replace_scenes:
+        # REPLACE: one visual per scene, straight from the composed blocks.
+        for i, b in enumerate(replace_scenes):
+            conf = (b.get("config") or {}).get("confidence")
+            cb = (((b.get("config") or {}).get("cookbook") or {}).get("id")
+                  or ((b.get("config") or {}).get("broll") or {}).get("id"))
+            if b.get("block_type") == "host" or ((b.get("config") or {}).get("host") or {}).get("id"):
+                host_scenes.append(i)
+            entry = {"type": "cookbook" if cb else b.get("block_type"), "scene": i, "cost": "free"}
+            if cb:
+                entry["id"] = cb
+            if conf is not None:
+                entry["confidence"] = conf
+                if conf < 0.5:
+                    low_conf.append(i)
+            assets.append(entry)
+    else:
+        # CLASSIC / AUGMENT: enumerate the hand-authored beats, then any augment blocks.
+        for i, bt in enumerate(cfg.get("beats") or []):
+            b0 = str(bt).split("|")[0]
+            if b0 in ("host", "host2"):
+                host_scenes.append(i); assets.append({"type": "host", "scene": i, "cost": "paid"})
+            elif b0.startswith("cook:"):
+                assets.append({"type": "cookbook", "id": b0[5:].split("#", 1)[0], "scene": i, "cost": "free"})
+            elif b0.startswith("pip:"):
+                assets.append({"type": "pip", "ref": b0[4:], "scene": i, "cost": "free"})
+            elif b0.startswith("rec:"):
+                assets.append({"type": "recording", "ref": b0[4:].split("@")[0], "scene": i, "cost": "free"})
+            elif b0.startswith("stat:"):
+                assets.append({"type": "statbars", "scene": i, "cost": "free"})
+        for b in _composed_sequence(CHANNEL_KEY_FOR_PROV):
+            cb = ((b.get("config") or {}).get("cookbook") or {}).get("id")
+            if cb:
+                assets.append({"type": "cookbook", "id": cb, "cost": "free", "augment": True})
+
+    if host_scenes:
+        try:
+            href = resolve_locked("host_outfit", "character/host_library/outfit_11_sol_magenta", cfg=cfg)
+        except Exception:
+            href = None
+        assets.append({"type": "host_outfit", "ref": href, "cost": "paid", "scenes": host_scenes})
+
+    try:
+        cast = resolve_cast(cfg)
+    except Exception:
+        cast = {}
+    assets.append({"type": "music_bed", "ref": cast.get("music_bed"), "cost": "free"})
+    assets.append({"type": "outro_sting", "ref": cast.get("outro_sting"), "cost": "free"})
+    if cast.get("outro_cta"):
+        assets.append({"type": "outro_cta", "cost": "paid", "detail": "host speaks the CTA card"})
+    assets.append({"type": "hook" if cfg.get("hook") else "cover", "cost": "free",
+                   "detail": "illustration opener" if cfg.get("hook") else "poster opener"})
+    try:
+        rc = resolve_locked("remotion_comp", "Short", cfg=cfg)
+    except Exception:
+        rc = "Short"
+    assets.append({"type": "remotion_comp", "ref": rc, "cost": "free"})
+
+    manifest = {
+        "version": 1,
+        "sequence_mode": _sequence_mode(),
+        "outro_source": _outro_source(),
+        "template_version_id": _TPL_VERSION_ID,
+        "scene_count": n,
+        "paid_asset_count": sum(1 for a in assets if a.get("cost") == "paid"),
+        "low_confidence_scenes": low_conf,
+        "assets": assets,
+    }
+    print(f">> MANIFEST — {len(assets)} assets, {manifest['paid_asset_count']} paid, "
+          f"mode={manifest['sequence_mode']}, {n} scenes"
+          + (f", {len(low_conf)} low-confidence" if low_conf else ""))
+    if not quiet:
+        print(json.dumps(manifest, indent=1))
+    if calendar_id:
+        try:
+            _supa().patch("factory_calendar", f"id=eq.{calendar_id}",
+                          {"generation_manifest": manifest, "manifest_version_lock": _TPL_VERSION_ID})
+            print(f">> manifest persisted to factory_calendar {calendar_id}")
+        except Exception as e:
+            print(f"!! manifest not persisted ({e}) — review it above")
+    return manifest
+
+
 def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_version=None,
-          allow_cast_override=False):
+          allow_cast_override=False, manifest=False):
     """tag = the render stem (ep<NN>_<tag>{,_raw,_outro}.mp4). Defaults to the
     historical "v2"; pass another (e.g. "v3") to cut a REVISION without
     overwriting the shipped file, so old and new can be compared side by side.
@@ -1757,14 +2808,59 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     _bind_template_version("claude-tricks", explicit=template_version,
                            cfg=cfg, calendar_id=calendar_id,
                            allow_cast_override=allow_cast_override, ep=ep, tag=tag)
+
+    # Sprint-5 REPLACE mode: when the bound locked composition declares
+    # sequence_mode='replace', the composed _sequence IS the whole short — its scenes
+    # supply the VO script (1 scene : 1 VO line) and the segments, so the classic
+    # hand-authored beats are cleared. The append loop below then times each scene
+    # segment from the VO (seg_durs), not its placeholder config.dur. Inert (byte-
+    # identity) in the default 'augment' mode and whenever nothing is bound
+    # (_composed_sequence() == []), so classic produces are unchanged.
+    _replace_scenes = _composed_sequence(CHANNEL_KEY_FOR_PROV) if _sequence_mode() == "replace" else []
+    if _replace_scenes:
+        cfg = dict(cfg)  # never mutate a shared EPISODES_V2 entry
+        cfg["lines"] = [str((b.get("config") or {}).get("line") or "") for b in _replace_scenes]
+        cfg["beats"] = []                 # segments come from the scenes, not classic beats
+        cfg.setdefault("hot_words", [])
+        cfg.setdefault("steps", [])
+        # no cover/hook default: a replace auto-short opens straight on scene 0
+        # (build()'s opener now tolerates neither — see the elif below).
+
+    # Sprint-5 --manifest: emit the pre-render GENERATION MANIFEST and STOP, BEFORE
+    # any VO/HeyGen/render spend — a planning surface for REVIEW (what it WILL make).
+    if manifest:
+        return _emit_manifest(ep, tag, cfg, _replace_scenes, calendar_id)
+
     A = os.path.join(CH, "assets", f"ep{ep}"); os.makedirs(A, exist_ok=True)
     R = os.path.join(CH, "renders"); os.makedirs(R, exist_ok=True)
 
     # 1) VO with word timings (breaks between lines)
     from eleven_vo import load_key, synth
+    import hashlib
     vo = os.path.join(A, "vo_v2.wav")
+    # CONTENT-ADDRESSED CACHE. File existence alone is NOT a valid cache key, and
+    # trusting it shipped a real defect: on `_game` the script's payoff line was
+    # edited from "two hundred and thirty one" to "two hundred and sixty nine",
+    # the rebuild silently reused the old audio, and the master ended up showing
+    # 269ms on screen while the voice said 231. Hash the script instead — when it
+    # moves, the VO is stale, and so is every host clip CUT FROM that VO.
+    vo_txt = f" {BREAK} ".join(cfg["lines"])
+    vo_sig_p = os.path.join(A, "vo_v2.sig")
+    sig = hashlib.sha256(vo_txt.encode("utf-8")).hexdigest()[:16]
+    prev = open(vo_sig_p).read().strip() if os.path.exists(vo_sig_p) else None
     if not os.path.exists(vo):
-        synth(load_key(), ELEVEN_VOICE, f" {BREAK} ".join(cfg["lines"]), vo, speed=1.0, style=STYLE)
+        synth(load_key(), ELEVEN_VOICE, vo_txt, vo, speed=float(os.environ.get("VO_SPEED", "1.0")), style=STYLE)
+    elif prev is None:
+        # An episode built before this guard existed. Adopt the cached VO rather
+        # than re-spending (and re-cutting an already-shipped master's audio);
+        # every edit from here on is protected.
+        print(f">> vo_v2.sig absent for ep{ep} — adopting cached VO, guarding future edits")
+    elif prev != sig:
+        print(f">> SCRIPT CHANGED ({prev} -> {sig}) — re-synthesizing VO and all host clips")
+        synth(load_key(), ELEVEN_VOICE, vo_txt, vo, speed=float(os.environ.get("VO_SPEED", "1.0")), style=STYLE)
+        # host clips are cut from VO slices, so changed line timings invalidate them
+        os.environ["FACTORY_REBUILD_HOSTS"] = "1"
+    open(vo_sig_p, "w").write(sig)
     words = json.load(open(vo.rsplit(".", 1)[0] + ".words.json"))
     hot = set(cfg["hot_words"])
 
@@ -1786,6 +2882,74 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         cw = "".join(c for c in w["w"].upper() if c.isalnum() or c in "+-'/")
         if cw:
             caps.append({"w": cw, "start": w["start"], "end": w["end"], "hot": cw in hot})
+
+    # ---- spoken figures become NUMERALS on screen ------------------------
+    # VJ: "for number figures rather have them in number italic". The VO must
+    # still SAY "six thousand and sixty nine" (ElevenLabs reads digits badly and
+    # the cache is keyed on the spoken text), so the conversion happens only on
+    # the caption stream. KaraokeLine italicises any token containing a digit,
+    # so this changes the words and NOT the style.
+    #
+    # ONLY runs of 2+ number words collapse. A lone number word is prose, not a
+    # figure: "Six quick taps" must stay SIX (writing "6 quick taps" reads like a
+    # spec), and "One supermarket trip" must stay ONE. But "SIX THOUSAND AND
+    # SIXTY NINE" is a figure and becomes 6,069.
+    _UNITS = {"ZERO":0,"ONE":1,"TWO":2,"THREE":3,"FOUR":4,"FIVE":5,"SIX":6,
+              "SEVEN":7,"EIGHT":8,"NINE":9,"TEN":10,"ELEVEN":11,"TWELVE":12,
+              "THIRTEEN":13,"FOURTEEN":14,"FIFTEEN":15,"SIXTEEN":16,
+              "SEVENTEEN":17,"EIGHTEEN":18,"NINETEEN":19,"TWENTY":20,
+              "THIRTY":30,"FORTY":40,"FIFTY":50,"SIXTY":60,"SEVENTY":70,
+              "EIGHTY":80,"NINETY":90}
+    _SCALE = {"HUNDRED":100,"THOUSAND":1000,"LAKH":100000,"CRORE":10000000}
+
+    def _numword(w):
+        return w in _UNITS or w in _SCALE
+
+    def _to_int(tokens):
+        totalv, cur = 0, 0
+        for tk in tokens:
+            if tk == "AND":
+                continue
+            if tk in _UNITS:
+                cur += _UNITS[tk]
+            elif tk == "HUNDRED":
+                cur = (cur or 1) * 100
+            else:                      # THOUSAND / LAKH / CRORE
+                totalv += (cur or 1) * _SCALE[tk]; cur = 0
+        return totalv + cur
+
+    # A RUN MUST NOT CROSS A LINE BOUNDARY. Without this, line 5's "five
+    # thousand nine hundred" swallowed the "Six" that opens line 6 and rendered
+    # 5,906 — a figure that was never said and is not in the data.
+    def _lineno(c):
+        n = 0
+        for b in boundaries:
+            if c["start"] >= b - 1e-6:
+                n += 1
+        return n
+
+    merged, i = [], 0
+    while i < len(caps):
+        j, ln = i, _lineno(caps[i])
+        while j < len(caps) and _lineno(caps[j]) == ln and (
+                _numword(caps[j]["w"])
+                or (caps[j]["w"] == "AND" and j > i
+                    and j + 1 < len(caps) and _lineno(caps[j + 1]) == ln
+                    and _numword(caps[j + 1]["w"]))):
+            j += 1
+        numrun = [c["w"] for c in caps[i:j] if c["w"] != "AND"]
+        if len(numrun) >= 2:
+            val = _to_int([c["w"] for c in caps[i:j]])
+            merged.append({"w": f"{val:,}", "start": caps[i]["start"],
+                           "end": caps[j - 1]["end"], "hot": True})
+            i = j
+        else:
+            merged.append(caps[i]); i += 1
+    if len(merged) != len(caps):
+        print(f">> captions: {len(caps) - len(merged)} spoken number words "
+              f"collapsed into numerals "
+              f"({', '.join(m['w'] for m in merged if any(ch.isdigit() for ch in m['w']))})")
+    caps = merged
 
     n_lines = len(cfg["lines"])
     total = caps[-1]["end"]
@@ -1933,6 +3097,30 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     _seg_t = [0.0]
     for d in seg_durs:
         _seg_t.append(_seg_t[-1] + d)
+
+    # --- THE SPINE ---------------------------------------------------------
+    # Every beat renders inside its own <Sequence>, so useCurrentFrame() restarts
+    # at 0 on each cut. That is right for a beat that is its own little scene, and
+    # WRONG for a component meant to run continuously ACROSS beats: it would
+    # replay its entrance at every cut, and any absolute moment it is authored
+    # around (a snap pinned to the film's 6.00s retention knee) would never land.
+    #
+    # cfg["spine"] names the component ids that carry one unbroken timeline. For
+    # each, the beat it FIRST appears on becomes its anchor, and every later beat
+    # gets start = -(elapsed since that anchor) so the component's internal clock
+    # reads continuous film time. Offsets are computed from seg_durs -- the
+    # MEASURED VO clock -- never from planned storyboard timings, because the
+    # synthesised read is always a little longer or shorter than the plan and a
+    # hardcoded offset would show up as a jump at the cut.
+    _spine_anchor: dict = {}
+    for _si, _sb in enumerate(beats):
+        _s0 = str(_sb).split("|")[0]
+        if not _s0.startswith("cook:"):
+            continue
+        _scid = _s0[5:].split("#", 1)[0]
+        if _scid in (cfg.get("spine") or []) and _scid not in _spine_anchor:
+            _spine_anchor[_scid] = _seg_t[_si] if _si < len(_seg_t) else 0.0
+
     i = 0
     while i < len(beats):
         b = beats[i]
@@ -2123,9 +3311,73 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
             # the beat's merged dur is the segment dur; props come from
             # cfg["cookbook"][<componentId>] (a dict keyed by component id), default {}.
             # Emits the EXACT Short.tsx contract shape: seg["cookbook"]["id"]/["props"].
-            cid = b[5:]
+            # "cook:<Id>" or "cook:<Id>#<variant>" — the variant suffix lets ONE
+            # component appear on several beats with different props (e.g. two
+            # ScreenStage beats pointing at different offsets of the same tape).
+            # Component id is before the '#'; the FULL string is the props key.
+            raw_cid = b[5:]
+            cid = raw_cid.split("#", 1)[0]
             if isinstance(cid, str) and cid:
-                props = (cfg.get("cookbook") or {}).get(cid, {})
+                cb_props = cfg.get("cookbook") or {}
+                props = dict(cb_props.get(raw_cid, cb_props.get(cid, {})))
+                # a spine component's clock is film time, not beat time (see
+                # _spine_anchor above) -- so it survives the cut unbroken.
+                # NB start_i, never i: consecutive identical beats are MERGED into
+                # one segment above, and `i` has already walked to the END of that
+                # run. Offsetting by the run's last beat would drop the component
+                # into the middle of its own timeline -- CareerArc would open on
+                # the snap it is supposed to build to.
+                _anchor = _spine_anchor.get(cid, _seg_t[start_i])
+                if cid in _spine_anchor:
+                    props["start"] = round(_anchor - _seg_t[start_i], 3)
+                # "@beat<N>" resolves to the component-clock second at which beat
+                # N begins. A designed beat is authored around MOMENTS -- the flinch
+                # when the prompt lands, the snap, the demote -- and every one of
+                # those wants to sit exactly on a cut. Hardcoding them means
+                # re-timing the whole file by hand whenever the read comes back a
+                # quarter-second long, and re-timing it WRONG means the snap drifts
+                # off the cut it was written to punctuate. Resolving from seg_durs
+                # keeps the choreography nailed to the voice, whatever the voice does.
+                # "@beat<N>" or "@beat<N>+<seconds>" -- the offset form paces several
+                # moments across one spoken line, which is how a long beat is kept
+                # alive without inventing a second VO line to hang them on.
+                def _at(v):
+                    if isinstance(v, str) and v.startswith("@beat"):
+                        _spec, _off = v[5:], 0.0
+                        for _sgn in ("+", "-"):
+                            if _sgn in _spec:
+                                _spec, _o = _spec.split(_sgn, 1)
+                                try:
+                                    _off = float(_o) * (1 if _sgn == "+" else -1)
+                                except ValueError:
+                                    return v
+                                break
+                        try:
+                            n = int(_spec)
+                        except ValueError:
+                            return v
+                        return round((_seg_t[n] if n < len(_seg_t) else _seg_t[-1])
+                                     - _anchor + _off, 3)
+                    if isinstance(v, dict):
+                        return {k: _at(x) for k, x in v.items()}
+                    if isinstance(v, list):
+                        return [_at(x) for x in v]
+                    return v
+                props = {k: _at(v) for k, v in props.items()}
+                # `host: true` -> generate a HeyGen clip cut from THIS beat's own
+                # VO slice (so the lipsync matches the words spoken over it) and
+                # swap the real path in. Same path pip: beats use.
+                if props.get("host") is True:
+                    # The pinned PIP photo-avatar (dc9533a1...) is GONE from the
+                    # HeyGen account — /v3/videos returns avatar_not_found. The
+                    # WIDE avatar is alive (the host beats render from it), so the
+                    # PIP is cut from the wide 16:9 avatar and shown as a small
+                    # landscape card rather than a square crop.
+                    _pip_tid = WIDE_TID or framed_tid or tid
+                    _hc = host_clip(f"v2_cook_{raw_cid.replace('#', '_')}",
+                                    _seg_t[i], _seg_t[i + 1],
+                                    photo=_pip_tid, aspect="16:9")
+                    props["host"] = "assets/" + rel(_hc)
                 segments.append({"kind": "cookbook", "dur": round(dur, 3),
                                  "cookbook": {"id": cid, "props": props or {}}})
             else:
@@ -2138,10 +3390,27 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     # contract shapes) to augment the classic beat segments above. When no
     # _sequence is bound, _composed_sequence() is [] and this is a no-op — the
     # classic beat path stays byte-for-byte unchanged.
-    for _blk in _composed_sequence(CHANNEL_KEY_FOR_PROV):
+    _seq_replace = _sequence_mode() == "replace"
+    for _idx, _blk in enumerate(_composed_sequence(CHANNEL_KEY_FOR_PROV)):
         _seg = _seq_segment(_blk)
         if _seg is not None:
+            # REPLACE: the scene IS a VO line, so time it from seg_durs (the VO
+            # clock, 1 scene:1 line) instead of the block's placeholder config.dur.
+            # AUGMENT keeps config.dur (extra b-roll after the spoken beats).
+            if _seq_replace and _idx < len(seg_durs):
+                _seg["dur"] = round(seg_durs[_idx], 3)
             segments.append(_seg)
+        # S4 block reconciliation: record EVERY locked block, rendered or not.
+        # A locked block _seq_segment() dropped (rendered=False) is a real
+        # divergence — the reviewer sees it in the sequence-reconciliation card.
+        _RESOLVED_BLOCKS.append({
+            "position": _blk.get("position", 0),
+            "block_type": _blk.get("block_type"),
+            "layout": (_seg or {}).get("slot", {}).get("layout")
+                      if isinstance(_seg, dict) else None,
+            "ref": _block_ref(_blk),
+            "rendered": _seg is not None,
+        })
 
     # steps -> absolute times
     line_starts = []
@@ -2187,6 +3456,76 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         # lockup washes out and collides with the app's own header text.
         "headerScrim": bool(cfg.get("header_scrim")),
     }
+    # ---- MOTION-PIPELINE FILM MODE (docs/MOTION-PIPELINE.md) --------------
+    # cfg["film"] marks a motion-graphics FILM: one persistent canvas behind
+    # every scene, one camera drift over all of them, and the transcript as
+    # 1-3 word chips at a locked anchor (N1/U7) instead of the sentence
+    # caption. Chips are grouped HERE, from the measured word timings, because
+    # the grouping rules are editorial (break on pauses, cap at 3 words) and
+    # the renderer should only ever draw what it is given.
+    if cfg.get("film"):
+        _fl = cfg["film"] if isinstance(cfg["film"], dict) else {}
+        _chips, _cur = [], []
+
+        def _flush_chip():
+            if not _cur:
+                return
+            _hi = next((ii for ii, ww in enumerate(_cur) if ww.get("hot")), -1)
+            _chips.append({"t": round(_cur[0]["start"], 3),
+                           "end": round(_cur[-1]["end"] + 0.12, 3),
+                           "text": " ".join(ww["w"] for ww in _cur),
+                           "hot": _hi})
+
+        for _w in caps:
+            if _cur and (_w["start"] - _cur[-1]["end"] >= 0.25 or len(_cur) >= 3
+                         or _w["end"] - _cur[0]["start"] >= 1.4):
+                _flush_chip(); _cur = []
+            _cur.append(_w)
+        _flush_chip()
+        # a sub-0.34s chip is a strobe at 2x: merge back if the word budget
+        # allows, else hold it longer (the next chip simply starts late)
+        _mg = []
+        for _c in _chips:
+            if _mg and (_c["end"] - _c["t"]) < 0.34                and len((_mg[-1]["text"] + " " + _c["text"]).split()) <= 3:
+                _mg[-1]["text"] += " " + _c["text"]
+                _mg[-1]["end"] = _c["end"]
+                if _mg[-1]["hot"] < 0 <= _c["hot"]:
+                    _mg[-1]["hot"] = len(_mg[-1]["text"].split()) - len(_c["text"].split()) + _c["hot"]
+            else:
+                if (_c["end"] - _c["t"]) < 0.34:
+                    _c["end"] = round(_c["t"] + 0.34, 3)
+                _mg.append(_c)
+        # whiteout blooms sit ON beat boundaries, named by beat index
+        _blooms = [round(_seg_t[b], 3) for b in (_fl.get("bloom_beats") or [])
+                   if b < len(_seg_t)]
+        # chips_to routes the transcript INTO the film's spine component (the
+        # CLAYLIGHT worlds caption through their own ChipClay layer, in-world
+        # type) instead of the global Anton ChipCaption. Both at once would put
+        # six words on screen and fail U7 by construction.
+        _chips_to = _fl.get("chips_to")
+        if _chips_to:
+            _clay = [{"t": c["t"], "end": c["end"], "text": c["text"],
+                      "hot": c["hot"] >= 0} for c in _mg]
+            for _sg in segments:
+                if _sg.get("kind") == "cookbook" and _sg["cookbook"]["id"] == _chips_to:
+                    # AUTHORED chips win: a film whose storyboard was approved
+                    # with editorial chips ("5 SUSPECTS") keeps them — anchored
+                    # via @beat so they retime with the measured VO — and the
+                    # transcript grouping only fills films that authored none.
+                    _sg["cookbook"].setdefault("props", {})
+                    if not _sg["cookbook"]["props"].get("chips"):
+                        _sg["cookbook"]["props"]["chips"] = _clay
+            _mg = []
+        spec["film"] = {"chips": _mg, "blooms": _blooms,
+                        "driftAmp": _fl.get("driftAmp", 7)}
+        if _fl.get("plate"):
+            spec["film"]["plate"] = "assets/" + _fl["plate"]
+        # scenes live ON the canvas: cookbook beats render transparent so the
+        # film's single world shows through — the island behaviour ends here
+        for _sg in segments:
+            if _sg.get("kind") == "cookbook":
+                _sg["cookbook"]["transparent"] = True
+
     # v16.3: illustration hook opener REPLACES the poster cover on premium
     # episodes (VJ: a title card reads as an intro + gets scrolled past). When
     # cfg["hook"] is present we emit `hook` and drop `cover`; otherwise the
@@ -2197,17 +3536,20 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
             hk["image"] = "assets/" + hk["image"]
         hk.setdefault("until", round(min(max(hook_end + 0.6, 1.6), 3.0), 2))
         spec["hook"] = hk
-    else:
+    elif cfg.get("cover"):
         spec["cover"] = {**cfg["cover"],
                          "until": cfg["cover"].get(
                              "until",
                              round(min(max(hook_end + 0.6, 0.7), 1.8), 2) if not news_split else 2.2)}
+    # else (Sprint-5 replace auto-short): no cover/hook — open straight on scene 0.
     # v16.3: attach the static key line that fills each framed-host "THE IDEA"
     # panel (order matches the framed segments: hook run, then payoff run, ...).
     host_panels = cfg.get("host_panels", [])
     framed_segs = [s for s in segments if s.get("framed")]
     for s, panel in zip(framed_segs, host_panels):
         s["hostLines"] = panel["lines"]
+        if panel.get("hot"):
+            s["hostHot"] = panel["hot"]
         if panel.get("hot"):
             s["hostHot"] = panel["hot"]
     if news_split:
@@ -2264,6 +3606,34 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         rflags.append(f"--concurrency={os.environ['FACTORY_REMOTION_CONCURRENCY']}")
     if os.environ.get("FACTORY_REMOTION_HWACCEL"):
         rflags.append(f"--hardware-acceleration={os.environ['FACTORY_REMOTION_HWACCEL']}")
+    #   FACTORY_REMOTION_SCALE=2  -> render the 1080x1920 comp at 2160x3840.
+    #     Shorts play on phones, so the pixels are not the point: uploading above
+    #     1080p is what moves YouTube onto the VP9/AV1 ladder instead of
+    #     H.264-only, and this film is mostly aurora gradients and glass, which
+    #     is exactly the content that bands on a thin H.264 encode.
+    #   FACTORY_REMOTION_CRF=16   -> quality of the raw. The default master step
+    #     is -c:v copy, so whatever Remotion writes here IS the shipped video.
+    # PER-FORMAT DEFAULT, not repo-wide. A DESIGNED short — every beat a cookbook
+    # component — renders at 2x by default, because that content is aurora
+    # gradients and glass, which is exactly what bands on a thin 1080p H.264
+    # encode, and >1080p is what moves YouTube onto the VP9/AV1 ladder.
+    #
+    # It is deliberately NOT the default for everything. Measured: --scale=2 is
+    # 3.01x wall clock, the worker's JOB_TIMEOUT_S is 45 min for a job that already
+    # carries VO + HeyGen + lipsync + render + concat, per-episode output goes
+    # 40MB -> 118MB, and tape-based/news formats gain far less because their
+    # content is already a 1080p screen recording that cannot be sharpened by
+    # rendering the frame around it larger.
+    _designed = bool(beats) and all(str(b).startswith("cook:") for b in beats)
+    _scale = os.environ.get("FACTORY_REMOTION_SCALE") or ("2" if _designed else None)
+    _crf = os.environ.get("FACTORY_REMOTION_CRF") or ("16" if _designed else None)
+    if _scale and float(_scale) != 1:
+        rflags.append(f"--scale={_scale}")
+        os.environ.setdefault("FACTORY_REMOTION_SCALE", str(_scale))  # outro card matches
+        print(f">> designed short -> rendering at {int(1080*float(_scale))}x"
+              f"{int(1920*float(_scale))} (scale {_scale}, crf {_crf})")
+    if _crf:
+        rflags.append(f"--crf={_crf}")
     run(["npx", "remotion", "render", resolve_locked("remotion_comp", "Short"), raw,
          f"--props={sp}", *rflags],
         cwd=os.path.join(REPO, "remotion-studio"))
@@ -2275,6 +3645,16 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         # up the SAME cfg later and runs mastering + endcard + outro to publish.
         print(f">> PREVIEW mode — stopped after raw: {raw}")
         _flush_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
+        _flush_sequence_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
+        # S6 (Sprint 5): stamp the generation manifest onto the calendar row so the
+        # review board can show what this produce made (scene-linked, free|paid,
+        # low-confidence). Additive + never fails the produce (render already done).
+        if calendar_id:
+            try:
+                _rs = _composed_sequence(CHANNEL_KEY_FOR_PROV) if _sequence_mode() == "replace" else []
+                _emit_manifest(ep, tag, cfg, _rs, calendar_id, quiet=True)
+            except Exception as e:
+                print(f"!! manifest stamp skipped ({e}) — render is unaffected")
         return raw
 
     # 5) master: sidechain-ducked music + limiter
@@ -2343,7 +3723,10 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         assert os.path.exists(card), f"endcard missing: {card}"
         outc = os.path.join(R, f"ep{ep}_{tag}_cta.mp4")
         run(["ffmpeg", "-y", "-i", out, "-i", card, "-filter_complex",
-             f"[0][1]overlay=0:0:enable='between(t,{ec['in_s']},{ec['out_s']})'",
+             # the endcard PNG is authored at 1080x1920; overlay=0:0 pins it to the
+             # top-left, so on a scaled body it covered only a quarter of frame
+             f"[1:v]scale={_body_dims()[0]}:{_body_dims()[1]}:flags=lanczos[ec];"
+             f"[0][ec]overlay=0:0:enable='between(t,{ec['in_s']},{ec['out_s']})'",
              "-map", "0:a", "-c:a", "copy",
              *venc("18", "veryfast"),
              "-pix_fmt", "yuv420p", outc])
@@ -2351,7 +3734,12 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         out = outc
 
     # optional reusable outro sting (subscribe/comment), music keeps rolling + fades
-    if cfg.get("outro"):
+    _outro_owner = _outro_source()
+    if cfg.get("outro") and _outro_owner == "sequence":
+        print(">> OUTRO owned by the composed sequence — classic sting SKIPPED "
+              "(look setting outro_source=sequence). The sequence scene must carry "
+              "the question and the CTA words itself.")
+    if cfg.get("outro") and _outro_owner == "sting":
         # v16.2: per-episode outro override (cfg["outro_src"], relative to assets/)
         # so premium episodes can use a stronger question-CTA card instead of the
         # shared subscribe/comment sting.
@@ -2426,13 +3814,30 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         assert os.path.exists(card), f"endcard missing: {card}"
         outc = os.path.join(R, f"ep{ep}_{tag}_final.mp4")
         run(["ffmpeg", "-y", "-i", out, "-i", card, "-filter_complex",
-             f"[0][1]overlay=0:0:enable='gte(t,{ec['in_s']})'",
+             # the endcard PNG is authored at 1080x1920; overlay=0:0 pins it to the
+             # top-left, so on a scaled body it covered only a quarter of frame
+             f"[1:v]scale={_body_dims()[0]}:{_body_dims()[1]}:flags=lanczos[ec];"
+             f"[0][ec]overlay=0:0:enable='gte(t,{ec['in_s']})'",
              "-map", "0:a", "-c:a", "copy",
              *venc("18", "veryfast"),
              "-pix_fmt", "yuv420p", outc])
         print(f">> ENDCARD {ec['in_s']}s -> last frame (over the sting)", outc)
         out = outc
+    # AUTO-SFX (the ship-gap fix): lpa v1 armed SILENT because sfx_mix was a
+    # separate manual step. When the spec authors film.sfx, run it here — and a
+    # failed SFX pass must NEVER kill a build: warn loudly, ship the un-sfx file.
+    if isinstance(cfg.get("film"), dict) and cfg["film"].get("sfx"):
+        try:
+            mf = os.path.join(REPO, "renders_out", f"sfx_man_ep{ep}_{tag}.json")
+            json.dump({"film": cfg["film"]}, open(mf, "w"))
+            sfx_out = os.path.splitext(out)[0] + "_sfx.mp4"
+            run([sys.executable, os.path.join(CH, "sfx_mix.py"), "--manifest", mf,
+                 "--props", sp, "--video", out, "--out", sfx_out])
+            out = sfx_out
+        except Exception as e:
+            print(f"!! SFX PASS FAILED ({e}) — SHIPPING WITHOUT SFX: {out}")
     _flush_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
+    _flush_sequence_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
     return out
 
 if __name__ == "__main__":
@@ -2442,6 +3847,11 @@ if __name__ == "__main__":
                          "fallback spec at episodes/<ep>.v2.json (v16)")
     ap.add_argument("--dry", action="store_true",
                     help="regenerate the episode spec JSON only (no render/master)")
+    ap.add_argument("--manifest", action="store_true",
+                    help="Sprint-5: emit the pre-render generation manifest (assets + "
+                         "scene links + free/paid + low-confidence) and stop, BEFORE any "
+                         "VO/HeyGen/render spend. Persists to factory_calendar when "
+                         "--calendar-id is given.")
     ap.add_argument("--preview", action="store_true",
                     help="v16: stop after Remotion raw render — no master, "
                          "no endcard, no outro. For produce_preview jobs.")
@@ -2465,4 +3875,5 @@ if __name__ == "__main__":
                          "owner's deliberate cast pin. Operator escape hatch only.")
     a = ap.parse_args()
     build(a.ep, dry=a.dry, tag=a.tag, preview=a.preview, calendar_id=a.calendar_id,
-          template_version=a.template_version, allow_cast_override=a.allow_cast_override)
+          template_version=a.template_version, allow_cast_override=a.allow_cast_override,
+          manifest=a.manifest)

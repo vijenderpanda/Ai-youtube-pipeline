@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { api } from '../api'
 import { usePoll } from '../hooks'
-import { resolveStage } from '../pipeline'
+import { buildTriage } from '../triage'
 
 function Icon({ name }) {
   const paths = {
@@ -100,51 +100,44 @@ function Icon({ name }) {
  * Today (things waiting on the creator) and Activity (failed tasks).
  */
 const NAV_GROUPS = [
-  { label: null, items: [{ to: '/', label: 'Today', icon: 'overview', end: true, badge: 'today' }] },
   {
-    label: 'Create',
+    label: null,
     items: [
-      { to: '/calendar', label: 'Plan', icon: 'calendar' },
-      { to: '/studio', label: 'Studio', icon: 'studio' },
-      { to: '/posts', label: 'Publish', icon: 'posts' },
-    ],
-  },
-  {
-    label: 'Grow',
-    items: [
-      { to: '/analytics', label: 'Insights', icon: 'analytics' },
-      { to: '/channels', label: 'Channels', icon: 'channels' },
-    ],
-  },
-  {
-    label: 'Behind the scenes',
-    quiet: true,
-    items: [
-      { to: '/jobs', label: 'Activity', icon: 'jobs', badge: 'failed' },
-      { to: '/renders', label: 'Library', icon: 'renders' },
-      { to: '/studio/templates', label: 'Templates', icon: 'renders' },
-      // 'Formats' (/generators) archived 2026-08-19 — the composition/format now lives in
-      // Templates (sequence × layout × theme). Route redirects; page kept for history.
-      { to: '/workers', label: 'Machines', icon: 'workers' },
+      { to: '/', label: 'Today', icon: 'overview', end: true, badge: 'today' },
+      { to: '/make', label: 'Make', icon: 'studio' },
+      { to: '/plan', label: 'Plan', icon: 'calendar' },
+      { to: '/looks', label: 'Looks', icon: 'renders' },
+      { to: '/scoreboard', label: 'Scoreboard', icon: 'analytics' },
+      { to: '/machines', label: 'Machines', icon: 'workers' },
     ],
   },
 ]
 
 export default function Sidebar({ onLock }) {
-  // Badge data rides the endpoints the app already polls elsewhere.
+  // The badge must count exactly what Today shows. It used to run its own
+  // filter over the same rows with no recency window, no preview_path test, no
+  // cap and no empty-channel cards, on a different page of jobs at a different
+  // interval — so the two could never agree (measured: badge 19, headline 20,
+  // six cards drawn). Same selector, same inputs, one number.
   const stagedQ = usePoll(() => api.get('?r=staged'), 15000)
-  const jobsQ = usePoll(() => api.get('?r=jobs&limit=100'), 30000)
+  const jobsQ = usePoll(() => api.get('?r=jobs&limit=60'), 30000)
+  const postsQ = usePoll(() => api.get('?r=posts'), 60000)
+  const chansQ = usePoll(() => api.get('?r=channels'), 0)
+  const planQ = usePoll(() => api.get('?r=calendar'), 60000)
 
-  const items = (stagedQ.data && stagedQ.data.items) || []
-  const counts = (stagedQ.data && stagedQ.data.counts) || {}
-  const todayCount = items.filter((it) => resolveStage(it, counts[it.id] || {}).action).length
-  const failedCount = ((jobsQ.data && jobsQ.data.jobs) || []).filter((j) => j.status === 'failed').length
+  const { cards } = buildTriage({
+    items: (stagedQ.data && stagedQ.data.items) || [],
+    countsById: (stagedQ.data && stagedQ.data.counts) || {},
+    jobs: (jobsQ.data && jobsQ.data.jobs) || [],
+    posts: (postsQ.data && postsQ.data.posts) || [],
+    channels: (chansQ.data && chansQ.data.channels) || [],
+    planned: (planQ.data && planQ.data.items) || [],
+  })
+  const todayCount = cards.length
 
   const badge = (kind) => {
     if (kind === 'today' && todayCount > 0)
       return <span className="nav-badge nav-badge-today">{todayCount}</span>
-    if (kind === 'failed' && failedCount > 0)
-      return <span className="nav-badge nav-badge-failed">{failedCount}</span>
     return null
   }
 

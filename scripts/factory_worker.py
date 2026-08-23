@@ -56,13 +56,11 @@ v6 additions:
   suggest_brief and analytics_sync jobs skip recaps (results already structured).
 
 v6 challenge additions:
-- analyze_and_suggest v3 CHALLENGE PASS: the strategist re-audits upcoming
-  (today..+14d) planned/suggested calendar items against the newest per-video
-  analytics + web research. A suggestion carrying replaces_ref/why_not lands as
-  a CHALLENGER factory_calendar row (replaces_id + why_not, kind copied from
-  the original, status 'suggested', origin 'ai_suggestion'). An original that
-  already has a live challenger (status 'suggested' with replaces_id=it) is
-  never challenged again -- no stacking duplicates.
+- CHALLENGE PASS: RETIRED 2026-08-20 by owner decision. The strategist used to
+  re-audit upcoming items and write a CHALLENGER row (replaces_id + why_not)
+  proposing to replace one. The prompt no longer asks for it and
+  challenger_row() refuses any that still arrives. The replaces_id/why_not
+  columns and the two edge actions remain so historical rows stay resolvable.
 - analytics_sync upserts factory_settings.last_sync_at (ISO) after a successful
   sync -- powers the dashboard's "last ran" display.
 
@@ -1475,15 +1473,6 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
             "improve: 0-2 suggestions with kind 'factory' -- each a concrete generator "
             "create/update task that names the exact scripts/<file> (see the generator "
             "catalog in the context file).\n"
-            "STEP 3 -- CHALLENGE PASS: re-audit every existing planned/suggested item "
-            "dated today..+14d against the newest per-video analytics and your web "
-            "research. For any item likely to underperform, add a suggestion entry with "
-            "replaces_ref:'<item id>', why_not:'<one crisp sentence: why the current plan "
-            "is weak, citing data/research>', and a REVISED title+brief that keeps the "
-            "item's intent but fixes the weakness. Do not challenge items already "
-            "queued/produced, or items that already have a live challenger (a 'suggested' "
-            "calendar row whose replaces_id points at them). Challenge only when you have "
-            "a real reason -- no churn.\n"
             f"Write {suggestions_path(job['id'])}: "
             '{"analysis_summary": str, '
             '"suggestions": [{"kind": "content"|"factory", '
@@ -1494,10 +1483,7 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
             '"type": "produce_short"|"record_demo"|"custom" (factory items always "custom"), '
             '"model": str, "effort": str, '
             '"ultracode": bool, "reason": str (one crisp sentence citing the data or the '
-            'research you found), '
-            '"replaces_ref": str (CHALLENGE PASS entries only -- the id of the calendar '
-            'item this suggestion revises; omit otherwise), '
-            '"why_not": str (required with replaces_ref: why the current plan is weak)}], '
+            'research you found)}], '
             '"insights": {"<channel_key>": {"summary": str, "details": {"wins": [str], '
             '"risks": [str], "next": [str]}}}}\n'
             "This job is planning only -- do NOT produce any videos. "
@@ -1555,6 +1541,23 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
             '"title": str (provocation/curiosity, keyword front-loaded, 40-55 chars), '
             '"hook": str (the <=1.5s spoken cold-open line), '
             '"why_viral": str (1-2 sentences; cite the dated source that anchors it), '
+            # BEAT SKELETON (2026-08-20): the planner emits the shot list as
+            # BeatIntents so the visual library can propose a component per beat
+            # BEFORE the money gate. pickCookbook (remotion-studio/src/cookbook/
+            # registry.ts) ranks on exactly these fields, and its `keywords` are
+            # documented as "free words from the script / plan" -- so this does
+            # not need the final VO, which is written later inside the produce.
+            # The vocabularies are CLOSED: an invented value ranks nothing.
+            '"beats": [{"beat": "hook"|"context"|"stat"|"process"|"comparison"|"demo"'
+            '|"punchline"|"cta"|"social-proof", '
+            '"shows": str (one line: what is literally ON SCREEN in this beat), '
+            '"needs": "series"|"metrics"|"single-number"|"facts"|"before-after"|"steps"|"options"'
+            '|"dialogue"|"phrase"|"query-results"|"hub-spokes"|"ledger"|"part-whole"|"alerts"|"utterance"|"table" '
+            '(the SHAPE of what is on screen, not the topic), '
+            '"keywords": [str] (3-6 CONCRETE nouns this visual is about -- they are matched '
+            'against a component library, so "budget, spending, category, total" ranks and '
+            '"useful, clean, modern" ranks nothing)}] '
+            '(3-6 beats IN ORDER; the LAST beat must be "cta"), '
             '"brief": str (production-ready: the 6-beat outline, the verified TODAY anchor + '
             'its source, and the 6 shot ideas -- enough for produce_channel to run)}]}\n'
             "Rank by viral potential. Planning only -- do NOT produce videos, do NOT write a manifest."
@@ -1590,6 +1593,23 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
             '"title": str (YouTube title in this channel\'s voice), '
             '"hook": str (the cold-open line), '
             '"why_viral": str (1-2 sentences; cite the evidence/source/date), '
+            # BEAT SKELETON (2026-08-20): the planner emits the shot list as
+            # BeatIntents so the visual library can propose a component per beat
+            # BEFORE the money gate. pickCookbook (remotion-studio/src/cookbook/
+            # registry.ts) ranks on exactly these fields, and its `keywords` are
+            # documented as "free words from the script / plan" -- so this does
+            # not need the final VO, which is written later inside the produce.
+            # The vocabularies are CLOSED: an invented value ranks nothing.
+            '"beats": [{"beat": "hook"|"context"|"stat"|"process"|"comparison"|"demo"'
+            '|"punchline"|"cta"|"social-proof", '
+            '"shows": str (one line: what is literally ON SCREEN in this beat), '
+            '"needs": "series"|"metrics"|"single-number"|"facts"|"before-after"|"steps"|"options"'
+            '|"dialogue"|"phrase"|"query-results"|"hub-spokes"|"ledger"|"part-whole"|"alerts"|"utterance"|"table" '
+            '(the SHAPE of what is on screen, not the topic), '
+            '"keywords": [str] (3-6 CONCRETE nouns this visual is about -- they are matched '
+            'against a component library, so "budget, spending, category, total" ranks and '
+            '"useful, clean, modern" ranks nothing)}] '
+            '(3-6 beats IN ORDER; the LAST beat must be "cta"), '
             '"brief": str (production-ready brief following the channel blueprint -- '
             'enough for produce_channel to run)}]}\n'
             "Rank by viral potential. Planning only -- do NOT produce videos, do NOT write a manifest."
@@ -1598,7 +1618,23 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
         # v17: the channel-page "Plan content" idea engine. Ranked list across 4
         # signals (analytics / Vaibhav-DNA / recent news / upcoming events). Each
         # idea carries a production-ready brief so the user can pick -> produce_channel.
+        #
+        # One Desk · Make: the owner may PASTE fresh rows out of YouTube Studio
+        # before asking. That paste outranks everything else in the context file:
+        # the Analytics API finalizes with ~48h lag and a 1-3 day old Short has no
+        # rows at all, so the stored numbers can be flatly wrong about exactly the
+        # videos the next idea should learn from.
+        fresh = str((job.get("meta") or {}).get("fresh_numbers") or "").strip()
+        fresh_block = (
+            "FRESH NUMBERS, PASTED BY THE OWNER MINUTES AGO -- this is the newest and most\n"
+            "trustworthy source you have. It OUTRANKS the stats in the context file and the\n"
+            "Analytics API (both lag ~48h; the newest Shorts have no API rows at all). Read it\n"
+            "as ground truth for the videos it names, and SAY in why_viral when an idea is\n"
+            "driven by it:\n"
+            f"<<<PASTED\n{fresh}\nPASTED\n\n"
+        ) if fresh else ""
         body = (
+            fresh_block +
             f"You are the content strategist for the AI Unpacked channel ('{key}': a premium "
             "AI-tips Short channel for GENERAL beginners; synthetic host Sol, magenta).\n"
             f"Read {ctx_path or '(context file missing)'} (guidelines, last-30d stats, recent "
@@ -1624,6 +1660,23 @@ def build_prompt(job, guidelines="", ctx_path=None, asset=None, template=None):
             '"title": str (YouTube title w/ emoji, Vaibhav-DNA hook grammar), '
             '"hook": str (the <=1.5s spoken hook line), '
             '"why_viral": str (1-2 sentences; cite the evidence/source/date), '
+            # BEAT SKELETON (2026-08-20): the planner emits the shot list as
+            # BeatIntents so the visual library can propose a component per beat
+            # BEFORE the money gate. pickCookbook (remotion-studio/src/cookbook/
+            # registry.ts) ranks on exactly these fields, and its `keywords` are
+            # documented as "free words from the script / plan" -- so this does
+            # not need the final VO, which is written later inside the produce.
+            # The vocabularies are CLOSED: an invented value ranks nothing.
+            '"beats": [{"beat": "hook"|"context"|"stat"|"process"|"comparison"|"demo"'
+            '|"punchline"|"cta"|"social-proof", '
+            '"shows": str (one line: what is literally ON SCREEN in this beat), '
+            '"needs": "series"|"metrics"|"single-number"|"facts"|"before-after"|"steps"|"options"'
+            '|"dialogue"|"phrase"|"query-results"|"hub-spokes"|"ledger"|"part-whole"|"alerts"|"utterance"|"table" '
+            '(the SHAPE of what is on screen, not the topic), '
+            '"keywords": [str] (3-6 CONCRETE nouns this visual is about -- they are matched '
+            'against a component library, so "budget, spending, category, total" ranks and '
+            '"useful, clean, modern" ranks nothing)}] '
+            '(3-6 beats IN ORDER; the LAST beat must be "cta"), '
             '"brief": str (production-ready brief following the Ep11/Ep12 template -- enough for '
             'produce_channel to run)}]}\n'
             "Rank by viral potential. Planning only -- do NOT produce videos, do NOT write a manifest."
@@ -2870,11 +2923,22 @@ def ingest_insights(supa, data, buf):
 
 
 def challenger_row(supa, s, row, buf):
-    """v6 challenge pass: a suggestion carrying replaces_ref revises an existing
-    calendar item. Completes `row` with replaces_id + why_not and the ORIGINAL
-    item's kind, and returns it -- or returns None to skip (original missing or
-    unreadable, or it already has a live challenger: a 'suggested' row whose
-    replaces_id points at it -- no stacking duplicates)."""
+    """RETIRED 2026-08-20 by owner decision: the challenge pass is gone.
+
+    It wrote a CHALLENGER calendar row (replaces_id + why_not) proposing to
+    replace an already-planned piece, and the app showed those within 72h of
+    publish as a decision to make. The prompt no longer asks for one; this
+    refuses any that still arrives, so a stray replaces_ref in an old cached
+    plan cannot quietly resurrect rows nothing renders. The two edge actions
+    (supersede_calendar_item, dismiss_challenge) stay callable so the existing
+    rows can still be resolved."""
+    ref = str(s.get("replaces_ref") or "").strip()
+    if ref:
+        buf.add(f"[worker] ignored challenger for {ref!r} — the challenge pass is retired")
+    return None
+
+
+def _challenger_row_retired(supa, s, row, buf):
     ref = str(s.get("replaces_ref") or "").strip()
     try:
         orig = supa.select("factory_calendar", f"id=eq.{ref}&select=id,kind,status")
@@ -4993,8 +5057,12 @@ def main():
     # Propagate non-secret tuning knobs into the process env so the GPU/encode
     # settings reach child render subprocesses (ffmpeg helper, Remotion). Secrets
     # (service key etc.) are deliberately NOT exported to job children.
+    # FACTORY_REMOTION_SCALE/_CRF must be here or a worker-run produce silently
+    # ships 1080p while an interactive run on the same commit ships 4K — the
+    # nastiest kind of divergence, because nothing errors.
     for _k in ("FACTORY_FFMPEG_HWACCEL", "FACTORY_FFMPEG", "FACTORY_REMOTION_GL",
-               "FACTORY_REMOTION_CONCURRENCY", "FACTORY_REMOTION_HWACCEL"):
+               "FACTORY_REMOTION_CONCURRENCY", "FACTORY_REMOTION_HWACCEL",
+               "FACTORY_REMOTION_SCALE", "FACTORY_REMOTION_CRF"):
         if env.get(_k):
             os.environ.setdefault(_k, env[_k])
     supa = Supa(env["SUPABASE_URL"], env["SUPABASE_SERVICE_KEY"])

@@ -124,6 +124,45 @@ def load_previous():
     return prev
 
 
+
+def reconcile_shipped(lines):
+    """Link videos that are live on YouTube back to the pieces that made them.
+
+    Runs here because this is the one job that fires daily on the machine where
+    the YouTube credentials live. Without it, anything armed OUTSIDE the app
+    drifts: finalize writes factory_posts.calendar_id, but a piece armed by hand
+    leaves no post at all, and its calendar row keeps the status the triage feed
+    selects for -- so the app asks you to review a video that is already public.
+    Three Aashiqana songs sat like that for a day.
+
+    Never fatal. A stats run that wrote its report must not fail because a
+    YouTube token expired.
+    """
+    try:
+        sys.path.insert(0, os.path.join(REPO, "scripts"))
+        from reconcile_posts import link_existing, from_youtube
+        from factory_worker import Supa, load_env
+
+        env = load_env()
+        supa = Supa(env["SUPABASE_URL"], env["SUPABASE_SERVICE_KEY"])
+        a = link_existing(supa, apply=True, quiet=True) or {}
+        b = from_youtube(supa, apply=True, quiet=True) or {}
+        done = (a.get("linked") or 0) + (b.get("written") or 0)
+        unsure = (a.get("ambiguous") or 0) + (b.get("unsure") or 0)
+        if done or unsure:
+            bits = []
+            if done:
+                bits.append(f"{done} shipped video(s) matched back to their piece")
+            if unsure:
+                bits.append(f"{unsure} left unmatched (a day two pieces share cannot be "
+                            f"separated safely — run scripts/reconcile_posts.py to see them)")
+            lines.append("## Reconciliation\n" + "\n".join(f"- {b}" for b in bits) + "\n")
+        print(f"reconcile: linked={done} unsure={unsure}")
+    except Exception as e:  # noqa: BLE001
+        lines.append(f"## Reconciliation\n- did not run: {type(e).__name__}: {str(e)[:120]}\n")
+        print(f"reconcile: skipped ({type(e).__name__}: {str(e)[:90]})")
+
+
 def main():
     os.makedirs(STATS_DIR, exist_ok=True)
     today = datetime.now().strftime("%Y-%m-%d")
@@ -188,6 +227,8 @@ def main():
             movers.append((ch_delta, label))
     if errors:
         lines.append("## Errors\n" + "\n".join(f"- {e}" for e in errors))
+    # after the numbers, before the report is written, so what it did is on record
+    reconcile_shipped(lines)
     with open(REPORT, "w") as f:
         f.write("\n".join(lines) + "\n")
 

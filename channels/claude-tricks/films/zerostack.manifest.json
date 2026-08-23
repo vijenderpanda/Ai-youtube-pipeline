@@ -1,0 +1,366 @@
+{
+  "ep": "_zerostack",
+  "class": "MYSTERY",
+  "world": "METER-CHOR — one daylight papercraft world: the cutaway house wears split-flap taxi meters; dark meter housings + green AI dock are the value anchors on cream. The ECU hook and the loop-out are the same camera position (frame 0 adjacent to last frame).",
+  "honesty": "declared-illustration",
+  "plant": {
+    "what": "the BLURRED rate window (₹??/hr) on the hero meter bolted to the AC — a visibly locked secret, paid at the 75% rate-lock",
+    "beat": 0
+  },
+  "knee": {
+    "what": "the JUN digit SLAM at absolute 6.00s + the ₹3,400 chunk SHEARING off the bill-meter with mass — the film's loudest event, inside the window, then an ANIMATING shelf (chunk pulses), never a freeze",
+    "anchor": 6.0,
+    "window": [
+      4.0,
+      8.0
+    ]
+  },
+  "payoff": {
+    "what": "RATE LOCK: the blurred window from frame 0 slams ₹18/HR at ~40% frame width; chai anchor lands it",
+    "anchor": "@beat6+0.3",
+    "min_frac": 0.75
+  },
+  "lines": [
+    {
+      "vo": "Tumhare AC pe taxi ka meter chal raha hai.",
+      "subject": "the hero meter",
+      "from": "ECU: split-flap fare meter bolted on the old AC grille, total mid-roll, red flag down, RATE window blurred",
+      "to": "camera yank-back begins"
+    },
+    {
+      "vo": "Har appliance pe meter hai. Bill dekho: April, May, aur June mein jump.",
+      "subject": "the house + the bill-meter",
+      "from": "cutaway house, five meters ticking in polyrhythm — AC's fastest",
+      "to": "the bill becomes a giant meter; odometer rolls 8,577 → 9,940 → 11,990 (DEMO), final digit SLAMS at 6.00s and the top SHEARS off"
+    },
+    {
+      "vo": "Extra chauntees sau kisne khaya? Free AI se pucho — uska meter zero.",
+      "subject": "the coral chunk + the AI dock",
+      "from": "+₹3,400 chunk pulsing where it fell",
+      "to": "three bills whoosh into the green dock; the AI's own meter refuses to tick — ₹0, dead needle"
+    },
+    {
+      "vo": "Fridge — har mahina same. TV same. Geyser sirf sardi. Machine hafte mein do.",
+      "subject": "the meter-walk",
+      "from": "first suspect pulled forward with scan bar",
+      "to": "four flags flip UP in accelerating cadence — each cleared by its own 12-month usage sparkline, housings grey out"
+    },
+    {
+      "vo": "Ek bacha: purana AC, roz chhe ghante.",
+      "subject": "the survivor",
+      "from": "the walk stops",
+      "to": "the film's ONLY push-in — old AC alone in colour, amber wash, label flips STUDY·AC → CHOR?, nameplate flips out"
+    },
+    {
+      "vo": "Chauntees sau, tees din, chhe ghante — meter bolta hai…",
+      "subject": "the division as machinery",
+      "from": "the coral chunk feeds into the meter slot",
+      "to": "sliced into 30 slivers, regrouped over the raat-6-ghante arc into 6 chips — division performed physically"
+    },
+    {
+      "vo": "Athara rupaye har ghanta. Har ghante ek cutting chai. Wahi jump.",
+      "subject": "the rate lock + the circle",
+      "from": "the blurred window UNLOCKS: ₹18/HR slams at 40% width, chai-glass anchor",
+      "to": "slivers fly back into the chunk, chunk snaps into the bill labelled AC ≈ ₹3,240 — WAHI JUMP"
+    },
+    {
+      "vo": "Prompt pinned hai. Apne bills daalo, apna chor pakdo. Free.",
+      "subject": "the give + loop",
+      "from": "detective prompt types FAST, complete and static ≥2s, PINNED ✓ COPY KARO",
+      "to": "camera returns to the ECU meter — last frame adjacent to frame 0"
+    }
+  ],
+  "beats": [
+    "cook:MeterChor#ecu",
+    "cook:MeterChor#housebill",
+    "cook:MeterChor#shearfeed",
+    "cook:MeterChor#walk",
+    "cook:MeterChor#sirfac",
+    "cook:MeterChor#slice",
+    "cook:MeterChor#lock",
+    "cook:MeterChor#give"
+  ],
+  "spine": [
+    "MeterChor"
+  ],
+  "scenes": [
+    {
+      "archetype": "A1",
+      "comp": "MeterChor",
+      "beats": [
+        0
+      ],
+      "note": "wrongness hook: a taxi meter on an AC — situation, not information; no build-in, brand <1s"
+    },
+    {
+      "archetype": "A3",
+      "comp": "MeterChor",
+      "beats": [
+        1
+      ],
+      "note": "bill-as-meter roll; 6.00s digit slam + shear = knee event"
+    },
+    {
+      "archetype": "A4",
+      "comp": "MeterChor",
+      "beats": [
+        2,
+        3
+      ],
+      "note": "dead AI meter gag; accelerating elimination walk, tempo = suspicion"
+    },
+    {
+      "archetype": "A2",
+      "comp": "MeterChor",
+      "beats": [
+        4,
+        5
+      ],
+      "note": "only push-in on the survivor; division as machinery"
+    },
+    {
+      "archetype": "A5",
+      "comp": "MeterChor",
+      "beats": [
+        6,
+        7
+      ],
+      "note": "rate lock at 75%, circle snap-back, complete-prompt give, loop-out"
+    }
+  ],
+  "numbers": [
+    {
+      "value": "8577",
+      "spoken": "",
+      "source": "DECLARED ILLUSTRATION — demo bill figures, DEMO tag on the bill header; the METHOD (seasonal delta) is the teachable content"
+    },
+    {
+      "value": "9940",
+      "spoken": "",
+      "source": "DECLARED ILLUSTRATION — demo bill figure (DEMO tag)"
+    },
+    {
+      "value": "11990",
+      "spoken": "",
+      "source": "DECLARED ILLUSTRATION — demo bill figure (DEMO tag)"
+    },
+    {
+      "value": "3400",
+      "spoken": "chauntees sau",
+      "source": "DECLARED ILLUSTRATION — the demo jump (11,990-8,577 seasonal delta ≈ 3,400 rounded)"
+    },
+    {
+      "value": "30",
+      "spoken": "tees",
+      "source": "days in a month — common knowledge"
+    },
+    {
+      "value": "6",
+      "spoken": "chhe",
+      "source": "assumed daily AC runtime, stated on screen as the raat-6-ghante arc — declared assumption"
+    },
+    {
+      "value": "18",
+      "spoken": "athara",
+      "source": "derived on screen: 3400/30/6 ≈ 18.9 → ₹18; cross-check 1.9 units/hr × ₹9.5/unit ≈ ₹18 (NoBroker/Onida 2026 non-inverter 1.5T + Mumbai tariff)"
+    },
+    {
+      "value": "3240",
+      "spoken": "",
+      "source": "derived on screen: 18×6×30 — the circle-close label"
+    },
+    {
+      "value": "0",
+      "spoken": "zero",
+      "source": "free tier — the premise; the AI meter that refuses to tick"
+    },
+    {
+      "value": "3",
+      "spoken": "",
+      "source": "three monthly bills fed to the AI — the method's input"
+    }
+  ],
+  "hot_words": [
+    "AC",
+    "TAXI",
+    "METER",
+    "KAUN",
+    "KHA",
+    "CHAUNTEES",
+    "KISNE",
+    "ZERO",
+    "BARI",
+    "SIRF",
+    "TEES",
+    "CHHE",
+    "ATHARA",
+    "CHAI",
+    "WAHI",
+    "JUMP",
+    "PINNED",
+    "PAKDO"
+  ],
+  "carry": "the coral ₹3,400 chunk — born at the 6s shear, pulses as the shelf, feeds the slicer, snaps back at the circle; plus the hero meter itself (frame 0, the ECU return at the loop-out). The dark meter housings are the persistent value anchors.",
+  "cookbook": {
+    "MeterChor": {
+      "yankAt": "@beat0+1.6",
+      "billAt": "@beat1+0.4",
+      "slamAt": 6.0,
+      "shearAt": 6.3,
+      "feedAt": "@beat2+1.4",
+      "aiMeterAt": "@beat2+2.6",
+      "walkAts": [
+        "@beat3+0.0",
+        "@beat3+1.5",
+        "@beat3+2.7",
+        "@beat3+3.8"
+      ],
+      "acAt": "@beat4+0.2",
+      "sliceAt": "@beat5+0.0",
+      "regroupAt": "@beat5+2.0",
+      "lockAt": "@beat6+0.3",
+      "circleAt": "@beat6+2.6",
+      "giveAt": "@beat7+0.2",
+      "endAt": "@beat7+4.0",
+      "chips": [
+        {
+          "t": "@beat0+0.3",
+          "end": "@beat0+1.7",
+          "text": "KAUN KHA RAHA?",
+          "hot": true
+        },
+        {
+          "t": "@beat0+1.8",
+          "end": "@beat1+0.3",
+          "text": "HAR METER CHALU"
+        },
+        {
+          "t": "@beat1+0.4",
+          "end": "@beat1+1.9",
+          "text": "BILL BHI METER"
+        },
+        {
+          "t": "@beat1+2.0",
+          "end": 6.35,
+          "text": "APR → MAY → JUN"
+        },
+        {
+          "t": 6.4,
+          "end": "@beat2+1.3",
+          "text": "+₹3,400 KISNE?",
+          "hot": true,
+          "big": true
+        },
+        {
+          "t": "@beat2+1.4",
+          "end": "@beat2+2.5",
+          "text": "3 BILLS → AI"
+        },
+        {
+          "t": "@beat2+2.6",
+          "end": "@beat3+0.0",
+          "text": "AI METER: ₹0",
+          "hot": true
+        },
+        {
+          "t": "@beat3+0.1",
+          "end": "@beat3+1.4",
+          "text": "FRIDGE ✗"
+        },
+        {
+          "t": "@beat3+1.5",
+          "end": "@beat3+2.6",
+          "text": "TV ✗"
+        },
+        {
+          "t": "@beat3+2.7",
+          "end": "@beat3+3.7",
+          "text": "GEYSER ✗"
+        },
+        {
+          "t": "@beat3+3.8",
+          "end": "@beat4+0.1",
+          "text": "MACHINE ✗"
+        },
+        {
+          "t": "@beat4+0.2",
+          "end": "@beat4+1.6",
+          "text": "SIRF AC",
+          "hot": true
+        },
+        {
+          "t": "@beat4+1.7",
+          "end": "@beat5+0.0",
+          "text": "ROZ 6 GHANTE"
+        },
+        {
+          "t": "@beat5+0.1",
+          "end": "@beat5+1.9",
+          "text": "÷ 30 DIN"
+        },
+        {
+          "t": "@beat5+2.0",
+          "end": "@beat6+0.2",
+          "text": "÷ 6 GHANTE"
+        },
+        {
+          "t": "@beat6+0.3",
+          "end": "@beat6+1.8",
+          "text": "₹18/GHANTA",
+          "hot": true,
+          "big": false
+        },
+        {
+          "t": "@beat6+1.9",
+          "end": "@beat6+3.3",
+          "text": "1 CHAI/GHANTA"
+        },
+        {
+          "t": "@beat6+3.4",
+          "end": "@beat7+0.1",
+          "text": "WAHI JUMP"
+        },
+        {
+          "t": "@beat7+0.2",
+          "end": "@beat7+1.6",
+          "text": "PROMPT PINNED",
+          "hot": true
+        },
+        {
+          "t": "@beat7+1.7",
+          "end": "@beat7+3.9",
+          "text": "CHOR PAKDO"
+        }
+      ]
+    }
+  },
+  "film": {
+    "chips_to": "MeterChor",
+    "desc_hashtags": [
+      "#ai",
+      "#electricitybill",
+      "#claude"
+    ]
+  },
+  "give": {
+    "prompt": "Mere ghar ka bijli bill zyada aa raha hai. Detective bano: yeh mere last 3 months ke bill amounts hain — [April ___, May ___, June ___]. Appliances: AC (inverter/non-inverter?) __ hrs/day, fridge, TV, geyser, washing machine. Seasonal jump nikaalo, appliance-wise hisaab do, sabse bada culprit batao aur uska per-hour cost estimate karo.",
+    "where": "description above the fold + pinned comment"
+  },
+  "outro": {
+    "q": "KAUN KHA RAHA|TUMHARI|BIJLI?",
+    "accent_word": "BIJLI?",
+    "cta": "The detective prompt is pinned and in the description. Apne bill ke numbers daalo — free mein chor pakdo."
+  },
+  "title_candidates": [
+    "I Caught My Bijli Chor By Typing One Line 🔍",
+    "AC Pe TAXI METER — ₹18/Hour Chori 🚕",
+    "Your Bill Jumped ₹3,400 — A FREE AI Found Why 🔍"
+  ],
+  "tags": [
+    "electricity bill",
+    "bijli bill",
+    "ai detective",
+    "claude",
+    "free ai"
+  ]
+}

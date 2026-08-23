@@ -1,0 +1,11 @@
+file '/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/ep15/mock/ask.png'
+duration 2.6
+file '/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/ep15/mock/generic.png'
+duration 5.4
+file '/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/ep15/mock/paste.png'
+duration 5.0
+file '/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/ep15/mock/matched.png'
+duration 3.2
+file '/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/ep15/mock/compare.png'
+duration 8.8
+file '/Users/vijenderpanda/Ai-youtube-pipeline/channels/claude-tricks/assets/ep15/mock/compare.png'

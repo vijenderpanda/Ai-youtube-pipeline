@@ -1,0 +1,92 @@
+[
+ {
+  "w": "DROP",
+  "start": 0.0,
+  "end": 0.28
+ },
+ {
+  "w": "YOUR",
+  "start": 0.33,
+  "end": 0.42
+ },
+ {
+  "w": "REACTION",
+  "start": 0.45,
+  "end": 0.79
+ },
+ {
+  "w": "TIME",
+  "start": 0.84,
+  "end": 1.01
+ },
+ {
+  "w": "IN",
+  "start": 1.04,
+  "end": 1.09
+ },
+ {
+  "w": "THE",
+  "start": 1.13,
+  "end": 1.2
+ },
+ {
+  "w": "COMMENTS",
+  "start": 1.23,
+  "end": 1.68
+ },
+ {
+  "w": "FOLLOW",
+  "start": 1.83,
+  "end": 2.14
+ },
+ {
+  "w": "FOR",
+  "start": 2.18,
+  "end": 2.3
+ },
+ {
+  "w": "MORE",
+  "start": 2.37,
+  "end": 2.55
+ },
+ {
+  "w": "SIMPLE",
+  "start": 2.61,
+  "end": 3.01
+ },
+ {
+  "w": "FAST",
+  "start": 3.05,
+  "end": 3.34
+ },
+ {
+  "w": "AI",
+  "start": 3.41,
+  "end": 3.62
+ },
+ {
+  "w": "TOOLS",
+  "start": 3.65,
+  "end": 3.87
+ },
+ {
+  "w": "YOU",
+  "start": 3.92,
+  "end": 3.99
+ },
+ {
+  "w": "CAN",
+  "start": 4.03,
+  "end": 4.14
+ },
+ {
+  "w": "ACTUALLY",
+  "start": 4.19,
+  "end": 4.49
+ },
+ {
+  "w": "USE",
+  "start": 4.54,
+  "end": 5.06
+ }
+]

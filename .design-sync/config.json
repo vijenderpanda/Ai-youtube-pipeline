@@ -1,0 +1,21 @@
+{
+  "projectId": "8a24b4d5-f061-44df-90bb-e913dd9ae2d0",
+  "shape": "package",
+  "pkg": "remotion-studio",
+  "globalName": "AIUnpackedCookbook",
+  "srcDir": "src",
+  "tsconfig": "tsconfig.json",
+  "extraFonts": [
+    "public/fonts/fonts.css"
+  ],
+  "componentSrcMap": {
+    "MotionStage": "src/designsystem.tsx",
+    "BRAND": null,
+    "SANS": null,
+    "MONO": null,
+    "DISPLAY": null,
+    "SERIF": null,
+    "SAFE": null
+  },
+  "buildCmd": "npm run build"
+}

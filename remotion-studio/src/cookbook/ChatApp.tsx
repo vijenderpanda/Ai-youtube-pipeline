@@ -19,7 +19,18 @@ import { BRAND, SANS, rgba, clamp, coverBg, Fonts } from "./kit";
 
 export type ChatMessage = {
   from: "user" | "ai";
-  text: string;
+  text?: string;
+  /* An ARTIFACT CARD instead of a text bubble — the moment an AI hands back a
+     built thing (a file, an app) rather than prose. Added 2026-08-19 so the
+     "one line -> a real app" beat can play inside our own designed UI instead
+     of a small, chrome-heavy screen recording. The card materializes with a
+     sheen sweep so the app reads as being HANDED OVER, not just listed. */
+  artifact?: {
+    title: string; // e.g. "Dinner wheel"
+    subtitle?: string; // e.g. "Code · HTML"
+    action?: string; // trailing chip, e.g. "Open"
+    glyph?: string; // tile glyph, default "</>"
+  };
 };
 
 export type ChatAppProps = {
@@ -186,26 +197,97 @@ export const ChatApp: React.FC<ChatAppProps> = ({
                   transform: `translateX(${dx2}px) scale(${interpolate(s, [0, 1], [0.94, 1])})`,
                 }}
               >
-                <div
-                  style={{
-                    maxWidth: "78%",
-                    padding: "26px 32px",
-                    fontSize: 38,
-                    lineHeight: 1.34,
-                    color: isUser ? ink : BRAND.paper,
-                    background: isUser
-                      ? `linear-gradient(160deg, ${accent}, ${rgba(accent, 0.82)})`
-                      : AI_BUBBLE,
-                    border: isUser ? "none" : `1px solid ${rgba("#ffffff", 0.07)}`,
-                    borderRadius: 34,
-                    borderBottomRightRadius: isUser ? 10 : 34,
-                    borderBottomLeftRadius: isUser ? 34 : 10,
-                    boxShadow: isUser ? `0 12px 34px ${rgba(accent, 0.34)}` : `0 12px 30px ${rgba("#000000", 0.4)}`,
-                    fontWeight: isUser ? 600 : 500,
-                  }}
-                >
-                  {m.text}
-                </div>
+                {m.artifact ? (
+                  /* artifact card — the built thing being handed back */
+                  <div
+                    style={{
+                      position: "relative",
+                      width: "88%",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 26,
+                      padding: "30px 32px",
+                      borderRadius: 30,
+                      background: `linear-gradient(150deg, ${rgba(accent, 0.20)}, ${AI_BUBBLE} 58%)`,
+                      border: `1px solid ${rgba(accent, 0.55)}`,
+                      boxShadow: `0 18px 46px ${rgba(accent, 0.30)}`,
+                      overflow: "hidden",
+                    }}
+                  >
+                    {/* sheen sweep as it lands */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background: `linear-gradient(100deg, transparent 35%, ${rgba("#ffffff", 0.16)} 50%, transparent 65%)`,
+                        transform: `translateX(${interpolate(clamp(s), [0, 1], [-140, 140])}%)`,
+                      }}
+                    />
+                    <div
+                      style={{
+                        width: 96,
+                        height: 96,
+                        borderRadius: 22,
+                        flex: "0 0 auto",
+                        display: "grid",
+                        placeItems: "center",
+                        background: rgba("#ffffff", 0.08),
+                        border: `1px solid ${rgba("#ffffff", 0.12)}`,
+                        color: BRAND.paper,
+                        fontSize: 34,
+                        fontWeight: 800,
+                      }}
+                    >
+                      {m.artifact.glyph ?? "</>"}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 42, fontWeight: 800, color: BRAND.paper }}>
+                        {m.artifact.title}
+                      </div>
+                      {m.artifact.subtitle && (
+                        <div style={{ fontSize: 30, color: BRAND.mute, marginTop: 6 }}>
+                          {m.artifact.subtitle}
+                        </div>
+                      )}
+                    </div>
+                    {m.artifact.action && (
+                      <div
+                        style={{
+                          flex: "0 0 auto",
+                          padding: "16px 30px",
+                          borderRadius: 999,
+                          background: accent,
+                          color: "#fff",
+                          fontSize: 30,
+                          fontWeight: 800,
+                        }}
+                      >
+                        {m.artifact.action}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      maxWidth: "78%",
+                      padding: "26px 32px",
+                      fontSize: 38,
+                      lineHeight: 1.34,
+                      color: isUser ? ink : BRAND.paper,
+                      background: isUser
+                        ? `linear-gradient(160deg, ${accent}, ${rgba(accent, 0.82)})`
+                        : AI_BUBBLE,
+                      border: isUser ? "none" : `1px solid ${rgba("#ffffff", 0.07)}`,
+                      borderRadius: 34,
+                      borderBottomRightRadius: isUser ? 10 : 34,
+                      borderBottomLeftRadius: isUser ? 34 : 10,
+                      boxShadow: isUser ? `0 12px 34px ${rgba(accent, 0.34)}` : `0 12px 30px ${rgba("#000000", 0.4)}`,
+                      fontWeight: isUser ? 600 : 500,
+                    }}
+                  >
+                    {m.text}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -304,9 +386,11 @@ export const chatAppDemo: ChatAppProps = {
   appName: "Prompt Deck",
   status: "online",
   messages: [
-    { from: "user", text: "turn my messy notes into a 3-step plan" },
-    { from: "ai", text: "Done. 1) Draft the outline  2) Cut to 3 beats  3) Write the last line first." },
-    { from: "user", text: "make step 3 a hook" },
-    { from: "ai", text: "“You’re writing the ending before the start — here’s why that wins.”" },
+    { from: "user", text: "build me a spin-the-wheel dinner picker" },
+    { from: "ai", text: "On it — six options, one big SPIN button." },
+    {
+      from: "ai",
+      artifact: { title: "Dinner wheel", subtitle: "Code · HTML", action: "Open" },
+    },
   ],
 };

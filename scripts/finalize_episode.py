@@ -116,6 +116,191 @@ def qc_gate(final_path):
     return (not issues), issues
 
 
+
+# ---------------------------------------------------------------------------
+# ARM-TIME GATE — the last thing that runs before anything touches YouTube.
+#
+# Every check below exists because the thing it checks ALREADY SHIPPED WRONG,
+# or came within minutes of doing so. Ordered by the damage each one prevented.
+# Rationale and incident notes: docs/SHORTS-METHOD-AND-APP-GATES.md §3, §7.
+# ---------------------------------------------------------------------------
+
+# Words that carry no discovery value, so they are never required to appear in
+# title/tags. Deliberately small: the point is to catch a MISSING artifact noun,
+# not to police copy.
+_GATE_STOP = {
+    "build", "me", "a", "an", "the", "app", "that", "with", "for", "and", "my",
+    "in", "to", "of", "what", "it", "this", "big", "clear", "huge", "just",
+    "some", "very", "really", "simple", "small",
+}
+
+
+def _registry_entry(ep):
+    """EPISODES_V2[ep] read by AST — never import build_ep_v2, it has side effects."""
+    import ast
+    src = os.path.join(CH, "build_ep_v2.py")
+    if not os.path.exists(src):
+        return None
+    try:
+        tree = ast.parse(open(src).read())
+    except Exception:
+        return None
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign) and any(
+                getattr(t, "id", None) == "EPISODES_V2" for t in node.targets):
+            for k, v in zip(node.value.keys, node.value.values):
+                if getattr(k, "value", None) == ep:
+                    try:
+                        return ast.literal_eval(v)
+                    except Exception:
+                        return None
+    return None
+
+
+def _capture_prompt(ep):
+    """The prompt REALLY typed on camera, from this episode's capture script.
+
+    Convention: rec_<key>_app.py, where key is the episode key without its
+    leading underscore (_game -> rec_game_app.py)."""
+    import ast
+    cand = os.path.join(CH, f"rec_{ep.lstrip('_')}_app.py")
+    if not os.path.exists(cand):
+        return None
+    try:
+        tree = ast.parse(open(cand).read())
+    except Exception:
+        return None
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign) and any(
+                getattr(t, "id", None) == "PROMPT" for t in node.targets):
+            try:
+                return ast.literal_eval(node.value)
+            except Exception:
+                return None
+    return None
+
+
+def _artifact_nouns(prompt):
+    """The words that NAME the thing that was built.
+
+    Takes the noun phrase after "build me a/an/the", stopping at the first
+    clause break, so "Build me a reaction time game that fills the whole
+    screen..." yields {reaction, time, game} and not the whole spec."""
+    import re
+    m = re.search(r"\bbuild me (?:a|an|the)\s+(.+)", prompt or "", re.I)
+    if not m:
+        return []
+    phrase = re.split(r"\s+-\s+|,|\.|\bthat\b", m.group(1), 1)[0]
+    return sorted({w for w in re.findall(r"[a-z]+", phrase.lower())
+                   if len(w) > 2 and w not in _GATE_STOP})
+
+
+def _spoken_text(ep):
+    """What the rendered voice track actually SAYS, normalised for comparison."""
+    import re
+    wp = os.path.join(CH, "assets", f"ep{ep}", "vo_v2.words.json")
+    if not os.path.exists(wp):
+        return None
+    try:
+        words = json.load(open(wp))
+    except Exception:
+        return None
+    said = " ".join(w.get("w", "") for w in words
+                    if not w.get("w", "").lower().startswith(("<break", "time=", "/")))
+    return re.sub(r"[^a-z0-9]", "", said.lower())
+
+
+def arm_gate(ep, spec_path, spec, thumb_path):
+    """Hard pre-flight. Returns (issues, warnings); a non-empty issues list
+    must abort before upload."""
+    import re
+    issues, warns = [], []
+
+    # 1) THE MIRROR MUST EXIST. Tip #2 went live to real subscribers titled
+    #    "ep_habit_v2_outro.mp4" because this file did not exist and finalize
+    #    fell back to the filename.
+    if not os.path.exists(spec_path):
+        issues.append(f"metadata mirror missing: {spec_path} — finalize would "
+                      f"title the video after the FILE (this already happened once)")
+        return issues, warns
+    for field in ("title", "tags", "lines"):
+        if not spec.get(field):
+            issues.append(f"mirror {os.path.basename(spec_path)} has no {field!r}")
+
+    title = spec.get("title") or ""
+    tags = spec.get("tags") or ""
+
+    # 2) MIRROR MUST MATCH THE REGISTRY. build_ep_v2 renders from EPISODES_V2;
+    #    finalize publishes from the mirror. When they drift, the video and its
+    #    metadata describe different things. Drifted within MINUTES of an edit
+    #    on _wheel (tags) — this is not a theoretical failure.
+    reg = _registry_entry(ep)
+    if reg is None:
+        warns.append(f"no EPISODES_V2[{ep!r}] to cross-check the mirror against")
+    else:
+        for field in ("title", "tags", "lines"):
+            if field in reg and reg[field] != spec.get(field):
+                issues.append(
+                    f"{field} DIVERGES between EPISODES_V2[{ep!r}] and the mirror\n"
+                    f"       registry: {reg[field]!r}\n"
+                    f"       mirror  : {spec.get(field)!r}")
+
+    # 3) TITLE SANITY — a filename is never a title.
+    if title.lower().endswith((".mp4", ".mov", ".json")) or re.match(r"^ep[_0-9]", title):
+        issues.append(f"title looks like a filename, not a title: {title!r}")
+    if len(title) > YT_TITLE_MAX:
+        issues.append(f"title is {len(title)} chars, over YouTube's {YT_TITLE_MAX}")
+
+    # 4) THE ARTIFACT'S OWN NOUNS MUST BE DISCOVERABLE. On _game the thing built
+    #    was a GAME, the title said "Reaction Test", and "game" appeared only in
+    #    the voiceover — i.e. nowhere the algorithm reads. A human caught that;
+    #    nothing automated did. This is that check.
+    prompt = _capture_prompt(ep)
+    if prompt:
+        nouns = _artifact_nouns(prompt)
+        hay = (title + " " + tags).lower()
+        missing = [w for w in nouns if w not in hay]
+        if missing:
+            issues.append(
+                f"the prompt built {nouns} but {missing} appear in NEITHER title "
+                f"nor tags — unsearchable\n       prompt: {prompt[:90]}...")
+    else:
+        warns.append(f"no rec_{ep.lstrip('_')}_app.py — skipped the keyword check")
+
+    # 5) THUMBNAIL. This channel's CTR advantage (4.6% vs a 0.76% ceiling) rides
+    #    on the thumbnail; _game would have armed without one.
+    if not thumb_path:
+        issues.append(f"no thumbnail found (renders/thumb_ep{ep}.jpg) — this "
+                      f"channel's CTR depends on it")
+
+    # 6) THE VOICE MUST MATCH THE PUBLISHED SCRIPT. The VO used to be cached on
+    #    file existence, so an edited script shipped stale audio: a master went
+    #    out showing 269ms while the voice said "two hundred and thirty one".
+    said = _spoken_text(ep)
+    if said is None:
+        warns.append("no vo_v2.words.json — could not verify the voice matches the script")
+    else:
+        for i, line in enumerate(spec.get("lines") or []):
+            norm = re.sub(r"[^a-z0-9]", "", line.lower())
+            if norm and norm not in said:
+                issues.append(
+                    f"line {i} in the mirror is NOT what the voice track says — "
+                    f"stale VO or edited metadata\n       mirror: {line!r}")
+                break
+
+    # 7) DESCRIPTION must render and carry the compliance line.
+    try:
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            desc = open(build_description(spec, os.path.join(td, "probe"))).read()
+        if "Not affiliated" not in desc:
+            issues.append("description is missing the required disclosure line")
+    except Exception as e:
+        issues.append(f"description failed to build: {e!r}")
+
+    return issues, warns
+
+
 # Series-follow numbering (VJ pick 2026-08-13): the YouTube title carries a
 # "30 Claude tricks in 30 days" challenge suffix so every audition viewer sees
 # there's a next episode to follow. The Vaibhav-DNA hook grammar stays LOCKED
@@ -179,8 +364,14 @@ def build_description(spec, final_path):
     if entities:
         disclosure = "Not affiliated with " + ", ".join(entities) + "."
 
-    tag_line = " ".join("#" + t.strip().replace(" ", "") for t in
-                        (spec.get("tags") or "").split(",") if t.strip())
+    # 2026-08-21 metadata research: hashtag-stuffed descriptions are the outlier
+    # pattern, not the hit pattern (Fireship ships 3; both top videos ship few or
+    # none). `desc_hashtags` lets a spec pin a curated short set while the full
+    # tags list still fills the upload's tag field, where our searched-noun law
+    # lives and where they cost nothing.
+    tag_line = spec.get("desc_hashtags") or " ".join(
+        "#" + t.strip().replace(" ", "") for t in
+        (spec.get("tags") or "").split(",") if t.strip())
     # Series promise — every viewer must see there's a next episode to follow
     # (VJ directive 2026-08-13; series-follow pass). Build Club specs carry
     # the Friday promise + the week's homework instead of the daily line.
@@ -199,9 +390,29 @@ def build_description(spec, final_path):
     else:
         promise = ["One 30-second Claude trick, every day."]
 
+    # Optional per-episode ask, placed directly under the hook line where it is
+    # visible without expanding the description. Opt-in: episodes that do not set
+    # `desc_cta` render exactly as before, so this changes no existing episode.
+    # Added 2026-08-20 — YouTube analytics on tip #2 flagged zero likes and zero
+    # viewer comments on 221 views and recommended asking a specific question, and
+    # the ask existed only in the picture, not in any indexed text.
+    ask = [spec["desc_cta"], ""] if spec.get("desc_cta") else []
+
+    # The exact prompt, verbatim and copy-pasteable, ABOVE the fold. Added
+    # 2026-08-20 for _upi: the analytics law is that the ask must live in
+    # INDEXED text, not only in the picture or the voice-over — and a viewer who
+    # has to expand the description to find the prompt does not find it. This is
+    # also the artifact being claimable: four episodes of the previous franchise
+    # asked people to want a thing and gave them no way to get it.
+    # MUST be char-for-char identical to what is typed on tape and to the
+    # capture script's PROMPT constant (gate C1 in the shooting spec).
+    recipe = ([spec["desc_prompt"].strip(), ""] if spec.get("desc_prompt") else [])
+
     desc = "\n".join([
         hook_line,
         "",
+        *recipe,
+        *ask,
         *promise,
         "",
         "AI Unpacked — no hype, just what actually works.",
@@ -340,6 +551,10 @@ def main():
                     help="run master + QC only, do NOT touch YouTube")
     ap.add_argument("--dry", action="store_true",
                     help="pass --dry through to yt_upload (arm smoke test)")
+    ap.add_argument("--force-arm", action="store_true",
+                    help="publish even if the arm-time gate finds problems. Every gate "
+                         "check exists because that exact thing already shipped wrong — "
+                         "read the failures before reaching for this.")
     ap.add_argument("--calendar-id",
                     help="factory_calendar item id — when given (and the arm "
                          "succeeds), a scheduled factory_posts row is inserted and "
@@ -383,6 +598,15 @@ def main():
     print(">> QC gate PASSED")
 
     # 4) ARM YOUTUBE (optional)
+    # --dry USED TO PUBLISH FOR REAL. arm_youtube() accepted the flag and never
+    # used it, the yt_upload command it builds carries no --dry, and yt_upload.py
+    # has no --dry argument at all -- so "--dry" performed a live upload and only
+    # skipped the factory-DB sync. The one true rehearsal was --skip-arm, which
+    # is not what the flag name promises anyone reading --help.
+    if a.dry and not a.skip_arm:
+        print("!! --dry does NOT upload — treating it as --skip-arm. "
+              "Master and every gate still run. Drop --dry to actually arm.")
+        a.skip_arm = True
     if a.skip_arm or not a.schedule:
         print(">> skipping YT arm (no --schedule or --skip-arm)")
         print(f">> final master ready at: {final}")
@@ -418,6 +642,23 @@ def main():
         if os.path.exists(cand):
             thumb = cand
             break
+
+    # ---- ARM-TIME GATE: last stop before YouTube ----
+    gate_issues, gate_warns = arm_gate(a.ep, spec, spec_data, thumb)
+    for w in gate_warns:
+        print(f"!! gate warning: {w}")
+    if gate_issues:
+        print("\n!! ARM GATE FAILED — nothing has been uploaded:", file=sys.stderr)
+        for i in gate_issues:
+            print(f"  - {i}", file=sys.stderr)
+        if not a.force_arm:
+            print("\n   Fix these, or re-run with --force-arm if you are certain.",
+                  file=sys.stderr)
+            sys.exit(3)
+        print("\n!! --force-arm given: publishing DESPITE the failures above.",
+              file=sys.stderr)
+    else:
+        print(">> arm gate PASSED")
 
     ok, msg, video_id = arm_youtube(final, a.schedule, spec_data, thumb_path=thumb, dry=a.dry)
     if not ok:

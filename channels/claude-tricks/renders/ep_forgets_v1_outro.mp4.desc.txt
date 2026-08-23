@@ -1,0 +1,19 @@
+Claude just forgot what you told it.
+
+Your chat is a box with a fixed size — the context window. When it fills (Claude's holds ~200K tokens), the oldest messages get pushed out, and the AI genuinely can't see them anymore.
+
+The fix — paste this BEFORE your chat gets long:
+
+"Before this chat gets long: summarize everything worth keeping so far — decisions, facts, numbers, names — as short notes I can paste into a fresh chat and continue exactly where we left off."
+
+Then open a fresh chat, paste the notes, and continue where you left off. Works in ChatGPT, Claude, and Gemini.
+
+Has an AI ever forgotten something you told it? Yes or no 👇
+
+One 30-second Claude trick, every day.
+
+AI Unpacked — no hype, just what actually works.
+
+Not affiliated with Anthropic, OpenAI.
+
+#chatgpt #claude #ai

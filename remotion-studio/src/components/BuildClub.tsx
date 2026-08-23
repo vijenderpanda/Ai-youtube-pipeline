@@ -44,7 +44,7 @@ export type ChapterPayload = {
   // optional season-map strip (bc01 v5): pills revealed one-by-one while the
   // VO reads the week map — kills the 8s static-card dead zone. Each pill may
   // carry `at` (seconds into the beat) to sync its pop to the spoken day.
-  week?: {d: string; t: string; at?: number}[];
+  week?: {d: string; t: string; at?: number; on?: boolean}[];
 };
 export type PausePayload = {
   title: string;                          // "PAUSE — COPY THIS PROMPT"
@@ -244,6 +244,7 @@ export const ChapterCard: React.FC<{chapter: ChapterPayload; fps: number}> = ({
         >
           {chapter.week.map((w, i) => {
             const at = w.at ?? 1.6 + i * 1.5; // fallback: even stagger
+            const hot = w.on ?? i === 0; // tonight's pill; default first
             const pop = spring({
               frame: f - Math.round(at * fps),
               fps,
@@ -256,7 +257,7 @@ export const ChapterCard: React.FC<{chapter: ChapterPayload; fps: number}> = ({
                   opacity: pop,
                   transform: `translateY(${(1 - pop) * 26}px) scale(${0.85 + 0.15 * pop})`,
                   background: "rgba(255,255,255,0.06)",
-                  border: `2px solid ${i === 0 ? MAG : FAINT}`,
+                  border: `2px solid ${hot ? MAG : FAINT}`,
                   borderRadius: 18,
                   padding: "16px 22px",
                   textAlign: "center",
@@ -264,7 +265,7 @@ export const ChapterCard: React.FC<{chapter: ChapterPayload; fps: number}> = ({
                 }}
               >
                 <div style={{fontSize: 30, letterSpacing: 4, color: DIM}}>{w.d}</div>
-                <div style={{fontSize: 40, letterSpacing: 2, color: i === 0 ? MAG : TXT, marginTop: 6}}>
+                <div style={{fontSize: 40, letterSpacing: 2, color: hot ? MAG : TXT, marginTop: 6}}>
                   {w.t}
                 </div>
               </div>

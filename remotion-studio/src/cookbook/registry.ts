@@ -49,8 +49,11 @@ export type DataShape =
   | "phrase" // a sentence with words to emphasize
   | "query-results" // a search query + result rows
   | "hub-spokes" // one center + N related items
+  | "ledger" // many homogeneous records that must be read, filtered and grouped
+  | "part-whole" // one figure and the larger figure it is a share of
   | "alerts" // a set of short notifications
-  | "utterance"; // a spoken line -> live transcript
+  | "utterance" // a spoken line -> live transcript
+  | "table"; // rows of label + A-value vs B-value — a comparison matrix with a winner
 
 export type CookbookEntry = {
   id: string; // component export name (also the file basename)
@@ -63,7 +66,14 @@ export type CookbookEntry = {
   transparentCapable: boolean; // supports `transparent` -> can overlay a host/b-roll
   wow: 1 | 2 | 3 | 4 | 5; // taste-flex impact (5 = showstopper)
   density: "low" | "med" | "high"; // how much info it carries at once
-  useWhen: string; // one-line selection guidance
+  /** One-line selection guidance. Optional because many entries carry `gist`
+   *  instead — the two coexisted for months while the type declared only this
+   *  one, so every `gist` was an excess-property error the loose tsconfig hid. */
+  useWhen?: string;
+  /** What the component actually DOES, in the library's own voice. Several
+   *  entries have used this since the cookbook was written; it was never on the
+   *  type. Declaring it is what makes those entries legal. */
+  gist?: string;
 };
 
 export const COOKBOOK: CookbookEntry[] = [
@@ -158,6 +168,137 @@ export const COOKBOOK: CookbookEntry[] = [
     transparentCapable: true, wow: 4, density: "med",
     useWhen: "Show AI sifting a set of options and picking the best one.",
   },
+  {
+    id: "Fogline", demoId: "FoglineDemo", title: "Agent plan / lit road",
+    role: "app-ui", beats: ["process", "demo", "context"], needs: "steps",
+    keywords: ["agent", "plan", "roadmap", "pipeline", "autonomy", "foresight", "lookahead", "what happens next", "steps ahead", "orchestration", "workflow", "confidence"],
+    transparentCapable: true, wow: 5, density: "high",
+    useWhen: "Show an agent's whole PLAN executing with honest foresight — the near step sharp, the far ones fogged (blur = confidence). Sibling to DynamicIsland (present) — Fogline is the future.",
+  },
+  {
+    id: "HoloCard", demoId: "HoloCardDemo", title: "Holographic hero card",
+    role: "layout", beats: ["hook", "punchline", "cta", "context"], needs: "facts",
+    keywords: ["hero", "feature", "product", "reveal", "spotlight", "premium", "one thing", "flagship", "launch", "showcase", "3d card", "depth"],
+    transparentCapable: true, wow: 5, density: "low",
+    useWhen: "Spotlight ONE subject (feature/product/idea) as a floating, dimensional artifact with a few spec chips. The low-density hero counterpart to BentoGrid.",
+  },
+  {
+    id: "GlassPanel", demoId: "GlassPanelDemo", title: "Liquid-glass stat panel",
+    role: "device-ui", beats: ["stat", "context", "cta", "social-proof"], needs: "single-number",
+    keywords: ["glass", "frosted", "liquid glass", "premium", "ios", "translucent", "hud", "panel", "headline number", "dashboard", "refraction", "style"],
+    transparentCapable: true, wow: 5, density: "med",
+    useWhen: "Present ONE hero figure + a few supporting rows on a frosted, refractive glass panel — the premium-material way to land a number.",
+  },
+  {
+    id: "GenerativeUI", demoId: "GenerativeUIDemo", title: "Prompt in, components land",
+    role: "app-ui", beats: ["demo", "process", "context"], needs: "steps",
+    keywords: ["prompt", "agent", "generative", "tool call", "component", "chat", "ask", "build"],
+    transparentCapable: true, wow: 5, density: "med",
+    gist: "Plate 08 staged: one prompt goes in and UI COMPONENTS land one by one on a timeline - a spec card, a preview tile, an action row - never a paragraph. Chat bubbles port the fallback; this ports the interface.",
+  },
+  {
+    id: "ScreenStage", demoId: "ScreenStageDemo", title: "Staged screen recording",
+    role: "layout", beats: ["demo", "process", "punchline"], needs: "steps",
+    keywords: ["recording", "screen", "tape", "demo", "footage", "device", "proof", "morph"],
+    transparentCapable: true, wow: 5, density: "low",
+    gist: "Real recorded footage presented with the plates that port: a glass-bezelled card on a scripted camera (depth without 3D), a shadow plane and sheen at different depths, SVG grain, and a Plate 05 bounding-box morph so the recording TRAVELS from an inset card to hero instead of cutting. The pixels inside are never altered - staging around real evidence.",
+  },
+  {
+    id: "OutroGlass", demoId: "OutroGlassDemo", title: "Glass question-CTA outro",
+    role: "layout", beats: ["cta", "punchline"], needs: "phrase",
+    keywords: ["outro", "cta", "subscribe", "question", "comment", "sting", "endcard", "glass"],
+    transparentCapable: false, wow: 5, density: "low",
+    gist: "The channel sting rebuilt on the 2026 mechanics: a refractive glass panel over a drifting aurora bed (baked blur + inset hairline + specular sweep), the question arriving as kinetic type on a 26ms per-word stagger, and Plate 09 draw grammar applied to the panel's OWN rules: an accent rule plus both hairlines DRAW left-to-right in a top-down cascade, each line leading its row in. No chart, no numerals, no fabricated data. Holds a readable end state.",
+  },
+  {
+    id: "ReactionMeter", demoId: "ReactionMeterDemo", title: "Reaction time (measured)",
+    role: "dataviz", beats: ["hook", "demo", "punchline"], needs: "single-number",
+    keywords: ["reaction", "speed", "time", "ms", "milliseconds", "test", "score", "measure",
+               "benchmark", "challenge", "game", "fast", "timer", "stopwatch"],
+    transparentCapable: true, wow: 5, density: "med",
+    useWhen: "A single measured NUMBER is the payoff. Runs a WAIT -> GREEN -> arrive cycle so the value is earned on camera, then holds a readable end state with an average marker to compare against.",
+    gist: "The library's Plate 09 block: a panel holds on red, snaps hard to green, and the result ARRIVES — ring drawn via stroke-dashoffset, digits rotating up on a 26ms stagger, then an average-human marker that turns the readout into a challenge the viewer can answer.",
+  },
+  {
+    id: "LedgerFlow", demoId: "LedgerFlowRushDemo", title: "Conserved ledger column",
+    role: "transformation", beats: ["hook", "demo", "process", "stat"], needs: "ledger",
+    keywords: ["transactions", "spend", "upi", "ledger", "rows", "sort", "categories",
+               "screenshots", "history", "group", "bank", "expenses", "audit"],
+    transparentCapable: true, wow: 5, density: "high",
+    gist: "40-60 real records stream past too fast to read, get bracketed against what was NOT read, then re-lay themselves into category lanes as ticks - one conserved row set across four phases, so consecutive beats hand off with no cut. Masks person-to-person rows by construction.",
+  },
+  {
+    id: "ShareSplit", demoId: "ShareSplitDemo", title: "Part-of-whole split",
+    role: "dataviz", beats: ["punchline", "stat", "comparison"], needs: "part-whole",
+    keywords: ["share", "fraction", "part", "whole", "third", "portion", "total",
+               "breakdown", "proportion", "payoff", "floor", "at least"],
+    transparentCapable: true, wow: 5, density: "low",
+    gist: "One total and the whole it is a share of, as a single bar that splits in ONE un-eased frame - the part rebuilt out of the countable atoms that produced it, the remainder greyed aside. Opens pixel-continuous with a handed-off rectangle, and can late-reveal a >= so the number re-reads as a floor.",
+  },
+  {
+    id: "SpinWheel", demoId: "SpinWheelDemo", title: "Decision wheel (spins)",
+    role: "interaction", beats: ["hook", "demo", "punchline"], needs: "options",
+    keywords: ["wheel", "spin", "decide", "decision", "random", "picker", "chance", "dinner", "game"],
+    transparentCapable: true, wow: 5, density: "med",
+    gist: "A designed decision wheel that accelerates, smears at speed, eases onto the chosen wedge and lands with a flare + result pill. The cookbook's motion-hook: continuous movement in the swipe window.",
+  },
+  {
+    id: "TapStack", demoId: "TapStackDemo", title: "Receipts that keep arriving",
+    role: "transformation", beats: ["hook"], needs: "ledger",
+    keywords: ["receipt", "payment", "upi", "spend", "hook", "opening", "pile",
+               "stack", "arrive", "accumulate", "transactions", "adds up", "screenshots"],
+    transparentCapable: true, wow: 5, density: "med",
+    useWhen: "The OPENING frame of a spend/accumulation episode. Use when the first image must be recognised with no run-up: it opens on ONE nameable payment receipt, then buries it under real receipts at an accelerating rate that plateaus. Structurally cannot draw a total, a HUD or a digit plate — safe in front of a withheld payoff.",
+    gist: "Frame 0 is a single UPI receipt — PAID TO, merchant medallion, green success ring, one big rupee figure — drawn in our glass language, not photographed. Then the gap between arrivals contracts and floors at 4 frames while the group scales down, so the pile grows without leaving frame. Person-to-person rows carry no name in the PROPS at all and draw a mask plate with the amount still readable. Recedes to an EMPTY container for real tape to fill: it hands off a container, never an artifact.",
+  },
+  {
+    id: "MorphField", demoId: "MorphFieldDemo", title: "Button → field → confirm",
+    role: "interaction", beats: ["cta", "demo", "hook"], needs: "steps",
+    keywords: ["signup", "capture", "cta", "form", "input", "field", "submit", "join", "subscribe", "one field", "morph", "enter email", "waitlist"],
+    transparentCapable: true, wow: 4, density: "low",
+    useWhen: "Show a one-field ask as a single object morphing: a button opens into an input, accepts a typed value, then confirms. For CTA / capture beats.",
+  },
+  // ---- Web-tour set (channels/claude-tricks/WEB-TOUR-TEMPLATE.md) ----
+  {
+    id: "WebTour", demoId: "WebTourDemo", title: "Toured web recording",
+    role: "layout", beats: ["demo", "process", "context"], needs: "steps",
+    keywords: ["web", "website", "page", "repo", "github", "docs", "tour", "recording",
+               "screen", "tape", "camera", "zoom", "punch", "selection", "highlight", "real", "proof"],
+    transparentCapable: true, wow: 5, density: "med",
+    gist: "A REAL rec_web_tour.py tape staged as a glass browser card with a scripted camera that pans/zooms INTO the page — punches to the manifest's focus boxes, caret-led browser-style selection sweeps glued to the tape pixels by one shared transform. Pixels never altered or retimed; provenance strip on by default. ScreenStage frames a recording; WebTour films inside one.",
+  },
+  {
+    id: "SerifCap", demoId: "SerifCapDemo", title: "Mixed-register caption",
+    role: "typography", beats: ["hook", "punchline", "cta", "context"], needs: "phrase",
+    keywords: ["caption", "serif", "italic", "editorial", "statement", "line", "quote",
+               "elegant", "mixed", "register", "overlay"],
+    transparentCapable: true, wow: 4, density: "low",
+    useWhen: "The web-tour template's signature caption plate: sans-800 / Playfair-serif-italic / Anton small-caps registers mixed in one line, ONE accent word, word-cluster rise + settle, bottom-anchored and growing UP. Overlay it over a WebTour tape or run it standalone.",
+  },
+  {
+    id: "HeroDrop", demoId: "HeroDropDemo", title: "Hero-asset physics drop",
+    role: "layout", beats: ["hook", "punchline"], needs: "phrase",
+    keywords: ["hero", "drop", "crown", "fall", "impact", "physics", "logo", "emoji",
+               "cold open", "gravity", "squash", "landing", "mascot"],
+    transparentCapable: true, wow: 5, density: "low",
+    gist: "The crown moment: an asset (image or giant emoji) gathers, plunges with gravity + smear, lands with squash/overshoot and a rationed ≤12-particle gold dust burst, then a mixed-register caption rises 0.25s after impact. TravelSprite physics as a registered cold-open — motion is already on screen at frame 1.",
+  },
+  {
+    id: "VsTable", demoId: "VsTableDemo", title: "A-vs-B verdict table",
+    role: "layout", beats: ["comparison", "stat", "context"], needs: "table",
+    keywords: ["versus", "vs", "compare", "comparison", "table", "columns", "rows",
+               "winner", "verdict", "difference", "by hand", "with", "without"],
+    transparentCapable: true, wow: 4, density: "high",
+    gist: "A two-column comparison table on a glass hero panel: rows reveal top-down, each verdict lights the winning cell in accent with a one-shot pulse while the loser fades, then the losing COLUMN dims 60% and the winning header takes an accent underline wipe. Max 5 rows, hard-capped.",
+  },
+  {
+    id: "TermRun", demoId: "TermRunDemo", title: "Terminal one-liner run",
+    role: "app-ui", beats: ["demo", "process"], needs: "steps",
+    keywords: ["terminal", "command", "cli", "shell", "type", "typing", "prompt",
+               "claude", "run", "output", "console", "one line", "one command"],
+    transparentCapable: true, wow: 4, density: "med",
+    gist: "A 1080x1920-native dark-glass terminal: the command types char-by-char with a solid block cursor, thinks on a 2Hz blink, then response lines stream in with tone colors (ok mint / accent gold / warn / info). Ends held on a fresh blinking prompt. CodeDemo's typing math, cookbook-native and full-frame.",
+  },
 ];
 
 /* ------------------------------------------------------------------------- */
@@ -175,7 +316,10 @@ export type BeatIntent = {
 
 export type Scored = { entry: CookbookEntry; score: number; why: string[] };
 
-const norm = (s: string): string => s.toLowerCase().trim();
+/* Null-safe: catalog entries are hand-authored, and an entry that omits an
+   optional text field (e.g. `useWhen`) must not crash selection for the whole
+   catalog — pickCookbook is called live by the designer and by auto_compose. */
+const norm = (s?: string | null): string => (s ? String(s).toLowerCase().trim() : "");
 
 /** Score every catalog entry against a beat intent and return the best `n`,
     highest score first. Scoring (additive, transparent + role/wow are gates):
@@ -206,7 +350,11 @@ export function pickCookbook(intent: BeatIntent, n = 3): Scored[] {
       why.push(`beat:${intent.beat}`);
     }
     if (kw.length) {
-      const hay = [...entry.keywords.map(norm), norm(entry.title), norm(entry.useWhen)];
+      // filter(Boolean): an entry that omits an optional text field yields "" —
+      // and `k.includes("")` is ALWAYS true, which would make that entry match
+      // every keyword and dominate the ranking. Drop empties before matching.
+      const hay = [...entry.keywords.map(norm), norm(entry.title), norm(entry.useWhen)]
+        .filter(Boolean);
       let hits = 0;
       for (const k of kw) {
         if (hay.some((h) => h.includes(k) || k.includes(h))) {

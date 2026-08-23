@@ -1,0 +1,96 @@
+{
+  "typing_start": 2.453,
+  "typing_end": 9.122,
+  "submit": 9.771,
+  "answer_start": 9.771,
+  "answer_end": 23.646,
+  "scrolls": [],
+  "duration": 48.333,
+  "first_token": 12.613,
+  "stream_25": 12.613,
+  "stream_50": 12.613,
+  "stream_75": 12.613,
+  "composer_box": [
+    0.13518518518518519,
+    0.5140625,
+    0.7907407407407407,
+    0.5390625
+  ],
+  "answer_box": [
+    0.02962962962962963,
+    0.2552083333333333,
+    0.9703703703703703,
+    0.4322916666666667
+  ],
+  "observed": {
+    "answer_selector": "li[data-message-role=\"assistant\"] [data-assistant-markdown]",
+    "answer_head": "Writing\nCoffee Brand Launch\n\nWake up to bold. Sip something unforgettable.\nYour new coffee obsession has officially arrived.",
+    "answer_chars": 124,
+    "logged_in": null,
+    "pii_blurred": null,
+    "forbidden_term": null,
+    "fail_matched": [],
+    "tell_term": null,
+    "fix_answer_selector": "li[data-message-role=\"assistant\"] [data-assistant-markdown]",
+    "fix_answer_head": "Writing\nCoffee Brand Launch\n\nNo weak brews. No sleepy mornings. Just a punch of dark-roasted rocket fuel that makes 6 a.m. flinch.",
+    "fix_answer_chars": 130,
+    "fix_forbidden_term": null,
+    "fix_seed_matched": [
+      "rocket",
+      "punch",
+      "flinch",
+      "6"
+    ],
+    "fix_seed_first": "rocket"
+  },
+  "fix_typing_start": 27.526,
+  "fix_paste_end": 28.535,
+  "fix_typing_end": 33.214,
+  "fix_submit": 33.911,
+  "fix_answer_end": 47.792,
+  "fix_first_token": 36.753,
+  "fix_seeded": 36.753,
+  "fix_seeded_delay_s": 0.0,
+  "punches": [
+    {
+      "t0": 2.353,
+      "t1": 9.422,
+      "center": [
+        0.463,
+        0.527
+      ],
+      "zoom": 1.2,
+      "label": "compose"
+    },
+    {
+      "t0": 12.413,
+      "t1": 23.446,
+      "center": [
+        0.5,
+        0.344
+      ],
+      "zoom": 1.042,
+      "label": "robotic"
+    },
+    {
+      "t0": 27.426,
+      "t1": 33.514,
+      "center": [
+        0.5,
+        0.896
+      ],
+      "zoom": 1.107,
+      "label": "fixline"
+    },
+    {
+      "t0": 36.553,
+      "t1": 47.692,
+      "center": [
+        0.5,
+        0.669
+      ],
+      "zoom": 1.042,
+      "label": "human"
+    }
+  ]
+}

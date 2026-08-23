@@ -1,0 +1,23 @@
+{
+  "_note": "Demo tour for the web-tour template: github.com/anthropics/claude-code, anonymous, dark, desktop. Selectors verified against the live server-rendered HTML 2026-08-23.",
+  "url": "https://github.com/anthropics/claude-code",
+  "view": "desktop",
+  "dark": true,
+  "steps": [
+    { "do": "wait", "s": 1.6 },
+    { "do": "focus", "selector": "strong[itemprop=\"name\"] a", "label": "repo-title", "hold": 2.0, "zoom": 1.9 },
+    { "do": "wait", "s": 1.5 },
+    { "do": "focus", "selector": "#repo-stars-counter-star", "label": "stars", "hold": 2.2, "zoom": 2.2 },
+    { "do": "wait", "s": 0.6 },
+    { "do": "scroll", "to_selector": "article.markdown-body", "smooth": true, "dur": 1.8 },
+    { "do": "wait", "s": 0.9 },
+    { "do": "select", "selector": "article.markdown-body", "text": "an agentic coding tool that lives in your terminal", "hold": 2.0 },
+    { "do": "wait", "s": 0.7 },
+    { "do": "scroll", "by": 700, "smooth": true, "dur": 1.5 },
+    { "do": "wait", "s": 1.1 },
+    { "do": "scroll", "to_selector": "a[title=\"README.md\"]", "margin": 300, "smooth": true, "dur": 1.8 },
+    { "do": "wait", "s": 0.7 },
+    { "do": "focus", "selector": "a[title=\"README.md\"]", "label": "file-row", "hold": 2.2, "zoom": 1.6 },
+    { "do": "wait", "s": 2.6 }
+  ]
+}

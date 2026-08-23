@@ -120,6 +120,8 @@ export default function StudioBoard() {
   const jobs = (boardQ.data && boardQ.data.jobs) || []
   // Phase 4: what the build ACTUALLY resolved per slot (cast reconciliation).
   const builtRows = (boardQ.data && boardQ.data.provenance) || null
+  // S4: which block played at each sequence position (block reconciliation).
+  const builtBlocks = (boardQ.data && boardQ.data.sequence) || null
 
   // Phase B — the step-spine PLAN panel shows the channel's resolved template
   // card + its locked brand frames. Templates are the whole registry; brand
@@ -387,7 +389,7 @@ export default function StudioBoard() {
         ? 'Rebuild the low-res draft with the latest assets'
         : 'Queue a low-res draft stitch of the whole episode'
 
-  const doPreview = async () => {
+  const doPreview = async (autoMode = false) => {
     if (busy) return
     setBusy('preview')
     try {
@@ -402,8 +404,8 @@ export default function StudioBoard() {
       // behaviour intact once a staged item has assets to stitch.
       const fresh = (counts.total || 0) === 0
       if (fresh) {
-        await api.post({ action: 'produce_preview', calendar_id: calendarId })
-        show('Producing — the draft renders with this cast', 'ok')
+        await api.post({ action: 'produce_preview', calendar_id: calendarId, auto_mode: !!autoMode })
+        show(autoMode ? 'Auto-producing — minimal review, stops at the arm gate' : 'Producing — the draft renders with this cast', 'ok')
       } else {
         await api.post({ action: 'queue_preview', calendar_id: calendarId })
         show('Draft preview queued — a low-res stitch will render', 'ok')
@@ -892,6 +894,10 @@ export default function StudioBoard() {
             </Link>{' '}
             <span className="dim">/</span>{' '}
             <span className="mono">{item ? item.channel_key : '…'}</span>
+            {/* One Desk slice 1: the new single-page gate rail, opt-in while it proves out. */}
+            <Link className="link" to={'/piece/' + calendarId} style={{ marginLeft: 10 }}>
+              new piece view →
+            </Link>
           </div>
           <h1>{item ? item.title || '(untitled)' : 'Loading…'}</h1>
           {item && (
@@ -997,6 +1003,7 @@ export default function StudioBoard() {
             produceJob={previewJobDirect}
             producedAssets={ordered}
             builtRows={builtRows}
+            builtBlocks={builtBlocks}
             planning={planning}
             planFailed={planFailed}
             planFailReason={planFailReason}

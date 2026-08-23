@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anita's Tiffin — Fresh Home-Cooked Veg Meals in Indiranagar, Bengaluru</title>
+
+<meta name="description" content="Pure veg ghar-ka-khana cooked the same morning in Indiranagar. Rajma Chawal ₹120, Paneer Thali ₹150, Dal + 4 Roti ₹90. Free delivery within 3 km. Mon–Sat.">
+<meta name="theme-color" content="#17402F">
+<meta name="robots" content="index, follow">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Anita's Tiffin — Fresh Home-Cooked Veg Meals in Indiranagar">
+<meta property="og:description" content="Pure veg, cooked the same morning. Free delivery within 3 km. Order on WhatsApp by 10 AM for lunch.">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2317402F'/><g fill='none' stroke='%23E3A008' stroke-width='7' stroke-linecap='round'><path d='M28 40h44v18H28z'/><path d='M28 62h44v18H28z'/><path d='M50 28v8'/></g></svg>">
+
+<style>
+:root{
+  --ink:#1B1A17;
+  --ink-soft:#4A473F;
+  --paper:#FAF6EC;
+  --paper-2:#F1EADA;
+  --leaf:#17402F;
+  --leaf-2:#26584180;
+  --turmeric:#E3A008;
+  --brass:#C08A2E;
+  --steel:#B9BFB6;
+  --chili:#A82F1B;
+  --rule:#DED5C2;
+
+  --display:'Fraunces',Georgia,'Times New Roman',serif;
+  --body:'Karla',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+
+  --pad:clamp(20px,5vw,64px);
+  --radius:14px;
+  --shadow:0 1px 2px rgba(27,26,23,.06),0 12px 32px -18px rgba(27,26,23,.35);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--body);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.6;
+  font-size:17px;
+  overflow-x:hidden;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--turmeric);outline-offset:3px;border-radius:4px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--pad)}
+.section{padding-block:clamp(52px,8vw,96px)}
+.eyebrow{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--brass);margin-bottom:14px;
+}
+.h2{
+  font-family:var(--display);font-weight:600;line-height:1.08;
+  font-size:clamp(1.9rem,4.6vw,2.9rem);letter-spacing:-.015em;
+}
+.lede{color:var(--ink-soft);max-width:52ch;margin-top:12px}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  font-family:var(--body);font-weight:700;font-size:1rem;
+  padding:15px 26px;border-radius:999px;border:1.5px solid transparent;
+  text-decoration:none;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+  min-height:52px;
+}
+.btn-primary{background:var(--turmeric);color:#231C05;box-shadow:0 8px 20px -10px rgba(227,160,8,.9)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px -12px rgba(227,160,8,.95)}
+.btn-ghost{background:transparent;color:var(--paper);border-color:rgba(250,246,236,.4)}
+.btn-ghost:hover{background:rgba(250,246,236,.1)}
+.btn-dark{background:var(--leaf);color:var(--paper)}
+.btn-dark:hover{transform:translateY(-2px)}
+.btn-sm{padding:10px 18px;min-height:44px;font-size:.92rem}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(23,64,47,.96);backdrop-filter:blur(8px);
+  color:var(--paper);border-bottom:1px solid rgba(250,246,236,.12);
+}
+.topbar-in{display:flex;align-items:center;gap:16px;min-height:60px}
+.brand{font-family:var(--display);font-weight:600;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}
+.brand span{color:var(--turmeric)}
+.topbar .status{margin-left:auto}
+
+/* live status pill */
+.status{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:.76rem;letter-spacing:.02em;
+  padding:7px 13px;border-radius:999px;
+  background:rgba(250,246,236,.1);border:1px solid rgba(250,246,236,.18);
+  white-space:nowrap;
+}
+.status .dot{width:8px;height:8px;border-radius:50%;background:var(--turmeric);flex:none}
+.status.is-open .dot{background:#5FD08A;box-shadow:0 0 0 4px rgba(95,208,138,.16)}
+.status.is-closed .dot{background:var(--chili)}
+.topbar .btn{flex:none}
+
+/* ---------- hero ---------- */
+.hero{
+  background:var(--leaf);color:var(--paper);
+  padding-block:clamp(48px,8vw,88px);
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(70% 55% at 78% 18%,rgba(227,160,8,.14),transparent 70%);
+}
+.hero-grid{display:grid;gap:clamp(32px,5vw,56px);align-items:center;position:relative;z-index:1}
+@media(min-width:900px){.hero-grid{grid-template-columns:1.15fr .85fr}}
+
+.hero h1{
+  font-family:var(--display);font-weight:600;
+  font-size:clamp(2.5rem,7.4vw,4.15rem);line-height:1.02;letter-spacing:-.03em;
+}
+.hero h1 em{font-style:italic;color:var(--turmeric)}
+.hero p.sub{margin-top:20px;font-size:clamp(1.02rem,2.2vw,1.18rem);color:rgba(250,246,236,.84);max-width:44ch}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.trust{
+  display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:30px;
+  font-family:var(--mono);font-size:.74rem;color:rgba(250,246,236,.75);
+}
+.trust li{list-style:none;border:1px solid rgba(250,246,236,.2);padding:6px 11px;border-radius:8px}
+
+.dabba{max-width:340px;margin-inline:auto;width:100%}
+.steam{animation:rise 4.5s ease-in-out infinite}
+.steam:nth-child(2){animation-delay:.9s}
+.steam:nth-child(3){animation-delay:1.8s}
+@keyframes rise{
+  0%{opacity:0;transform:translateY(6px)}
+  35%{opacity:.85}
+  100%{opacity:0;transform:translateY(-14px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .steam{animation:none;opacity:.5}
+  html{scroll-behavior:auto}
+  .btn:hover{transform:none}
+}
+
+/* ---------- menu ---------- */
+.menu-list{margin-top:36px;border-top:1px solid var(--rule)}
+.dish{
+  display:grid;grid-template-columns:1fr auto;gap:4px 18px;align-items:baseline;
+  padding:22px 0;border-bottom:1px solid var(--rule);
+}
+.dish-name{font-family:var(--display);font-weight:600;font-size:1.32rem;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.veg-mark{width:14px;height:14px;border:1.5px solid #2E7D32;border-radius:3px;display:grid;place-items:center;flex:none}
+.veg-mark::after{content:'';width:6px;height:6px;border-radius:50%;background:#2E7D32}
+.dish-desc{grid-column:1;color:var(--ink-soft);font-size:.94rem}
+.dish-price{font-family:var(--mono);font-weight:500;font-size:1.3rem;grid-row:1;grid-column:2}
+.dish-order{grid-column:2;grid-row:2;justify-self:end}
+.dish-order a{font-family:var(--mono);font-size:.78rem;color:var(--brass);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
+.dish-order a:hover{color:var(--leaf)}
+.menu-note{margin-top:22px;font-size:.9rem;color:var(--ink-soft)}
+
+/* ---------- plan ---------- */
+.plan{background:var(--paper-2)}
+.plan-card{
+  background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:clamp(26px,4vw,40px);box-shadow:var(--shadow);
+  display:grid;gap:24px;align-items:center;
+}
+@media(min-width:760px){.plan-card{grid-template-columns:1fr auto}}
+.plan-price{font-family:var(--mono);font-size:clamp(2.1rem,5vw,2.8rem);font-weight:500;line-height:1}
+.plan-save{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:.78rem;color:#2E7D32;background:#2E7D3214;padding:5px 10px;border-radius:6px}
+
+/* ---------- hours ---------- */
+.hours-grid{display:grid;gap:20px;margin-top:36px}
+@media(min-width:700px){.hours-grid{grid-template-columns:1fr 1fr}}
+.slot{border:1px solid var(--rule);border-radius:var(--radius);padding:26px;background:var(--paper)}
+.slot h3{font-family:var(--display);font-weight:600;font-size:1.25rem;margin-bottom:14px}
+.slot dl{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:.95rem}
+.slot dt{font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);padding-top:3px}
+.slot dd{font-family:var(--mono);font-size:1rem}
+.slot .cut{color:var(--chili);font-weight:500}
+
+/* ---------- ask box (signature) ---------- */
+.ask{background:var(--leaf);color:var(--paper)}
+.ask .eyebrow{color:var(--turmeric)}
+.ask .lede{color:rgba(250,246,236,.8)}
+.ask-box{
+  margin-top:32px;background:var(--paper);color:var(--ink);
+  border-radius:18px;padding:clamp(20px,3.5vw,30px);box-shadow:0 24px 60px -30px rgba(0,0,0,.7);
+}
+.ask-form{display:flex;gap:10px;flex-wrap:wrap}
+.ask-input{
+  flex:1 1 240px;min-width:0;font-family:var(--body);font-size:1.02rem;
+  padding:15px 18px;border:1.5px solid var(--rule);border-radius:999px;background:#fff;color:var(--ink);
+  min-height:54px;
+}
+.ask-input::placeholder{color:#9A948A}
+.ask-input:focus{border-color:var(--leaf);outline:none;box-shadow:0 0 0 3px rgba(23,64,47,.13)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{
+  font-family:var(--body);font-size:.86rem;padding:9px 15px;border-radius:999px;
+  border:1px solid var(--rule);background:var(--paper);color:var(--ink-soft);cursor:pointer;
+  transition:background .15s ease,color .15s ease,border-color .15s ease;
+}
+.chip:hover{background:var(--leaf);color:var(--paper);border-color:var(--leaf)}
+.answer{margin-top:20px}
+.answer:empty{display:none}
+.answer-card{
+  border-left:3px solid var(--turmeric);background:var(--paper-2);
+  padding:18px 20px;border-radius:0 12px 12px 0;
+}
+.answer-from{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);margin-bottom:8px}
+.answer-card p{margin-bottom:8px}
+.answer-card p:last-child{margin-bottom:0}
+.answer-card strong{font-weight:700}
+.answer-card ul{margin:8px 0 0 18px}
+.answer-card li{margin-bottom:4px}
+.answer-actions{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px}
+.ask-foot{margin-top:16px;font-size:.82rem;color:var(--ink-soft);font-family:var(--mono);line-height:1.5}
+
+/* ---------- pay / area ---------- */
+.pay-grid{display:grid;gap:20px;margin-top:36px}
+@media(min-width:700px){.pay-grid{grid-template-columns:repeat(3,1fr)}}
+.pay-card{border:1px solid var(--rule);border-radius:var(--radius);padding:24px;background:var(--paper)}
+.pay-card h3{font-family:var(--display);font-weight:600;font-size:1.15rem;margin-bottom:10px}
+.pay-card p{font-size:.95rem;color:var(--ink-soft)}
+.upi-row{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+.upi-id{font-family:var(--mono);font-size:.95rem;background:var(--paper-2);padding:8px 12px;border-radius:8px}
+.copy-btn{
+  font-family:var(--mono);font-size:.76rem;padding:8px 12px;border-radius:8px;
+  border:1px solid var(--rule);background:transparent;cursor:pointer;color:var(--ink-soft);min-height:38px;
+}
+.copy-btn:hover{border-color:var(--leaf);color:var(--leaf)}
+
+/* ---------- footer ---------- */
+footer{background:var(--leaf);color:var(--paper);padding-block:clamp(48px,7vw,72px)}
+.foot-grid{display:grid;gap:32px}
+@media(min-width:760px){.foot-grid{grid-template-columns:1.2fr .8fr;align-items:start}}
+footer h2{font-family:var(--display);font-weight:600;font-size:clamp(1.7rem,4vw,2.3rem);line-height:1.1;letter-spacing:-.02em}
+footer p{color:rgba(250,246,236,.78);margin-top:12px;max-width:40ch}
+.foot-meta{font-family:var(--mono);font-size:.8rem;color:rgba(250,246,236,.62);line-height:1.9}
+.foot-meta a{text-decoration:none;border-bottom:1px solid rgba(250,246,236,.3)}
+.foot-bottom{
+  margin-top:44px;padding-top:22px;border-top:1px solid rgba(250,246,236,.15);
+  font-family:var(--mono);font-size:.74rem;color:rgba(250,246,236,.5);
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+}
+
+/* ---------- mobile order bar ---------- */
+.mobilebar{
+  position:fixed;left:0;right:0;bottom:0;z-index:60;
+  background:rgba(23,64,47,.98);backdrop-filter:blur(8px);
+  border-top:1px solid rgba(250,246,236,.14);
+  padding:10px var(--pad) calc(10px + env(safe-area-inset-bottom));
+  display:flex;align-items:center;gap:12px;
+  transform:translateY(110%);transition:transform .25s ease;
+}
+.mobilebar.show{transform:translateY(0)}
+.mobilebar .status{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+@media(min-width:820px){.mobilebar{display:none}}
+@media(max-width:819px){
+  body{padding-bottom:76px}
+  .topbar .status{display:none}
+}
+@media(max-width:420px){
+  .topbar .btn-sm{padding:9px 14px;font-size:.85rem}
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a href="#top" class="brand">Anita<span>'s</span> Tiffin</a>
+    <div class="status" id="statusTop" role="status"><span class="dot"></span><span class="status-text">Checking kitchen hours…</span></div>
+    <a class="btn btn-primary btn-sm" data-wa data-wa-text="Hi Anita! I'd like to place a tiffin order.">Order on WhatsApp</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Ghar ka khana,<br>hot by <em>one o'clock</em>.</h1>
+        <p class="sub">Anita cooks a small number of pure-veg tiffins every morning in her own Indiranagar kitchen, then sends them straight to your desk or door.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" data-wa data-wa-text="Hi Anita! I'd like to place a tiffin order.">Order on WhatsApp</a>
+          <a class="btn btn-ghost" href="#menu">See today's menu</a>
+        </div>
+        <ul class="trust">
+          <li>100% pure veg</li>
+          <li>Cooked the same morning</li>
+          <li>Free delivery within 3 km</li>
+          <li>Mon – Sat</li>
+        </ul>
+      </div>
+
+      <div class="dabba" aria-hidden="true">
+        <svg viewBox="0 0 300 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="#E3A008" stroke-width="2.5" stroke-linecap="round" opacity=".9">
+            <path class="steam" d="M120 66c-10-12 8-18-2-30"/>
+            <path class="steam" d="M150 58c-10-12 8-18-2-30"/>
+            <path class="steam" d="M180 66c-10-12 8-18-2-30"/>
+          </g>
+          <g stroke="#B9BFB6" stroke-width="3" stroke-linejoin="round">
+            <path d="M96 96h108M150 96V80" stroke="#C08A2E" stroke-width="4"/>
+            <rect x="72" y="96" width="156" height="52" rx="10" fill="#1F4C39"/>
+            <rect x="72" y="152" width="156" height="52" rx="10" fill="#1F4C39"/>
+            <rect x="72" y="208" width="156" height="56" rx="12" fill="#1F4C39"/>
+            <path d="M72 122h156M72 178h156M72 236h156" opacity=".35"/>
+            <path d="M60 112c-12 22-12 118 0 140M240 112c12 22 12 118 0 140" stroke="#C08A2E" stroke-width="4"/>
+          </g>
+          <circle cx="150" cy="122" r="7" fill="#E3A008"/>
+          <circle cx="150" cy="178" r="7" fill="#E3A008"/>
+          <circle cx="150" cy="236" r="7" fill="#E3A008"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENU -->
+  <section class="section" id="menu">
+    <div class="wrap">
+      <p class="eyebrow">The menu</p>
+      <h2 class="h2">Three plates, made properly.</h2>
+      <p class="lede">Small kitchen, short menu. Everything is pure vegetarian and cooked the same morning it's delivered.</p>
+
+      <div class="menu-list" id="menuList">
+        <article class="dish" data-dish="Rajma Chawal" data-price="120">
+          <h3 class="dish-name"><span class="veg-mark" aria-label="Vegetarian"></span>Rajma Chawal</h3>
+          <p class="dish-price">₹120</p>
+          <p class="dish-desc">Slow-cooked rajma with steamed rice.</p>
+          <p class="dish-order"><a data-wa data-wa-text="Hi Anita! I'd like to order Rajma Chawal (₹120).">Order this →</a></p>
+        </article>
+
+        <article class="dish" data-dish="Paneer Thali" data-price="150">
+          <h3 class="dish-name"><span class="veg-mark" aria-label="Vegetarian"></span>Paneer Thali</h3>
+          <p class="dish-price">₹150</p>
+          <p class="dish-desc">Fresh paneer sabzi, served as a full thali.</p>
+          <p class="dish-order"><a data-wa data-wa-text="Hi Anita! I'd like to order the Paneer Thali (₹150).">Order this →</a></p>
+        </article>
+
+        <article class="dish" data-dish="Dal + 4 Roti" data-price="90">
+          <h3 class="dish-name"><span class="veg-mark" aria-label="Vegetarian"></span>Dal + 4 Roti</h3>
+          <p class="dish-price">₹90</p>
+          <p class="dish-desc">Everyday dal with four fresh rotis.</p>
+          <p class="dish-order"><a data-wa data-wa-text="Hi Anita! I'd like to order Dal + 4 Roti (₹90).">Order this →</a></p>
+        </article>
+      </div>
+
+      <p class="menu-note" data-jain="Jain (no onion, no garlic) on request with one day's notice.">Jain (no onion, no garlic) on request with one day's notice — just mention it when you order.</p>
+    </div>
+  </section>
+
+  <!-- WEEKLY PLAN -->
+  <section class="section plan">
+    <div class="wrap">
+      <p class="eyebrow">Weekly plan</p>
+      <h2 class="h2">Six lunches, one payment.</h2>
+      <div class="plan-card" data-plan="6 lunches" data-plan-price="650" data-plan-meals="6" style="margin-top:32px">
+        <div>
+          <p class="plan-price">₹650 <span style="font-family:var(--body);font-size:1rem;color:var(--ink-soft)">/ 6 lunches</span></p>
+          <p class="plan-save">Works out to about ₹108 a lunch</p>
+          <p class="lede" style="margin-top:14px">Pick your six lunches across the week, Monday to Saturday. Tell Anita which days when you start.</p>
+        </div>
+        <a class="btn btn-dark" data-wa data-wa-text="Hi Anita! I'd like to start the weekly plan — 6 lunches for ₹650.">Start the weekly plan</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOURS -->
+  <section class="section" id="hours">
+    <div class="wrap">
+      <p class="eyebrow">Timings</p>
+      <h2 class="h2">Order by the cutoff, eat on time.</h2>
+      <p class="lede">The kitchen runs Monday to Saturday. Sunday is off.</p>
+
+      <div class="hours-grid" data-hours
+           data-days="Monday to Saturday"
+           data-lunch-window="12:00 – 1:00 PM"
+           data-lunch-cutoff="10:00 AM"
+           data-dinner-window="7:30 – 8:30 PM"
+           data-dinner-cutoff="6:00 PM">
+        <div class="slot">
+          <h3>Lunch</h3>
+          <dl>
+            <dt>Delivered</dt><dd>12:00 – 1:00 PM</dd>
+            <dt>Order by</dt><dd class="cut">10:00 AM</dd>
+          </dl>
+        </div>
+        <div class="slot">
+          <h3>Dinner</h3>
+          <dl>
+            <dt>Delivered</dt><dd>7:30 – 8:30 PM</dd>
+            <dt>Order by</dt><dd class="cut">6:00 PM</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASK US ANYTHING -->
+  <section class="section ask" id="ask">
+    <div class="wrap">
+      <p class="eyebrow">Ask us anything</p>
+      <h2 class="h2">Question about the food?<br>Get the answer right here.</h2>
+      <p class="lede">Type in English or Hinglish. Answers come straight off this page, instantly — no waiting for a reply.</p>
+
+      <div class="ask-box">
+        <form class="ask-form" id="askForm" autocomplete="off">
+          <label class="sr-only" for="askInput">Ask a question about Anita's Tiffin</label>
+          <input class="ask-input" id="askInput" type="text" placeholder="e.g. Paneer thali kitne ka hai?" maxlength="200">
+          <button class="btn btn-dark" type="submit">Ask</button>
+        </form>
+
+        <div class="chips" id="chips"></div>
+        <div class="answer" id="answer" role="status" aria-live="polite"></div>
+        <p class="ask-foot">Answers use only what's written on this page. Anything else goes straight to Anita on WhatsApp.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DELIVERY + PAYMENT -->
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Delivery &amp; payment</p>
+      <h2 class="h2">Simple as it should be.</h2>
+
+      <div class="pay-grid">
+        <div class="pay-card" data-area="Indiranagar, Bengaluru" data-radius="3">
+          <h3>Where we deliver</h3>
+          <p>Free delivery anywhere within 3 km of Indiranagar, Bengaluru. Outside that, message Anita and she'll tell you if it's doable.</p>
+        </div>
+        <div class="pay-card" data-upi="anitas.tiffin@upi" data-payment="UPI or cash on delivery">
+          <h3>How to pay</h3>
+          <p>UPI or cash on delivery — whichever suits you.</p>
+          <div class="upi-row">
+            <code class="upi-id" id="upiId">anitas.tiffin@upi</code>
+            <button class="copy-btn" id="copyUpi" type="button">Copy UPI ID</button>
+          </div>
+        </div>
+        <div class="pay-card">
+          <h3>How to order</h3>
+          <p>Send a WhatsApp message with what you want and your address. Lunch by 10 AM, dinner by 6 PM.</p>
+          <p style="margin-top:12px"><a class="btn btn-dark btn-sm" data-wa data-wa-text="Hi Anita! I'd like to place a tiffin order.">Message Anita</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div>
+      <h2>Hungry now? Anita's probably still cooking.</h2>
+      <p>One home kitchen in Indiranagar, feeding the working folks and students around it since day one.</p>
+      <p style="margin-top:24px"><a class="btn btn-primary" data-wa data-wa-text="Hi Anita! I'd like to place a tiffin order.">Order on WhatsApp</a></p>
+    </div>
+    <div class="foot-meta">
+      Anita's Tiffin<br>
+      Indiranagar, Bengaluru 560038<br>
+      Monday – Saturday · Sunday closed<br>
+      Lunch 12:00 – 1:00 PM · Dinner 7:30 – 8:30 PM<br>
+      <a data-wa data-wa-text="Hi Anita! I have a question about the tiffin service.">WhatsApp</a> ·
+      <a data-tel href="#">Call</a>
+    </div>
+  </div>
+  <div class="wrap foot-bottom">
+    <span>© <span id="year">2026</span> Anita's Tiffin</span>
+    <span>Home kitchen · Pure vegetarian</span>
+  </div>
+</footer>
+
+<div class="mobilebar" id="mobilebar">
+  <div class="status" id="statusBar" role="status"><span class="dot"></span><span class="status-text">Checking hours…</span></div>
+  <a class="btn btn-primary btn-sm" data-wa data-wa-text="Hi Anita! I'd like to place a tiffin order.">Order</a>
+</div>
+
+<script>
+/* =====================================================================
+   ANITA'S TIFFIN — site script
+   ---------------------------------------------------------------------
+   👉 THE ONLY THING YOU MUST EDIT BEFORE GOING LIVE IS THE LINE BELOW.
+      Put the real WhatsApp number here: country code + number, digits only.
+      Example for India: '919876543210'
+      Every button, link, footer entry and the answer box all read from it.
+   ===================================================================== */
+const CONFIG = {
+  phone: '919999999999',        // <-- REPLACE THIS
+  businessName: "Anita's Tiffin"
+};
+
+(function () {
+  'use strict';
+
+  const $  = (s, c) => (c || document).querySelector(s);
+  const $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
+  const waLink = t => 'https://wa.me/' + CONFIG.phone + (t ? '?text=' + encodeURIComponent(t) : '');
+
+  /* ---------- 1. Wire every WhatsApp link to the single number ---------- */
+  $$('[data-wa]').forEach(el => {
+    el.setAttribute('href', waLink(el.dataset.waText || ''));
+    el.setAttribute('target', '_blank');
+    el.setAttribute('rel', 'noopener');
+  });
+  $$('[data-tel]').forEach(el => el.setAttribute('href', 'tel:+' + CONFIG.phone));
+  $('#year').textContent = new Date().getFullYear();
+
+  /* ---------- 2. Read the facts out of the page itself ----------
+     The answer box never has its own copy of the menu. It reads the
+     live DOM, so editing a price above automatically fixes answers. */
+  const hoursEl = $('[data-hours]');
+  const areaEl  = $('[data-area]');
+  const upiEl   = $('[data-upi]');
+  const planEl  = $('[data-plan]');
+
+  const F = {
+    dishes: $$('[data-dish]').map(el => ({
+      name:  el.dataset.dish,
+      price: Number(el.dataset.price),
+      desc:  ($('.dish-desc', el) || {}).textContent || ''
+    })),
+    days:          hoursEl.dataset.days,
+    lunchWindow:   hoursEl.dataset.lunchWindow,
+    lunchCutoff:   hoursEl.dataset.lunchCutoff,
+    dinnerWindow:  hoursEl.dataset.dinnerWindow,
+    dinnerCutoff:  hoursEl.dataset.dinnerCutoff,
+    area:          areaEl.dataset.area,
+    radius:        Number(areaEl.dataset.radius),
+    upi:           upiEl.dataset.upi,
+    payment:       upiEl.dataset.payment,
+    plan:          planEl.dataset.plan,
+    planPrice:     Number(planEl.dataset.planPrice),
+    planMeals:     Number(planEl.dataset.planMeals),
+    jain:          $('[data-jain]').dataset.jain
+  };
+  const cheapest = F.dishes.reduce((a, b) => (b.price < a.price ? b : a), F.dishes[0]);
+  const priciest = F.dishes.reduce((a, b) => (b.price > a.price ? b : a), F.dishes[0]);
+  const menuLine = F.dishes.map(d => d.name + ' ₹' + d.price).join(', ');
+
+  /* ---------- 3. Live kitchen clock (always Indian time) ---------- */
+  function istNow() {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Kolkata', weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false
+    }).formatToParts(new Date());
+    const get = t => (parts.find(p => p.type === t) || {}).value;
+    const days = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    return { day: days[get('weekday')], mins: Number(get('hour')) * 60 + Number(get('minute')) };
+  }
+  const LUNCH_CUT = 10 * 60, DINNER_CUT = 18 * 60;
+  const left = m => { const h = Math.floor(m / 60), mm = m % 60; return h ? (mm ? h + 'h ' + mm + 'm' : h + 'h') : mm + 'm'; };
+
+  function kitchenStatus() {
+    const { day, mins } = istNow();
+    if (day === 0) return {
+      state:'closed', short:'Closed Sundays',
+      full:'The kitchen is closed on Sunday. Orders open again Monday — lunch cutoff ' + F.lunchCutoff + '.',
+      fullHi:'Aaj Sunday hai, kitchen band hai. Monday se phir shuru — lunch cutoff ' + F.lunchCutoff + '.' };
+    if (mins < LUNCH_CUT) return {
+      state:'open', short:'Lunch closes in ' + left(LUNCH_CUT - mins),
+      full:'Yes — lunch orders are open for another ' + left(LUNCH_CUT - mins) + ' (cutoff ' + F.lunchCutoff + '). Delivery ' + F.lunchWindow + '.',
+      fullHi:'Haan — lunch ka order abhi ' + left(LUNCH_CUT - mins) + ' aur le sakte hain (cutoff ' + F.lunchCutoff + '). Delivery ' + F.lunchWindow + '.' };
+    if (mins < DINNER_CUT) return {
+      state:'open', short:'Dinner closes in ' + left(DINNER_CUT - mins),
+      full:'Lunch is closed for today, but dinner is still open for another ' + left(DINNER_CUT - mins) + ' (cutoff ' + F.dinnerCutoff + '). Delivery ' + F.dinnerWindow + '.',
+      fullHi:'Lunch band ho gaya, lekin dinner ka order abhi ' + left(DINNER_CUT - mins) + ' aur chalu hai (cutoff ' + F.dinnerCutoff + '). Delivery ' + F.dinnerWindow + '.' };
+    if (day === 6) return {
+      state:'closed', short:'Closed until Monday',
+      full:"Today's orders are closed and Sunday is off. Monday lunch orders close at " + F.lunchCutoff + '.',
+      fullHi:'Aaj ke order band ho chuke hain aur Sunday chutti hai. Monday ka lunch order ' + F.lunchCutoff + ' tak.' };
+    return {
+      state:'closed', short:'Opens tomorrow',
+      full:"Today's orders are closed. Tomorrow's lunch cutoff is " + F.lunchCutoff + ' — send your order tonight and Anita will pick it up in the morning.',
+      fullHi:'Aaj ke order band ho chuke hain. Kal lunch ka cutoff ' + F.lunchCutoff + ' hai — aaj raat message kar dijiye, Anita subah dekh lengi.' };
+  }
+
+  function paintStatus() {
+    const s = kitchenStatus();
+    $$('.status').forEach(el => {
+      el.classList.toggle('is-open', s.state === 'open');
+      el.classList.toggle('is-closed', s.state === 'closed');
+      $('.status-text', el).textContent = s.short;
+    });
+  }
+  paintStatus();
+  setInterval(paintStatus, 30000);
+
+  /* ---------- 4. Mobile order bar ---------- */
+  const bar = $('#mobilebar');
+  const onScroll = () => bar.classList.toggle('show', window.scrollY > 420);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ---------- 5. Copy UPI ---------- */
+  const copyBtn = $('#copyUpi');
+  copyBtn.addEventListener('click', async () => {
+    const done = () => { copyBtn.textContent = 'Copied ✓'; setTimeout(() => copyBtn.textContent = 'Copy UPI ID', 1800); };
+    try { await navigator.clipboard.writeText(F.upi); done(); }
+    catch (e) {
+      const r = document.createRange(); r.selectNode($('#upiId'));
+      const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      try { document.execCommand('copy'); done(); } catch (_) { copyBtn.textContent = 'Select & copy'; }
+      sel.removeAllRanges();
+    }
+  });
+
+  /* =====================================================================
+     6. ASK US ANYTHING — offline answer engine
+     Detects English vs Hinglish, scores the question against intents,
+     and builds every answer out of the facts read from this page.
+     ===================================================================== */
+
+  const HINGLISH = ['kya','kitna','kitne','kitni','kaha','kahan','kab','kaise','kaisa','hai','hain','hoga','hogi','milega','milta','milti','chahiye','karna','karo','karu','karte','khana','khaana','ghar','paise','paisa','daam','rupaye','roz','subah','shaam','raat','dopahar','nahi','haan','bhej','bhejo','bhejte','denge','deti','aap','mujhe','mera','meri','tak','wala','sasta','mein','abhi','aaj','kal','pyaz','lehsun','shakahari','chalega','chalta','band','khula','itwar','ravivar','chutti','hafta','mahina','ho'];
+  const isHinglish = q => /[\u0900-\u097F]/.test(q) || HINGLISH.some(w => q.includes(' ' + w + ' '));
+
+  const norm = q => ' ' + q.toLowerCase()
+    .replace(/[₹]/g, ' rupees ')
+    .replace(/[^a-z0-9\u0900-\u097F]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim() + ' ';
+
+  const INTENTS = [
+    { id:'veg',      k:['veg','vegetarian','non veg','nonveg','egg','eggs','chicken','mutton','meat','jain','onion','garlic','pyaz','lehsun','shakahari','ande','anda','pure veg'] },
+    { id:'price',    k:['price','cost','rate','how much','charges','charge','rupees','kitna','kitne','kitni','daam','paisa','paise','expensive','cheap','sasta','cheapest','pricing'] },
+    { id:'plan',     k:['plan','weekly','monthly','subscription','subscribe','package','month','week','hafta','mahina','mahine','bulk','regular','daily plan','tiffin plan','discount','offer'] },
+
+    { id:'timing',   k:['time','timing','when','deliver by','arrive','reach','delivery time','kab','pahunch','pahunchega','lunch time','dinner time','what time'] },
+    { id:'cutoff',   k:['cutoff','cut off','order by','last order','deadline','kab tak','how late','advance','pehle','notice'] },
+    { id:'days',     k:['days','sunday','saturday','weekend','holiday','itwar','ravivar','chutti','everyday','daily','roz','week off','open on'] },
+    { id:'opennow',  k:['right now','now','abhi','today','aaj','still','open','closed','band','khula','order now','too late','late ho'] },
+    { id:'portion',  k:['portion','quantity','serving','servings','how many people','how much food','kitne log','ek plate','one plate','filling','pet','grams','gram','katori','pieces','how many rotis','sabzi kitni'] },
+    { id:'delivery', k:['deliver','delivery','area','areas','location','far','distance','km','free delivery','pickup','pick up','address','indiranagar','koramangala','hsr','domlur','whitefield','marathahalli','jayanagar','btm','ghar tak','office'] },
+    { id:'payment',  k:['pay','payment','upi','gpay','google pay','phonepe','paytm','cash','cod','card','online','net banking','paise kaise','bhugtan','advance payment'] },
+    { id:'order',    k:['how do i order','how to order','order kaise','book','booking','whatsapp','number','phone','contact','call','message','app','swiggy','zomato'] },
+    { id:'menu',     k:['menu','serve','items','dishes','food','options','what do you','kya milta','kya milega','khana kya','choices','variety','today'] },
+    { id:'fresh',    k:['fresh','hygiene','hygienic','oil','ghee','homemade','home cooked','ghar ka','taste','quality','clean','saaf','preservative','frozen','leftover','who cooks','anita'] },
+    { id:'allergy',  k:['allergy','allergic','allergen','nuts','peanut','gluten','dairy','lactose','diabetic','sugar free','spice level','spicy','mirchi','teekha','oil free','calorie','ingredients'] },
+    { id:'dish',     k:['rajma','chawal','paneer','thali','dal','daal','roti','rotis','chapati','chapathi','rice'] }
+  ];
+
+  function detectDishes(q) {
+    const map = [
+      { re:/\b(rajma|chawal|kidney bean)/, i:0 },
+      { re:/\b(paneer|thali)/,             i:1 },
+      { re:/\b(dal|daal|roti|rotis|chapati|chapathi)/, i:2 }
+    ];
+    return map.filter(m => m.re.test(q)).map(m => F.dishes[m.i]).filter(Boolean);
+  }
+
+  function score(q) {
+    return INTENTS.map(it => {
+      let s = 0;
+      it.k.forEach(k => {
+        if (q.includes(' ' + k + ' ') || q.includes(' ' + k)) s += k.includes(' ') ? 2.5 : 1;
+      });
+      return { id: it.id, s };
+    }).sort((a, b) => b.s - a.s);
+  }
+
+  const rs = n => '₹' + n;
+  const waBtn = (label, text) =>
+    '<a class="btn btn-dark btn-sm" target="_blank" rel="noopener" href="' + waLink(text) + '">' + label + '</a>';
+
+  function answer(raw) {
+    const q  = norm(raw);
+    const hi = isHinglish(q);
+    const dishes = detectDishes(q);
+    const ranked = score(q);
+    const top = ranked[0];
+    const has = id => ranked.find(r => r.id === id && r.s > 0);
+    const st  = kitchenStatus();
+
+    // Nothing matched at all
+    if (!top || top.s === 0) return fallback(raw, hi);
+
+    // Portion size isn't stated anywhere on the page — don't invent it
+    if (has('portion') && top.id === 'portion') return fallback(raw, hi);
+
+    // Allergy / ingredient detail — never guess about food safety
+    if (has('allergy')) {
+      return {
+        html: hi
+          ? '<p>Ye detail is page par nahi likhi hai, aur khane ke maamle mein main andaza nahi lagana chahti. Anita khud sab pakati hain — unse WhatsApp par seedha pooch lijiye, wo sahi bata dengi.</p>'
+          : "<p>That detail isn't on this page, and I won't guess about anything you'll eat. Anita cooks every plate herself — ask her directly and she'll tell you exactly.</p>",
+        actions: [waBtn(hi ? 'Anita se poochein' : 'Ask Anita', raw)]
+      };
+    }
+
+    // Veg / Jain
+    if (has('veg') && top.id === 'veg') {
+      return { html: hi
+        ? '<p><strong>Sab kuch 100% pure veg hai.</strong> Koi egg, koi non-veg nahi.</p><p>Jain khana (bina pyaz-lehsun) mil sakta hai — bas ek din pehle bata dijiye.</p>'
+        : '<p><strong>Everything is 100% pure vegetarian.</strong> No egg, no non-veg at all.</p><p>Jain food (no onion, no garlic) is available with one day\'s notice — just mention it when you order.</p>' };
+    }
+
+    // A dish + price, or a dish on its own
+    if (dishes.length && (has('price') || top.id === 'dish' || top.s === 0)) {
+      if (dishes.length === 1) {
+        const d = dishes[0];
+        return { html: hi
+          ? '<p><strong>' + d.name + ' ' + rs(d.price) + ' ka hai.</strong> ' + d.desc + ' Pura menu: ' + menuLine + '.</p>'
+          : '<p><strong>' + d.name + ' is ' + rs(d.price) + '.</strong> ' + d.desc + '</p>',
+          actions: [waBtn(hi ? d.name + ' order karein' : 'Order ' + d.name, 'Hi Anita! I\'d like to order ' + d.name + ' (' + rs(d.price) + ').')] };
+      }
+      return { html: '<p>' + (hi ? 'Ye rahe daam:' : 'Here are the prices:') + '</p><ul>' +
+        dishes.map(d => '<li>' + d.name + ' — <strong>' + rs(d.price) + '</strong></li>').join('') + '</ul>' };
+    }
+
+    // Weekly plan
+    if (top.id === 'plan') {
+      const per = Math.round(F.planPrice / F.planMeals);
+      return { html: hi
+        ? '<p><strong>Weekly plan: ' + F.planMeals + ' lunch ' + rs(F.planPrice) + ' mein</strong> — matlab lagbhag ' + rs(per) + ' per lunch. Apne 6 din Monday se Saturday ke beech chun sakte hain.</p>'
+        : '<p><strong>The weekly plan is ' + F.planMeals + ' lunches for ' + rs(F.planPrice) + '</strong> — about ' + rs(per) + ' a lunch. Pick your six days anywhere across ' + F.days + '.</p>',
+        actions: [waBtn(hi ? 'Plan shuru karein' : 'Start the weekly plan', 'Hi Anita! I\'d like to start the weekly plan — ' + F.planMeals + ' lunches for ' + rs(F.planPrice) + '.')] };
+    }
+
+    // All prices
+    if (top.id === 'price') {
+      return { html: '<p>' + (hi ? 'Poora menu aur daam:' : 'Here\'s the full menu:') + '</p><ul>' +
+        F.dishes.map(d => '<li>' + d.name + ' — <strong>' + rs(d.price) + '</strong></li>').join('') +
+        '</ul><p>' + (hi
+          ? 'Sabse sasta ' + cheapest.name + ' ' + rs(cheapest.price) + ' hai. Weekly plan: ' + F.planMeals + ' lunch ' + rs(F.planPrice) + '. Delivery ' + F.radius + ' km ke andar free hai.'
+          : 'Cheapest is ' + cheapest.name + ' at ' + rs(cheapest.price) + ', and the weekly plan is ' + F.planMeals + ' lunches for ' + rs(F.planPrice) + '. Delivery is free within ' + F.radius + ' km.') + '</p>' };
+    }
+
+    // Can I order right now?
+    if (top.id === 'opennow') {
+      return { html: '<p>' + (hi ? st.fullHi : st.full) + '</p>',
+        actions: [waBtn(hi ? 'WhatsApp par order karein' : 'Order on WhatsApp', 'Hi Anita! I\'d like to place a tiffin order.')] };
+    }
+
+    // Timings
+    if (top.id === 'timing' || top.id === 'cutoff') {
+      const wantsDinner = /dinner|raat|night|shaam|evening/.test(q);
+      const wantsLunch  = /lunch|dopahar|afternoon|\bdin\b/.test(q);
+      let body;
+      if (wantsDinner && !wantsLunch) {
+        body = hi ? 'Dinner ' + F.dinnerWindow + ' ke beech pahunchta hai, aur order ' + F.dinnerCutoff + ' tak dena hota hai.'
+                  : 'Dinner arrives between ' + F.dinnerWindow + ', and orders close at ' + F.dinnerCutoff + '.';
+      } else if (wantsLunch && !wantsDinner) {
+        body = hi ? 'Lunch ' + F.lunchWindow + ' ke beech pahunchta hai, aur order ' + F.lunchCutoff + ' tak dena hota hai.'
+                  : 'Lunch arrives between ' + F.lunchWindow + ', and orders close at ' + F.lunchCutoff + '.';
+      } else {
+        body = hi ? 'Lunch: ' + F.lunchWindow + ' (order ' + F.lunchCutoff + ' tak). Dinner: ' + F.dinnerWindow + ' (order ' + F.dinnerCutoff + ' tak). Kitchen ' + F.days + ' chalta hai.'
+                  : 'Lunch is delivered ' + F.lunchWindow + ' (order by ' + F.lunchCutoff + '). Dinner is ' + F.dinnerWindow + ' (order by ' + F.dinnerCutoff + '). The kitchen runs ' + F.days + '.';
+      }
+      return { html: '<p>' + body + '</p><p>' + (hi ? st.fullHi : st.full) + '</p>' };
+    }
+
+    // Days open
+    if (top.id === 'days') {
+      return { html: hi
+        ? '<p>Kitchen <strong>' + F.days + '</strong> chalta hai. <strong>Sunday band</strong> rehta hai.</p><p>' + st.fullHi + '</p>'
+        : '<p>The kitchen runs <strong>' + F.days + '</strong>. <strong>Sunday is closed.</strong></p><p>' + st.full + '</p>' };
+    }
+
+    // Delivery / area
+    if (top.id === 'delivery') {
+      return { html: hi
+        ? '<p><strong>' + F.area + ' se ' + F.radius + ' km ke andar delivery bilkul free hai.</strong></p><p>Agar aap us dayre se bahar hain, to Anita ko apna area WhatsApp kar dijiye — wo bata dengi ki ho payega ya nahi.</p>'
+        : '<p><strong>Free delivery anywhere within ' + F.radius + ' km of ' + F.area + '.</strong></p><p>If you\'re outside that, send Anita your area on WhatsApp and she\'ll tell you whether she can manage it.</p>',
+        actions: [waBtn(hi ? 'Apna area poochein' : 'Check my area', 'Hi Anita! Do you deliver to my area? My location is: ')] };
+    }
+
+    // Payment
+    if (top.id === 'payment') {
+      return { html: hi
+        ? '<p><strong>UPI ya cash on delivery</strong> — dono chalta hai.</p><p>UPI ID: <strong>' + F.upi + '</strong></p>'
+        : '<p><strong>UPI or cash on delivery</strong> — whichever you prefer.</p><p>UPI ID: <strong>' + F.upi + '</strong></p>' };
+    }
+
+    // How to order
+    if (top.id === 'order') {
+      return { html: hi
+        ? '<p>Order sirf <strong>WhatsApp</strong> par lete hain. Bas apna order aur address bhej dijiye — lunch ' + F.lunchCutoff + ' tak, dinner ' + F.dinnerCutoff + ' tak.</p>'
+        : '<p>Orders go through <strong>WhatsApp</strong>. Send what you want plus your address — by ' + F.lunchCutoff + ' for lunch, ' + F.dinnerCutoff + ' for dinner.</p>',
+        actions: [waBtn(hi ? 'WhatsApp kholein' : 'Open WhatsApp', 'Hi Anita! I\'d like to place a tiffin order.')] };
+    }
+
+    // Menu
+    if (top.id === 'menu' || top.id === 'dish') {
+      return { html: '<p>' + (hi ? 'Menu chhota hai, sab kuch pure veg:' : 'Short menu, all pure veg:') + '</p><ul>' +
+        F.dishes.map(d => '<li><strong>' + d.name + '</strong> — ' + rs(d.price) + '. ' + d.desc + '</li>').join('') +
+        '</ul><p>' + (hi ? 'Jain (bina pyaz-lehsun) ek din pehle batane par mil jata hai.' : F.jain) + '</p>' };
+    }
+
+    // Freshness / who cooks
+    if (top.id === 'fresh') {
+      return { html: hi
+        ? '<p>Anita har subah apne <strong>' + F.area + '</strong> wale ghar ki kitchen mein khud pakati hain, aur usi din bhejti hain. Kuch bhi bacha hua ya frozen nahi jata.</p>'
+        : '<p>Anita cooks every plate herself in her own kitchen in <strong>' + F.area + '</strong>, the same morning it goes out. Nothing is reheated from the day before.</p>' };
+    }
+
+    return fallback(raw, hi);
+  }
+
+  function fallback(raw, hi) {
+    return {
+      html: hi
+        ? '<p>Ye baat is page par nahi likhi, aur main apne se kuch bana kar nahi bata sakti. Anita ko WhatsApp kar dijiye — wo turant jawab de dengi.</p>'
+        : "<p>That one isn't on this page, and I'd rather not make it up. Send it to Anita on WhatsApp — she answers quickly.</p>",
+      actions: [waBtn(hi ? 'Anita se poochein' : 'Ask Anita on WhatsApp', raw)]
+    };
+  }
+
+  /* ---------- render ---------- */
+  const answerEl = $('#answer');
+  const inputEl  = $('#askInput');
+
+  function ask(qRaw) {
+    const q = (qRaw || '').trim();
+    if (!q) { inputEl.focus(); return; }
+    const a = answer(q);
+    answerEl.innerHTML =
+      '<div class="answer-card">' +
+        '<p class="answer-from">Anita\'s Tiffin</p>' +
+        a.html +
+        (a.actions && a.actions.length ? '<div class="answer-actions">' + a.actions.join('') + '</div>' : '') +
+      '</div>';
+  }
+
+  $('#askForm').addEventListener('submit', e => { e.preventDefault(); ask(inputEl.value); });
+
+  const CHIPS = [
+    'How much is the Paneer Thali?',
+    'Kab tak order kar sakte hain?',
+    'Do you deliver to my area?',
+    'UPI chalega?',
+    'Jain khana milega?',
+    'Sunday open hai?'
+  ];
+  const chipsEl = $('#chips');
+  CHIPS.forEach(c => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.textContent = c;
+    b.addEventListener('click', () => { inputEl.value = c; ask(c); });
+    chipsEl.appendChild(b);
+  });
+
+  /* ---------- 7. Search-engine data, built from the same constants ---------- */
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': 'FoodEstablishment',
+    name: CONFIG.businessName,
+    servesCuisine: 'Indian, North Indian, Vegetarian',
+    description: 'Home-cooked pure vegetarian tiffin service in Indiranagar, Bengaluru. Free delivery within ' + F.radius + ' km.',
+    telephone: '+' + CONFIG.phone,
+    priceRange: '₹' + cheapest.price + '–₹' + priciest.price,
+    address: { '@type': 'PostalAddress', addressLocality: 'Indiranagar', addressRegion: 'Karnataka', postalCode: '560038', addressCountry: 'IN' },
+    areaServed: F.area,
+    paymentAccepted: F.payment,
+    openingHoursSpecification: [{
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+      opens: '12:00', closes: '20:30'
+    }],
+    hasMenu: { '@type': 'Menu', hasMenuSection: { '@type': 'MenuSection', name: 'Tiffins',
+      hasMenuItem: F.dishes.map(d => ({ '@type': 'MenuItem', name: d.name, offers: { '@type': 'Offer', price: d.price, priceCurrency: 'INR' } })) } }
+  };
+  const s = document.createElement('script');
+  s.type = 'application/ld+json';
+  s.textContent = JSON.stringify(ld);
+  document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>

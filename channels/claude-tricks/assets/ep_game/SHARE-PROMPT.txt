@@ -1,0 +1,11 @@
+THE EXACT ONE LINE I TYPED 👇
+(copy it into Claude — free account works)
+
+Build me a reaction time game that fills the whole screen edge to edge - no borders, no header, just colour. Red means wait, green means tap, and show my reaction time in milliseconds in huge numbers.
+
+-
+That's it. One line, no code, no install. It comes back as a working artifact you can open and play on your phone.
+
+Change any part of it — the colours, the scoring, add a high-score table — and it rebuilds.
+
+Drop your reaction time below. Mine was 269ms. 👀

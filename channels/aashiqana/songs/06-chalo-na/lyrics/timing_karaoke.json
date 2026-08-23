@@ -1,0 +1,125 @@
+{
+ "_note": "lyrics — stable-ts load_faster_whisper('small').align() on the demucs vocal stem, Devanagari align text -> romanized display (1:1 by word count); onset-snap to nearest silero-VAD onset (threshold union (0.5, 0.35), speech_pad 0) within 2.5s (guarded: a snap can never cross the previous line's end; a line with no VAD onset at all is re-aligned in isolation over the remaining audio); sweep-cap e = min(aligned_e, next_s-0.2, s+6.5); MIN_LINE 0.5s. Lines in (parens) are aligned as a tail sink and NOT displayed. Times are relative to the cut start.",
+ "lines": [
+  {
+   "s": 0.9,
+   "e": 6.28,
+   "text": "Chalo na, chalo na, chalo na kahin"
+  },
+  {
+   "s": 6.72,
+   "e": 12.16,
+   "text": "Jahan bas tu ho, aur main hi wahin"
+  },
+  {
+   "s": 12.8,
+   "e": 18.14,
+   "text": "Chalo na, chalo na, chalo na kahin"
+  },
+  {
+   "s": 21.66,
+   "e": 24.14,
+   "text": "Chalo na, chalo na, chalo na kahin"
+  },
+  {
+   "s": 32.06,
+   "e": 36.08,
+   "text": "Lehron ke aage, ye rasta tera"
+  },
+  {
+   "s": 37.25,
+   "e": 41.86,
+   "text": "Nange se paaon, kinara mera"
+  },
+  {
+   "s": 43.04,
+   "e": 48.14,
+   "text": "Hawa mein udti, teri woh zulfein"
+  },
+  {
+   "s": 49.18,
+   "e": 54.04,
+   "text": "Main khoya khoya, tu meri manzilein"
+  },
+  {
+   "s": 54.26,
+   "e": 59.38,
+   "text": "Chalo na, chalo na, chalo na kahin"
+  },
+  {
+   "s": 60.1,
+   "e": 65.52,
+   "text": "Jahan bas tu ho, aur main hi wahin"
+  },
+  {
+   "s": 66.11,
+   "e": 71.58,
+   "text": "Chalo na, chalo na, chalo na kahin"
+  },
+  {
+   "s": 73.54,
+   "e": 80.04,
+   "text": "Chalo na, chalo na, chalo na kahin"
+  },
+  {
+   "s": 96.48,
+   "e": 100.84,
+   "text": "Suraj dhal raha, aur tu muskura"
+  },
+  {
+   "s": 101.47,
+   "e": 106.68,
+   "text": "Samundar gawaah, tu mera ho ja"
+  },
+  {
+   "s": 107.6,
+   "e": 112.6,
+   "text": "Na koi duniya, na koi fikar"
+  },
+  {
+   "s": 113.12,
+   "e": 118.6,
+   "text": "Bas tu, bas main, aur ye samandar"
+  },
+  {
+   "s": 119.52,
+   "e": 125.02,
+   "text": "Reti pe likh de tu mera naam"
+  },
+  {
+   "s": 125.22,
+   "e": 130.5,
+   "text": "Ye shaam apni, ye pyaara jahaan"
+  },
+  {
+   "s": 131.26,
+   "e": 136.4,
+   "text": "Chalo na, chalo na, chalo na kahin"
+  },
+  {
+   "s": 137.12,
+   "e": 142.46,
+   "text": "Jahan bas tu ho, aur main hi wahin"
+  },
+  {
+   "s": 143.14,
+   "e": 148.4,
+   "text": "Chalo na, chalo na, chalo na kahin"
+  },
+  {
+   "s": 152.03,
+   "e": 158.53,
+   "text": "Chalo na, chalo na, chalo na kahin"
+  },
+  {
+   "s": 161.14,
+   "e": 166.46,
+   "text": "Chalo na, chalo na, chalo na kahin"
+  },
+  {
+   "s": 169.54,
+   "e": 172.88,
+   "text": "Chalo na... kahin..."
+  }
+ ]
+}

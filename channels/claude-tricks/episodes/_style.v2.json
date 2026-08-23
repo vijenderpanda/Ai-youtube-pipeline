@@ -1,0 +1,14 @@
+{
+ "_note": "Metadata mirror for finalize_episode.py (title/tags/lines only). FULL render config lives in EPISODES_V2['_style'] in build_ep_v2.py, which shadows this JSON for RENDERING — but finalize reads THIS file for the YouTube title/description/tags. Post-pivot standalone tip #3 — the 'paste an example' writing tip (promised by tip #2's outro).",
+ "title": "Stop DESCRIBING The Style — Paste 1 Example 🎯",
+ "tags": "chatgpt tips,ai writing,prompt tips,writing style,ai for beginners,better ai answers,paste example,ai tools,ai tips",
+ "lines": [
+  "Same request to the same AI — but one pasted line changes everything. Watch.",
+  "Don't describe the style — show it one example.",
+  "First, I describe it — bold, punchy, modern. I get this: generic, every-brand copy.",
+  "So I paste one line in the exact voice I want, and ask for the same thing.",
+  "Now it's a real voice — punchy and specific. It copied my example, not my adjectives.",
+  "Describing a style makes AI guess. Give it one real example, and it nails the voice.",
+  "Stop describing the vibe — paste one line that already has it."
+ ]
+}

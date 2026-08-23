@@ -1,4 +1,32 @@
-import { useMemo, useState } from 'react'
+import { Component, Suspense, lazy, useEffect, useMemo, useState } from 'react'
+
+// S4 · deliverable #2 — client-side live preview. Lazy chunk: the preview pulls
+// in remotion + @remotion/player (heavy), so it loads only when the designer
+// opens it; the rest of the app is unaffected. The vite alias + React dedupe
+// (webapp/vite.config.js) make importing the real Short.tsx composition safe.
+const LivePreview = lazy(() => import('./LivePreview'))
+
+// A preview failure (bad block config, a bundling hiccup) must never take down
+// the designer — isolate it to a small inline notice.
+class PreviewBoundary extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { err: null }
+  }
+  static getDerivedStateFromError(err) {
+    return { err }
+  }
+  render() {
+    if (this.state.err) {
+      return (
+        <div className="dim small" style={{ padding: '14px 0', textAlign: 'center' }}>
+          Preview unavailable — {String((this.state.err && this.state.err.message) || this.state.err)}
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 
 /* =============================================================================
    SequenceEditor — the composition designer's SEQUENCE section (Sprint 3).
@@ -69,6 +97,17 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
   const [openPos, setOpenPos] = useState(null)
   const [buf, setBuf] = useState('') // JSON config buffer for the open block
   const [cfgErr, setCfgErr] = useState('')
+  const [preview, setPreview] = useState(false) // S4: live structural preview
+  // S6 (Sprint 5) semi-auto compose: paste a script, pickCookbook picks per line.
+  const [autoOpen, setAutoOpen] = useState(false)
+  const [autoScript, setAutoScript] = useState('')
+  const [autoBusy, setAutoBusy] = useState('')
+  // D2: cookbook options RANKED for the open scene's line (mock's ranked picker).
+  const [ranked, setRanked] = useState([])
+  // D1: sample props per component id — the schema the structured props form is
+  // derived from (string/number/boolean → inputs; array/object → JSON field).
+  const [demos, setDemos] = useState({})
+  const [showJson, setShowJson] = useState(false)
 
   const sorted = useMemo(() => [...(blocks || [])].sort((a, b) => a.position - b.position), [blocks])
 
@@ -137,21 +176,135 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
     put(b.position, b.block_type, b.layout, parsed, 'block:set:' + b.position)
   }
 
+  // S6 semi-auto compose: one script line = one scene. pickCookbook (the SAME
+  // ranker registry.ts/build_ep_v2 use — lazy-imported so it and the demo props
+  // stay out of the main bundle) chooses the best-fit visual per line; each block
+  // is seeded with that component's demo props so the sequence renders immediately,
+  // then the operator refines. Stamps sequence_mode='replace' (this IS the short).
+  const STOP = new Set('the a an to of and or in on for it is you your with that this my our we i me just can could what if get got are be by as at so'.split(' '))
+  const kwOf = (line) => (line.toLowerCase().match(/[a-z0-9']+/g) || []).filter((w) => w.length > 2 && !STOP.has(w))
+  const beatOf = (i, n) => (i === 0 ? 'hook' : i === n - 1 ? 'cta' : i === 1 ? 'context' : 'demo')
+
+  const autoCompose = async () => {
+    const lines = autoScript.split('\n').map((l) => l.trim()).filter(Boolean)
+    if (!lines.length || autoBusy) return
+    setAutoBusy('compose')
+    try {
+      const [{ pickCookbook }, demosMod] = await Promise.all([
+        import('@remotion-src/cookbook/registry'),
+        import('@remotion-src/cookbook/demos').catch(() => ({ COOKBOOK_DEMOS: {} })),
+      ])
+      const demos = demosMod.COOKBOOK_DEMOS || {}
+      const existing = sorted.map((b) => b.position)
+      for (let i = 0; i < lines.length; i++) {
+        const [top] = pickCookbook({ beat: beatOf(i, lines.length), keywords: kwOf(lines[i]) }, 1)
+        // Never skip a line: replace mode is 1 scene : 1 VO line, so a line that
+        // matches nothing still gets a scene — KineticQuote carries a spoken
+        // phrase — flagged at 0 confidence so review catches it.
+        const id = top ? top.entry.id : 'KineticQuote'
+        const confidence = top ? Math.min(1, Math.round((top.score / 8) * 100) / 100) : 0
+        await put(i, 'broll', 'full-broll', { cookbook: { id, props: demos[id] || {} }, line: lines[i], confidence }, 'auto:' + i)
+      }
+      for (const pos of existing.filter((p) => p >= lines.length)) {
+        await onPost({ action: 'delete_template_version_block', template_version_id: versionId, position: pos }, 'auto:del:' + pos)
+      }
+      await onPost({ action: 'set_template_version_setting', template_version_id: versionId, name: 'sequence_mode', value: 'replace' }, 'auto:mode')
+      setAutoOpen(false)
+      setAutoScript('')
+    } finally {
+      setAutoBusy('')
+    }
+  }
+
+  // D1 — structured editing. Every control below mutates the SAME JSON buffer the
+  // Save path already commits, so there is one write route and nothing is lost:
+  // the raw JSON just moves behind "Advanced".
+  const patchCfg = (mut) => {
+    const cfg = parseBuf({})
+    mut(cfg)
+    setBuf(JSON.stringify(cfg, null, 2))
+    setCfgErr('')
+  }
+  const cfgOf = () => parseBuf({})
+  /** the cookbook payload for a block, whichever shape its type uses */
+  const cbOf = (cfg, type) => (type === 'slot' ? cfg.broll : cfg.cookbook) || {}
+  const setProp = (type, key, val) =>
+    patchCfg((cfg) => {
+      const node = type === 'slot' ? (cfg.broll = cfg.broll || { kind: 'cookbook' }) : (cfg.cookbook = cfg.cookbook || {})
+      node.props = { ...(node.props || {}), [key]: val }
+    })
+  const fillSample = (type, id) =>
+    patchCfg((cfg) => {
+      const node = type === 'slot' ? (cfg.broll = cfg.broll || { kind: 'cookbook', id }) : (cfg.cookbook = cfg.cookbook || { id })
+      node.props = { ...(demos[id] || {}) }
+    })
+
+  // D1: load the sample-props map once (lazy — keeps remotion out of the bundle).
+  useEffect(() => {
+    let ok = true
+    import('@remotion-src/cookbook/demos')
+      .then((m) => { if (ok) setDemos(m.COOKBOOK_DEMOS || {}) })
+      .catch(() => {})
+    return () => { ok = false }
+  }, [])
+
+  // D2: rank the cookbook for the open scene's line (reuses the auto-compose
+  // ranker, lazy-loaded). Empty when there's no line — the plain list shows then.
+  useEffect(() => {
+    const b = sorted.find((x) => x.position === openPos)
+    const line = b && b.config && b.config.line
+    if (!b || !line || (b.block_type !== 'broll' && b.block_type !== 'slot')) { setRanked([]); return }
+    let ok = true
+    import('@remotion-src/cookbook/registry')
+      .then(({ pickCookbook }) => {
+        if (!ok) return
+        setRanked(
+          pickCookbook({ keywords: kwOf(line) }, 6).map((s) => ({
+            id: s.entry.id, title: s.entry.title, role: s.entry.role, needs: s.entry.needs,
+            score: s.score, why: (s.why || []).slice(0, 3).join(' · '),
+          })),
+        )
+      })
+      .catch(() => setRanked([]))
+    return () => { ok = false }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openPos])
+
   return (
     <section className="card" aria-labelledby="seq-title" style={{ marginTop: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
         <div>
           <h2 id="seq-title" style={{ margin: 0, fontSize: 16 }}>Sequence</h2>
           <div style={{ fontSize: 12.5, color: 'var(--text-2)', marginTop: 2 }}>
-            The ordered blocks that play — each a layout + config. Frozen into the composition at lock.
+            The ordered scenes that play — each a layout + config. Frozen into the composition at lock.
           </div>
         </div>
-        <span className="chip">{sorted.length} block{sorted.length === 1 ? '' : 's'}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button
+            type="button"
+            className={preview ? 'btn-primary' : 'btn-ghost'}
+            style={{ padding: '5px 12px' }}
+            disabled={!sorted.length}
+            onClick={() => setPreview((v) => !v)}
+            title={sorted.length ? 'Play this sequence live in the browser — free, no render' : 'Add a block to preview'}
+          >
+            {preview ? '▣ Hide preview' : '▷ Preview'}
+          </button>
+          <span className="chip">{sorted.length} scene{sorted.length === 1 ? '' : 's'}</span>
+        </div>
       </div>
+
+      {preview && sorted.length > 0 && (
+        <PreviewBoundary>
+          <Suspense fallback={<div className="dim small" style={{ padding: '18px 0', textAlign: 'center' }}>Loading preview…</div>}>
+            <LivePreview blocks={sorted} />
+          </Suspense>
+        </PreviewBoundary>
+      )}
 
       {!sorted.length && (
         <div style={{ color: 'var(--text-3)', fontSize: 13, padding: '10px 0' }}>
-          No blocks yet. {isDraft ? 'Add one to start designing the composition.' : 'This version has no sequence.'}
+          No scenes yet. {isDraft ? 'Add one to start designing the composition.' : 'This version has no sequence.'}
         </div>
       )}
 
@@ -164,11 +317,24 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
                 <span style={{ fontFamily: 'var(--mono, monospace)', fontSize: 12, color: 'var(--text-3)', textAlign: 'center' }}>{String(i).padStart(2, '0')}</span>
                 <LayoutFrame id={b.layout} />
                 <button type="button" onClick={() => (isOpen ? setOpenPos(null) : open(b))} style={{ textAlign: 'left', background: 'none', border: 0, color: 'inherit', cursor: 'pointer', minWidth: 0 }}>
-                  <div style={{ fontSize: 13.5, fontWeight: 700 }}>
-                    <span style={{ fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--accent-hi)', fontWeight: 700, marginRight: 8 }}>{b.block_type}</span>
-                    {b.layout || '—'}
+                  <div style={{ fontSize: 13.5, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--accent-hi)', fontWeight: 700 }}>{b.block_type}</span>
+                    <span>{b.layout || '—'}</span>
+                    {b.config && typeof b.config.confidence === 'number' && (
+                      <span
+                        title="Auto-compose fit for this scene"
+                        style={{ marginLeft: 'auto', fontSize: 10.5, fontFamily: 'var(--mono, monospace)', fontWeight: 600, letterSpacing: '.02em', padding: '2px 7px', borderRadius: 999, border: '1px solid var(--border-strong)', color: b.config.confidence < 0.5 ? '#e0a84a' : 'var(--ok, #5cc08a)' }}
+                      >
+                        {Math.round(b.config.confidence * 100)}% fit
+                      </span>
+                    )}
                   </div>
                   <div style={{ fontSize: 12, color: 'var(--text-2)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{blockSummary(b)}</div>
+                  {b.config && b.config.line && (
+                    <div style={{ fontSize: 12, color: 'var(--text-3)', fontStyle: 'italic', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: 1 }}>
+                      “{b.config.line}”
+                    </div>
+                  )}
                 </button>
                 {isDraft && (
                   <div style={{ display: 'flex', gap: 6 }}>
@@ -203,21 +369,162 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
 
                   {(b.block_type === 'broll' || b.block_type === 'slot') && (
                     <div>
-                      <label style={LBL}>Cookbook component</label>
-                      <select className="input" disabled={!isDraft || !!busy} value={cookbookIdOfCfg(parseBuf(b.config)) || ''} onChange={(e) => pickCookbook(b, e.target.value)} style={{ marginTop: 6 }}>
-                        <option value="">— pick —</option>
-                        {cookbook.map((c) => <option key={c.id} value={c.id}>{c.id} — {c.label} ({c.needs})</option>)}
-                      </select>
+                      <label style={LBL}>Cookbook component{b.config && b.config.line ? ' · ranked for this line' : ''}</label>
+                      {ranked.length > 0 ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8, maxHeight: 280, overflowY: 'auto' }}>
+                          {ranked.map((r) => {
+                            const sel = cookbookIdOfCfg(parseBuf(b.config)) === r.id
+                            return (
+                              <button key={r.id} type="button" disabled={!isDraft || !!busy} onClick={() => pickCookbook(b, r.id)}
+                                style={{ textAlign: 'left', background: sel ? 'var(--accent-soft)' : 'var(--input, #101116)', border: sel ? '1px solid var(--accent)' : '1px solid var(--border)', borderRadius: 8, padding: '8px 10px', cursor: isDraft ? 'pointer' : 'default', display: 'flex', alignItems: 'center', gap: 10 }}>
+                                <div style={{ minWidth: 0, flex: 1 }}>
+                                  <div style={{ fontSize: 12.5, fontWeight: 700 }}>{r.id}<span style={{ color: 'var(--text-3)', fontWeight: 400, marginLeft: 7 }}>{r.title}</span></div>
+                                  <div style={{ fontSize: 10.5, color: 'var(--text-3)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                    <span style={{ color: 'var(--cyan, #5ec6d6)' }}>{r.role}</span> · needs {r.needs}{r.why ? ' · ' + r.why : ''}
+                                  </div>
+                                </div>
+                                <span style={{ fontFamily: 'var(--mono, monospace)', fontSize: 12, fontWeight: 700, color: sel ? 'var(--accent-hi)' : 'var(--text-2)' }}>{r.score}</span>
+                              </button>
+                            )
+                          })}
+                        </div>
+                      ) : (
+                        <select className="input" disabled={!isDraft || !!busy} value={cookbookIdOfCfg(parseBuf(b.config)) || ''} onChange={(e) => pickCookbook(b, e.target.value)} style={{ marginTop: 6 }}>
+                          <option value="">— pick —</option>
+                          {cookbook.map((c) => <option key={c.id} value={c.id}>{c.id} — {c.label} ({c.needs})</option>)}
+                        </select>
+                      )}
+                    </div>
+                  )}
+
+                  {/* D1 · scene basics — the script line drives VO timing 1:1 */}
+                  <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                    <div style={{ flex: '1 1 260px', minWidth: 0 }}>
+                      <label style={LBL}>Script line</label>
+                      <input className="input" disabled={!isDraft || !!busy} value={cfgOf().line || ''} placeholder="What's said over this scene"
+                        onChange={(e) => patchCfg((c) => { c.line = e.target.value })} style={{ marginTop: 6, width: '100%' }} />
+                    </div>
+                    <div style={{ flex: '0 0 110px' }}>
+                      <label style={LBL}>Duration</label>
+                      <input className="input" type="number" min="0" step="0.5" disabled={!isDraft || !!busy}
+                        value={cfgOf().dur ?? ''} placeholder="auto"
+                        onChange={(e) => patchCfg((c) => { const n = parseFloat(e.target.value); if (Number.isFinite(n)) c.dur = n; else delete c.dur })}
+                        style={{ marginTop: 6, width: '100%' }} />
+                    </div>
+                  </div>
+                  {cfgOf().line && (
+                    <div className="dim small" style={{ marginTop: -6 }}>
+                      In replace mode the voice-over sets the real length — duration is a placeholder.
+                    </div>
+                  )}
+
+                  {b.block_type === 'slot' && (
+                    <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                      <div style={{ flex: '1 1 200px', minWidth: 0 }}>
+                        <label style={LBL}>Host</label>
+                        <input className="input" disabled={!isDraft || !!busy} placeholder="outfit id (blank = cast default)"
+                          value={(cfgOf().host || {}).id || (cfgOf().host || {}).label || ''}
+                          onChange={(e) => patchCfg((c) => { c.host = { ...(c.host || {}), id: e.target.value } })}
+                          style={{ marginTop: 6, width: '100%' }} />
+                      </div>
+                      <div style={{ flex: '1 1 160px', minWidth: 0 }}>
+                        <label style={LBL}>#tag</label>
+                        <input className="input" disabled={!isDraft || !!busy} placeholder="corner label"
+                          value={cfgOf().tag || ''}
+                          onChange={(e) => patchCfg((c) => { if (e.target.value) c.tag = e.target.value; else delete c.tag })}
+                          style={{ marginTop: 6, width: '100%' }} />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* D1 · component props — fields derived from the component's own sample */}
+                  {(() => {
+                    const type = b.block_type
+                    if (type !== 'broll' && type !== 'slot') return null
+                    const cb = cbOf(cfgOf(), type)
+                    if (!cb.id) return null
+                    const sample = demos[cb.id] || {}
+                    const keys = [...new Set([...Object.keys(sample), ...Object.keys(cb.props || {})])]
+                    if (!keys.length) return null
+                    const val = (k) => (cb.props || {})[k]
+                    return (
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                          <label style={{ ...LBL, margin: 0 }}>{cb.id} — content</label>
+                          {isDraft && (
+                            <button type="button" className="btn-ghost" style={{ padding: '3px 9px', fontSize: 11.5 }} disabled={!!busy}
+                              onClick={() => fillSample(type, cb.id)} title="Replace these fields with the component's sample content">
+                              Fill with sample
+                            </button>
+                          )}
+                        </div>
+                        <div style={{ display: 'grid', gap: 8 }}>
+                          {keys.map((k) => {
+                            const t = Array.isArray(sample[k]) ? 'array' : typeof (sample[k] ?? val(k))
+                            const cur = val(k)
+                            if (t === 'boolean') {
+                              return (
+                                <label key={k} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5 }}>
+                                  <input type="checkbox" disabled={!isDraft || !!busy} checked={!!cur} onChange={(e) => setProp(type, k, e.target.checked)} />
+                                  {k}
+                                </label>
+                              )
+                            }
+                            if (t === 'number') {
+                              return (
+                                <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                  <span style={{ fontSize: 12, color: 'var(--text-2)', minWidth: 108 }}>{k}</span>
+                                  <input className="input" type="number" step="any" disabled={!isDraft || !!busy} value={cur ?? ''}
+                                    placeholder={String(sample[k] ?? '')} onChange={(e) => { const n = parseFloat(e.target.value); setProp(type, k, Number.isFinite(n) ? n : undefined) }}
+                                    style={{ flex: 1 }} />
+                                </div>
+                              )
+                            }
+                            if (t === 'array' || t === 'object') {
+                              return (
+                                <div key={k}>
+                                  <span style={{ fontSize: 12, color: 'var(--text-2)' }}>{k} <span className="dim small">· list</span></span>
+                                  <textarea className="input" disabled={!isDraft || !!busy} spellCheck={false}
+                                    value={cur === undefined ? '' : JSON.stringify(cur, null, 1)}
+                                    placeholder={JSON.stringify(sample[k] ?? [], null, 1)}
+                                    onChange={(e) => { try { setProp(type, k, JSON.parse(e.target.value || 'null')) } catch { /* keep typing */ } }}
+                                    style={{ marginTop: 4, width: '100%', minHeight: 68, fontFamily: 'var(--mono, monospace)', fontSize: 12, lineHeight: 1.45, resize: 'vertical' }} />
+                                </div>
+                              )
+                            }
+                            return (
+                              <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                <span style={{ fontSize: 12, color: 'var(--text-2)', minWidth: 108 }}>{k}</span>
+                                <input className="input" disabled={!isDraft || !!busy} value={cur ?? ''} placeholder={String(sample[k] ?? '')}
+                                  onChange={(e) => setProp(type, k, e.target.value)} style={{ flex: 1 }} />
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )
+                  })()}
+
+                  {b.block_type !== 'broll' && b.block_type !== 'slot' && (
+                    <div className="dim small" style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '9px 11px' }}>
+                      A <b>{b.block_type}</b> scene doesn’t render from the sequence yet — only <b>broll</b> and <b>slot</b> scenes draw.
+                      Switch the type above, or keep this as a plan note.
                     </div>
                   )}
 
                   <div>
-                    <label style={LBL}>Config (JSON)</label>
-                    <textarea className="input" disabled={!isDraft || !!busy} value={buf} onChange={(e) => { setBuf(e.target.value); if (cfgErr) setCfgErr('') }} spellCheck={false}
-                      style={{ marginTop: 6, minHeight: 120, fontFamily: 'var(--mono, monospace)', fontSize: 12.5, lineHeight: 1.5, resize: 'vertical' }} />
-                    {cfgErr && <div style={{ color: 'var(--dead, #d1706a)', fontSize: 12, marginTop: 6 }}>{cfgErr}</div>}
+                    <button type="button" className="btn-ghost" style={{ padding: '4px 10px', fontSize: 12 }} onClick={() => setShowJson((v) => !v)}>
+                      {showJson ? '▲ Hide advanced (JSON)' : '▼ Advanced (JSON)'}
+                    </button>
+                    {showJson && (
+                      <textarea className="input" disabled={!isDraft || !!busy} value={buf} onChange={(e) => { setBuf(e.target.value); if (cfgErr) setCfgErr('') }} spellCheck={false}
+                        style={{ marginTop: 6, minHeight: 120, fontFamily: 'var(--mono, monospace)', fontSize: 12.5, lineHeight: 1.5, resize: 'vertical', width: '100%' }} />
+                    )}
+                    {cfgErr && <div style={{ color: 'var(--danger)', fontSize: 12, marginTop: 6 }}>{cfgErr}</div>}
                     {isDraft && (
-                      <button type="button" className="btn-primary" style={{ marginTop: 8 }} disabled={!!busy} onClick={() => saveConfig(b)}>Save config</button>
+                      <div style={{ marginTop: 8 }}>
+                        <button type="button" className="btn-primary" disabled={!!busy} onClick={() => saveConfig(b)}>Save scene</button>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -228,9 +535,50 @@ export default function SequenceEditor({ versionId, isDraft, blocks, cookbook = 
       </div>
 
       {isDraft && (
-        <button type="button" className="btn-ghost" style={{ marginTop: 10, width: '100%', borderStyle: 'dashed' }} disabled={!!busy} onClick={addBlock}>
-          ＋ Add block
-        </button>
+        <>
+          <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+            <button type="button" className="btn-ghost" style={{ flex: 1, borderStyle: 'dashed' }} disabled={!!busy} onClick={addBlock}>
+              ＋ Add scene
+            </button>
+            <button
+              type="button"
+              className={autoOpen ? 'btn-primary' : 'btn-ghost'}
+              style={autoOpen ? undefined : { borderStyle: 'dashed' }}
+              disabled={!!busy}
+              onClick={() => setAutoOpen((v) => !v)}
+              title="Turn a script into a composed sequence — pickCookbook chooses a best-fit visual per line"
+            >
+              ✨ Auto-compose
+            </button>
+          </div>
+          {autoOpen && (
+            <div className="card" style={{ marginTop: 10 }}>
+              <div className="field-label">Script — one line per scene</div>
+              <textarea
+                rows={6}
+                value={autoScript}
+                onChange={(e) => setAutoScript(e.target.value)}
+                placeholder={'What if one line could build your whole app?\nWatch the agent plan every step ahead.\nIt shipped in twelve seconds.'}
+                style={{ width: '100%', marginTop: 6, fontSize: 13 }}
+              />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 8, flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className="btn-primary"
+                  disabled={!!autoBusy || !autoScript.trim()}
+                  onClick={autoCompose}
+                >
+                  {autoBusy
+                    ? 'Composing…'
+                    : `Compose ${autoScript.split('\n').map((l) => l.trim()).filter(Boolean).length} scene(s) →`}
+                </button>
+                <span className="dim small">
+                  Each line becomes one scene with a best-fit visual (seeded with sample content), and this sequence becomes the whole short. Refine each scene below, then lock.
+                </span>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </section>
   )

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import CalendarStatusChip from './CalendarStatusChip'
@@ -34,6 +34,9 @@ export default function CalendarDrawer({
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
   const [justQueued, setJustQueued] = useState(false)
+  // S5 (Sprint 5): the channel's locked composition library + the current pin.
+  const [comps, setComps] = useState([])
+  const [compPin, setCompPin] = useState(item.template_version_id || '')
 
   const locked = status === 'queued' || status === 'produced' || status === 'superseded'
   const suggested = status === 'suggested'
@@ -43,6 +46,44 @@ export default function CalendarDrawer({
   // even if the channels list hasn't loaded yet.
   const chan = channels.find((c) => c.key === item.channel_key)
   const isDirect = chan && chan.template ? true : item.channel_key === 'claude-tricks'
+  const tplKey = chan && chan.template ? chan.template : null
+
+  // S5: load this channel's LOCKED composition library so the planner picks which
+  // composition this piece runs through — at plan time, per calendar row. Locked-
+  // only (set_calendar_template_version rejects drafts); keep a pinned-then-retired
+  // value visible so the current pin never vanishes from the dropdown.
+  useEffect(() => {
+    if (!tplKey) return
+    let ok = true
+    api
+      .get(`?r=template_versions&template_key=${encodeURIComponent(tplKey)}&include_retired=1`)
+      .then((d) => {
+        if (ok) setComps((d.versions || []).filter((v) => v.status === 'locked' || v.id === compPin))
+      })
+      .catch(() => {})
+    return () => {
+      ok = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tplKey])
+
+  // Pin (or clear) the composition on this calendar row. Reuses the same edge
+  // action the produce board uses — the pick is just moved earlier, to plan time.
+  const setComposition = async (val) => {
+    setCompPin(val)
+    setError('')
+    try {
+      await api.post({
+        action: 'set_calendar_template_version',
+        calendar_id: item.id,
+        template_version_id: val || null,
+      })
+      onChanged()
+    } catch (e) {
+      setError(e.message)
+    }
+  }
+
   const set = (k) => (e) => {
     setSaved(false)
     setForm((f) => ({ ...f, [k]: e.target.value }))
@@ -311,6 +352,24 @@ export default function CalendarDrawer({
                   </select>
                 </label>
               </div>
+              {tplKey && (
+                <label className="field">
+                  <span className="field-label">Composition</span>
+                  <select value={compPin} onChange={(e) => setComposition(e.target.value)}>
+                    <option value="">— channel default —</option>
+                    {comps.map((v) => (
+                      <option key={v.id} value={v.id} disabled={v.status !== 'locked'}>
+                        v{v.version}
+                        {v.label ? ' · ' + v.label : ''}
+                        {v.status === 'retired' ? ' (retired)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="field-hint" style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 4 }}>
+                    Which locked composition this piece runs through. Default = the channel's active cast.
+                  </span>
+                </label>
+              )}
               <label className="field">
                 <span className="field-label">Title</span>
                 <input value={form.title} onChange={set('title')} required />

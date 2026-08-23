@@ -13,6 +13,32 @@ import { NotificationStack } from "./NotificationStack";
 import { DynamicIsland } from "./DynamicIsland";
 import { VoiceOrb } from "./VoiceOrb";
 import { SwipeDeck } from "./SwipeDeck";
+import { Fogline } from "./Fogline";
+import { HoloCard } from "./HoloCard";
+import { GlassPanel } from "./GlassPanel";
+import { MorphField } from "./MorphField";
+import { ReactionMeter } from "./ReactionMeter";
+import { LedgerFlow } from "./LedgerFlow";
+import { ShareSplit } from "./ShareSplit";
+import { SpinWheel } from "./SpinWheel";
+import { OutroGlass } from "./OutroGlass";
+import { ScreenStage } from "./ScreenStage";
+import { TapStack } from "./TapStack";
+import { CareerArc } from "./CareerArc";
+import { ProofTrace } from "./ProofTrace";
+import { ContextTube } from "./ContextTube";
+import { ForgetsClay } from "./ForgetsClay";
+import { ZeroStackPaper } from "./ZeroStackPaper";
+import { BillDay } from "./BillDay";
+import { MeterChor } from "./MeterChor";
+import { SalaryBrick } from "./SalaryBrick";
+import { CaseBullets } from "./CaseBullets";
+import { GenerativeUI } from "./GenerativeUI";
+import { WebTour } from "./WebTour";
+import { SerifCap } from "./SerifCap";
+import { HeroDrop } from "./HeroDrop";
+import { VsTable } from "./VsTable";
+import { TermRun } from "./TermRun";
 
 /* =============================================================================
    COOKBOOK render dispatch — the id -> component map.
@@ -37,6 +63,32 @@ export const COOKBOOK_COMPONENTS: Record<string, React.FC<any>> = {
   DynamicIsland,
   VoiceOrb,
   SwipeDeck,
+  Fogline,
+  HoloCard,
+  GlassPanel,
+  MorphField,
+  ReactionMeter,
+  LedgerFlow,
+  ShareSplit,
+  SpinWheel,
+  OutroGlass,
+  ScreenStage,
+  GenerativeUI,
+  TapStack,
+  CareerArc,
+  ProofTrace,
+  ContextTube,
+  ForgetsClay,
+  ZeroStackPaper,
+  BillDay,
+  MeterChor,
+  SalaryBrick,
+  CaseBullets,
+  WebTour,
+  SerifCap,
+  HeroDrop,
+  VsTable,
+  TermRun,
 };
 
 export type CookbookBlockProps = {
