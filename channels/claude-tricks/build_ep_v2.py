@@ -3374,8 +3374,11 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
                     # PIP is cut from the wide 16:9 avatar and shown as a small
                     # landscape card rather than a square crop.
                     _pip_tid = WIDE_TID or framed_tid or tid
+                    # NB start_i, never i (same trap as _anchor above): consecutive
+                    # identical cook beats are MERGED into one segment, so the PIP
+                    # must lipsync the WHOLE run's VO slice, not just the last line.
                     _hc = host_clip(f"v2_cook_{raw_cid.replace('#', '_')}",
-                                    _seg_t[i], _seg_t[i + 1],
+                                    _seg_t[start_i], _seg_t[i + 1],
                                     photo=_pip_tid, aspect="16:9")
                     props["host"] = "assets/" + rel(_hc)
                 segments.append({"kind": "cookbook", "dur": round(dur, 3),
