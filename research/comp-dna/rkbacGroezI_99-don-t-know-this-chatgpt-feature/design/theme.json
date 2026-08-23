@@ -1,0 +1,26 @@
+{
+  "palette": {
+    "bg": "#0d0d0d",
+    "fg": "#ffffff",
+    "accent": "#ff1a6b",
+    "accent2": "#e8dcff",
+    "caption_fill": "#ffffff",
+    "caption_stroke": "#ff1a6b"
+  },
+  "typography": {
+    "headline": {"family_guess": "system sans-serif (SF Pro/Helvetica-ish)", "weight": "800 black", "case": "sentence-case", "size_rel": "n/a - no headline card, only captions"},
+    "caption": {"family_guess": "system sans-serif bold", "weight": "700-800", "case": "lowercase as-spoken", "size_rel": "~6-7% of frame height, 2-3 words per line, 2 lines max"}
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "selfie/vlog full-bleed, host walks and talks holding phone at arm's length; later cuts to laptop-screen recording",
+    "safe_zones": "captions sit lower-third, avoid absolute bottom (~10-15% from bottom) and top status bar",
+    "caption_pos": "lower-third, centered, pink/magenta rounded-rect pill background behind white bold text"
+  },
+  "motion": {
+    "cut_rate_per_10s": 3,
+    "zoom_punches": false,
+    "transitions": ["hard cuts only", "walking handheld selfie pans into location", "screen-record laptop footage cut in mid-scene", "cutaway to a talking-head reference clip (borrowed/inset) around t=17-19s and t=34-36s"]
+  },
+  "themeable": ["accent pill color", "caption font", "b-roll location footage", "screen-record content", "host wardrobe"]
+}

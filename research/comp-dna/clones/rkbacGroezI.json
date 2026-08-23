@@ -1,0 +1,124 @@
+{
+  "title": "rkbacGroezI · 99% don't know this ChatGPT feature",
+  "theme": "cream",
+  "accent": "#E8623D",
+  "blocks": [
+    {
+      "id": "SplitHead",
+      "beat": "hook",
+      "seconds": 2.4,
+      "props": {
+        "kicker": "wait for it",
+        "label": "Today",
+        "line": "The coolest thing you can do with AI",
+        "punch": "coolest",
+        "align": "left",
+        "size": "lg",
+        "underline": "bar"
+      },
+      "caption": "Coolest thing you can do with AI today"
+    },
+    {
+      "id": "AppWindow",
+      "beat": "setup-prompt",
+      "seconds": 3,
+      "props": {
+        "title": "ChatGPT",
+        "sidebar": ["New chat", "Room redesign", "History"],
+        "activeIndex": 1,
+        "body": {
+          "kind": "lines",
+          "lines": [
+            "Here's my empty conference room.",
+            "Turn it into a YouTube studio setup",
+            "using these reference photos."
+          ]
+        },
+        "cursor": true,
+        "shadow": true,
+        "tilt": true
+      },
+      "caption": "I gave it a prompt and reference photos"
+    },
+    {
+      "id": "ChatApp",
+      "beat": "proof-generate",
+      "seconds": 3.2,
+      "props": {
+        "appName": "ChatGPT",
+        "status": "generating",
+        "messages": [
+          { "from": "user", "text": "Turn my conference room into a studio setup" },
+          { "from": "ai", "text": "On it — building the concept from your references." },
+          { "from": "ai", "artifact": { "title": "Studio concept render", "subtitle": "Image · Generated", "action": "Open" } }
+        ]
+      },
+      "caption": "Watch what it built from that"
+    },
+    {
+      "id": "KineticQuote",
+      "beat": "payoff",
+      "seconds": 2.6,
+      "props": {
+        "kicker": "the reveal",
+        "parts": [
+          { "text": "Look at" },
+          { "text": "THIS.", "hot": true },
+          { "text": "This looks" },
+          { "text": "AMAZING.", "hot": true }
+        ],
+        "footer": "One generated render, full room concept",
+        "highlight": "bar"
+      },
+      "caption": "Look at this — it looks amazing"
+    },
+    {
+      "id": "AppWindow",
+      "beat": "proof-plan",
+      "seconds": 3.2,
+      "props": {
+        "title": "Room Plan.pdf",
+        "sidebar": ["Floor Plan", "Shopping List", "Layout"],
+        "activeIndex": 0,
+        "body": {
+          "kind": "lines",
+          "lines": [
+            "Desk — left wall, window light",
+            "Bookshelf — behind camera left",
+            "Lamp — warm 3200K, back corner",
+            "Full shopping list attached below"
+          ]
+        },
+        "cursor": false,
+        "shadow": true,
+        "tilt": true
+      },
+      "caption": "A full room plan and shopping list"
+    },
+    {
+      "id": "StatCloser",
+      "beat": "closer-stat",
+      "seconds": 2.4,
+      "props": {
+        "value": 3,
+        "label": "Deliverables from one prompt",
+        "sub": "render, floor plan, *shopping list*",
+        "theme": "cream"
+      },
+      "caption": "An in-depth layout for any room"
+    },
+    {
+      "id": "BrandBumper",
+      "beat": "cta",
+      "seconds": 2.2,
+      "props": {
+        "name": "ChatGPT Work",
+        "tagline": "the feature nobody's using yet",
+        "glyph": "spark",
+        "mode": "close",
+        "cta": "Try the new work app"
+      },
+      "caption": "All done with the new ChatGPT work app"
+    }
+  ]
+}

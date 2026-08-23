@@ -1,0 +1,13 @@
+| t_start | t_end | beat_role | what's on screen | text shown | why it works |
+|---|---|---|---|---|---|
+| 0:00 | 0:03 | hook | white title card, black bold text, no host | "Claude Now Leaves Invisible Fingerprints" | states the whole news in one sentence before host even appears — front-loads the payoff, no wind-up |
+| 0:03 | 0:09 | hook (host restate) | talking head, static med shot | "so we can now detect AI-generated words at a slip of text because..." | host re-says the hook in his own words — reinforces retention for viewers who skipped the card |
+| 0:09 | 0:19 | setup | talking head + occasional gesture | "Claude will add an invisible watermark / embedded inside all text and files it generates" | plain-language definition before jargon; sets up the mechanism question |
+| 0:20 | 0:29 | proof (doc insert #1) | full-screen screenshot of Claude Support article "How Claude marks content", red highlight box on key sentence | article body text, one line highlighted in red | cites the primary source instantly — builds credibility, red box directs eye to the exact claim being explained |
+| 0:29 | 0:39 | step 1 | talking head | "flag if Claude created or processed the file... something woven into the content itself" | explains mechanism #1 (embedded watermark) in spoken plain language, mirrors the doc |
+| 0:39 | 0:49 | proof (doc insert #2) | screenshot again, red box highlight | "readable marks provide important signal... but it's worth understanding their limitations" | returns to source doc to prove the "limitations" claim isn't host opinion |
+| 0:49 | 0:60 | step 2 / caveat | talking head | "detection mark doesn't automatically prove it's authored by Claude" | introduces nuance/caveat — keeps content honest, raises stakes for next section |
+| 1:00 | 1:11 | payoff / mechanism | talking head, hand gestures | "statistical sequencing of the text itself... maintains a particular structure" | explains HOW the watermark technically works (word-choice sequencing) — the "aha" beat |
+| 1:11 | 1:21 | proof (doc insert #3) | screenshot, bullet list highlighted | Anthropic's commitments under EU AI Act Code of Practice | escalates credibility — ties claim to regulation, not just a blog post |
+| 1:21 | 1:33 | context / stakes | talking head | "beyond Claude because a lot of the models... distilling Claude" | broadens relevance — connects to industry-wide implication (model distillation) |
+| 1:33 | 1:40 | cta / closer | talking head, calm posture | "because this could be a very clever way... to save itself" | ends on a provocative one-line thesis, no explicit "like/subscribe" — the line itself is the loop/cliffhanger |

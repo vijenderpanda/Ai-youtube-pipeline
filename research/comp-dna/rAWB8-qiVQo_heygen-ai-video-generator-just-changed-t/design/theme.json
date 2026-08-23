@@ -1,0 +1,42 @@
+{
+  "palette": {
+    "bg": "#e8e6e2",
+    "fg": "#ffffff",
+    "accent": "#1a1a2e",
+    "accent2": "#4a6fa5",
+    "caption_fill": "#ffffff",
+    "caption_stroke": "#2b3a67"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "none (no headline/title card used)",
+      "weight": null,
+      "case": null,
+      "size_rel": null
+    },
+    "caption": {
+      "family_guess": "Montserrat/Poppins ExtraBold or similar rounded-grotesk",
+      "weight": "800-900",
+      "case": "lowercase-as-spoken (no forced caps)",
+      "size_rel": "~0.09 of frame height per word"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "dead-center, extreme close-up, face fills ~65% of frame width, cropped at chest",
+    "safe_zones": "bottom ~12% reserved as solid black caption bar; top ~5% clear",
+    "caption_pos": "bottom, inside a solid black letterbox bar (not overlaid on video), single word or short 2-word chunk centered"
+  },
+  "motion": {
+    "cut_rate_per_10s": 0,
+    "zoom_punches": false,
+    "transitions": ["none — single continuous unbroken talking-head take for full 131s duration"]
+  },
+  "themeable": [
+    "caption_fill/stroke color pair",
+    "accent2 (stroke/glow color, currently blue)",
+    "caption font weight/family",
+    "black-bar height",
+    "background room/set (fixed per creator, not swappable per content)"
+  ]
+}

@@ -24,7 +24,23 @@ Source: 10 reference Shorts (9× Greg Isenberg house style, 1× be10X ad). Per-v
 | `A5` | screen-record walkthrough + kinetic titles | none | cUG0TGwE9-4 | tool tutorials where the real UI is the star |
 | `A6` | static infographic + stylus annotation | none | IFBBmwsGpUw | ad/poster-style; NOT our lane (low craft, high CTR bait) |
 
+## 2b. Archetype family B — the 2026-08-23 scout cohort (what the feed actually selected in-lane)
+All 12 top in-lane shorts are **host-on-camera** (host=full); none use the cream kinetic kit. Sparse proof inserts, karaoke/yellow-highlight captions, cold-open mid-sentence.
+| key | label | refs | v/day range | use when |
+|---|---|---|---|---|
+| `B1` | talking-head + kinetic stat overlays (liquid-fill, pyramid, map) | uR2JDsLZS6I | 6.5k | one shock number carries the piece |
+| `B2` | doc/essay hook card → talking-head + mixed-media b-roll (archival, comic panels, chalk) | dF9bvpTy6JA, lKs6Gl_dX8w | 4–6k | 100s+ story explainers (Varun Mayya lane) |
+| `B3` | talking-head + proof-card inserts (paper/tweet/repo/doc screenshot, chart-first open) | hINGU1P9Xtw, e2W5HLrj-w4, SK8SSr7-JaY, Z1NTwYuuvvw | 1–3.4k | news/hot-take with receipts; listicle tips |
+| `B4` | single-take monologue, zero cuts, captions only | SVNLC4NLXjA, TRIO7lBfgNQ, dx-0jU2Y0I4, rAWB8-qiVQo | 1–1.4k (+1 outlier) | 19–35s one-idea takes (Nate B Jones lane) — cheapest format that still gets selected |
+| `B5` | walking selfie face-cam + screen-record proof | rkbacGroezI | 1.9k | "99% don't know this feature" tip (Ishan lane, India) |
+
+**Read:** family A (Isenberg kit) is the *craft* reference; family B is the *selection* reference. The feed rewarded a face + a claim in the first second, not motion design. Our Sol host + cream kit = hybrid: B-style cold-open claim with host full-frame, A-style proof inserts (PhoneMock/AppWindow/StatCloser) instead of raw screenshots. Yellow word-highlight karaoke (B3/B4) is the caption convention across 7/12 winners.
+
+### Family-B components to add to the cookbook (gap list)
+★ proof-card insert (paper/tweet/repo/doc with red highlight box) · ★ word-highlight karaoke bar (yellow on white/black-stroke — we have KaraokeLine; add the yellow-highlight variant) · chart-first opener (timeline) · quote/question card over host · liquid-fill stat container · news-chyron card · circular avatar+chart PIP.
+
 ## 3. Hook mechanics observed (first 3s)
+- Family B adds: `H-shock-stat`, `H-quote-card`, `H-claim-title-card` (title slapped over host frame 1), `H-yes-no-question`, `H-chart-first`, `H-verbal-gap`/`H-mid-sentence` (no card at all — 4/12 winners), `H-walking-selfie-claim`.
 - `H-logo-motion` — icon/starburst → product logo → hard cut (VE2, DirG)
 - `H-wordless-icon` — 3s vector motion before any text (VSC5, dLS)
 - `H-object-3d` — relatable 3D object + incomplete 2nd-person line (yJK5)

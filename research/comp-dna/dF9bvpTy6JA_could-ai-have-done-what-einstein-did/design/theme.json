@@ -1,0 +1,42 @@
+{
+  "palette": {
+    "bg": "#7C8B78",
+    "fg": "#FFFFFF",
+    "accent": "#C0392B",
+    "accent2": "#6B4A2F",
+    "caption_fill": "#FFFFFF",
+    "caption_stroke": "#000000"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "Helvetica Neue / Inter Bold (generic geometric sans)",
+      "weight": "800-900",
+      "case": "sentence-case, no periods",
+      "size_rel": "0.06-0.08 of frame height, 2-3 line wrap"
+    },
+    "caption": {
+      "family_guess": "same bold sans as headline, slightly smaller",
+      "weight": "800",
+      "case": "sentence-case",
+      "size_rel": "0.04-0.05 of frame height, white fill + heavy black outline/drop-shadow, always 1-2 lines"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "center-frame, seated cross-legged, chest-up to full-seated framing, static locked camera, sage-green wall + wood shelf behind (red object top-right shelf as recurring color anchor)",
+    "safe_zones": "captions sit in lower-middle third, never over host's face/hands; top ~10% reserved for occasional chyron/logo card cutaways",
+    "caption_pos": "lower-center, one caption per beat, burned-in, changes every 1-2s synced to speech"
+  },
+  "motion": {
+    "cut_rate_per_10s": "6-9 cuts (talking-head holds ~1-3s between cutaways; cutaways themselves are quick 1-2s inserts)",
+    "zoom_punches": false,
+    "transitions": ["hard cut only, no crossfades/wipes seen"]
+  },
+  "themeable": [
+    "accent (red shelf-object / brand-color pop)",
+    "caption_fill/caption_stroke",
+    "b-roll card background (black-bg quote/logo cards)",
+    "chalk-equation insert graphics",
+    "product/illustration cutaway color grade (currently blue-toned medical illustration set)"
+  ]
+}

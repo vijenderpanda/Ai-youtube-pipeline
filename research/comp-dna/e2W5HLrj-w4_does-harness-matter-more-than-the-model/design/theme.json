@@ -1,0 +1,44 @@
+{
+  "palette": {
+    "bg": "#E8E4DC",
+    "fg": "#111111",
+    "accent": "#F5D400",
+    "accent2": "#22C55E",
+    "caption_fill": "#F5D400",
+    "caption_stroke": "#000000"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "Inter/Helvetica Neue Bold (system sans)",
+      "weight": 800,
+      "case": "sentence-case (first word cap, rest lower)",
+      "size_rel": 0.075
+    },
+    "caption": {
+      "family_guess": "Inter/Helvetica Neue Bold, same as headline",
+      "weight": 800,
+      "case": "sentence-case, 2-4 words per card",
+      "size_rel": 0.06,
+      "stroke": "thin black outline for legibility on any bg",
+      "color_rule": "yellow = default/neutral, green = opening question/quote text"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "seated, slightly off-center, chair swivels left/right between phrases; camera static locked-off tripod shot, office bg (window, monitor, whiteboard doodle)",
+    "safe_zones": "captions sit lower-third (~y=0.75-0.85 of frame), never overlapping face; inset cards/screenshots sit upper-half, clear of face and captions",
+    "caption_pos": "bottom third, center-aligned, one short phrase per ~1s beat"
+  },
+  "motion": {
+    "cut_rate_per_10s": 0,
+    "zoom_punches": false,
+    "transitions": ["none — single continuous take, no cuts; only caption text changes and inset overlays appear/disappear"]
+  },
+  "themeable": [
+    "accent caption color (swap yellow/green per channel brand)",
+    "inset card style (screenshot/tweet/paper/thumbnail frame)",
+    "host outfit/bg (locked identity, swappable wardrobe)",
+    "caption position/size",
+    "which claims get an inset-proof card vs plain caption"
+  ]
+}

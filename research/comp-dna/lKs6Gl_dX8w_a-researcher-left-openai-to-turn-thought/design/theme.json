@@ -1,0 +1,26 @@
+{
+  "palette": {
+    "bg": "#F2F1EC",
+    "fg": "#141414",
+    "accent": "#7A1F1F",
+    "accent2": "#1A2E5C",
+    "caption_fill": "#111111",
+    "caption_stroke": "#FFFFFF"
+  },
+  "typography": {
+    "headline": {"family_guess": "Helvetica Neue / Inter (grotesk sans)", "weight": "600-700", "case": "sentence", "size_rel": 0.055},
+    "caption": {"family_guess": "system sans (Inter/SF)", "weight": "500", "case": "sentence", "size_rel": 0.045}
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "center-frame, chest-up, direct-to-camera on cream seamless or dark studio bg",
+    "safe_zones": "top 10% reserved for small persistent title chip; bottom 12% kept clear for platform UI",
+    "caption_pos": "lower-third, left-aligned or centered depending on beat, stacked short lines"
+  },
+  "motion": {
+    "cut_rate_per_10s": 3,
+    "zoom_punches": true,
+    "transitions": ["hard cut", "match cut on gesture (hands to headset)", "cut to full-bleed still/UI screenshot", "cut to archival-style photo/diagram"]
+  },
+  "themeable": ["accent", "accent2", "headline copy", "screenshot/diagram content", "b-roll subject", "caption text"]
+}

@@ -1,0 +1,11 @@
+| t_start | t_end | beat_role | what's on screen | text shown | why it works |
+|---|---|---|---|---|---|
+| 0s | 3s | hook | static host bust shot, black title card lower-third w/ trash-can emoji icon | "bad Claude Code habits" | title stated instantly, no cold open wasted — viewer knows exact content contract in 1s |
+| 3s | 6s | setup (habit 1 intro, spoken) | host talking, no card yet | "not optimal... be wasting... And things in" | spoken lead-in builds to the visual proof beat |
+| 6s | 9s | proof (habit 1) | context-window usage screenshot insert, then a literal trash-bag photo cut in, then card appears | "It's... so... not good" / card: "Leaving Opus on for everything" | screenshot = concrete evidence, trash bag = comedic literal metaphor for "wasting", card locks in the habit name only after the joke lands |
+| 9s | 15s | setup+proof (habit 2) | host talking, then huge CLAUDE.md file-tree screenshot fills frame | "It's... than Fable... is still an... so" / card: "Dumping everything into Claude.md" | tree screenshot visually dwarfs the host, dramatizing "dumping everything" |
+| 15s | 19s | payoff/reax (habit 2 continued) | host talking, card persists | "Terrible. You should... that apply" | reaction word ("Terrible") is the punchline, delivered dry to camera |
+| 19s | 22s | proof (habit 2, detail) | zoomed-in file-tree screenshot detail | "session... in there" | second beat inside same habit — shows the tree isn't just deep, it's cluttered w/ irrelevant files |
+| 22s | 26s | setup+proof (habit 3) | host talking, card appears | "Disgusting. what you're..." / card: "Keeping 12 MCP servers installed at all times" | number in card (12) is the hook — specific quantified excess |
+| 26s | 29s | setup (habit 4 intro) | host talking, cut to laptop-on-desk cutaway shot | "you're a... 10X developer... locked in." | rare non-host cutaway breaks pattern right before final habit, signals "last one, pay attention" |
+| 29s | 32s | payoff/cta (habit 4) | host talking, card | "If you... a screenshot... context, it" / card: "Just saying 'fix my repo'" | final habit is the most relatable/self-deprecating one — ends on a laugh, implicit CTA is the whole video's practical takeaway (be specific with Claude) |

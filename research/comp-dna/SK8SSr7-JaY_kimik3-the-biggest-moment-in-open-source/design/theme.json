@@ -1,0 +1,44 @@
+{
+  "palette": {
+    "bg": "#D9D9D9",
+    "fg": "#111111",
+    "accent": "#F5E642",
+    "accent2": "#1E7FE0",
+    "caption_fill": "#F5E642",
+    "caption_stroke": "#000000"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "Montserrat/Poppins Bold (generic geometric sans)",
+      "weight": "800-900",
+      "case": "lower (talks in lowercase phrases, not shouty caps)",
+      "size_rel": "large, ~1 short phrase (1-4 words) per screen, centered mid-lower third"
+    },
+    "caption": {
+      "family_guess": "same as headline, single word/short-phrase burn-in",
+      "weight": "800-900",
+      "case": "lower",
+      "size_rel": "large, fills ~60-80% of frame width per word"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "seated, full-frame vertical, centered, chest-up, hands gesturing, plain gray studio wall behind",
+    "safe_zones": "caption band sits lower-middle third (~55-70% height); small circular avatar+chart insert appears top-center when a chart is referenced; top strip mostly clear",
+    "caption_pos": "one word/phrase burned in per ~1s beat, centered horizontally, vertically ~55-65% down frame, directly under/near speaker's chin"
+  },
+  "motion": {
+    "cut_rate_per_10s": "0 hard cuts (single continuous talking-head take) but caption word changes every ~1s giving perceived pacing; occasional full-frame B-roll insert (charts, hardware photos, screenshots) replacing the host shot for 1-3s",
+    "zoom_punches": false,
+    "transitions": ["hard swap between host frame and full-bleed B-roll/screenshot (no crossfade)", "small circular PIP chart/graph appears floating top-center over host for data beats"]
+  },
+  "themeable": [
+    "accent (caption fill color, currently yellow)",
+    "accent2 (used for brand-mark chips/blue highlights)",
+    "bg (studio wall / plain background color)",
+    "caption font family",
+    "circular PIP chart content",
+    "full-bleed B-roll photo/screenshot content",
+    "brand-logo chip icons"
+  ]
+}
