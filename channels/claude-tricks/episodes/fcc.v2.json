@@ -72,7 +72,7 @@
       "tourW": 1920,
       "tourH": 1080,
       "from": 7.0,
-      "_camera_note": "from=7.0: tape stars-focus hold is 7.64-10.04 so the KNEE punch at beat+2.15 (tape 9.15) still frames the counter; tape scroll 10.6-12.4 = beat 3.6-5.4 (pull-back); tagline select at tape 13.38 = beat+6.38 inside line 3. TRUE after VO: beat1 must start at 3.85 so 3.85+2.15 = 6.00 abs — if VO measures differently, shift camera[1].at (and sfx 6.0 stays absolute).",
+      "_camera_note": "TRUED 2026-08-23 from measured VO: beat1 starts 4.09s; stars punch at=1.41/dur .5 -> lands 6.00 abs (KNEE pop at 6.0 absolute). Tape from=7.0 so the punch frames the counter (tape 8.41 inside the 7.64-10.04 stars hold); tagline select at beat+6.38 (tape 13.38).",
       "camera": [
         {
           "at": 0.3,
@@ -82,10 +82,10 @@
             0.38
           ],
           "zoom": 1.22,
-          "hold": 1.3
+          "hold": 0.5
         },
         {
-          "at": 2.15,
+          "at": 1.41,
           "dur": 0.5,
           "center": [
             0.947,
@@ -206,7 +206,7 @@
     "TermRun#how": {
       "cmd": "curl -fsSL \"https://raw.githubusercontent.com/Alishahryar1/free-claude-code/main/scripts/install.sh\" | sh",
       "typeStart": 0.4,
-      "charsPerSec": 34,
+      "charsPerSec": 44,
       "promptLabel": "~",
       "response": [
         {
@@ -235,16 +235,16 @@
           "at": 0.3,
           "dur": 0.55,
           "center": [
-            0.361,
+            0.39,
             0.397
           ],
-          "zoom": 1.6,
-          "hold": 3.2
+          "zoom": 1.42,
+          "hold": 2.4
         }
       ],
       "selections": [
         {
-          "at": 1.2,
+          "at": 0.9,
           "rects": [
             [
               0.5814,
@@ -254,12 +254,13 @@
             ]
           ],
           "scrollTop": 2351,
-          "hold": 2.6,
+          "hold": 2.0,
           "sweep": "ltr"
         }
       ],
       "host": true,
-      "hostSize": 360
+      "hostSize": 360,
+      "_note": "payoff punch: zoom 1.42 centered x=0.39 so the WHOLE curl line (tape x 0.05-0.735) stays inside the card while it is selected (v2 cut it at 'scripts/instal')."
     }
   },
   "sfx": [
@@ -343,17 +344,17 @@
       "note": "riser into the payoff (ends ~beat6; minus-anchors unsupported)"
     },
     {
-      "at": "@beat5+1.2",
+      "at": "@beat5+0.9",
       "name": "pop",
       "note": "payoff: the curl line selected on the REAL page"
     },
     {
-      "at": "@beat5+2.6",
+      "at": "@beat5+1.9",
       "name": "slam",
       "note": "THE stop-and-slam (~85%) — duck window ends here"
     }
   ],
-  "duck": "@beat5+2.46,@beat5+2.60",
+  "duck": "@beat5+1.76,@beat5+1.90",
   "desc_cta": "Which repo should I open next? Tell me below.",
   "desc_prompt": "📋 THE EXACT LINE (macOS/Linux — read the installer first if you like):\n\ncurl -fsSL \"https://raw.githubusercontent.com/Alishahryar1/free-claude-code/main/scripts/install.sh\" | sh\n\nThen add ONE free provider key (NVIDIA NIM · Groq · OpenRouter). Free tiers have limits set by each provider.",
   "steps": [],

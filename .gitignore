@@ -46,6 +46,11 @@ webapp/.netlify/
 renders_out/
 renders_test/
 
+# swipe-capture skill — external reference shorts (raw video + contact sheets)
+research/learning-assets/
+research/comp-dna/*/raw.*
+research/comp-dna/*/contact_sheet.*
+
 # ─────────────────────────────────────────────────────────────
 # Runtime / caches / vendored deps
 # ─────────────────────────────────────────────────────────────
