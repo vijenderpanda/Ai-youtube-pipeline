@@ -3736,7 +3736,13 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
           "[m][v2]sidechaincompress=threshold=0.05:ratio=8:attack=40:release=600[duck];"
           "[v1][duck]amix=inputs=2:duration=first:normalize=0,"
           "loudnorm=I=-14:TP=-1:LRA=11,alimiter=limit=0.95[a]")
-    run(["ffmpeg", "-y", "-i", raw, "-stream_loop", "-1", "-i", music,
+    # per-episode bed IN-POINT (cfg["music_offset"], seconds): bed_active's first
+    # ~30s is its quiet intro (-13.5 dB RMS) and the full-energy drop lands at
+    # ~31s (-8 dB) — looping from 0 put the hook on the intro (VJ 2026-08-23:
+    # "opening sounds cold"). Seeks the bed input; the loop still wraps to 0.
+    _moff = float(cfg.get("music_offset", 0) or 0)
+    _mss = ["-ss", str(_moff)] if _moff else []
+    run(["ffmpeg", "-y", "-i", raw, "-stream_loop", "-1", *_mss, "-i", music,
          "-filter_complex", fc, "-map", "0:v", "-map", "[a]",
          "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", out])
     print(">> MASTERED", out)
@@ -3839,7 +3845,7 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
             fst = round(max(T - 1.6, 0.3), 3)
             fc2 = outro_fc(pre, fst, ratio=T / base, gain_db=cta["gain_db"])
             run(["ffmpeg", "-y", "-i", out] + tin + ["-i", outro,
-                 "-stream_loop", "-1", "-i", music, "-i", cta["wav"],
+                 "-stream_loop", "-1", *_mss, "-i", music, "-i", cta["wav"],
                  "-filter_complex", fc2, "-map", "[v]", "-map", "[a]",
                  *venc("18", "veryfast"),
                  "-c:a", "aac", "-b:a", "192k", "-shortest", out2])
@@ -3849,7 +3855,7 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
             fst = round(max(odur - 1.2, 0.0), 3) if odur else 2.6
             fc2 = outro_fc(pre, fst)
             run(["ffmpeg", "-y", "-i", out] + tin + ["-i", outro,
-                 "-stream_loop", "-1", "-i", music,
+                 "-stream_loop", "-1", *_mss, "-i", music,
                  "-filter_complex", fc2, "-map", "[v]", "-map", "[a]",
                  *venc("18", "veryfast"),
                  "-c:a", "aac", "-b:a", "192k", "-shortest", out2])

@@ -260,6 +260,12 @@
   },
   "sfx": [
     {
+      "at": 0.02,
+      "name": "pop",
+      "gain_db": 1,
+      "note": "opening attack at frame 0 (the riser alone left ~0.3s near-silent)"
+    },
+    {
       "at": "@beat0",
       "name": "riser",
       "note": "under the padlock fall"
@@ -358,9 +364,9 @@
   "outro_src": "epfcc/outro_card.mp4",
   "outro_cta": "Follow, I tour one AI repo every day. Which one should I open next?",
   "_outro_note": "VJ 2026-08-23: the CTA is the OUTRO STING (OutroGlass card) with Sol in a ~300px TALKING circle disc — host clip for THIS beat only via EchoMimic on the 3060 worker (scripts/avatar_render.py --track echomimic_local; HeyGen = fallback), cut from assets/epfcc/outro_cta.wav. Card rendered by gen_outro_glass.py at EXACTLY 0.45 + cta_dur + 0.8 s with --avatar <clip> --avatar-size 300 --avatar-delay 0.45 so build_ep_v2's outro retime ratio is 1 (a retimed talking disc would desync). Body ends on the payoff slam; line 8 moved here.",
-  "music_gain_db": 3.0,
+  "music_gain_db": 2.0,
   "music_fade_in": 0.25,
-  "_bed_note": "VJ 2026-08-23: bed_webtour (G2 pad, LRA 2.2, no drums) read as 'not energetic' -> bed_active (channel standard, LRA 5.7) at +3 dB, fade-in 0.25s so the open isn't cold. Sidechain duck keeps the VO on top; loudnorm keeps -14.",
+  "_bed_note": "VJ 2026-08-23 'opening sounds cold': bed_active's first ~30s is a quiet intro (-13.5 dB RMS) and its drop lands at ~31s (-8 dB, +5.5 dB). music_offset=31.5 starts the bed ON the drop; gain trimmed 3->2 dB since the drop section is hotter; fade-in 0.25. Opening hit: pop at 0.02 so frame 0 has an attack (riser alone was soft).",
   "pings": [
     {
       "at": "@beat1+6.5",
@@ -414,5 +420,6 @@
     "from": "@beat1",
     "y": 300
   },
-  "_rail_note": "TourRail (VJ 2026-08-23): fills the void between header and card — hairline + beat dots + gliding comet + current label; hidden on the hero, lit from the tour; the payoff dot breathes ahead (open loop). Stops on the merged-segment clock."
+  "_rail_note": "TourRail (VJ 2026-08-23): fills the void between header and card — hairline + beat dots + gliding comet + current label; hidden on the hero, lit from the tour; the payoff dot breathes ahead (open loop). Stops on the merged-segment clock.",
+  "music_offset": 31.5
 }
