@@ -2950,6 +2950,13 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
               f"collapsed into numerals "
               f"({', '.join(m['w'] for m in merged if any(ch.isdigit() for ch in m['w']))})")
     caps = merged
+    # Stamp each caption word with its SCRIPT LINE (from the <break> boundaries
+    # above). A merged multi-line cook run (e.g. 4x cook:WebTour#tour with a host
+    # PIP) is ONE beat in Short.tsx, and KaraokeLine used to paint every word of
+    # the beat as one 4-row paragraph -- over the PIP. With `line`, Short.tsx
+    # windows the karaoke to the line being spoken. 1-line beats are unchanged.
+    for c in caps:
+        c["line"] = _lineno(c)
 
     n_lines = len(cfg["lines"])
     total = caps[-1]["end"]

@@ -30,7 +30,7 @@ import {
 } from "./components/BuildClub";
 
 /* ---------- types (props come from a per-episode JSON) ---------- */
-export type Word = { w: string; start: number; end: number; hot?: boolean };
+export type Word = { w: string; start: number; end: number; hot?: boolean; line?: number };
 export type Seg = {
   /* src omitted for kind "statBars" (chart is drawn in-comp, never pre-baked) */
   src?: string;
@@ -387,7 +387,11 @@ const Caption: React.FC<{ word: Word; fps: number; y?: string | number; size?: n
 const NUMERIC = /[0-9]/;
 const KaraokeLine: React.FC<{
   words: Word[]; t: number; fps: number; size?: number; bottom?: number;
-}> = ({ words, t, fps, size, bottom = 360 }) => {
+  /* left inset — a cook beat with a bottom-left host PIP (WebTour/ScreenStage
+     host:true, x 56..416, y 1398..1600) shares this band; push the line right
+     of the card instead of painting it across Sol's face. */
+  left?: number;
+}> = ({ words, t, fps, size, bottom = 360, left = 56 }) => {
   const theme = useTheme();
   const frame = useCurrentFrame();
   if (!words.length) return null;
@@ -403,7 +407,7 @@ const KaraokeLine: React.FC<{
   const base = size ?? Math.round(theme.cap.size * 0.94);
   const BAND = 1560 - 1460 + 96;          // the 100px band, plus the headroom
                                           // the designed beats actually leave
-  const CPR = 968 / (base * 0.46);        // chars per row at the hot-word size
+  const CPR = (1080 - left - 56) / (base * 0.46); // chars per row at the hot-word size
   const chars = words.reduce((a, w) => a + w.w.length + 1, 0);
   const rows = Math.max(1, Math.ceil(chars / CPR));
   const fit = Math.min(1, BAND / (rows * base * 1.04));
@@ -423,7 +427,7 @@ const KaraokeLine: React.FC<{
       // So the band is 1517 (LedgerFlow's SAFE_BOTTOM + margin) to ~1560, and
       // the block bottom sits at 1920-360 = 1560 and grows UP into frame space
       // the designed beats deliberately leave empty.
-      position: "absolute", left: 56, right: 56, bottom,
+      position: "absolute", left, right: 56, bottom,
       maxHeight: 1560 - 1380,
       display: "flex", flexWrap: "wrap", alignItems: "baseline",
       justifyContent: "center", gap: "0 12px",
@@ -1373,6 +1377,22 @@ export const Short: React.FC<ShortProps> = (props) => {
   // an all-cookbook episode is never framed/split/capLow, so it used to fall
   // through to the single-word <Caption/> and lose the locked line treatment
   const activeIsCookbook = props.segments[Math.max(activeIdx, 0)]?.kind === "cookbook";
+  // MERGED MULTI-LINE COOK RUN: the build stamps `line` on every caption word.
+  // Window the karaoke to the line being spoken (or the last one started) so a
+  // 4-line run over one component reads as 4 successive lines, not a paragraph.
+  // Words without `line` (older props) fall through to the whole beat as before.
+  const lineWords = (() => {
+    if (!beatWords.some((w) => w.line !== undefined)) return beatWords;
+    let cur = beatWords.find((w) => t >= w.start && t <= w.end);
+    if (!cur) for (const w of beatWords) if (t >= w.start) cur = w;
+    if (!cur) cur = beatWords[0];
+    return beatWords.filter((w) => w.line === cur!.line);
+  })();
+  // a cook beat with a host PIP bottom-left → caption sits right of the card
+  const cookHostProps = props.segments[Math.max(activeIdx, 0)]?.cookbook?.props as
+    { host?: unknown; hostSize?: number } | undefined;
+  const cookHostInset = activeIsCookbook && !!cookHostProps?.host
+    ? 56 + (cookHostProps?.hostSize ?? 360) + 28 : undefined;
   const paneFor = (mode: NonNullable<Seg["mode"]>): React.CSSProperties =>
     mode === "split"
       ? { position: "absolute", top: 0, left: 0, width: "100%", height: "55%", overflow: "hidden" }
@@ -1539,7 +1559,7 @@ export const Short: React.FC<ShortProps> = (props) => {
         // smaller + not all-caps here so it doesn't fight the #NN callout/desc).
         <PanelCaption words={beatWords} t={t} top={1772} bottom={38} size={theme.cap.plain} chunk={6} plain />
       ) : activeIsCookbook && beatWords.length ? (
-        <KaraokeLine words={beatWords} t={t} fps={fps} />
+        <KaraokeLine words={lineWords} t={t} fps={fps} left={cookHostInset} />
       ) : activeCaption ? (
         activeIsPip ? (
           // v16.2: small running captions with hot-word highlight in the bottom
