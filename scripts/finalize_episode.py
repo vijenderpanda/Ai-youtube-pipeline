@@ -297,6 +297,7 @@ def arm_gate(ep, spec_path, spec, thumb_path):
                 break
 
     # 7) DESCRIPTION must render and carry the compliance line.
+    desc = ""
     try:
         import tempfile
         with tempfile.TemporaryDirectory() as td:
@@ -305,6 +306,26 @@ def arm_gate(ep, spec_path, spec, thumb_path):
             issues.append("description is missing the required disclosure line")
     except Exception as e:
         issues.append(f"description failed to build: {e!r}")
+
+    # 6) PACKAGING SCORE — advisory CTR/virality check (score_packaging.py). Below
+    #    the floor is a gate issue (title/desc/tags miss our known winner patterns);
+    #    at/above floor the per-rule misses print as warnings so they stay visible.
+    try:
+        sys.path.insert(0, HERE)
+        import score_packaging as sp
+        _lines = spec.get("lines") or []
+        _noun = (tags.split(",")[0].strip() if tags else None) or None
+        _sc, _verdict, _checks = sp.run(title, tags, desc,
+                                        _lines[0] if _lines else None, _noun)
+        print(f">> packaging score: {_sc}/100 — {_verdict} (floor {sp.FLOOR})")
+        for _c in _checks:
+            if _c["max"] and _c["status"] != "PASS":
+                warns.append(f"packaging/{_c['name']}: {_c['detail']} ({_c['pts']}/{_c['max']})")
+        if _sc < sp.FLOOR:
+            issues.append(f"packaging score {_sc}/100 is below the {sp.FLOOR} floor — "
+                          f"title/desc/tags miss our CTR patterns (see warnings; --force-arm to override)")
+    except Exception as e:
+        warns.append(f"packaging score skipped: {e!r}")
 
     return issues, warns
 
