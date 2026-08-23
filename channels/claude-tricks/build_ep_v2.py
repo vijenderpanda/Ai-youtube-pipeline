@@ -3559,6 +3559,21 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     # by hand (<=3); the outro card takes its own via gen_outro_glass --pings.
     if cfg.get("pings"):
         spec["pings"] = [{**pg, "at": _at_beat(pg["at"])} for pg in cfg["pings"]]
+    # beat timeline rail (TourRail): cfg["tour_rail"] = {"labels": [...one per
+    # merged segment, "" = no dot...], "from": @beat|sec, "y": px}
+    if cfg.get("tour_rail"):
+        _tr = cfg["tour_rail"]
+        if _tr.get("stops"):                                   # explicit [{label, at}]
+            _lab = [st["label"] for st in _tr["stops"]]
+            _sta = [_at_beat(st["at"]) for st in _tr["stops"]]
+        else:                                                  # one label per merged segment
+            _lab0 = list(_tr.get("labels", []))
+            _idx = [i for i, l in enumerate(_lab0) if l]       # "" = no dot
+            _lab = [_lab0[i] for i in _idx]; _sta = [_segstarts[i] for i in _idx]
+        spec["tourRail"] = {"labels": _lab, "starts": _sta,
+                            "end": round(_segstarts[-1], 3),
+                            **({"from": _at_beat(_tr["from"])} if _tr.get("from") else {}),
+                            **({"y": _tr["y"]} if _tr.get("y") else {})}
     if cfg.get("hook"):
         hk = dict(cfg["hook"])
         if not hk["image"].startswith(("assets/", "http")):

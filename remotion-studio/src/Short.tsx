@@ -12,6 +12,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { EngagePing, type Ping } from "./cookbook/EngagePing";
+import { TourRail, type TourRailPayload } from "./cookbook/TourRail";
 import { fitFont, splitHook } from "./components/fitText";
 import { StatBars, StatBarsProps } from "./components/StatBars";
 import { CookbookBlock } from "./cookbook/components";
@@ -122,6 +123,8 @@ export type ShortProps = {
   /* VJ engagement glows (EngagePing) at the YT button positions, fired on
      script beats — absolute seconds on the Short clock. Rationed: ≤3/episode. */
   pings?: Ping[];
+  /* beat timeline in the void above the card (web-tour template) */
+  tourRail?: TourRailPayload;
   steps?: Step[];
   vo: string;
   music?: string;
@@ -1583,6 +1586,7 @@ export const Short: React.FC<ShortProps> = (props) => {
       ) : null}
       {/* v16.4: ONE consistent global header on every beat (brand + episode tag),
           rendered last so it sits above all beat layouts incl. the hook. */}
+      {props.tourRail ? <TourRail rail={props.tourRail} t={t} /> : null}
       {props.pings?.map((pg, i) => <EngagePing key={`ping${i}`} t={t} ping={pg} />)}
       {props.watermark !== false ? <GlobalHeader epTag={props.epTag} scrim={props.headerScrim} /> : null}
 

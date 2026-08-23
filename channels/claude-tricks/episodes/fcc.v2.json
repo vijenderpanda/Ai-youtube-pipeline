@@ -378,5 +378,36 @@
       "dur": 2.6
     }
   ],
-  "_pings_note": "EngagePing (VJ's engagement glow, shape-matched at the YT button spots) fired on the words: LIKE on the '1.3B free tokens' sweep, COMMENT on 'pinned below', SUBSCRIBE on the outro 'Follow' (outro_pings -> gen_outro_glass --pings). Rationed to 3."
+  "_pings_note": "EngagePing (VJ's engagement glow, shape-matched at the YT button spots) fired on the words: LIKE on the '1.3B free tokens' sweep, COMMENT on 'pinned below', SUBSCRIBE on the outro 'Follow' (outro_pings -> gen_outro_glass --pings). Rationed to 3.",
+  "tour_rail": {
+    "stops": [
+      {
+        "label": "47K ★",
+        "at": "@beat1"
+      },
+      {
+        "label": "1.3B free",
+        "at": "@beat1+4.0"
+      },
+      {
+        "label": "the swap",
+        "at": "@beat2"
+      },
+      {
+        "label": "the catch",
+        "at": "@beat3"
+      },
+      {
+        "label": "one line",
+        "at": "@beat4"
+      },
+      {
+        "label": "payoff",
+        "at": "@beat5"
+      }
+    ],
+    "from": "@beat1",
+    "y": 300
+  },
+  "_rail_note": "TourRail (VJ 2026-08-23): fills the void between header and card — hairline + beat dots + gliding comet + current label; hidden on the hero, lit from the tour; the payoff dot breathes ahead (open loop). Stops on the merged-segment clock."
 }
