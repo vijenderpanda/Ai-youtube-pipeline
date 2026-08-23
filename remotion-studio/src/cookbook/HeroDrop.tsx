@@ -248,8 +248,8 @@ export const HeroDrop: React.FC<HeroDropProps> = ({
       {/* IMPACT: white flash + expanding shockwave ring at the landing point */}
       {impact > 0 ? (
         <>
-          <div style={{ position: "absolute", inset: 0, background: "#ffffff",
-            opacity: impact * impact * 0.22, mixBlendMode: "screen", pointerEvents: "none" }} />
+          <div style={{ position: "absolute", inset: 0, background: GOLD,
+            opacity: impact * impact * 0.16, mixBlendMode: "screen", pointerEvents: "none" }} />
           <div style={{ position: "absolute",
             left: cx - (size * 0.5) - (1 - impact) * size * 1.4,
             top: landBottom - 30 - (1 - impact) * size * 0.5,
