@@ -1,0 +1,42 @@
+{
+  "palette": {
+    "bg": "#87A8C7",
+    "fg": "#1A1A1A",
+    "accent": "#F5D400",
+    "accent2": "#FF7A1A",
+    "caption_fill": "#FFE600",
+    "caption_stroke": "#000000"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "system sans-serif (Helvetica/Arial-like, heavy weight)",
+      "weight": "800-900 black",
+      "case": "upper",
+      "size_rel": 0.05
+    },
+    "caption": {
+      "family_guess": "same sans-serif, condensed-bold",
+      "weight": "800 black",
+      "case": "upper",
+      "size_rel": 0.045
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "center-frame, standing full body outdoors, static wide shot no reframing",
+    "safe_zones": "caption pill sits low-third (~62-72% of frame height), never overlaps face; top/bottom ~8% kept clear for platform UI",
+    "caption_pos": "single short 2-4 word phrase in a solid-yellow rounded pill, horizontally centered, positioned at chest/waist level of host, one new pill per beat (~1s cadence)"
+  },
+  "motion": {
+    "cut_rate_per_10s": 0,
+    "zoom_punches": false,
+    "transitions": ["none - single continuous static take for host segments", "hard cut to full-bleed screenshot/UI insert then back to host", "hard cut to end-card poster"]
+  },
+  "themeable": [
+    "caption_fill/caption_stroke color (currently yellow-on-black, could repaint per brand)",
+    "accent2 used for secondary info-card labels (e.g. prize/reward text)",
+    "end-card poster background + logo mark",
+    "background b-roll location (currently static govt-building/park exterior, swappable)",
+    "product/UI screenshot inserts (swappable per topic)"
+  ]
+}

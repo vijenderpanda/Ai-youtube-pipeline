@@ -1,0 +1,48 @@
+{
+  "palette": {
+    "bg": "#0A0A0A",
+    "fg": "#FFFFFF",
+    "accent": "#D42B2B",
+    "accent2": "#1FD7D0",
+    "caption_fill": "#FFFFFF",
+    "caption_stroke": "#000000"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "serif display (Times/Georgia-like) for card interstitials (\"THE\", logo cards)",
+      "weight": "regular-bold mix",
+      "case": "sentence/mixed, occasional ALLCAPS on single-word cards",
+      "size_rel": "large, ~10-14% of frame height on interstitial cards"
+    },
+    "caption": {
+      "family_guess": "sans-serif (Inter/Helvetica-like) rounded-corner pill background",
+      "weight": "medium",
+      "case": "sentence case, short phrase fragments (2-4 words)",
+      "size_rel": "small-medium, ~4-5% of frame height, bottom-third placed on pill chip"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "center-frame, chest-up, direct to camera; secondary co-founder interviews are split-frame (two stacked headshots) around t=39-43s",
+    "safe_zones": "top 8% and bottom 12% avoided for caption text; captions sit lower-third, never overlapping mouth region during demo shots",
+    "caption_pos": "one short caption pill per beat, roughly centered horizontally, vertically ~65-75% down frame; drifts to just-below-subject on cutaways"
+  },
+  "motion": {
+    "cut_rate_per_10s": 9,
+    "zoom_punches": false,
+    "transitions": [
+      "hard cuts only, ~1s/beat cadence",
+      "white full-bleed card interludes (logo/wordmark reveal) between demo sections",
+      "picture-in-picture / multi-window screen recording collage (app icons, code editor) inserted mid-explanation",
+      "medical/diagram illustration insert (anatomical cross-section) for credibility beat",
+      "split-screen two-speaker interview insert near end"
+    ]
+  },
+  "themeable": [
+    "accent color (brand red -> swap per channel/product)",
+    "accent2 (teal used only in one UI-recording insert, could drop)",
+    "caption pill background/opacity",
+    "white-card interstitial background/logo",
+    "diagram illustration style"
+  ]
+}

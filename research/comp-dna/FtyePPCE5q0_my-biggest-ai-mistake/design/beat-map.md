@@ -1,0 +1,13 @@
+| t_start | t_end | beat_role | what's on screen | text shown | why it works |
+|---|---|---|---|---|---|
+| 0 | 2 | hook | host full-frame, hands clasped, plain wall bg | "Biggest AI coding mistake" (red card, white bg, black text) | blunt claim card, no preamble, instant topic clarity |
+| 2 | 5 | setup | host circle pip over dark git-graph diagram (branch/commit dots) | "So recently, has to be, Git worktrees" | names the fix before explaining the problem — curiosity gap |
+| 5 | 9 | setup | host full-frame, dark bg, Cursor mic badge lower-third | "and just all agents on the same branch. it's not Okay?" | rhetorical question closes the setup beat, sets up "why that's bad" |
+| 10 | 12 | proof | host circle pip over two line/scatter benchmark charts (orange, teal) | "Models like Fable 5, and GPT 5.6 SOL," | credibility injection via named-model chart, not directly on-topic but signals expertise |
+| 12 | 14 | proof | host full-frame | "they are smart enough, to like recognize," | plain talking-head carries the logic thread between visuals |
+| 14 | 19 | proof | host circle pip on cream bg, pixel-art robot+monitor mascot icon | "another agent this file. until he finishes or later run into issues where if you'd wanna" | mascot illustration personifies "agent" concept, cream bg = tonal break from dark set |
+| 20 | 25 | step | host circle pip, node-diagram of feature branches diverging into README/main.py/algorithm files (green/blue boxes) | "into production and everything and there is like 7 different commits different features it's a total mess." | diagram literalizes the messy-branch problem in sync with words |
+| 26 | 29 | step | host full-frame, mid-gesture | "might require migration, might require I made" | talking-head beat lets tension build before the fix reveal |
+| 30 | 32 | step | host circle pip (30) then full pip on white bg, repo/branch folder tree diagram | "just like YOLOing on one branch and not using" | tree diagram shows the anti-pattern structurally |
+| 33 | 39 | payoff | host full-frame, hands steepled, then split cream cards of "IMPLEMENT USER AUTH" node trees | "And hours of just untangling commits and like that. So from now on, every agent" | steepled-hands pause = gravity beat, then twin diagram cards show before/after |
+| 40 | 49 | cta/payoff | host full-frame (40), pip small over cream node card (41), then blue git-worktree branch diagrams growing frame to frame | "Git worktree. if an agent a different a completely separate folder on my computer git branch, there safely. And when then it's merged" | diagram animates the actual git-worktree flow live as he narrates the fix — payoff visual matches payoff words exactly |

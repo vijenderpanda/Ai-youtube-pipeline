@@ -1,7 +1,61 @@
 {
  "generated_for": "comp-dna library",
- "n": 59,
+ "n": 67,
  "assets": [
+  {
+   "id": "2ZQ4jSkiqr4",
+   "kind": "reference",
+   "title": "I'm Doing a Hackathon to Fix India's Public Service Websites",
+   "creator": "Varun Mayya",
+   "tags": {
+    "palette": "paperYellow",
+    "tone": "light",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "verbal-gap",
+    "lane": "news-hottake",
+    "region": "IN",
+    "mood": "curious",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 15357,
+    "views_per_day_pct": 0.82,
+    "like_rate": 0.0736
+   },
+   "evidence": 0.93,
+   "clone": "clones/2ZQ4jSkiqr4.json",
+   "sheet": "cards/refs/2ZQ4jSkiqr4.html"
+  },
+  {
+   "id": "52_wce7E3aQ",
+   "kind": "reference",
+   "title": "The Most Important Paper in AI History",
+   "creator": "David Ondrej",
+   "tags": {
+    "palette": "paperYellow",
+    "tone": "light",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "object-3d",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "curious",
+    "length": "short",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 1647,
+    "views_per_day_pct": 0.45,
+    "like_rate": 0.0267
+   },
+   "evidence": 0.56,
+   "clone": "clones/52_wce7E3aQ.json",
+   "sheet": "cards/refs/52_wce7E3aQ.html"
+  },
   {
    "id": "DirGcMXm4zw",
    "kind": "reference",
@@ -30,6 +84,87 @@
    "sheet": "cards/refs/DirGcMXm4zw.html"
   },
   {
+   "id": "FdmpR0-XvvU",
+   "kind": "reference",
+   "title": "This Engineer Saved The Internet From The Worst Cyber Attack",
+   "creator": "Varun Mayya",
+   "tags": {
+    "palette": "night",
+    "tone": "dark",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "claim-title-card",
+    "lane": "news-hottake",
+    "region": "IN",
+    "mood": "authoritative",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 23200,
+    "views_per_day_pct": 0.86,
+    "like_rate": 0.04
+   },
+   "evidence": 0.81,
+   "clone": "clones/FdmpR0-XvvU.json",
+   "sheet": "cards/refs/FdmpR0-XvvU.html"
+  },
+  {
+   "id": "FtyePPCE5q0",
+   "kind": "reference",
+   "title": "My Biggest AI Mistake...",
+   "creator": "David Ondrej",
+   "tags": {
+    "palette": "night",
+    "tone": "dark",
+    "accent": "yellow",
+    "host": "pip",
+    "archetype": "B3",
+    "hook": "claim-title-card",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "authoritative",
+    "length": "mid",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 1779,
+    "views_per_day_pct": 0.46,
+    "like_rate": 0.025
+   },
+   "evidence": 0.55,
+   "clone": "clones/FtyePPCE5q0.json",
+   "sheet": "cards/refs/FtyePPCE5q0.html"
+  },
+  {
+   "id": "GR4cCUL51wU",
+   "kind": "reference",
+   "title": "New Cursor plan\u2026",
+   "creator": "David Ondrej",
+   "tags": {
+    "palette": "paperYellow",
+    "tone": "light",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "mid-sentence",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "curious",
+    "length": "mid",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 1486,
+    "views_per_day_pct": 0.43,
+    "like_rate": 0.0295
+   },
+   "evidence": 0.57,
+   "clone": "clones/GR4cCUL51wU.json",
+   "sheet": "cards/refs/GR4cCUL51wU.html"
+  },
+  {
    "id": "IFBBmwsGpUw",
    "kind": "reference",
    "title": "AIUAE_KS_P3_AI331_KS_KS_POV@Mastering claude in 2026 9:16",
@@ -55,6 +190,33 @@
    "evidence": 0.2,
    "clone": "clones/IFBBmwsGpUw.json",
    "sheet": "cards/refs/IFBBmwsGpUw.html"
+  },
+  {
+   "id": "LRJnkGyae_Q",
+   "kind": "reference",
+   "title": "Why AI Art Gets Called Slop?",
+   "creator": "Varun Mayya",
+   "tags": {
+    "palette": "night",
+    "tone": "dark",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B4",
+    "hook": "claim-title-card",
+    "lane": "news-hottake",
+    "region": "IN",
+    "mood": "authoritative",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 1913,
+    "views_per_day_pct": 0.51,
+    "like_rate": 0.0399
+   },
+   "evidence": 0.67,
+   "clone": "clones/LRJnkGyae_Q.json",
+   "sheet": "cards/refs/LRJnkGyae_Q.html"
   },
   {
    "id": "SK8SSr7-JaY",
@@ -381,6 +543,33 @@
    "sheet": "cards/refs/e2W5HLrj-w4.html"
   },
   {
+   "id": "ecG_W1oZVtM",
+   "kind": "reference",
+   "title": "You Can Control Your Cursor Using Your Tongue!",
+   "creator": "Varun Mayya",
+   "tags": {
+    "palette": "night",
+    "tone": "dark",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "mid-sentence",
+    "lane": "news-hottake",
+    "region": "IN",
+    "mood": "curious",
+    "length": "mid",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 2586,
+    "views_per_day_pct": 0.61,
+    "like_rate": 0.0308
+   },
+   "evidence": 0.65,
+   "clone": "clones/ecG_W1oZVtM.json",
+   "sheet": "cards/refs/ecG_W1oZVtM.html"
+  },
+  {
    "id": "hINGU1P9Xtw",
    "kind": "reference",
    "title": "Claude Just Made Its Text Traceable",
@@ -433,6 +622,33 @@
    "evidence": 0.77,
    "clone": "clones/lKs6Gl_dX8w.json",
    "sheet": "cards/refs/lKs6Gl_dX8w.html"
+  },
+  {
+   "id": "lMiHRN8pzn4",
+   "kind": "reference",
+   "title": "ChatGPT 5.6 is a dumber model. I love it.",
+   "creator": "AI News & Strategy Daily | Nate B Jones",
+   "tags": {
+    "palette": "paperYellow",
+    "tone": "light",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B4",
+    "hook": "verbal-gap",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "curious",
+    "length": "micro",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 1147,
+    "views_per_day_pct": 0.34,
+    "like_rate": 0.0104
+   },
+   "evidence": 0.41,
+   "clone": "clones/lMiHRN8pzn4.json",
+   "sheet": "cards/refs/lMiHRN8pzn4.html"
   },
   {
    "id": "ovLAIhbk3ek",

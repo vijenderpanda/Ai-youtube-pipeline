@@ -1,0 +1,180 @@
+{
+ "title": "GR4cCUL51wU \u00b7 Cursor India pricing take",
+ "theme": "paperYellow",
+ "accent": "#FFE600",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 2.2,
+   "props": {
+    "kicker": "MY OWN TWEET",
+    "label": "This is going",
+    "line": "Because of one plan from Cursor",
+    "punch": "Cursor",
+    "align": "left",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "My tweet is going because of this."
+  },
+  {
+   "id": "AppWindow",
+   "beat": "setup/context",
+   "seconds": 2.4,
+   "props": {
+    "title": "Cursor Start",
+    "sidebar": [
+     "Plans",
+     "Start",
+     "Pro",
+     "Business"
+    ],
+    "activeIndex": 1,
+    "body": {
+     "kind": "lines",
+     "lines": [
+      "New: Cursor Start",
+      "Only available in India",
+      "\u20b9499/mo"
+     ]
+    },
+    "cursor": false,
+    "shadow": true,
+    "tilt": true,
+    "dark": false
+   },
+   "caption": "I love Cursor \u2014 great company, single day."
+  },
+  {
+   "id": "VsTable",
+   "beat": "setup (the twist/fact)",
+   "seconds": 2.6,
+   "props": {
+    "title": "Same plan, different access",
+    "colA": "India (cheaper)",
+    "colB": "Everyone else",
+    "rows": [
+     {
+      "label": "Price",
+      "a": "\u20b9499/mo",
+      "b": "$20/mo",
+      "verdict": "a"
+     },
+     {
+      "label": "Grok 4.5 access",
+      "a": "Blocked",
+      "b": "Included",
+      "verdict": "b"
+     }
+    ],
+    "rowStagger": 0.5
+   },
+   "caption": "Cheaper plan \u2014 but no Grok 4.5 access."
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "proof/tension build",
+   "seconds": 2.2,
+   "props": {
+    "kicker": "THE QUESTION",
+    "parts": [
+     {
+      "text": "Why would"
+     },
+     {
+      "text": "India"
+     },
+     {
+      "text": "get CHEAPER",
+      "hot": true
+     },
+     {
+      "text": "access \u2014"
+     },
+     {
+      "text": "for LESS?",
+      "hot": true
+     }
+    ],
+    "footer": "That's the real question.",
+    "highlight": "bar"
+   },
+   "caption": "Why would India get a cheaper plan for less?"
+  },
+  {
+   "id": "ChipRow",
+   "beat": "proof (counter-argument shown)",
+   "seconds": 2.2,
+   "props": {
+    "eyebrow": "The comments said",
+    "chips": [
+     {
+      "text": "India is poor",
+      "kind": "objection",
+      "struck": true
+     },
+     {
+      "text": "Pricing power",
+      "kind": "objection",
+      "struck": true
+     },
+     {
+      "text": "Makes sense?",
+      "kind": "objection",
+      "struck": true
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "y": 700,
+    "stagger": 0.24
+   },
+   "caption": "The comments: India's poor, it's pricing power."
+  },
+  {
+   "id": "BentoGrid",
+   "beat": "payoff (data punch)",
+   "seconds": 2.6,
+   "props": {
+    "heading": "Other poor countries? No deal.",
+    "tiles": [
+     {
+      "title": "Mali",
+      "value": "No plan",
+      "note": "poverty rate higher"
+     },
+     {
+      "title": "Niger",
+      "value": "No plan"
+     },
+     {
+      "title": "Nigeria",
+      "value": "No plan"
+     },
+     {
+      "title": "Chad",
+      "value": "No plan",
+      "span": "2x1"
+     }
+    ],
+    "stagger": 0.12
+   },
+   "caption": "Mali, Niger, Nigeria, Chad \u2014 no discount there."
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta/close",
+   "seconds": 2.2,
+   "props": {
+    "name": "Call This Out",
+    "tagline": "48 countries. Zero logic.",
+    "glyph": "bolt",
+    "mode": "close",
+    "cta": "Say it in the comments"
+   },
+   "caption": "Enough is enough \u2014 call this out."
+  }
+ ]
+}

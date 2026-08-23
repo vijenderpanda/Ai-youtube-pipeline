@@ -1,0 +1,11 @@
+| t_start | t_end | beat_role | what's on screen | text shown | why it works |
+|---|---|---|---|---|---|
+| 0:00 | 0:09 | hook | face-cam, host gesturing, direct address | "why AI art gets called slop?" (title bubble) + word bursts "AI SLOP" / "THIS ART..." / "THE INSTAGRAM" / "MOTIVATED BY" | title bubble states the exact question being answered; caption bursts tease the argument word-by-word, keeps eyes on captions |
+| 0:10 | 0:19 | setup | continuous talking head, hand gestures for emphasis | "MAKE ART BE" / "BEST FORM" / "EVERYONE LOVES" / "FAVORITE TO" / "WHY THEY DO IT" | sets up the premise/argument being built |
+| 0:20 | 0:29 | setup/argument | same shot, pointing gesture at 1:26 for emphasis | "FINAL PRODUCT" / "PEOPLE ARE LESS" / "IS ACTUALLY" / "BUT ANY TIME" / "FOR ANYTHING" | builds logical chain, pointing gesture marks key claim |
+| 0:30 | 0:39 | proof/example | cutaway to closer/tilted framing at 1:37 (only visual break in whole video) | "GETS LABELED" / "IS SLOP WHEN" / "IS REJECTED BY" / "I'M AMAZED" / "THE FIRST TIME" | brief framing shift acts as a visual "beat change" cue without a real cut |
+| 0:40 | 0:49 | proof | steady talking head | "THINK" / "UTTERLY MEANING" / "WHAT IS SPECIFIC" / "OR SOMETHING" | reinforces argument with rhetorical questions |
+| 0:50 | 0:59 | payoff/build | more animated gestures, mouth mid-word | "IS DIFFERENT" / "HELPFUL" / "IT'S SPECIFIC" / "MEANINGFUL" | starts resolving the "what is slop vs not" distinction |
+| 1:00 | 1:19 | payoff | continuous, gesture-heavy | "#2" / "THE PURPOSE" / "NOT THE PROCESS" / "IS ABOUT" / "MADE IT LOOK GOOD" / "THEY DIDN'T" / "TOO MUCH EFFORT" | numbered-point marker ("#2") signals listicle structure inside a talking-head video |
+| 1:20 | 1:35 | elaboration | continuous | "ARE INTENTION" / "MEDIUM" / "STYLE, AESTHETIC" / "MADE ON ANY" / "STYLE, EVERYTHING" | expands the thesis with parallel word cadence |
+| 1:36 | 1:60+(2:xx) | wrap/cta implied | continuous, no distinct CTA card observed within captured window | "AFTER MONTHS" / "FLOODED WITH" / "COLLECT SLOP" / "MORE JUST DO" / "ACTUALLY SPAM" / "INSTEAD, DO" | winds down argument to a personal takeaway; no explicit end-card in sampled frames |

@@ -1,0 +1,149 @@
+{
+ "title": "LRJnkGyae_Q \u00b7 Why AI art gets called slop",
+ "theme": "night",
+ "accent": "#f2d94e",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 3.5,
+   "props": {
+    "kicker": "The question",
+    "label": "Why does",
+    "line": "AI art get called slop?",
+    "punch": "slop",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "Why does AI art get called slop?"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "setup",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "The premise",
+    "parts": [
+     {
+      "text": "Everyone wants"
+     },
+     {
+      "text": "art people"
+     },
+     {
+      "text": "LOVE.",
+      "hot": true
+     },
+     {
+      "text": "So why do so many"
+     },
+     {
+      "text": "HATE IT?",
+      "hot": true
+     }
+    ],
+    "highlight": "bar"
+   },
+   "caption": "Everyone wants art people love \u2014 why do so many hate it?"
+  },
+  {
+   "id": "VsTable",
+   "beat": "proof/argument",
+   "seconds": 3.5,
+   "props": {
+    "title": "What actually gets labeled slop",
+    "colA": "Rejected as slop",
+    "colB": "Never called slop",
+    "rows": [
+     {
+      "label": "intention",
+      "a": "none",
+      "b": "specific",
+      "verdict": "b"
+     },
+     {
+      "label": "purpose",
+      "a": "unclear",
+      "b": "clear",
+      "verdict": "b"
+     },
+     {
+      "label": "effort shown",
+      "a": "too little",
+      "b": "just enough",
+      "verdict": "b"
+     }
+    ],
+    "rowStagger": 0.5
+   },
+   "caption": "It's rejected when intention is missing, not because it's AI"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "payoff/build",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "#2",
+    "parts": [
+     {
+      "text": "It's about"
+     },
+     {
+      "text": "THE PURPOSE,",
+      "hot": true
+     },
+     {
+      "text": "not"
+     },
+     {
+      "text": "THE PROCESS.",
+      "hot": true
+     }
+    ],
+    "highlight": "bar"
+   },
+   "caption": "It's about the purpose, not the process"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "wrap/cta",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "The takeaway",
+    "parts": [
+     {
+      "text": "Stop making"
+     },
+     {
+      "text": "MORE.",
+      "hot": true
+     },
+     {
+      "text": "Start making"
+     },
+     {
+      "text": "SOMETHING.",
+      "hot": true
+     }
+    ],
+    "footer": "Intention beats volume, every time.",
+    "highlight": "bar"
+   },
+   "caption": "Stop making more \u2014 start making something"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "bumper",
+   "seconds": 2,
+   "props": {
+    "name": "AI Unpacked",
+    "tagline": "one AI truth a day",
+    "glyph": "spark",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "caption": "Follow for more"
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+| t_start | t_end | beat_role | what's on screen | text shown | why it works |
+|---|---|---|---|---|---|
+| 0 | 2 | hook | host talking-head, gestures, product line-drawing icon | "You can now" | curiosity-gap open, mid-sentence hook, no logo/intro |
+| 2 | 4 | hook cont. | mouth close-up, abstract dark texture, geometric ^ mark | "using" / (blank) / "So, a startup" | mystery visual (mouth) before reveal, withholds the object |
+| 4 | 9 | reveal/setup | white card w/ product wordmark "THE", product macro shots (device in hand), host eating/inserting device, laptop w/ cursor | "just built" / "THE" / "It's basically" / "pressure-sensitive" / "touchpad that" / "the roof of ^ugmental" | slow specific reveal — define what it is before showing full use |
+| 9 | 19 | proof/demo | multi-app icon grid, screen recording collage (person on couch w/ laptop), code editor shortcuts panel, close-up mouth+device in profile | "become cursor" / "movements," / "become clicks," / "computer over" | stacks capability proof — shows real screen control across many apps |
+| 19 | 22 | comparison | fist mimicking mouse grip, host talking | "just like a" / '"regular" mouse.' | analogy to familiar object, lowers perceived novelty-risk |
+| 22 | 25 | proof cont. | UI cursor over teal video, device close-up | '"weird," the best' / "It doesn't need" | pre-empts skepticism ("weird") then counters it immediately |
+| 25 | 29 | use-case | device box open, people biting into/removing device, finger tapping OS logo | "You can wear" / "or remove it" / "accessory that" / "works across" | portability + universality claims paired 1:1 with visuals |
+| 29 | 31 | proof (compat) | white cards: Windows/macOS text, Linux penguin, Android logo | "Windows, macOS," / "Linux, Android" / "and even iOS." | rapid logo-card list = credibility via breadth, zero-cost visual |
+| 31 | 38 | how-it's-made | 3D scan software, gloved hands molding mouthpiece, scan mesh, 3D printer resin bath | "Plus, every" / "mouthpiece is" / "custom-fitted" / "scan, and then" / "3D printed" / "to be as" / "as possible" | manufacturing footage = trust/quality signal, satisfying process shot |
+| 38 | 44 | authority/social proof | two co-founders in split interview frame, product logo card, MRI/anatomy scan images | "Say whatever," / "definitely" / "right." / (diagrams) / "your tongue" / "be a better" | founder testimony + real medical scan = scientific legitimacy |
+| 44 | 48 | education | anatomical mouth cross-section diagrams (palate/sensor/tongue labels), tongue close-up | "is packed" / "with muscles," / "gets tired," | teaches the biomechanical premise, diagram = high info-density beat |
+| 48 | 50 | disclaimer/proof | small-multiple grid of demo clips, disclaimer text card | "works for" / "people who have" / "of their" (disability context) | quiet honesty beat — no effects disclaimer builds trust |
+| 50 | 54 | reveal detail | device flexing/bending shot, mouth insert w/ implant-like piece | "and using" / "doesn't even" / "implant" | second twist — no surgery/implant needed, addresses objection |
+| 54 | 59 | cta/payoff | round device macro (brain-computer interface framing), host talking direct-to-camera, closing gestures | "brain-computer" / "companies" / "Plus, it might" / "a sharper jawline" / "if you want." | ends on a light/funny bonus benefit — memorable closer, not a hard CTA |

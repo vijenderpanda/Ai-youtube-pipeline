@@ -1,0 +1,156 @@
+{
+ "title": "FdmpR0-XvvU \u00b7 The Engineer Who Saved The Internet",
+ "theme": "night",
+ "accent": "#E4382E",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 2.4,
+   "props": {
+    "kicker": "TRUE STORY",
+    "label": "This person saved",
+    "line": "The internet from the worst cyberattack",
+    "punch": "worst cyberattack",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar",
+    "theme": "cream"
+   },
+   "caption": "This person saved the internet"
+  },
+  {
+   "id": "TermRun",
+   "beat": "setup",
+   "seconds": 2.4,
+   "props": {
+    "cmd": "ssh login --trace",
+    "typeStart": 0.4,
+    "charsPerSec": 30,
+    "response": [
+     {
+      "t": "[OK] booting system\u2026",
+      "tone": "info"
+     },
+     {
+      "t": "SSH login taking +0.50s",
+      "tone": "accent"
+     },
+     {
+      "t": "\u2026slightly longer than usual",
+      "tone": "info"
+     }
+    ],
+    "lineStagger": 0.3,
+    "promptLabel": "~/prod"
+   },
+   "caption": "One of the worst cyberattacks in history"
+  },
+  {
+   "id": "OrbitNodes",
+   "beat": "character-intro",
+   "seconds": 2.6,
+   "props": {
+    "hub": {
+     "label": "Andres Freund",
+     "icon": "\ud83d\udd75\ufe0f"
+    },
+    "nodes": [
+     {
+      "label": "SSH login"
+     },
+     {
+      "label": "CPU spike"
+     },
+     {
+      "label": "Timing"
+     },
+     {
+      "label": "Anomaly"
+     },
+     {
+      "label": "Valgrind"
+     },
+     {
+      "label": "xz utils"
+     }
+    ]
+   },
+   "caption": "A Microsoft engineer got suspicious"
+  },
+  {
+   "id": "Odometer",
+   "beat": "escalation",
+   "seconds": 2.6,
+   "props": {
+    "value": 11509337,
+    "group": true,
+    "label": "Linux servers exposed",
+    "delta": "+11.5M at risk"
+   },
+   "caption": "A hidden operation to hijack every server"
+  },
+  {
+   "id": "DiffReveal",
+   "beat": "mechanism",
+   "seconds": 2.6,
+   "props": {
+    "filename": "liblzma/sshd.c",
+    "kicker": "XZ UTILS \u00b7 BACKDOOR",
+    "title": "A tiny compression library hid a master key.",
+    "lines": [
+     {
+      "text": "# openssh via systemd",
+      "kind": "same"
+     },
+     {
+      "text": "verify(client_key)",
+      "kind": "del"
+     },
+     {
+      "text": "if (attacker_key_match)",
+      "kind": "add"
+     },
+     {
+      "text": "  bypass_auth()",
+      "kind": "add"
+     },
+     {
+      "text": "  grant_full_access()",
+      "kind": "add"
+     }
+    ],
+    "footer": "Full remote access \u2014 no password needed."
+   },
+   "caption": "One maintainer, years of trust, one backdoor"
+  },
+  {
+   "id": "StatCloser",
+   "beat": "payoff",
+   "seconds": 2.5,
+   "props": {
+    "value": 0.5,
+    "suffix": "s",
+    "decimals": 1,
+    "label": "The delay that gave it away",
+    "sub": "Reported it \u2014 before the update reached *the whole internet*",
+    "theme": "cream"
+   },
+   "caption": "0.5 seconds. That's all it took to notice"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta",
+   "seconds": 2.2,
+   "props": {
+    "name": "AI Unpacked",
+    "tagline": "one AI story a day",
+    "glyph": "bolt",
+    "mode": "close",
+    "cta": "Follow for more",
+    "theme": "cream"
+   },
+   "caption": "One dangerous attack, one closer call"
+  }
+ ]
+}

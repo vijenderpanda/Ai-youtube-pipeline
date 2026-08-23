@@ -1,0 +1,42 @@
+{
+  "palette": {
+    "bg": "#C9D8DE",
+    "fg": "#FFFFFF",
+    "accent": "#F5E400",
+    "accent2": "#4A9FD8",
+    "caption_fill": "#FFFFFF",
+    "caption_stroke": "#000000"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "Montserrat/Proxima-Nova-Bold (generic geometric sans, TikTok-caption style)",
+      "weight": "800-900",
+      "case": "UPPER",
+      "size_rel": "~9-10% of frame height per line, 2 lines max"
+    },
+    "caption": {
+      "family_guess": "same as headline, no separate caption face — captions ARE the headline",
+      "weight": "800-900",
+      "case": "UPPER",
+      "size_rel": "same as headline"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "dead-center, face fills ~55% frame width, shot from chest-up, static tripod/webcam, zero camera movement",
+    "safe_zones": "top 8% and bottom 8% kept clear of face; caption block sits in lower third (~72-92% of frame height)",
+    "caption_pos": "bottom-center, 2 lines max, centered, stacked directly above bottom safe margin"
+  },
+  "motion": {
+    "cut_rate_per_10s": 0,
+    "zoom_punches": false,
+    "transitions": ["none — single continuous static shot, all motion is host's natural talking gesture (hand points, praying-hands emphasis at payoff beat)"]
+  },
+  "themeable": [
+    "accent (keyword highlight color) — swap per channel brand",
+    "accent2 (secondary highlight, used sparingly) — swap per channel brand",
+    "bg (host's real background) — not directly controllable if using real talking-head footage, but if recreated with a virtual host this becomes swappable",
+    "caption font family — swap for brand type as long as weight stays ultra-bold + all-caps",
+    "wardrobe/backdrop — content-specific, not part of the reusable look"
+  ]
+}

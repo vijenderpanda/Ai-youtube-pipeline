@@ -1,0 +1,54 @@
+{
+  "palette": {
+    "bg": "#0A0C0F",
+    "fg": "#F2F2F0",
+    "accent": "#E4382E",
+    "accent2": "#2ED9A0",
+    "caption_fill": "#FFFFFF",
+    "caption_stroke": "#000000",
+    "notes": "terminal green (#2ED9A0-ish) for code/hacker beats, alert red (#E4382E) for danger/lock/threat beats, near-black bg (#0A0C0F) throughout; host hoodie is white/cream, framed by a red graphic (looks like a red hand-print/logo) behind him"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "Inter/Helvetica-ish bold sans",
+      "weight": "800-900",
+      "case": "Title Case / Sentence case mixed",
+      "size_rel": "large, ~2-3 words per line, left-aligned or centered depending on beat"
+    },
+    "caption": {
+      "family_guess": "Inter/system sans bold",
+      "weight": "700-800",
+      "case": "lowercase, word-by-word or 2-3 word bursts",
+      "size_rel": "medium, bottom-third, white fill no stroke (relies on dark bg for contrast) — occasional highlighted word in accent color"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "full-bleed vertical talking head, centered, chest-up; recurring branded graphic behind (red hand-print) as a bumper/sting element between segments",
+    "safe_zones": "top ~10% reserved for small pill/label tags (e.g. speaker name, 'source' tag), bottom ~15% for captions",
+    "caption_pos": "lower-third, centered, 2-4 words at a time, animates in per-word"
+  },
+  "motion": {
+    "cut_rate_per_10s": "6-9 (fast, near-constant scene/graphic change)",
+    "zoom_punches": true,
+    "transitions": [
+      "hard cut",
+      "host-to-graphic swap on beat",
+      "number ticker / counter animation on stats",
+      "radar/sonar sweep graphic for 'scanning/detecting' beats",
+      "terminal-typing reveal for code/log beats",
+      "newspaper article scroll for 'proof/credibility' beats",
+      "grid of red/white squares filling in for 'compromise count' beats"
+    ]
+  },
+  "themeable": [
+    "accent color (swap red for channel color)",
+    "accent2 terminal-green (swap per topic, e.g. code color)",
+    "host name/title pill text",
+    "headline/hook text",
+    "stat/counter values",
+    "article/proof screenshot content",
+    "code/log snippet content",
+    "radar/network-graph node labels"
+  ]
+}

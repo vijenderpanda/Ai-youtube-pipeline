@@ -1,0 +1,188 @@
+{
+ "title": "FtyePPCE5q0 \u00b7 Biggest AI Coding Mistake",
+ "theme": "night",
+ "accent": "#FFD400",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 2,
+   "props": {
+    "label": "THE MISTAKE",
+    "line": "Biggest AI coding mistake",
+    "punch": "mistake",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "Biggest AI coding mistake"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "setup",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "THE FIX",
+    "parts": [
+     {
+      "text": "So the fix"
+     },
+     {
+      "text": "is"
+     },
+     {
+      "text": "GIT WORKTREES.",
+      "hot": true
+     }
+    ],
+    "footer": "One branch, many agents \u2014 bad."
+   },
+   "caption": "So recently \u2014 Git worktrees"
+  },
+  {
+   "id": "FlowTree",
+   "beat": "step",
+   "seconds": 3,
+   "props": {
+    "title": "One branch, seven agents",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "main branch",
+      "icon": "\ud83c\udf31",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "README",
+      "parent": "root",
+      "icon": "\ud83d\udcc4",
+      "state": "active"
+     },
+     {
+      "id": "b",
+      "label": "main.py",
+      "parent": "root",
+      "icon": "\ud83d\udc0d",
+      "state": "active"
+     },
+     {
+      "id": "c",
+      "label": "algorithm",
+      "parent": "root",
+      "icon": "\ud83e\udde9",
+      "state": "active"
+     },
+     {
+      "id": "d",
+      "label": "conflict",
+      "parent": "a",
+      "state": "todo"
+     },
+     {
+      "id": "e",
+      "label": "conflict",
+      "parent": "b",
+      "state": "todo"
+     }
+    ]
+   },
+   "caption": "7 different commits \u2014 total mess"
+  },
+  {
+   "id": "VsTable",
+   "beat": "step",
+   "seconds": 3.5,
+   "props": {
+    "title": "The difference",
+    "colA": "One branch",
+    "colB": "Worktrees",
+    "rows": [
+     {
+      "label": "agents",
+      "a": "all on one branch",
+      "b": "each own folder",
+      "verdict": "b"
+     },
+     {
+      "label": "commits",
+      "a": "7 tangled features",
+      "b": "clean, separate",
+      "verdict": "b"
+     },
+     {
+      "label": "merge",
+      "a": "hours untangling",
+      "b": "safe, isolated",
+      "verdict": "b"
+     },
+     {
+      "label": "risk",
+      "a": "breaks production",
+      "b": "nothing touched",
+      "verdict": "b"
+     }
+    ],
+    "rowStagger": 0.5
+   },
+   "caption": "Hours untangling commits vs a clean merge"
+  },
+  {
+   "id": "TermRun",
+   "beat": "payoff",
+   "seconds": 3,
+   "props": {
+    "cmd": "git worktree add ../agent-2 feature-2",
+    "typeStart": 0.4,
+    "charsPerSec": 30,
+    "response": [
+     {
+      "t": "\u25cf creating separate folder\u2026",
+      "tone": "info"
+     },
+     {
+      "t": "\u2713 new branch feature-2 checked out",
+      "tone": "ok"
+     },
+     {
+      "t": "\u2713 agent runs here, untouched",
+      "tone": "ok"
+     },
+     {
+      "t": "safe to merge when it's done",
+      "tone": "accent"
+     }
+    ],
+    "lineStagger": 0.2,
+    "promptLabel": "~/project"
+   },
+   "caption": "A separate folder, a separate branch"
+  },
+  {
+   "id": "StatCloser",
+   "beat": "payoff",
+   "seconds": 2.5,
+   "props": {
+    "value": 6,
+    "suffix": " hrs",
+    "label": "Saved every week",
+    "sub": "no more *untangling commits*"
+   },
+   "caption": "That's hours back every week"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta",
+   "seconds": 2,
+   "props": {
+    "name": "Worktree Fix",
+    "tagline": "one prompt away",
+    "glyph": "orbit",
+    "mode": "close",
+    "cta": "Follow for more Git tips"
+   },
+   "caption": "Follow for more Git tips"
+  }
+ ]
+}

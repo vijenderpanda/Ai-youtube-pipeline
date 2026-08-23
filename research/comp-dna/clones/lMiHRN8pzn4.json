@@ -1,0 +1,126 @@
+{
+ "title": "lMiHRN8pzn4 \u00b7 Dumber does not mean dumb",
+ "theme": "paperYellow",
+ "accent": "#F5E400",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook + reframe",
+   "seconds": 3,
+   "props": {
+    "kicker": "Contrarian take",
+    "label": "New model",
+    "line": "A dumber model, and I love it",
+    "punch": "love it",
+    "align": "left",
+    "size": "lg",
+    "underline": "bar",
+    "theme": "cream"
+   },
+   "caption": "A dumber model \u2014 and I love it"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "thesis",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "The thesis",
+    "parts": [
+     {
+      "text": "DUMBER"
+     },
+     {
+      "text": "DOES NOT"
+     },
+     {
+      "text": "MEAN DUMB.",
+      "hot": true
+     }
+    ],
+    "footer": "Not remotely.",
+    "highlight": "bar"
+   },
+   "caption": "Dumber does not mean dumb"
+  },
+  {
+   "id": "ChipRow",
+   "beat": "proof intro",
+   "seconds": 2.5,
+   "props": {
+    "eyebrow": "The proof point",
+    "chips": [
+     {
+      "text": "Agent exam",
+      "kind": "model",
+      "icon": "dot",
+      "hot": true
+     },
+     {
+      "text": "Long-running work",
+      "kind": "objection"
+     },
+     {
+      "text": "Professional tasks",
+      "kind": "objection"
+     },
+     {
+      "text": "55 fields",
+      "kind": "toggle",
+      "hot": true
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "theme": "cream"
+   },
+   "caption": "Sol crushed the agent exam"
+  },
+  {
+   "id": "StatCloser",
+   "beat": "stat payoff",
+   "seconds": 3,
+   "props": {
+    "value": 55,
+    "suffix": " fields",
+    "label": "Fields measured on the agent exam",
+    "sub": "long-running professional work \u2014 *across every field*",
+    "theme": "cream"
+   },
+   "caption": "Across 55 different fields"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "capper",
+   "seconds": 2,
+   "props": {
+    "kicker": "The result",
+    "parts": [
+     {
+      "text": "SOL SET"
+     },
+     {
+      "text": "A NEW HIGH.",
+      "hot": true
+     }
+    ],
+    "highlight": "bar"
+   },
+   "caption": "Sol set a new high"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta",
+   "seconds": 2,
+   "props": {
+    "name": "AI Unpacked",
+    "tagline": "one AI trick a day",
+    "glyph": "bolt",
+    "mode": "close",
+    "cta": "Follow for more",
+    "theme": "cream"
+   },
+   "caption": "Follow for more"
+  }
+ ]
+}
