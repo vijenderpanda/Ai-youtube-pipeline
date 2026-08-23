@@ -1,0 +1,36 @@
+{
+  "palette": {
+    "bg": "#DEDAD1",
+    "fg": "#1E1E1E",
+    "accent": "#EA5A2B",
+    "accent2": "#3D8F7A",
+    "caption_fill": "#1E1E1E",
+    "caption_stroke": "none"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "serif (Georgia/Tiempos-like) for statement lines; grotesk sans for labels/UI",
+      "weight": "regular-medium, occasional italic for emphasis word",
+      "case": "sentence case",
+      "size_rel": "large, ~2-4 words per screen, center or left aligned"
+    },
+    "caption": {
+      "family_guess": "small grotesk sans, all-lowercase in UI chips",
+      "weight": "regular",
+      "case": "lowercase for chip labels, sentence case for VO-sync text",
+      "size_rel": "small, secondary to headline"
+    }
+  },
+  "layout": {
+    "host": "none",
+    "host_pos": "n/a",
+    "safe_zones": "generous top/bottom margin (~8-10%), content vertically centered, no bottom-third clutter",
+    "caption_pos": "VO-sync text appears center-screen as standalone typographic beats, not burned subtitles at bottom"
+  },
+  "motion": {
+    "cut_rate_per_10s": "~10 cuts/10s (near 1 cut per second, matches contact-sheet sampling)",
+    "zoom_punches": false,
+    "transitions": ["hard cut", "word-by-word text build (VO drives one word/phrase per screen)", "icon morph (robot mascot appears/disappears, funnel shape recolors)", "motion blur whip on repeated-object cut (t=41-42s)"]
+  },
+  "themeable": ["accent", "accent2", "bg", "mascot icon", "headline copy", "chip label text", "screenshot content"]
+}

@@ -1,0 +1,42 @@
+{
+  "palette": {
+    "bg": "#EDE9E1",
+    "fg": "#2B2B28",
+    "accent": "#3E8C74",
+    "accent2": "#1F5E4C",
+    "caption_fill": "#2B2B28",
+    "caption_stroke": "none"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "Playfair Display / serif italic (script-y for emphasis words)",
+      "weight": "600-700 for emphasis words, 400 for body serif line",
+      "case": "sentence case, lowercase-leaning",
+      "size_rel": "0.06-0.09 of frame height per line, emphasis words ~1.3x body size"
+    },
+    "caption": {
+      "family_guess": "same serif family throughout — no separate sans caption font",
+      "weight": "400 body / 700 bold-italic for keyword emphasis",
+      "case": "sentence case",
+      "size_rel": "0.045-0.06 of frame height"
+    }
+  },
+  "layout": {
+    "host": "none",
+    "host_pos": "n/a — one static circular headshot photo (Derek Sivers) used as a citation card only, not a talking host",
+    "safe_zones": "generous top/bottom margin (~15% each), all text vertically centered in middle third",
+    "caption_pos": "center, stacked 1-3 short lines, no lower-third bar"
+  },
+  "motion": {
+    "cut_rate_per_10s": "~9-10 (near 1 new beat/scene per second)",
+    "zoom_punches": true,
+    "transitions": ["hard cut on beat", "vignette pulse/breathe on static icon", "icon morph (triangle->dots grid, coin->ripple)", "text fade/scale-in per word or per line", "checkbox/strike-through reveal", "particle/confetti burst on payoff word"]
+  },
+  "themeable": [
+    "accent/accent2 hue (teal can be swapped for channel brand color)",
+    "icon set (silhouette figure, coin, funnel/triangle, phone mockup, checklist, momentum-cradle, chess piece)",
+    "headline copy per beat",
+    "citation card name/photo/title",
+    "background stays neutral cream vignette — do not themify to dark, it's core to the look"
+  ]
+}

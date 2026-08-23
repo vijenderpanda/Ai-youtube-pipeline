@@ -1,0 +1,50 @@
+{
+  "palette": {
+    "bg": "#CFE3DC",
+    "fg": "#0E1A17",
+    "accent": "#2F7A63",
+    "accent2": "#101820",
+    "caption_fill": "#0B0B0B",
+    "caption_stroke": "#FFFFFF"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "serif italic display (Georgia/Playfair-like) mixed with bold sans",
+      "weight": "black/700-900",
+      "case": "lowercase for italic-serif accent words, sentence case for sans",
+      "size_rel": "large, ~2 words per screen, often split across 2 lines"
+    },
+    "caption": {
+      "family_guess": "bold sans-serif (Inter/Helvetica Bold)",
+      "weight": "700-800",
+      "case": "lowercase, one-word or 2-3 word burst captions",
+      "size_rel": "medium-large, sits low-center over host, one phrase revealed per beat"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "center-frame, medium-close shot, bookshelf background, stays static across most of video",
+    "safe_zones": "top 10% and bottom 12% kept clear of dense UI; captions placed lower-third over chest",
+    "caption_pos": "lower-third, one short word/phrase per beat, sometimes split top+bottom (e.g. 'it's' top-left, 'set up' large center)"
+  },
+  "motion": {
+    "cut_rate_per_10s": 8,
+    "zoom_punches": true,
+    "transitions": [
+      "hard cut host <-> full-bg graphic/UI screen",
+      "b&w desaturation flash on host during fast-recap beats",
+      "3D-tilted card stack reveal (rotate + drop-shadow)",
+      "icon orbit/constellation intro",
+      "phone-mockup screen recording insert (iMessage UI)",
+      "floating pill-chip icons drifting in bg"
+    ]
+  },
+  "themeable": [
+    "accent (teal->any brand color)",
+    "bg (mint->any content-appropriate background)",
+    "headline font pairing (serif-italic + bold sans combo)",
+    "icon/logo used in orbit + bottom bumper",
+    "phone-mockup chat content",
+    "card-stack list items"
+  ]
+}

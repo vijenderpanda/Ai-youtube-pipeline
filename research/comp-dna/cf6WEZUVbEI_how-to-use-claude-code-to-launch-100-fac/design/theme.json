@@ -1,0 +1,43 @@
+{
+  "palette": {
+    "bg": "#EDE7DE",
+    "fg": "#1A1A1A",
+    "accent": "#1F5C4F",
+    "accent2": "#5FBDA8",
+    "caption_fill": "#111111",
+    "caption_stroke": "#EDE7DE"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "serif italic (Georgia/Times-style) for connective words + condensed sans-bold for data labels",
+      "weight": "400 italic / 700 bold",
+      "case": "lowercase for connective ('first,', 'to simply polish the end product.'), Title Case for card labels",
+      "size_rel": "0.06-0.09 of frame height"
+    },
+    "caption": {
+      "family_guess": "system sans-serif, small caps on retro terminal card ('CLAUDE CODE') is monospace/pixel font",
+      "weight": "600",
+      "case": "UPPERCASE on retro CRT text, Title Case on data cards",
+      "size_rel": "0.03-0.04 of frame height"
+    }
+  },
+  "layout": {
+    "host": "pip",
+    "host_pos": "top-left small inset at t=0 (webcam-in-browser chrome), then cuts to full-frame host bust shots against warm wood-shelf background at regular intervals",
+    "safe_zones": "center-vertical column ~70% width holds all cards/icons; top ~10% and bottom ~12% kept clear for platform UI",
+    "caption_pos": "no burned-in spoken captions visible in sampled frames; on-screen text is graphic/kinetic-typography only, centered"
+  },
+  "motion": {
+    "cut_rate_per_10s": "6-9 (fast graphic cuts alternating with 2-4s host holds)",
+    "zoom_punches": true,
+    "transitions": ["hard cut", "vertical smear/motion-blur wipe (stacked cards blurring into a vertical streak)", "teal funnel/hourglass morph shape transition", "icon-to-icon match cut"]
+  },
+  "themeable": [
+    "accent/accent2 colors (teal→any brand color)",
+    "card content (ad mockups, stat cards, testimonial cards)",
+    "icon set (robot mascot, funnel, api/social icons)",
+    "headline copy text",
+    "host background (wood shelf can swap to any set)",
+    "retro CRT terminal text string"
+  ]
+}

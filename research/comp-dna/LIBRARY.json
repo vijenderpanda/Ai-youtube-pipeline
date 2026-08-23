@@ -6,12 +6,22 @@
     "dur": 41,
     "fps": 24,
     "folder": "DirGcMXm4zw_how-to-turn-imessage-into-an-ai-executiv",
-    "theme": "",
-    "hook_type": "",
-    "beat_grammar": "",
-    "visual_dna": "",
-    "design_extract": "",
-    "notes": ""
+    "theme": "sage",
+    "hook_type": "H-logo-motion",
+    "beat_grammar": "see design/beat-map.md",
+    "visual_dna": "talking-head + phone-mockup demo",
+    "design_extract": "DirGcMXm4zw_how-to-turn-imessage-into-an-ai-executiv/design/",
+    "notes": "",
+    "archetype": "A1",
+    "palette": {
+      "bg": "#CFE3DC",
+      "fg": "#0E1A17",
+      "accent": "#2F7A63",
+      "accent2": "#101820",
+      "caption_fill": "#0B0B0B",
+      "caption_stroke": "#FFFFFF"
+    },
+    "host": "full"
   },
   {
     "id": "IFBBmwsGpUw",
@@ -20,12 +30,24 @@
     "dur": 87,
     "fps": 50,
     "folder": "IFBBmwsGpUw_aiuae-ks-p3-ai331-ks-ks-pov-mastering-cl",
-    "theme": "",
-    "hook_type": "",
-    "beat_grammar": "",
-    "visual_dna": "",
-    "design_extract": "",
-    "notes": ""
+    "theme": "red/white (off-kit)",
+    "hook_type": "H-poster-claim",
+    "beat_grammar": "see design/beat-map.md",
+    "visual_dna": "static infographic + stylus",
+    "design_extract": "IFBBmwsGpUw_aiuae-ks-p3-ai331-ks-ks-pov-mastering-cl/design/",
+    "notes": "",
+    "archetype": "A6",
+    "palette": {
+      "bg": "#FFFFFF",
+      "fg": "#1A1A1A",
+      "accent": "#C0392B",
+      "accent2": "#E8912A",
+      "caption_fill": "#FFFFFF",
+      "caption_stroke": "#00000099",
+      "outro_bg": "#0D1A0D",
+      "outro_accent": "#C7F92E"
+    },
+    "host": "none"
   },
   {
     "id": "VE2Uxb9Fz7I",
@@ -34,12 +56,23 @@
     "dur": 49,
     "fps": 25,
     "folder": "VE2Uxb9Fz7I_claude-cowork-explained",
-    "theme": "",
-    "hook_type": "",
-    "beat_grammar": "",
-    "visual_dna": "",
-    "design_extract": "",
-    "notes": ""
+    "theme": "terracotta",
+    "hook_type": "H-logo-motion",
+    "beat_grammar": "see design/beat-map.md",
+    "visual_dna": "kinetic-text + app-metaphor + UI proof",
+    "design_extract": "VE2Uxb9Fz7I_claude-cowork-explained/design/",
+    "notes": "",
+    "archetype": "A3",
+    "palette": {
+      "bg": "#EAE6DD",
+      "bg_dark": "#1F3A34",
+      "fg": "#1A1A1A",
+      "accent": "#E8623D",
+      "accent2": "#5B9279",
+      "caption_fill": "#1A1A1A",
+      "caption_stroke": "#EAE6DD"
+    },
+    "host": "none"
   },
   {
     "id": "VSC5E0okvD4",
@@ -48,12 +81,22 @@
     "dur": 72,
     "fps": 30,
     "folder": "VSC5E0okvD4_the-decision-framework-i-use",
-    "theme": "",
-    "hook_type": "",
-    "beat_grammar": "",
-    "visual_dna": "",
-    "design_extract": "",
-    "notes": ""
+    "theme": "sage",
+    "hook_type": "H-wordless-icon",
+    "beat_grammar": "see design/beat-map.md",
+    "visual_dna": "kinetic-icon silhouettes + geometry",
+    "design_extract": "VSC5E0okvD4_the-decision-framework-i-use/design/",
+    "notes": "",
+    "archetype": "A4",
+    "palette": {
+      "bg": "#EDE9E1",
+      "fg": "#2B2B28",
+      "accent": "#3E8C74",
+      "accent2": "#1F5E4C",
+      "caption_fill": "#2B2B28",
+      "caption_stroke": "none"
+    },
+    "host": "none"
   },
   {
     "id": "cUG0TGwE9-4",
@@ -62,12 +105,22 @@
     "dur": 52,
     "fps": 24,
     "folder": "cUG0TGwE9-4_design-beautiful-ui-ux-with-weavy-ai",
-    "theme": "",
-    "hook_type": "",
-    "beat_grammar": "",
-    "visual_dna": "",
-    "design_extract": "",
-    "notes": ""
+    "theme": "terracotta",
+    "hook_type": "H-dense-montage-relief",
+    "beat_grammar": "see design/beat-map.md",
+    "visual_dna": "screen-record + kinetic titles",
+    "design_extract": "cUG0TGwE9-4_design-beautiful-ui-ux-with-weavy-ai/design/",
+    "notes": "",
+    "archetype": "A5",
+    "palette": {
+      "bg": "#EDE9E3",
+      "fg": "#2B3A2E",
+      "accent": "#D97B52",
+      "accent2": "#5FC9A8",
+      "caption_fill": "#1F2E22",
+      "caption_stroke": "#EDE9E3"
+    },
+    "host": "none"
   },
   {
     "id": "cf6WEZUVbEI",
@@ -76,12 +129,22 @@
     "dur": 50,
     "fps": 24,
     "folder": "cf6WEZUVbEI_how-to-use-claude-code-to-launch-100-fac",
-    "theme": "",
-    "hook_type": "",
-    "beat_grammar": "",
-    "visual_dna": "",
-    "design_extract": "",
-    "notes": ""
+    "theme": "sage-dark",
+    "hook_type": "H-crt-boot",
+    "beat_grammar": "see design/beat-map.md",
+    "visual_dna": "pip host + kinetic case-study reel",
+    "design_extract": "cf6WEZUVbEI_how-to-use-claude-code-to-launch-100-fac/design/",
+    "notes": "",
+    "archetype": "A2",
+    "palette": {
+      "bg": "#EDE7DE",
+      "fg": "#1A1A1A",
+      "accent": "#1F5C4F",
+      "accent2": "#5FBDA8",
+      "caption_fill": "#111111",
+      "caption_stroke": "#EDE7DE"
+    },
+    "host": "pip"
   },
   {
     "id": "dLS-6jn9xxc",
@@ -90,12 +153,22 @@
     "dur": 55,
     "fps": 25,
     "folder": "dLS-6jn9xxc_easily-build-agentic-workflows-with-hype",
-    "theme": "",
-    "hook_type": "",
-    "beat_grammar": "",
-    "visual_dna": "",
-    "design_extract": "",
-    "notes": ""
+    "theme": "terracotta",
+    "hook_type": "H-wordless-icon",
+    "beat_grammar": "see design/beat-map.md",
+    "visual_dna": "kinetic-text + mascot flow diagram",
+    "design_extract": "dLS-6jn9xxc_easily-build-agentic-workflows-with-hype/design/",
+    "notes": "",
+    "archetype": "A3",
+    "palette": {
+      "bg": "#DEDAD1",
+      "fg": "#1E1E1E",
+      "accent": "#EA5A2B",
+      "accent2": "#3D8F7A",
+      "caption_fill": "#1E1E1E",
+      "caption_stroke": "none"
+    },
+    "host": "none"
   },
   {
     "id": "ovLAIhbk3ek",
@@ -104,12 +177,22 @@
     "dur": 47,
     "fps": 24,
     "folder": "ovLAIhbk3ek_how-to-10x-your-claude-with-4-md-files",
-    "theme": "",
-    "hook_type": "",
-    "beat_grammar": "",
-    "visual_dna": "",
-    "design_extract": "",
-    "notes": ""
+    "theme": "terracotta",
+    "hook_type": "H-curiosity-type",
+    "beat_grammar": "see design/beat-map.md",
+    "visual_dna": "talking-head + fake chat-UI mocks",
+    "design_extract": "ovLAIhbk3ek_how-to-10x-your-claude-with-4-md-files/design/",
+    "notes": "",
+    "archetype": "A1",
+    "palette": {
+      "bg": "#EDE8DE",
+      "fg": "#1E1E1E",
+      "accent": "#E8794A",
+      "accent2": "#2F4A3C",
+      "caption_fill": "#1E1E1E",
+      "caption_stroke": "#EDE8DE"
+    },
+    "host": "full"
   },
   {
     "id": "yJK5GueSHmU",
@@ -118,12 +201,22 @@
     "dur": 46,
     "fps": 30,
     "folder": "yJK5GueSHmU_claude-code-obsidian-in-under-1-minute",
-    "theme": "",
-    "hook_type": "",
-    "beat_grammar": "",
-    "visual_dna": "",
-    "design_extract": "",
-    "notes": ""
+    "theme": "teal-mint",
+    "hook_type": "H-object-3d",
+    "beat_grammar": "see design/beat-map.md",
+    "visual_dna": "kinetic-text + 3D mockup objects",
+    "design_extract": "yJK5GueSHmU_claude-code-obsidian-in-under-1-minute/design/",
+    "notes": "",
+    "archetype": "A3",
+    "palette": {
+      "bg": "#EAE7E0",
+      "fg": "#1A1A1A",
+      "accent": "#5FBFA0",
+      "accent2": "#0F2E27",
+      "caption_fill": "#1A1A1A",
+      "caption_stroke": "none"
+    },
+    "host": "none"
   },
   {
     "id": "zB5mUHSYjXA",
@@ -132,11 +225,24 @@
     "dur": 57,
     "fps": 24,
     "folder": "zB5mUHSYjXA_how-to-make-with-openclaw",
-    "theme": "",
-    "hook_type": "",
-    "beat_grammar": "",
-    "visual_dna": "",
-    "design_extract": "",
-    "notes": ""
+    "theme": "sage",
+    "hook_type": "H-mid-sentence",
+    "beat_grammar": "see design/beat-map.md",
+    "visual_dna": "talking-head + kinetic diagrams",
+    "design_extract": "zB5mUHSYjXA_how-to-make-with-openclaw/design/",
+    "notes": "",
+    "archetype": "A1",
+    "palette": {
+      "bg": "#EDE8DF",
+      "fg": "#1A1A1A",
+      "accent": "#5C9E88",
+      "accent2": "#D9553C",
+      "caption_fill": "#1A1A1A",
+      "caption_stroke": "none",
+      "card_fill": "#17352A",
+      "card_text": "#F2EFE6",
+      "host_bg_warm": "#5A3A1E"
+    },
+    "host": "full"
   }
 ]

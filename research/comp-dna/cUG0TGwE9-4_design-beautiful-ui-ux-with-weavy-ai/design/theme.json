@@ -1,0 +1,36 @@
+{
+  "palette": {
+    "bg": "#EDE9E3",
+    "fg": "#2B3A2E",
+    "accent": "#D97B52",
+    "accent2": "#5FC9A8",
+    "caption_fill": "#1F2E22",
+    "caption_stroke": "#EDE9E3"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "serif/slab (editorial, e.g. GT Sectra / Tiempos)",
+      "weight": "medium-bold",
+      "case": "sentence-case, some italic emphasis words",
+      "size_rel": "large, 2-4 words per screen, center or left aligned"
+    },
+    "caption": {
+      "family_guess": "sans (Inter/Neue Montreal-ish) for UI chrome + prompt boxes",
+      "weight": "regular-medium",
+      "case": "sentence-case",
+      "size_rel": "small, ~UI-scale, sits inside prompt-bar chips not burned full-width captions"
+    }
+  },
+  "layout": {
+    "host": "none",
+    "host_pos": "n/a",
+    "safe_zones": "top ~8% and bottom ~8% kept clear on phone-mock frames; prompt bar always docked near bottom third",
+    "caption_pos": "no traditional burned captions; text lives inside on-screen prompt-input chips and short kinetic-type title cards"
+  },
+  "motion": {
+    "cut_rate_per_10s": "~6-8 cuts (fast, near 1 new visual per second in dense sections, slower holds ~2s on kinetic-text beats)",
+    "zoom_punches": true,
+    "transitions": ["hard cut", "whip/blur cut between UI states", "cross-dissolve on kinetic word reveals", "scale-pop on generated asset reveal"]
+  },
+  "themeable": ["accent", "accent2", "bg swap dark<->light per section", "prompt-bar text content", "phone-mock UI content", "generated asset imagery (cassette/moodboard)", "headline copy"]
+}

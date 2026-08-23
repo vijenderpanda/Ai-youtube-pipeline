@@ -1,0 +1,43 @@
+{
+  "palette": {
+    "bg": "#EDE8DE",
+    "fg": "#1E1E1E",
+    "accent": "#E8794A",
+    "accent2": "#2F4A3C",
+    "caption_fill": "#1E1E1E",
+    "caption_stroke": "#EDE8DE"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "serif display (Canela/Tiempos-like) mixed with a plain sans for emphasis words",
+      "weight": "medium-bold",
+      "case": "sentence, lowercase-leaning",
+      "size_rel": "large, 2-3 word lines, animates in with kinetic-type word-by-word reveal"
+    },
+    "caption": {
+      "family_guess": "same serif italic for accent words, sans for base text",
+      "weight": "semibold",
+      "case": "sentence",
+      "size_rel": "medium, 1-2 lines, no box, plain color text with a colored italic keyword"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "center-frame, chest-up, bookshelf background, static camera",
+    "safe_zones": "top 12% and bottom 15% kept clear of dense UI for caption/CTA text",
+    "caption_pos": "center-upper third, overlaid directly on host or on cream/black UI background"
+  },
+  "motion": {
+    "cut_rate_per_10s": "6-9 (fast — mostly UI-graphic beats under 1s each, host beats held longer at 2-4s)",
+    "zoom_punches": false,
+    "transitions": ["hard cut", "kinetic-typography word reveal", "icon burst/starburst animation", "card slide-in/stack", "flowchart node draw-on"]
+  },
+  "themeable": [
+    "accent (starburst/icon color, currently orange)",
+    "accent2 (UI card/chat-bubble color, currently dark green)",
+    "bg (cream backdrop for graphic beats)",
+    "headline copy + word-reveal timing",
+    "file/card labels (e.g. Agents.md, Memory.md, Context.md, Skills.md)",
+    "flowchart node labels and count"
+  ]
+}

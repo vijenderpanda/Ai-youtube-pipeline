@@ -1,0 +1,27 @@
+{
+  "palette": {
+    "bg": "#EAE6DD",
+    "bg_dark": "#1F3A34",
+    "fg": "#1A1A1A",
+    "accent": "#E8623D",
+    "accent2": "#5B9279",
+    "caption_fill": "#1A1A1A",
+    "caption_stroke": "#EAE6DD"
+  },
+  "typography": {
+    "headline": {"family_guess": "condensed serif/slab (Tiempos/Canela-Deck style) + bold sans mix", "weight": "800", "case": "upper for emphasis words, sentence-case otherwise", "size_rel": "large, 2-4 word max per screen"},
+    "caption": {"family_guess": "system sans (SF/Helvetica-ish)", "weight": "500", "case": "sentence", "size_rel": "small, dense paragraph blocks for UI-mock screenshots"}
+  },
+  "layout": {
+    "host": "none",
+    "host_pos": "n/a",
+    "safe_zones": "full-bleed vertical 1080x1920, no persistent chrome/UI bar, text centered or left-aligned with generous margin",
+    "caption_pos": "no burned spoken-word captions; text is design copy placed mid-frame, not bottom-third karaoke captions"
+  },
+  "motion": {
+    "cut_rate_per_10s": "~5-7 cuts/10s (roughly 1 new frame/sec of contact sheet = fast beat changes)",
+    "zoom_punches": false,
+    "transitions": ["hard cuts", "color-block wipes (dark green <-> cream split-screen)", "logo/icon morph (Claude sunburst -> lightning-bolt icon)", "radiating starburst background pulse on intro"]
+  },
+  "themeable": ["accent color (orange)", "bg duotone pair (cream/dark-green)", "icon glyph swapped per app being demoed", "mock-UI screenshot content", "headline copy"]
+}

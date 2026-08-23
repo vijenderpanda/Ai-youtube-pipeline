@@ -1,0 +1,36 @@
+{
+  "palette": {
+    "bg": "#EAE7E0",
+    "fg": "#1A1A1A",
+    "accent": "#5FBFA0",
+    "accent2": "#0F2E27",
+    "caption_fill": "#1A1A1A",
+    "caption_stroke": "none"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "serif display (Georgia/Tiempos-like) mixed with italic accent word",
+      "weight": "bold/regular mix, italic for emphasis word",
+      "case": "sentence case",
+      "size_rel": "large, ~2-3 lines centered"
+    },
+    "caption": {
+      "family_guess": "monospace pixel/terminal font for app-mockup labels (e.g. 'CLAUDE CODE' card), sans-serif for pill labels",
+      "weight": "bold",
+      "case": "upper for card titles, sentence for pill chips",
+      "size_rel": "small-medium, chip-sized"
+    }
+  },
+  "layout": {
+    "host": "none",
+    "host_pos": null,
+    "safe_zones": "content centered in vertical middle third, generous negative space top/bottom, drop-shadow floating cards on plain bg",
+    "caption_pos": "center screen, no burned bottom-third captions; text is the visual itself, not overlay-on-video"
+  },
+  "motion": {
+    "cut_rate_per_10s": "~9-10 (near 1 cut/sec, matches 1fps sampling)",
+    "zoom_punches": true,
+    "transitions": ["object float-in/out with soft shadow", "particle/glow burst (starburst mind-map reveal)", "node-graph animate-in (dots connecting into a brain shape)", "card slide/stack reveal", "text fade with word-by-word emphasis", "screen-record terminal cut", "motion blur whip on card transitions"]
+  },
+  "themeable": ["accent (mint green)", "accent2 (dark green card fill)", "bg (warm off-white/cream)", "headline copy + italic emphasis word", "app-mockup icon/logo", "card title text", "terminal command content"]
+}
