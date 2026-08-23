@@ -82,3 +82,26 @@ Public proxies only (retention not public): **views/day** = feed selection, like
 - **Not working**: tutorial-shaped shorts with tool names in the title but no stake (Greg Isenberg 176 v/day median, Cole Medin 140, Riley Brown 110 despite big long-form audiences); Anthropic posts no shorts at all (gap).
 - **Outlier, don't copy**: Wes Roth HeyGen 3M views at 0.02% likes/131s — reach without engagement.
 - **Caveat**: retention is not public; these are selection proxies. Duration did not predict v/day within the lane.
+
+## Social Blade momentum (public pages, 14-day window 2026-08-10 → 08-23, pulled 2026-08-23)
+
+| channel | subs | total views | avg views/day | wk2 vs wk1 | subs +14d | subs/day | rank | min–max day |
+|---|---|---|---|---|---|---|---|---|
+| Raj Shamani | 19M | 2.3B | 2,925,061 | -3% | +100,000 | +7,143 | US 175 (SB 10,823) | 1,245,734–3,577,104 |
+| Aakash Gupta | 4.7M | 618M | 203,562 | +238% | +10,000 | +714 | IN 702 | 56,707–812,698 |
+| Wes Roth | 325K | 59M | 109,573 | -31% | +1,000 | +71 | US 1,772 | 35,567–195,929 |
+| Ishan Sharma | 2.2M | 478M | 101,953 | -57% | +0 | +0 | IN 957 | 33,740–242,539 |
+| Varun Mayya | 1.2M | 438M | 86,136 | -29% | +0 | +0 | IN 562 Howto | 52,649–209,702 |
+| Anthropic | 771K | 34M | 72,092 | -15% | +11,000 | +786 | US 1,327 | 38,705–129,751 |
+| Greg Isenberg | 699K | 37M | 56,760 | -35% | +10,000 | +714 | US 1,399 | 20,010–181,707 |
+| Nate B Jones | 316K | 25M | 44,191 | -22% | +6,000 | +429 | - | 13,602–128,119 |
+| Riley Brown | 276K | 12M | 35,350 | -35% | +5,000 | +357 | - | 9,194–102,174 |
+| David Ondrej | 412K | 27M | 33,881 | -54% | +2,000 | +143 | CZ 158 | 15,601–73,098 |
+| Cole Medin | 223K | 12M | 11,906 | +14% | +2,000 | +143 | US 1,875 | 4,833–23,233 |
+
+### Read (momentum layer on top of the per-video scout)
+- **Sub velocity, in-lane**: Anthropic +786/day, Greg Isenberg +714/day, Nate B Jones +429/day, Riley Brown +357/day, David Ondrej +143/day, Cole Medin +143/day. Varun Mayya and Ishan Sharma are FLAT on subs over 14 days despite 55–240k views/day — big view machines that have stopped converting. Anthropic's channel is growing fastest in-lane with ZERO shorts (long-form + brand pull) — confirms the shorts gap is real and unowned.
+- **Channel trend (wk2 vs wk1)**: Ishan **−57%** and David Ondrej **−54%** (cooling hard), Greg −35%, Riley −35%, Wes Roth −31%, Varun −29%, Nate −22%, Anthropic −15%; only Cole Medin +14% (off a tiny 12k/day base) and Aakash Gupta +238% (one 813k-view day = viral music clip, not a format). Nobody in-lane is on a real uptrend this fortnight — the whole AI-tools lane cooled in the week of 08-17.
+- **Spike shape**: in-lane channels live on 1 spike/week (Greg 181k on 08-12, Nate 128k on 08-12, Riley 102k on 08-12 — same day, likely one news cycle) over a 20–45k/day floor. Floor = audience; spike = selection win. Our target is raising the floor, and the floor is set by sub count × posting cadence, not by any single short.
+- **Scale reality**: Raj Shamani does 3.2M views/day (100× the in-lane median) — the Indian feed's appetite is enormous but for face+emotion, not tools. Family-B hybrid (face-first claim) is how in-lane creators borrow some of that.
+- **What Social Blade cannot tell us**: per-video retention, shorts-vs-long split of the daily views, traffic source. Treat channel views/day as mostly long-form for Varun/Wes/Anthropic.
