@@ -34,6 +34,34 @@ export const BRAND = {
   mute: "#9A9AAE", // muted grey text
 } as const;
 
+/* COMP-DNA "cream kit" — the warm-canvas house style extracted from the 10
+   reference Shorts (research/comp-dna/TAXONOMY.md §1). ONE accent per film:
+   terracotta for money/urgency, sage/mint for calm/tooling. Components that
+   ship this look take `theme:"cream"` (or `bg`/`accent` overrides) and fall
+   back to BRAND when absent, so both identities coexist in one cookbook. */
+export const CREAM = {
+  bg: "#EAE7E0",
+  bgDeep: "#DEDAD1",
+  ink: "#1F1F1D",
+  mute: "#7A776F",
+  line: "#D2CEC4",
+  card: "#F4F2EC",
+  dark: "#1C1C1A", // glass/terminal cards on the cream canvas
+  terracotta: "#E8623D",
+  sage: "#3E8C74",
+  mint: "#5FBFA0",
+} as const;
+export type CookTheme = "brand" | "cream";
+/** Resolve the four tokens every comp-dna component draws with. */
+export const themeTokens = (
+  theme: CookTheme | undefined,
+  accent?: string,
+  bg?: string,
+): { bg: string; ink: string; mute: string; accent: string; card: string; line: string } =>
+  theme === "cream"
+    ? { bg: bg ?? CREAM.bg, ink: CREAM.ink, mute: CREAM.mute, accent: accent ?? CREAM.terracotta, card: CREAM.card, line: CREAM.line }
+    : { bg: bg ?? BRAND.ink, ink: BRAND.paper, mute: BRAND.mute, accent: accent ?? BRAND.mag, card: "#16161E", line: "#2A2A36" };
+
 /* font stacks. Body/UI text uses the system sans so headless Chromium never
    blocks on a web font; DISPLAY (Anton) + SERIF (Playfair) load via <Fonts/>. */
 export const SANS =

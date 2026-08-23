@@ -130,6 +130,13 @@ const COOKBOOK_CATALOG: { id: string; label: string; role: string; needs: string
   { id: "HeroDrop", label: "Hero-asset physics drop", role: "layout", needs: "phrase" },
   { id: "VsTable", label: "A-vs-B verdict table", role: "layout", needs: "table" },
   { id: "TermRun", label: "Terminal one-liner run", role: "app-ui", needs: "steps" },
+  { id: "PhoneMock", label: "Phone chat-thread mockup", role: "device-ui", needs: "dialogue" },
+  { id: "FlowTree", label: "Node tree / flowchart", role: "dataviz", needs: "steps" },
+  { id: "StatCloser", label: "Editorial number closer", role: "dataviz", needs: "single-number" },
+  { id: "ChipRow", label: "Pill / chip row", role: "layout", needs: "facts" },
+  { id: "BrandBumper", label: "Brand / product bumper", role: "typography", needs: "phrase" },
+  { id: "SplitHead", label: "Split-register title card", role: "typography", needs: "phrase" },
+  { id: "AppWindow", label: "Desktop app-window mockup", role: "app-ui", needs: "facts" },
 ];
 const COOKBOOK_IDS = new Set(COOKBOOK_CATALOG.map((c) => c.id));
 // The 6 spatial layout ids (remotion-studio/src/layouts.ts) a slot/spatial block

@@ -53,6 +53,13 @@ import { SerifCap, serifCapDemo } from "./cookbook/SerifCap";
 import { HeroDrop, heroDropDemo } from "./cookbook/HeroDrop";
 import { VsTable, vsTableDemo } from "./cookbook/VsTable";
 import { TermRun, termRunDemo } from "./cookbook/TermRun";
+import { PhoneMock, phoneMockDemo } from "./cookbook/PhoneMock";
+import { FlowTree, flowTreeDemo } from "./cookbook/FlowTree";
+import { StatCloser, statCloserDemo } from "./cookbook/StatCloser";
+import { ChipRow, chipRowDemo } from "./cookbook/ChipRow";
+import { BrandBumper, brandBumperDemo } from "./cookbook/BrandBumper";
+import { SplitHead, splitHeadDemo } from "./cookbook/SplitHead";
+import { AppWindow, appWindowDemo } from "./cookbook/AppWindow";
 
 const FPS = 30;
 
@@ -646,6 +653,69 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={termRunDemo}
+      />
+      <Composition
+        id="PhoneMockDemo"
+        component={PhoneMock}
+        durationInFrames={10 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={phoneMockDemo}
+      />
+      <Composition
+        id="FlowTreeDemo"
+        component={FlowTree}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={flowTreeDemo}
+      />
+      <Composition
+        id="StatCloserDemo"
+        component={StatCloser}
+        durationInFrames={5 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={statCloserDemo}
+      />
+      <Composition
+        id="ChipRowDemo"
+        component={ChipRow}
+        durationInFrames={5 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={chipRowDemo}
+      />
+      <Composition
+        id="BrandBumperDemo"
+        component={BrandBumper}
+        durationInFrames={2 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={brandBumperDemo}
+      />
+      <Composition
+        id="SplitHeadDemo"
+        component={SplitHead}
+        durationInFrames={4 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={splitHeadDemo}
+      />
+      <Composition
+        id="AppWindowDemo"
+        component={AppWindow}
+        durationInFrames={6 * FPS}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={appWindowDemo}
       />
       <Composition
         id="UpiRushDemo"
