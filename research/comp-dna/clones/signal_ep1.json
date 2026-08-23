@@ -67,7 +67,7 @@
      },
      {
       "id": "harness",
-      "label": "CLAUDE.md + tools + memory",
+      "label": "CLAUDE.md + tools",
       "parent": "p",
       "state": "active",
       "icon": "\u2699\ufe0f"
@@ -123,13 +123,11 @@
    "beat": "payoff",
    "seconds": 4,
    "props": {
-    "value": 3,
-    "suffix": "\u00d7",
-    "label": "SAME MODEL",
-    "sub": "fewer retries with a real harness",
-    "source": "your own runs"
+    "value": 4,
+    "label": "THE FIX",
+    "sub": "files the model reads *first*"
    },
-   "caption": "Same model, 3x fewer retries.",
+   "caption": "Four files. Same model, sharper output.",
    "host": "none"
   },
   {
