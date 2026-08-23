@@ -448,7 +448,7 @@ def arm_youtube(final_path, schedule_iso, spec, thumb_path=None, dry=False):
     title = spec.get("title") or os.path.basename(final_path)
     tags = spec.get("tags") or ""
 
-    cmd = ["python3", yt_upload, "--channel", "claude-tricks",
+    cmd = [sys.executable, yt_upload, "--channel", "claude-tricks",
            "--video", final_path,
            "--title", title,
            "--desc-file", desc_path,
@@ -582,7 +582,7 @@ def main():
     build = os.path.join(CH, "build_ep_v2.py")
     # --calendar-id rides through so an outro_cta spec can EXCLUDE this episode's
     # own calendar row from its next-episode tease lookup (outro_cta.py).
-    r = run(["python3", build, "--ep", a.ep, "--tag", a.tag]
+    r = run([sys.executable, build, "--ep", a.ep, "--tag", a.tag]
             + (["--calendar-id", a.calendar_id] if a.calendar_id else []))
     if r.returncode != 0:
         print(f"!! master render exited {r.returncode}", file=sys.stderr)

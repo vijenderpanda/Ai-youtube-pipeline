@@ -1,0 +1,92 @@
+[
+ {
+  "w": "FOLLOW",
+  "start": 0.0,
+  "end": 0.43
+ },
+ {
+  "w": "I",
+  "start": 0.48,
+  "end": 0.52
+ },
+ {
+  "w": "TOUR",
+  "start": 0.61,
+  "end": 0.79
+ },
+ {
+  "w": "ONE",
+  "start": 0.86,
+  "end": 1.03
+ },
+ {
+  "w": "AI",
+  "start": 1.07,
+  "end": 1.29
+ },
+ {
+  "w": "THING",
+  "start": 1.32,
+  "end": 1.5
+ },
+ {
+  "w": "EVERY",
+  "start": 1.57,
+  "end": 1.76
+ },
+ {
+  "w": "DAY",
+  "start": 1.81,
+  "end": 2.07
+ },
+ {
+  "w": "WHICH",
+  "start": 2.31,
+  "end": 2.52
+ },
+ {
+  "w": "PATH",
+  "start": 2.57,
+  "end": 2.82
+ },
+ {
+  "w": "SHOULD",
+  "start": 2.87,
+  "end": 3.04
+ },
+ {
+  "w": "I",
+  "start": 3.08,
+  "end": 3.1
+ },
+ {
+  "w": "OPEN",
+  "start": 3.18,
+  "end": 3.39
+ },
+ {
+  "w": "FIRST",
+  "start": 3.45,
+  "end": 3.79
+ },
+ {
+  "w": "CHAT",
+  "start": 3.84,
+  "end": 4.13
+ },
+ {
+  "w": "OR",
+  "start": 4.2,
+  "end": 4.28
+ },
+ {
+  "w": "CLAUDE",
+  "start": 4.34,
+  "end": 4.6
+ },
+ {
+  "w": "CODE",
+  "start": 4.63,
+  "end": 5.16
+ }
+]

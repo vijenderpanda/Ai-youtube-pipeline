@@ -79,8 +79,11 @@ const faceStyle = (face: "sans" | "serif" | "display", fs: number): React.CSSPro
         }
       : { fontFamily: SANS, fontWeight: 800, fontSize: fs, letterSpacing: 0.5 };
 
-const ANT = 0.14; // anticipation gather
-const FALL = 0.46; // descent
+// VJ 2026-08-23 STANDARD: a heavy "crown drop" — bigger anticipation, a fast
+// plunge, a hard impact (deep squash + screen shake + shockwave). Applies to
+// every HeroDrop across the channel.
+const ANT = 0.20; // anticipation gather (deeper wind-up)
+const FALL = 0.34; // descent — faster = higher impact velocity
 const BURST_LIFE = 0.75; // particle lifetime
 const BURST_N = 12; // hard cap — ≤12 particles by spec
 
@@ -108,7 +111,7 @@ export const HeroDrop: React.FC<HeroDropProps> = ({
   const resolve = (p: string) => (/^https?:\/\//.test(p) ? p : staticFile(p));
 
   const cx = width / 2;
-  const startTop = 150; // just below SAFE.headerFloor — a mid-fall still stays legal
+  const startTop = 138; // just below SAFE.headerFloor — a mid-fall still stays legal
   const landBottom = 1010; // asset bottom at rest
   const landTop = landBottom - size;
   const dist = landTop - startTop;
@@ -131,21 +134,26 @@ export const HeroDrop: React.FC<HeroDropProps> = ({
     sy = 1 + Math.sin(a * Math.PI) * 0.04;
     sx = 1 / sy;
   } else if (tt < tImpact) {
-    // gravity descent: accelerating, stretching along travel, softening
+    // gravity descent: accelerating hard, stretching along travel, motion-blur
     const fp = clamp01((tt - tFall) / FALL);
-    topY = startTop + dist * fp * fp;
-    rot = -6 + fp * 9;
-    sy = 1 + fp * fp * 0.12;
+    const ease = fp * fp * fp; // cubic — snaps down at the end (heavier)
+    topY = startTop + dist * ease;
+    rot = -8 + fp * 11;
+    sy = 1 + ease * 0.2; // more stretch at speed
     sx = 1 / sy;
-    blurPx = fp * fp * 3;
+    blurPx = ease * 7; // stronger motion blur on the plunge
   } else {
-    // landed: squash + overshoot ripple at the bottom origin, rotation damps
+    // HARD landing: deep squash + overshoot ripple at the bottom origin
     topY = landTop;
-    const sq = settle(tt, tImpact, 0.55);
-    sx = 1 + sq * 0.16;
-    sy = 1 - sq * 0.16;
-    rot = 3 * Math.exp(-(tt - tImpact) * 10) + settle(tt, tImpact, 0.5) * 3;
+    const sq = settle(tt, tImpact, 0.5);
+    sx = 1 + sq * 0.30; // deep squash (was .16)
+    sy = 1 - sq * 0.30;
+    rot = 4 * Math.exp(-(tt - tImpact) * 9) + settle(tt, tImpact, 0.5) * 3;
   }
+  // impact envelope (1 at landing -> 0 over ~0.5s) for shake + shockwave + flash
+  const impact = tt >= tImpact ? Math.max(0, 1 - (tt - tImpact) / 0.5) : 0;
+  const shakeX = impact * Math.sin((tt - tImpact) * 90) * 9 * impact;
+  const shakeY = impact * Math.cos((tt - tImpact) * 76) * 13 * impact;
 
   // hold = life, never freeze. VJ 2026-08-23 (fcc 0-3s audit): 1.8px read as a
   // freeze at feed size — the hold now FLOATS (slow sine hover, ±7px) on top of
@@ -171,7 +179,8 @@ export const HeroDrop: React.FC<HeroDropProps> = ({
   const accentIdx = capParts.findIndex((q) => !!q.accent); // ONE accent word max (N3)
 
   return (
-    <AbsoluteFill style={{ background: transparent ? undefined : ink, fontFamily: SANS }}>
+    <AbsoluteFill style={{ background: transparent ? undefined : ink, fontFamily: SANS,
+      transform: `translate(${shakeX.toFixed(2)}px, ${shakeY.toFixed(2)}px)` }}>
       <Fonts />
       {transparent || onSrc ? null : <AuroraBed t={tBed} accent={accent} ink={ink} />}
 
@@ -236,6 +245,22 @@ export const HeroDrop: React.FC<HeroDropProps> = ({
           }}
         />
       ) : null}
+      {/* IMPACT: white flash + expanding shockwave ring at the landing point */}
+      {impact > 0 ? (
+        <>
+          <div style={{ position: "absolute", inset: 0, background: "#ffffff",
+            opacity: impact * impact * 0.22, mixBlendMode: "screen", pointerEvents: "none" }} />
+          <div style={{ position: "absolute",
+            left: cx - (size * 0.5) - (1 - impact) * size * 1.4,
+            top: landBottom - 30 - (1 - impact) * size * 0.5,
+            width: size + (1 - impact) * size * 2.8,
+            height: (size + (1 - impact) * size * 2.8) * 0.42,
+            borderRadius: "50%",
+            border: `${(impact * 8).toFixed(1)}px solid ${rgba(GOLD, impact * 0.7)}`,
+            opacity: impact, pointerEvents: "none" }} />
+        </>
+      ) : null}
+
       {/* the hero asset (or giant emoji) — bottom-origin so squash reads as impact */}
       <div
         style={{
@@ -274,7 +299,7 @@ export const HeroDrop: React.FC<HeroDropProps> = ({
         ? Array.from({ length: BURST_N }, (_, i) => {
             const d = tt - tImpact;
             const a = -Math.PI * (0.08 + 0.84 * mhash(i + 7)); // upward fan, wide
-            const v = 360 + mhash(i + 13) * 460;
+            const v = 520 + mhash(i + 13) * 620; // faster on the hard impact
             const px = cx + Math.cos(a) * v * d;
             const py = landBottom - 44 + Math.sin(a) * v * d + 520 * d * d;
             const ps = 9 + mhash(i + 29) * 10;

@@ -76,16 +76,16 @@
       "url": "https://academy.claude.com",
       "tourW": 1920,
       "tourH": 1080,
-      "from": 11.5,
+      "from": 9.5,
       "camera": [
         {
-          "at": 1.5,
-          "dur": 0.5,
+          "at": 1.26,
+          "dur": 0.42,
           "center": [
             0.211,
             0.536
           ],
-          "zoom": 2.3,
+          "zoom": 2.9,
           "hold": 2.6
         }
       ],
@@ -107,7 +107,7 @@
       ],
       "host": true,
       "hostSize": 360,
-      "_note": "KNEE: beat est start ~4.5 -> punch at 1.5 lands 6.0 abs on the AI Fluency card (tape 13.8, card focused 12.8-15.2); '14 lessons' sweep tape 15.65 = beat+3.35. TRUE after VO."
+      "_note": "KNEE (G9): from=9.5 puts the 6.00s punch at the tape scroll's velocity PEAK (~11.2, scroll 10.4-12.0), zoom 1.0->2.9 — max page-motion+zoom delta at the knee. Sweep beat+3.36 = tape 12.86 (card focused, scroll settled)."
     },
     "WebTour#badge": {
       "src": "tapes/academy_tape.mp4",
@@ -265,19 +265,19 @@
       "from": 33.9,
       "camera": [
         {
-          "at": 0.5,
-          "dur": 0.55,
+          "at": 0.7,
+          "dur": 0.75,
           "center": [
             0.12,
             0.528
           ],
-          "zoom": 2.0,
+          "zoom": 1.7,
           "hold": 3.0
         }
       ],
       "selections": [
         {
-          "at": 1.23,
+          "at": 1.6,
           "rects": [
             [
               0.0875,
@@ -422,16 +422,16 @@
       "name": "whoosh_up"
     },
     {
-      "at": "@beat6+1.23",
+      "at": "@beat6+1.6",
       "name": "pop",
       "note": "Start course sweep"
     },
     {
-      "at": "@beat6+2.4",
+      "at": "@beat6+2.7",
       "name": "slam"
     }
   ],
-  "duck": "@beat6+2.26,@beat6+2.40",
+  "duck": "@beat6+2.56,@beat6+2.70",
   "outro": true,
   "outro_src": "epacademy/outro_card.mp4",
   "outro_cta": "Follow. I tour one AI thing every day. Which path should I open first, chat or Claude Code?",
