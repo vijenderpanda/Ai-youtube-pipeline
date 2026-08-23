@@ -14,6 +14,17 @@ Source: 10 reference Shorts (9× Greg Isenberg house style, 1× be10X ad). Per-v
 
 **Repaint rule:** content mood → accent. Money/urgency/warning → terracotta family. Calm/system/tooling → sage/teal family. Never two accents in one short. Brand/affiliate colour only on the product's own logo/UI screenshot, never on the canvas.
 
+## 1b. Palette families (the kit is NOT paper-only)
+Extracted from all 22 refs. `kit.tsx` ships all five as `PALETTES` + `themeTokens(theme,accent,bg)`; every component wears any family.
+| preset | canvas | accent | lane | refs |
+|---|---|---|---|---|
+| `cream` | warm paper #EAE7E0 | terracotta/sage | design-flex, host-free (Isenberg) | 14 |
+| `paperYellow` | off-white #ECE7DB | hot yellow #F5C400 | talking-head caption-pop (Varun) | 3 |
+| `night` | near-black #0F0F0E | yellow #F5E642 | night-news/hot-take (Nate/Ishan) | 3 |
+| `midnight` | slate #141821 | pink #FF2E6B | product-news dark (rkbac) | 1 |
+| `cleanRed` | white #FFFFFF | red #D8352A | urgency/claim poster (be10X) | 1 |
+**Finding:** the winning talking-head accent is YELLOW, not terracotta — the cream kit alone can't reproduce the most common winning look, which is why the kit now carries five families. Repaint rule still holds within a family (one accent per film). Clones are re-themed to each ref's true palette (not defaulted to cream).
+
 ## 2. Archetypes (choose ONE per episode)
 | key | label | host | refs | use when |
 |---|---|---|---|---|
