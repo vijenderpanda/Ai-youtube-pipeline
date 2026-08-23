@@ -3542,11 +3542,23 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     # legacy poster cover is emitted exactly as before.
     # no burned caption before cfg["caption_from"] seconds (2x-playback +
     # tap-to-mute rule: the cold-open's own designed type carries 0-1.6s)
+    # merged-SEGMENT clock (same semantics as sfx_mix's @beatN): one entry per
+    # props segment, so a merged cook run counts once.
+    _segstarts = [0.0]
+    for _sg in segments:
+        _segstarts.append(_segstarts[-1] + float(_sg["dur"]))
+    def _at_beat(v):
+        if isinstance(v, str) and v.startswith("@beat"):
+            _h, _, _off = v[5:].partition("+")
+            return round(_segstarts[min(int(_h), len(_segstarts) - 1)] + (float(_off) if _off else 0.0), 3)
+        return round(float(v), 3)
     if cfg.get("caption_from"):
-        _cf = cfg["caption_from"]
-        if isinstance(_cf, str) and _cf.startswith("@beat"):
-            _cf = _seg_t[min(int(_cf[5:]), len(_seg_t) - 1)]   # line-index clock
-        spec["captionFrom"] = round(float(_cf), 3)
+        spec["captionFrom"] = _at_beat(cfg["caption_from"])
+    # VJ engagement glows (EngagePing): cfg["pings"] = [{at, kind, tip, dur?}],
+    # at = @beatN+x on the merged-segment clock or absolute seconds. Rationed
+    # by hand (<=3); the outro card takes its own via gen_outro_glass --pings.
+    if cfg.get("pings"):
+        spec["pings"] = [{**pg, "at": _at_beat(pg["at"])} for pg in cfg["pings"]]
     if cfg.get("hook"):
         hk = dict(cfg["hook"])
         if not hk["image"].startswith(("assets/", "http")):
@@ -3701,7 +3713,10 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     #   distortion at these low LRA values; alimiter catches any residual
     #   over-shoot at -0.45 dBFS (raised from -1.0 to give the louder mix
     #   room to breathe under YT's -1 TP recommendation).
-    fc = (f"[1:a]{pre}volume=0.20,afade=t=in:st=0:d=1.5[m];"
+    # per-episode bed fade-in (default 1.5s = the shipped chain). A hot cold-open
+    # (VJ 2026-08-23 fcc: "opening feels cold") wants the bed present from frame 0.
+    _mfi = float(cfg.get("music_fade_in", 1.5))
+    fc = (f"[1:a]{pre}volume=0.20,afade=t=in:st=0:d={_mfi}[m];"
           "[0:a]volume=14dB,asplit=2[v1][v2];"
           "[m][v2]sidechaincompress=threshold=0.05:ratio=8:attack=40:release=600[duck];"
           "[v1][duck]amix=inputs=2:duration=first:normalize=0,"

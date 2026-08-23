@@ -44,7 +44,7 @@
     "cook:WebTour#install"
   ],
   "caption_from": "@beat1",
-  "music": "music/bed_webtour.mp3",
+  "music": "music/bed_active.mp3",
   "cookbook": {
     "HeroDrop#hook": {
       "emoji": "🔓",
@@ -72,18 +72,8 @@
       "tourW": 1920,
       "tourH": 1080,
       "from": 7.0,
-      "_camera_note": "TRUED 2026-08-23 from measured VO: beat1 starts 4.09s; stars punch at=1.41/dur .5 -> lands 6.00 abs (KNEE pop at 6.0 absolute). Tape from=7.0 so the punch frames the counter (tape 8.41 inside the 7.64-10.04 stars hold); tagline select at beat+6.38 (tape 13.38).",
+      "_camera_note": "KNEE (G9): base pose is wide (zoom 1.0, idle drift) so the 6.00s punch is 1.0->2.6 onto the star counter — landing ON 'STARRED' (5.98s measured) with the +2dB pop; pull-back at beat+3.3 (7.39s) so it does not out-shout the knee; tagline punch beat+6.0 / sweep 6.38 (tape 13.38). v4 failed G9 with a 1.22->2.3 punch (loudest second was the 8s pull-back).",
       "camera": [
-        {
-          "at": 0.3,
-          "dur": 0.6,
-          "center": [
-            0.5,
-            0.38
-          ],
-          "zoom": 1.22,
-          "hold": 0.5
-        },
         {
           "at": 1.41,
           "dur": 0.5,
@@ -91,18 +81,18 @@
             0.947,
             0.142
           ],
-          "zoom": 2.3,
-          "hold": 1.6
+          "zoom": 2.6,
+          "hold": 1.3
         },
         {
-          "at": 4.2,
+          "at": 3.3,
           "dur": 0.6,
           "center": [
             0.5,
             0.5
           ],
           "zoom": 1.0,
-          "hold": 1.2
+          "hold": 1.6
         },
         {
           "at": 6.0,
@@ -362,5 +352,31 @@
   "outro": true,
   "outro_src": "epfcc/outro_card.mp4",
   "outro_cta": "Follow, I tour one AI repo every day. Which one should I open next?",
-  "_outro_note": "VJ 2026-08-23: the CTA is the OUTRO STING (OutroGlass card) with Sol in a ~300px TALKING circle disc — host clip for THIS beat only via EchoMimic on the 3060 worker (scripts/avatar_render.py --track echomimic_local; HeyGen = fallback), cut from assets/epfcc/outro_cta.wav. Card rendered by gen_outro_glass.py at EXACTLY 0.45 + cta_dur + 0.8 s with --avatar <clip> --avatar-size 300 --avatar-delay 0.45 so build_ep_v2's outro retime ratio is 1 (a retimed talking disc would desync). Body ends on the payoff slam; line 8 moved here."
+  "_outro_note": "VJ 2026-08-23: the CTA is the OUTRO STING (OutroGlass card) with Sol in a ~300px TALKING circle disc — host clip for THIS beat only via EchoMimic on the 3060 worker (scripts/avatar_render.py --track echomimic_local; HeyGen = fallback), cut from assets/epfcc/outro_cta.wav. Card rendered by gen_outro_glass.py at EXACTLY 0.45 + cta_dur + 0.8 s with --avatar <clip> --avatar-size 300 --avatar-delay 0.45 so build_ep_v2's outro retime ratio is 1 (a retimed talking disc would desync). Body ends on the payoff slam; line 8 moved here.",
+  "music_gain_db": 3.0,
+  "music_fade_in": 0.25,
+  "_bed_note": "VJ 2026-08-23: bed_webtour (G2 pad, LRA 2.2, no drums) read as 'not energetic' -> bed_active (channel standard, LRA 5.7) at +3 dB, fade-in 0.25s so the open isn't cold. Sidechain duck keeps the VO on top; loudnorm keeps -14.",
+  "pings": [
+    {
+      "at": "@beat1+6.5",
+      "kind": "like",
+      "tip": "free. really.",
+      "dur": 2.2
+    },
+    {
+      "at": "@beat5+1.0",
+      "kind": "comment",
+      "tip": "pinned below",
+      "dur": 2.2
+    }
+  ],
+  "outro_pings": [
+    {
+      "at": 0.5,
+      "kind": "subscribe",
+      "tip": "follow",
+      "dur": 2.6
+    }
+  ],
+  "_pings_note": "EngagePing (VJ's engagement glow, shape-matched at the YT button spots) fired on the words: LIKE on the '1.3B free tokens' sweep, COMMENT on 'pinned below', SUBSCRIBE on the outro 'Follow' (outro_pings -> gen_outro_glass --pings). Rationed to 3."
 }

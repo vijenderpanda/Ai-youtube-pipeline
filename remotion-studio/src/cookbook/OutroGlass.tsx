@@ -13,6 +13,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { BRAND, SANS, MONO, DISPLAY, rgba, clamp, Fonts, AuroraBed } from "./kit";
+import { EngagePing, type Ping } from "./EngagePing";
 
 /* =============================================================================
    OutroGlass — the channel's question-CTA sting, in the GlassPanel language.
@@ -55,6 +56,7 @@ export type OutroGlassProps = {
   avatar?: string; // host disc, resolved via staticFile() — .mp4/.webm = TALKING disc (muted; VO is the master)
   avatarSize?: number; // disc diameter px (default 208; VJ 2026-08-23 outro-CTA talking disc ~300)
   avatarDelay?: number; // seconds before a VIDEO avatar starts playing (the spoken-CTA lead-in; frozen first frame before)
+  pings?: Ping[]; // engagement glows on the card's own clock (e.g. subscribe at the spoken "Follow")
   accent?: string; // brand magenta
   accent2?: string; // cyan
   ink?: string;
@@ -102,6 +104,7 @@ export const OutroGlass: React.FC<OutroGlassProps> = ({
   avatar,
   avatarSize = 208,
   avatarDelay = 0,
+  pings = [],
   accent = BRAND.mag,
   accent2 = BRAND.cyan,
   ink = BRAND.ink,
@@ -636,6 +639,7 @@ export const OutroGlass: React.FC<OutroGlassProps> = ({
       >
         {tagline}
       </div>
+      {pings.map((pg, i) => <EngagePing key={`ping${i}`} t={t} ping={pg} />)}
     </AbsoluteFill>
   );
 };

@@ -11,6 +11,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import { EngagePing, type Ping } from "./cookbook/EngagePing";
 import { fitFont, splitHook } from "./components/fitText";
 import { StatBars, StatBarsProps } from "./components/StatBars";
 import { CookbookBlock } from "./cookbook/components";
@@ -118,6 +119,9 @@ export type ShortProps = {
   captions: Word[];
   /* no burned caption before this many seconds (cold-open rule) */
   captionFrom?: number;
+  /* VJ engagement glows (EngagePing) at the YT button positions, fired on
+     script beats — absolute seconds on the Short clock. Rationed: ≤3/episode. */
+  pings?: Ping[];
   steps?: Step[];
   vo: string;
   music?: string;
@@ -1579,6 +1583,7 @@ export const Short: React.FC<ShortProps> = (props) => {
       ) : null}
       {/* v16.4: ONE consistent global header on every beat (brand + episode tag),
           rendered last so it sits above all beat layouts incl. the hook. */}
+      {props.pings?.map((pg, i) => <EngagePing key={`ping${i}`} t={t} ping={pg} />)}
       {props.watermark !== false ? <GlobalHeader epTag={props.epTag} scrim={props.headerScrim} /> : null}
 
       <Audio src={res(props.vo)} />
