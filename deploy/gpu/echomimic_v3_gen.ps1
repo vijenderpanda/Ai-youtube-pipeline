@@ -66,7 +66,8 @@ Say "running EchoMimicV3-Flash (8-step)..."
   --neg_scale 1.0 --neg_steps 0 --seed 43 --enable_teacache --teacache_threshold 0.1 `
   --num_skip_start_steps 5 --riflex_k 6 --ulysses_degree 1 --ring_degree 1 `
   --weight_dtype "bfloat16" --sample_size $Size $Size --fps $Fps `
-  --add_prompt "" --negative_prompt "" --shift 5.0 2>&1 | Out-Host
+  --shift 5.0 2>&1 | Out-Host
+  # (--add_prompt/--negative_prompt omitted: PowerShell drops empty-string args and argparse dies)
 $rc = $LASTEXITCODE
 Pop-Location
 if ($rc -ne 0) { Die "infer_flash.py exited $rc" }
