@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, Img, Sequence, staticFile, useVideoConfig } from "remotion";
+import { AbsoluteFill, Img, OffthreadVideo, Sequence, staticFile, useVideoConfig } from "remotion";
 import { CookbookBlock } from "./cookbook/components";
 import { ChipCaption, Chip } from "./cookbook/ChipCaption";
 import { CREAM, Fonts, SANS, SERIF, rgba, themeTokens, CookTheme } from "./cookbook/kit";
@@ -42,19 +42,27 @@ export type CloneReelProps = {
      stands in for the real HeyGen Sol clip that composites at full render.
    - "pip"  = a small corner window (dev-tips variant only).
    The graphic beats pass host:"none" → nothing renders (hard cutaway to graphic-full). */
-const HostShot: React.FC<{ src: string; mode: "full" | "pip"; pos: "bl" | "br"; accent: string; bg: string }> = ({ src, mode, pos, accent, bg }) => {
+const isVideo = (s: string) => /\.(mp4|webm|mov)$/i.test(s);
+const HostMedia: React.FC<{ src: string; startSec?: number; style: React.CSSProperties }> = ({ src, startSec = 0, style }) => {
+  const { fps } = useVideoConfig();
+  return isVideo(src)
+    ? <OffthreadVideo src={staticFile(src)} startFrom={Math.round(startSec * fps)} muted style={style} />
+    : <Img src={staticFile(src)} style={style} />;
+};
+const HostShot: React.FC<{ src: string; mode: "full" | "pip"; pos: "bl" | "br"; accent: string; bg: string; startSec?: number }> = ({ src, mode, pos, accent, bg, startSec }) => {
+  const mediaStyle = (extra: React.CSSProperties): React.CSSProperties => ({ objectFit: "cover", objectPosition: "top center", ...extra });
   if (mode === "full") {
-    // talking-head fills the lower ~62% of frame, bottom-anchored, with a bg-scrim so overlay text stays legible
+    // A full 9:16 studio host scene fills the whole frame (Vaibhav grammar: desk + studio +
+    // dark headroom for the title). Slow Ken-Burns so a still reads as alive.
     return (
-      <>
-        <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 1200, width: 1080,
-          display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
-          <Img src={staticFile(src)} style={{ height: 1180, objectFit: "cover", objectPosition: "top center",
-            maskImage: "linear-gradient(180deg, transparent 0%, #000 16%)", WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 16%)" }} />
+      <AbsoluteFill style={{ overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, transform: "scale(1.06)", transformOrigin: "50% 42%",
+          animation: undefined }}>
+          <HostMedia src={src} startSec={startSec} style={mediaStyle({ width: 1080, height: 1920 })} />
         </div>
-        <div style={{ position: "absolute", left: 40, bottom: 40, padding: "6px 16px", borderRadius: 999,
-          background: accent, color: "#111", fontFamily: SANS, fontWeight: 800, fontSize: 26, letterSpacing: 1 }}>SOL · live</div>
-      </>
+        {/* darken the top headroom a touch so the claim/title always reads */}
+        <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 34%)" }} />
+      </AbsoluteFill>
     );
   }
   const w = 360, h = Math.round(w * 1.34);
@@ -81,6 +89,7 @@ export const CloneReel: React.FC<CloneReelProps> = ({ title, theme = "cream", ac
     <AbsoluteFill style={{ background: T.bg, fontFamily: SANS }}>
       <Fonts />
       {blocks.map((b, i) => {
+        const beatStart = at;
         const from = Math.round(at * fps);
         const dur = Math.max(1, Math.round(b.seconds * fps));
         at += b.seconds;
@@ -89,11 +98,11 @@ export const CloneReel: React.FC<CloneReelProps> = ({ title, theme = "cream", ac
           <Sequence key={i} from={from} durationInFrames={dur} layout="none">
             <AbsoluteFill>
               {hostSrc && (b.host ?? hostDefault) === "full" ? (
-                <HostShot src={hostSrc} mode="full" pos={hostPos} accent={T.accent} bg={T.bg} />
+                <HostShot src={hostSrc} mode="full" pos={hostPos} accent={T.accent} bg={T.bg} startSec={beatStart} />
               ) : null}
               <CookbookBlock id={b.id} props={props} transparent={b.transparent ?? true} />
               {hostSrc && (b.host ?? hostDefault) === "pip" ? (
-                <HostShot src={hostSrc} mode="pip" pos={hostPos} accent={T.accent} bg={T.bg} />
+                <HostShot src={hostSrc} mode="pip" pos={hostPos} accent={T.accent} bg={T.bg} startSec={beatStart} />
               ) : null}
               {b.caption ? (
                 <div
