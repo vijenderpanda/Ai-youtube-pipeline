@@ -11,6 +11,7 @@ this keeps Sol's exact face (the host-consistency rule). Two-step edit:
 Source gen: leonardo `1f19f8e6-e680-6800-8068-23e6de846e7d` img -2 (768×1376, 9:16).
 
 - `wide.jpg` (1080×1920) — the full 9:16 studio scene; the SIGNAL "host full" shot (title sits in the dark headroom, Vaibhav-style). Also mirrored to `remotion-studio/public/hosts/sol_studio.jpg`.
+- `closeup.jpg` (1080×1920) — TIGHT head-and-shoulders close-up (warm studio, hand-near-chest gesture); the **split-screen host** (bottom band under a graphic, Vaibhav-style). Mirrored to `remotion-studio/public/hosts/sol_closeup.jpg`. Leo gen `1f19f905-a726-6730-beb3-8f144ec6fbd3` img -0.
 - `center.jpg` (896×1344) — chest-up crop, the HeyGen/EchoMimic talking-photo source + PIP.
 
 Style-only clone of Vaibhav's *presentation* (framing/wardrobe/energy) — never his likeness.
