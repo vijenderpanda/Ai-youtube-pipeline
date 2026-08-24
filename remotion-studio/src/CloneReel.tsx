@@ -98,10 +98,12 @@ export const CloneReel: React.FC<CloneReelProps> = ({ title, theme = "cream", ac
         at += b.seconds;
         const props = { theme, accent, bg, ...(b.props ?? {}) };
         const hostMode = b.host ?? hostDefault;
-        const closeup = hostCloseupSrc ?? "hosts/sol_closeup.jpg";
-        // Vaibhav split layout: graphic clipped to the top ~62%, host close-up in the bottom ~38%.
+        // Vaibhav split layout: graphic clipped to the top ~60%, host MEDIUM shot in the bottom ~40%.
+        // Use the wide studio scene (hostCloseupSrc override wins) so the host reads as a
+        // pulled-back medium shot (head + shoulders + chest + desk), NOT a tight face.
+        const splitHostSrc = hostCloseupSrc ?? hostSrc ?? "hosts/sol_studio.jpg";
         if (hostMode === "split") {
-          const TOP = 1190; // 62% of 1920
+          const TOP = 1150; // ~60% of 1920 — host band a touch taller for the medium shot
           return (
             <Sequence key={i} from={from} durationInFrames={dur} layout="none">
               <AbsoluteFill style={{ background: T.bg }}>
@@ -110,9 +112,20 @@ export const CloneReel: React.FC<CloneReelProps> = ({ title, theme = "cream", ac
                 </div>
                 <div style={{ position: "absolute", top: TOP, left: 0, width: 1080, height: 1920 - TOP,
                   overflow: "hidden", borderTop: `2px solid ${rgba(T.accent, 0.5)}` }}>
-                  <HostMedia src={closeup} startSec={beatStart}
-                    style={{ objectFit: "cover", objectPosition: "center 40%", width: 1080, height: 1920 - TOP }} />
-                  <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, ${rgba(T.bg, 0.9)} 0%, rgba(0,0,0,0) 18%)` }} />
+                  {/* Zoom OUT: scale the wide studio scene down so the head→desk (hands) region fills
+                      the band — Vaibhav's pulled-back medium shot, not a tight face. */}
+                  {(() => {
+                    const BH = 1920 - TOP;            // band height (~770)
+                    const REGION = 0.60;              // show 60% of the source height (head→desk)
+                    const S = BH / (1920 * REGION);   // scale so that region fills the band height
+                    const W = Math.round(1080 * S);
+                    return (
+                      <HostMedia src={splitHostSrc} startSec={beatStart}
+                        style={{ position: "absolute", width: W, height: Math.round(1920 * S),
+                          left: (1080 - W) / 2, top: -Math.round(0.22 * 1920 * S), objectFit: "cover" }} />
+                    );
+                  })()}
+                  <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, ${rgba(T.bg, 0.9)} 0%, rgba(0,0,0,0) 16%)` }} />
                 </div>
               </AbsoluteFill>
             </Sequence>
