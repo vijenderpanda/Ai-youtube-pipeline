@@ -29,7 +29,7 @@ From the 30-short scout + SocialBlade momentum (`research/comp-dna/scout/SCOUT.m
 - **Selection is title-driven** (CTR), hold is the 4–8s job — see memory `[[retention-truth-2026-08]]`.
 
 ## The self-contained kit (Remotion cookbook — the ONLY components SIGNAL uses)
-Host = HeyGen **outfit_11 Sol** (pip id for proof beats; wide id if a full-frame beat is needed).
+Host = **outfit_12_sol_vaibhav** (LOCKED default 2026-08-24 — Sol restyled to the Vaibhav presentation: black tee, hands gesturing, warm dark studio; keep-face NB2 edit). `wide.jpg` = hands full-frame for "host full" beats; `center.jpg` = HeyGen/EchoMimic talking-photo + PIP. outfit_11 magenta = fallback.
 Palette from `kit.tsx` `PALETTES` — chosen per episode by the scoring layer (default **night**;
 **paperYellow** for lighter/how-to; **cleanRed** only for a hard urgency/number claim).
 Beat components, all `theme`-aware (accent = the palette's yellow unless a red/pink claim):

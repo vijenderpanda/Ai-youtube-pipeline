@@ -31,9 +31,11 @@ AVATAR_TRACKS = {
     "_default": {"track": "heygen"},
     "claude-tricks": {
         "track": "echomimic_local",  # FREE default (VJ 2026-08-19); heygen = fallback
-        # EchoMimic reference portrait already in the bucket (locked outfit-11 host):
-        "host_image": "gpu-refs/sol_host_outfit11.jpg",
-        # HeyGen fallback avatar — outfit-11 pip talking_photo_id:
+        # LOCKED host 2026-08-24 = outfit_12_sol_vaibhav (Sol restyled to Vaibhav presentation,
+        # keep-face NB2 edit). center.jpg = talking-photo source; local path (uploaded per job).
+        "host_image": "channels/claude-tricks/assets/character/host_library/outfit_12_sol_vaibhav/center.jpg",
+        # HeyGen fallback avatar — STILL outfit-11 pip talking_photo_id (outfit_12 not yet uploaded
+        # to HeyGen; the v3/videos endpoint 404s pre-Oct-31 cutover — re-register once fixed):
         "heygen_photo_id": "dc9533a1e07944a1ad32e6dcb19b678f",
     },
 }
