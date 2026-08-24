@@ -68,32 +68,32 @@ if (-not (CudaOK)) {
 if (-not (CudaOK)) { Die "torch CUDA not available" }
 Write-Host "EM3_STEP3_OK"
 
-# deps: requirements.txt minus torch (pinned above) and gradio (webui only, resolver
-# bloat). SPLIT installs so one failure doesn't take the rest down. tensorflow 2.15
-# (retina-face dep) ships a Windows CPU wheel — TF is only used for face detection.
-function DepsOK { try { return ((& $VenvPy -c "import diffusers,transformers,librosa,decord,moviepy,omegaconf,einops,safetensors,accelerate;from retinaface import RetinaFace;print(1)" 2>$null).Trim() -eq "1") } catch { return $false } }
+# deps: LEAN set — only what infer_flash.py actually imports (verified against the
+# file: diffusers/transformers/omegaconf/PIL/decord/librosa/moviepy/pyloudnorm/
+# einops + src/* internals). tensorflow+retina-face are NOT used by the flash
+# path (app-only) and their resolver fights broke two installs; mmgp (quantized
+# UI only) hijacked torch to 2.13-CPU. All three DROPPED. torch re-pinned after.
+function DepsOK { try { return ((& $VenvPy -c "import diffusers,transformers,librosa,decord,omegaconf,einops,safetensors,accelerate,pyloudnorm,imageio;from moviepy import VideoFileClip;print(1)" 2>$null).Trim() -eq "1") } catch { return $false } }
 if (-not (DepsOK)) {
-  Say "installing core deps..."
+  Say "installing lean deps (no tf / no retina-face / no mmgp)..."
   & $VenvPy -m pip install "diffusers>=0.30.1" "transformers>=4.46.2" "accelerate>=0.25.0" `
-      einops safetensors timm tomesd torchdiffeq torchsde omegaconf SentencePiece `
-      albumentations "imageio[ffmpeg]" "imageio[pyav]" beautifulsoup4 ftfy func_timeout `
-      onnxruntime scikit-image opencv-python librosa "moviepy==2.2.1" mmgp datasets tensorboard 2>&1 | Out-Host
-  if ($LASTEXITCODE -ne 0) { Die "core deps install failed" }
+      einops safetensors omegaconf SentencePiece "imageio[ffmpeg]" ftfy `
+      scikit-image opencv-python librosa "moviepy==2.2.1" pyloudnorm 2>&1 | Out-Host
+  if ($LASTEXITCODE -ne 0) { Die "lean deps install failed" }
   Say "installing decord (prebuilt wheel only)..."
   & $VenvPy -m pip install decord --only-binary=:all: 2>&1 | Out-Host
   if ($LASTEXITCODE -ne 0) { Die "decord wheel install failed" }
-  Say "installing tensorflow 2.15 + retina-face (face detector, CPU)..."
-  & $VenvPy -m pip install "tensorflow==2.15.0" "retina-face==0.0.17" 2>&1 | Out-Host
-  if ($LASTEXITCODE -ne 0) { Die "tensorflow/retina-face install failed" }
-  # Keras 3 (pulled in by another dep) breaks `tensorflow.keras` on TF 2.15 —
-  # pin keras 2.15 LAST so the tf.keras shim resolves (classic failure, hit 2026-08-24)
-  & $VenvPy -m pip install "keras==2.15.0" 2>&1 | Out-Host
+  # resolver may have moved torch/numpy — force the known-good pins back LAST
+  Say "re-pinning torch 2.5.1 cu121 + numpy 2.1.3..."
+  & $VenvPy -m pip install --force-reinstall --no-deps torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121 2>&1 | Out-Host
+  & $VenvPy -m pip install "numpy==2.1.3" 2>&1 | Out-Host
 }
 if (-not (DepsOK)) {
   Say "deps import failed -- detail:"
-  & $VenvPy -c "import diffusers,transformers,librosa,decord,moviepy,omegaconf,einops,safetensors,accelerate;from retinaface import RetinaFace" 2>&1 | Out-Host
+  & $VenvPy -c "import diffusers,transformers,librosa,decord,omegaconf,einops,safetensors,accelerate,pyloudnorm,imageio;from moviepy import VideoFileClip" 2>&1 | Out-Host
   Die "deps import failed"
 }
+if (-not (CudaOK)) { Die "torch lost CUDA after dep resolution" }
 Write-Host "EM3_STEP4_OK"
 
 # weights: three snapshot_downloads (resumable; a killed 90-min job finishes on re-run)
