@@ -62,8 +62,8 @@ Write-Host "EM3_STEP2_OK"
 # 2.5.1 cu121 is the wheel already proven on this worker (numpy 2.x compatible).
 function CudaOK { try { return ((& $VenvPy -c "import torch;print(torch.cuda.is_available())" 2>$null).Trim() -eq "True") } catch { return $false } }
 if (-not (CudaOK)) {
-  Say "installing torch 2.5.1 cu121..."
-  & $VenvPy -m pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121 2>&1 | Out-Host
+  Say "installing torch 2.6.0 cu124 (transformers CVE-2025-32434 gate needs >=2.6 for torch.load)..."
+  & $VenvPy -m pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cu124 2>&1 | Out-Host
 }
 if (-not (CudaOK)) { Die "torch CUDA not available" }
 Write-Host "EM3_STEP3_OK"
@@ -84,8 +84,8 @@ if (-not (DepsOK)) {
   & $VenvPy -m pip install decord --only-binary=:all: 2>&1 | Out-Host
   if ($LASTEXITCODE -ne 0) { Die "decord wheel install failed" }
   # resolver may have moved torch/numpy — force the known-good pins back LAST
-  Say "re-pinning torch 2.5.1 cu121 + numpy 2.1.3..."
-  & $VenvPy -m pip install --force-reinstall --no-deps torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121 2>&1 | Out-Host
+  Say "re-pinning torch 2.6.0 cu124 + numpy 2.1.3..."
+  & $VenvPy -m pip install --force-reinstall --no-deps torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cu124 2>&1 | Out-Host
   & $VenvPy -m pip install "numpy==2.1.3" 2>&1 | Out-Host
 }
 if (-not (DepsOK)) {
