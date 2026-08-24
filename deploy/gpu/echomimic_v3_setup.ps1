@@ -60,7 +60,7 @@ Write-Host "EM3_STEP2_OK"
 
 # torch cu121 FIRST + EXPLICIT (requirements says torch>=2.1.2; unpinned pip grabs CPU).
 # 2.5.1 cu121 is the wheel already proven on this worker (numpy 2.x compatible).
-function CudaOK { try { return ((& $VenvPy -c "import torch;print(torch.cuda.is_available())" 2>$null).Trim() -eq "True") } catch { return $false } }
+function CudaOK { try { return ((& $VenvPy -c "import torch;print(torch.cuda.is_available() and tuple(map(int,torch.__version__.split('+')[0].split('.')[:2]))>=(2,6))" 2>$null).Trim() -eq "True") } catch { return $false } }
 if (-not (CudaOK)) {
   Say "installing torch 2.6.0 cu124 (transformers CVE-2025-32434 gate needs >=2.6 for torch.load)..."
   & $VenvPy -m pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cu124 2>&1 | Out-Host
