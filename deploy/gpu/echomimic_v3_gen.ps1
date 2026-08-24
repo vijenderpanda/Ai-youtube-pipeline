@@ -7,7 +7,11 @@
 # worker: powershell.exe -NonInteractive -File <this> -RepoRoot <REPO>
 #   -SrcUrl <portrait png/jpg> -AudioUrl <wav> [-Size 768] [-Steps 8] [-Fps 25] [-Tag em3]
 param([string]$RepoRoot, [string]$SrcUrl, [string]$AudioUrl,
-      [int]$Size = 768, [int]$Steps = 8, [int]$Fps = 25, [string]$Tag = "em3")
+      [int]$Size = 512, [int]$Steps = 8, [int]$Fps = 25, [string]$Tag = "em3",
+      [string]$MemMode = "model_cpu_offload_and_qfloat8")
+# MemMode: this box has 16GB RAM — sequential_cpu_offload parks the ~11GB T5 in
+# system RAM and froze the worker (2026-08-24). qfloat8 + model offload halves
+# the transformer; 512² default cuts activations. 768 needs a RAM upgrade.
 $ErrorActionPreference = "Continue"; $ProgressPreference = "SilentlyContinue"
 $env:PYTHONUTF8 = "1"; $env:PYTHONIOENCODING = "utf-8"
 
@@ -41,7 +45,7 @@ $dur = 4.0
 if ($ffprobe) { try { $dur = [double](& $ffprobe -v error -show_entries format=duration -of csv=p=0 $wav) } catch {} }
 $L = [int][math]::Ceiling($dur * $Fps) + 1
 if ($L -lt 49) { $L = 49 }
-if ($L -gt 161) { $L = 161 }   # ~6.4s per window cap on 12GB; longer audio -> model windows internally
+if ($L -gt 113) { $L = 113 }   # tighter window on 16GB-RAM box   # ~6.4s per window cap on 12GB; longer audio -> model windows internally
 Say ("audio=" + [math]::Round($dur, 2) + "s -> video_length=$L @ $Fps fps; ${Size}x${Size} steps=$Steps")
 
 $outRoot = Join-Path $Root "outputs"
@@ -66,7 +70,7 @@ Say "running EchoMimicV3-Flash (8-step)..."
   --neg_scale 1.0 --neg_steps 0 --seed 43 --enable_teacache --teacache_threshold 0.1 `
   --num_skip_start_steps 5 --riflex_k 6 --ulysses_degree 1 --ring_degree 1 `
   --weight_dtype "bfloat16" --sample_size $Size $Size --fps $Fps `
-  --shift 5.0 2>&1 | Out-Host
+  --GPU_memory_mode $MemMode --shift 5.0 2>&1 | Out-Host
   # (--add_prompt/--negative_prompt omitted: PowerShell drops empty-string args and argparse dies)
 $rc = $LASTEXITCODE
 Pop-Location
