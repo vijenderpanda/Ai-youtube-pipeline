@@ -50,7 +50,7 @@ Two Shorts/day, ≥6h apart, English audio/titles (both slots):
 2. Fresh scout picks — `research/comp-dna/scout/` (Social Blade momentum layer, 22-short scan). Pull a rising in-lane repo/tool/site.
 3. `uR2JDsLZS6I` "how much water AI consumes" — local comp-dna ref without a `design/` extraction yet (pull via DesignSync from "Comp-DNA Shorts Library").
 4. Port ★ Comp-DNA components into Remotion cookbook: PhoneMock, FlowTree, StatCloser (taxonomy §5 gap list).
-5. Open spawned task `task_caf012df` — harden sync_preview large-file upload + auto true-peak in sfx_mix.
+5. ~~harden sync_preview large-file upload + auto true-peak~~ **DONE** (sibling session, 2026-08-24): `origin/claude/dazzling-bouman-8f474a` @ 5ffcc9f — streams storage uploads + true-peak ship gate. NOT yet merged to main; merge it before relying on the fixes (my curl-workaround + finalize limiter still cover us meanwhile).
 
 ## Key files
 - Plans: `NEXT-POST-OPTIONS-2026-08-23.md`, `EP2-PLAN-2026-08-24.md`
