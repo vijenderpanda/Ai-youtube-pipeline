@@ -786,5 +786,35 @@
     "views": 24091,
     "views_per_day": 1147,
     "like_rate": 0.0104
+  },
+  {
+    "id": "7A4s1UtOYv0",
+    "title": "Stop paying for AI NVIDIA made every top AI FREE",
+    "uploader": "Vaibhav Sisinty",
+    "dur": 77,
+    "fps": 30,
+    "folder": "7A4s1UtOYv0_stop-paying-for-ai-nvidia-made-every",
+    "archetype": "B3",
+    "hook_type": "H-poster-claim",
+    "visual_dna": "talking-head + UI screenshot proof-reel",
+    "theme": "night",
+    "palette": {
+      "bg": "#0E0B08",
+      "fg": "#FFFFFF",
+      "accent": "#D4FF3D",
+      "accent2": "#7CFC8A",
+      "caption_fill": "#FFFFFF",
+      "caption_stroke": "#000000",
+      "card_bg": "#EDE8D0",
+      "danger": "#7A1414",
+      "notes": "Host set is warm dark brown/black bookshelf blur, near-black (#0E0B08). Bold headline captions are white with black stroke; hero keywords recolor to lime-yellow (#D4FF3D) or lime-green (#7CFC8A) for emphasis (e.g. 'Max', 'unfair advantage', 'real products'). Insert cards use cream/khaki paper bg (#EDE8D0) with black monospace text for concept slides ('You write the code' / 'NVIDIA pays the compute bill'). One danger beat flashes a dark red overlay (#7A1414) over grayscale b-roll ('developers panicked'). Screenshots/UI captures keep native app colors (Anthropic black, NVIDIA dark UI, whale/Kimi logos) unaltered."
+    },
+    "host": "full",
+    "beat_grammar": "see design/beat-map.md",
+    "design_extract": "7A4s1UtOYv0_stop-paying-for-ai-nvidia-made-every/design/",
+    "source": "promoted-2026-08-24",
+    "views": 424208,
+    "views_per_day": 3626,
+    "like_rate": 0.0471
   }
 ]

@@ -1,6 +1,6 @@
 {
  "generated_for": "comp-dna library",
- "n": 67,
+ "n": 68,
  "assets": [
   {
    "id": "2ZQ4jSkiqr4",
@@ -22,7 +22,7 @@
    },
    "perf": {
     "views_per_day": 15357,
-    "views_per_day_pct": 0.82,
+    "views_per_day_pct": 0.83,
     "like_rate": 0.0736
    },
    "evidence": 0.93,
@@ -49,12 +49,39 @@
    },
    "perf": {
     "views_per_day": 1647,
-    "views_per_day_pct": 0.45,
+    "views_per_day_pct": 0.44,
     "like_rate": 0.0267
    },
-   "evidence": 0.56,
+   "evidence": 0.55,
    "clone": "clones/52_wce7E3aQ.json",
    "sheet": "cards/refs/52_wce7E3aQ.html"
+  },
+  {
+   "id": "7A4s1UtOYv0",
+   "kind": "reference",
+   "title": "Stop paying for AI NVIDIA made every top AI FREE",
+   "creator": "Vaibhav Sisinty",
+   "tags": {
+    "palette": "night",
+    "tone": "dark",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "poster-claim",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "money",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 3626,
+    "views_per_day_pct": 0.67,
+    "like_rate": 0.0471
+   },
+   "evidence": 0.78,
+   "clone": "clones/7A4s1UtOYv0.json",
+   "sheet": "cards/refs/7A4s1UtOYv0.html"
   },
   {
    "id": "DirGcMXm4zw",
@@ -103,7 +130,7 @@
    },
    "perf": {
     "views_per_day": 23200,
-    "views_per_day_pct": 0.86,
+    "views_per_day_pct": 0.87,
     "like_rate": 0.04
    },
    "evidence": 0.81,
@@ -130,7 +157,7 @@
    },
    "perf": {
     "views_per_day": 1779,
-    "views_per_day_pct": 0.46,
+    "views_per_day_pct": 0.45,
     "like_rate": 0.025
    },
    "evidence": 0.55,
@@ -265,7 +292,7 @@
    },
    "perf": {
     "views_per_day": 1277,
-    "views_per_day_pct": 0.38,
+    "views_per_day_pct": 0.37,
     "like_rate": 0.0149
    },
    "evidence": 0.45,
@@ -508,7 +535,7 @@
    },
    "perf": {
     "views_per_day": 1437,
-    "views_per_day_pct": 0.42,
+    "views_per_day_pct": 0.41,
     "like_rate": 0.0197
    },
    "evidence": 0.5,
@@ -562,7 +589,7 @@
    },
    "perf": {
     "views_per_day": 2586,
-    "views_per_day_pct": 0.61,
+    "views_per_day_pct": 0.6,
     "like_rate": 0.0308
    },
    "evidence": 0.65,
@@ -589,7 +616,7 @@
    },
    "perf": {
     "views_per_day": 3381,
-    "views_per_day_pct": 0.65,
+    "views_per_day_pct": 0.64,
     "like_rate": 0.0421
    },
    "evidence": 0.74,
@@ -643,10 +670,10 @@
    },
    "perf": {
     "views_per_day": 1147,
-    "views_per_day_pct": 0.34,
+    "views_per_day_pct": 0.33,
     "like_rate": 0.0104
    },
-   "evidence": 0.41,
+   "evidence": 0.4,
    "clone": "clones/lMiHRN8pzn4.json",
    "sheet": "cards/refs/lMiHRN8pzn4.html"
   },
@@ -724,7 +751,7 @@
    },
    "perf": {
     "views_per_day": 1900,
-    "views_per_day_pct": 0.5,
+    "views_per_day_pct": 0.49,
     "like_rate": 0.0344
    },
    "evidence": 0.63,
