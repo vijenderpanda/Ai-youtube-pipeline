@@ -52,6 +52,7 @@ PIP. **`scripts/assign_host.py` sets host per beat automatically** — no manual
 - **Host ABSENT** (graphic full-frame, hard cutaway) on every proof beat (FlowTree/AppWindow/TermRun/
   StatCloser/VsTable/…). The graphic is the shot.
 - Cadence: don't hold host static >~8s without a graphic or a graphic >~8s without returning to host.
+- **Split-screen mode** (`host:"split"` on a beat) — Vaibhav grammar: the graphic fills the top ~62%, the host **close-up** (`outfit_12/closeup.jpg` → `hosts/sol_closeup.jpg`, via `hostCloseupSrc`) sits in the bottom ~38% band with an accent divider. Use for a proof beat where you want host + graphic on screen together; set it manually per beat (not auto-assigned).
 - Host-visible % is content-driven, not fixed (graphics-heavy 7% and talk-heavy 82% both win). Run
   `python scripts/assign_host.py <spec>.json --in-place` after building the block spec.
 

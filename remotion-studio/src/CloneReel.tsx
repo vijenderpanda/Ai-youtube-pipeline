@@ -18,7 +18,7 @@ export type CloneBlock = {
   props?: Record<string, unknown>;
   caption?: string; // stand-in for the VO line (bottom chip)
   transparent?: boolean;
-  host?: "full" | "pip" | "none"; // host presence on this beat (overrides reel default)
+  host?: "full" | "pip" | "none" | "split"; // host presence on this beat (overrides reel default)
 };
 
 export type CloneReelProps = {
@@ -31,8 +31,11 @@ export type CloneReelProps = {
    *  Sol clip that composites at full render. Lets the contact sheet show the
    *  actual host placement. */
   hostSrc?: string; // e.g. "hosts/sol_center.jpg"
-  hostDefault?: "full" | "pip" | "none"; // presence when a block doesn't set its own (default "pip")
+  hostDefault?: "full" | "pip" | "none" | "split"; // presence when a block doesn't set its own (default "pip")
   hostPos?: "bl" | "br"; // pip corner (default "bl")
+  /** Tight head-and-shoulders host close-up, used for the `split` layout's bottom band
+   *  (Vaibhav split-screen grammar: graphic top ~62%, host close-up bottom ~38%). */
+  hostCloseupSrc?: string; // e.g. "hosts/sol_closeup.jpg"
   /** Global yellow word-highlight karaoke, on the film clock (from VO word timings). */
   karaoke?: Chip[];
 };
@@ -81,7 +84,7 @@ const HostShot: React.FC<{ src: string; mode: "full" | "pip"; pos: "bl" | "br"; 
 export const cloneReelDuration = (p: CloneReelProps, fps: number): number =>
   Math.max(1, Math.round(p.blocks.reduce((a, b) => a + b.seconds, 0) * fps));
 
-export const CloneReel: React.FC<CloneReelProps> = ({ title, theme = "cream", accent, bg, blocks, hostSrc, hostDefault = "pip", hostPos = "bl", karaoke }) => {
+export const CloneReel: React.FC<CloneReelProps> = ({ title, theme = "cream", accent, bg, blocks, hostSrc, hostDefault = "pip", hostPos = "bl", hostCloseupSrc, karaoke }) => {
   const { fps } = useVideoConfig();
   const T = themeTokens(theme, accent, bg);
   let at = 0;
@@ -94,14 +97,35 @@ export const CloneReel: React.FC<CloneReelProps> = ({ title, theme = "cream", ac
         const dur = Math.max(1, Math.round(b.seconds * fps));
         at += b.seconds;
         const props = { theme, accent, bg, ...(b.props ?? {}) };
+        const hostMode = b.host ?? hostDefault;
+        const closeup = hostCloseupSrc ?? "hosts/sol_closeup.jpg";
+        // Vaibhav split layout: graphic clipped to the top ~62%, host close-up in the bottom ~38%.
+        if (hostMode === "split") {
+          const TOP = 1190; // 62% of 1920
+          return (
+            <Sequence key={i} from={from} durationInFrames={dur} layout="none">
+              <AbsoluteFill style={{ background: T.bg }}>
+                <div style={{ position: "absolute", top: 0, left: 0, width: 1080, height: TOP, overflow: "hidden" }}>
+                  <CookbookBlock id={b.id} props={props} transparent={b.transparent ?? true} />
+                </div>
+                <div style={{ position: "absolute", top: TOP, left: 0, width: 1080, height: 1920 - TOP,
+                  overflow: "hidden", borderTop: `2px solid ${rgba(T.accent, 0.5)}` }}>
+                  <HostMedia src={closeup} startSec={beatStart}
+                    style={{ objectFit: "cover", objectPosition: "center 40%", width: 1080, height: 1920 - TOP }} />
+                  <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, ${rgba(T.bg, 0.9)} 0%, rgba(0,0,0,0) 18%)` }} />
+                </div>
+              </AbsoluteFill>
+            </Sequence>
+          );
+        }
         return (
           <Sequence key={i} from={from} durationInFrames={dur} layout="none">
             <AbsoluteFill>
-              {hostSrc && (b.host ?? hostDefault) === "full" ? (
+              {hostSrc && hostMode === "full" ? (
                 <HostShot src={hostSrc} mode="full" pos={hostPos} accent={T.accent} bg={T.bg} startSec={beatStart} />
               ) : null}
               <CookbookBlock id={b.id} props={props} transparent={b.transparent ?? true} />
-              {hostSrc && (b.host ?? hostDefault) === "pip" ? (
+              {hostSrc && hostMode === "pip" ? (
                 <HostShot src={hostSrc} mode="pip" pos={hostPos} accent={T.accent} bg={T.bg} startSec={beatStart} />
               ) : null}
               {b.caption ? (
