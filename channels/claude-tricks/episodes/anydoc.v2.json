@@ -1,0 +1,400 @@
+{
+  "_note": "EP3 NIGHTWATCH (2026-08-24) — AnyDoc real-page tour. Tape tapes/anydoc_tape.mp4 (31s, github.com/firecrawl/anydoc, DARK, 3 verbatim sweeps). Geometry from anydoc_tape.tour.json. Camera `at` provisional until VO measured (knee = stars punch landing 6.00s abs; overlap tape scroll peak if G9<0.12). Honesty: 'free' = MIT license (real); star count read live off the tape; real page, dark native, never retimed.",
+  "title": "Stop Pasting Messy PDFs Into AI — AnyDoc Fixes It 📄",
+  "tags": "anydoc,firecrawl,pdf to markdown,pdf to text,ai document tool,markdown,free ai tool,document converter,word to markdown,rust,claude,chatgpt,ai tools 2026,ai unpacked",
+  "lines": [
+    "Every AI chokes on messy PDFs and Word docs. This free tool fixes it.",
+    "Eighteen thousand developers starred it in a week. Look at that.",
+    "It turns any file. Word, Excel, PDF. Into clean Markdown.",
+    "LLM-ready. In single-digit milliseconds. On your own machine.",
+    "Messy file in, clean text out. Free, and it never leaves your computer.",
+    "One line in your terminal. Point it at any document.",
+    "That's it. The exact command is pinned below."
+  ],
+  "hot_words": [
+    "EVERY",
+    "FREE",
+    "THIS",
+    "18",
+    "THOUSAND",
+    "LOOK",
+    "ANY",
+    "WORD",
+    "EXCEL",
+    "PDF",
+    "CLEAN",
+    "MARKDOWN",
+    "LLM-READY",
+    "MILLISECONDS",
+    "FREE",
+    "ONE",
+    "LINE",
+    "PINNED"
+  ],
+  "beats": [
+    "cook:HeroDrop#hook",
+    "cook:WebTour#tour",
+    "cook:WebTour#what",
+    "cook:WebTour#why",
+    "cook:VsTable#swap",
+    "cook:TermRun#how",
+    "cook:WebTour#payoff"
+  ],
+  "caption_from": "@beat1",
+  "music": "music/bed_active.mp3",
+  "music_gain_db": 2.0,
+  "music_fade_in": 0.25,
+  "cookbook": {
+    "HeroDrop#hook": {
+      "emoji": "📄",
+      "onSrc": "tapes/anydoc_hero.jpg",
+      "caption": {
+        "parts": [
+          {
+            "t": "any file in.",
+            "face": "sans"
+          },
+          {
+            "t": "clean Markdown out.",
+            "face": "serif",
+            "accent": true
+          }
+        ]
+      },
+      "dropAt": 0.1,
+      "size": 400,
+      "partAt": [
+        1.6,
+        3.0
+      ],
+      "_note": "partAt trued after VO"
+    },
+    "WebTour#tour": {
+      "src": "tapes/anydoc_tape.mp4",
+      "url": "https://github.com/firecrawl/anydoc",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 6.9,
+      "camera": [
+        {
+          "at": 1.26,
+          "dur": 0.42,
+          "center": [
+            0.948,
+            0.142
+          ],
+          "zoom": 2.7,
+          "hold": 2.4
+        }
+      ],
+      "selections": [],
+      "host": true,
+      "hostSize": 360,
+      "_note": "KNEE: stars punch lands 6.00 abs (true from measured VO; overlap scroll peak if G9<0.12)."
+    },
+    "WebTour#what": {
+      "src": "tapes/anydoc_tape.mp4",
+      "url": "https://github.com/firecrawl/anydoc",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 11.6,
+      "camera": [
+        {
+          "at": 0.5,
+          "dur": 0.55,
+          "center": [
+            0.16,
+            0.325
+          ],
+          "zoom": 1.9,
+          "hold": 3.2
+        }
+      ],
+      "selections": [
+        {
+          "at": 1.5,
+          "rects": [
+            [
+              0.0508,
+              0.3133,
+              0.2647,
+              0.3383
+            ]
+          ],
+          "scrollTop": 1053,
+          "hold": 2.4,
+          "sweep": "ltr"
+        }
+      ],
+      "host": true,
+      "hostSize": 360
+    },
+    "WebTour#why": {
+      "src": "tapes/anydoc_tape.mp4",
+      "url": "https://github.com/firecrawl/anydoc",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 15.0,
+      "camera": [
+        {
+          "at": 0.5,
+          "dur": 0.55,
+          "center": [
+            0.39,
+            0.381
+          ],
+          "zoom": 1.8,
+          "hold": 3.4
+        }
+      ],
+      "selections": [
+        {
+          "at": 1.3,
+          "rects": [
+            [
+              0.165,
+              0.3689,
+              0.6127,
+              0.3939
+            ]
+          ],
+          "scrollTop": 1053,
+          "hold": 2.6,
+          "sweep": "ltr"
+        }
+      ],
+      "host": true,
+      "hostSize": 360
+    },
+    "VsTable#swap": {
+      "title": "what changes",
+      "colA": "Your messy file",
+      "colB": "With AnyDoc",
+      "rows": [
+        {
+          "label": "the file",
+          "a": "PDF / Word / Excel",
+          "b": "same",
+          "verdict": "none"
+        },
+        {
+          "label": "what AI reads",
+          "a": "garbled text",
+          "b": "clean Markdown",
+          "verdict": "b"
+        },
+        {
+          "label": "where it runs",
+          "a": "upload to a site",
+          "b": "your machine",
+          "verdict": "b"
+        },
+        {
+          "label": "cost",
+          "a": "paid tools",
+          "b": "free (MIT)",
+          "verdict": "b"
+        }
+      ],
+      "rowStagger": 0.55
+    },
+    "TermRun#how": {
+      "cmd": "npx @firecrawl/anydoc report.docx",
+      "typeStart": 0.4,
+      "charsPerSec": 30,
+      "promptLabel": "~",
+      "response": [
+        {
+          "t": "reading report.docx…",
+          "tone": "info"
+        },
+        {
+          "t": "→ clean Markdown, 8ms",
+          "tone": "ok"
+        },
+        {
+          "t": "LLM-ready. local. free.",
+          "tone": "accent"
+        }
+      ],
+      "lineStagger": 0.22
+    },
+    "WebTour#payoff": {
+      "src": "tapes/anydoc_tape.mp4",
+      "url": "https://github.com/firecrawl/anydoc",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 25.8,
+      "camera": [
+        {
+          "at": 0.7,
+          "dur": 0.75,
+          "center": [
+            0.17,
+            0.675
+          ],
+          "zoom": 1.7,
+          "hold": 3.0
+        }
+      ],
+      "selections": [
+        {
+          "at": 1.6,
+          "rects": [
+            [
+              0.0633,
+              0.6636,
+              0.2744,
+              0.6858
+            ]
+          ],
+          "scrollTop": 1363,
+          "hold": 2.4,
+          "sweep": "ltr"
+        }
+      ],
+      "host": true,
+      "hostSize": 360
+    }
+  },
+  "tour_rail": {
+    "stops": [
+      {
+        "label": "18K stars",
+        "at": "@beat1"
+      },
+      {
+        "label": "any file",
+        "at": "@beat2"
+      },
+      {
+        "label": "LLM-ready",
+        "at": "@beat3"
+      },
+      {
+        "label": "the swap",
+        "at": "@beat4"
+      },
+      {
+        "label": "one line",
+        "at": "@beat5"
+      },
+      {
+        "label": "copy it",
+        "at": "@beat6"
+      }
+    ],
+    "from": "@beat1",
+    "y": 300
+  },
+  "pings": [
+    {
+      "at": "@beat2+1.5",
+      "kind": "like",
+      "tip": "clean. free.",
+      "dur": 2.2
+    },
+    {
+      "at": "@beat6+1.6",
+      "kind": "comment",
+      "tip": "pinned below",
+      "dur": 2.2
+    }
+  ],
+  "outro_pings": [
+    {
+      "at": 0.5,
+      "kind": "subscribe",
+      "tip": "follow",
+      "dur": 2.6
+    }
+  ],
+  "sfx": [
+    {
+      "at": 0.02,
+      "name": "pop",
+      "gain_db": 1
+    },
+    {
+      "at": "@beat0",
+      "name": "riser"
+    },
+    {
+      "at": "@beat0+1.2",
+      "name": "pop"
+    },
+    {
+      "at": "@beat1",
+      "name": "whoosh_up"
+    },
+    {
+      "at": 6.0,
+      "name": "pop",
+      "gain_db": 2,
+      "note": "KNEE absolute"
+    },
+    {
+      "at": "@beat2",
+      "name": "whoosh_down"
+    },
+    {
+      "at": "@beat2+1.5",
+      "name": "pop",
+      "note": "tagline sweep"
+    },
+    {
+      "at": "@beat3",
+      "name": "whoosh_up"
+    },
+    {
+      "at": "@beat3+1.3",
+      "name": "pop",
+      "note": "llm sweep"
+    },
+    {
+      "at": "@beat4",
+      "name": "whoosh_up"
+    },
+    {
+      "at": "@beat4+1.7",
+      "name": "pop",
+      "gain_db": -3,
+      "note": "verdict"
+    },
+    {
+      "at": "@beat4+2.3",
+      "name": "pop",
+      "gain_db": -3,
+      "note": "verdict"
+    },
+    {
+      "at": "@beat5",
+      "name": "whoosh_down"
+    },
+    {
+      "at": "@beat5+0.4",
+      "name": "keys",
+      "note": "TermRun"
+    },
+    {
+      "at": "@beat6",
+      "name": "whoosh_up"
+    },
+    {
+      "at": "@beat6+1.6",
+      "name": "pop",
+      "note": "cli sweep"
+    },
+    {
+      "at": "@beat6+2.7",
+      "name": "slam"
+    }
+  ],
+  "duck": "@beat6+2.56,@beat6+2.70",
+  "outro": true,
+  "outro_src": "epanydoc/outro_card.mp4",
+  "outro_cta": "Follow. I tour one free AI tool every day. Which should I open next?",
+  "desc_cta": "Which free AI tool should I tour next? Tell me below.",
+  "desc_prompt": "📄 THE EXACT COMMAND (copy it):\n\nnpx @firecrawl/anydoc report.docx\n\nTurns Word/Excel/PDF into clean, LLM-ready Markdown locally. Free & open-source (MIT): github.com/firecrawl/anydoc",
+  "steps": []
+}

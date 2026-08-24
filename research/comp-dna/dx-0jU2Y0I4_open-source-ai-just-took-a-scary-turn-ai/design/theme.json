@@ -1,0 +1,26 @@
+{
+  "palette": {
+    "bg": "#3A3F42",
+    "fg": "#FFFFFF",
+    "accent": "#F5E642",
+    "accent2": "#5AC8E8",
+    "caption_fill": "#FFFFFF",
+    "caption_stroke": "#000000"
+  },
+  "typography": {
+    "headline": {"family_guess": "none (no title card)", "weight": "n/a", "case": "n/a", "size_rel": "n/a"},
+    "caption": {"family_guess": "Arial/Helvetica Bold (auto-caption font, Opus/CapCut-style)", "weight": "bold", "case": "UPPERCASE", "size_rel": "~7% of frame height, 2-line max"}
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "dead-center, chest-up, camera at eye level, fills ~70% frame width",
+    "safe_zones": "top 5% clear (no title card used); bottom 22% reserved for 2-line caption block above YouTube UI chrome",
+    "caption_pos": "bottom-third, centered, 2 lines, sits just above where YT Shorts chrome would paint"
+  },
+  "motion": {
+    "cut_rate_per_10s": 0,
+    "zoom_punches": false,
+    "transitions": ["none — single continuous static talking-head shot, zero edits/cuts for full 29s"]
+  },
+  "themeable": ["accent (keyword-highlight color)", "caption_fill/caption_stroke", "bg (host's room/background)", "host wardrobe/branding element (jersey badge here)"]
+}

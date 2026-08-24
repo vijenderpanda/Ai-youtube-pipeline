@@ -1,0 +1,210 @@
+{
+ "title": "ovLAIhbk3ek \u00b7 How to 10x your Claude with 4 .md files",
+ "theme": "cream",
+ "accent": "#E8794A",
+ "blocks": [
+  {
+   "id": "FlowTree",
+   "seconds": 2.5,
+   "props": {
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "Claude",
+      "icon": "\u2726",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "?",
+      "parent": "root",
+      "state": "todo"
+     },
+     {
+      "id": "b",
+      "label": "?",
+      "parent": "root",
+      "state": "todo"
+     }
+    ],
+    "theme": "cream"
+   },
+   "caption": "",
+   "beat": "hook_burst"
+  },
+  {
+   "id": "SplitHead",
+   "seconds": 2,
+   "props": {
+    "label": "How to",
+    "line": "10x Claude with four .md files",
+    "punch": "four .md files",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar",
+    "theme": "cream"
+   },
+   "caption": "Here's how four files change everything",
+   "beat": "host_recap"
+  },
+  {
+   "id": "FlowTree",
+   "seconds": 2.5,
+   "props": {
+    "title": "The four files",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "Claude",
+      "icon": "\u2726",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "Agents.md",
+      "parent": "root",
+      "state": "done"
+     },
+     {
+      "id": "b",
+      "label": "Context.md",
+      "parent": "root",
+      "state": "active"
+     },
+     {
+      "id": "c",
+      "label": "Memory.md",
+      "parent": "root",
+      "state": "todo"
+     },
+     {
+      "id": "d",
+      "label": "Skills.md",
+      "parent": "root",
+      "state": "todo"
+     }
+    ],
+    "theme": "cream"
+   },
+   "caption": "Agents, Context, Memory, Skills",
+   "beat": "four_files"
+  },
+  {
+   "id": "ChatApp",
+   "seconds": 3,
+   "props": {
+    "appName": "Claude",
+    "status": "online",
+    "messages": [
+     {
+      "from": "user",
+      "text": "Write a LinkedIn post about our launch"
+     },
+     {
+      "from": "ai",
+      "text": "Referencing agents.md \u2014 matching your voice."
+     },
+     {
+      "from": "ai",
+      "artifact": {
+       "title": "LinkedIn post draft",
+       "subtitle": "Agents.md \u00b7 applied",
+       "action": "Open"
+      }
+     }
+    ]
+   },
+   "caption": "Claude reads Agents.md before replying",
+   "beat": "agents_demo"
+  },
+  {
+   "id": "ChipRow",
+   "seconds": 2,
+   "props": {
+    "eyebrow": "Skills.md",
+    "chips": [
+     {
+      "text": "Short Answers",
+      "kind": "toggle"
+     },
+     {
+      "text": "First Principles",
+      "kind": "toggle",
+      "hot": true
+     },
+     {
+      "text": "Structured",
+      "kind": "toggle"
+     },
+     {
+      "text": "Critical Thinking",
+      "kind": "toggle"
+     },
+     {
+      "text": "Step by Step",
+      "kind": "toggle"
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "theme": "cream"
+   },
+   "caption": "Skills.md sets how Claude thinks",
+   "beat": "skills_chips"
+  },
+  {
+   "id": "FlowTree",
+   "seconds": 3,
+   "props": {
+    "title": "Research a competitor",
+    "direction": "right",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "Identify",
+      "icon": "\ud83d\udd0d",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "Analyze",
+      "parent": "root",
+      "state": "done"
+     },
+     {
+      "id": "b",
+      "label": "Breakdown",
+      "parent": "a",
+      "state": "active"
+     },
+     {
+      "id": "c",
+      "label": "Summarize",
+      "parent": "b",
+      "state": "todo"
+     }
+    ],
+    "theme": "cream"
+   },
+   "caption": "All four files compound into one workflow",
+   "beat": "compound_workflow"
+  },
+  {
+   "id": "BrandBumper",
+   "seconds": 2.5,
+   "props": {
+    "name": "Claude Files",
+    "tagline": "Agents \u00b7 Context \u00b7 Memory \u00b7 Skills",
+    "glyph": "spark",
+    "mode": "close",
+    "cta": "Save this framework",
+    "theme": "cream"
+   },
+   "caption": "Turn a four-hour task into minutes",
+   "beat": "cta_bumper"
+  }
+ ]
+}

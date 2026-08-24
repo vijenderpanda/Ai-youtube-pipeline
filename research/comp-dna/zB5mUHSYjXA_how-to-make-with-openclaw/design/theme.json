@@ -1,0 +1,51 @@
+{
+  "palette": {
+    "bg": "#EDE8DF",
+    "fg": "#1A1A1A",
+    "accent": "#5C9E88",
+    "accent2": "#D9553C",
+    "caption_fill": "#1A1A1A",
+    "caption_stroke": "none",
+    "card_fill": "#17352A",
+    "card_text": "#F2EFE6",
+    "host_bg_warm": "#5A3A1E"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "serif display (Playfair/Georgia-like) mixed with a rounded sans for emphasis words",
+      "weight": "bold",
+      "case": "sentence, mixed serif+italic accent word",
+      "size_rel": "large, 2-4 words per screen, stacked left-aligned"
+    },
+    "caption": {
+      "family_guess": "small serif label, sometimes handwritten-italic for accent words (e.g. 'you', 'stack a')",
+      "weight": "regular-bold mix",
+      "case": "lowercase for accent words",
+      "size_rel": "medium"
+    },
+    "card_label": {
+      "family_guess": "rounded sans-serif (Inter/SF-like)",
+      "weight": "medium",
+      "case": "title case",
+      "size_rel": "small, dark pill/card with white text"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "center-frame, chest-up, seated at desk with warm wood bookshelf background, boom mic in shot",
+    "safe_zones": "top ~10% and bottom ~10% kept clear on diagram screens; host frames use full bleed",
+    "caption_pos": "headline text upper-left third on diagram/b-roll screens; no burned captions over host frames (spoken word only)"
+  },
+  "motion": {
+    "cut_rate_per_10s": "6-8 (fast diagram cuts, slower ~2-3 on host talking-head holds)",
+    "zoom_punches": true,
+    "transitions": ["hard cut", "swipe/slide of cards into frame", "funnel/pipe morph (upwork logo scanning into keyword)", "mascot walk/idle loop bridging sections", "quadrant chart build-up (elements appear sequentially)"]
+  },
+  "themeable": [
+    "accent2 (mascot/brand color) can be swapped per content topic",
+    "card_fill dark-green cards are a reusable pill/label component, color themeable",
+    "bg cream can shift lighter/darker per brand",
+    "host framing + bookshelf backdrop is fixed per creator (not themeable across clones)",
+    "quadrant/funnel/tree diagram shapes are reusable structure, colors themeable"
+  ]
+}

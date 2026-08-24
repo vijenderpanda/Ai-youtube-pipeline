@@ -1,0 +1,190 @@
+{
+ "title": "dF9bvpTy6JA \u00b7 Could AI have done what Einstein did?",
+ "theme": "cream",
+ "accent": "#C0392B",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 2.5,
+   "props": {
+    "label": "THE QUESTION",
+    "line": "AI could have done what Einstein did?",
+    "punch": "Einstein",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "AI could have done what Einstein did?"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "setup",
+   "seconds": 2,
+   "props": {
+    "kicker": "THE PREMISE",
+    "parts": [
+     {
+      "text": "AI is"
+     },
+     {
+      "text": "getting really"
+     },
+     {
+      "text": "good.",
+      "hot": true
+     },
+     {
+      "text": "Kind of"
+     },
+     {
+      "text": "brilliant.",
+      "hot": true
+     }
+    ],
+    "footer": "But is it science?",
+    "highlight": "bar"
+   },
+   "caption": "AI's getting kind of brilliant"
+  },
+  {
+   "id": "ChipRow",
+   "beat": "proof",
+   "seconds": 2.5,
+   "props": {
+    "eyebrow": "The proof",
+    "chips": [
+     {
+      "text": "Protein folding \u2191",
+      "kind": "model",
+      "icon": "\ud83e\uddec",
+      "hot": true
+     },
+     {
+      "text": "Unsolved math problem",
+      "kind": "model",
+      "icon": "\u2797",
+      "hot": true
+     },
+     {
+      "text": "Unreleased Anthropic model",
+      "kind": "platform",
+      "icon": "\ud83e\udde0"
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "stagger": 0.24
+   },
+   "caption": "Models cracked an unsolved math problem"
+  },
+  {
+   "id": "SplitHead",
+   "beat": "definition",
+   "seconds": 2,
+   "props": {
+    "label": "THE PIVOT",
+    "line": "But what is real science?",
+    "punch": "real science",
+    "align": "left",
+    "size": "lg",
+    "underline": "line"
+   },
+   "caption": "But what is real science?"
+  },
+  {
+   "id": "FlowTree",
+   "beat": "mechanism",
+   "seconds": 2.5,
+   "props": {
+    "title": "Einstein didn't invent the pieces",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "Known physics",
+      "icon": "\ud83d\udcda",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "Space & time",
+      "parent": "root",
+      "icon": "\ud83d\udd70\ufe0f",
+      "state": "done"
+     },
+     {
+      "id": "b",
+      "label": "Light speed",
+      "parent": "root",
+      "icon": "\ud83d\udca1",
+      "state": "done"
+     },
+     {
+      "id": "c",
+      "label": "Relativity",
+      "parent": "root",
+      "icon": "\u2728",
+      "state": "active"
+     }
+    ]
+   },
+   "caption": "He connected pieces no one had linked"
+  },
+  {
+   "id": "BentoGrid",
+   "beat": "case study",
+   "seconds": 2.5,
+   "props": {
+    "heading": "Case study: drug research",
+    "tiles": [
+     {
+      "title": "Cough syrup",
+      "value": "AmbroXol",
+      "note": "an existing, approved drug",
+      "icon": "\ud83d\udc8a"
+     },
+     {
+      "title": "New target",
+      "value": "Immune system",
+      "note": "repurposed mechanism found",
+      "span": "2x1",
+      "accent": true,
+      "icon": "\ud83d\udd2c"
+     },
+     {
+      "title": "Outcome",
+      "value": "Allergy pathway",
+      "note": "a whole new research branch",
+      "icon": "\ud83e\uddeb"
+     }
+    ]
+   },
+   "caption": "One old drug, a brand-new use"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "callback/closer",
+   "seconds": 2,
+   "props": {
+    "kicker": "THE CALLBACK",
+    "parts": [
+     {
+      "text": "So could AI"
+     },
+     {
+      "text": "find the next"
+     },
+     {
+      "text": "Einstein?",
+      "hot": true
+     }
+    ],
+    "footer": "From math to medicine.",
+    "highlight": "underline"
+   },
+   "caption": "Could AI find the next Einstein?"
+  }
+ ]
+}

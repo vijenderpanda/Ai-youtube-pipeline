@@ -1,0 +1,168 @@
+{
+ "title": "TRIO7lBfgNQ \u00b7 Don't Tell AI What To Do",
+ "theme": "paperYellow",
+ "accent": "#F5E028",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 3,
+   "props": {
+    "kicker": "2026",
+    "label": "The challenge is to ask",
+    "line": "Don't tell AI what to do",
+    "punch": "what to do",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar",
+    "theme": "cream"
+   },
+   "caption": "Part of the challenge in 2026"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "setup",
+   "seconds": 3,
+   "props": {
+    "kicker": "The reframe",
+    "parts": [
+     {
+      "text": "Don't ask it to"
+     },
+     {
+      "text": "pick the tool.",
+      "hot": true
+     },
+     {
+      "text": "Ask it to"
+     },
+     {
+      "text": "pick the problem.",
+      "hot": true
+     }
+    ],
+    "highlight": "bar"
+   },
+   "caption": "You don't just ask it to pick the tool"
+  },
+  {
+   "id": "ChipRow",
+   "beat": "proof",
+   "seconds": 3,
+   "props": {
+    "eyebrow": "What I did",
+    "chips": [
+     {
+      "text": "Codex",
+      "kind": "model",
+      "icon": "dot",
+      "hot": true
+     },
+     {
+      "text": "Fable",
+      "kind": "model",
+      "icon": "dot",
+      "hot": true
+     },
+     {
+      "text": "Freehand",
+      "kind": "model",
+      "icon": "dot",
+      "hot": true
+     },
+     {
+      "text": "My local files",
+      "kind": "platform"
+     },
+     {
+      "text": "My Slacks",
+      "kind": "platform"
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "y": 700,
+    "stagger": 0.24,
+    "theme": "cream"
+   },
+   "caption": "Codex, Fable, Freehand looked at all of it"
+  },
+  {
+   "id": "VsTable",
+   "beat": "proof cont.",
+   "seconds": 4,
+   "props": {
+    "title": "The business process",
+    "colA": "What you tell it",
+    "colB": "What it reads",
+    "rows": [
+     {
+      "label": "input",
+      "a": "a task",
+      "b": "your files",
+      "verdict": "b"
+     },
+     {
+      "label": "scope",
+      "a": "one tool",
+      "b": "your Slacks",
+      "verdict": "b"
+     },
+     {
+      "label": "goal",
+      "a": "an order",
+      "b": "the process",
+      "verdict": "b"
+     }
+    ],
+    "rowStagger": 0.5
+   },
+   "caption": "Anything that describes my business process"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "payoff",
+   "seconds": 4,
+   "props": {
+    "kicker": "The mechanism",
+    "parts": [
+     {
+      "text": "It's obligated"
+     },
+     {
+      "text": "to come back with a"
+     },
+     {
+      "text": "PROBLEM DEFINITION",
+      "hot": true
+     },
+     {
+      "text": "and a"
+     },
+     {
+      "text": "SOLUTION.",
+      "hot": true
+     }
+    ],
+    "footer": "Plus the automation.",
+    "highlight": "bar"
+   },
+   "caption": "Obligated to come back with a solution and automation"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta",
+   "seconds": 3,
+   "props": {
+    "name": "Ask Better",
+    "tagline": "Give it the problem, not the order",
+    "glyph": "spark",
+    "mode": "close",
+    "cta": "Follow for more",
+    "theme": "cream"
+   },
+   "caption": "Give AI the problem, not the order"
+  }
+ ]
+}

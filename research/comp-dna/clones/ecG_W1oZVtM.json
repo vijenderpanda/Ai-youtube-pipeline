@@ -1,0 +1,199 @@
+{
+ "title": "ecG_W1oZVtM \u00b7 Tongue-Controlled Cursor",
+ "theme": "night",
+ "accent": "#D42B2B",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 2,
+   "props": {
+    "kicker": "wait, what?",
+    "label": "You can now",
+    "line": "Control your cursor with your tongue",
+    "punch": "tongue",
+    "align": "left",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "You can now... using your tongue"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "reveal",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "THE REVEAL",
+    "parts": [
+     {
+      "text": "It's"
+     },
+     {
+      "text": "basically a"
+     },
+     {
+      "text": "TOUCHPAD",
+      "hot": true
+     },
+     {
+      "text": "for the roof"
+     },
+     {
+      "text": "of your mouth."
+     }
+    ],
+    "footer": "No hands needed.",
+    "highlight": "bar"
+   },
+   "caption": "It's basically a touchpad for the roof of your mouth"
+  },
+  {
+   "id": "ChipRow",
+   "beat": "proof/demo",
+   "seconds": 2.5,
+   "props": {
+    "eyebrow": "Movements become clicks",
+    "chips": [
+     {
+      "text": "Chrome",
+      "kind": "app",
+      "icon": "\ud83c\udf10"
+     },
+     {
+      "text": "VS Code",
+      "kind": "app",
+      "icon": "\ud83d\udcbb"
+     },
+     {
+      "text": "Figma",
+      "kind": "app",
+      "icon": "\ud83c\udfa8"
+     },
+     {
+      "text": "Docs",
+      "kind": "app",
+      "icon": "\ud83d\udcc4"
+     },
+     {
+      "text": "Games",
+      "kind": "app",
+      "icon": "\ud83c\udfae",
+      "hot": true
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "stagger": 0.2
+   },
+   "caption": "Your movements become clicks, everywhere"
+  },
+  {
+   "id": "ChipRow",
+   "beat": "compatibility",
+   "seconds": 2,
+   "props": {
+    "eyebrow": "Works across",
+    "chips": [
+     {
+      "text": "Windows",
+      "kind": "platform"
+     },
+     {
+      "text": "macOS",
+      "kind": "platform"
+     },
+     {
+      "text": "Linux",
+      "kind": "platform"
+     },
+     {
+      "text": "Android",
+      "kind": "platform"
+     },
+     {
+      "text": "iOS",
+      "kind": "platform",
+      "hot": true
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "stagger": 0.16
+   },
+   "caption": "Windows, macOS, Linux, Android, and even iOS"
+  },
+  {
+   "id": "FlowTree",
+   "beat": "how-it's-made",
+   "seconds": 2.5,
+   "props": {
+    "title": "Custom-fitted, 3D printed",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "3D Scan",
+      "icon": "\ud83e\uddb7",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "Mold",
+      "parent": "root",
+      "icon": "\ud83e\udde4",
+      "state": "done"
+     },
+     {
+      "id": "b",
+      "label": "3D Print",
+      "parent": "root",
+      "icon": "\ud83d\udda8\ufe0f",
+      "state": "active"
+     }
+    ]
+   },
+   "caption": "Every mouthpiece is scanned, molded, and 3D printed"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "twist",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "THE TWIST",
+    "parts": [
+     {
+      "text": "And it"
+     },
+     {
+      "text": "doesn't need"
+     },
+     {
+      "text": "an implant.",
+      "hot": true
+     },
+     {
+      "text": "No surgery."
+     }
+    ],
+    "footer": "Just wear it.",
+    "highlight": "bar"
+   },
+   "caption": "It doesn't even need an implant \u2014 no surgery"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta",
+   "seconds": 2,
+   "props": {
+    "name": "TongueTech",
+    "tagline": "control your computer, hands-free",
+    "glyph": "orbit",
+    "mode": "close",
+    "cta": "Follow for more weird tech"
+   },
+   "caption": "Follow for more weird tech"
+  }
+ ]
+}

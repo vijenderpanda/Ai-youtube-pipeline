@@ -1,0 +1,224 @@
+{
+ "title": "SIGNAL ep1 \u00b7 Your Claude Problem Isn't The Model",
+ "theme": "night",
+ "accent": "#F5E642",
+ "hostSrc": "hosts/sol_studio.jpg",
+ "hostDefault": "pip",
+ "hostPos": "bl",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "cold-open-claim",
+   "seconds": 3.03,
+   "host": "full",
+   "props": {
+    "label": "THE REAL REASON",
+    "line": "Claude isn't dumb. Your setup is.",
+    "punch": "setup",
+    "align": "left",
+    "size": "lg"
+   },
+   "caption": ""
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "setup",
+   "seconds": 3.72,
+   "props": {
+    "kicker": "HERE'S THE THING",
+    "parts": [
+     {
+      "text": "Everyone swaps "
+     },
+     {
+      "text": "models."
+     },
+     {
+      "text": " Almost nobody fixes "
+     },
+     {
+      "text": "the harness.",
+      "hot": true
+     }
+    ],
+    "highlight": "bar"
+   },
+   "caption": "",
+   "host": "full"
+  },
+  {
+   "id": "FlowTree",
+   "beat": "proof-harness",
+   "seconds": 3.77,
+   "props": {
+    "title": "Same model, two setups",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "p",
+      "label": "Your prompt"
+     },
+     {
+      "id": "bare",
+      "label": "Bare prompt",
+      "parent": "p",
+      "state": "todo",
+      "icon": "\ud83d\ude35"
+     },
+     {
+      "id": "harness",
+      "label": "CLAUDE.md + tools",
+      "parent": "p",
+      "state": "active",
+      "icon": "\u2699\ufe0f"
+     },
+     {
+      "id": "vague",
+      "label": "Vague output",
+      "parent": "bare",
+      "state": "todo"
+     },
+     {
+      "id": "sharp",
+      "label": "Sharp output",
+      "parent": "harness",
+      "state": "done"
+     }
+    ]
+   },
+   "caption": "",
+   "host": "none"
+  },
+  {
+   "id": "AppWindow",
+   "beat": "proof-files",
+   "seconds": 6.3,
+   "props": {
+    "title": "your-project",
+    "dark": true,
+    "sidebar": [
+     "CLAUDE.md",
+     "tools/",
+     "memory/",
+     "examples/"
+    ],
+    "activeIndex": 0,
+    "body": {
+     "kind": "lines",
+     "lines": [
+      "# CLAUDE.md",
+      "- what the project is",
+      "- how you work",
+      "- the commands that matter",
+      "\u2192 the model reads this first"
+     ]
+    },
+    "cursor": true
+   },
+   "caption": "",
+   "host": "none"
+  },
+  {
+   "id": "StatCloser",
+   "beat": "payoff",
+   "seconds": 2.88,
+   "props": {
+    "value": 4,
+    "label": "THE FIX",
+    "sub": "files the model reads *first*"
+   },
+   "caption": "",
+   "host": "none"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta",
+   "seconds": 2.76,
+   "props": {
+    "name": "AI UNPACKED",
+    "tagline": "one AI trick a day",
+    "glyph": "bolt",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "caption": "",
+   "host": "none"
+  }
+ ],
+ "hostGrammar": "cutaway",
+ "_vo": {
+  "words": "prod/ep1_vo.words.json",
+  "total_s": 22.06
+ },
+ "karaoke": [
+  {
+   "t": 6.75,
+   "end": 7.92,
+   "text": "same model one",
+   "hot": 0
+  },
+  {
+   "t": 7.95,
+   "end": 8.53,
+   "text": "bare prompt",
+   "hot": 0
+  },
+  {
+   "t": 8.6,
+   "end": 9.51,
+   "text": "gives you vague",
+   "hot": 2
+  },
+  {
+   "t": 9.54,
+   "end": 10.77,
+   "text": "answers add"
+  },
+  {
+   "t": 10.82,
+   "end": 11.64,
+   "text": "a claude dot"
+  },
+  {
+   "t": 11.8,
+   "end": 12.96,
+   "text": "m d your"
+  },
+  {
+   "t": 13.03,
+   "end": 14.16,
+   "text": "tools a little",
+   "hot": 0
+  },
+  {
+   "t": 14.2,
+   "end": 15.22,
+   "text": "memory and the",
+   "hot": 0
+  },
+  {
+   "t": 15.29,
+   "end": 16.13,
+   "text": "same model gets",
+   "hot": 0
+  },
+  {
+   "t": 16.16,
+   "end": 17.44,
+   "text": "sharp four files",
+   "hot": 0
+  },
+  {
+   "t": 17.52,
+   "end": 18.38,
+   "text": "it reads first",
+   "hot": 2
+  },
+  {
+   "t": 18.55,
+   "end": 19.46,
+   "text": "that's the fix",
+   "hot": 2
+  }
+ ]
+}

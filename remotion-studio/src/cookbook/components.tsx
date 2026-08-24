@@ -39,6 +39,13 @@ import { SerifCap } from "./SerifCap";
 import { HeroDrop } from "./HeroDrop";
 import { VsTable } from "./VsTable";
 import { TermRun } from "./TermRun";
+import { PhoneMock } from "./PhoneMock";
+import { FlowTree } from "./FlowTree";
+import { StatCloser } from "./StatCloser";
+import { ChipRow } from "./ChipRow";
+import { BrandBumper } from "./BrandBumper";
+import { SplitHead } from "./SplitHead";
+import { AppWindow } from "./AppWindow";
 
 /* =============================================================================
    COOKBOOK render dispatch — the id -> component map.
@@ -89,6 +96,13 @@ export const COOKBOOK_COMPONENTS: Record<string, React.FC<any>> = {
   HeroDrop,
   VsTable,
   TermRun,
+  PhoneMock,
+  FlowTree,
+  StatCloser,
+  ChipRow,
+  BrandBumper,
+  SplitHead,
+  AppWindow,
 };
 
 export type CookbookBlockProps = {

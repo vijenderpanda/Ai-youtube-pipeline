@@ -2950,6 +2950,13 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
               f"collapsed into numerals "
               f"({', '.join(m['w'] for m in merged if any(ch.isdigit() for ch in m['w']))})")
     caps = merged
+    # Stamp each caption word with its SCRIPT LINE (from the <break> boundaries
+    # above). A merged multi-line cook run (e.g. 4x cook:WebTour#tour with a host
+    # PIP) is ONE beat in Short.tsx, and KaraokeLine used to paint every word of
+    # the beat as one 4-row paragraph -- over the PIP. With `line`, Short.tsx
+    # windows the karaoke to the line being spoken. 1-line beats are unchanged.
+    for c in caps:
+        c["line"] = _lineno(c)
 
     n_lines = len(cfg["lines"])
     total = caps[-1]["end"]
@@ -3374,8 +3381,11 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
                     # PIP is cut from the wide 16:9 avatar and shown as a small
                     # landscape card rather than a square crop.
                     _pip_tid = WIDE_TID or framed_tid or tid
+                    # NB start_i, never i (same trap as _anchor above): consecutive
+                    # identical cook beats are MERGED into one segment, so the PIP
+                    # must lipsync the WHOLE run's VO slice, not just the last line.
                     _hc = host_clip(f"v2_cook_{raw_cid.replace('#', '_')}",
-                                    _seg_t[i], _seg_t[i + 1],
+                                    _seg_t[start_i], _seg_t[i + 1],
                                     photo=_pip_tid, aspect="16:9")
                     props["host"] = "assets/" + rel(_hc)
                 segments.append({"kind": "cookbook", "dur": round(dur, 3),
@@ -3530,6 +3540,40 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     # episodes (VJ: a title card reads as an intro + gets scrolled past). When
     # cfg["hook"] is present we emit `hook` and drop `cover`; otherwise the
     # legacy poster cover is emitted exactly as before.
+    # no burned caption before cfg["caption_from"] seconds (2x-playback +
+    # tap-to-mute rule: the cold-open's own designed type carries 0-1.6s)
+    # merged-SEGMENT clock (same semantics as sfx_mix's @beatN): one entry per
+    # props segment, so a merged cook run counts once.
+    _segstarts = [0.0]
+    for _sg in segments:
+        _segstarts.append(_segstarts[-1] + float(_sg["dur"]))
+    def _at_beat(v):
+        if isinstance(v, str) and v.startswith("@beat"):
+            _h, _, _off = v[5:].partition("+")
+            return round(_segstarts[min(int(_h), len(_segstarts) - 1)] + (float(_off) if _off else 0.0), 3)
+        return round(float(v), 3)
+    if cfg.get("caption_from"):
+        spec["captionFrom"] = _at_beat(cfg["caption_from"])
+    # VJ engagement glows (EngagePing): cfg["pings"] = [{at, kind, tip, dur?}],
+    # at = @beatN+x on the merged-segment clock or absolute seconds. Rationed
+    # by hand (<=3); the outro card takes its own via gen_outro_glass --pings.
+    if cfg.get("pings"):
+        spec["pings"] = [{**pg, "at": _at_beat(pg["at"])} for pg in cfg["pings"]]
+    # beat timeline rail (TourRail): cfg["tour_rail"] = {"labels": [...one per
+    # merged segment, "" = no dot...], "from": @beat|sec, "y": px}
+    if cfg.get("tour_rail"):
+        _tr = cfg["tour_rail"]
+        if _tr.get("stops"):                                   # explicit [{label, at}]
+            _lab = [st["label"] for st in _tr["stops"]]
+            _sta = [_at_beat(st["at"]) for st in _tr["stops"]]
+        else:                                                  # one label per merged segment
+            _lab0 = list(_tr.get("labels", []))
+            _idx = [i for i, l in enumerate(_lab0) if l]       # "" = no dot
+            _lab = [_lab0[i] for i in _idx]; _sta = [_segstarts[i] for i in _idx]
+        spec["tourRail"] = {"labels": _lab, "starts": _sta,
+                            "end": round(_segstarts[-1], 3),
+                            **({"from": _at_beat(_tr["from"])} if _tr.get("from") else {}),
+                            **({"y": _tr["y"]} if _tr.get("y") else {})}
     if cfg.get("hook"):
         hk = dict(cfg["hook"])
         if not hk["image"].startswith(("assets/", "http")):
@@ -3684,12 +3728,29 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     #   distortion at these low LRA values; alimiter catches any residual
     #   over-shoot at -0.45 dBFS (raised from -1.0 to give the louder mix
     #   room to breathe under YT's -1 TP recommendation).
-    fc = (f"[1:a]{pre}volume=0.20,afade=t=in:st=0:d=1.5[m];"
+    # per-episode bed fade-in (default 1.5s = the shipped chain). A hot cold-open
+    # (VJ 2026-08-23 fcc: "opening feels cold") wants the bed present from frame 0.
+    _mfi = float(cfg.get("music_fade_in", 1.5))
+    fc = (f"[1:a]{pre}volume=0.20,afade=t=in:st=0:d={_mfi}[m];"
           "[0:a]volume=14dB,asplit=2[v1][v2];"
           "[m][v2]sidechaincompress=threshold=0.05:ratio=8:attack=40:release=600[duck];"
           "[v1][duck]amix=inputs=2:duration=first:normalize=0,"
           "loudnorm=I=-14:TP=-1:LRA=11,alimiter=limit=0.95[a]")
-    run(["ffmpeg", "-y", "-i", raw, "-stream_loop", "-1", "-i", music,
+    # per-episode bed IN-POINT (cfg["music_offset"], seconds): bed_active's first
+    # ~30s is its quiet intro (-13.5 dB RMS) and the full-energy drop lands at
+    # ~31s (-8 dB) — looping from 0 put the hook on the intro (VJ 2026-08-23:
+    # "opening sounds cold"). Seeks the bed input; the loop still wraps to 0.
+    # CHANNEL DEFAULT (VJ 2026-08-23): bed_active starts ON its drop. Any other
+    # bed keeps 0 unless the spec says otherwise; an explicit music_offset wins.
+    BED_DEFAULT_OFFSET = {"bed_active.mp3": 31.5}
+    _moff = cfg.get("music_offset")
+    if _moff is None:
+        _moff = BED_DEFAULT_OFFSET.get(os.path.basename(music), 0)
+    _moff = float(_moff or 0)
+    _mss = ["-ss", str(_moff)] if _moff else []
+    if _moff:
+        print(f">> bed in-point {_moff}s ({os.path.basename(music)})")
+    run(["ffmpeg", "-y", "-i", raw, "-stream_loop", "-1", *_mss, "-i", music,
          "-filter_complex", fc, "-map", "0:v", "-map", "[a]",
          "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", out])
     print(">> MASTERED", out)
@@ -3792,7 +3853,7 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
             fst = round(max(T - 1.6, 0.3), 3)
             fc2 = outro_fc(pre, fst, ratio=T / base, gain_db=cta["gain_db"])
             run(["ffmpeg", "-y", "-i", out] + tin + ["-i", outro,
-                 "-stream_loop", "-1", "-i", music, "-i", cta["wav"],
+                 "-stream_loop", "-1", *_mss, "-i", music, "-i", cta["wav"],
                  "-filter_complex", fc2, "-map", "[v]", "-map", "[a]",
                  *venc("18", "veryfast"),
                  "-c:a", "aac", "-b:a", "192k", "-shortest", out2])
@@ -3802,7 +3863,7 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
             fst = round(max(odur - 1.2, 0.0), 3) if odur else 2.6
             fc2 = outro_fc(pre, fst)
             run(["ffmpeg", "-y", "-i", out] + tin + ["-i", outro,
-                 "-stream_loop", "-1", "-i", music,
+                 "-stream_loop", "-1", *_mss, "-i", music,
                  "-filter_complex", fc2, "-map", "[v]", "-map", "[a]",
                  *venc("18", "veryfast"),
                  "-c:a", "aac", "-b:a", "192k", "-shortest", out2])
@@ -3826,10 +3887,19 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
     # AUTO-SFX (the ship-gap fix): lpa v1 armed SILENT because sfx_mix was a
     # separate manual step. When the spec authors film.sfx, run it here — and a
     # failed SFX pass must NEVER kill a build: warn loudly, ship the un-sfx file.
+    # SFX WITHOUT FILM MODE (2026-08-23, Option A / web-tour): cfg["film"] forces
+    # chip captions + transparent cook beats, which kills the approved karaoke-
+    # beside-Sol look (wtdemo). A top-level cfg["sfx"] (+ optional cfg["duck"])
+    # carries the same event grammar without switching the renderer into a film.
+    _sfx_cfg = None
     if isinstance(cfg.get("film"), dict) and cfg["film"].get("sfx"):
+        _sfx_cfg = cfg["film"]
+    elif cfg.get("sfx"):
+        _sfx_cfg = {"sfx": cfg["sfx"], **({"duck": cfg["duck"]} if cfg.get("duck") else {})}
+    if _sfx_cfg:
         try:
             mf = os.path.join(REPO, "renders_out", f"sfx_man_ep{ep}_{tag}.json")
-            json.dump({"film": cfg["film"]}, open(mf, "w"))
+            json.dump({"film": _sfx_cfg}, open(mf, "w"))
             sfx_out = os.path.splitext(out)[0] + "_sfx.mp4"
             run([sys.executable, os.path.join(CH, "sfx_mix.py"), "--manifest", mf,
                  "--props", sp, "--video", out, "--out", sfx_out])

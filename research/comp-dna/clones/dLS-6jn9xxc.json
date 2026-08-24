@@ -1,0 +1,156 @@
+{
+ "title": "dLS-6jn9xxc \u00b7 Easily Build Agentic Workflows With Hyperagent",
+ "theme": "cream",
+ "accent": "#EA5A2B",
+ "blocks": [
+  {
+   "id": "FlowTree",
+   "seconds": 2,
+   "props": {
+    "id": "FlowTree",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "Prompt",
+      "icon": "\u25aa",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "Agent",
+      "parent": "root",
+      "icon": "\u25aa",
+      "state": "active"
+     },
+     {
+      "id": "b",
+      "label": "Agent",
+      "parent": "root",
+      "icon": "\u25aa",
+      "state": "todo"
+     }
+    ],
+    "theme": "cream"
+   },
+   "caption": "",
+   "beat": "hook"
+  },
+  {
+   "id": "SplitHead",
+   "seconds": 2,
+   "props": {
+    "id": "SplitHead",
+    "line": "Weeks of work. Overnight.",
+    "punch": "Overnight.",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar",
+    "theme": "cream"
+   },
+   "caption": "Weeks of work, done overnight",
+   "beat": "value-prop"
+  },
+  {
+   "id": "ChatApp",
+   "seconds": 2.5,
+   "props": {
+    "id": "ChatApp",
+    "appName": "Hyperagent",
+    "status": "online",
+    "messages": [
+     {
+      "from": "user",
+      "text": "Build a workflow for gym beginners"
+     },
+     {
+      "from": "ai",
+      "text": "Got it \u2014 describe your quality standards too."
+     }
+    ]
+   },
+   "caption": "Describe your use case and quality bar",
+   "beat": "product-mock"
+  },
+  {
+   "id": "OrbitNodes",
+   "seconds": 3,
+   "props": {
+    "id": "OrbitNodes",
+    "hub": {
+     "label": "Hyperagent"
+    },
+    "nodes": [
+     {
+      "label": "Market Research"
+     },
+     {
+      "label": "Reddit Threads"
+     },
+     {
+      "label": "Competitor Analysis"
+     },
+     {
+      "label": "Feature Planning"
+     }
+    ]
+   },
+   "caption": "One brief spins up a team of agents",
+   "beat": "agent-team"
+  },
+  {
+   "id": "ChipRow",
+   "seconds": 2,
+   "props": {
+    "id": "ChipRow",
+    "eyebrow": "Judged before you see it",
+    "chips": [
+     {
+      "text": "Draft output",
+      "kind": "objection",
+      "struck": true
+     },
+     {
+      "text": "Passed your standards",
+      "kind": "toggle",
+      "hot": true
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "theme": "cream"
+   },
+   "caption": "It's already passed your own standards",
+   "beat": "judge-gate"
+  },
+  {
+   "id": "StatCloser",
+   "seconds": 2.5,
+   "props": {
+    "id": "StatCloser",
+    "value": 35,
+    "prefix": "$",
+    "label": "Total token spend",
+    "sub": "Less than your *Uber Eats* order",
+    "theme": "cream"
+   },
+   "caption": "Total cost: $35 in tokens",
+   "beat": "cost-closer"
+  },
+  {
+   "id": "BrandBumper",
+   "seconds": 2,
+   "props": {
+    "id": "BrandBumper",
+    "name": "Hyperagent",
+    "tagline": "Weeks of work. Overnight.",
+    "glyph": "spark",
+    "mode": "close",
+    "cta": "Follow for more",
+    "theme": "cream"
+   },
+   "caption": "Hyperagent \u2014 weeks of work, overnight",
+   "beat": "bumper"
+  }
+ ]
+}

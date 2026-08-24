@@ -1,0 +1,1649 @@
+{
+ "generated_for": "comp-dna library",
+ "n": 68,
+ "assets": [
+  {
+   "id": "2ZQ4jSkiqr4",
+   "kind": "reference",
+   "title": "I'm Doing a Hackathon to Fix India's Public Service Websites",
+   "creator": "Varun Mayya",
+   "tags": {
+    "palette": "paperYellow",
+    "tone": "light",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "verbal-gap",
+    "lane": "news-hottake",
+    "region": "IN",
+    "mood": "curious",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 15357,
+    "views_per_day_pct": 0.83,
+    "like_rate": 0.0736
+   },
+   "evidence": 0.93,
+   "clone": "clones/2ZQ4jSkiqr4.json",
+   "sheet": "cards/refs/2ZQ4jSkiqr4.html"
+  },
+  {
+   "id": "52_wce7E3aQ",
+   "kind": "reference",
+   "title": "The Most Important Paper in AI History",
+   "creator": "David Ondrej",
+   "tags": {
+    "palette": "paperYellow",
+    "tone": "light",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "object-3d",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "curious",
+    "length": "short",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 1647,
+    "views_per_day_pct": 0.44,
+    "like_rate": 0.0267
+   },
+   "evidence": 0.55,
+   "clone": "clones/52_wce7E3aQ.json",
+   "sheet": "cards/refs/52_wce7E3aQ.html"
+  },
+  {
+   "id": "7A4s1UtOYv0",
+   "kind": "reference",
+   "title": "Stop paying for AI NVIDIA made every top AI FREE",
+   "creator": "Vaibhav Sisinty",
+   "tags": {
+    "palette": "night",
+    "tone": "dark",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "poster-claim",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "money",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 3626,
+    "views_per_day_pct": 0.67,
+    "like_rate": 0.0471
+   },
+   "evidence": 0.78,
+   "clone": "clones/7A4s1UtOYv0.json",
+   "sheet": "cards/refs/7A4s1UtOYv0.html"
+  },
+  {
+   "id": "DirGcMXm4zw",
+   "kind": "reference",
+   "title": "How to turn iMessage into an AI executive assistant with Lindy",
+   "creator": "Greg Isenberg",
+   "tags": {
+    "palette": "cream",
+    "tone": "light",
+    "accent": "sage",
+    "host": "full",
+    "archetype": "A1",
+    "hook": "logo-motion",
+    "lane": "tutorial",
+    "region": "US",
+    "mood": "authoritative",
+    "length": "short",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 0,
+    "views_per_day_pct": 0.0,
+    "like_rate": 0.0
+   },
+   "evidence": 0.2,
+   "clone": "clones/DirGcMXm4zw.json",
+   "sheet": "cards/refs/DirGcMXm4zw.html"
+  },
+  {
+   "id": "FdmpR0-XvvU",
+   "kind": "reference",
+   "title": "This Engineer Saved The Internet From The Worst Cyber Attack",
+   "creator": "Varun Mayya",
+   "tags": {
+    "palette": "night",
+    "tone": "dark",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "claim-title-card",
+    "lane": "news-hottake",
+    "region": "IN",
+    "mood": "authoritative",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 23200,
+    "views_per_day_pct": 0.87,
+    "like_rate": 0.04
+   },
+   "evidence": 0.81,
+   "clone": "clones/FdmpR0-XvvU.json",
+   "sheet": "cards/refs/FdmpR0-XvvU.html"
+  },
+  {
+   "id": "FtyePPCE5q0",
+   "kind": "reference",
+   "title": "My Biggest AI Mistake...",
+   "creator": "David Ondrej",
+   "tags": {
+    "palette": "night",
+    "tone": "dark",
+    "accent": "yellow",
+    "host": "pip",
+    "archetype": "B3",
+    "hook": "claim-title-card",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "authoritative",
+    "length": "mid",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 1779,
+    "views_per_day_pct": 0.45,
+    "like_rate": 0.025
+   },
+   "evidence": 0.55,
+   "clone": "clones/FtyePPCE5q0.json",
+   "sheet": "cards/refs/FtyePPCE5q0.html"
+  },
+  {
+   "id": "GR4cCUL51wU",
+   "kind": "reference",
+   "title": "New Cursor plan\u2026",
+   "creator": "David Ondrej",
+   "tags": {
+    "palette": "paperYellow",
+    "tone": "light",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "mid-sentence",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "curious",
+    "length": "mid",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 1486,
+    "views_per_day_pct": 0.43,
+    "like_rate": 0.0295
+   },
+   "evidence": 0.57,
+   "clone": "clones/GR4cCUL51wU.json",
+   "sheet": "cards/refs/GR4cCUL51wU.html"
+  },
+  {
+   "id": "IFBBmwsGpUw",
+   "kind": "reference",
+   "title": "AIUAE_KS_P3_AI331_KS_KS_POV@Mastering claude in 2026 9:16",
+   "creator": "be10X",
+   "tags": {
+    "palette": "cleanRed",
+    "tone": "light",
+    "accent": "red",
+    "host": "none",
+    "archetype": "A6",
+    "hook": "poster-claim",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "money",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 0,
+    "views_per_day_pct": 0.0,
+    "like_rate": 0.0
+   },
+   "evidence": 0.2,
+   "clone": "clones/IFBBmwsGpUw.json",
+   "sheet": "cards/refs/IFBBmwsGpUw.html"
+  },
+  {
+   "id": "LRJnkGyae_Q",
+   "kind": "reference",
+   "title": "Why AI Art Gets Called Slop?",
+   "creator": "Varun Mayya",
+   "tags": {
+    "palette": "night",
+    "tone": "dark",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B4",
+    "hook": "claim-title-card",
+    "lane": "news-hottake",
+    "region": "IN",
+    "mood": "authoritative",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 1913,
+    "views_per_day_pct": 0.51,
+    "like_rate": 0.0399
+   },
+   "evidence": 0.67,
+   "clone": "clones/LRJnkGyae_Q.json",
+   "sheet": "cards/refs/LRJnkGyae_Q.html"
+  },
+  {
+   "id": "SK8SSr7-JaY",
+   "kind": "reference",
+   "title": "KimiK3 - The Biggest moment in Open Source AI ever...",
+   "creator": "David Ondrej",
+   "tags": {
+    "palette": "paperYellow",
+    "tone": "light",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "chart-first",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "authoritative",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 0,
+    "views_per_day_pct": 0.0,
+    "like_rate": 0.0
+   },
+   "evidence": 0.2,
+   "clone": "clones/SK8SSr7-JaY.json",
+   "sheet": "cards/refs/SK8SSr7-JaY.html"
+  },
+  {
+   "id": "SVNLC4NLXjA",
+   "kind": "reference",
+   "title": "How to use AI on a file you can't upload #AI #privacy #productivity #datasecurity #AItools",
+   "creator": "AI News & Strategy Daily | Nate B Jones",
+   "tags": {
+    "palette": "night",
+    "tone": "dark",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B4",
+    "hook": "verbal-gap",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "curious",
+    "length": "short",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 1277,
+    "views_per_day_pct": 0.37,
+    "like_rate": 0.0149
+   },
+   "evidence": 0.45,
+   "clone": "clones/SVNLC4NLXjA.json",
+   "sheet": "cards/refs/SVNLC4NLXjA.html"
+  },
+  {
+   "id": "TRIO7lBfgNQ",
+   "kind": "reference",
+   "title": "Don't tell AI what to do in 2026. Do this instead #AI #aiagents #Codex #Fable5 #automation",
+   "creator": "AI News & Strategy Daily | Nate B Jones",
+   "tags": {
+    "palette": "paperYellow",
+    "tone": "light",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B4",
+    "hook": "mid-sentence",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "curious",
+    "length": "short",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 1106,
+    "views_per_day_pct": 0.32,
+    "like_rate": 0.0243
+   },
+   "evidence": 0.49,
+   "clone": "clones/TRIO7lBfgNQ.json",
+   "sheet": "cards/refs/TRIO7lBfgNQ.html"
+  },
+  {
+   "id": "VE2Uxb9Fz7I",
+   "kind": "reference",
+   "title": "Claude Cowork Explained",
+   "creator": "Greg Isenberg",
+   "tags": {
+    "palette": "cream",
+    "tone": "light",
+    "accent": "terracotta",
+    "host": "none",
+    "archetype": "A3",
+    "hook": "logo-motion",
+    "lane": "product-demo",
+    "region": "US",
+    "mood": "authoritative",
+    "length": "mid",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 0,
+    "views_per_day_pct": 0.0,
+    "like_rate": 0.0
+   },
+   "evidence": 0.2,
+   "clone": "clones/VE2Uxb9Fz7I.json",
+   "sheet": "cards/refs/VE2Uxb9Fz7I.html"
+  },
+  {
+   "id": "VSC5E0okvD4",
+   "kind": "reference",
+   "title": "The Decision Framework I use",
+   "creator": "Greg Isenberg",
+   "tags": {
+    "palette": "cream",
+    "tone": "light",
+    "accent": "sage",
+    "host": "none",
+    "archetype": "A4",
+    "hook": "wordless-icon",
+    "lane": "framework",
+    "region": "US",
+    "mood": "curious",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 0,
+    "views_per_day_pct": 0.0,
+    "like_rate": 0.0
+   },
+   "evidence": 0.2,
+   "clone": "clones/VSC5E0okvD4.json",
+   "sheet": "cards/refs/VSC5E0okvD4.html"
+  },
+  {
+   "id": "Z1NTwYuuvvw",
+   "kind": "reference",
+   "title": "Bad Claude Code Habits",
+   "creator": "David Ondrej",
+   "tags": {
+    "palette": "cream",
+    "tone": "light",
+    "accent": "terracotta",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "title-over-face",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "curious",
+    "length": "short",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 0,
+    "views_per_day_pct": 0.0,
+    "like_rate": 0.0
+   },
+   "evidence": 0.2,
+   "clone": "clones/Z1NTwYuuvvw.json",
+   "sheet": "cards/refs/Z1NTwYuuvvw.html"
+  },
+  {
+   "id": "cUG0TGwE9-4",
+   "kind": "reference",
+   "title": "Design Beautiful UI/UX with Weavy AI",
+   "creator": "Greg Isenberg",
+   "tags": {
+    "palette": "cream",
+    "tone": "light",
+    "accent": "terracotta",
+    "host": "none",
+    "archetype": "A5",
+    "hook": "dense-montage-relief",
+    "lane": "tutorial",
+    "region": "US",
+    "mood": "authoritative",
+    "length": "mid",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 0,
+    "views_per_day_pct": 0.0,
+    "like_rate": 0.0
+   },
+   "evidence": 0.2,
+   "clone": "clones/cUG0TGwE9-4.json",
+   "sheet": "cards/refs/cUG0TGwE9-4.html"
+  },
+  {
+   "id": "cf6WEZUVbEI",
+   "kind": "reference",
+   "title": "How to use Claude Code to launch 100+ Facebook ads",
+   "creator": "Greg Isenberg",
+   "tags": {
+    "palette": "cream",
+    "tone": "light",
+    "accent": "terracotta",
+    "host": "pip",
+    "archetype": "A2",
+    "hook": "crt-boot",
+    "lane": "tutorial",
+    "region": "US",
+    "mood": "playful",
+    "length": "mid",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 0,
+    "views_per_day_pct": 0.0,
+    "like_rate": 0.0
+   },
+   "evidence": 0.2,
+   "clone": "clones/cf6WEZUVbEI.json",
+   "sheet": "cards/refs/cf6WEZUVbEI.html"
+  },
+  {
+   "id": "dF9bvpTy6JA",
+   "kind": "reference",
+   "title": "Could AI Have Done What Einstein Did",
+   "creator": "Varun Mayya",
+   "tags": {
+    "palette": "cream",
+    "tone": "light",
+    "accent": "terracotta",
+    "host": "full",
+    "archetype": "B2",
+    "hook": "quote-card",
+    "lane": "news-hottake",
+    "region": "IN",
+    "mood": "authoritative",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 5698,
+    "views_per_day_pct": 0.73,
+    "like_rate": 0.0503
+   },
+   "evidence": 0.83,
+   "clone": "clones/dF9bvpTy6JA.json",
+   "sheet": "cards/refs/dF9bvpTy6JA.html"
+  },
+  {
+   "id": "dLS-6jn9xxc",
+   "kind": "reference",
+   "title": "Easily build agentic workflows with Hyperagent",
+   "creator": "Greg Isenberg",
+   "tags": {
+    "palette": "cream",
+    "tone": "light",
+    "accent": "terracotta",
+    "host": "none",
+    "archetype": "A3",
+    "hook": "wordless-icon",
+    "lane": "product-demo",
+    "region": "US",
+    "mood": "curious",
+    "length": "mid",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 0,
+    "views_per_day_pct": 0.0,
+    "like_rate": 0.0
+   },
+   "evidence": 0.2,
+   "clone": "clones/dLS-6jn9xxc.json",
+   "sheet": "cards/refs/dLS-6jn9xxc.html"
+  },
+  {
+   "id": "dx-0jU2Y0I4",
+   "kind": "reference",
+   "title": "Open-source AI just took a scary turn #AI #cybersecurity #opensource #AIsafety #technology",
+   "creator": "AI News & Strategy Daily | Nate B Jones",
+   "tags": {
+    "palette": "night",
+    "tone": "dark",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B4",
+    "hook": "mid-sentence",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "curious",
+    "length": "short",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 1437,
+    "views_per_day_pct": 0.41,
+    "like_rate": 0.0197
+   },
+   "evidence": 0.5,
+   "clone": "clones/dx-0jU2Y0I4.json",
+   "sheet": "cards/refs/dx-0jU2Y0I4.html"
+  },
+  {
+   "id": "e2W5HLrj-w4",
+   "kind": "reference",
+   "title": "Does harness matter more than the model?",
+   "creator": "David Ondrej",
+   "tags": {
+    "palette": "paperYellow",
+    "tone": "light",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "yes-no-question",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "curious",
+    "length": "short",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 2273,
+    "views_per_day_pct": 0.55,
+    "like_rate": 0.0147
+   },
+   "evidence": 0.52,
+   "clone": "clones/e2W5HLrj-w4.json",
+   "sheet": "cards/refs/e2W5HLrj-w4.html"
+  },
+  {
+   "id": "ecG_W1oZVtM",
+   "kind": "reference",
+   "title": "You Can Control Your Cursor Using Your Tongue!",
+   "creator": "Varun Mayya",
+   "tags": {
+    "palette": "night",
+    "tone": "dark",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "mid-sentence",
+    "lane": "news-hottake",
+    "region": "IN",
+    "mood": "curious",
+    "length": "mid",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 2586,
+    "views_per_day_pct": 0.6,
+    "like_rate": 0.0308
+   },
+   "evidence": 0.65,
+   "clone": "clones/ecG_W1oZVtM.json",
+   "sheet": "cards/refs/ecG_W1oZVtM.html"
+  },
+  {
+   "id": "hINGU1P9Xtw",
+   "kind": "reference",
+   "title": "Claude Just Made Its Text Traceable",
+   "creator": "Varun Mayya",
+   "tags": {
+    "palette": "night",
+    "tone": "dark",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B3",
+    "hook": "claim-title-card",
+    "lane": "news-hottake",
+    "region": "IN",
+    "mood": "authoritative",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 3381,
+    "views_per_day_pct": 0.64,
+    "like_rate": 0.0421
+   },
+   "evidence": 0.74,
+   "clone": "clones/hINGU1P9Xtw.json",
+   "sheet": "cards/refs/hINGU1P9Xtw.html"
+  },
+  {
+   "id": "lKs6Gl_dX8w",
+   "kind": "reference",
+   "title": "A researcher left OpenAI to turn thoughts into text.",
+   "creator": "Varun Mayya",
+   "tags": {
+    "palette": "cream",
+    "tone": "light",
+    "accent": "terracotta",
+    "host": "full",
+    "archetype": "B2",
+    "hook": "shock-claim-card",
+    "lane": "news-hottake",
+    "region": "IN",
+    "mood": "curious",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 4311,
+    "views_per_day_pct": 0.69,
+    "like_rate": 0.0438
+   },
+   "evidence": 0.77,
+   "clone": "clones/lKs6Gl_dX8w.json",
+   "sheet": "cards/refs/lKs6Gl_dX8w.html"
+  },
+  {
+   "id": "lMiHRN8pzn4",
+   "kind": "reference",
+   "title": "ChatGPT 5.6 is a dumber model. I love it.",
+   "creator": "AI News & Strategy Daily | Nate B Jones",
+   "tags": {
+    "palette": "paperYellow",
+    "tone": "light",
+    "accent": "yellow",
+    "host": "full",
+    "archetype": "B4",
+    "hook": "verbal-gap",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "curious",
+    "length": "micro",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 1147,
+    "views_per_day_pct": 0.33,
+    "like_rate": 0.0104
+   },
+   "evidence": 0.4,
+   "clone": "clones/lMiHRN8pzn4.json",
+   "sheet": "cards/refs/lMiHRN8pzn4.html"
+  },
+  {
+   "id": "ovLAIhbk3ek",
+   "kind": "reference",
+   "title": "How to 10x your Claude with 4 .md files",
+   "creator": "Greg Isenberg",
+   "tags": {
+    "palette": "cream",
+    "tone": "light",
+    "accent": "terracotta",
+    "host": "full",
+    "archetype": "A1",
+    "hook": "curiosity-type",
+    "lane": "tutorial",
+    "region": "US",
+    "mood": "curious",
+    "length": "mid",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 0,
+    "views_per_day_pct": 0.0,
+    "like_rate": 0.0
+   },
+   "evidence": 0.2,
+   "clone": "clones/ovLAIhbk3ek.json",
+   "sheet": "cards/refs/ovLAIhbk3ek.html"
+  },
+  {
+   "id": "rAWB8-qiVQo",
+   "kind": "reference",
+   "title": "HeyGen AI video generator just changed the game...",
+   "creator": "Wes Roth",
+   "tags": {
+    "palette": "cream",
+    "tone": "light",
+    "accent": "terracotta",
+    "host": "full",
+    "archetype": "B4",
+    "hook": "none",
+    "lane": "news-hottake",
+    "region": "US",
+    "mood": "curious",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 0,
+    "views_per_day_pct": 0.0,
+    "like_rate": 0.0
+   },
+   "evidence": 0.2,
+   "clone": "clones/rAWB8-qiVQo.json",
+   "sheet": "cards/refs/rAWB8-qiVQo.html"
+  },
+  {
+   "id": "rkbacGroezI",
+   "kind": "reference",
+   "title": "99% don\u2019t know this ChatGPT feature!\ud83d\udd25",
+   "creator": "Ishan Sharma",
+   "tags": {
+    "palette": "midnight",
+    "tone": "dark",
+    "accent": "pink",
+    "host": "full",
+    "archetype": "B5",
+    "hook": "walking-selfie-claim",
+    "lane": "tutorial",
+    "region": "IN",
+    "mood": "playful",
+    "length": "mid",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 1900,
+    "views_per_day_pct": 0.49,
+    "like_rate": 0.0344
+   },
+   "evidence": 0.63,
+   "clone": "clones/rkbacGroezI.json",
+   "sheet": "cards/refs/rkbacGroezI.html"
+  },
+  {
+   "id": "uR2JDsLZS6I",
+   "kind": "reference",
+   "title": "Here's How Much Water AI Consumes",
+   "creator": "Varun Mayya",
+   "tags": {
+    "palette": "cream",
+    "tone": "light",
+    "accent": "terracotta",
+    "host": "full",
+    "archetype": "B1",
+    "hook": "shock-stat",
+    "lane": "news-hottake",
+    "region": "IN",
+    "mood": "urgent",
+    "length": "long",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 0,
+    "views_per_day_pct": 0.0,
+    "like_rate": 0.0
+   },
+   "evidence": 0.2,
+   "clone": "clones/uR2JDsLZS6I.json",
+   "sheet": "cards/refs/uR2JDsLZS6I.html"
+  },
+  {
+   "id": "yJK5GueSHmU",
+   "kind": "reference",
+   "title": "Claude Code + Obsidian in under 1 minute",
+   "creator": "Greg Isenberg",
+   "tags": {
+    "palette": "cream",
+    "tone": "light",
+    "accent": "terracotta",
+    "host": "none",
+    "archetype": "A3",
+    "hook": "object-3d",
+    "lane": "product-demo",
+    "region": "US",
+    "mood": "curious",
+    "length": "mid",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 0,
+    "views_per_day_pct": 0.0,
+    "like_rate": 0.0
+   },
+   "evidence": 0.2,
+   "clone": "clones/yJK5GueSHmU.json",
+   "sheet": "cards/refs/yJK5GueSHmU.html"
+  },
+  {
+   "id": "zB5mUHSYjXA",
+   "kind": "reference",
+   "title": "How to make $$ with OpenClaw",
+   "creator": "Greg Isenberg",
+   "tags": {
+    "palette": "cream",
+    "tone": "light",
+    "accent": "sage",
+    "host": "full",
+    "archetype": "A1",
+    "hook": "mid-sentence",
+    "lane": "tutorial",
+    "region": "US",
+    "mood": "curious",
+    "length": "mid",
+    "density": "med"
+   },
+   "perf": {
+    "views_per_day": 0,
+    "views_per_day_pct": 0.0,
+    "like_rate": 0.0
+   },
+   "evidence": 0.2,
+   "clone": "clones/zB5mUHSYjXA.json",
+   "sheet": "cards/refs/zB5mUHSYjXA.html"
+  },
+  {
+   "id": "ChatApp",
+   "kind": "component",
+   "role": "app-ui",
+   "needs": "dialogue",
+   "beats": [
+    "demo",
+    "context"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 4,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/ChatApp.html"
+  },
+  {
+   "id": "LineReveal",
+   "kind": "component",
+   "role": "dataviz",
+   "needs": "series",
+   "beats": [
+    "stat",
+    "context",
+    "social-proof"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 4,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/LineReveal.html"
+  },
+  {
+   "id": "CommandPalette",
+   "kind": "component",
+   "role": "interaction",
+   "needs": "query-results",
+   "beats": [
+    "demo",
+    "hook"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/CommandPalette.html"
+  },
+  {
+   "id": "BentoGrid",
+   "kind": "component",
+   "role": "layout",
+   "needs": "facts",
+   "beats": [
+    "stat",
+    "context",
+    "social-proof"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "high",
+    "wow": 3,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/BentoGrid.html"
+  },
+  {
+   "id": "DiffReveal",
+   "kind": "component",
+   "role": "transformation",
+   "needs": "before-after",
+   "beats": [
+    "demo",
+    "comparison",
+    "punchline"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 4,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/DiffReveal.html"
+  },
+  {
+   "id": "RingGauge",
+   "kind": "component",
+   "role": "dataviz",
+   "needs": "metrics",
+   "beats": [
+    "stat"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 4,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/RingGauge.html"
+  },
+  {
+   "id": "Odometer",
+   "kind": "component",
+   "role": "interaction",
+   "needs": "single-number",
+   "beats": [
+    "stat",
+    "hook",
+    "social-proof"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "low",
+    "wow": 4,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/Odometer.html"
+  },
+  {
+   "id": "OrbitNodes",
+   "kind": "component",
+   "role": "interaction",
+   "needs": "hub-spokes",
+   "beats": [
+    "context",
+    "demo"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 4,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/OrbitNodes.html"
+  },
+  {
+   "id": "KineticQuote",
+   "kind": "component",
+   "role": "typography",
+   "needs": "phrase",
+   "beats": [
+    "hook",
+    "punchline",
+    "cta"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "low",
+    "wow": 4,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/KineticQuote.html"
+  },
+  {
+   "id": "NotificationStack",
+   "kind": "component",
+   "role": "device-ui",
+   "needs": "alerts",
+   "beats": [
+    "demo",
+    "social-proof",
+    "context"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/NotificationStack.html"
+  },
+  {
+   "id": "DynamicIsland",
+   "kind": "component",
+   "role": "device-ui",
+   "needs": "steps",
+   "beats": [
+    "process",
+    "demo"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "low",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/DynamicIsland.html"
+  },
+  {
+   "id": "VoiceOrb",
+   "kind": "component",
+   "role": "device-ui",
+   "needs": "utterance",
+   "beats": [
+    "demo",
+    "hook"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "low",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/VoiceOrb.html"
+  },
+  {
+   "id": "SwipeDeck",
+   "kind": "component",
+   "role": "interaction",
+   "needs": "options",
+   "beats": [
+    "comparison",
+    "demo",
+    "process"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 4,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/SwipeDeck.html"
+  },
+  {
+   "id": "Fogline",
+   "kind": "component",
+   "role": "app-ui",
+   "needs": "steps",
+   "beats": [
+    "process",
+    "demo",
+    "context"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "high",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/Fogline.html"
+  },
+  {
+   "id": "HoloCard",
+   "kind": "component",
+   "role": "layout",
+   "needs": "facts",
+   "beats": [
+    "hook",
+    "punchline",
+    "cta",
+    "context"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "low",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/HoloCard.html"
+  },
+  {
+   "id": "GlassPanel",
+   "kind": "component",
+   "role": "device-ui",
+   "needs": "single-number",
+   "beats": [
+    "stat",
+    "context",
+    "cta",
+    "social-proof"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/GlassPanel.html"
+  },
+  {
+   "id": "GenerativeUI",
+   "kind": "component",
+   "role": "app-ui",
+   "needs": "steps",
+   "beats": [
+    "demo",
+    "process",
+    "context"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/GenerativeUI.html"
+  },
+  {
+   "id": "ScreenStage",
+   "kind": "component",
+   "role": "layout",
+   "needs": "steps",
+   "beats": [
+    "demo",
+    "process",
+    "punchline"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "low",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/ScreenStage.html"
+  },
+  {
+   "id": "OutroGlass",
+   "kind": "component",
+   "role": "layout",
+   "needs": "phrase",
+   "beats": [
+    "cta",
+    "punchline"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "low",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/OutroGlass.html"
+  },
+  {
+   "id": "ReactionMeter",
+   "kind": "component",
+   "role": "dataviz",
+   "needs": "single-number",
+   "beats": [
+    "hook",
+    "demo",
+    "punchline"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/ReactionMeter.html"
+  },
+  {
+   "id": "LedgerFlow",
+   "kind": "component",
+   "role": "transformation",
+   "needs": "ledger",
+   "beats": [
+    "hook",
+    "demo",
+    "process",
+    "stat"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "high",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/LedgerFlow.html"
+  },
+  {
+   "id": "ShareSplit",
+   "kind": "component",
+   "role": "dataviz",
+   "needs": "part-whole",
+   "beats": [
+    "punchline",
+    "stat",
+    "comparison"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "low",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/ShareSplit.html"
+  },
+  {
+   "id": "SpinWheel",
+   "kind": "component",
+   "role": "interaction",
+   "needs": "options",
+   "beats": [
+    "hook",
+    "demo",
+    "punchline"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/SpinWheel.html"
+  },
+  {
+   "id": "TapStack",
+   "kind": "component",
+   "role": "transformation",
+   "needs": "ledger",
+   "beats": [
+    "hook"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/TapStack.html"
+  },
+  {
+   "id": "MorphField",
+   "kind": "component",
+   "role": "interaction",
+   "needs": "steps",
+   "beats": [
+    "cta",
+    "demo",
+    "hook"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "low",
+    "wow": 4,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/MorphField.html"
+  },
+  {
+   "id": "WebTour",
+   "kind": "component",
+   "role": "layout",
+   "needs": "steps",
+   "beats": [
+    "demo",
+    "process",
+    "context"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/WebTour.html"
+  },
+  {
+   "id": "SerifCap",
+   "kind": "component",
+   "role": "typography",
+   "needs": "phrase",
+   "beats": [
+    "hook",
+    "punchline",
+    "cta",
+    "context"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "low",
+    "wow": 4,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/SerifCap.html"
+  },
+  {
+   "id": "HeroDrop",
+   "kind": "component",
+   "role": "layout",
+   "needs": "phrase",
+   "beats": [
+    "hook",
+    "punchline"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "low",
+    "wow": 5,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/HeroDrop.html"
+  },
+  {
+   "id": "VsTable",
+   "kind": "component",
+   "role": "layout",
+   "needs": "table",
+   "beats": [
+    "comparison",
+    "stat",
+    "context"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "high",
+    "wow": 4,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/VsTable.html"
+  },
+  {
+   "id": "TermRun",
+   "kind": "component",
+   "role": "app-ui",
+   "needs": "steps",
+   "beats": [
+    "demo",
+    "process"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 4,
+    "comp_dna": false
+   },
+   "evidence": 0.5,
+   "card": "cards/components/TermRun.html"
+  },
+  {
+   "id": "PhoneMock",
+   "kind": "component",
+   "role": "device-ui",
+   "needs": "dialogue",
+   "beats": [
+    "demo",
+    "process",
+    "punchline"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 3,
+    "comp_dna": true
+   },
+   "evidence": 0.5,
+   "card": "cards/components/PhoneMock.html"
+  },
+  {
+   "id": "FlowTree",
+   "kind": "component",
+   "role": "dataviz",
+   "needs": "steps",
+   "beats": [
+    "process",
+    "context",
+    "demo"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 4,
+    "comp_dna": true
+   },
+   "evidence": 0.5,
+   "card": "cards/components/FlowTree.html"
+  },
+  {
+   "id": "StatCloser",
+   "kind": "component",
+   "role": "dataviz",
+   "needs": "single-number",
+   "beats": [
+    "stat",
+    "punchline",
+    "social-proof"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "low",
+    "wow": 3,
+    "comp_dna": true
+   },
+   "evidence": 0.5,
+   "card": "cards/components/StatCloser.html"
+  },
+  {
+   "id": "ChipRow",
+   "kind": "component",
+   "role": "layout",
+   "needs": "facts",
+   "beats": [
+    "context",
+    "comparison",
+    "demo"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 2,
+    "comp_dna": true
+   },
+   "evidence": 0.5,
+   "card": "cards/components/ChipRow.html"
+  },
+  {
+   "id": "BrandBumper",
+   "kind": "component",
+   "role": "typography",
+   "needs": "phrase",
+   "beats": [
+    "hook",
+    "cta"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "low",
+    "wow": 3,
+    "comp_dna": true
+   },
+   "evidence": 0.5,
+   "card": "cards/components/BrandBumper.html"
+  },
+  {
+   "id": "SplitHead",
+   "kind": "component",
+   "role": "typography",
+   "needs": "phrase",
+   "beats": [
+    "hook",
+    "context",
+    "punchline",
+    "cta"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "low",
+    "wow": 3,
+    "comp_dna": true
+   },
+   "evidence": 0.5,
+   "card": "cards/components/SplitHead.html"
+  },
+  {
+   "id": "AppWindow",
+   "kind": "component",
+   "role": "app-ui",
+   "needs": "facts",
+   "beats": [
+    "demo",
+    "context",
+    "process"
+   ],
+   "tags": {
+    "palette": "any",
+    "tone": "any",
+    "accent": "any",
+    "motion": "kinetic",
+    "density": "med",
+    "wow": 3,
+    "comp_dna": true
+   },
+   "evidence": 0.5,
+   "card": "cards/components/AppWindow.html"
+  }
+ ]
+}

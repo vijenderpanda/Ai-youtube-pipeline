@@ -46,6 +46,12 @@ webapp/.netlify/
 renders_out/
 renders_test/
 
+# swipe-capture skill — external reference shorts (raw video + contact sheets)
+research/learning-assets/
+research/comp-dna/*/raw.*
+research/comp-dna/*/contact_sheet.*
+research/comp-dna/clones/out/
+
 # ─────────────────────────────────────────────────────────────
 # Runtime / caches / vendored deps
 # ─────────────────────────────────────────────────────────────
@@ -73,3 +79,6 @@ ds-bundle/
 .design-sync/.cache/
 .design-sync/learnings/
 .design-sync/node_modules
+
+# scratch stderr from scout runs
+scout*.err

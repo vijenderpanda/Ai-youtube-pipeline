@@ -3,6 +3,9 @@ import {
   AbsoluteFill,
   Easing,
   Img,
+  Freeze,
+  OffthreadVideo,
+  Sequence,
   interpolate,
   spring,
   staticFile,
@@ -10,6 +13,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { BRAND, SANS, MONO, DISPLAY, rgba, clamp, Fonts, AuroraBed } from "./kit";
+import { EngagePing, type Ping } from "./EngagePing";
 
 /* =============================================================================
    OutroGlass — the channel's question-CTA sting, in the GlassPanel language.
@@ -49,7 +53,10 @@ export type OutroGlassProps = {
   subscribeLabel?: string; // left cell of the subscribe row
   subscribeValue?: string; // right cell, accent
   tagline?: string; // small line under the panel
-  avatar?: string; // host disc, resolved via staticFile()
+  avatar?: string; // host disc, resolved via staticFile() — .mp4/.webm = TALKING disc (muted; VO is the master)
+  avatarSize?: number; // disc diameter px (default 208; VJ 2026-08-23 outro-CTA talking disc ~300)
+  avatarDelay?: number; // seconds before a VIDEO avatar starts playing (the spoken-CTA lead-in; frozen first frame before)
+  pings?: Ping[]; // engagement glows on the card's own clock (e.g. subscribe at the spoken "Follow")
   accent?: string; // brand magenta
   accent2?: string; // cyan
   ink?: string;
@@ -95,6 +102,9 @@ export const OutroGlass: React.FC<OutroGlassProps> = ({
   subscribeValue = "ONE / DAY",
   tagline = "one AI trick, every single day",
   avatar,
+  avatarSize = 208,
+  avatarDelay = 0,
+  pings = [],
   accent = BRAND.mag,
   accent2 = BRAND.cyan,
   ink = BRAND.ink,
@@ -377,10 +387,10 @@ export const OutroGlass: React.FC<OutroGlassProps> = ({
         <div
           style={{
             position: "absolute",
-            left: width / 2 - 104,
-            top: 356,
-            width: 208,
-            height: 208,
+            left: width / 2 - avatarSize / 2,
+            top: 356 - (avatarSize - 208) / 2,
+            width: avatarSize,
+            height: avatarSize,
             borderRadius: "50%",
             overflow: "hidden",
             border: `4px solid ${rgba("#ffffff", 0.9)}`,
@@ -389,10 +399,34 @@ export const OutroGlass: React.FC<OutroGlassProps> = ({
             opacity: clamp(assemble * 1.3) * clamp(pOut),
           }}
         >
-          <Img
-            src={avatar.startsWith("http") ? avatar : staticFile(avatar)}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
+          {/\.(mp4|webm|mov)$/i.test(avatar) ? (
+            // TALKING disc: a lipsynced host clip (EchoMimic / HeyGen) cut from the
+            // spoken outro CTA. Frozen on its first frame for avatarDelay (the CTA
+            // lead-in), then plays 1:1 from the delay — the card must NOT be
+            // retimed after this (ratio 1 in build_ep_v2's outro_fc).
+            frame < Math.round(avatarDelay * fps) ? (
+              <Freeze frame={0}>
+                <OffthreadVideo
+                  src={avatar.startsWith("http") ? avatar : staticFile(avatar)}
+                  muted
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </Freeze>
+            ) : (
+              <Sequence from={Math.round(avatarDelay * fps)} layout="none">
+                <OffthreadVideo
+                  src={avatar.startsWith("http") ? avatar : staticFile(avatar)}
+                  muted
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </Sequence>
+            )
+          ) : (
+            <Img
+              src={avatar.startsWith("http") ? avatar : staticFile(avatar)}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          )}
         </div>
       )}
 
@@ -605,6 +639,7 @@ export const OutroGlass: React.FC<OutroGlassProps> = ({
       >
         {tagline}
       </div>
+      {pings.map((pg, i) => <EngagePing key={`ping${i}`} t={t} ping={pg} />)}
     </AbsoluteFill>
   );
 };

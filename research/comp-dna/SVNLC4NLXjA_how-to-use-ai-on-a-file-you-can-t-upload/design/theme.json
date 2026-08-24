@@ -1,0 +1,41 @@
+{
+  "palette": {
+    "bg": "#2b2620",
+    "fg": "#ffffff",
+    "accent": "#e8e13a",
+    "accent2": "#3a6ea8",
+    "caption_fill": "#ffffff",
+    "caption_stroke": "#000000"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "Helvetica/Arial Bold Condensed (system sans, heavy weight)",
+      "weight": "800-900",
+      "case": "upper",
+      "size_rel": "0.055 of frame height per line, 2 lines max"
+    },
+    "caption": {
+      "family_guess": "same as headline, no separate caption face",
+      "weight": "800-900",
+      "case": "upper",
+      "size_rel": "0.055"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "dead-center, chest-up, static single lockoff shot, laptop lid visible bottom-frame (Apple logo in shot)",
+    "safe_zones": "bottom 20% reserved for 2-line caption block; top 10% clear",
+    "caption_pos": "bottom-center, ~78-92% of frame height, centered horizontally, 2 lines"
+  },
+  "motion": {
+    "cut_rate_per_10s": 0,
+    "zoom_punches": false,
+    "transitions": ["none - single continuous static shot, no b-roll, no cutaways"]
+  },
+  "themeable": [
+    "accent (keyword highlight color, currently yellow)",
+    "accent2 (unused mostly, could tint background wash)",
+    "caption copy per line",
+    "bg (bookshelf/office backdrop could be swapped for any static set)"
+  ]
+}

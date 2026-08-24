@@ -1,0 +1,42 @@
+{
+  "palette": {
+    "bg": "#2E322C",
+    "fg": "#FFFFFF",
+    "accent": "#D64545",
+    "accent2": "#F2EFE9",
+    "caption_fill": "#FFFFFF",
+    "caption_stroke": "#000000"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "Helvetica Neue / Inter Bold (system sans)",
+      "weight": "800",
+      "case": "sentence",
+      "size_rel": "0.09 of frame height, 2-3 line wrap"
+    },
+    "caption": {
+      "family_guess": "system sans bold",
+      "weight": "800",
+      "case": "upper for emphasis phrases, sentence otherwise",
+      "size_rel": "0.055 of frame height, bottom-third, one short clause per card, black outline + white fill"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "centered, medium shot, seated, chest-up, static camera, plain wall background",
+    "safe_zones": "top 8% reserved for title card only at hook; bottom 15% reserved for platform UI (like/share icons) so captions sit mid-lower third not at very bottom",
+    "caption_pos": "lower-middle third, centered horizontally, 1 short animated phrase burned in per beat, changes every 1-2s in sync with speech"
+  },
+  "motion": {
+    "cut_rate_per_10s": 0,
+    "zoom_punches": false,
+    "transitions": ["hard cut from title card to talking head at t=0-1s", "hard cut talking-head <-> full-screen doc/article screenshot ~6-8 times across 100s", "no crossfades, no camera movement, static locked-off shot throughout"]
+  },
+  "themeable": [
+    "accent (red highlight color used for emphasis boxes/underlines on screenshots)",
+    "caption typography/animation style",
+    "doc/article screenshot content (swap in any reference article)",
+    "title/hook card text and background color",
+    "host identity/outfit (talking-head slot is a themeable component, not tied to this specific presenter)"
+  ]
+}

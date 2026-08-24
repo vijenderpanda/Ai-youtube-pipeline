@@ -1,0 +1,115 @@
+{
+ "title": "SIGNAL ep2 \u00b7 Stop Paying $20 For AI (Vaibhav style)",
+ "theme": "night",
+ "accent": "#D4FF3D",
+ "hostSrc": "hosts/sol_center.jpg",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 3,
+   "props": {
+    "label": "COST",
+    "line": "Stop paying $20 a month for AI.",
+    "punch": "$20",
+    "align": "left",
+    "size": "lg"
+   },
+   "host": "full"
+  },
+  {
+   "id": "StatCloser",
+   "beat": "proof/price-shock",
+   "seconds": 3,
+   "props": {
+    "value": 240,
+    "prefix": "$",
+    "suffix": "/yr",
+    "label": "WHAT YOU PAY",
+    "sub": "for models you can use *free*"
+   },
+   "host": "none"
+  },
+  {
+   "id": "ChipRow",
+   "beat": "proof/free-list",
+   "seconds": 4,
+   "props": {
+    "eyebrow": "FREE TIERS, NO CARD",
+    "chips": [
+     {
+      "text": "Google AI Studio",
+      "hot": true
+     },
+     {
+      "text": "NVIDIA build"
+     },
+     {
+      "text": "DeepSeek"
+     },
+     {
+      "text": "Kimi"
+     },
+     {
+      "text": "GLM",
+      "hot": true
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true
+   },
+   "host": "none"
+  },
+  {
+   "id": "TermRun",
+   "beat": "step/how",
+   "seconds": 4,
+   "props": {
+    "cmd": "open aistudio.google.com",
+    "response": [
+     { "t": "\u2192 sign in with Google", "tone": "info" },
+     { "t": "\u2192 Get API key  (no card)", "tone": "ok" },
+     { "t": "\u2192 same Gemini models, $0", "tone": "accent" }
+    ]
+   },
+   "host": "none"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "cta/payoff",
+   "seconds": 3,
+   "props": {
+    "kicker": "THE POINT",
+    "parts": [
+     {
+      "text": "Free. "
+     },
+     {
+      "text": "No card. "
+     },
+     {
+      "text": "Same models.",
+      "hot": true
+     }
+    ],
+    "highlight": "bar"
+   },
+   "host": "full"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta",
+   "seconds": 2,
+   "props": {
+    "name": "AI UNPACKED",
+    "tagline": "one AI trick a day",
+    "glyph": "bolt",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "host": "none"
+  }
+ ],
+ "hostGrammar": "cutaway"
+}

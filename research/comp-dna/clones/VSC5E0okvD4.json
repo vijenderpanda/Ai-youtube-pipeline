@@ -1,0 +1,178 @@
+{
+ "title": "VSC5E0okvD4 \u00b7 The Decision Framework I Use",
+ "theme": "cream",
+ "accent": "#3E8C74",
+ "blocks": [
+  {
+   "id": "OrbitNodes",
+   "seconds": 2.5,
+   "props": {
+    "hub": {
+     "label": "You"
+    },
+    "nodes": [
+     {
+      "label": "yes"
+     },
+     {
+      "label": "yes"
+     },
+     {
+      "label": "yes"
+     },
+     {
+      "label": "no"
+     }
+    ],
+    "spin": 2
+   },
+   "caption": "Say yes to everything?",
+   "beat": "hook"
+  },
+  {
+   "id": "KineticQuote",
+   "seconds": 2,
+   "props": {
+    "kicker": "Derek Sivers, Author",
+    "parts": [
+     {
+      "text": "Hell yeah!"
+     },
+     {
+      "text": "or"
+     },
+     {
+      "text": "it's a no.",
+      "hot": true
+     }
+    ],
+    "footer": "his rule for every decision"
+   },
+   "caption": "His rule: hell yeah or no.",
+   "beat": "authority"
+  },
+  {
+   "id": "FlowTree",
+   "seconds": 2.5,
+   "props": {
+    "title": "It sounds simple",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "Ask yourself",
+      "state": "done"
+     },
+     {
+      "id": "time",
+      "label": "Time",
+      "parent": "root",
+      "state": "done"
+     },
+     {
+      "id": "focus",
+      "label": "Focus",
+      "parent": "root",
+      "state": "active"
+     },
+     {
+      "id": "energy",
+      "label": "Energy",
+      "parent": "root",
+      "state": "todo"
+     }
+    ]
+   },
+   "caption": "So he built a checklist.",
+   "beat": "setup"
+  },
+  {
+   "id": "VsTable",
+   "seconds": 2.5,
+   "props": {
+    "title": "Bandwidth \u2260 Time",
+    "colA": "Time",
+    "colB": "Bandwidth",
+    "rows": [
+     {
+      "label": "feels like",
+      "a": "productive",
+      "b": "just busy",
+      "verdict": "b"
+     },
+     {
+      "label": "measures",
+      "a": "hours spent",
+      "b": "what's left over",
+      "verdict": "b"
+     }
+    ],
+    "rowStagger": 0.4
+   },
+   "caption": "But busy isn't the same as free.",
+   "beat": "tension"
+  },
+  {
+   "id": "OrbitNodes",
+   "seconds": 3,
+   "props": {
+    "hub": {
+     "label": "Decision Making"
+    },
+    "nodes": [
+     {
+      "label": "Trust"
+     },
+     {
+      "label": "Distribution"
+     }
+    ],
+    "spin": 2
+   },
+   "caption": "The real framework: two things.",
+   "beat": "reveal"
+  },
+  {
+   "id": "KineticQuote",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "The reframe",
+    "parts": [
+     {
+      "text": "Every yes"
+     },
+     {
+      "text": "that doesn't build your"
+     },
+     {
+      "text": "LEVERAGE",
+      "hot": true
+     },
+     {
+      "text": "is"
+     },
+     {
+      "text": "DEBT.",
+      "hot": true
+     }
+    ],
+    "footer": "so stop just managing time"
+   },
+   "caption": "Every yes without leverage is debt.",
+   "beat": "payoff"
+  },
+  {
+   "id": "BrandBumper",
+   "seconds": 2.5,
+   "props": {
+    "name": "Hell Yeah or No",
+    "tagline": "it's not rejection \u2014 it's strategy",
+    "glyph": "orbit",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "caption": "It's not rejection \u2014 it's strategy.",
+   "beat": "cta"
+  }
+ ]
+}

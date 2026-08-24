@@ -1,0 +1,104 @@
+{
+  "_note": "EP3 NIGHTWATCH tape: github.com/firecrawl/anydoc, anonymous, DARK, desktop. Needles VERBATIM from README 2026-08-24. One tape; beats re-order via per-beat from.",
+  "url": "https://github.com/firecrawl/anydoc",
+  "view": "desktop",
+  "dark": true,
+  "steps": [
+    {
+      "do": "wait",
+      "s": 1.6
+    },
+    {
+      "do": "focus",
+      "selector": "strong[itemprop=\"name\"] a",
+      "label": "repo-title",
+      "hold": 2.0,
+      "zoom": 1.9
+    },
+    {
+      "do": "wait",
+      "s": 1.2
+    },
+    {
+      "do": "focus",
+      "selector": "#repo-stars-counter-star",
+      "label": "stars",
+      "hold": 2.4,
+      "zoom": 2.3
+    },
+    {
+      "do": "wait",
+      "s": 0.6
+    },
+    {
+      "do": "scroll",
+      "to_selector": "article.markdown-body",
+      "smooth": true,
+      "dur": 1.8
+    },
+    {
+      "do": "wait",
+      "s": 0.9
+    },
+    {
+      "do": "select",
+      "selector": "article.markdown-body",
+      "text": "into clean GitHub-Flavored Markdown",
+      "hold": 2.4
+    },
+    {
+      "do": "wait",
+      "s": 0.8
+    },
+    {
+      "do": "select",
+      "selector": "article.markdown-body",
+      "text": "turn any office document into LLM-ready Markdown in single-digit milliseconds",
+      "hold": 2.4
+    },
+    {
+      "do": "wait",
+      "s": 0.8
+    },
+    {
+      "do": "wait",
+      "s": 0.9
+    },
+    {
+      "do": "wait",
+      "s": 0.8
+    },
+    {
+      "do": "scroll",
+      "to_selector": "article.markdown-body pre",
+      "margin": 280,
+      "smooth": true,
+      "dur": 1.6
+    },
+    {
+      "do": "wait",
+      "s": 0.7
+    },
+    {
+      "do": "focus",
+      "selector": "article.markdown-body pre",
+      "label": "cli",
+      "hold": 2.0,
+      "zoom": 1.5
+    },
+    {
+      "do": "wait",
+      "s": 0.5
+    },
+    {
+      "do": "select",
+      "selector": "article.markdown-body",
+      "text": "npx @firecrawl/anydoc report.docx",
+      "hold": 2.4
+    },
+    {
+      "do": "wait",
+      "s": 2.2
+    }
+  ]
+}

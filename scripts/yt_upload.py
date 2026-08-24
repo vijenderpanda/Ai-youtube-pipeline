@@ -109,16 +109,42 @@ def main():
     # phone-verified -- marked an uploaded+scheduled post as FAILED).
     def set_extras(vid):
         if a.thumbnail:
-            try:
-                yt.thumbnails().set(videoId=vid, media_body=MediaFileUpload(a.thumbnail)).execute()
-                print(">> thumbnail set")
-            except HttpError as e:
-                hint = ""
-                if e.resp.status == 403:
-                    hint = (" -- custom thumbnails need one-time PHONE VERIFICATION "
-                            "for this channel: youtube.com/features (then re-run with "
-                            f"--video-id {vid} --thumbnail ...)")
-                print(f">> WARNING: thumbnail not set ({e.resp.status}){hint}")
+            # thumbnails.set on a just-uploaded video can silently NOT stick
+            # (fcc BEqvWkT5B5g 2026-08-24: set returned 200 but the custom thumb
+            # never appeared). So VERIFY via videos().list and RETRY up to 3x,
+            # confirming a custom key (standard/maxres) actually landed.
+            import time as _t
+
+            def _has_custom():
+                try:
+                    it = yt.videos().list(part="snippet", id=vid).execute()["items"][0]
+                    th = it["snippet"].get("thumbnails", {})
+                    return ("maxres" in th) or ("standard" in th)
+                except Exception:
+                    return False
+
+            set_ok = False
+            for attempt in range(1, 4):
+                try:
+                    yt.thumbnails().set(videoId=vid,
+                                        media_body=MediaFileUpload(a.thumbnail)).execute()
+                except HttpError as e:
+                    hint = ""
+                    if e.resp.status == 403:
+                        hint = (" -- custom thumbnails need one-time PHONE VERIFICATION "
+                                "for this channel: youtube.com/features (then re-run with "
+                                f"--video-id {vid} --thumbnail ...)")
+                    print(f">> WARNING: thumbnail set errored ({e.resp.status}){hint}")
+                    break
+                _t.sleep(6)
+                if _has_custom():
+                    print(f">> thumbnail set + verified (attempt {attempt})")
+                    set_ok = True
+                    break
+                print(f">> thumbnail not stuck yet (attempt {attempt}) — retrying")
+            if a.thumbnail and not set_ok:
+                print(f">> WARNING: thumbnail did NOT verify after retries — set it "
+                      f"manually: yt_upload.py --video-id {vid} --thumbnail {a.thumbnail}")
         if a.playlist:
             try:
                 yt.playlistItems().insert(part="snippet", body={"snippet": {"playlistId": a.playlist,

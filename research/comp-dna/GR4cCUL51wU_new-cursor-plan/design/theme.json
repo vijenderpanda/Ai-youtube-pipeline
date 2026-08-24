@@ -1,0 +1,42 @@
+{
+  "palette": {
+    "bg": "#E9E9E5",
+    "fg": "#111111",
+    "accent": "#FFE600",
+    "accent2": "#000000",
+    "caption_fill": "#FFE600",
+    "caption_stroke": "#000000"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "Inter/Helvetica-Neue Bold (generic sans, YouTube-native burned caption font)",
+      "weight": "800-900",
+      "case": "sentence-case, no forced caps",
+      "size_rel": "~0.09 of frame height, 1-3 words per card"
+    },
+    "caption": {
+      "family_guess": "same as headline, one word/short-phrase captions, word-by-word reveal",
+      "weight": "800-900",
+      "case": "sentence-case",
+      "size_rel": "~0.08 of frame height"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "center-frame, chest-up, alternates between facing-camera talking and 3/4 profile pacing shots — profile shots signal 'thinking/building tension', frontal shots signal 'direct address/punchline'",
+    "safe_zones": "captions sit in lower-third (~78-88% frame height); screenshot/tweet cards inset upper-half or center, never overlapping mouth",
+    "caption_pos": "bottom-third, centered horizontally, single line, 1-3 words per beat, changes every ~1s (word-paced to speech)"
+  },
+  "motion": {
+    "cut_rate_per_10s": 0,
+    "zoom_punches": false,
+    "transitions": ["none — single continuous handheld/tripod talking-head take for 56s, no hard cuts visible in sampled frames; only overlay cards pop in/out and host pivots between camera-facing and profile stance"]
+  },
+  "themeable": [
+    "caption_fill/accent color (currently yellow, swappable per channel brand)",
+    "caption_stroke",
+    "tweet/screenshot card content (screenshotted proof, fully replaceable per topic)",
+    "host wardrobe color (black polo, could reskin)",
+    "background (plain office wall, low-cost, easily replicated)"
+  ]
+}

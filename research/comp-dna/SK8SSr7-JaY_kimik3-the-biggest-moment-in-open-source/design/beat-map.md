@@ -1,0 +1,18 @@
+| t_start | t_end | beat_role | what's on screen | text shown | why it works |
+|---|---|---|---|---|---|
+| 0 | 2 | hook | full-bleed line chart (release timeline) then host w/ small PIP chart | "What do you think" / "Kimi K3 - Moonshot AI - 2.8T release?" | opens on a chart, not the face — signals "data incoming"; direct question baits a reply |
+| 2 | 5 | hook | host full-frame, hands together | "the biggest" / "moment" / "open source AI." | one bold word per beat builds the claim phrase-by-phrase, forces you to keep reading/watching |
+| 5 | 7 | proof/context | full-bleed red stock-market heatmap w/ whale logo chip | "I think" / "DeepSeek moment" | analogy to a known event (DeepSeek's market-moving release) borrows credibility/urgency |
+| 7 | 9 | setup | host talking, gesturing | "an incredible model" / "Almost 3 trillion" | stat drop (3T params) as a specific, surprising number |
+| 9 | 10 | setup | host + small circular avatar/leaderboard chart top | "by far the best" / "open source model" | leaderboard chart PIP substantiates the superlative claim visually |
+| 10 | 15 | step/question | host, eyes closed/gesturing | "But is it" / "to self-host it?" / "it is possible, but it's" | pivots from hype to practical "can I use this" question — relatable stakes |
+| 15 | 20 | proof | host then full-bleed hardware/server-rack photos | "very cheapest" / "$11,000 to $12,000" / "of hardware." / "more realistic," | swaps to real B-roll photos of the actual rig — concreteness over stock imagery |
+| 20 | 24 | proof | full-bleed hardware close-ups (GPU rack, motherboard) | "like $25,000" / "of hardware" / "mostly spent on RAM" | granular cost breakdown builds authenticity, teaches a real spec lesson |
+| 24 | 29 | step/payoff | host, then circular PIP speed-gauge dial | "is what it takes" / "Kimi" / "at very slow" / "5 to 10" / "how to use it" | dial/gauge visual makes an abstract metric (tokens/sec) instantly legible |
+| 29 | 34 | proof/twist | host + circular PIP gauge (token throughput dots grid) | "day to day" / "50 tokens" / "or more" / "that's like $350,000" | dollar-izes a technical number (cost-per-day at scale) — reframes tech spec as money, the twist |
+| 34 | 40 | setup/argument | host talking | "so who" / "actually benefits" / "I think" / "benefits" / "because it puts" / "on OpenAI" | sets up the payoff argument (who wins from open weights) |
+| 40 | 49 | proof | host + brand-logo chips (OpenAI/Anthropic/GPT icons) | "and Anthropic" / "closed source" / "AI labs to create" / "better models." / "cannot put restrictions on" / "GPT or Fable" / "Kimi being open source." | logo chips make abstract company names instantly recognizable, punchy beat rhythm |
+| 50 | 54 | step | host + full-bleed terminal/code screenshot | "the weights" / "If they have" / "But what if" / "the government" / "open models?" | terminal screenshot signals "technical proof," raises a new hypothetical stake |
+| 54 | 59 | payoff | host, then full-bleed NAS/backup hardware photos | "they can try, backing up" / "all of the" / "right now the NAS" / "is backing up" | shows the actual NAS mid-backup — payoff is literally happening on screen (process, not claim) |
+| 60 | 67 | proof/cta-setup | host + full-bleed HuggingFace file-listing screenshots | "GLM 5.2," / "1.5 trillion" / "disk space." / "people can just" / "You can go to" / "get the weights." | screenshot of the real download page — invites the viewer to go verify/download themselves |
+| 67 | 71 | outro/tag | host + abstract graph/plot inserts | "But ultimately" / "this is just" / "multiplication." / "So there's" / "ban math." | closes on a provocative one-liner ("ban math") — quotable, philosophical mic-drop ending, math-graph visual literalizes the punchline |

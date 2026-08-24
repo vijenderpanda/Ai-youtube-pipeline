@@ -1,0 +1,212 @@
+{
+ "title": "DirGcMXm4zw \u00b7 Text your AI exec assistant",
+ "theme": "cream",
+ "accent": "#2F7A63",
+ "blocks": [
+  {
+   "id": "OrbitNodes",
+   "seconds": 2.5,
+   "props": {
+    "hub": {
+     "label": "Lindy",
+     "icon": "\ud83e\udde0"
+    },
+    "nodes": [
+     {
+      "label": "Gmail",
+      "icon": "\u2709\ufe0f"
+     },
+     {
+      "label": "Calendar",
+      "icon": "\ud83d\udcc5"
+     },
+     {
+      "label": "Slack",
+      "icon": "\ud83d\udcac"
+     },
+     {
+      "label": "Drive",
+      "icon": "\ud83d\udcc1"
+     },
+     {
+      "label": "Notion",
+      "icon": "\ud83d\uddd2\ufe0f"
+     },
+     {
+      "label": "Meet",
+      "icon": "\ud83c\udfa5"
+     }
+    ],
+    "spin": 6
+   },
+   "caption": "",
+   "beat": "hook-orbit"
+  },
+  {
+   "id": "BrandBumper",
+   "seconds": 1.5,
+   "props": {
+    "name": "Lindy",
+    "glyph": "orbit",
+    "mode": "open"
+   },
+   "caption": "",
+   "beat": "brand-open"
+  },
+  {
+   "id": "SplitHead",
+   "seconds": 2,
+   "props": {
+    "label": "it's",
+    "line": "set up 10x simpler",
+    "punch": "10x simpler",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "It's set up ten times simpler",
+   "beat": "setup-claim"
+  },
+  {
+   "id": "PhoneMock",
+   "seconds": 2.5,
+   "props": {
+    "contact": "Lindy",
+    "appName": "Messages",
+    "tilt": 6,
+    "typingLead": 0.5,
+    "messages": [
+     {
+      "t": 0.4,
+      "from": "me",
+      "text": "Lindy, organize my inbox."
+     },
+     {
+      "t": 1.4,
+      "from": "me",
+      "text": "Also schedule a meeting with Alex tomorrow afternoon."
+     },
+     {
+      "t": 2.6,
+      "from": "them",
+      "text": "Done, I prioritized your inbox and booked Alex for 3pm."
+     }
+    ]
+   },
+   "caption": "Just text it what you need",
+   "beat": "texting-lindy"
+  },
+  {
+   "id": "ChipRow",
+   "seconds": 2,
+   "props": {
+    "eyebrow": "It can also",
+    "chips": [
+     {
+      "text": "Meetings",
+      "kind": "toggle",
+      "icon": "\ud83d\udcc5"
+     },
+     {
+      "text": "Notes",
+      "kind": "toggle",
+      "icon": "\ud83d\uddd2\ufe0f"
+     },
+     {
+      "text": "Emails",
+      "kind": "toggle",
+      "icon": "\u2709\ufe0f"
+     },
+     {
+      "text": "Messages",
+      "kind": "toggle",
+      "icon": "\ud83d\udcac"
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "stagger": 0.2
+   },
+   "caption": "It does that proactively too",
+   "beat": "proactive-chips"
+  },
+  {
+   "id": "BentoGrid",
+   "seconds": 3,
+   "props": {
+    "heading": "Week task",
+    "cols": 2,
+    "tiles": [
+     {
+      "title": "Update CRM",
+      "value": "auto",
+      "span": "2x1",
+      "accent": true,
+      "icon": "\ud83d\uddc2\ufe0f"
+     },
+     {
+      "title": "Follow up",
+      "value": "on time",
+      "icon": "\ud83d\udce8"
+     },
+     {
+      "title": "Handle tasks",
+      "value": "done",
+      "icon": "\u2705"
+     },
+     {
+      "title": "Set reminders",
+      "value": "set",
+      "icon": "\u23f0"
+     },
+     {
+      "title": "Track priorities",
+      "value": "ranked",
+      "icon": "\ud83d\udccc"
+     },
+     {
+      "title": "Summarize notes",
+      "value": "ready",
+      "icon": "\ud83d\uddd2\ufe0f"
+     },
+     {
+      "title": "Schedule meetings",
+      "value": "booked",
+      "span": "2x1",
+      "icon": "\ud83d\udcc5"
+     }
+    ],
+    "stagger": 0.12
+   },
+   "caption": "It runs your whole week",
+   "beat": "task-list-reveal"
+  },
+  {
+   "id": "StatCloser",
+   "seconds": 2.5,
+   "props": {
+    "value": 60,
+    "suffix": "%",
+    "label": "Of weekly tasks",
+    "sub": "handled *without you lifting a finger*",
+    "theme": "cream"
+   },
+   "caption": "More than 60 percent of tasks",
+   "beat": "stat-close"
+  },
+  {
+   "id": "BrandBumper",
+   "seconds": 2,
+   "props": {
+    "name": "Lindy",
+    "tagline": "Text it like a person",
+    "glyph": "orbit",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "caption": "Meet Lindy",
+   "beat": "brand-close"
+  }
+ ]
+}

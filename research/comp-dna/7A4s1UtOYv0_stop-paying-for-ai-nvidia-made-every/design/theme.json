@@ -1,0 +1,39 @@
+{
+  "palette": {
+    "bg": "#0E0B08",
+    "fg": "#FFFFFF",
+    "accent": "#D4FF3D",
+    "accent2": "#7CFC8A",
+    "caption_fill": "#FFFFFF",
+    "caption_stroke": "#000000",
+    "card_bg": "#EDE8D0",
+    "danger": "#7A1414",
+    "notes": "Host set is warm dark brown/black bookshelf blur, near-black (#0E0B08). Bold headline captions are white with black stroke; hero keywords recolor to lime-yellow (#D4FF3D) or lime-green (#7CFC8A) for emphasis (e.g. 'Max', 'unfair advantage', 'real products'). Insert cards use cream/khaki paper bg (#EDE8D0) with black monospace text for concept slides ('You write the code' / 'NVIDIA pays the compute bill'). One danger beat flashes a dark red overlay (#7A1414) over grayscale b-roll ('developers panicked'). Screenshots/UI captures keep native app colors (Anthropic black, NVIDIA dark UI, whale/Kimi logos) unaltered."
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "Inter/SF Pro Bold or similar grotesque sans",
+      "weight": "800-900",
+      "case": "sentence/lower, no forced caps",
+      "size_rel": "large, 2-4 words per card, centered mid-lower frame"
+    },
+    "caption": {
+      "family_guess": "same grotesque sans, bold",
+      "weight": "700-800",
+      "case": "sentence case",
+      "size_rel": "medium, 1 short phrase, stacked 1-2 lines, centered lower-middle third over host chest"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "centered chest-up, static camera, seated, warm blurred bookshelf background, consistent framing entire video",
+    "safe_zones": "captions sit in lower-middle third (below chin, above bottom UI-safe margin); top third kept clear for platform chrome",
+    "caption_pos": "center-anchored, one phrase revealed per cut, word-level recolor for emphasis"
+  },
+  "motion": {
+    "cut_rate_per_10s": 8,
+    "zoom_punches": false,
+    "transitions": ["hard cut", "host-to-screenshot insert cut", "host-to-cream-card insert cut", "logo sting cut (Anthropic wordmark, GLM/Kimi/whale logos)", "brief color-flash overlay (red danger beat)"]
+  },
+  "themeable": ["accent", "accent2", "card_bg", "headline text/keywords", "screenshot/logo inserts", "danger flash use", "caption phrase content"]
+}

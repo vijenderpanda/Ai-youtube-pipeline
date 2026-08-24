@@ -1,0 +1,36 @@
+{
+  "palette": {
+    "bg": "#E9E7E2",
+    "fg": "#1A1A1A",
+    "accent": "#F5D400",
+    "accent2": "#2B2B2B",
+    "caption_fill": "#FFE600",
+    "caption_stroke": "#000000"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "Montserrat/Poppins ExtraBold (impact sans)",
+      "weight": "800-900",
+      "case": "sentence-case (not all-caps)",
+      "size_rel": "large, ~2-3 words per line, centered-left third of frame"
+    },
+    "caption": {
+      "family_guess": "same as headline, one running caption style (not per-word karaoke)",
+      "weight": "800",
+      "case": "sentence-case",
+      "size_rel": "med-large, 3-5 word chunks, yellow fill/black stroke, no background chip"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "host fills frame edge-to-edge holding a physical printed paper up to camera; host stands/gestures, paper occupies center-right or is held overhead",
+    "safe_zones": "captions sit lower-third to mid-frame, avoid host's face; when host holds paper, text floats left of paper or below chin",
+    "caption_pos": "dynamic per-line placement near host's torso/left of held object, not fixed baseline"
+  },
+  "motion": {
+    "cut_rate_per_10s": "~5-7 cuts (mostly caption-text swaps, few hard camera cuts; paper occasionally swapped for zoomed insert)",
+    "zoom_punches": true,
+    "transitions": ["hard cut to paper close-up insert", "hard cut to diagram/animation insert (neural net, transformer arch)", "hard cut back to host", "no wipes/slides, all straight cuts"]
+  },
+  "themeable": ["accent (caption yellow)", "headline copy", "insert diagrams/images (paper photos, arch diagrams, logos)", "host outfit/bg"]
+}

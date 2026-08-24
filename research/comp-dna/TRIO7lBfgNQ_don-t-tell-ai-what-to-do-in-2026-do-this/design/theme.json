@@ -1,0 +1,43 @@
+{
+  "palette": {
+    "bg": "#E8E2D6",
+    "fg": "#FFFFFF",
+    "accent": "#F5E028",
+    "accent2": "#4FA8D8",
+    "caption_fill": "#FFFFFF",
+    "caption_stroke": "#000000"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "Helvetica/Arial Bold or similar grotesque (default caption-app font)",
+      "weight": "800-900 (black/heavy)",
+      "case": "ALL CAPS",
+      "size_rel": "large, ~7-9% of frame height per line"
+    },
+    "caption": {
+      "family_guess": "same grotesque bold as headline (single caption style throughout, no separate title card)",
+      "weight": "800-900",
+      "case": "ALL CAPS",
+      "size_rel": "~7-9% of frame height, 2 lines max, tight leading",
+      "highlight": "1 keyword per line/phrase colored accent yellow (#F5E028), rest white, black stroke ~4-6px on all text"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "centered, face fills upper-2/3 of frame, static camera, no reframing",
+    "safe_zones": "bottom ~15-20% reserved for 2-line caption block; no other overlays, no logo/watermark, no side UI",
+    "caption_pos": "bottom-center, ~72-88% of frame height"
+  },
+  "motion": {
+    "cut_rate_per_10s": 0,
+    "zoom_punches": false,
+    "transitions": ["none — single continuous unedited talking-head take for full 35s"]
+  },
+  "themeable": [
+    "caption_fill",
+    "caption_stroke",
+    "accent (keyword highlight color)",
+    "bg (whatever the host's real background is — not art-directed)",
+    "typography.family_guess (swap for brand font)"
+  ]
+}

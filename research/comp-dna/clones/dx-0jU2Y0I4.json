@@ -1,0 +1,174 @@
+{
+ "title": "dx-0jU2Y0I4 \u00b7 Open-source AI cyber threats",
+ "theme": "night",
+ "accent": "#F5E642",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 3,
+   "props": {
+    "kicker": "RIGHT NOW",
+    "label": "We have",
+    "line": "Crossed the frontier into open-source",
+    "punch": "frontier",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "We've crossed the frontier into open-source AI"
+  },
+  {
+   "id": "FlowTree",
+   "beat": "setup",
+   "seconds": 3,
+   "props": {
+    "title": "Open-source models",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "Open-source AI",
+      "icon": "\ud83e\udd16",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "Coding tools",
+      "parent": "root",
+      "icon": "\ud83d\udcbb",
+      "state": "active"
+     },
+     {
+      "id": "b",
+      "label": "Hacking tools",
+      "parent": "root",
+      "icon": "\u26a0\ufe0f",
+      "state": "active"
+     },
+     {
+      "id": "c",
+      "label": "Cyber threats",
+      "parent": "root",
+      "icon": "\ud83d\uded1",
+      "state": "todo"
+     }
+    ]
+   },
+   "caption": "Models being built into cyber threats"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "escalation",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "THINK ABOUT THIS",
+    "parts": [
+     {
+      "text": "It's only"
+     },
+     {
+      "text": "GOING UP",
+      "hot": true
+     },
+     {
+      "text": "from here."
+     }
+    ],
+    "footer": "You need to think about it.",
+    "highlight": "bar"
+   },
+   "caption": "And we're just going up from here"
+  },
+  {
+   "id": "OrbitNodes",
+   "beat": "proof",
+   "seconds": 3,
+   "props": {
+    "hub": {
+     "label": "Called It",
+     "icon": "\ud83d\uddd3\ufe0f"
+    },
+    "nodes": [
+     {
+      "label": "2 months ago"
+     },
+     {
+      "label": "Open models"
+     },
+     {
+      "label": "Cyber risk"
+     },
+     {
+      "label": "Now: true"
+     }
+    ]
+   },
+   "caption": "Just like I said a couple months ago"
+  },
+  {
+   "id": "ChipRow",
+   "beat": "anchor",
+   "seconds": 2.5,
+   "props": {
+    "eyebrow": "Second half of 2026",
+    "chips": [
+     {
+      "text": "Open-source models",
+      "kind": "model",
+      "icon": "\ud83e\udd16",
+      "hot": true
+     },
+     {
+      "text": "Everywhere online",
+      "kind": "platform"
+     },
+     {
+      "text": "Cyber weapons",
+      "kind": "objection"
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true
+   },
+   "caption": "By late 2026 they'll be everywhere online"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "payoff",
+   "seconds": 3,
+   "props": {
+    "kicker": "THE FORECAST",
+    "parts": [
+     {
+      "text": "Used as"
+     },
+     {
+      "text": "CYBER WEAPONS",
+      "hot": true
+     },
+     {
+      "text": "by bad actors."
+     }
+    ],
+    "footer": "The scariest part isn't coming \u2014 it's here.",
+    "highlight": "bar"
+   },
+   "caption": "Used as cyber weapons by bad actors"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta",
+   "seconds": 2,
+   "props": {
+    "name": "AI Unpacked",
+    "tagline": "one AI trick a day",
+    "glyph": "bolt",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "caption": "Follow for more"
+  }
+ ]
+}

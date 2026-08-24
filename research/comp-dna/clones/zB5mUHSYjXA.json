@@ -1,0 +1,189 @@
+{
+ "title": "zB5mUHSYjXA \u00b7 How to make $$ with OpenClaw",
+ "theme": "cream",
+ "accent": "#5C9E88",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "seconds": 2,
+   "props": {
+    "kicker": "part two",
+    "label": "so now you can",
+    "line": "Also make money with this",
+    "punch": "money",
+    "align": "left",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "So now you can also make money",
+   "beat": "hook"
+  },
+  {
+   "id": "BrandBumper",
+   "seconds": 1.5,
+   "props": {
+    "name": "OpenClaw",
+    "tagline": "your AI workforce",
+    "glyph": "spark",
+    "mode": "open"
+   },
+   "caption": "Meet the workforce",
+   "beat": "mascot-intro"
+  },
+  {
+   "id": "ChipRow",
+   "seconds": 2.5,
+   "props": {
+    "eyebrow": "Real gigs on Upwork",
+    "chips": [
+     {
+      "text": "Web Researcher",
+      "kind": "gig",
+      "hot": true
+     },
+     {
+      "text": "CRM Workflow",
+      "kind": "gig",
+      "hot": true
+     },
+     {
+      "text": "Data Analysis",
+      "kind": "gig"
+     },
+     {
+      "text": "Automation Setup",
+      "kind": "gig"
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "stagger": 0.22
+   },
+   "caption": "These gigs are real and paying",
+   "beat": "gig-proof"
+  },
+  {
+   "id": "OrbitNodes",
+   "seconds": 3,
+   "props": {
+    "hub": {
+     "label": "Integrating tools"
+    },
+    "nodes": [
+     {
+      "label": "Capture"
+     },
+     {
+      "label": "Automate"
+     },
+     {
+      "label": "Store"
+     },
+     {
+      "label": "Notify"
+     },
+     {
+      "label": "Orchestrate"
+     },
+     {
+      "label": "Manage"
+     }
+    ]
+   },
+   "caption": "One hub wires every tool together",
+   "beat": "tool-hub"
+  },
+  {
+   "id": "FlowTree",
+   "seconds": 2.5,
+   "props": {
+    "title": "Now build the workforce",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "Agent",
+      "icon": "\ud83e\udd16",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "Data Processing",
+      "parent": "root",
+      "state": "done"
+     },
+     {
+      "id": "b",
+      "label": "System Integration",
+      "parent": "root",
+      "state": "active"
+     },
+     {
+      "id": "c",
+      "label": "Status Notification",
+      "parent": "root",
+      "state": "todo"
+     }
+    ]
+   },
+   "caption": "One prompt splits into three subsystems",
+   "beat": "system-breakdown"
+  },
+  {
+   "id": "AppWindow",
+   "seconds": 2.5,
+   "props": {
+    "title": "Simple Note Editor",
+    "sidebar": [
+     "Inbox",
+     "Ideas",
+     "Today",
+     "Archive"
+    ],
+    "activeIndex": 2,
+    "body": {
+     "kind": "lines",
+     "lines": [
+      "Plan for Tuesday",
+      "- Log the CRM update",
+      "- Notify the client at 4",
+      "- Store the report"
+     ]
+    },
+    "cursor": true,
+    "shadow": true,
+    "tilt": true
+   },
+   "caption": "It writes real notes for you",
+   "beat": "note-demo"
+  },
+  {
+   "id": "StatCloser",
+   "seconds": 2,
+   "props": {
+    "value": 30,
+    "prefix": "$",
+    "suffix": "/mo",
+    "label": "Starter plan",
+    "sub": "simply *stack a* plan as you grow",
+    "theme": "cream"
+   },
+   "caption": "Simply stack a plan and go",
+   "beat": "pricing-payoff"
+  },
+  {
+   "id": "BrandBumper",
+   "seconds": 1.5,
+   "props": {
+    "name": "OpenClaw",
+    "tagline": "build your workforce",
+    "glyph": "spark",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "caption": "Follow for more agent breakdowns",
+   "beat": "cta"
+  }
+ ]
+}

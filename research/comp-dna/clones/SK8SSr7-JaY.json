@@ -1,0 +1,193 @@
+{
+ "title": "SK8SSr7-JaY \u00b7 The biggest moment in open source AI",
+ "theme": "paperYellow",
+ "accent": "#F5E642",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook-claim",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "Kimi K3 \u00b7 Moonshot AI",
+    "label": "This is",
+    "line": "The biggest moment in open source AI.",
+    "punch": "biggest",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "The biggest moment in open source AI"
+  },
+  {
+   "id": "StatCloser",
+   "beat": "proof-params",
+   "seconds": 2.5,
+   "props": {
+    "value": 2800,
+    "suffix": "B",
+    "label": "Parameters",
+    "sub": "an incredible model \u2014 *almost 3 trillion*",
+    "compare": {
+     "label": "typical open model",
+     "value": 70,
+     "suffix": "B"
+    }
+   },
+   "caption": "Almost 3 trillion parameters, by far the best open model"
+  },
+  {
+   "id": "ChipRow",
+   "beat": "market-reaction",
+   "seconds": 2,
+   "props": {
+    "eyebrow": "I think this is",
+    "chips": [
+     {
+      "text": "DeepSeek moment",
+      "kind": "model",
+      "icon": "\ud83d\udcc9",
+      "hot": true
+     },
+     {
+      "text": "Market shock",
+      "kind": "objection"
+     },
+     {
+      "text": "Open weights",
+      "kind": "toggle",
+      "hot": true
+     }
+    ],
+    "align": "center",
+    "size": "md"
+   },
+   "caption": "I think this is a DeepSeek moment"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "pivot-question",
+   "seconds": 2,
+   "props": {
+    "kicker": "But is it",
+    "parts": [
+     {
+      "text": "Can you"
+     },
+     {
+      "text": "self-host it?",
+      "hot": true
+     }
+    ],
+    "footer": "It's possible \u2014 but it's not cheap",
+    "highlight": "bar"
+   },
+   "caption": "But is it possible to self-host it?"
+  },
+  {
+   "id": "VsTable",
+   "beat": "cost-breakdown",
+   "seconds": 2.5,
+   "props": {
+    "title": "What it takes to run it",
+    "colA": "Cheapest",
+    "colB": "Realistic",
+    "rows": [
+     {
+      "label": "hardware",
+      "a": "$11,000",
+      "b": "$25,000",
+      "verdict": "b"
+     },
+     {
+      "label": "spent mostly on",
+      "a": "GPUs",
+      "b": "RAM",
+      "verdict": "b"
+     }
+    ]
+   },
+   "caption": "$11 to $12 thousand cheapest, more realistically $25,000"
+  },
+  {
+   "id": "Odometer",
+   "beat": "speed-cost-twist",
+   "seconds": 2.5,
+   "props": {
+    "value": 350000,
+    "prefix": "$",
+    "suffix": "/day",
+    "label": "At real-world throughput",
+    "delta": "5-10 tok/s slow, 50+ tok/s at scale"
+   },
+   "caption": "At scale, that speed is like $350,000 a day"
+  },
+  {
+   "id": "ChipRow",
+   "beat": "who-benefits",
+   "seconds": 2,
+   "props": {
+    "eyebrow": "Who actually benefits?",
+    "chips": [
+     {
+      "text": "OpenAI",
+      "kind": "model",
+      "icon": "\ud83d\udd12"
+     },
+     {
+      "text": "Anthropic",
+      "kind": "model",
+      "icon": "\ud83d\udd12"
+     },
+     {
+      "text": "Can't restrict open weights",
+      "kind": "toggle",
+      "hot": true
+     }
+    ],
+    "align": "center",
+    "size": "md"
+   },
+   "caption": "It forces closed labs to build better models"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "mic-drop-closer",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "Ultimately",
+    "parts": [
+     {
+      "text": "This is just"
+     },
+     {
+      "text": "MULTIPLICATION.",
+      "hot": true
+     },
+     {
+      "text": "You can't"
+     },
+     {
+      "text": "ban math.",
+      "hot": true
+     }
+    ],
+    "footer": "The weights are already out",
+    "highlight": "bar"
+   },
+   "caption": "Ultimately this is just multiplication \u2014 you can't ban math"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta-close",
+   "seconds": 2,
+   "props": {
+    "name": "AI Unpacked",
+    "tagline": "open source, decoded",
+    "glyph": "orbit",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "caption": "Follow for more open-source breakdowns"
+  }
+ ]
+}

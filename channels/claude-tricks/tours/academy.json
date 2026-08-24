@@ -1,0 +1,147 @@
+{
+  "_note": "EP2 tape: academy.claude.com (Anthropic's Claude Academy), anonymous, DARK (VJ 2026-08-23: dark mode for these captures), desktop. SPA — pre-wait for hydration. Needles VERBATIM from the live pages 2026-08-23. One tape; beats re-order via per-beat `from`. Cookie banner dismissed with 'Reject all' (privacy-preserving; a real user action, not a pixel edit).",
+  "url": "https://academy.claude.com",
+  "view": "desktop",
+  "dark": true,
+  "steps": [
+    {
+      "do": "wait",
+      "s": 1.2
+    },
+    {
+      "do": "click",
+      "selector": "button:has-text(\"Reject all\")"
+    },
+    {
+      "do": "wait",
+      "s": 0.8
+    },
+    {
+      "do": "wait",
+      "s": 2.0
+    },
+    {
+      "do": "focus",
+      "selector": "h1",
+      "label": "hero",
+      "hold": 1.6,
+      "zoom": 1.5
+    },
+    {
+      "do": "wait",
+      "s": 0.6
+    },
+    {
+      "do": "scroll",
+      "to_selector": "a[href='/courses/ai-fluency-framework-foundations']",
+      "margin": 220,
+      "smooth": true,
+      "dur": 1.6
+    },
+    {
+      "do": "wait",
+      "s": 0.8
+    },
+    {
+      "do": "focus",
+      "selector": "a[href='/courses/ai-fluency-framework-foundations']",
+      "label": "fluency-card",
+      "hold": 2.4,
+      "zoom": 2.0
+    },
+    {
+      "do": "wait",
+      "s": 0.4
+    },
+    {
+      "do": "select",
+      "selector": "a[href='/courses/ai-fluency-framework-foundations']",
+      "text": "14 lessons",
+      "hold": 1.8
+    },
+    {
+      "do": "wait",
+      "s": 0.6
+    },
+    {
+      "do": "focus",
+      "selector": "a[href='/tutorials/the-4-properties-of-ai']",
+      "label": "seven-min",
+      "hold": 2.2,
+      "zoom": 2.0
+    },
+    {
+      "do": "wait",
+      "s": 0.4
+    },
+    {
+      "do": "select",
+      "selector": "a[href='/tutorials/the-4-properties-of-ai']",
+      "text": "7 min",
+      "hold": 1.8
+    },
+    {
+      "do": "wait",
+      "s": 0.6
+    },
+    {
+      "do": "scroll",
+      "to_selector": "a[href='/products/code']",
+      "margin": 260,
+      "smooth": true,
+      "dur": 1.4
+    },
+    {
+      "do": "wait",
+      "s": 0.7
+    },
+    {
+      "do": "select",
+      "selector": "a[href='/products/code']",
+      "text": "Claude Code",
+      "hold": 1.8
+    },
+    {
+      "do": "wait",
+      "s": 0.6
+    },
+    {
+      "do": "click",
+      "selector": "a[href='/courses/ai-fluency-framework-foundations']"
+    },
+    {
+      "do": "wait",
+      "s": 2.6
+    },
+    {
+      "do": "select",
+      "selector": "main",
+      "text": "Completion badge",
+      "hold": 2.2
+    },
+    {
+      "do": "wait",
+      "s": 0.6
+    },
+    {
+      "do": "select",
+      "selector": "main",
+      "text": "Sign in to save progress",
+      "hold": 2.0
+    },
+    {
+      "do": "wait",
+      "s": 0.6
+    },
+    {
+      "do": "select",
+      "selector": "main",
+      "text": "Start course",
+      "hold": 2.4
+    },
+    {
+      "do": "wait",
+      "s": 2.0
+    }
+  ]
+}

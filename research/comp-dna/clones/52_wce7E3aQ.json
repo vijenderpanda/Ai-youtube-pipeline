@@ -1,0 +1,166 @@
+{
+ "title": "52_wce7E3aQ \u00b7 the most important paper in AI history",
+ "theme": "paperYellow",
+ "accent": "#F5D400",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "We bought this",
+    "label": "Meet",
+    "line": "The most important paper in AI history",
+    "punch": "most important",
+    "align": "left",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "We bought this \u2014 it's a big deal"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "setup",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "The paper",
+    "parts": [
+     {
+      "text": "Attention"
+     },
+     {
+      "text": "Is All"
+     },
+     {
+      "text": "You Need.",
+      "hot": true
+     }
+    ],
+    "footer": "The famous transformer paper.",
+    "highlight": "bar"
+   },
+   "caption": "It's the famous transformer paper"
+  },
+  {
+   "id": "FlowTree",
+   "beat": "proof/explainer",
+   "seconds": 3,
+   "props": {
+    "title": "One architecture, every model",
+    "direction": "down",
+    "nodes": [
+     {
+      "id": "root",
+      "label": "Transformer",
+      "icon": "\ud83d\udcc4",
+      "state": "done"
+     },
+     {
+      "id": "a",
+      "label": "Pre-training",
+      "parent": "root",
+      "icon": "\ud83e\udde0",
+      "state": "done"
+     },
+     {
+      "id": "b",
+      "label": "GPT",
+      "parent": "root",
+      "icon": "\ud83e\udd16",
+      "state": "active"
+     },
+     {
+      "id": "c",
+      "label": "Modern AI",
+      "parent": "root",
+      "icon": "\u2726",
+      "state": "todo"
+     }
+    ]
+   },
+   "caption": "This is the architecture all current AI runs on"
+  },
+  {
+   "id": "OrbitNodes",
+   "beat": "proof/explainer",
+   "seconds": 2.5,
+   "props": {
+    "hub": {
+     "label": "Transformer",
+     "icon": "\ud83d\udcc4"
+    },
+    "nodes": [
+     {
+      "label": "Pre-trained",
+      "icon": "\ud83e\udde0"
+     },
+     {
+      "label": "GPU rack",
+      "icon": "\ud83d\udda5\ufe0f"
+     },
+     {
+      "label": "MLP layers",
+      "icon": "\ud83d\udd22"
+     },
+     {
+      "label": "Attention",
+      "icon": "\ud83d\udd17"
+     }
+    ],
+    "spin": 3
+   },
+   "caption": "Pre-trained, GPU-scaled \u2014 this paper is the basis"
+  },
+  {
+   "id": "SplitHead",
+   "beat": "payoff",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "Figure 1",
+    "label": "So",
+    "line": "All modern AI traces back to this",
+    "punch": "traces back",
+    "align": "center",
+    "size": "lg",
+    "underline": "line"
+   },
+   "caption": "So all modern AI traces back to this"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "proof (brand)",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "Without it",
+    "parts": [
+     {
+      "text": "No ChatGPT.",
+      "hot": true
+     },
+     {
+      "text": "No"
+     },
+     {
+      "text": "modern AI."
+     }
+    ],
+    "footer": "None of it exists without this paper.",
+    "highlight": "underline"
+   },
+   "caption": "Without it, no ChatGPT, none of it"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta/closer",
+   "seconds": 2,
+   "props": {
+    "name": "Extremely...",
+    "tagline": "you know the rest",
+    "glyph": "spark",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "caption": "This paper is extremely..."
+  }
+ ]
+}

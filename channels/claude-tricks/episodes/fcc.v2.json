@@ -1,0 +1,424 @@
+{
+  "_note": "OPTION A (2026-08-23) — 'This Repo Gives You Claude Code FREE'. WEB-TOUR template + the approved wtdemo host-PIP look (Sol bottom-left over the tour, per-line karaoke beside him). Tape = tapes/fcc_tape.mp4 (31.2s, github.com/Alishahryar1/free-claude-code, dark, desktop, recorded 2026-08-23 via rec_web_tour.py tours/fcc.json). Camera centers/zooms and selection rects are the TRUED numbers from tapes/fcc_tape.tour.json; `from` per beat re-orders the tape (tour=title/stars/tagline, catch=free-tier note, install=curl line, cta=stars again). Camera `at` values are COMPONENT-CLOCK seconds and are provisional until VO is measured — the KNEE LAW needs the stars punch at ABSOLUTE 6.00s; true `tour.from`/`camera[].at` after the first VO timing. Honesty: real page only, never retimed; provenance strip ON; 'free TIERS' + 'you bring a key' spoken out loud; page's own caveat line is the catch sweep. caption_from=1.6 keeps the burned caption off the cold-open (HeroDrop's own type carries it). SFX via top-level `sfx` (NOT film mode — film mode would replace the karaoke look). Bed bed_webtour (G2 pad).",
+  "title": "This Repo Gives You Claude Code FREE 👀",
+  "tags": "claude code,free claude code,claude code free,free ai coding,anthropic,claude,github repo,ai coding agent,openrouter,groq,nvidia nim,ai tools 2026,ai unpacked,claude code tutorial,free ai tools",
+  "lines": [
+    "This GitHub repo lets you run Claude Code. For free.",
+    "Forty-seven thousand people already starred it. Look at that counter.",
+    "One point three billion free tokens a month. From forty-nine providers.",
+    "Your Claude Code stays exactly the same. Only the bill moves. To free tiers.",
+    "The catch: you bring a free key. NVIDIA, Groq, OpenRouter. The limits are theirs, not mine.",
+    "One line in your terminal installs it. Watch it type.",
+    "That's it. The exact line is pinned below."
+  ],
+  "hot_words": [
+    "FREE",
+    "47,000",
+    "LOOK",
+    "1.3",
+    "BILLION",
+    "49",
+    "SAME",
+    "BILL",
+    "FREE",
+    "TIERS",
+    "CATCH",
+    "FREE",
+    "KEY",
+    "NVIDIA",
+    "GROQ",
+    "OPENROUTER",
+    "THEIRS",
+    "ONE",
+    "LINE",
+    "WATCH",
+    "PINNED"
+  ],
+  "beats": [
+    "cook:HeroDrop#hook",
+    "cook:WebTour#tour",
+    "cook:WebTour#tour",
+    "cook:VsTable#why",
+    "cook:WebTour#catch",
+    "cook:TermRun#how",
+    "cook:WebTour#install"
+  ],
+  "caption_from": "@beat1",
+  "music": "music/bed_active.mp3",
+  "cookbook": {
+    "HeroDrop#hook": {
+      "emoji": "🔓",
+      "onSrc": "tapes/fcc_hero.jpg",
+      "caption": {
+        "parts": [
+          {
+            "t": "Claude Code.",
+            "face": "sans"
+          },
+          {
+            "t": "for free.",
+            "face": "serif",
+            "accent": true
+          }
+        ]
+      },
+      "dropAt": 0.1,
+      "size": 400,
+      "_note": "onSrc = tapes/fcc_hero.jpg: the tape's own 1.0s frame composed at the WebTour card geometry (1016x572 @ 32,602 on ink) so the padlock lands on the REAL page and the cut into the live tour is continuous. Burned karaoke held off until @beat1 (HeroDrop's own caption carries the claim).",
+      "partAt": [
+        1.9,
+        3.05
+      ],
+      "_twin_note": "U2 visual twins in the hook (measured VO): padlock lands ~0.9s; 'Claude Code.' lands at 1.90 ON the word; 'for free.' pops at 3.05 ON the word."
+    },
+    "WebTour#tour": {
+      "src": "tapes/fcc_tape.mp4",
+      "url": "https://github.com/Alishahryar1/free-claude-code",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 7.0,
+      "_camera_note": "KNEE (G9): base pose is wide (zoom 1.0, idle drift) so the 6.00s punch is 1.0->2.6 onto the star counter — landing ON 'STARRED' (5.98s measured) with the +2dB pop; pull-back at beat+3.3 (7.39s) so it does not out-shout the knee; tagline punch beat+6.0 / sweep 6.38 (tape 13.38). v4 failed G9 with a 1.22->2.3 punch (loudest second was the 8s pull-back).",
+      "camera": [
+        {
+          "at": 1.41,
+          "dur": 0.5,
+          "center": [
+            0.947,
+            0.142
+          ],
+          "zoom": 2.6,
+          "hold": 1.3
+        },
+        {
+          "at": 3.3,
+          "dur": 0.6,
+          "center": [
+            0.5,
+            0.5
+          ],
+          "zoom": 1.0,
+          "hold": 1.6
+        },
+        {
+          "at": 6.0,
+          "dur": 0.55,
+          "center": [
+            0.247,
+            0.779
+          ],
+          "zoom": 1.9,
+          "hold": 2.0
+        }
+      ],
+      "selections": [
+        {
+          "at": 6.38,
+          "rects": [
+            [
+              0.0758,
+              0.7664,
+              0.4183,
+              0.7914
+            ]
+          ],
+          "scrollTop": 1053,
+          "hold": 2.0,
+          "sweep": "ltr"
+        }
+      ],
+      "host": true,
+      "hostSize": 360
+    },
+    "VsTable#why": {
+      "title": "what changes",
+      "colA": "Claude Code today",
+      "colB": "With this repo",
+      "rows": [
+        {
+          "label": "your terminal",
+          "a": "same",
+          "b": "same",
+          "verdict": "none"
+        },
+        {
+          "label": "the agent",
+          "a": "Claude Code",
+          "b": "Claude Code",
+          "verdict": "none"
+        },
+        {
+          "label": "who pays",
+          "a": "your card",
+          "b": "free tiers",
+          "verdict": "b"
+        },
+        {
+          "label": "you bring",
+          "a": "a login",
+          "b": "a free key",
+          "verdict": "b"
+        }
+      ],
+      "rowStagger": 0.55
+    },
+    "WebTour#catch": {
+      "src": "tapes/fcc_tape.mp4",
+      "url": "https://github.com/Alishahryar1/free-claude-code",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 17.9,
+      "camera": [
+        {
+          "at": 0.3,
+          "dur": 0.6,
+          "center": [
+            0.274,
+            0.751
+          ],
+          "zoom": 1.9,
+          "hold": 3.6
+        }
+      ],
+      "selections": [
+        {
+          "at": 0.85,
+          "rects": [
+            [
+              0.0508,
+              0.7386,
+              0.498,
+              0.7636
+            ]
+          ],
+          "scrollTop": 1473,
+          "hold": 3.4,
+          "sweep": "ltr"
+        }
+      ],
+      "host": true,
+      "hostSize": 360
+    },
+    "TermRun#how": {
+      "cmd": "curl -fsSL \"https://raw.githubusercontent.com/Alishahryar1/free-claude-code/main/scripts/install.sh\" | sh",
+      "typeStart": 0.4,
+      "charsPerSec": 44,
+      "promptLabel": "~",
+      "response": [
+        {
+          "t": "free-claude-code · installer",
+          "tone": "info"
+        },
+        {
+          "t": "pick an agent → Claude Code",
+          "tone": "ok"
+        },
+        {
+          "t": "next: add ONE free provider key",
+          "tone": "accent"
+        }
+      ],
+      "lineStagger": 0.22
+    },
+    "WebTour#install": {
+      "src": "tapes/fcc_tape.mp4",
+      "url": "https://github.com/Alishahryar1/free-claude-code",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 24.2,
+      "camera": [
+        {
+          "at": 0.3,
+          "dur": 0.55,
+          "center": [
+            0.39,
+            0.397
+          ],
+          "zoom": 1.42,
+          "hold": 2.4
+        }
+      ],
+      "selections": [
+        {
+          "at": 0.9,
+          "rects": [
+            [
+              0.5814,
+              0.3845,
+              0.735,
+              0.4067
+            ]
+          ],
+          "scrollTop": 2351,
+          "hold": 2.0,
+          "sweep": "ltr"
+        }
+      ],
+      "host": true,
+      "hostSize": 360,
+      "_note": "payoff punch: zoom 1.42 centered x=0.39 so the WHOLE curl line (tape x 0.05-0.735) stays inside the card while it is selected (v2 cut it at 'scripts/instal')."
+    }
+  },
+  "sfx": [
+    {
+      "at": 0.02,
+      "name": "pop",
+      "gain_db": 1,
+      "note": "opening attack at frame 0 (the riser alone left ~0.3s near-silent)"
+    },
+    {
+      "at": "@beat0",
+      "name": "riser",
+      "note": "under the padlock fall"
+    },
+    {
+      "at": "@beat0+1.2",
+      "name": "pop",
+      "note": "HeroDrop landing"
+    },
+    {
+      "at": "@beat1",
+      "name": "whoosh_up",
+      "note": "into the tour"
+    },
+    {
+      "at": 6.0,
+      "name": "pop",
+      "gain_db": 2,
+      "note": "KNEE: stars punch lands here (absolute)"
+    },
+    {
+      "at": "@beat1+4.2",
+      "name": "whoosh_down",
+      "note": "pull back + scroll to README"
+    },
+    {
+      "at": "@beat1+6.4",
+      "name": "pop",
+      "note": "tagline sweep ON content"
+    },
+    {
+      "at": "@beat2",
+      "name": "whoosh_up",
+      "note": "into VsTable"
+    },
+    {
+      "at": "@beat2+1.7",
+      "name": "pop",
+      "gain_db": -3,
+      "note": "who-pays verdict"
+    },
+    {
+      "at": "@beat2+2.3",
+      "name": "pop",
+      "gain_db": -3,
+      "note": "you-bring verdict"
+    },
+    {
+      "at": "@beat3",
+      "name": "whoosh_down",
+      "note": "into the catch"
+    },
+    {
+      "at": "@beat3+0.85",
+      "name": "pop",
+      "note": "caveat-line sweep"
+    },
+    {
+      "at": "@beat4",
+      "name": "whoosh_up",
+      "note": "into the terminal"
+    },
+    {
+      "at": "@beat4+0.4",
+      "name": "keys",
+      "note": "TermRun typeStart"
+    },
+    {
+      "at": "@beat4+3.6",
+      "name": "pop",
+      "gain_db": -3,
+      "note": "installer lines stream"
+    },
+    {
+      "at": "@beat4+4.0",
+      "name": "riser",
+      "note": "riser into the payoff (ends ~beat6; minus-anchors unsupported)"
+    },
+    {
+      "at": "@beat5+0.9",
+      "name": "pop",
+      "note": "payoff: the curl line selected on the REAL page"
+    },
+    {
+      "at": "@beat5+1.9",
+      "name": "slam",
+      "note": "THE stop-and-slam (~85%) — duck window ends here"
+    }
+  ],
+  "duck": "@beat5+1.76,@beat5+1.90",
+  "desc_cta": "Which repo should I open next? Tell me below.",
+  "desc_prompt": "📋 THE EXACT LINE (macOS/Linux — read the installer first if you like):\n\ncurl -fsSL \"https://raw.githubusercontent.com/Alishahryar1/free-claude-code/main/scripts/install.sh\" | sh\n\nThen add ONE free provider key (NVIDIA NIM · Groq · OpenRouter). Free tiers have limits set by each provider.",
+  "steps": [],
+  "_sfx_note": "@beatN = PROPS SEGMENT index (post-merge: 0 hero,1 tour[lines 2+3],2 VsTable,3 catch,4 TermRun,5 install,6 cta), NOT the lines index.",
+  "outro": true,
+  "outro_src": "epfcc/outro_card.mp4",
+  "outro_cta": "Follow, I tour one AI repo every day. Which one should I open next?",
+  "_outro_note": "VJ 2026-08-23: the CTA is the OUTRO STING (OutroGlass card) with Sol in a ~300px TALKING circle disc — host clip for THIS beat only via EchoMimic on the 3060 worker (scripts/avatar_render.py --track echomimic_local; HeyGen = fallback), cut from assets/epfcc/outro_cta.wav. Card rendered by gen_outro_glass.py at EXACTLY 0.45 + cta_dur + 0.8 s with --avatar <clip> --avatar-size 300 --avatar-delay 0.45 so build_ep_v2's outro retime ratio is 1 (a retimed talking disc would desync). Body ends on the payoff slam; line 8 moved here.",
+  "music_gain_db": 2.0,
+  "music_fade_in": 0.25,
+  "_bed_note": "VJ 2026-08-23 'opening sounds cold': bed_active's first ~30s is a quiet intro (-13.5 dB RMS) and its drop lands at ~31s (-8 dB, +5.5 dB). bed_active in-point 31.5s is now the CHANNEL DEFAULT in build_ep_v2 (BED_DEFAULT_OFFSET); gain trimmed 3->2 dB since the drop section is hotter; fade-in 0.25. Opening hit: pop at 0.02 so frame 0 has an attack (riser alone was soft).",
+  "pings": [
+    {
+      "at": "@beat1+6.5",
+      "kind": "like",
+      "tip": "free. really.",
+      "dur": 2.2
+    },
+    {
+      "at": "@beat5+1.0",
+      "kind": "comment",
+      "tip": "pinned below",
+      "dur": 2.2
+    }
+  ],
+  "outro_pings": [
+    {
+      "at": 0.5,
+      "kind": "subscribe",
+      "tip": "follow",
+      "dur": 2.6
+    }
+  ],
+  "_pings_note": "EngagePing (VJ's engagement glow, shape-matched at the YT button spots) fired on the words: LIKE on the '1.3B free tokens' sweep, COMMENT on 'pinned below', SUBSCRIBE on the outro 'Follow' (outro_pings -> gen_outro_glass --pings). Rationed to 3.",
+  "tour_rail": {
+    "stops": [
+      {
+        "label": "47K ★",
+        "at": "@beat1"
+      },
+      {
+        "label": "1.3B free",
+        "at": "@beat1+4.0"
+      },
+      {
+        "label": "the swap",
+        "at": "@beat2"
+      },
+      {
+        "label": "the catch",
+        "at": "@beat3"
+      },
+      {
+        "label": "one line",
+        "at": "@beat4"
+      },
+      {
+        "label": "payoff",
+        "at": "@beat5"
+      }
+    ],
+    "from": "@beat1",
+    "y": 300
+  },
+  "_rail_note": "TourRail (VJ 2026-08-23): fills the void between header and card — hairline + beat dots + gliding comet + current label; hidden on the hero, lit from the tour; the payoff dot breathes ahead (open loop). Stops on the merged-segment clock."
+}

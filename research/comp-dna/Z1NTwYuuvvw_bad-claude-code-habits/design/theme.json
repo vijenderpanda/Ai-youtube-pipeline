@@ -1,0 +1,41 @@
+{
+  "palette": {
+    "bg": "#D9D6CE",
+    "fg": "#1A1A1A",
+    "accent": "#E8792E",
+    "accent2": "#F2B84A",
+    "caption_fill": "#FFF200",
+    "caption_stroke": "#000000"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "system rounded sans-serif (SF Pro Rounded / similar app-UI font)",
+      "weight": "bold",
+      "case": "sentence-case, italic used on the single emphasized word (e.g. 'Opus', 'Claude.md', 'fix my repo')",
+      "size_rel": "0.85 of frame width block, ~2-line max"
+    },
+    "caption": {
+      "family_guess": "bold grotesque sans (TikTok/CapCut default style)",
+      "weight": "black",
+      "case": "lowercase as spoken, one word revealed at a time",
+      "size_rel": "large, ~1/10 frame height, centered lower-middle third"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "centered bust shot, static camera, fills ~70% frame width, head near top third",
+    "safe_zones": "top ~8% and bottom ~10% kept clear of text; lower-third band (55-75% height) reserved for the black title card; word captions sit ~45-55% height, above the card",
+    "caption_pos": "single word, centered horizontally, vertically just above the black label card"
+  },
+  "motion": {
+    "cut_rate_per_10s": 0,
+    "zoom_punches": false,
+    "transitions": ["hard cut only between host-only and host+screenshot/diagram inserts", "no crossfades, no camera movement — static locked-off webcam shot throughout"]
+  },
+  "themeable": [
+    "accent (orange) and accent2 (gold) — can be swapped to any channel brand color pair",
+    "caption_fill/stroke — yellow-on-black is generic TikTok default, freely themeable",
+    "black label card background/text — content-specific per habit, structurally reusable as a lower-third 'chapter card'",
+    "bg wall/office is NOT themeable (real environment) — a synthetic host replacement would need its own background"
+  ]
+}

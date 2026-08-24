@@ -1,0 +1,42 @@
+{
+  "palette": {
+    "bg": "#d7e6f2",
+    "fg": "#173a5e",
+    "accent": "#1c6fd6",
+    "accent2": "#2b3d52",
+    "caption_fill": "#1c3a5c",
+    "caption_stroke": "#ffffff"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "Poppins/Gilroy-style geometric sans, bold",
+      "weight": "800-900",
+      "case": "upper for stat words (WATER, 2400L), sentence-case for phrase captions (But Remember)",
+      "size_rel": "huge for single stat numbers (0.5x screen width), medium for phrase captions (2 lines max)"
+    },
+    "caption": {
+      "family_guess": "same geometric sans, semibold",
+      "weight": "700",
+      "case": "mixed, short phrase fragments",
+      "size_rel": "small pill-label size, ~0.05 of frame height"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "centered full-bleed frame in early b-roll (island/field), later tight chest-up talking-head inside a red-arched doorway vignette",
+    "safe_zones": "bottom ~15% reserved for platform-UI end card only at very end; captions sit mid-lower third, stat numbers sit center or upper-third",
+    "caption_pos": "short colored pill/badge captions bottom-left or center under host chin; big stat text centered mid-frame over b-roll/graphic"
+  },
+  "motion": {
+    "cut_rate_per_10s": 8,
+    "zoom_punches": true,
+    "transitions": ["hard cut", "text pop-in with slight scale/glow", "match-cut host walk to next b-roll", "graphic build-up (bars/glasses filling one by one)"]
+  },
+  "themeable": [
+    "accent color (currently AI-blue, swappable per topic)",
+    "stat number graphic style (glass/bottle fill, bar chart, map heat)",
+    "host outfit color",
+    "caption pill background color",
+    "b-roll footage (island/field/server-room are content-specific, swappable)"
+  ]
+}

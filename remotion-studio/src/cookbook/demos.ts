@@ -30,6 +30,13 @@ import { serifCapDemo } from "./SerifCap";
 import { heroDropDemo } from "./HeroDrop";
 import { vsTableDemo } from "./VsTable";
 import { termRunDemo } from "./TermRun";
+import { phoneMockDemo } from "./PhoneMock";
+import { flowTreeDemo } from "./FlowTree";
+import { statCloserDemo } from "./StatCloser";
+import { chipRowDemo } from "./ChipRow";
+import { brandBumperDemo } from "./BrandBumper";
+import { splitHeadDemo } from "./SplitHead";
+import { appWindowDemo } from "./AppWindow";
 
 // deno-lint-ignore no-explicit-any
 export const COOKBOOK_DEMOS: Record<string, any> = {
@@ -55,4 +62,11 @@ export const COOKBOOK_DEMOS: Record<string, any> = {
   HeroDrop: heroDropDemo,
   VsTable: vsTableDemo,
   TermRun: termRunDemo,
+  PhoneMock: phoneMockDemo,
+  FlowTree: flowTreeDemo,
+  StatCloser: statCloserDemo,
+  ChipRow: chipRowDemo,
+  BrandBumper: brandBumperDemo,
+  SplitHead: splitHeadDemo,
+  AppWindow: appWindowDemo,
 };

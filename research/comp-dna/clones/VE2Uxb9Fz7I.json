@@ -1,0 +1,167 @@
+{
+ "title": "VE2Uxb9Fz7I \u00b7 Claude Cowork Explained",
+ "theme": "cream",
+ "accent": "#E8623D",
+ "blocks": [
+  {
+   "id": "BrandBumper",
+   "seconds": 2,
+   "props": {
+    "name": "Claude Cowork",
+    "glyph": "bolt",
+    "mode": "open"
+   },
+   "caption": "Meet Claude Cowork",
+   "beat": "open_bumper"
+  },
+  {
+   "id": "SplitHead",
+   "seconds": 2,
+   "props": {
+    "kicker": "New",
+    "label": "Built for",
+    "line": "Non-coders can use it too",
+    "punch": "Non-coders",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "This isn't just for developers",
+   "beat": "non_coders"
+  },
+  {
+   "id": "ChatApp",
+   "seconds": 3,
+   "props": {
+    "appName": "Cowork",
+    "status": "online",
+    "messages": [
+     {
+      "from": "user",
+      "text": "organize my receipts please"
+     },
+     {
+      "from": "ai",
+      "text": "On it \u2014 scanning your files now."
+     }
+    ]
+   },
+   "caption": "Simply ask it to do things",
+   "beat": "ask_prompt"
+  },
+  {
+   "id": "ChatApp",
+   "seconds": 3,
+   "props": {
+    "appName": "Cowork",
+    "status": "online",
+    "messages": [
+     {
+      "from": "ai",
+      "text": "I've examined all four receipts and matched vendor, date, amount."
+     },
+     {
+      "from": "ai",
+      "artifact": {
+       "title": "Receipts renamed",
+       "subtitle": "Spreadsheet \u00b7 XLSX",
+       "action": "Open"
+      }
+     }
+    ]
+   },
+   "caption": "It reads, sorts, and renames every file",
+   "beat": "proof_result"
+  },
+  {
+   "id": "OrbitNodes",
+   "seconds": 2.5,
+   "props": {
+    "hub": {
+     "label": "Claude"
+    },
+    "nodes": [
+     {
+      "label": "Email"
+     },
+     {
+      "label": "Calendar"
+     },
+     {
+      "label": "Slack"
+     },
+     {
+      "label": "Drive"
+     },
+     {
+      "label": "Docs"
+     },
+     {
+      "label": "Chat"
+     }
+    ],
+    "spin": 3
+   },
+   "caption": "It can reach into all your apps",
+   "beat": "reach_network"
+  },
+  {
+   "id": "KineticQuote",
+   "seconds": 2,
+   "props": {
+    "kicker": "Wait",
+    "parts": [
+     {
+      "text": "What about"
+     },
+     {
+      "text": "THE SAFETY",
+      "hot": true
+     }
+    ],
+    "highlight": "bar"
+   },
+   "caption": "But what about the safety?",
+   "beat": "elephant_twist"
+  },
+  {
+   "id": "VsTable",
+   "seconds": 2.5,
+   "props": {
+    "title": "You stay in control",
+    "colA": "No confirm",
+    "colB": "Ask first",
+    "rows": [
+     {
+      "label": "share file",
+      "a": "auto-sent",
+      "b": "you approve",
+      "verdict": "b"
+     },
+     {
+      "label": "delete file",
+      "a": "auto-deleted",
+      "b": "you approve",
+      "verdict": "b"
+     }
+    ],
+    "rowStagger": 0.5
+   },
+   "caption": "You approve every risky action first",
+   "beat": "approve_deny"
+  },
+  {
+   "id": "BrandBumper",
+   "seconds": 2,
+   "props": {
+    "name": "Claude Cowork",
+    "tagline": "the possibilities are fascinating",
+    "glyph": "bolt",
+    "mode": "close",
+    "cta": "Follow for more"
+   },
+   "caption": "And that's just the beginning",
+   "beat": "close_bumper"
+  }
+ ]
+}

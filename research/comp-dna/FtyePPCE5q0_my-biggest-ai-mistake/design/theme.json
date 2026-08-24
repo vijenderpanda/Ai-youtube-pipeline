@@ -1,0 +1,37 @@
+{
+  "palette": {
+    "bg": "#0D0D0D",
+    "bg_alt": "#F2EFE9",
+    "fg": "#FFFFFF",
+    "accent": "#FFD400",
+    "accent2": "#2EC4E8",
+    "caption_fill": "#FFD400",
+    "caption_stroke": "#000000"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "Inter/Helvetica Bold (system sans)",
+      "weight": "800",
+      "case": "sentence",
+      "size_rel": "0.09h (hook card, 2-line max)"
+    },
+    "caption": {
+      "family_guess": "Inter/Helvetica Bold (system sans)",
+      "weight": "800",
+      "case": "sentence",
+      "size_rel": "0.055h, 1-3 words per card, thick black stroke"
+    }
+  },
+  "layout": {
+    "host": "pip",
+    "host_pos": "circular mask, upper-center, ~45% frame width, cutout on plain white/dark wall bg",
+    "safe_zones": "bottom 20% reserved for platform UI (like/share/comment rail on right edge implied, avoid placing text there); captions sit center-low under host circle",
+    "caption_pos": "center, ~60-65% down frame, single word/phrase per beat, swaps every ~1s"
+  },
+  "motion": {
+    "cut_rate_per_10s": 10,
+    "zoom_punches": false,
+    "transitions": ["hard cut on every spoken word/phrase (word-synced caption swap)", "host circle cross-fades to full-bleed diagram/screenshot and back", "bg toggles dark<->light depending on inserted asset"]
+  },
+  "themeable": ["accent (caption fill)", "accent2 (diagram line color)", "bg (dark vs light insert cards)", "host_pos/mask shape", "diagram content"]
+}

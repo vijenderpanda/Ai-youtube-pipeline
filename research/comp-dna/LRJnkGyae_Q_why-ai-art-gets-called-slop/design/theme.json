@@ -1,0 +1,41 @@
+{
+  "palette": {
+    "bg": "#3a3226",
+    "fg": "#2a1f14",
+    "accent": "#f2d94e",
+    "accent2": "#8fae5a",
+    "caption_fill": "#f2d94e",
+    "caption_stroke": "#2a1f14"
+  },
+  "typography": {
+    "headline": {
+      "family_guess": "system sans (SF/Helvetica-like)",
+      "weight": "600-700",
+      "case": "sentence",
+      "size_rel": "small, ~0.03h, single line in a white speech-bubble at top"
+    },
+    "caption": {
+      "family_guess": "bold condensed sans (Montserrat/Poppins Bold)",
+      "weight": "800",
+      "case": "upper",
+      "size_rel": "~0.035h, 1-3 word bursts"
+    }
+  },
+  "layout": {
+    "host": "full",
+    "host_pos": "full-bleed vertical face-cam, seated, chest-up, centered slightly left",
+    "safe_zones": "top 8% reserved for title bubble; bottom 10% reserved for caption pill; sides ~4% margin",
+    "caption_pos": "bottom-third, overlapping chin/chest, small pill/box per word-burst"
+  },
+  "motion": {
+    "cut_rate_per_10s": 0,
+    "zoom_punches": false,
+    "transitions": ["none — single continuous static talking-head shot, no cuts/b-roll for whole 97s"]
+  },
+  "themeable": [
+    "caption_fill/caption_stroke colors",
+    "title bubble text",
+    "accent (caption pill color) can be swapped per channel brand",
+    "background (host's room) is fixed/non-themeable unless re-shot"
+  ]
+}

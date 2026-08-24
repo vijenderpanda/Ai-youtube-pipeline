@@ -1,0 +1,27 @@
+{
+  "_note": "Option A tape: github.com/Alishahryar1/free-claude-code, anonymous, dark, desktop. Tape ORDER is page order; the episode re-orders via per-beat `from` offsets (tour1 = title/stars/tagline, catch = free-tier note, install = curl block). All select needles VERBATIM from README 2026-08-23.",
+  "url": "https://github.com/Alishahryar1/free-claude-code",
+  "view": "desktop",
+  "dark": true,
+  "steps": [
+    { "do": "wait", "s": 1.6 },
+    { "do": "focus", "selector": "strong[itemprop=\"name\"] a", "label": "repo-title", "hold": 2.0, "zoom": 1.9 },
+    { "do": "wait", "s": 1.2 },
+    { "do": "focus", "selector": "#repo-stars-counter-star", "label": "stars", "hold": 2.4, "zoom": 2.3 },
+    { "do": "wait", "s": 0.6 },
+    { "do": "scroll", "to_selector": "article.markdown-body", "smooth": true, "dur": 1.8 },
+    { "do": "wait", "s": 0.9 },
+    { "do": "select", "selector": "article.markdown-body", "text": "49 ToS-friendly providers. 1.3B+ free tokens every month.", "hold": 2.4 },
+    { "do": "wait", "s": 0.8 },
+    { "do": "scroll", "by": 420, "smooth": true, "dur": 1.3 },
+    { "do": "wait", "s": 0.8 },
+    { "do": "select", "selector": "article.markdown-body", "text": "Free-tier availability and limits are controlled by each provider and may change.", "hold": 2.4 },
+    { "do": "wait", "s": 0.8 },
+    { "do": "scroll", "to_selector": "article.markdown-body pre", "margin": 260, "smooth": true, "dur": 1.8 },
+    { "do": "wait", "s": 0.8 },
+    { "do": "focus", "selector": "article.markdown-body pre", "label": "install", "hold": 2.0, "zoom": 1.6 },
+    { "do": "wait", "s": 0.5 },
+    { "do": "select", "selector": "article.markdown-body", "text": "scripts/install.sh\" | sh", "hold": 2.4 },
+    { "do": "wait", "s": 2.4 }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "tool": "rec_web_tour.py",
+  "view": {
+    "w": 1280,
+    "h": 720,
+    "dsf": 2
+  },
+  "fps": 30,
+  "url": "https://github.com/Alishahryar1/free-claude-code",
+  "captured_at": "2026-08-23T08:52:59+00:00",
+  "dark": true,
+  "duration": 31.233,
+  "events": [
+    {
+      "t": 10.658,
+      "kind": "scroll_start",
+      "scroll_top": 0
+    },
+    {
+      "t": 12.466,
+      "kind": "scroll_end",
+      "scroll_top": 1053
+    },
+    {
+      "t": 16.589,
+      "kind": "scroll_start",
+      "scroll_top": 1053
+    },
+    {
+      "t": 17.899,
+      "kind": "scroll_end",
+      "scroll_top": 1473
+    },
+    {
+      "t": 21.919,
+      "kind": "scroll_start",
+      "scroll_top": 1473
+    },
+    {
+      "t": 23.724,
+      "kind": "scroll_end",
+      "scroll_top": 2351
+    }
+  ],
+  "focus": [
+    {
+      "t": 4.425,
+      "hold": 2.0,
+      "label": "repo-title",
+      "box": [
+        0.1375,
+        0.1264,
+        0.2637,
+        0.1583
+      ],
+      "center": [
+        0.201,
+        0.142
+      ],
+      "zoom": 1.9
+    },
+    {
+      "t": 7.645,
+      "hold": 2.4,
+      "label": "stars",
+      "box": [
+        0.9294,
+        0.1278,
+        0.9648,
+        0.1556
+      ],
+      "center": [
+        0.947,
+        0.142
+      ],
+      "zoom": 2.3
+    },
+    {
+      "t": 24.551,
+      "hold": 2.0,
+      "label": "install",
+      "box": [
+        0.0508,
+        0.3609,
+        0.6711,
+        0.4331
+      ],
+      "center": [
+        0.361,
+        0.397
+      ],
+      "zoom": 1.58
+    }
+  ],
+  "selections": [
+    {
+      "t": 13.375,
+      "hold": 2.4,
+      "label": "49 ToS-friendly providers. 1.3B+ free tokens every month.",
+      "rects": [
+        [
+          0.0758,
+          0.7664,
+          0.4183,
+          0.7914
+        ]
+      ],
+      "scroll_top": 1053
+    },
+    {
+      "t": 18.707,
+      "hold": 2.4,
+      "label": "Free-tier availability and limits are controlled by each provider and may change.",
+      "rects": [
+        [
+          0.0508,
+          0.7386,
+          0.498,
+          0.7636
+        ]
+      ],
+      "scroll_top": 1473
+    },
+    {
+      "t": 27.065,
+      "hold": 2.4,
+      "label": "scripts/install.sh\" | sh",
+      "rects": [
+        [
+          0.5814,
+          0.3845,
+          0.735,
+          0.4067
+        ]
+      ],
+      "scroll_top": 2351
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+{
+ "title": "Z1NTwYuuvvw \u00b7 bad Claude Code habits",
+ "theme": "cream",
+ "accent": "#E8792E",
+ "blocks": [
+  {
+   "id": "SplitHead",
+   "beat": "hook",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "4 HABITS",
+    "label": "WATCH OUT FOR",
+    "line": "bad Claude Code habits",
+    "punch": "bad",
+    "align": "center",
+    "size": "lg",
+    "underline": "bar"
+   },
+   "caption": "bad Claude Code habits"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "habit1-reaction",
+   "seconds": 2.5,
+   "props": {
+    "kicker": "HABIT 1",
+    "parts": [
+     {
+      "text": "Leaving"
+     },
+     {
+      "text": "Opus",
+      "hot": true
+     },
+     {
+      "text": "on for"
+     },
+     {
+      "text": "everything.",
+      "hot": true
+     }
+    ],
+    "footer": "So wasteful."
+   },
+   "caption": "leaving Opus on for everything, so wasteful"
+  },
+  {
+   "id": "AppWindow",
+   "beat": "habit2-proof",
+   "seconds": 3,
+   "props": {
+    "title": "CLAUDE.md",
+    "sidebar": [
+     "project",
+     "src",
+     "docs",
+     "tests"
+    ],
+    "activeIndex": 0,
+    "body": {
+     "kind": "lines",
+     "lines": [
+      "# CLAUDE.md",
+      "- rule 1",
+      "- rule 2",
+      "- rule 3 (irrelevant)",
+      "- rule 4 (stale)",
+      "- rule 5 (duplicate)"
+     ]
+    },
+    "cursor": true,
+    "shadow": true,
+    "tilt": true,
+    "dark": true
+   },
+   "caption": "dumping everything into Claude.md"
+  },
+  {
+   "id": "KineticQuote",
+   "beat": "habit2-reaction",
+   "seconds": 2,
+   "props": {
+    "kicker": "HABIT 2",
+    "parts": [
+     {
+      "text": "Terrible."
+     },
+     {
+      "text": "You should"
+     },
+     {
+      "text": "prune",
+      "hot": true
+     },
+     {
+      "text": "that."
+     }
+    ],
+    "footer": "Old rules still apply."
+   },
+   "caption": "terrible, prune that file"
+  },
+  {
+   "id": "ChipRow",
+   "beat": "habit3",
+   "seconds": 3,
+   "props": {
+    "eyebrow": "12 MCP SERVERS, ALWAYS ON",
+    "chips": [
+     {
+      "text": "GitHub",
+      "kind": "tool",
+      "icon": "\ud83d\udd27",
+      "hot": true
+     },
+     {
+      "text": "Slack",
+      "kind": "tool",
+      "hot": true
+     },
+     {
+      "text": "Notion",
+      "kind": "tool"
+     },
+     {
+      "text": "Figma",
+      "kind": "tool"
+     },
+     {
+      "text": "Linear",
+      "kind": "tool"
+     },
+     {
+      "text": "Postgres",
+      "kind": "tool"
+     },
+     {
+      "text": "Stripe",
+      "kind": "tool"
+     },
+     {
+      "text": "Sentry",
+      "kind": "tool"
+     },
+     {
+      "text": "Drive",
+      "kind": "tool"
+     },
+     {
+      "text": "Calendar",
+      "kind": "tool"
+     },
+     {
+      "text": "Docker",
+      "kind": "tool"
+     },
+     {
+      "text": "AWS",
+      "kind": "tool"
+     }
+    ],
+    "align": "center",
+    "size": "md",
+    "wrap": true,
+    "y": 700,
+    "stagger": 0.15
+   },
+   "caption": "disgusting, keeping 12 servers installed"
+  },
+  {
+   "id": "TermRun",
+   "beat": "habit4",
+   "seconds": 3,
+   "props": {
+    "cmd": "\"fix my repo\"",
+    "typeStart": 0.4,
+    "charsPerSec": 32,
+    "response": [
+     {
+      "t": "\u25cf no file, no error, no context",
+      "tone": "info"
+     },
+     {
+      "t": "\u2717 guessing what's broken",
+      "tone": "info"
+     },
+     {
+      "t": "still stuck",
+      "tone": "accent"
+     }
+    ],
+    "promptLabel": "~/repo"
+   },
+   "caption": "just saying fix my repo, no context"
+  },
+  {
+   "id": "BrandBumper",
+   "beat": "cta-bumper",
+   "seconds": 2,
+   "props": {
+    "name": "Claude Tricks",
+    "tagline": "be specific next time",
+    "glyph": "bolt",
+    "mode": "close",
+    "cta": "Follow for the fix"
+   },
+   "caption": "be specific, that's the fix"
+  }
+ ]
+}

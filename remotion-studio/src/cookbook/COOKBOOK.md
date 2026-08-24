@@ -55,6 +55,8 @@ stacks, `rgba()`, `clamp()`, `coverBg()`, and the `<Fonts/>` loader.
 
 ## Catalog
 
+> **comp-dna components** (PhoneMock, FlowTree, StatCloser, ChipRow, BrandBumper, SplitHead, AppWindow) default to `theme:"cream"` — the warm-canvas house style extracted in `research/comp-dna/TAXONOMY.md`. Repaint rule: ONE `accent` per film (terracotta = money/urgency, sage/mint = calm/tooling); `theme:"brand"` restores the Sol identity. Tokens: `CREAM` + `themeTokens()` in kit.tsx.
+
 | Component | Cookbook role | Gist |
 |-----------|---------------|------|
 | **ChatApp** | fake app UI | An invented AI chat screen. Messages arrive on a schedule; user bubbles slide in, AI replies show a typing indicator then spring in; thread bottom-anchors (auto-scroll). |
@@ -81,6 +83,13 @@ stacks, `rgba()`, `clamp()`, `coverBg()`, and the `<Fonts/>` loader.
 | **HeroDrop** | hero / physics drop | The crown moment: an asset (image or giant emoji) gathers, plunges with gravity + smear, lands with squash/overshoot and a ≤12-particle gold dust burst, then a mixed-register caption rises 0.25s after impact. TravelSprite physics as a registered cold-open — motion on screen at frame 1. |
 | **VsTable** | layout / verdict table | A two-column A-vs-B table on a glass hero panel: rows reveal top-down, each verdict lights the winning cell in accent with a one-shot pulse while the loser fades; after the last row the losing COLUMN dims 60% and the winning header takes an accent underline wipe. Hard-capped at 5 rows. |
 | **TermRun** | app-ui / terminal | A 1080×1920-native dark-glass terminal: the command types char-by-char with a solid block cursor, "thinks" on a 2Hz blink, response lines stream with tone colors (ok mint / accent gold / warn / info), ends held on a fresh blinking prompt. CodeDemo's typing math, cookbook-native and full-frame. |
+| **PhoneMock** | device-ui / comp-dna | Tilted phone frame (island + status bar) with a bottom-anchored chat thread: grey incoming / accent outgoing bubbles land on a schedule with typing dots. Cream-first. Invented thread — never a real app screenshot. |
+| **FlowTree** | dataviz / comp-dna | Root-down (or left-right) node tree ≤7 nodes: right-angle connectors draw via dashoffset before each child pops; done=✓, active=accent fill + ring, todo=dashed. A diagram of structure, never a live-product claim. |
+| **StatCloser** | dataviz / comp-dna | Cream editorial number-closer: small-caps label, Anton figure counts up + settle kick, accent underline sweeps, sans sub with serif-italic punch, optional struck compare + source chip. The calm payoff (Odometer is the reel drama). |
+| **ChipRow** | layout / comp-dna | Rounded chips popping in staggered; kinds label/model/platform/objection/toggle; any chip can go hot (accent fill) or struck (accent strike draws, dims, serif-italic); per-chip `t` to land on VO. Transparent overlay is the primary use. |
+| **BrandBumper** | typography / comp-dna | 1.2–2s brand/product bumper: glyph/emoji lands on a radiating burst, wordmark types in, tagline; `mode:"close"` adds a CTA pill + pulse. Glyph enum + text only — never a real third-party logo. |
+| **SplitHead** | typography / comp-dna | Cream title card: heavy sans label over a headline whose ONE punch word flips to Playfair italic in accent; clusters rise+settle, punch last, accent highlight-bar wipes under it. The chapter/"HOW TO" card (SerifCap is the caption plate). |
+| **AppWindow** | app-ui / comp-dna | Desktop window chrome (traffic lights, title, optional URL bar + sidebar) dropping in; body types on lines/code or lands table rows staggered, caret blinks, idle drift hold. Frames INVENTED content (ScreenStage/WebTour frame real footage). |
 
 ### The Web-tour set
 

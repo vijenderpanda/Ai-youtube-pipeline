@@ -90,6 +90,14 @@ def measure_lufs(path):
         return None
 
 
+def measure_tp(path):
+    """Input true peak (dBTP) via ffmpeg loudnorm summary; None if unreadable."""
+    r = subprocess.run(["ffmpeg", "-i", path, "-af", "loudnorm=I=-14:TP=-1:LRA=11:print_format=summary",
+                        "-f", "null", "-"], capture_output=True, text=True)
+    m = re.search(r"Input True Peak:\s*([-+]?[0-9.]+)", r.stderr)
+    return float(m.group(1)) if m else None
+
+
 def qc_gate(final_path):
     """Verify the mastered file meets the channel's shipped-quality bar.
     Returns (ok, [issues])."""
@@ -289,6 +297,7 @@ def arm_gate(ep, spec_path, spec, thumb_path):
                 break
 
     # 7) DESCRIPTION must render and carry the compliance line.
+    desc = ""
     try:
         import tempfile
         with tempfile.TemporaryDirectory() as td:
@@ -297,6 +306,26 @@ def arm_gate(ep, spec_path, spec, thumb_path):
             issues.append("description is missing the required disclosure line")
     except Exception as e:
         issues.append(f"description failed to build: {e!r}")
+
+    # 6) PACKAGING SCORE — advisory CTR/virality check (score_packaging.py). Below
+    #    the floor is a gate issue (title/desc/tags miss our known winner patterns);
+    #    at/above floor the per-rule misses print as warnings so they stay visible.
+    try:
+        sys.path.insert(0, HERE)
+        import score_packaging as sp
+        _lines = spec.get("lines") or []
+        _noun = (tags.split(",")[0].strip() if tags else None) or None
+        _sc, _verdict, _checks = sp.run(title, tags, desc,
+                                        _lines[0] if _lines else None, _noun)
+        print(f">> packaging score: {_sc}/100 — {_verdict} (floor {sp.FLOOR})")
+        for _c in _checks:
+            if _c["max"] and _c["status"] != "PASS":
+                warns.append(f"packaging/{_c['name']}: {_c['detail']} ({_c['pts']}/{_c['max']})")
+        if _sc < sp.FLOOR:
+            issues.append(f"packaging score {_sc}/100 is below the {sp.FLOOR} floor — "
+                          f"title/desc/tags miss our CTR patterns (see warnings; --force-arm to override)")
+    except Exception as e:
+        warns.append(f"packaging score skipped: {e!r}")
 
     return issues, warns
 
@@ -440,7 +469,7 @@ def arm_youtube(final_path, schedule_iso, spec, thumb_path=None, dry=False):
     title = spec.get("title") or os.path.basename(final_path)
     tags = spec.get("tags") or ""
 
-    cmd = ["python3", yt_upload, "--channel", "claude-tricks",
+    cmd = [sys.executable, yt_upload, "--channel", "claude-tricks",
            "--video", final_path,
            "--title", title,
            "--desc-file", desc_path,
@@ -574,7 +603,7 @@ def main():
     build = os.path.join(CH, "build_ep_v2.py")
     # --calendar-id rides through so an outro_cta spec can EXCLUDE this episode's
     # own calendar row from its next-episode tease lookup (outro_cta.py).
-    r = run(["python3", build, "--ep", a.ep, "--tag", a.tag]
+    r = run([sys.executable, build, "--ep", a.ep, "--tag", a.tag]
             + (["--calendar-id", a.calendar_id] if a.calendar_id else []))
     if r.returncode != 0:
         print(f"!! master render exited {r.returncode}", file=sys.stderr)
@@ -583,10 +612,31 @@ def main():
     final = os.path.join(CH, "renders", f"ep{a.ep}_{a.tag}.mp4")
     # build_ep_v2 optionally writes ep{ep}_{tag}_outro.mp4 or a _cta variant when
     # cfg carries endcard/outro. If either exists, prefer it as the "final".
-    for stem in (f"ep{a.ep}_{a.tag}_outro.mp4", f"ep{a.ep}_{a.tag}_cta.mp4"):
+    # ORDER MATTERS — later wins. The SFX pass (build_ep_v2 AUTO-SFX) writes
+    # ep{ep}_{tag}_outro_sfx.mp4 and that is the ship file; before 2026-08-23
+    # this list stopped at _outro.mp4 and would have armed fcc WITHOUT its SFX
+    # (the lpa-armed-silent gap, again, one layer up).
+    for stem in (f"ep{a.ep}_{a.tag}_cta.mp4", f"ep{a.ep}_{a.tag}_outro.mp4",
+                 f"ep{a.ep}_{a.tag}_outro_sfx.mp4"):
         alt = os.path.join(CH, "renders", stem)
         if os.path.exists(alt):
             final = alt
+    print(f">> final candidate: {os.path.basename(final)}")
+
+    # TRUE-PEAK SAFETY: the SFX mix can overshoot (fcc v2 measured +0.6 dBTP).
+    # Spec is <= -1 dBTP. Limit once, re-measure, ship the limited copy.
+    try:
+        _tp = measure_tp(final)
+        if _tp is not None and _tp > -1.0:
+            lim = final.replace(".mp4", "_tp.mp4")
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", final, "-c:v", "copy",
+                            "-af", "alimiter=limit=0.85:attack=3:release=60:level=false",
+                            "-c:a", "aac", "-b:a", "192k", lim], check=True)
+            print(f">> true-peak {_tp:+.1f} dBTP > -1 -> limited -> {os.path.basename(lim)} "
+                  f"({measure_tp(lim):+.1f} dBTP)")
+            final = lim
+    except Exception as e:
+        print(f"!! true-peak pass skipped ({e})")
 
     # 3) QC GATE
     ok, issues = qc_gate(final)

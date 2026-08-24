@@ -1,0 +1,35 @@
+{
+  "palette": {
+    "bg": "#FFFFFF",
+    "fg": "#1A1A1A",
+    "accent": "#C0392B",
+    "accent2": "#E8912A",
+    "caption_fill": "#FFFFFF",
+    "caption_stroke": "#00000099",
+    "outro_bg": "#0D1A0D",
+    "outro_accent": "#C7F92E"
+  },
+  "typography": {
+    "headline": {"family_guess": "Poppins/Montserrat ExtraBold", "weight": 800, "case": "Title Case + one giant number/word", "size_rel": "1.6x body"},
+    "label": {"family_guess": "Poppins SemiBold", "weight": 700, "case": "UPPERCASE", "size_rel": "0.9x body"},
+    "caption": {"family_guess": "Poppins Bold", "weight": 800, "case": "UPPERCASE burned label chip", "size_rel": "1x", "bg_chip": true}
+  },
+  "layout": {
+    "host": "none",
+    "host_pos": null,
+    "safe_zones": "top ~4% and bottom ~6% reserved for YouTube chrome; content is a static full-bleed infographic poster occupying whole 9:16 frame",
+    "caption_pos": "center-low third, on a dark semi-transparent rounded chip, one short phrase at a time"
+  },
+  "motion": {
+    "cut_rate_per_10s": 0,
+    "zoom_punches": false,
+    "transitions": ["none — single static poster image + simulated stylus/finger annotation drawing (circles, arrows, underlines) over ~70s, then hard cut to a separate dark countdown-timer card for last ~15s"]
+  },
+  "themeable": [
+    "accent color pair (accent/accent2) — swap per channel brand",
+    "headline poster content (levels/steps/numbers) — fully content-driven",
+    "caption chip text",
+    "outro countdown card colors (bg/accent) and CTA copy",
+    "icon set style (line-icon glyphs) — can be swapped for a different icon family keeping same grid"
+  ]
+}

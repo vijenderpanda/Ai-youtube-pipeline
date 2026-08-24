@@ -1,0 +1,38 @@
+{
+  "_note": "DEMO (2026-08-23) — a cook:WebTour beat with the Sol host PIP mixed in. Machinery proof for WEB-TOUR-TEMPLATE.md, NOT the template pilot: one merged cook:WebTour#tour run spans all four VO lines, so build_ep_v2 cuts ONE HeyGen 16:9 clip from the full VO slice (props host:true -> host_clip at build_ep_v2 cook branch) and WebTour renders it bottom-left while the camera tours the tape. Sound stays the mastered VO spine - the PIP video is muted in WebTour.tsx. Camera punches + the selection sweep are the TRUED numbers from remotion-studio/public/tapes/webtour_demo.tour.json (identical to webTourDemo in WebTour.tsx): ABSOLUTE seconds against from=3, deliberately not @beat anchors, because punches must land where the tape's scroll actually sits (title/stars valid to comp 7.37s; selection rect valid at scroll_top 1012, comp 9.17-12.8s). Build: python3 build_ep_v2.py wtdemo (tape tapes/webtour_demo.mp4 lives on the capture machine - media is gitignored).",
+  "title": "WebTour demo — Sol PIP over a real repo tour",
+  "tags": "demo,webtour,claude code,ai coding",
+  "lines": [
+    "This is the Claude Code repo. Not a screenshot. The real page, recorded live.",
+    "Watch the stars counter. That number is today's, not a mockup.",
+    "And there's the pitch in their own words. An agentic coding tool that lives in your terminal.",
+    "Follow. I unpack one AI trick every single day."
+  ],
+  "hot_words": ["REAL", "RECORDED", "LIVE", "WATCH", "STARS", "TODAY'S",
+                "AGENTIC", "TERMINAL", "FOLLOW", "EVERY", "DAY"],
+  "beats": ["cook:WebTour#tour", "cook:WebTour#tour",
+            "cook:WebTour#tour", "cook:WebTour#tour"],
+  "cookbook": {
+    "WebTour#tour": {
+      "src": "tapes/webtour_demo.mp4",
+      "url": "https://github.com/anthropics/claude-code",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 3,
+      "camera": [
+        {"at": 1.0,  "dur": 0.7,  "center": [0.172, 0.142], "zoom": 1.9, "hold": 2.0},
+        {"at": 4.54, "dur": 0.65, "center": [0.948, 0.142], "zoom": 2.2, "hold": 1.9},
+        {"at": 7.3,  "dur": 0.6,  "center": [0.5, 0.5],     "zoom": 1.0, "hold": 1.2},
+        {"at": 9.3,  "dur": 0.6,  "center": [0.275, 0.29],  "zoom": 1.9, "hold": 1.9},
+        {"at": 12.5, "dur": 0.6,  "center": [0.5, 0.5],     "zoom": 1.0, "hold": 2.0}
+      ],
+      "selections": [
+        {"at": 10.08, "rects": [[0.1396, 0.2772, 0.4096, 0.3022]],
+         "scrollTop": 1012, "hold": 1.4, "sweep": "ltr"}
+      ],
+      "host": true,
+      "hostSize": 360
+    }
+  },
+  "steps": []
+}

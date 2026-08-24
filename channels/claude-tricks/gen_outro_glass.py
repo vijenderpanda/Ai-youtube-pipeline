@@ -42,7 +42,14 @@ def main():
     ap.add_argument("--subscribe-label", default="Subscribe")
     ap.add_argument("--subscribe-value", default="ONE / DAY")
     ap.add_argument("--tagline", default="one AI trick, every single day")
-    ap.add_argument("--avatar", default=DEFAULT_AVATAR)
+    ap.add_argument("--avatar", default=DEFAULT_AVATAR,
+                    help="host disc: still image, OR an .mp4 talking clip (muted; VO is the master)")
+    ap.add_argument("--avatar-size", type=float, default=None, help="disc diameter px (default 208)")
+    ap.add_argument("--pings", default=None,
+                    help='JSON list of engagement glows on the card clock, e.g. '
+                         '[{"at":0.6,"kind":"subscribe","tip":"follow"}]')
+    ap.add_argument("--avatar-delay", type=float, default=None,
+                    help="seconds a VIDEO avatar holds its first frame before playing (CTA lead-in)")
     ap.add_argument("--accent", default=None, help="override brand magenta")
     ap.add_argument("--prompt-text", default=None,
                     help="the REAL typed line — shown chunky before the CTA card (prompt reveal)")
@@ -70,6 +77,12 @@ def main():
     }
     if a.accent:
         props["accent"] = a.accent
+    if a.avatar_size:
+        props["avatarSize"] = a.avatar_size
+    if a.avatar_delay is not None:
+        props["avatarDelay"] = a.avatar_delay
+    if a.pings:
+        props["pings"] = json.loads(a.pings)
     if a.prompt_text:
         props.update({
             "promptText": a.prompt_text,

@@ -1,3 +1,5 @@
+> LOCKED as **NIGHTWATCH** (00:30 IST slot) — see templates/NIGHTWATCH.LOCKED.md. This file is the design rationale; the LOCKED doc is the source of truth.
+
 # Web Tour — template proposal v1 (PROPOSAL — NOT LOCKED — awaiting VJ pilot approval)
 
 Status: **PROPOSAL** · target channel: claude-tricks (AI Unpacked) · 2026-08-23
