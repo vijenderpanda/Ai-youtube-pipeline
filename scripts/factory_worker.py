@@ -371,10 +371,62 @@ class Supa:
         return r.json()
 
     def upload(self, storage_path, data, content_type):
-        r = requests.post(f"{self.url}/storage/v1/object/{BUCKET}/{storage_path}",
-                          headers={**self.headers, "Content-Type": content_type, "x-upsert": "true"},
-                          data=data, timeout=(10, 600))
-        self._check(r)
+        """Upload to storage. `data` may be bytes, a str/Path to a file, or an open
+        binary file object. Large bodies are STREAMED from disk (requests +
+        bytes-in-memory hit "The write operation timed out" on ~50MB masters with
+        both LibreSSL py3.9 and miniconda py3.12); on ConnectionError we fall back
+        to a curl subprocess, which reliably pushes the same URL at ~2.3MB/s."""
+        url = f"{self.url}/storage/v1/object/{BUCKET}/{storage_path}"
+        hdrs = {**self.headers, "Content-Type": content_type, "x-upsert": "true"}
+        tmp = None
+        try:
+            if isinstance(data, (str, Path)):
+                src = Path(data)
+            elif isinstance(data, (bytes, bytearray, memoryview)):
+                # spill to disk so both the streamed POST and the curl fallback
+                # can re-read the body (requests can't rewind bytes it consumed mid-TLS)
+                fd, tmp = __import__("tempfile").mkstemp(suffix=".upload")
+                with os.fdopen(fd, "wb") as f:
+                    f.write(data)
+                src = Path(tmp)
+            else:  # file object
+                name = getattr(data, "name", None)
+                if name and Path(str(name)).is_file():
+                    src = Path(str(name))
+                else:
+                    fd, tmp = __import__("tempfile").mkstemp(suffix=".upload")
+                    with os.fdopen(fd, "wb") as f:
+                        shutil.copyfileobj(data, f)
+                    src = Path(tmp)
+            size = src.stat().st_size
+            old_to = socket.getdefaulttimeout()
+            socket.setdefaulttimeout(1800)
+            try:
+                with open(src, "rb") as fh:
+                    r = requests.post(url, headers={**hdrs, "Content-Length": str(size)},
+                                      data=fh, timeout=(30, 1800))
+                self._check(r)
+                return
+            except requests.exceptions.ConnectionError as e:
+                log(f"upload: requests failed ({e.__class__.__name__}: {e}) — falling back to curl "
+                    f"({size/1e6:.1f} MB)", "warn")
+            finally:
+                socket.setdefaulttimeout(old_to)
+            if not shutil.which("curl"):
+                raise RuntimeError("upload failed via requests and curl is not installed")
+            cmd = ["curl", "-sS", "-f", "-X", "POST", url,
+                   "--data-binary", f"@{src}", "--max-time", "3600",
+                   "--retry", "3", "--retry-delay", "5"]
+            for k, v in hdrs.items():
+                cmd += ["-H", f"{k}: {v}"]
+            res = subprocess.run(cmd, capture_output=True, text=True)
+            if res.returncode != 0:
+                raise RuntimeError(f"curl upload failed rc={res.returncode}: "
+                                   f"{(res.stderr or res.stdout).strip()[:500]}")
+        finally:
+            if tmp:
+                try: os.unlink(tmp)
+                except OSError: pass
 
 
 def now_iso():
@@ -2163,15 +2215,14 @@ def upload_manifest_files(supa, job, manifest):
             storage_path = f"{channel_key}/{job['id']}/{p.name}"
             ctype = mimetypes.guess_type(p.name)[0] or "application/octet-stream"
             kind = kind_for(p, entry.get("kind"))
-            data = p.read_bytes()
-            supa.upload(storage_path, data, ctype)
+            supa.upload(storage_path, p, ctype)  # streamed from disk
             created = supa.insert_returning("factory_renders", [{
                 "channel_key": channel_key,
                 "job_id": job["id"],
                 "filename": p.name,
                 "storage_path": storage_path,
                 "kind": kind,
-                "size_bytes": len(data),
+                "size_bytes": p.stat().st_size,
                 "duration_s": probe_duration(p) if kind in ("video", "audio") else None,
                 "local_path": str(p),
             }])

@@ -66,8 +66,7 @@ def main():
 
     name = os.path.basename(path)
     storage = f"{a.channel}/assets/{cal_id}/_preview/{uuid.uuid4().hex[:8]}_{name}"
-    with open(path, "rb") as f:
-        supa.upload(storage, f.read(), mimetypes.guess_type(name)[0] or "video/mp4")
+    supa.upload(storage, path, mimetypes.guess_type(name)[0] or "video/mp4")  # streamed from disk
     # `title` MUST be patched too. Re-syncing an existing --calendar-id updated the
     # preview file but left the row's original title in place, so a title correction
     # made after the first sync never reached the board the reviewer actually reads —

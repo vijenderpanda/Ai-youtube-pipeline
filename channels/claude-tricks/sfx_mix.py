@@ -11,7 +11,7 @@ Usage:
       --props ../../renders_out/props_ep_lpa_draft.json \
       --video renders/ep_lpa_draft_outro.mp4 --out renders/ep_lpa_draft_sfx.mp4
 """
-import argparse, json, subprocess, tempfile
+import argparse, json, re, subprocess, tempfile
 from pathlib import Path
 import numpy as np
 
@@ -120,6 +120,18 @@ def synth(name):
         return (hi * fall * 0.5 + lo * rise * 0.3) * env(n, 0.03, 0.14)
     return np.zeros(int(0.1 * SR))
 
+TP_MAX = -1.0  # dBTP ship ceiling (PRODUCTION-PLAYBOOK)
+LIMITER = "alimiter=limit=0.85:attack=3:release=60:level=false"
+
+def measure_peak(path):
+    """(true_peak_dBTP, integrated_LUFS) via ffmpeg loudnorm summary; (None, None) on parse fail."""
+    out = subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-i", path,
+                          "-af", "loudnorm=print_format=summary", "-f", "null", "-"],
+                         capture_output=True, text=True).stderr
+    tp = re.search(r"Input True Peak:\s*([-+]?[\d.]+)", out)
+    lu = re.search(r"Input Integrated:\s*([-+]?[\d.]+)", out)
+    return (float(tp.group(1)) if tp else None, float(lu.group(1)) if lu else None)
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--manifest", required=True)
@@ -204,10 +216,19 @@ def main():
     subprocess.run([
         "ffmpeg", "-nostdin", "-loglevel", "error", "-y",
         "-i", a.video, "-i", sfx_wav,
-        "-filter_complex", vsrc + "[1:a]amix=inputs=2:duration=first:normalize=0[a]",
+        "-filter_complex", vsrc + "[1:a]amix=inputs=2:duration=first:normalize=0[am];"
+        # TRUE-PEAK LIMITER (ship gate): the summed slam pushed _lpa to +0.6 dBTP
+        # (spec <= -1 dBTP). Fast attack / 0.85 ceiling keeps AAC overshoot under
+        # the line; the mix level (integrated LUFS) is untouched.
+        "[am]" + LIMITER + "[a]",
         "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
         a.out], check=True)
     print(f">> SFX: {n_placed} events mixed at {a.gain_db} dB{note} -> {a.out}")
+    tp, lufs = measure_peak(a.out)
+    flag = "PASS" if tp is not None and tp <= TP_MAX else "FAIL"
+    print(f">> SFX peak gate: {lufs} LUFS / {tp} dBTP (limit {TP_MAX}) {flag}")
+    if flag == "FAIL":
+        raise SystemExit(f"!! true peak {tp} dBTP > {TP_MAX} after limiter — refusing to ship")
 
 if __name__ == "__main__":
     main()

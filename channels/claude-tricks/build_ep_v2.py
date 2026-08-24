@@ -2105,6 +2105,40 @@ EPISODES_V2 = {
   },
 }
 
+TP_MAX = -1.0  # dBTP ship ceiling (PRODUCTION-PLAYBOOK)
+
+def _measure_tp(path):
+    import re
+    err = subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-i", path,
+                          "-af", "loudnorm=print_format=summary", "-f", "null", "-"],
+                         capture_output=True, text=True).stderr
+    m = re.search(r"Input True Peak:\s*([-+]?[\d.]+)", err)
+    return float(m.group(1)) if m else None
+
+def _true_peak_gate(path):
+    """FINAL ship gate: re-measure the master; if true peak > TP_MAX, re-encode the
+    audio through alimiter (video stream copied) and return the limited file.
+    _lpa v1 shipped at +0.6 dBTP because the SFX slam summed over the loudnorm'd
+    VO+bed — this catches that and any future path (SFX or not). Never fatal."""
+    try:
+        tp = _measure_tp(path)
+        if tp is None:
+            print("!! TP gate: could not measure true peak, shipping as-is")
+            return path
+        if tp <= TP_MAX:
+            print(f">> TP gate: {tp} dBTP <= {TP_MAX} PASS")
+            return path
+        lim = os.path.splitext(path)[0] + "_tp.mp4"
+        run(["ffmpeg", "-nostdin", "-loglevel", "error", "-y", "-i", path,
+             "-af", "alimiter=limit=0.85:attack=3:release=60:level=false",
+             "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", lim])
+        tp2 = _measure_tp(lim)
+        print(f">> TP gate: {tp} dBTP > {TP_MAX} -> limited to {tp2} dBTP: {lim}")
+        return lim
+    except Exception as e:
+        print(f"!! TP gate failed ({e}) — shipping unlimited: {path}")
+        return path
+
 def run(cmd, **kw):
     print("+", " ".join(str(c) for c in cmd))
     subprocess.run(cmd, check=True, **kw)
@@ -3836,6 +3870,7 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
             out = sfx_out
         except Exception as e:
             print(f"!! SFX PASS FAILED ({e}) — SHIPPING WITHOUT SFX: {out}")
+    out = _true_peak_gate(out)
     _flush_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
     _flush_sequence_provenance(CHANNEL_KEY_FOR_PROV, ep, tag, calendar_id)
     return out
