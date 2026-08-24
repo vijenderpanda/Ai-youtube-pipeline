@@ -1,6 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Img, Sequence, staticFile, useVideoConfig } from "remotion";
 import { CookbookBlock } from "./cookbook/components";
+import { ChipCaption, Chip } from "./cookbook/ChipCaption";
 import { CREAM, Fonts, SANS, SERIF, rgba, themeTokens, CookTheme } from "./cookbook/kit";
 
 /* =============================================================================
@@ -32,6 +33,8 @@ export type CloneReelProps = {
   hostSrc?: string; // e.g. "hosts/sol_center.jpg"
   hostDefault?: "full" | "pip" | "none"; // presence when a block doesn't set its own (default "pip")
   hostPos?: "bl" | "br"; // pip corner (default "bl")
+  /** Global yellow word-highlight karaoke, on the film clock (from VO word timings). */
+  karaoke?: Chip[];
 };
 
 /* Host render per the cutaway grammar (research/comp-dna/HOST-PLACEMENT.md):
@@ -70,7 +73,7 @@ const HostShot: React.FC<{ src: string; mode: "full" | "pip"; pos: "bl" | "br"; 
 export const cloneReelDuration = (p: CloneReelProps, fps: number): number =>
   Math.max(1, Math.round(p.blocks.reduce((a, b) => a + b.seconds, 0) * fps));
 
-export const CloneReel: React.FC<CloneReelProps> = ({ title, theme = "cream", accent, bg, blocks, hostSrc, hostDefault = "pip", hostPos = "bl" }) => {
+export const CloneReel: React.FC<CloneReelProps> = ({ title, theme = "cream", accent, bg, blocks, hostSrc, hostDefault = "pip", hostPos = "bl", karaoke }) => {
   const { fps } = useVideoConfig();
   const T = themeTokens(theme, accent, bg);
   let at = 0;
@@ -107,6 +110,9 @@ export const CloneReel: React.FC<CloneReelProps> = ({ title, theme = "cream", ac
           </Sequence>
         );
       })}
+      {karaoke && karaoke.length ? (
+        <ChipCaption chips={karaoke} accent={T.accent} />
+      ) : null}
       {title ? (
         <div style={{ position: "absolute", left: 40, top: 40, fontSize: 24, letterSpacing: 2, color: T.mute, opacity: 0.8 }}>
           CLONE · {title}

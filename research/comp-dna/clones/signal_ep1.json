@@ -9,7 +9,7 @@
   {
    "id": "SplitHead",
    "beat": "cold-open-claim",
-   "seconds": 3,
+   "seconds": 3.03,
    "host": "full",
    "props": {
     "label": "THE REAL REASON",
@@ -23,7 +23,7 @@
   {
    "id": "KineticQuote",
    "beat": "setup",
-   "seconds": 3,
+   "seconds": 3.72,
    "props": {
     "kicker": "HERE'S THE THING",
     "parts": [
@@ -43,13 +43,13 @@
     ],
     "highlight": "bar"
    },
-   "caption": "Everyone blames the model.",
+   "caption": "",
    "host": "full"
   },
   {
    "id": "FlowTree",
    "beat": "proof-harness",
-   "seconds": 5,
+   "seconds": 3.77,
    "props": {
     "title": "Same model, two setups",
     "direction": "down",
@@ -86,13 +86,13 @@
      }
     ]
    },
-   "caption": "Same model. The harness decides.",
+   "caption": "",
    "host": "none"
   },
   {
    "id": "AppWindow",
    "beat": "proof-files",
-   "seconds": 4,
+   "seconds": 6.3,
    "props": {
     "title": "your-project",
     "dark": true,
@@ -115,25 +115,25 @@
     },
     "cursor": true
    },
-   "caption": "Four files change everything.",
+   "caption": "",
    "host": "none"
   },
   {
    "id": "StatCloser",
    "beat": "payoff",
-   "seconds": 4,
+   "seconds": 2.88,
    "props": {
     "value": 4,
     "label": "THE FIX",
     "sub": "files the model reads *first*"
    },
-   "caption": "Four files. Same model, sharper output.",
+   "caption": "",
    "host": "none"
   },
   {
    "id": "BrandBumper",
    "beat": "cta",
-   "seconds": 2,
+   "seconds": 2.76,
    "props": {
     "name": "AI UNPACKED",
     "tagline": "one AI trick a day",
@@ -145,5 +145,80 @@
    "host": "none"
   }
  ],
- "hostGrammar": "cutaway"
+ "hostGrammar": "cutaway",
+ "_vo": {
+  "words": "prod/ep1_vo.words.json",
+  "total_s": 22.06
+ },
+ "karaoke": [
+  {
+   "t": 6.75,
+   "end": 7.92,
+   "text": "same model one",
+   "hot": 0
+  },
+  {
+   "t": 7.95,
+   "end": 8.53,
+   "text": "bare prompt",
+   "hot": 0
+  },
+  {
+   "t": 8.6,
+   "end": 9.51,
+   "text": "gives you vague",
+   "hot": 2
+  },
+  {
+   "t": 9.54,
+   "end": 10.77,
+   "text": "answers add"
+  },
+  {
+   "t": 10.82,
+   "end": 11.64,
+   "text": "a claude dot"
+  },
+  {
+   "t": 11.8,
+   "end": 12.96,
+   "text": "m d your"
+  },
+  {
+   "t": 13.03,
+   "end": 14.16,
+   "text": "tools a little",
+   "hot": 0
+  },
+  {
+   "t": 14.2,
+   "end": 15.22,
+   "text": "memory and the",
+   "hot": 0
+  },
+  {
+   "t": 15.29,
+   "end": 16.13,
+   "text": "same model gets",
+   "hot": 0
+  },
+  {
+   "t": 16.16,
+   "end": 17.44,
+   "text": "sharp four files",
+   "hot": 0
+  },
+  {
+   "t": 17.52,
+   "end": 18.38,
+   "text": "it reads first",
+   "hot": 2
+  },
+  {
+   "t": 18.55,
+   "end": 19.46,
+   "text": "that's the fix",
+   "hot": 2
+  }
+ ]
 }
