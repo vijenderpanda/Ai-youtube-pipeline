@@ -298,3 +298,25 @@ CREATE scripts/sustain_gate.py, a network-scope CLI: `python scripts/sustain_gat
 
 - [ ] open
 
+## Build scripts/retention_cliff_gate.py — auto-flag calendar items reusing an unfixed format cliff
+_source: analyze_and_suggest 905ff4ae-7fcc-4c18-aaa1-a703682bfbf7 · 2026-08-24_
+
+**Why:** This analysis had to manually re-derive that three separate 'Typing One Line' episodes share the same 4.7-6.3s cliff by reading yt_retention.py output by hand each cycle -- codifying that comparison catches the next repeat automatically instead of relying on the next planner noticing.
+
+**Interface / acceptance:**
+
+Create scripts/retention_cliff_gate.py: reads retention.json (the output of scripts/yt_retention.py --summary) plus CONTENT-CALENDAR.csv per channel. For each planned/not-yet-shipped calendar item, fuzzy-match its title/format tag against past episodes' titles (e.g. all 'I Built A [X] By Typing One Line' entries), and if 2+ prior instances of that format share a drop_point >6pp within the same +/-1s window (the exact pattern this cycle found at 4.7-6.3s for claude-tricks), print a WARN line naming the calendar row, the shared cliff window, and the prior episodes it repeats, before any generate_asset job for that row is allowed to run. Wire it as a pre-flight check in factory_worker.py's produce_short job path (dry-run warn only, never auto-block, since format judgment stays human). This turns the manual cross-episode cliff comparison this analysis just did by hand into a standing gate so a format regression can't quietly get rescheduled again without a human seeing the repeat.
+
+- [ ] open
+
+## Update scripts/probe_frames.py — add YouTube player-furniture safe-zone to the corner/ink probes
+_source: analyze_and_suggest 905ff4ae-7fcc-4c18-aaa1-a703682bfbf7 · 2026-08-24_
+
+**Why:** PRODUCTION-PLAYBOOK.md documents this exact bug already shipping once (episode _upi's karaoke line rendered clean in Studio and in the master but was buried by the real player) -- baking the real player safe-zone into the existing probe tool prevents the same class of bug from recurring on the next designed episode.
+
+**Interface / acceptance:**
+
+Extend scripts/probe_frames.py's corner and ink modes with a new fixed exclusion band matching the documented YouTube Shorts player furniture (PRODUCTION-PLAYBOOK.md §4, episode _upi finding: the bottom ~330px of a 1920-tall Short is covered by the @handle/title/like-comment-share rail regardless of any internal SAFE.captionCeil). Add a --player-safe flag that treats y>1560 as always-covered ink (score 1.0, never a valid corner) independent of the component's own internal safe area, and print a second line in the probe output distinguishing 'clear of OUR components' vs 'clear of the actual YouTube player' so a chip or caption placed at e.g. bottom:104 (which scored clean against internal SAFE but was buried by the real player) gets caught before render, not after a QC pass at feed size.
+
+- [ ] open
+
