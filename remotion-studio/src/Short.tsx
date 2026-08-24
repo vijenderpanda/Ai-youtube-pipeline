@@ -125,6 +125,8 @@ export type ShortProps = {
   pings?: Ping[];
   /* beat timeline in the void above the card (web-tour template) */
   tourRail?: TourRailPayload;
+  /* V-A: burned promise chip in the first second (before captionFrom) */
+  promiseChip?: { text: string; from: number; until: number; accent?: string };
   steps?: Step[];
   vo: string;
   music?: string;
@@ -1586,6 +1588,32 @@ export const Short: React.FC<ShortProps> = (props) => {
       ) : null}
       {/* v16.4: ONE consistent global header on every beat (brand + episode tag),
           rendered last so it sits above all beat layouts incl. the hook. */}
+      {props.promiseChip && t >= props.promiseChip.from - 0.15 && t <= props.promiseChip.until + 0.25 ? (() => {
+        const pc = props.promiseChip!;
+        const inP = Math.min(1, Math.max(0, (t - (pc.from - 0.15)) / 0.18));
+        const outP = Math.min(1, Math.max(0, (t - pc.until) / 0.25));
+        const op = inP * (1 - outP);
+        const pop = 1 + (1 - Math.min(1, Math.max(0, (t - pc.from) / 0.22))) * 0.12;
+        const words = pc.text.split(" ");
+        return (
+          <div style={{ position: "absolute", left: 0, right: 0, top: 300, display: "flex",
+            justifyContent: "center", gap: "0 18px", flexWrap: "wrap", opacity: op,
+            transform: `scale(${pop.toFixed(3)})`, pointerEvents: "none", zIndex: 46 }}>
+            {words.map((w, i) => {
+              const hot = /^[^a-z]*$/.test(w) && /[A-Z0-9→]/.test(w) && (w.length <= 6 || /[→0-9]/.test(w));
+              return (
+                <span key={i} style={{
+                  fontFamily: "Anton, Arial Black, sans-serif",
+                  fontSize: 96, letterSpacing: 1,
+                  color: (i === words.length - 1 || w === "FREE" || w === "→") ? (pc.accent ?? theme.mag) : "#FFFFFF",
+                  textShadow: "0 6px 26px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.7)",
+                  lineHeight: 1.0,
+                }}>{w}</span>
+              );
+            })}
+          </div>
+        );
+      })() : null}
       {props.tourRail ? <TourRail rail={props.tourRail} t={t} /> : null}
       {props.pings?.map((pg, i) => <EngagePing key={`ping${i}`} t={t} ping={pg} />)}
       {props.watermark !== false ? <GlobalHeader epTag={props.epTag} scrim={props.headerScrim} /> : null}

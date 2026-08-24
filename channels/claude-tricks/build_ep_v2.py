@@ -3065,7 +3065,17 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         if stale or not os.path.exists(mp4):
             run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(t0), "-t", str(t1 - t0),
                  "-i", vo, "-c:a", "pcm_s16le", wav])
-            generate(photo or tid, upload_audio(wav), mp4, aspect=aspect)
+            # AVATAR TRACK SWITCH (2026-08-24): FACTORY_AVATAR_TRACK=echomimic_local
+            # routes every host clip to the FREE EchoMimic track on the 3060 worker
+            # (scripts/avatar_render.py) instead of HeyGen — used when HeyGen credit
+            # is out. Same lipsync-correct pass runs afterward on either track.
+            _track = os.environ.get("FACTORY_AVATAR_TRACK", "").lower()
+            if _track == "echomimic_local":
+                sys.path.insert(0, os.path.join(REPO, "scripts"))
+                import avatar_render as ar
+                ar.render_echomimic_local(ar.AVATAR_TRACKS["claude-tricks"], None, wav, mp4)
+            else:
+                generate(photo or tid, upload_audio(wav), mp4, aspect=aspect)
             # v16 inline lipsync auto-correct: a HeyGen render adds a
             # per-clip audio lead (measured 123-234 ms on Ep25); left
             # uncorrected, the host's mouth trails the voice by that much
@@ -3554,6 +3564,14 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         return round(float(v), 3)
     if cfg.get("caption_from"):
         spec["captionFrom"] = _at_beat(cfg["caption_from"])
+    # V-A A/B (2026-08-24): a burned promise chip in the FIRST second, BEFORE the
+    # no-caption-<1.6s window, to show (not just speak) the title's payoff to a
+    # muted swiper deciding at ~1.5s. {text, from, until} in seconds (or @beat).
+    if cfg.get("promise_chip"):
+        _pc = dict(cfg["promise_chip"])
+        _pc["from"] = _at_beat(_pc.get("from", 0.3))
+        _pc["until"] = _at_beat(_pc.get("until", 1.6))
+        spec["promiseChip"] = _pc
     # VJ engagement glows (EngagePing): cfg["pings"] = [{at, kind, tip, dur?}],
     # at = @beatN+x on the merged-segment clock or absolute seconds. Rationed
     # by hand (<=3); the outro card takes its own via gen_outro_glass --pings.

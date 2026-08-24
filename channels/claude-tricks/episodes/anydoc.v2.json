@@ -396,5 +396,11 @@
   "outro_cta": "Follow. I tour one free AI tool every day. Which should I open next?",
   "desc_cta": "Which free AI tool should I tour next? Tell me below.",
   "desc_prompt": "📄 THE EXACT COMMAND (copy it):\n\nnpx @firecrawl/anydoc report.docx\n\nTurns Word/Excel/PDF into clean, LLM-ready Markdown locally. Free & open-source (MIT): github.com/firecrawl/anydoc",
-  "steps": []
+  "steps": [],
+  "promise_chip": {
+    "text": "ANY FILE → CLEAN",
+    "from": 0.3,
+    "until": 1.7
+  },
+  "_va_note": "V-A A/B (2026-08-24): burned promise chip 0.3-1.7s (before caption_from) — muted swiper sees the payoff in second 1, not at the 6s knee. Host clips on FREE EchoMimic (3060); HeyGen credit out."
 }
