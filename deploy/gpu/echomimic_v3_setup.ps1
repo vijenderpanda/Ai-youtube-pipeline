@@ -85,6 +85,9 @@ if (-not (DepsOK)) {
   Say "installing tensorflow 2.15 + retina-face (face detector, CPU)..."
   & $VenvPy -m pip install "tensorflow==2.15.0" "retina-face==0.0.17" 2>&1 | Out-Host
   if ($LASTEXITCODE -ne 0) { Die "tensorflow/retina-face install failed" }
+  # Keras 3 (pulled in by another dep) breaks `tensorflow.keras` on TF 2.15 —
+  # pin keras 2.15 LAST so the tf.keras shim resolves (classic failure, hit 2026-08-24)
+  & $VenvPy -m pip install "keras==2.15.0" 2>&1 | Out-Host
 }
 if (-not (DepsOK)) {
   Say "deps import failed -- detail:"
