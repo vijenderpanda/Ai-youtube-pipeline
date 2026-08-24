@@ -1,0 +1,72 @@
+[
+ {
+  "w": "ONE",
+  "start": 0.0,
+  "end": 0.17
+ },
+ {
+  "w": "THIRTY-SECOND",
+  "start": 0.2,
+  "end": 0.71
+ },
+ {
+  "w": "CLAUDE",
+  "start": 0.76,
+  "end": 1.01
+ },
+ {
+  "w": "TRICK",
+  "start": 1.04,
+  "end": 1.33
+ },
+ {
+  "w": "EVERY",
+  "start": 1.37,
+  "end": 1.59
+ },
+ {
+  "w": "DAY",
+  "start": 1.62,
+  "end": 1.79
+ },
+ {
+  "w": "\u2014",
+  "start": 1.9,
+  "end": 2.03
+ },
+ {
+  "w": "FOLLOW",
+  "start": 2.15,
+  "end": 2.5
+ },
+ {
+  "w": "SO",
+  "start": 2.71,
+  "end": 2.84
+ },
+ {
+  "w": "THE",
+  "start": 2.89,
+  "end": 2.96
+ },
+ {
+  "w": "NEXT",
+  "start": 3.01,
+  "end": 3.22
+ },
+ {
+  "w": "ONE",
+  "start": 3.26,
+  "end": 3.4
+ },
+ {
+  "w": "FINDS",
+  "start": 3.45,
+  "end": 3.71
+ },
+ {
+  "w": "YOU",
+  "start": 3.75,
+  "end": 4.09
+ }
+]
