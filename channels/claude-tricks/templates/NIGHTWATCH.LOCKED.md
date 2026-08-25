@@ -68,8 +68,13 @@ needed. Host = HeyGen outfit_11 Sol (wide id for the disc; pip id for beat PIPs)
 9. `finalize_episode.py --ep <ep> --tag <v> --schedule <T19:00Z> --calendar-id <id>` (thumb first).
 10. Pin the comment (GIVE — URL/prompt + any caveat). API can't pin — manual.
 
-## "plan next" protocol (LOCKED behaviour)
+## "plan next" protocol (LOCKED behaviour; v2 — VJ 2026-08-25)
 When VJ says **"let's plan next"** (for NIGHTWATCH), the flow is:
+0. **PULL ANALYTICS FIRST** (ep4+ rule): current views/likes/AVP/stayed for every prior NIGHTWATCH ep
+   (yt API + whatever VJ shares from Studio). Name the winner pattern in one line and derive the ideas
+   from it. Known reads so far: ep2 (free + BADGE/credential + mega-brand + beginner) 5–6x ep1
+   (free + dev-tool); AVP strong (47.3%) but "stayed" slightly below typical → the FIRST SECOND needs
+   visual PROOF of the promise (show the result/credential immediately — YouTube's own tip).
 1. **Propose 2–3 topic ideas**, each with: title (+1–2 variants), the searched noun, the real page to tour,
    why it fits the 00:30/US-UK slot, and a **`score_packaging` score** for the lead title.
 2. VJ picks one (A/B allowed).
