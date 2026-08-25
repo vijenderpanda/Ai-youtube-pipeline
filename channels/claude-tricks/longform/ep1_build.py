@@ -400,6 +400,56 @@ def sfx_mix(video_with_audio, events, out):
          "-ar", "48000", "-ac", "2", "-b:a", "192k", out])
 
 
+
+MON_SCR = (150, 120, 1330, 800)   # x, y, w, h of the monitor screen hole
+
+
+def make_monitor_assets(tmp):
+    """Studio backdrop + monitor bezel (transparent screen hole) for the explain stage."""
+    bgp = os.path.join(tmp, "stage_bg.png")
+    bg = Image.new("RGB", (W, H), (13, 15, 20))
+    d = ImageDraw.Draw(bg)
+    for r in range(900, 0, -6):
+        a = int(26 * (r / 900))
+        d.ellipse([180 - r, H - 160 - r, 180 + r, H - 160 + r],
+                  fill=(13 + a, 13 + int(a * 0.86), 20 + int(a * 0.35)))
+    bg.save(bgp)
+    bzp = os.path.join(tmp, "monitor_bezel.png")
+    x, y, w2, h2 = MON_SCR
+    bz = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(bz)
+    d.rounded_rectangle([x - 34, y - 34, x + w2 + 34, y + h2 + 34], radius=30,
+                        fill=(24, 27, 34, 255), outline=(70, 76, 88, 255), width=3)
+    d.rounded_rectangle([x - 4, y - 4, x + w2 + 4, y + h2 + 4], radius=8,
+                        fill=(0, 0, 0, 255))
+    d.rectangle([x, y, x + w2, y + h2], fill=(0, 0, 0, 0))
+    cx = x + w2 // 2
+    d.polygon([(cx - 90, y + h2 + 34), (cx + 90, y + h2 + 34),
+               (cx + 130, y + h2 + 110), (cx - 130, y + h2 + 110)], fill=(30, 33, 40, 255))
+    d.rounded_rectangle([cx - 240, y + h2 + 104, cx + 240, y + h2 + 128], radius=12,
+                        fill=(38, 42, 50, 255))
+    bz.save(bzp)
+    return bgp, bzp
+
+
+def monitor_stage(src, ss, dur, out, tmp, cutout="medium", ch=None):
+    """VJ 2026-08-25: explaining-pose host needs something to explain AT — a monitor
+    in front of him. bg -> tape in monitor -> bezel -> host cutout (gaze at screen)."""
+    bgp, bzp = make_monitor_assets(tmp)
+    if ch is None:
+        ch = 600 if cutout == "wide" else 760  # wide cutout carries its own desk
+    png = os.path.join(A, f"cutout_{cutout}.png")
+    cw = round(Image.open(png).width * ch / Image.open(png).height)
+    x, y, w2, h2 = MON_SCR
+    run([lf.FFMPEG, "-y", "-loop", "1", "-i", bgp, "-ss", str(ss), "-i", src,
+         "-i", bzp, "-i", png, "-t", str(dur), "-filter_complex",
+         (f"[1:v]fps={FPS},scale={w2}:{h2}:force_original_aspect_ratio=decrease,"
+          f"pad={w2}:{h2}:(ow-iw)/2:(oh-ih)/2:color=black[tv];"
+          f"[0:v][tv]overlay={x}:{y}[s1];[s1][2:v]overlay=0:0[s2];"
+          f"[3:v]scale={cw}:{ch}[hc];[s2][hc]overlay=x={W - cw + 60}:y={H - ch}[v]"),
+         "-map", "[v]", *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
+
+
 def main():
     os.makedirs(R, exist_ok=True)
     segs, chapters, t_cursor = [], [], 0.0
@@ -446,7 +496,8 @@ def main():
         rv = []
         for i, ((t0, t1), src) in enumerate(zip(times, [BR1, BR2, GITLOG, LIVE])):
             base_v = os.path.join(tmp, f"rl{i}.mp4")
-            glass_conform(src, 0.0 if i != 3 else 1.0, t1 - t0, base_v, tmp)
+            monitor_stage(src, 0.0 if i != 3 else 1.0, t1 - t0, base_v, tmp,
+                          cutout="medium" if i % 2 == 0 else "wide")
             if POPQ[i][0]:
                 lab = os.path.join(tmp, f"rlq{i}.png")
                 feature_label_png(POPQ[i][0], POPQ[i][1], lab)
@@ -454,8 +505,7 @@ def main():
                 base_v = ov
             rv.append(base_v)
         rb = os.path.join(tmp, "rel_base.mp4"); concat_slices(rv, rb, tmp, "rel")
-        rcut = os.path.join(tmp, "rel_cut.mp4")
-        cutout_overlay(rb, "medium", rcut, height=700)
+        rcut = rb
         rc = os.path.join(tmp, "rel_cap.mp4"); captions_on(rcut, words_of("relate"), 0.3, rc)
         rs0 = os.path.join(tmp, "rel_seg0.mp4"); mux(rc, vo_wav("relate", tmp), rs0, lead=0.3)
         rs = os.path.join(tmp, "rel_seg.mp4")
@@ -465,15 +515,10 @@ def main():
         # ---- CH1 The Idea ----
         s, d = card(tmp, 1, "The Idea"); add(s, d, chapter="The Idea")
         seg, d = build_section("ch1", [
-            lambda du, o: glass_conform(DEMO, 0.0, du, o, tmp),
-            lambda du, o: glass_conform(CODE, 0.0, du, o, tmp),
-            lambda du, o: glass_conform(LIVE, 2.0, du, o, tmp),
+            lambda du, o: monitor_stage(DEMO, 0.0, du, o, tmp, cutout="medium"),
+            lambda du, o: monitor_stage(CODE, 0.0, du, o, tmp, cutout="wide"),
+            lambda du, o: monitor_stage(LIVE, 2.0, du, o, tmp, cutout="medium"),
         ], tmp, pip=None)
-        c1c = os.path.join(tmp, "ch1_cut.mp4")
-        cutout_overlay(seg, "close", c1c, height=680)
-        run([lf.FFMPEG, "-y", "-i", c1c, "-i", seg, "-map", "0:v", "-map", "1:a",
-             "-c:v", "copy", "-c:a", "copy", os.path.join(tmp, "ch1_final.mp4")])
-        seg = os.path.join(tmp, "ch1_final.mp4")
         add(seg, d)
 
         # ---- CH2 The Build ----
@@ -490,16 +535,11 @@ def main():
         # ---- CH3 On My iPhone ----
         s, d = card(tmp, 3, "On My iPhone"); add(s, d, chapter="On My iPhone")
         seg, d = build_section("ch3", [
-            lambda du, o: glass_conform(LIVE, 30.0, du, o, tmp),
-            lambda du, o: glass_conform(DEMO, 2.0, du, o, tmp),
-            lambda du, o: glass_conform(DEMO, 8.0, du, o, tmp),
-            lambda du, o: glass_conform(TRANS, 8.0, du, o, tmp),
+            lambda du, o: monitor_stage(LIVE, 30.0, du, o, tmp, cutout="wide"),
+            lambda du, o: monitor_stage(DEMO, 2.0, du, o, tmp, cutout="medium"),
+            lambda du, o: monitor_stage(DEMO, 8.0, du, o, tmp, cutout="wide"),
+            lambda du, o: monitor_stage(TRANS, 8.0, du, o, tmp, cutout="medium"),
         ], tmp, pip=None)
-        c3c = os.path.join(tmp, "ch3_cut.mp4")
-        cutout_overlay(seg, "wide", c3c, height=640)
-        run([lf.FFMPEG, "-y", "-i", c3c, "-i", seg, "-map", "0:v", "-map", "1:a",
-             "-c:v", "copy", "-c:a", "copy", os.path.join(tmp, "ch3_final.mp4")])
-        seg = os.path.join(tmp, "ch3_final.mp4")
         add(seg, d)
 
         # ---- THE APP (feature showcase / marketing beat — vision job #2) ----
@@ -515,7 +555,9 @@ def main():
             lab = os.path.join(tmp, f"ftl{i}.png"); feature_label_png(ttl, sub, lab)
             ov = os.path.join(tmp, f"fto{i}.mp4"); overlay_png(base_v, lab, ov)
             fs.append(ov)
-        ab = os.path.join(tmp, "app_base.mp4"); concat_slices(fs, ab, tmp, "app")
+        ab0 = os.path.join(tmp, "app_base0.mp4"); concat_slices(fs, ab0, tmp, "app")
+        ab = os.path.join(tmp, "app_base.mp4")
+        cutout_overlay(ab0, "close", ab, height=640)  # app BEHIND the host (VJ)
         ac = os.path.join(tmp, "app_cap.mp4"); captions_on(ab, words_of("appfeat"), 0.3, ac)
         aseg0 = os.path.join(tmp, "app_seg0.mp4"); mux(ac, vo_wav("appfeat", tmp), aseg0, lead=0.3)
         aseg = os.path.join(tmp, "app_seg.mp4")
