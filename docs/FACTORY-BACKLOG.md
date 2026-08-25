@@ -320,3 +320,14 @@ Extend scripts/probe_frames.py's corner and ink modes with a new fixed exclusion
 
 - [ ] open
 
+## Tighten claude-tricks reveal timing in scripts/assemble_short.py / build_ep_v2.py
+_source: analyze_and_suggest 8704a75b-5fa1-4dba-8b2d-b9e09b9e3592 · 2026-08-25_
+
+**Why:** Four independent 'I Built A' episodes with usable retention samples all drop 6-14pp in the same 4.8-6.3s window, which the news-format Shorts on the same channel don't show, pointing at a fixable structural cut point rather than topic fatigue.
+
+**Interface / acceptance:**
+
+All four claude-tricks 'I Built A' Shorts with real retention data (Reaction Game, Dinner Decider, Habit Tracker, UPI Audit) share one pattern the news/curriculum Shorts on the same channel do not: a -6pp to -14pp cliff clustered at 4.8-6.3s, right where the typed-prompt-to-running-demo cut currently lands. Update the episode beat scaffolding in scripts/build_ep_v2.py (the 'I Built A' beat template consumed by scripts/assemble_short.py) so the hard cut from hook-host to the VHS-recorded typed-command beat lands by ~3.5s instead of the current ~5-6s -- pull the StepChip's first window earlier and trim the host's setup line by one clause. Re-probe StepChip corners against the new cut window per scripts/probe_frames.py before shipping (playbook §4: probe the window you will cut, not a padded one).
+
+- [ ] open
+

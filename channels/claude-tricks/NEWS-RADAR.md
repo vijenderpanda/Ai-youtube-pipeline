@@ -310,3 +310,7 @@
 ## Radar 2026-08-23 01:34
 - [ ] Inherent, founded by DeepMind alumni, says its AI &#8216;teammate&#8217; just outperformed Anthropic and OpenAI at replicating research
   https://techcrunch.com/2026/08/22/inherent-founded-by-deepmind-alumni-says-its-ai-teammate-just-outperformed-anthropic-and-openai-at-replicating-research/
+
+## Radar 2026-08-24 23:00
+- [ ] OpenAI is building AI agents for everything. Will everyone use them?
+  https://techcrunch.com/2026/08/24/openai-is-building-an-ai-agent-for-everything-will-everyone-use-them/

@@ -1,0 +1,121 @@
+{
+  "tool": "rec_web_tour.py",
+  "view": {
+    "w": 1280,
+    "h": 720,
+    "dsf": 2
+  },
+  "fps": 30,
+  "url": "https://huggingface.co/learn/agents-course/unit0/introduction",
+  "captured_at": "2026-08-25T10:02:11+00:00",
+  "dark": true,
+  "duration": 24.867,
+  "events": [
+    {
+      "t": 5.743,
+      "kind": "scroll_start",
+      "scroll_top": 0
+    },
+    {
+      "t": 6.955,
+      "kind": "scroll_end",
+      "scroll_top": 650
+    },
+    {
+      "t": 6.956,
+      "kind": "scroll_start",
+      "scroll_top": 650
+    },
+    {
+      "t": 8.164,
+      "kind": "scroll_end",
+      "scroll_top": 0
+    },
+    {
+      "t": 17.804,
+      "kind": "scroll_start",
+      "scroll_top": 0
+    },
+    {
+      "t": 19.813,
+      "kind": "scroll_end",
+      "scroll_top": 1200
+    }
+  ],
+  "focus": [
+    {
+      "t": 4.326,
+      "hold": 1.4,
+      "label": "course-title",
+      "box": [
+        0.0219,
+        0.1125,
+        0.1098,
+        0.1437
+      ],
+      "center": [
+        0.066,
+        0.128
+      ],
+      "zoom": 1.7
+    }
+  ],
+  "selections": [
+    {
+      "t": 8.777,
+      "hold": 2.4,
+      "label": "The certification process is completely free",
+      "rects": [
+        [
+          0.2484,
+          6.8415,
+          0.4836,
+          6.872
+        ]
+      ],
+      "scroll_top": 0
+    },
+    {
+      "t": 11.986,
+      "hold": 2.4,
+      "label": "To get a certification for fundamentals: you need to complete Unit 1",
+      "rects": [
+        [
+          0.2747,
+          6.9115,
+          0.6378,
+          6.942
+        ]
+      ],
+      "scroll_top": 0
+    },
+    {
+      "t": 15.19,
+      "hold": 2.0,
+      "label": "no deadline",
+      "rects": [
+        [
+          0.2906,
+          7.1156,
+          0.3569,
+          7.1461
+        ]
+      ],
+      "scroll_top": 0
+    },
+    {
+      "t": 20.725,
+      "hold": 2.4,
+      "label": "Share your agents on the Hugging Face Hub",
+      "rects": [
+        [
+          0.2929,
+          0.6168,
+          0.5335,
+          0.6473
+        ]
+      ],
+      "scroll_top": 1200
+    }
+  ]
+}

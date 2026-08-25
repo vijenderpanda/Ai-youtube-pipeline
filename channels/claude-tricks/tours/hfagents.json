@@ -1,23 +1,35 @@
 {
-  "_note": "EP4 NIGHTWATCH: huggingface.co/learn agents-course, anonymous, DARK, desktop. Needles VERBATIM (verified 2026-08-25). Certificate-first: tour opens on the cert wording.",
+  "_note": "EP4 NIGHTWATCH: huggingface.co/learn agents-course, anonymous, DARK, desktop. Needles VERBATIM (verified 2026-08-25). Certificate-first: tour opens on the cert wording. v2 tape: early scroll-down-and-back (~5-8s) so the KNEE rides real page motion; sweeps back at scroll 0.",
   "url": "https://huggingface.co/learn/agents-course/unit0/introduction",
   "view": "desktop",
   "dark": true,
   "steps": [
     {
       "do": "wait",
-      "s": 2.2
+      "s": 2.0
     },
     {
       "do": "focus",
       "selector": "h1",
       "label": "course-title",
-      "hold": 1.8,
+      "hold": 1.4,
       "zoom": 1.7
     },
     {
+      "do": "scroll",
+      "by": 650,
+      "smooth": true,
+      "dur": 1.2
+    },
+    {
+      "do": "scroll",
+      "by": -650,
+      "smooth": true,
+      "dur": 1.2
+    },
+    {
       "do": "wait",
-      "s": 0.8
+      "s": 0.6
     },
     {
       "do": "select",
@@ -43,7 +55,7 @@
       "do": "select",
       "selector": "main",
       "text": "no deadline",
-      "hold": 2.2
+      "hold": 2.0
     },
     {
       "do": "wait",

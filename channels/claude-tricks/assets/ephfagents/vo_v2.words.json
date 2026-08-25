@@ -1,0 +1,417 @@
+[
+ {
+  "w": "YOU",
+  "start": 0.0,
+  "end": 0.17
+ },
+ {
+  "w": "CAN",
+  "start": 0.22,
+  "end": 0.33
+ },
+ {
+  "w": "GET",
+  "start": 0.37,
+  "end": 0.49
+ },
+ {
+  "w": "CERTIFIED",
+  "start": 0.52,
+  "end": 1.03
+ },
+ {
+  "w": "IN",
+  "start": 1.11,
+  "end": 1.25
+ },
+ {
+  "w": "A",
+  "start": 1.38,
+  "end": 1.44
+ },
+ {
+  "w": "I",
+  "start": 1.59,
+  "end": 1.66
+ },
+ {
+  "w": "AGENTS",
+  "start": 1.78,
+  "end": 2.37
+ },
+ {
+  "w": "FREE",
+  "start": 2.54,
+  "end": 2.95
+ },
+ {
+  "w": "HERE'S",
+  "start": 3.0,
+  "end": 3.26
+ },
+ {
+  "w": "WHERE",
+  "start": 3.32,
+  "end": 3.65
+ },
+ {
+  "w": "<BREAK",
+  "start": 4.16,
+  "end": 4.16
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 4.16,
+  "end": 4.16
+ },
+ {
+  "w": "/>",
+  "start": 4.16,
+  "end": 4.16
+ },
+ {
+  "w": "HUGGING",
+  "start": 4.16,
+  "end": 4.49
+ },
+ {
+  "w": "FACE",
+  "start": 4.56,
+  "end": 4.89
+ },
+ {
+  "w": "RUNS",
+  "start": 4.95,
+  "end": 5.31
+ },
+ {
+  "w": "AN",
+  "start": 5.42,
+  "end": 5.57
+ },
+ {
+  "w": "AGENTS",
+  "start": 5.69,
+  "end": 6.08
+ },
+ {
+  "w": "COURSE",
+  "start": 6.14,
+  "end": 6.62
+ },
+ {
+  "w": "THE",
+  "start": 6.73,
+  "end": 6.85
+ },
+ {
+  "w": "CERTIFICATION",
+  "start": 6.9,
+  "end": 7.54
+ },
+ {
+  "w": "IS",
+  "start": 7.59,
+  "end": 7.67
+ },
+ {
+  "w": "COMPLETELY",
+  "start": 7.74,
+  "end": 8.23
+ },
+ {
+  "w": "FREE",
+  "start": 8.28,
+  "end": 8.65
+ },
+ {
+  "w": "<BREAK",
+  "start": 9.15,
+  "end": 9.15
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 9.15,
+  "end": 9.15
+ },
+ {
+  "w": "/>",
+  "start": 9.15,
+  "end": 9.15
+ },
+ {
+  "w": "FINISH",
+  "start": 9.15,
+  "end": 9.5
+ },
+ {
+  "w": "UNIT",
+  "start": 9.58,
+  "end": 9.79
+ },
+ {
+  "w": "ONE",
+  "start": 9.87,
+  "end": 10.24
+ },
+ {
+  "w": "YOU'RE",
+  "start": 10.45,
+  "end": 10.63
+ },
+ {
+  "w": "CERTIFIED",
+  "start": 10.66,
+  "end": 11.19
+ },
+ {
+  "w": "IN",
+  "start": 11.26,
+  "end": 11.34
+ },
+ {
+  "w": "THE",
+  "start": 11.39,
+  "end": 11.46
+ },
+ {
+  "w": "FUNDAMENTALS",
+  "start": 11.51,
+  "end": 12.41
+ },
+ {
+  "w": "<BREAK",
+  "start": 12.88,
+  "end": 12.88
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 12.88,
+  "end": 12.88
+ },
+ {
+  "w": "/>",
+  "start": 12.88,
+  "end": 12.88
+ },
+ {
+  "w": "NO",
+  "start": 12.88,
+  "end": 13.03
+ },
+ {
+  "w": "DEADLINE",
+  "start": 13.1,
+  "end": 13.6
+ },
+ {
+  "w": "LEARN",
+  "start": 13.8,
+  "end": 14.11
+ },
+ {
+  "w": "AT",
+  "start": 14.22,
+  "end": 14.37
+ },
+ {
+  "w": "YOUR",
+  "start": 14.42,
+  "end": 14.54
+ },
+ {
+  "w": "OWN",
+  "start": 14.59,
+  "end": 14.74
+ },
+ {
+  "w": "PACE",
+  "start": 14.8,
+  "end": 15.23
+ },
+ {
+  "w": "<BREAK",
+  "start": 15.7,
+  "end": 15.7
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 15.7,
+  "end": 15.7
+ },
+ {
+  "w": "/>",
+  "start": 15.7,
+  "end": 15.7
+ },
+ {
+  "w": "YOU",
+  "start": 15.7,
+  "end": 15.84
+ },
+ {
+  "w": "BUILD",
+  "start": 15.95,
+  "end": 16.18
+ },
+ {
+  "w": "REAL",
+  "start": 16.31,
+  "end": 16.66
+ },
+ {
+  "w": "AGENTS",
+  "start": 16.78,
+  "end": 17.51
+ },
+ {
+  "w": "AND",
+  "start": 17.66,
+  "end": 17.81
+ },
+ {
+  "w": "SHIP",
+  "start": 17.88,
+  "end": 18.1
+ },
+ {
+  "w": "THEM",
+  "start": 18.16,
+  "end": 18.29
+ },
+ {
+  "w": "ON",
+  "start": 18.33,
+  "end": 18.4
+ },
+ {
+  "w": "THE",
+  "start": 18.44,
+  "end": 18.51
+ },
+ {
+  "w": "HUGGING",
+  "start": 18.56,
+  "end": 18.9
+ },
+ {
+  "w": "FACE",
+  "start": 19.02,
+  "end": 19.33
+ },
+ {
+  "w": "HUB",
+  "start": 19.36,
+  "end": 19.75
+ },
+ {
+  "w": "<BREAK",
+  "start": 20.47,
+  "end": 20.47
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 20.47,
+  "end": 20.47
+ },
+ {
+  "w": "/>",
+  "start": 20.47,
+  "end": 20.47
+ },
+ {
+  "w": "THAT'S",
+  "start": 20.47,
+  "end": 20.8
+ },
+ {
+  "w": "A",
+  "start": 21.13,
+  "end": 21.25
+ },
+ {
+  "w": "CERTIFICATE",
+  "start": 21.36,
+  "end": 22.09
+ },
+ {
+  "w": "EMPLOYERS",
+  "start": 22.14,
+  "end": 22.71
+ },
+ {
+  "w": "CAN",
+  "start": 22.75,
+  "end": 22.91
+ },
+ {
+  "w": "SEE",
+  "start": 22.98,
+  "end": 23.37
+ },
+ {
+  "w": "FOR",
+  "start": 23.55,
+  "end": 23.73
+ },
+ {
+  "w": "ZERO",
+  "start": 23.82,
+  "end": 24.16
+ },
+ {
+  "w": "RUPEES",
+  "start": 24.21,
+  "end": 24.81
+ },
+ {
+  "w": "<BREAK",
+  "start": 25.47,
+  "end": 25.47
+ },
+ {
+  "w": "TIME=\"0.4S\"",
+  "start": 25.47,
+  "end": 25.47
+ },
+ {
+  "w": "/>",
+  "start": 25.47,
+  "end": 25.47
+ },
+ {
+  "w": "LINK'S",
+  "start": 25.47,
+  "end": 25.86
+ },
+ {
+  "w": "PINNED",
+  "start": 26.01,
+  "end": 26.59
+ },
+ {
+  "w": "START",
+  "start": 26.86,
+  "end": 27.21
+ },
+ {
+  "w": "WITH",
+  "start": 27.25,
+  "end": 27.39
+ },
+ {
+  "w": "UNIT",
+  "start": 27.47,
+  "end": 27.71
+ },
+ {
+  "w": "ONE",
+  "start": 27.81,
+  "end": 28.02
+ },
+ {
+  "w": "TONIGHT",
+  "start": 28.05,
+  "end": 28.79
+ }
+]

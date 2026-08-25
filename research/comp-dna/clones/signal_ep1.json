@@ -2,14 +2,14 @@
  "title": "SIGNAL ep1 \u00b7 Your Claude Problem Isn't The Model",
  "theme": "night",
  "accent": "#F5E642",
- "hostSrc": "hosts/sol_studio.jpg",
+ "hostSrc": "hosts/sol_studio_talk.mp4",
  "hostDefault": "pip",
  "hostPos": "bl",
  "blocks": [
   {
    "id": "SplitHead",
    "beat": "cold-open-claim",
-   "seconds": 3.03,
+   "seconds": 2.53,
    "host": "full",
    "props": {
     "label": "THE REAL REASON",
@@ -23,7 +23,7 @@
   {
    "id": "KineticQuote",
    "beat": "setup",
-   "seconds": 3.72,
+   "seconds": 3.66,
    "props": {
     "kicker": "HERE'S THE THING",
     "parts": [
@@ -49,7 +49,7 @@
   {
    "id": "FlowTree",
    "beat": "proof-harness",
-   "seconds": 3.77,
+   "seconds": 3.84,
    "props": {
     "title": "Same model, two setups",
     "direction": "down",
@@ -92,7 +92,7 @@
   {
    "id": "AppWindow",
    "beat": "proof-files",
-   "seconds": 6.3,
+   "seconds": 6.42,
    "props": {
     "title": "your-project",
     "dark": true,
@@ -121,7 +121,7 @@
   {
    "id": "StatCloser",
    "beat": "payoff",
-   "seconds": 2.88,
+   "seconds": 3.29,
    "props": {
     "value": 4,
     "label": "THE FIX",
@@ -133,7 +133,7 @@
   {
    "id": "BrandBumper",
    "beat": "cta",
-   "seconds": 2.76,
+   "seconds": 3.93,
    "props": {
     "name": "AI UNPACKED",
     "tagline": "one AI trick a day",
@@ -147,76 +147,77 @@
  ],
  "hostGrammar": "cutaway",
  "_vo": {
-  "words": "prod/ep1_vo.words.json",
-  "total_s": 22.06
+  "audio": "channels/claude-tricks/renders/epsignal1_vo.wav",
+  "words": "channels/claude-tricks/renders/epsignal1_vo.words.json",
+  "total_s": 23.37
  },
  "karaoke": [
   {
-   "t": 6.75,
-   "end": 7.92,
+   "t": 6.19,
+   "end": 7.29,
    "text": "same model one",
    "hot": 0
   },
   {
-   "t": 7.95,
-   "end": 8.53,
+   "t": 7.34,
+   "end": 8.0,
    "text": "bare prompt",
    "hot": 0
   },
   {
-   "t": 8.6,
-   "end": 9.51,
+   "t": 8.13,
+   "end": 9.09,
    "text": "gives you vague",
    "hot": 2
   },
   {
-   "t": 9.54,
-   "end": 10.77,
+   "t": 9.12,
+   "end": 10.23,
    "text": "answers add"
   },
   {
-   "t": 10.82,
-   "end": 11.64,
+   "t": 10.26,
+   "end": 11.12,
    "text": "a claude dot"
   },
   {
-   "t": 11.8,
-   "end": 12.96,
+   "t": 11.33,
+   "end": 12.21,
    "text": "m d your"
   },
   {
-   "t": 13.03,
-   "end": 14.16,
+   "t": 12.28,
+   "end": 13.43,
    "text": "tools a little",
    "hot": 0
   },
   {
-   "t": 14.2,
-   "end": 15.22,
+   "t": 13.47,
+   "end": 14.41,
    "text": "memory and the",
    "hot": 0
   },
   {
-   "t": 15.29,
-   "end": 16.13,
+   "t": 14.45,
+   "end": 15.44,
    "text": "same model gets",
    "hot": 0
   },
   {
-   "t": 16.16,
-   "end": 17.44,
+   "t": 15.48,
+   "end": 17.07,
    "text": "sharp four files",
    "hot": 0
   },
   {
-   "t": 17.52,
-   "end": 18.38,
+   "t": 17.14,
+   "end": 17.84,
    "text": "it reads first",
    "hot": 2
   },
   {
-   "t": 18.55,
-   "end": 19.46,
+   "t": 18.29,
+   "end": 19.03,
    "text": "that's the fix",
    "hot": 2
   }

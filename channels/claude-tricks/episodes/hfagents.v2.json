@@ -1,5 +1,5 @@
 {
-  "_note": "EP4 NIGHTWATCH (2026-08-25, SWAP-IN for today's 17:30 if in time) — HF Agents Course free certification. Tape tapes/hfagents_tape.mp4 (23.9s, dark, 3 visible verbatim sweeps; 'no deadline' spoken only, below fold). CERT-FIRST hook per ep2 analytics: promise chip = the certificate claim in second 1. Host-free body + STILL-image outro disc (HeyGen credit out; talking disc returns when track available). Camera at values provisional until VO measured; knee rides the 1200px scroll (tape ~17.0-19.0).",
+  "_note": "EP4 NIGHTWATCH (2026-08-25, SWAP-IN for today's 17:30 if in time) — HF Agents Course free certification. Tape tapes/hfagents_tape.mp4 (23.9s, dark, 3 visible verbatim sweeps; 'no deadline' spoken only, below fold). CERT-FIRST hook per ep2 analytics: promise chip = the certificate claim in second 1. FULL LOCKED LOOK — HeyGen topped up 2026-08-25: Sol PIP on all WebTour beats + talking-disc outro. Camera at values provisional until VO measured; knee rides the 1200px scroll (tape ~17.0-19.0).",
   "title": "This Free AI Agents Course Certifies You 🤖",
   "tags": "hugging face,ai agents course,free ai course,ai certification,agents,hugging face course,learn ai agents,free certificate,ai tools 2026,ai unpacked,llm course,build ai agents",
   "lines": [
@@ -77,22 +77,22 @@
       "url": "https://huggingface.co/learn/agents-course",
       "tourW": 1920,
       "tourH": 1080,
-      "from": 5.6,
+      "from": 5.9,
       "camera": [
         {
-          "at": 0.5,
-          "dur": 0.5,
+          "at": 1.42,
+          "dur": 0.42,
           "center": [
-            0.5,
-            0.42
+            0.42,
+            0.45
           ],
-          "zoom": 1.8,
-          "hold": 2.4
+          "zoom": 2.2,
+          "hold": 2.2
         }
       ],
       "selections": [
         {
-          "at": 1.5,
+          "at": 2.88,
           "rects": [
             [
               0.2484,
@@ -106,7 +106,7 @@
           "sweep": "ltr"
         },
         {
-          "at": 4.7,
+          "at": 6.09,
           "rects": [
             [
               0.2747,
@@ -120,16 +120,16 @@
           "sweep": "ltr"
         }
       ],
-      "host": false,
+      "host": true,
       "hostSize": 360,
-      "_note": "merged 2-line beat; sweeps: 'completely free' (tape 7.10) then 'fundamentals' (tape 10.32). KNEE: true after VO."
+      "_note": "KNEE v4: tape v2 has a scroll-down-and-back at ~5.7-8.1; from=5.9 puts the 6.00 knee (beat+1.84, tape 7.74) mid-bounce = real page motion + punch; sweeps at beat+2.88/6.09 (tape 8.78/11.99, scroll 0)."
     },
     "WebTour#nodeadline": {
       "src": "tapes/hfagents_tape.mp4",
       "url": "https://huggingface.co/learn/agents-course",
       "tourW": 1920,
       "tourH": 1080,
-      "from": 12.6,
+      "from": 14.2,
       "camera": [
         {
           "at": 0.4,
@@ -143,14 +143,14 @@
         }
       ],
       "selections": [],
-      "host": false
+      "host": true
     },
     "WebTour#build": {
       "src": "tapes/hfagents_tape.mp4",
       "url": "https://huggingface.co/learn/agents-course",
       "tourW": 1920,
       "tourH": 1080,
-      "from": 16.2,
+      "from": 17.6,
       "camera": [
         {
           "at": 0.6,
@@ -165,7 +165,7 @@
       ],
       "selections": [
         {
-          "at": 3.06,
+          "at": 3.13,
           "rects": [
             [
               0.2929,
@@ -179,7 +179,7 @@
           "sweep": "ltr"
         }
       ],
-      "host": false,
+      "host": true,
       "_note": "the 1200px scroll (tape ~17-19) plays inside this beat = motion; sweep on 'Share your agents…' tape 19.26"
     },
     "VsTable#worth": {
@@ -219,7 +219,7 @@
       "url": "https://huggingface.co/learn/agents-course",
       "tourW": 1920,
       "tourH": 1080,
-      "from": 6.4,
+      "from": 7.9,
       "camera": [
         {
           "at": 0.6,
@@ -234,7 +234,7 @@
       ],
       "selections": [
         {
-          "at": 0.7,
+          "at": 0.88,
           "rects": [
             [
               0.2484,
@@ -248,7 +248,7 @@
           "sweep": "ltr"
         }
       ],
-      "host": false,
+      "host": true,
       "_note": "payoff re-sweeps THE claim ('completely free') as the title promise"
     }
   },
@@ -329,12 +329,12 @@
       "note": "KNEE absolute"
     },
     {
-      "at": "@beat1+1.5",
+      "at": "@beat1+2.88",
       "name": "pop",
       "note": "free sweep"
     },
     {
-      "at": "@beat1+4.7",
+      "at": "@beat1+6.09",
       "name": "pop",
       "note": "fundamentals sweep"
     },
@@ -347,7 +347,7 @@
       "name": "whoosh_up"
     },
     {
-      "at": "@beat3+3.06",
+      "at": "@beat3+3.13",
       "name": "pop",
       "note": "share-agents sweep"
     },
@@ -370,7 +370,7 @@
       "name": "whoosh_up"
     },
     {
-      "at": "@beat5+0.7",
+      "at": "@beat5+0.88",
       "name": "pop",
       "note": "payoff sweep"
     },
