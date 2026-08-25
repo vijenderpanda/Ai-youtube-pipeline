@@ -144,19 +144,101 @@ def screen_placeholder_still(out, label="LIVE DEMO"):
 
 
 def host_pip_png(out):
-    """Sol portrait -> center square crop -> rounded PiP with magenta ring, transparent."""
+    """v4: Sol -> CIRCULAR PiP with champagne ring (AI Master grammar), transparent."""
     src = Image.open(os.path.join(SOL_DIR, "center.jpg")).convert("RGB")
     s = min(src.width, src.height)
     src = src.crop(((src.width - s) // 2, 0, (src.width - s) // 2 + s, s))  # top-square (keep face)
     src = src.resize((PIP_D, PIP_D), Image.LANCZOS)
     ring = 8
-    canvas = Image.new("RGBA", (PIP_D + ring * 2, PIP_D + ring * 2), (0, 0, 0, 0))
+    D = PIP_D + ring * 2
+    canvas = Image.new("RGBA", (D, D), (0, 0, 0, 0))
     mask = Image.new("L", (PIP_D, PIP_D), 0)
-    ImageDraw.Draw(mask).rounded_rectangle([0, 0, PIP_D, PIP_D], radius=44, fill=255)
+    ImageDraw.Draw(mask).ellipse([0, 0, PIP_D, PIP_D], fill=255)
     d = ImageDraw.Draw(canvas)
-    d.rounded_rectangle([0, 0, PIP_D + ring * 2, PIP_D + ring * 2], radius=52, fill=ACCENT + (255,))
+    d.ellipse([0, 0, D, D], fill=ACCENT + (255,))
     canvas.paste(src, (ring, ring), mask)
     canvas.save(out)
+
+
+# ---------------------------------------------------------------------------
+# v4 — the three AI-Master-grammar tools (VJ 2026-08-25):
+#   punch-in choreography, spoken-text highlight, cutaway library
+# ---------------------------------------------------------------------------
+
+def punch_in_frame(src_im, rect, zoom=1.0):
+    """One 1920x1080 frame at `zoom` in [0..1] between full frame and `rect`
+    (x, y, w, h in source px). zoom=0 full frame, zoom=1 tight on rect."""
+    sw, sh = src_im.size
+    # target crop that shows rect with 8% breathing room, 16:9-corrected
+    rx, ry, rw, rh = rect
+    rw, rh = rw * 1.16, rh * 1.16
+    if rw / rh < 16 / 9: rw = rh * 16 / 9
+    else: rh = rw * 9 / 16
+    cx, cy = rx + rect[2] / 2, ry + rect[3] / 2
+    w = sw + (rw - sw) * zoom
+    h = sh + (rh - sh) * zoom
+    x = min(max(cx - w / 2, 0), sw - w) if w < sw else 0
+    y = min(max(cy - h / 2, 0), sh - h) if h < sh else 0
+    return src_im.crop((int(x), int(y), int(x + w), int(y + h))).resize((W, H), Image.LANCZOS)
+
+
+def render_punch_in(src_video, rect, dur, out, hold=0.6):
+    """Production punch-in: ease from full frame into `rect` over `dur` seconds
+    (first `hold` seconds full, cubic ease over the next 0.8s, then locked tight).
+    Done as per-frame crop expressions in ffmpeg (zoompan jitters at 1080p)."""
+    sw, sh = 1920, 1080  # conform first
+    rx, ry, rw, rh = rect
+    rw, rh = rw * 1.16, rh * 1.16
+    if rw / rh < 16 / 9: rw = rh * 16 / 9
+    else: rh = rw * 9 / 16
+    cx, cy = rx + rect[2] / 2, ry + rect[3] / 2
+    t0, t1 = hold, hold + 0.8
+    ease = f"if(lt(t,{t0}),0,if(gt(t,{t1}),1,pow((t-{t0})/{t1 - t0},3)))"
+    wexp = f"({sw}+({rw}-{sw})*{ease})"
+    hexp = f"({sh}+({rh}-{sh})*{ease})"
+    xexp = f"min(max({cx}-{wexp}/2,0),{sw}-{wexp})"
+    yexp = f"min(max({cy}-{hexp}/2,0),{sh}-{hexp})"
+    vf = (f"scale={sw}:{sh}:force_original_aspect_ratio=decrease,"
+          f"pad={sw}:{sh}:(ow-iw)/2:(oh-ih)/2,"
+          f"crop=w='{wexp}':h='{hexp}':x='{xexp}':y='{yexp}',scale={W}:{H},fps={FPS}")
+    run([FFMPEG, "-y", "-i", src_video, "-t", str(dur), "-vf", vf,
+         *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
+
+
+def highlight_rect(im, rect, pad=10):
+    """Champagne 'spoken text' highlight: translucent fill + 3px ring on rect."""
+    ov = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(ov)
+    x, y, w, h = rect
+    box = [x - pad, y - pad, x + w + pad, y + h + pad]
+    d.rounded_rectangle(box, radius=12, fill=ACCENT + (56,), outline=ACCENT + (255,), width=3)
+    return Image.alpha_composite(im.convert("RGBA"), ov).convert("RGB")
+
+
+def pop_text_still(text, out, sub=None):
+    """Cutaway: huge champagne pop-word on ink (the 'MORE SPECIFIC' beat)."""
+    im = Image.new("RGB", (W, H), INK)
+    d = ImageDraw.Draw(im)
+    f = font(170 if len(text) <= 14 else 120)
+    tw = d.textlength(text.upper(), font=f)
+    d.text(((W - tw) / 2, H * 0.38), text.upper(), font=f, fill=ACCENT)
+    if sub:
+        fs = font(54)
+        sw2 = d.textlength(sub, font=fs)
+        d.text(((W - sw2) / 2, H * 0.62), sub, font=fs, fill=(210, 215, 222))
+    im.save(out)
+
+
+def chapter_card_still(idx, title, out):
+    """Cutaway: dark chapter card — number tick + one phrase (AI Master grammar)."""
+    im = Image.new("RGB", (W, H), INK)
+    d = ImageDraw.Draw(im)
+    d.rectangle([W // 2 - 260, H * 0.30, W // 2 - 246, H * 0.30 + 96], fill=ACCENT)
+    d.text((W // 2 - 210, H * 0.30), f"{idx:02d}", font=font(88), fill=ACCENT)
+    f = font(110 if len(title) <= 16 else 84)
+    tw = d.textlength(title.upper(), font=f)
+    d.text(((W - tw) / 2, H * 0.47), title.upper(), font=f, fill=(245, 245, 245))
+    im.save(out)
 
 
 def lower_third_png(out, title):
