@@ -3,9 +3,9 @@
 Single source of truth to resume after a sign-out. All code is committed + pushed on branch
 `claude/latest-pull-uvxc9q`.
 
-## Cadence (LOCKED this week, per VJ's YouTube-revenue doc)
+## Cadence (UPDATED VJ 2026-08-25)
 Two Shorts/day, ≥6h apart, English audio/titles (both slots):
-- **00:30 IST → US/UK** (their afternoon/lunch + UK evening; higher CPM/RPM). Stage-1 seed in the West.
+- **17:30 IST daily → NIGHTWATCH lane (this session).** (Was 00:30; changed by VJ 2026-08-25.) NOTE: only 1h from the sibling lane's 18:30 — flagged to VJ vs his own 4-6h spacing rule; his call.
 - **18:30 IST → India** (prime post-work). Verdict in the doc: "Excellent".
 - Under the 3-notification/24h cap; no feed cannibalization. **Judge after 3–4 weeks, not 2 days.**
 

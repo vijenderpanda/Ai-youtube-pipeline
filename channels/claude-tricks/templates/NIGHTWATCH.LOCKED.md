@@ -1,4 +1,6 @@
-# NIGHTWATCH — LOCKED template · web-tour Shorts · 00:30 IST slot only
+# NIGHTWATCH — LOCKED template · web-tour Shorts · 17:30 IST slot only
+
+> SLOT CHANGE (VJ 2026-08-25): daily slot moved 00:30 IST → **17:30 IST** (2026-xx-xxT12:00Z). Template content/gates unchanged; every other 00:30 reference below reads as 17:30 now.
 
 **Status: LOCKED v1 (2026-08-24).** Do not change params without a new version + a VJ sign-off.
 **Codename NIGHTWATCH** = the 00:30 IST upload that seeds the US/UK feed overnight (their afternoon/UK
@@ -9,7 +11,7 @@ a SEPARATE template VJ maintains in another session; NIGHTWATCH does not touch i
 Proven on: ep1 `fcc` (youtu.be/BEqvWkT5B5g), ep2 `academy` (youtu.be/1PUZa8U-8Rw) — both armed 2026-08-24.
 
 ## Slot & cadence
-- **00:30 IST only** (2026-08-2xT19:00Z). Targets US/UK → English audio/titles mandatory, higher CPM/RPM.
+- **17:30 IST only** (T12:00Z; VJ 2026-08-25). English audio/titles stay mandatory (Stage-2 global reach).
 - One NIGHTWATCH short per day at this slot. Judge after 3–4 weeks, never off one video.
 
 ## The self-contained kit (Remotion cookbook — the ONLY components this template uses)
