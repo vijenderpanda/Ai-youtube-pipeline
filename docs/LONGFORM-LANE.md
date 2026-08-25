@@ -70,6 +70,9 @@ youtube.com/watch?v=Fys4oHlXQmQ (~105 min, 1080p). Frames + raw in
 3. **Real human host** in a moody studio w/ mic for setup beats — the ONE thing that
    isn't synthesizable to equal quality. Options: VJ on camera / HeyGen landscape Sol /
    frozen-still degrade (current proto, weakest).
+   **VJ call 2026-08-25: HeyGen landscape Sol** — generate 16:9 lip-synced Sol clips for
+   host beats (sparse: intro/chapter pivots/outro, ~$3-5/ep); wallet + photo-avatar cap
+   per HeyGen constraints memory. Frozen-still stays the zero-cost draft degrade.
 4. **Chapter title cards** (dark, one phrase) between sections — trivial for us.
 5. **Meme/illustration cutaways + big pop-text** ("MORE SPECIFIC") every ~20-40s —
    cutaway density is the pacing engine of the whole video.
