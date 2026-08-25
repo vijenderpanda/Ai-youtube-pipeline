@@ -104,6 +104,54 @@ def chapter(idx, title):
     im = Image.open(tmp).convert("RGB"); os.unlink(tmp); return im
 
 
+
+ICON = "/Users/vijenderpanda/missnomeetings/artwork/icon-original-rounded.jpeg"
+
+
+def appstore_listing_still():
+    """Option-A cold-open frame: App-Store-style product page built from the REAL app
+    icon. PLACEHOLDER CHROME — production MUST swap in a screen capture of the real
+    listing (honesty rule: proof beats are real tape)."""
+    im = Image.new("RGB", (W, H), (16, 16, 18))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle([360, 60, W - 360, H - 60], radius=28, fill=(28, 28, 30))
+    try:
+        icon = Image.open(ICON).convert("RGB").resize((190, 190), Image.LANCZOS)
+        m = Image.new("L", (190, 190), 0)
+        ImageDraw.Draw(m).rounded_rectangle([0, 0, 190, 190], radius=42, fill=255)
+        im.paste(icon, (420, 130), m)
+    except Exception:
+        d.rounded_rectangle([420, 130, 610, 320], radius=42, fill=(240, 150, 40))
+    f_big = ImageFont.truetype(lf.FONT_ANTON, 64)
+    f_sm = ImageFont.truetype(lf.FONT_ANTON, 34)
+    d.text((650, 150), "MissNoMeetings", font=f_big, fill=(245, 245, 247))
+    d.text((650, 235), "Never miss a meeting again", font=f_sm, fill=(160, 160, 166))
+    d.rounded_rectangle([650, 290, 810, 344], radius=27, fill=(0, 122, 255))
+    d.text((694, 300), "GET", font=f_sm, fill=(255, 255, 255))
+    for i in range(3):
+        x = 420 + i * 350
+        d.rounded_rectangle([x, 400, x + 320, 980], radius=24, outline=(70, 70, 76), width=2, fill=(20, 20, 24))
+    d.text((430, 990), "[PLACEHOLDER — real listing capture at production]", font=f_sm, fill=(228, 197, 107))
+    return im
+
+
+def timestamp_card():
+    """Beat 2: the unbelievable number, as receipts."""
+    im = Image.new("RGB", (W, H), lf.INK)
+    d = ImageDraw.Draw(im)
+    f_ts = ImageFont.truetype(lf.FONT_ANTON, 76)
+    f_big = ImageFont.truetype(lf.FONT_ANTON, 150)
+    f_sm = ImageFont.truetype(lf.FONT_ANTON, 40)
+    d.text((330, 300), "3:04 PM  prompt sent", font=f_ts, fill=(210, 215, 222))
+    d.text((330, 430), "6:12 PM  submitted to Apple", font=f_ts, fill=(210, 215, 222))
+    t = "3H 08M"
+    tw2 = d.textlength(t, font=f_big)
+    d.text(((W - tw2) / 2, 620), t, font=f_big, fill=lf.ACCENT)
+    d.text((330, 850), "[timestamps TBD — pull the REAL ones from the session log before render]",
+           font=f_sm, fill=(228, 197, 107))
+    return im
+
+
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
     # sim phone sits right-of-frame in the tape (1920x1200 conformed -> ~same x band)
@@ -112,12 +160,18 @@ def main():
 
     beats = [
         # (timecode, mode label, VO line, image)
-        ("0:00", "COLD-OPEN — App Store proof",
-         "This app is live on the App Store right now. Built in three hours. I didn't write the code.",
-         with_pip(lf.punch_in_frame(demo_frame(12.5), PHONE, zoom=1.0))),
-        ("0:45", "PROMISE — host (LEO wide)",
-         "Idea to shipped iPhone app, one afternoon, one tool. I'll show you every step — including the parts that broke.",
+        ("0:00", "COLD-OPEN A1 — the listing, silent",
+         "(no VO for 2s — just the listing scrolling) ...That's a real app, on the real App Store.",
+         appstore_listing_still()),
+        ("0:08", "COLD-OPEN A2 — the receipts",
+         "Now look at the timestamps. Prompt sent 3:04. Submitted to Apple 6:12. Three hours, eight minutes.",
+         timestamp_card()),
+        ("0:20", "COLD-OPEN A3 — the promise (LEO wide)",
+         "By the end of this video you'll know every step — because I'm going to show you all of it, including what broke.",
          leo_host("wide")),
+        ("0:45", "PROMISE — the app itself (punch-in)",
+         "One afternoon, one tool, zero lines of code written by me. Here's the app it built.",
+         with_pip(lf.punch_in_frame(demo_frame(12.5), PHONE, zoom=1.0))),
         ("1:20", "CHAPTER CARD", "—", chapter(1, "The Idea")),
         ("1:30", "SCREEN+PIP — the one-prompt spec",
          "MissNoMeetings: my phone buries meeting invites, I miss calls. So I typed the whole app as one prompt.",
