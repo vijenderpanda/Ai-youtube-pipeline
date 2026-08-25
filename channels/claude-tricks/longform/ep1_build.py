@@ -120,7 +120,7 @@ PIP_FACE = {"ch1": (870, 400), "ch2": (780, 380), "ch3": (1000, 400), "ch4": (90
 PIP_SQ = 720
 
 
-def talking_pip(base_video, host_clip, dur, out, tmp, face=(960, 400)):
+def talking_pip(base_video, host_clip, dur, out, tmp, face=(960, 400), windows=None):
     """Circle-masked TALKING host over the tape (lip-synced to the section VO)."""
     mp, rp = circle_mask_pngs(tmp)
     x = W - PIP_D - 56
@@ -134,8 +134,10 @@ def talking_pip(base_video, host_clip, dur, out, tmp, face=(960, 400)):
           f"scale={PIP_D}:{PIP_D}[pv];"
           f"[2:v]loop=-1:1,scale={PIP_D}:{PIP_D},format=gray[msk];"
           f"[pv][msk]alphamerge[pa];"
-          f"[0:v][pa]overlay=x={x}:y={y}:eof_action=repeat[b];"
-          f"[3:v]loop=-1:1[ring];[b][ring]overlay=x={x - 8}:y={y - 8}:eof_action=repeat[v]"),
+          + (f"[0:v][pa]overlay=x={x}:y={y}:eof_action=repeat"
+             + (f":enable='{windows}'" if windows else "") + "[b];")
+          + f"[3:v]loop=-1:1[ring];[b][ring]overlay=x={x - 8}:y={y - 8}:eof_action=repeat"
+          + (f":enable='{windows}'" if windows else "") + "[v]"),
          "-map", "[v]", "-t", str(dur), *venc("18", "veryfast"),
          "-pix_fmt", "yuv420p", "-an", out])
 
@@ -212,7 +214,7 @@ def static_pip_overlay(base_video, dur, out, tmp):
          "-t", str(dur), *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
 
 
-def build_section(name, visuals, tmp, pip=None, captions=True, lead=0.3):
+def build_section(name, visuals, tmp, pip=None, pip_lines=None, captions=True, lead=0.3):
     """visuals: list of callables f(dur, out) aligned to VO lines."""
     times, total = line_times(name, lead=lead)
     slices = []
@@ -225,9 +227,12 @@ def build_section(name, visuals, tmp, pip=None, captions=True, lead=0.3):
     cur = base
     if pip:
         p2 = os.path.join(tmp, f"{name}_pip.mp4")
+        win = None
+        if pip_lines is not None:
+            win = "+".join(f"between(t,{times[i][0]:.2f},{times[i][1]:.2f})" for i in pip_lines)
         if os.path.exists(pip):
             talking_pip(cur, pip, total, p2, tmp,
-                        face=PIP_FACE.get(name, (960, 400)))
+                        face=PIP_FACE.get(name, (960, 400)), windows=win)
         else:
             print(f"!! {name}: host clip missing (HeyGen credits) — static pip degrade")
             static_pip_overlay(cur, total, p2, tmp)
@@ -581,7 +586,8 @@ def kinetic_line(text, hot, dur, out, tmp):
         total = sum(widths)
         x = (W - total) / 2
         for w, ww in zip(words, widths):
-            col = lf.ACCENT if w.strip(".,").lower() == hot.lower() else (int(235 * k),) * 3
+            hots = {h.lower() for h in (hot if isinstance(hot, (set, list, tuple)) else [hot])}
+            col = lf.ACCENT if w.strip(".,!?").lower() in hots else (int(235 * k),) * 3
             d.text((x, H // 2 - base), w, font=f, fill=col)
             x += ww
         im.save(os.path.join(fd, f"f{i:04d}.png"))
@@ -640,9 +646,13 @@ def main():
                 ("GAVE UP?", "the back-and-forth loop"),
                 (None, None), (None, None)]
         rv = []
-        for i, ((t0, t1), src) in enumerate(zip(times, [BR1, BR2, GITLOG, LIVE])):
+        for i, ((t0, t1), src) in enumerate(zip(times, [BR1, None, GITLOG, LIVE])):
             base_v = os.path.join(tmp, f"rl{i}.mp4")
-            monitor_stage(src, 0.0 if i != 3 else 1.0, t1 - t0, base_v, tmp, plate=i % 2)
+            if i == 1:
+                kinetic_line("Somewhere in that loop... you give up.",
+                             ("give", "up"), t1 - t0, base_v, tmp)
+            else:
+                monitor_stage(src, 0.0 if i != 3 else 1.0, t1 - t0, base_v, tmp, plate=i % 2)
             if POPQ[i][0]:
                 lab = os.path.join(tmp, f"rlq{i}.png")
                 feature_label_png(POPQ[i][0], POPQ[i][1], lab)
@@ -664,7 +674,7 @@ def main():
             lambda du, o: window_stage(CODE, 0.0, du, o, tmp, bubble=False,
                                        bar_title="MeetingStore.swift"),
             lambda du, o: window_stage(LIVE, 2.0, du, o, tmp, bubble=False),
-        ], tmp, pip=os.path.join(A, "host_ch1.mp4"))
+        ], tmp, pip=os.path.join(A, "host_ch1.mp4"), pip_lines=[1, 2])
         add(seg, d)
 
         # ---- CH2 The Build ----
@@ -680,17 +690,18 @@ def main():
                                        bar_title="Claude Code — session log"),
             lambda du, o: window_stage(GITLOG, 8.0, du, o, tmp, bubble=False,
                                        bar_title="git log"),
-        ], tmp, pip=os.path.join(A, "host_ch2.mp4"))
+        ], tmp, pip=os.path.join(A, "host_ch2.mp4"), pip_lines=[1, 2, 3, 4])
         add(seg, d)
 
         # ---- CH3 On My iPhone ----
         s, d = card(tmp, 3, "On My iPhone"); add(s, d, chapter="On My iPhone")
         seg, d = build_section("ch3", [
             lambda du, o: monitor_stage(LIVE, 30.0, du, o, tmp, plate=1),
-            lambda du, o: monitor_stage(DEMO, 2.0, du, o, tmp, plate=0),
-            lambda du, o: monitor_stage(DEMO, 8.0, du, o, tmp, plate=1),
-            lambda du, o: monitor_stage(TRANS, 8.0, du, o, tmp, plate=0),
-        ], tmp, pip=os.path.join(A, "host_ch3.mp4"))
+            lambda du, o: window_stage(DEMO, 2.0, du, o, tmp, bubble=False),
+            lambda du, o: window_stage(DEMO, 8.0, du, o, tmp, bubble=False),
+            lambda du, o: window_stage(TRANS, 8.0, du, o, tmp, bubble=False,
+                                       bar_title="Claude Code — session log"),
+        ], tmp, pip=os.path.join(A, "host_ch3.mp4"), pip_lines=[1, 2, 3])
         add(seg, d)
 
         # ---- THE APP (feature showcase / marketing beat — vision job #2) ----
@@ -735,8 +746,9 @@ def main():
         # ---- CH4 The App Store ----
         s, d = card(tmp, 5, "The App Store"); add(s, d, chapter="The App Store")
         seg, d = build_section("ch4", [
-            lambda du, o: window_stage(TRANS, 14.0, du, o, tmp, bubble=False,
-                                       bar_title="Claude Code — session log"),
+            lambda du, o: pills_anim(["Step 1 — Signing", "Step 2 — Archive",
+                                      "Step 3 — App Store Connect", "Step 4 — Submit"],
+                                     du, o, tmp, title="THE BORING WALL"),
             lambda du, o: still_slice(listing_png, du, o, 150),
             lambda du, o: receipts_real(du, o, tmp),
         ], tmp, pip=None, captions=True)
