@@ -121,23 +121,45 @@ PIP_FACE = {"ch1": (870, 350, 500), "ch2": (800, 340, 500),
 PIP_SQ = 720
 
 
-def talking_pip(base_video, host_clip, dur, out, tmp, face=(960, 400), windows=None):
-    """Circle-masked TALKING host over the tape (lip-synced to the section VO)."""
-    mp, rp = circle_mask_pngs(tmp)
-    x = W - PIP_D - 56
-    y = H - PIP_D - 72
-    cx, cy, sq = (face if len(face) == 3 else (*face, PIP_SQ))
-    cx0 = max(0, min(1920 - sq, cx - sq // 2))
-    cy0 = max(0, min(1080 - sq, cy - sq // 2))
-    run([lf.FFMPEG, "-y", "-i", base_video, "-i", host_clip, "-i", mp, "-i", rp,
+REMBG = ("/private/tmp/claude-501/-Users-vijenderpanda-Ai-youtube-pipeline/"
+         "e48f13f1-bfc6-45eb-8796-3d93832605ad/scratchpad/rembg_env/bin/rembg")
+CUT_H = 620  # on-frame height of the cutout host
+
+
+def host_cutout_clip(name, host_clip):
+    """Cache a frameless (alpha) cutout of the talking host clip via rembg."""
+    cut = os.path.join(A, f"host_{name}_cut.mov")
+    if os.path.exists(cut):
+        return cut
+    cx, cy, _ = PIP_FACE.get(name, (960, 400, PIP_SQ))
+    cw, chh = 900, 980
+    x0 = max(0, min(1920 - cw, cx - cw // 2))
+    y0 = max(0, min(1080 - chh, cy - 300))
+    with tempfile.TemporaryDirectory() as td:
+        fin = os.path.join(td, "in"); fout = os.path.join(td, "out")
+        os.makedirs(fin); os.makedirs(fout)
+        run([lf.FFMPEG, "-y", "-i", host_clip,
+             "-vf", f"fps={FPS},crop={cw}:{chh}:{x0}:{y0},scale=568:-2",
+             os.path.join(fin, "f%05d.png")])
+        run([os.path.dirname(REMBG) + "/python3",
+             os.path.join(HERE, "person_cut.py"), fin, fout])
+        run([lf.FFMPEG, "-y", "-framerate", str(FPS),
+             "-i", os.path.join(fout, "f%05d.png"),
+             "-c:v", "png", "-pix_fmt", "rgba", cut])
+    return cut
+
+
+def talking_pip(base_video, host_clip, dur, out, tmp, face=(960, 400), windows=None,
+                name=None):
+    """Frameless TALKING cutout host over the tape (no circle/pip wrapper —
+    rembg-alpha'd HeyGen clip anchored bottom-right, VJ 2026-08-26)."""
+    cut = host_cutout_clip(name or "pip", host_clip)
+    x = W - 620
+    y = H - CUT_H
+    run([lf.FFMPEG, "-y", "-i", base_video, "-i", cut,
          "-filter_complex",
-         (f"[1:v]fps={FPS},crop={sq}:{sq}:{cx0}:{cy0},"
-          f"scale={PIP_D}:{PIP_D}[pv];"
-          f"[2:v]loop=-1:1,scale={PIP_D}:{PIP_D},format=gray[msk];"
-          f"[pv][msk]alphamerge[pa];"
-          + (f"[0:v][pa]overlay=x={x}:y={y}:eof_action=repeat"
-             + (f":enable='{windows}'" if windows else "") + "[b];")
-          + f"[3:v]loop=-1:1[ring];[b][ring]overlay=x={x - 8}:y={y - 8}:eof_action=repeat"
+         (f"[1:v]fps={FPS},scale=-2:{CUT_H},format=rgba[pa];"
+          f"[0:v][pa]overlay=x={x}:y={y}:eof_action=repeat"
           + (f":enable='{windows}'" if windows else "") + "[v]"),
          "-map", "[v]", "-t", str(dur), *venc("18", "veryfast"),
          "-pix_fmt", "yuv420p", "-an", out])
@@ -233,7 +255,8 @@ def build_section(name, visuals, tmp, pip=None, pip_lines=None, captions=True, l
             win = "+".join(f"between(t,{times[i][0]:.2f},{times[i][1]:.2f})" for i in pip_lines)
         if os.path.exists(pip):
             talking_pip(cur, pip, total, p2, tmp,
-                        face=PIP_FACE.get(name, (960, 400, PIP_SQ)), windows=win)
+                        face=PIP_FACE.get(name, (960, 400, PIP_SQ)), windows=win,
+                        name=name)
         else:
             print(f"!! {name}: host clip missing (HeyGen credits) — static pip degrade")
             static_pip_overlay(cur, total, p2, tmp)
@@ -329,6 +352,170 @@ def subscribe_card_still(out):
     d.text(((W - d.textlength(t2, font=f_s)) / 2, 780), t2, font=f_s, fill=(210, 215, 222))
     im.save(out)
 
+
+def _spring(p):
+    """0->1 with a soft overshoot (modern springy pop)."""
+    import math
+    if p <= 0: return 0.0
+    if p >= 1: return 1.0
+    return 1 - math.exp(-5.5 * p) * math.cos(9 * p)
+
+
+def lss_anim(dur, out, tmp):
+    """Animated LIKE / SHARE / SUBSCRIBE end-plate: springy glass chips popping
+    in sequence, champagne particle bursts, bell wiggle (VJ 2026-08-26)."""
+    import math, random
+    rng = random.Random(7)
+    fdir = os.path.join(tmp, "lss"); os.makedirs(fdir, exist_ok=True)
+    f_chip = ImageFont.truetype(lf.FONT_ANTON, 64)
+    f_head = ImageFont.truetype(lf.FONT_ANTON, 96)
+    f_sub = ImageFont.truetype(lf.FONT_ANTON, 46)
+    try:
+        icon = Image.open(sb.ICON).convert("RGB").resize((220, 220), Image.LANCZOS)
+        im_m = Image.new("L", (220, 220), 0)
+        ImageDraw.Draw(im_m).rounded_rectangle([0, 0, 220, 220], radius=48, fill=255)
+    except Exception:
+        icon = None
+    labels = ["LIKE", "SHARE", "SUBSCRIBE"]
+    widths = [int(f_chip.getlength(t)) + 150 for t in labels]
+    gap = 46
+    total_w = sum(widths) + gap * 2
+    x0 = (W - total_w) // 2
+    cy = 700
+    starts = [0.5, 1.0, 1.5]           # chip pop times
+    bursts = [(s + 0.18) for s in starts]
+    n = int(dur * FPS)
+    for fi in range(n):
+        t = fi / FPS
+        im = Image.new("RGB", (W, H), lf.INK)
+        # soft radial glow
+        g = Image.new("L", (W, H), 0)
+        ImageDraw.Draw(g).ellipse([W//2 - 700, cy - 420, W//2 + 700, cy + 420], fill=46)
+        g = g.resize((W // 8, H // 8)).resize((W, H))
+        im = Image.composite(Image.new("RGB", (W, H), (46, 38, 22)), im, g)
+        d = ImageDraw.Draw(im, "RGBA")
+        if icon is not None:
+            a = _spring(t / 0.45)
+            sz = max(2, int(220 * min(1.0, a)))
+            ic = icon.resize((sz, sz)); mm = im_m.resize((sz, sz))
+            im.paste(ic, ((W - sz) // 2, 200 + (220 - sz) // 2), mm)
+            d = ImageDraw.Draw(im, "RGBA")
+        hp = _spring((t - 0.25) / 0.5)
+        if hp > 0:
+            txt = "ENJOYED THE BUILD?"
+            d.text(((W - d.textlength(txt, font=f_head)) / 2, 480), txt,
+                   font=f_head, fill=(235, 238, 244, int(255 * min(1, hp))))
+        x = x0
+        for i, (lab, wd) in enumerate(zip(labels, widths)):
+            s = _spring((t - starts[i]) / 0.55)
+            if s > 0:
+                sc = 0.3 + 0.7 * s
+                cw, chh = int(wd * sc), int(112 * sc)
+                cx = x + wd // 2
+                box = [cx - cw // 2, cy - chh // 2, cx + cw // 2, cy + chh // 2]
+                on = t > bursts[i]
+                fill = lf.ACCENT + (255,) if on else (255, 255, 255, 16)
+                outline = lf.ACCENT + (255,) if on else (255, 255, 255, 70)
+                d.rounded_rectangle(box, radius=chh // 2, fill=fill, outline=outline, width=3)
+                col = lf.INK if on else (235, 238, 244)
+                tw = d.textlength(lab, font=f_chip)
+                if sc > 0.85:
+                    d.text((cx - tw / 2, cy - 40), lab, font=f_chip, fill=col)
+                # bell wiggle after subscribe activates
+                if i == 2 and on:
+                    ang = math.exp(-3 * (t - bursts[i])) * math.sin(14 * (t - bursts[i])) * 0.5
+                    bx, by = box[2] + 54, cy
+                    d.ellipse([bx - 4 + ang * 30, by + 26, bx + 4 + ang * 30, by + 34], fill=lf.ACCENT)
+                    d.pieslice([bx - 24, by - 26, bx + 24, by + 30], 180, 360, fill=lf.ACCENT)
+                    d.rectangle([bx - 26, by + 18, bx + 26, by + 24], fill=lf.ACCENT)
+            # particle burst on activation
+            bt = t - bursts[i]
+            if 0 < bt < 0.7:
+                cx = x + wd // 2
+                for k in range(14):
+                    a2 = rng.random() * math.tau if False else (k / 14) * math.tau
+                    r = 70 + 260 * (1 - (1 - bt / 0.7) ** 2)
+                    px, py = cx + math.cos(a2) * r, cy + math.sin(a2) * r * 0.6
+                    al = int(255 * (1 - bt / 0.7))
+                    pr = 5 * (1 - bt / 0.9)
+                    d.ellipse([px - pr, py - pr, px + pr, py + pr], fill=lf.ACCENT + (al,))
+            x += wd + gap
+        np_ = _spring((t - 2.1) / 0.5)
+        if np_ > 0:
+            t2 = "next: the $0 creator studio"
+            d.text(((W - d.textlength(t2, font=f_sub)) / 2, 880), t2,
+                   font=f_sub, fill=(210, 215, 222, int(255 * min(1, np_))))
+        im.save(os.path.join(fdir, f"f{fi:04d}.png"))
+    run([lf.FFMPEG, "-y", "-framerate", str(FPS), "-i", os.path.join(fdir, "f%04d.png"),
+         *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
+
+
+POPS = [("LIKE", 129.0), ("SHARE", 186.0)]  # analyzed value peaks, not random:
+# LIKE right after the on-iPhone payoff; SHARE at the end of the live app demo.
+POP_DUR = 3.4
+
+
+def lss_pop_mov(label, tmp):
+    """Small corner engagement pop (spring in, particle ring, fade out) — rgba mov."""
+    import math
+    fdir = os.path.join(tmp, f"pop_{label}"); os.makedirs(fdir, exist_ok=True)
+    f_chip = ImageFont.truetype(lf.FONT_ANTON, 52)
+    cw = int(f_chip.getlength(label)) + 120
+    CW, CHh = cw + 240, 320
+    cx, cy = CW // 2, CHh // 2
+    n = int(POP_DUR * FPS)
+    for fi in range(n):
+        t = fi / FPS
+        im = Image.new("RGBA", (CW, CHh), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im, "RGBA")
+        s = _spring(t / 0.5)
+        fade = min(1.0, max(0.0, (POP_DUR - t) / 0.35))
+        if s > 0 and fade > 0:
+            sc = 0.3 + 0.7 * s
+            w2, h2 = int(cw * sc) // 2, int(88 * sc) // 2
+            on = t > 0.55
+            fill = lf.ACCENT + (int(255 * fade),) if on else (255, 255, 255, int(20 * fade))
+            ol = lf.ACCENT + (int(255 * fade),) if on else (255, 255, 255, int(80 * fade))
+            d.rounded_rectangle([cx - w2, cy - h2, cx + w2, cy + h2],
+                                radius=h2, fill=fill, outline=ol, width=3)
+            if sc > 0.85:
+                base = lf.INK if on else (235, 238, 244)
+                tw = d.textlength(label, font=f_chip)
+                d.text((cx - tw / 2, cy - 33), label, font=f_chip,
+                       fill=tuple(base) + (int(255 * fade),))
+            bt = t - 0.55
+            if 0 < bt < 0.6:
+                for k in range(12):
+                    a2 = (k / 12) * math.tau
+                    r = w2 * 0.6 + 150 * (1 - (1 - bt / 0.6) ** 2)
+                    px, py = cx + math.cos(a2) * r, cy + math.sin(a2) * r * 0.55
+                    al = int(255 * (1 - bt / 0.6))
+                    pr = 4 * (1 - bt / 0.8)
+                    d.ellipse([px - pr, py - pr, px + pr, py + pr],
+                              fill=lf.ACCENT + (al,))
+        im.save(os.path.join(fdir, f"f{fi:04d}.png"))
+    mov = os.path.join(tmp, f"pop_{label}.mov")
+    run([lf.FFMPEG, "-y", "-framerate", str(FPS), "-i", os.path.join(fdir, "f%04d.png"),
+         "-c:v", "png", "-pix_fmt", "rgba", mov])
+    return mov, CW, CHh
+
+
+def engage_pops(master, out, tmp):
+    """Overlay the analyzed LIKE/SHARE pops onto the finished master (audio copied)."""
+    inputs, fc = ["-i", master], ""
+    prev = "0:v"
+    for i, (lab, t0) in enumerate(POPS):
+        mov, CW, CHh = lss_pop_mov(lab, tmp)
+        inputs += ["-i", mov]
+        x = 40
+        y = H - CHh - 60
+        fc += (f"[{i + 1}:v]setpts=PTS+{t0}/TB[p{i}];"
+               f"[{prev}][p{i}]overlay=x={x}:y={y}:"
+               f"enable='between(t,{t0},{t0 + POP_DUR})'[v{i}];")
+        prev = f"v{i}"
+    run([lf.FFMPEG, "-y", *inputs, "-filter_complex", fc.rstrip(";"),
+         "-map", f"[{prev}]", "-map", "0:a", *venc("18", "medium"),
+         "-c:a", "copy", out])
 
 
 GLASS_FG_W, GLASS_FG_H, GLASS_R = 1614, 908, 30
@@ -801,8 +988,7 @@ def main():
                  *venc("18", "veryfast"), "-an", o2])
         else:
             conform(GITLOG, 4.0, times[1][1] - times[1][0], o2, drift=False)
-        sub_png = os.path.join(tmp, "subcard.png"); subscribe_card_still(sub_png)
-        o3 = os.path.join(tmp, "ot3.mp4"); still_slice(sub_png, times[2][1] - times[2][0], o3, drift_px=40)
+        o3 = os.path.join(tmp, "ot3.mp4"); lss_anim(times[2][1] - times[2][0], o3, tmp)
         ob = os.path.join(tmp, "out_base.mp4"); concat_slices([o1, o2, o3], ob, tmp, "outro")
         oc = os.path.join(tmp, "out_cap.mp4"); captions_on(ob, words_of("outro2"), 0.3, oc)
         oseg = os.path.join(tmp, "out_seg.mp4"); mux(oc, vo_wav("outro2", tmp), oseg, lead=0.3)
@@ -836,6 +1022,9 @@ def main():
               f"measured_thresh={meas['input_thresh']}:offset={meas['target_offset']}:"
               f"linear=true,aresample=48000"),
              "-c:v", "copy", "-c:a", "aac", "-ar", "48000", "-b:a", "192k", out])
+        popped = os.path.join(tmp, "popped.mp4")
+        engage_pops(out, popped, tmp)
+        os.replace(popped, out)
 
     with open(os.path.join(R, "ep1_master.chapters.txt"), "w") as f:
         f.write("# Paste into the YouTube description:\n")
