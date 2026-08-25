@@ -1,0 +1,297 @@
+[
+ {
+  "w": "IF",
+  "start": 0.0,
+  "end": 0.16
+ },
+ {
+  "w": "A",
+  "start": 0.21,
+  "end": 0.23
+ },
+ {
+  "w": "MEETINGS",
+  "start": 0.28,
+  "end": 0.61
+ },
+ {
+  "w": "APP",
+  "start": 0.69,
+  "end": 0.87
+ },
+ {
+  "w": "TAKES",
+  "start": 0.92,
+  "end": 1.11
+ },
+ {
+  "w": "ONE",
+  "start": 1.17,
+  "end": 1.35
+ },
+ {
+  "w": "MORNING",
+  "start": 1.38,
+  "end": 1.71
+ },
+ {
+  "w": "IMAGINE",
+  "start": 1.81,
+  "end": 2.43
+ },
+ {
+  "w": "WHAT",
+  "start": 2.6,
+  "end": 2.81
+ },
+ {
+  "w": "YOUR",
+  "start": 2.86,
+  "end": 2.97
+ },
+ {
+  "w": "IDEA",
+  "start": 3.02,
+  "end": 3.25
+ },
+ {
+  "w": "TAKES",
+  "start": 3.31,
+  "end": 3.61
+ },
+ {
+  "w": "AND",
+  "start": 4.1,
+  "end": 4.23
+ },
+ {
+  "w": "ONE",
+  "start": 4.27,
+  "end": 4.42
+ },
+ {
+  "w": "MORE",
+  "start": 4.45,
+  "end": 4.6
+ },
+ {
+  "w": "THING",
+  "start": 4.64,
+  "end": 4.85
+ },
+ {
+  "w": "THIS",
+  "start": 5.18,
+  "end": 5.39
+ },
+ {
+  "w": "VIDEO",
+  "start": 5.5,
+  "end": 5.91
+ },
+ {
+  "w": "THE",
+  "start": 6.03,
+  "end": 6.15
+ },
+ {
+  "w": "VOICE",
+  "start": 6.2,
+  "end": 6.56
+ },
+ {
+  "w": "THE",
+  "start": 6.61,
+  "end": 6.71
+ },
+ {
+  "w": "CUT",
+  "start": 6.78,
+  "end": 7.0
+ },
+ {
+  "w": "THE",
+  "start": 7.06,
+  "end": 7.14
+ },
+ {
+  "w": "GRAPHICS",
+  "start": 7.2,
+  "end": 7.62
+ },
+ {
+  "w": "THE",
+  "start": 7.66,
+  "end": 7.74
+ },
+ {
+  "w": "MIX",
+  "start": 7.8,
+  "end": 8.12
+ },
+ {
+  "w": "PRODUCED",
+  "start": 8.41,
+  "end": 8.84
+ },
+ {
+  "w": "BY",
+  "start": 8.88,
+  "end": 9.01
+ },
+ {
+  "w": "THE",
+  "start": 9.07,
+  "end": 9.14
+ },
+ {
+  "w": "SAME",
+  "start": 9.17,
+  "end": 9.43
+ },
+ {
+  "w": "AI",
+  "start": 9.47,
+  "end": 9.74
+ },
+ {
+  "w": "PIPELINE",
+  "start": 9.79,
+  "end": 10.19
+ },
+ {
+  "w": "THAT",
+  "start": 10.22,
+  "end": 10.33
+ },
+ {
+  "w": "BUILT",
+  "start": 10.39,
+  "end": 10.59
+ },
+ {
+  "w": "THE",
+  "start": 10.61,
+  "end": 10.69
+ },
+ {
+  "w": "APP",
+  "start": 10.75,
+  "end": 10.97
+ },
+ {
+  "w": "THAT'S",
+  "start": 11.32,
+  "end": 11.59
+ },
+ {
+  "w": "THE",
+  "start": 11.63,
+  "end": 11.71
+ },
+ {
+  "w": "ERA",
+  "start": 11.78,
+  "end": 12.11
+ },
+ {
+  "w": "YOU'RE",
+  "start": 12.2,
+  "end": 12.34
+ },
+ {
+  "w": "AN",
+  "start": 12.37,
+  "end": 12.41
+ },
+ {
+  "w": "ENGINEER",
+  "start": 12.46,
+  "end": 12.83
+ },
+ {
+  "w": "IN",
+  "start": 12.9,
+  "end": 13.03
+ },
+ {
+  "w": "SUBSCRIBE",
+  "start": 13.56,
+  "end": 14.21
+ },
+ {
+  "w": "NEXT",
+  "start": 14.49,
+  "end": 14.72
+ },
+ {
+  "w": "EPISODE",
+  "start": 14.76,
+  "end": 15.26
+ },
+ {
+  "w": "I",
+  "start": 15.34,
+  "end": 15.41
+ },
+ {
+  "w": "CANCEL",
+  "start": 15.52,
+  "end": 15.91
+ },
+ {
+  "w": "MY",
+  "start": 15.97,
+  "end": 16.06
+ },
+ {
+  "w": "ENTIRE",
+  "start": 16.11,
+  "end": 16.44
+ },
+ {
+  "w": "PAID",
+  "start": 16.51,
+  "end": 16.73
+ },
+ {
+  "w": "CREATOR",
+  "start": 16.78,
+  "end": 17.11
+ },
+ {
+  "w": "STACK",
+  "start": 17.15,
+  "end": 17.46
+ },
+ {
+  "w": "AND",
+  "start": 17.7,
+  "end": 17.87
+ },
+ {
+  "w": "REBUILD",
+  "start": 17.93,
+  "end": 18.3
+ },
+ {
+  "w": "IT",
+  "start": 18.33,
+  "end": 18.41
+ },
+ {
+  "w": "WITH",
+  "start": 18.48,
+  "end": 18.67
+ },
+ {
+  "w": "FREE",
+  "start": 18.79,
+  "end": 19.05
+ },
+ {
+  "w": "AI",
+  "start": 19.11,
+  "end": 19.49
+ }
+]

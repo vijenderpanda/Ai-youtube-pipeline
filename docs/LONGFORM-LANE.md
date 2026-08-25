@@ -3,6 +3,22 @@
 **Status:** EXPLORATION. Branch point tagged `longform-branch-point` (commit d436f27, 2026-08-25).
 **Rule:** contact sheets + VJ approval BEFORE any render (standing render gate). No 4K by default.
 
+## MISSION (VJ 2026-08-25 — the compass for every episode)
+Empower YOUNG ENGINEERS who use AI, want to use it, or tried it and got less than
+they expected. Every episode proves: **in this era you can ship anything — it only
+needs a little time.** Three jobs per episode:
+1. PROOF — a real thing shipped, real receipts (timestamps, logs, tape).
+2. SHOWCASE the built thing — market the app/product itself, features and all.
+3. FLEX the factory — the video's own edit/mix/graphics are AI-produced, and we say so.
+Host beats optional (HeyGen when funded); the format must stand WITHOUT a host.
+
+## Future episode seeds (mission-fit)
+- Ep2: "$0 Creator Studio" (locked ideation) — cancel the paid stack, rebuild free.
+- "I gave AI my week — it shipped N things" (montage of small ships + receipts).
+- "Your first agent in one evening" (HF agents cert angle from the shorts plan).
+- "The loop that fixes AI's broken demos" (describe→test→paste→repeat, deep dive).
+- Viewer-submitted idea → shipped live in one episode (community flywheel).
+
 ## Why
 VJ ships real products fast (e.g. MissNoMeetings iOS app: idea → App Store in ~3h, 2026-08-25,
 demo recording on VJ's Desktop; simulator screenshots available via the missnomeetings project

@@ -1,0 +1,307 @@
+[
+ {
+  "w": "HERE'S",
+  "start": 0.0,
+  "end": 0.27
+ },
+ {
+  "w": "WHAT",
+  "start": 0.3,
+  "end": 0.43
+ },
+ {
+  "w": "ACTUALLY",
+  "start": 0.48,
+  "end": 0.77
+ },
+ {
+  "w": "SHIPPED",
+  "start": 0.81,
+  "end": 1.13
+ },
+ {
+  "w": "IMPORTANT",
+  "start": 1.54,
+  "end": 2.15
+ },
+ {
+  "w": "ONLY",
+  "start": 2.26,
+  "end": 2.54
+ },
+ {
+  "w": "MODE",
+  "start": 2.62,
+  "end": 3.05
+ },
+ {
+  "w": "IT",
+  "start": 3.29,
+  "end": 3.41
+ },
+ {
+  "w": "ALARMS",
+  "start": 3.46,
+  "end": 3.83
+ },
+ {
+  "w": "JUST",
+  "start": 3.88,
+  "end": 4.05
+ },
+ {
+  "w": "THE",
+  "start": 4.08,
+  "end": 4.14
+ },
+ {
+  "w": "MEETINGS",
+  "start": 4.23,
+  "end": 4.59
+ },
+ {
+  "w": "THAT",
+  "start": 4.61,
+  "end": 4.72
+ },
+ {
+  "w": "MATTER",
+  "start": 4.81,
+  "end": 5.17
+ },
+ {
+  "w": "NOT",
+  "start": 5.46,
+  "end": 5.65
+ },
+ {
+  "w": "EVERY",
+  "start": 5.74,
+  "end": 5.99
+ },
+ {
+  "w": "CALENDAR",
+  "start": 6.04,
+  "end": 6.41
+ },
+ {
+  "w": "INVITE",
+  "start": 6.46,
+  "end": 6.97
+ },
+ {
+  "w": "RING",
+  "start": 7.41,
+  "end": 7.65
+ },
+ {
+  "w": "BEFORE",
+  "start": 7.72,
+  "end": 8.15
+ },
+ {
+  "w": "YOU",
+  "start": 8.47,
+  "end": 8.6
+ },
+ {
+  "w": "PICK",
+  "start": 8.67,
+  "end": 8.82
+ },
+ {
+  "w": "THE",
+  "start": 8.89,
+  "end": 8.96
+ },
+ {
+  "w": "RUNWAY",
+  "start": 8.99,
+  "end": 9.37
+ },
+ {
+  "w": "TWO",
+  "start": 9.61,
+  "end": 9.81
+ },
+ {
+  "w": "MINUTES",
+  "start": 9.87,
+  "end": 10.09
+ },
+ {
+  "w": "TO",
+  "start": 10.12,
+  "end": 10.18
+ },
+ {
+  "w": "THIRTY",
+  "start": 10.25,
+  "end": 10.59
+ },
+ {
+  "w": "TWO",
+  "start": 11.05,
+  "end": 11.31
+ },
+ {
+  "w": "ALARM",
+  "start": 11.42,
+  "end": 11.78
+ },
+ {
+  "w": "SOUNDS",
+  "start": 11.87,
+  "end": 12.31
+ },
+ {
+  "w": "STANDARD",
+  "start": 12.81,
+  "end": 13.29
+ },
+ {
+  "w": "RINGS",
+  "start": 13.34,
+  "end": 13.69
+ },
+ {
+  "w": "LIKE",
+  "start": 13.9,
+  "end": 14.08
+ },
+ {
+  "w": "A",
+  "start": 14.12,
+  "end": 14.14
+ },
+ {
+  "w": "REAL",
+  "start": 14.21,
+  "end": 14.41
+ },
+ {
+  "w": "ALARM",
+  "start": 14.45,
+  "end": 14.8
+ },
+ {
+  "w": "GENTLE",
+  "start": 15.13,
+  "end": 15.7
+ },
+ {
+  "w": "IS",
+  "start": 15.81,
+  "end": 15.99
+ },
+ {
+  "w": "A",
+  "start": 16.03,
+  "end": 16.06
+ },
+ {
+  "w": "SOFT",
+  "start": 16.13,
+  "end": 16.5
+ },
+ {
+  "w": "CHIME",
+  "start": 16.61,
+  "end": 17.08
+ },
+ {
+  "w": "AND",
+  "start": 17.51,
+  "end": 17.66
+ },
+ {
+  "w": "THE",
+  "start": 17.7,
+  "end": 17.77
+ },
+ {
+  "w": "WHOLE",
+  "start": 17.82,
+  "end": 18.05
+ },
+ {
+  "w": "POINT",
+  "start": 18.11,
+  "end": 18.52
+ },
+ {
+  "w": "IT",
+  "start": 18.82,
+  "end": 18.97
+ },
+ {
+  "w": "RINGS",
+  "start": 19.06,
+  "end": 19.33
+ },
+ {
+  "w": "LOUD",
+  "start": 19.4,
+  "end": 19.77
+ },
+ {
+  "w": "ON",
+  "start": 19.95,
+  "end": 20.09
+ },
+ {
+  "w": "A",
+  "start": 20.13,
+  "end": 20.16
+ },
+ {
+  "w": "LOCKED",
+  "start": 20.24,
+  "end": 20.53
+ },
+ {
+  "w": "PHONE",
+  "start": 20.57,
+  "end": 20.96
+ },
+ {
+  "w": "THAT'S",
+  "start": 21.19,
+  "end": 21.43
+ },
+ {
+  "w": "THE",
+  "start": 21.48,
+  "end": 21.55
+ },
+ {
+  "w": "FEATURE",
+  "start": 21.62,
+  "end": 21.92
+ },
+ {
+  "w": "I",
+  "start": 21.95,
+  "end": 21.99
+ },
+ {
+  "w": "WAS",
+  "start": 22.05,
+  "end": 22.16
+ },
+ {
+  "w": "MISSING",
+  "start": 22.22,
+  "end": 22.48
+ },
+ {
+  "w": "CALLS",
+  "start": 22.52,
+  "end": 22.77
+ },
+ {
+  "w": "FOR",
+  "start": 22.81,
+  "end": 23.03
+ }
+]

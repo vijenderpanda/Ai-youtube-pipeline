@@ -283,6 +283,45 @@ def card(tmp, idx, title, dur=1.6):
     return s, dur
 
 
+
+def overlay_png(video, png, out):
+    run([lf.FFMPEG, "-y", "-i", video, "-i", png, "-filter_complex",
+         "[0:v][1:v]overlay=0:0[v]", "-map", "[v]", *venc("18", "veryfast"),
+         "-pix_fmt", "yuv420p", "-an", out])
+
+
+def feature_label_png(title, sub, out):
+    im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    f_t = ImageFont.truetype(lf.FONT_ANTON, 92)
+    f_s = ImageFont.truetype(lf.FONT_ANTON, 44)
+    d.rectangle([90, 96, 104, 210], fill=lf.ACCENT + (255,))
+    d.text((128, 100), title, font=f_t, fill=(255, 255, 255, 255),
+           stroke_width=3, stroke_fill=(0, 0, 0, 160))
+    d.text((130, 214), sub, font=f_s, fill=lf.ACCENT + (255,),
+           stroke_width=2, stroke_fill=(0, 0, 0, 160))
+    im.save(out)
+
+
+def subscribe_card_still(out):
+    im = Image.new("RGB", (W, H), lf.INK)
+    d = ImageDraw.Draw(im)
+    try:
+        icon = Image.open(sb.ICON).convert("RGB").resize((300, 300), Image.LANCZOS)
+        m = Image.new("L", (300, 300), 0)
+        ImageDraw.Draw(m).rounded_rectangle([0, 0, 300, 300], radius=66, fill=255)
+        im.paste(icon, ((W - 300) // 2, 220), m)
+    except Exception:
+        pass
+    f_b = ImageFont.truetype(lf.FONT_ANTON, 130)
+    f_s = ImageFont.truetype(lf.FONT_ANTON, 54)
+    t = "SUBSCRIBE"
+    d.text(((W - d.textlength(t, font=f_b)) / 2, 600), t, font=f_b, fill=lf.ACCENT)
+    t2 = "next: the $0 creator studio"
+    d.text(((W - d.textlength(t2, font=f_s)) / 2, 780), t2, font=f_s, fill=(210, 215, 222))
+    im.save(out)
+
+
 def main():
     os.makedirs(R, exist_ok=True)
     segs, chapters, t_cursor = [], [], 0.0
@@ -304,25 +343,18 @@ def main():
         listing_png = os.path.join(tmp, "listing.png")
         sb.appstore_listing_still().save(listing_png)
 
-        # ---- HOOK (host full + cutaways on lines 2-3, audio = clip's own) ----
-        hv, hdur = host_full_section("hook", tmp, captions=False)
-        times, _ = line_times("hook", lead=0.0, tail=0.0)
-        (l2s, l2e), (l3s, _) = times[1], times[2]
-        cut1 = os.path.join(tmp, "hook_cut1.mp4"); still_slice(listing_png, l2e - l2s, cut1, 200)
-        rc_end = l3s + 3.2
-        cut2 = os.path.join(tmp, "hook_cut2.mp4"); receipts_real(rc_end - l2e, cut2, tmp)
-        base = os.path.join(tmp, "hook_over.mp4")
-        run([lf.FFMPEG, "-y", "-i", hv, "-i", cut1, "-i", cut2, "-filter_complex",
-             f"[1:v]setpts=PTS+{l2s}/TB[c1];[2:v]setpts=PTS+{l2e}/TB[c2];"
-             f"[0:v][c1]overlay=eof_action=pass:enable='between(t,{l2s},{l2e})'[x1];"
-             f"[x1][c2]overlay=eof_action=pass:enable='between(t,{l2e},{rc_end})'[v]",
-             "-map", "[v]", "-map", "0:a", *venc("18", "veryfast"),
-             "-c:a", "aac", "-ar", "48000", "-ac", "2", "-b:a", "192k", base])
-        hc = os.path.join(tmp, "hook_cap.mp4"); captions_on(base, words_of("hook"), 0.0, hc)
-        hf = os.path.join(tmp, "hook_seg.mp4")
-        run([lf.FFMPEG, "-y", "-i", hc, "-i", base, "-map", "0:v", "-map", "1:a",
-             "-c:v", "copy", "-c:a", "copy", hf])
-        add(hf, hdur, chapter="Hook")
+        # ---- HOOK v6 (host-free, vision cut): listing -> receipts -> sim punch ----
+        times, total = line_times("hook2")
+        v1 = os.path.join(tmp, "hk1.mp4"); still_slice(listing_png, times[0][1] - times[0][0], v1, 220)
+        v2 = os.path.join(tmp, "hk2.mp4"); receipts_real(times[1][1] - times[1][0], v2, tmp)
+        v3 = os.path.join(tmp, "hk3.mp4"); conform(SIM, 8.0, times[2][1] - times[2][0], v3)
+        hb = os.path.join(tmp, "hook_base.mp4"); concat_slices([v1, v2, v3], hb, tmp, "hook")
+        hw = [w for w in words_of("hook2")]
+        hc = os.path.join(tmp, "hook_cap.mp4")
+        capw = [w for w in hw if not (times[1][0] - 0.3 <= w["start"] <= times[1][1] - 0.3)]
+        captions_on(hb, capw, 0.3, hc)
+        hf = os.path.join(tmp, "hook_seg.mp4"); mux(hc, vo_wav("hook2", tmp), hf, lead=0.3)
+        add(hf, total, chapter="Hook")
 
         # ---- CH1 The Idea ----
         s, d = card(tmp, 1, "The Idea"); add(s, d, chapter="The Idea")
@@ -330,7 +362,7 @@ def main():
             lambda du, o: conform(DEMO, 0.0, du, o),
             lambda du, o: conform(CODE, 0.0, du, o, drift=False),
             lambda du, o: conform(SIM, 4.0, du, o),
-        ], tmp, pip=os.path.join(A, "host_ch1.mp4"))
+        ], tmp, pip=None)
         add(seg, d)
 
         # ---- CH2 The Build ----
@@ -341,7 +373,7 @@ def main():
             lambda du, o: conform(SIM, 20.0, du, o),
             lambda du, o: conform(TRANS, 0.0, du, o, drift=False),
             lambda du, o: conform(GITLOG, 8.0, du, o, drift=False),
-        ], tmp, pip=os.path.join(A, "host_ch2.mp4"))
+        ], tmp, pip=None)
         add(seg, d)
 
         # ---- CH3 On My iPhone ----
@@ -351,19 +383,48 @@ def main():
             lambda du, o: conform(DEMO, 2.0, du, o),
             lambda du, o: conform(DEMO, 8.0, du, o),
             lambda du, o: conform(TRANS, 8.0, du, o, drift=False),
-        ], tmp, pip=os.path.join(A, "host_ch3.mp4"))
+        ], tmp, pip=None)
         add(seg, d)
 
-        # ---- MID-ROLL (host full) ----
-        seg, d = host_full_section("midroll", tmp); add(seg, d, chapter="Why Now")
+        # ---- THE APP (feature showcase / marketing beat — vision job #2) ----
+        sc, d = card(tmp, 4, "The App"); add(sc, d, chapter="The App")
+        FEATURES = [("IMPORTANT ONLY", "alarm just the meetings that matter", 12.0),
+                    ("RING BEFORE", "you pick the runway: 2m - 30m", 18.0),
+                    ("TWO ALARM SOUNDS", "Standard rings. Gentle chimes.", 24.0),
+                    ("RINGS WHEN LOCKED", "the feature I missed calls for", 40.0)]
+        times, total = line_times("appfeat")
+        fs = []
+        for i, ((t0, t1), (ttl, sub, ss)) in enumerate(zip(times, FEATURES)):
+            base_v = os.path.join(tmp, f"ft{i}.mp4"); conform(SIM, ss, t1 - t0, base_v)
+            lab = os.path.join(tmp, f"ftl{i}.png"); feature_label_png(ttl, sub, lab)
+            ov = os.path.join(tmp, f"fto{i}.mp4"); overlay_png(base_v, lab, ov)
+            fs.append(ov)
+        ab = os.path.join(tmp, "app_base.mp4"); concat_slices(fs, ab, tmp, "app")
+        ac = os.path.join(tmp, "app_cap.mp4"); captions_on(ab, words_of("appfeat"), 0.3, ac)
+        aseg = os.path.join(tmp, "app_seg.mp4"); mux(ac, vo_wav("appfeat", tmp), aseg, lead=0.3)
+        add(aseg, total)
+
+        # ---- MID-ROLL (host-free: pop-text kinetics) ----
+        times, total = line_times("midroll")
+        POPS = [("AGENTS", "the one-word answer"),
+                ("BUILDS. RUNS. REPAIRS.", "it reads its own errors"),
+                ("DESCRIBE. TEST.", "your whole job now")]
+        ms = []
+        for i, ((t0, t1), (t_, sub)) in enumerate(zip(times, POPS)):
+            png = os.path.join(tmp, f"mp{i}.png"); lf.pop_text_still(t_, png, sub=sub)
+            v = os.path.join(tmp, f"mpv{i}.mp4"); still_slice(png, t1 - t0, v, drift_px=60)
+            ms.append(v)
+        mb = os.path.join(tmp, "mid_base.mp4"); concat_slices(ms, mb, tmp, "mid")
+        mseg = os.path.join(tmp, "mid_seg.mp4"); mux(mb, vo_wav("midroll", tmp), mseg, lead=0.3)
+        add(mseg, total, chapter="Why Now")
 
         # ---- CH4 The App Store ----
-        s, d = card(tmp, 4, "The App Store"); add(s, d, chapter="The App Store")
+        s, d = card(tmp, 5, "The App Store"); add(s, d, chapter="The App Store")
         seg, d = build_section("ch4", [
             lambda du, o: conform(TRANS, 14.0, du, o, drift=False),
             lambda du, o: still_slice(listing_png, du, o, 150),
             lambda du, o: receipts_real(du, o, tmp),
-        ], tmp, pip=os.path.join(A, "host_ch4.mp4"), captions=True)
+        ], tmp, pip=None, captions=True)
         add(seg, d)
 
         # ---- PAYOFF (spec card, line-by-line highlight on VO bounds) ----
@@ -383,8 +444,25 @@ def main():
         ps = os.path.join(tmp, "pay_seg.mp4"); mux(pc, vo_wav("payoff", tmp), ps, lead=0.3)
         add(ps, total, chapter="Copy The Brief")
 
-        # ---- OUTRO ----
-        seg, d = host_full_section("outro", tmp); add(seg, d, chapter="What's Next")
+        # ---- OUTRO (host-free: receipts -> factory flex -> subscribe) ----
+        times, total = line_times("outro2")
+        o1 = os.path.join(tmp, "ot1.mp4"); receipts_real(times[0][1] - times[0][0], o1, tmp)
+        flex_src = os.path.join(R, "ep1_storyboard.jpg")
+        o2 = os.path.join(tmp, "ot2.mp4")
+        if os.path.exists(flex_src):
+            fd = times[1][1] - times[1][0]
+            run([lf.FFMPEG, "-y", "-loop", "1", "-i", flex_src, "-t", str(fd),
+                 "-vf", (f"scale={W}:-2,crop={W}:{H}:0:y='min((ih-{H})*t/{fd},ih-{H})',"
+                         f"fps={FPS},format=yuv420p"),
+                 *venc("18", "veryfast"), "-an", o2])
+        else:
+            conform(GITLOG, 4.0, times[1][1] - times[1][0], o2, drift=False)
+        sub_png = os.path.join(tmp, "subcard.png"); subscribe_card_still(sub_png)
+        o3 = os.path.join(tmp, "ot3.mp4"); still_slice(sub_png, times[2][1] - times[2][0], o3, drift_px=40)
+        ob = os.path.join(tmp, "out_base.mp4"); concat_slices([o1, o2, o3], ob, tmp, "outro")
+        oc = os.path.join(tmp, "out_cap.mp4"); captions_on(ob, words_of("outro2"), 0.3, oc)
+        oseg = os.path.join(tmp, "out_seg.mp4"); mux(oc, vo_wav("outro2", tmp), oseg, lead=0.3)
+        add(oseg, total, chapter="What's Next")
 
         # ---- JOIN + BED + LOUDNORM ----
         lst = os.path.join(tmp, "master.txt")

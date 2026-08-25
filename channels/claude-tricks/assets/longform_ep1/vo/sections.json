@@ -254,5 +254,100 @@
     "match": true
    }
   ]
+ },
+ "hook2": {
+  "duration": 17.24,
+  "bounds": [
+   {
+    "line": 1,
+    "text": "Three hours and forty eight minutes. That's what it took to go from an empty folder to a real iPhone app, ready for the App Store.",
+    "start": 0.0,
+    "end": 7.15,
+    "words": 26,
+    "match": true
+   },
+   {
+    "line": 2,
+    "text": "If you've tried building with AI and all you got was a broken demo, this video is for you.",
+    "start": 7.61,
+    "end": 12.35,
+    "words": 19,
+    "match": true
+   },
+   {
+    "line": 3,
+    "text": "No code written by hand. Every timestamp is real. Here's exactly how.",
+    "start": 12.92,
+    "end": 17.24,
+    "words": 12,
+    "match": true
+   }
+  ]
+ },
+ "appfeat": {
+  "duration": 23.03,
+  "bounds": [
+   {
+    "line": 1,
+    "text": "Here's what actually shipped. Important only mode. It alarms just the meetings that matter, not every calendar invite.",
+    "start": 0.0,
+    "end": 6.97,
+    "words": 18,
+    "match": true
+   },
+   {
+    "line": 2,
+    "text": "Ring before. You pick the runway. Two minutes to thirty.",
+    "start": 7.41,
+    "end": 10.59,
+    "words": 10,
+    "match": true
+   },
+   {
+    "line": 3,
+    "text": "Two alarm sounds. Standard rings like a real alarm. Gentle is a soft chime.",
+    "start": 11.05,
+    "end": 17.08,
+    "words": 14,
+    "match": true
+   },
+   {
+    "line": 4,
+    "text": "And the whole point. It rings loud, on a locked phone. That's the feature I was missing calls for.",
+    "start": 17.51,
+    "end": 23.03,
+    "words": 19,
+    "match": true
+   }
+  ]
+ },
+ "outro2": {
+  "duration": 19.49,
+  "bounds": [
+   {
+    "line": 1,
+    "text": "If a meetings app takes one morning, imagine what your idea takes.",
+    "start": 0.0,
+    "end": 3.61,
+    "words": 12,
+    "match": true
+   },
+   {
+    "line": 2,
+    "text": "And one more thing. This video. The voice, the cut, the graphics, the mix. Produced by the same AI pipeline that built the app. That's the era you're an engineer in.",
+    "start": 4.1,
+    "end": 13.03,
+    "words": 31,
+    "match": true
+   },
+   {
+    "line": 3,
+    "text": "Subscribe. Next episode, I cancel my entire paid creator stack, and rebuild it with free AI.",
+    "start": 13.56,
+    "end": 19.49,
+    "words": 16,
+    "match": true
+   }
+  ]
  }
 }
