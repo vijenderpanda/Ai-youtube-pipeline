@@ -97,13 +97,13 @@ def receipts_countup(dur, out, tmp):
         t = i / FPS
         im = Image.new("RGB", (W, H), lf.INK)
         d = ImageDraw.Draw(im)
-        a1 = min(1.0, max(0.0, (t - 0.2) / 0.5))
-        a2 = min(1.0, max(0.0, (t - 1.4) / 0.5))
+        a1 = min(1.0, max(0.0, t / 0.25))
+        a2 = min(1.0, max(0.0, (t - 0.35) / 0.25))
         c1 = tuple(int(210 * a1) for _ in range(3))
         c2 = tuple(int(210 * a2) for _ in range(3))
         d.text((330 - int(40 * (1 - a1)), 300), "3:04 PM  prompt sent", font=f_ts, fill=c1)
         d.text((330 - int(40 * (1 - a2)), 430), "6:12 PM  submitted to Apple", font=f_ts, fill=c2)
-        k = min(1.0, max(0.0, (t - 2.4) / 1.2))
+        k = min(1.0, max(0.0, (t - 0.7) / 0.6))
         mins = int(total_min * (1 - (1 - k) ** 3))
         txt = f"{mins // 60}H {mins % 60:02d}M"
         tw2 = d.textlength(txt, font=f_big)
@@ -140,37 +140,41 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         def add(seg): segs.append(seg)
 
-        # a1+a2 — ONE continuous ElevenLabs take (VJ: per-beat takes broke the flow),
-        # sliced at the line boundary so tone carries across the cut.
+        # COLD OPEN v4 (VJ + retention laws: knee at 5-7s, no dead air, proof + energy
+        # in second one). ONE continuous VO take, NEVER sliced — the VIDEO cuts to the
+        # VO's line boundaries instead, so there are zero audio joins to glitch.
         cold = synth_lines(key, VOICE,
-            ["That's a real app. On the real App Store.",
-             "Now look at the timestamps. Prompt sent, three oh four in the afternoon. "
-             "Submitted to Apple, six twelve. Three hours and eight minutes."],
-            os.path.join(tmp, "cold.mp3"), brk="0.6s", style=STYLE)
+            ["This is a real app. Live on the App Store. And it took three hours.",
+             "Prompt sent at three oh four. Submitted at six twelve. "
+             "Zero lines of code written by me."],
+            os.path.join(tmp, "cold.mp3"), brk="0.3s", style=0.55)
+        TEMPO = 1.06  # energy knob — speed the whole take, keep pitch
+        cold_wav = os.path.join(tmp, "cold.wav")
+        run([lf.FFMPEG, "-y", "-i", cold["audio"], "-af", f"atempo={TEMPO}",
+             "-ar", "48000", "-ac", "2", cold_wav])
+        LEAD = 0.3
+        cw = [{"w": x["w"], "start": round(x["start"] / TEMPO + LEAD, 2),
+               "end": round(x["end"] / TEMPO + LEAD, 2)} for x in cold["words"]]
         b0, b1_ = cold["line_boundaries"]
-        cut = (b0["end"] + b1_["start"]) / 2
+        cut1 = (b0["end"] + b1_["start"]) / 2 / TEMPO + LEAD
+        cold_end = b1_["end"] / TEMPO + LEAD + 0.35
 
-        def slice_take(t0, t1, name):
-            w = os.path.join(tmp, f"{name}.wav")
-            span = ["-to", str(t1)] if t1 else []
-            run([lf.FFMPEG, "-y", "-ss", str(t0), "-i", cold["audio"], *span,
-                 "-ar", "48000", "-ac", "2", w])
-            ws = [{"w": x["w"], "start": round(x["start"] - t0, 2), "end": round(x["end"] - t0, 2)}
-                  for x in cold["words"] if x["start"] >= t0 and (not t1 or x["end"] <= t1 + 0.01)]
-            return w, ws, max(x["end"] for x in ws)
-
-        wav, words, vend = slice_take(0.0, cut, "a1")
-        lead, dur = 2.0, 2.0 + vend + 0.5
+        # video track: fast listing pan (0..cut1), fast receipts (cut1..end)
         png = os.path.join(tmp, "a1.png"); sb.appstore_listing_still().save(png)
-        v = os.path.join(tmp, "a1_v.mp4"); pan_still(png, dur, v)
-        c = os.path.join(tmp, "a1_c.mp4"); captions_on(v, words, lead, c)
-        s = os.path.join(tmp, "a1.mp4"); mux(c, wav, s, lead); add(s)
-
-        # a2 — receipts count-up + VO, NO captions (collision fix)
-        wav, words, vend = slice_take(cut, None, "a2")
-        lead, dur = 0.3, 0.3 + vend + 0.6
-        v = os.path.join(tmp, "a2_v.mp4"); receipts_countup(dur, v, tmp)
-        s = os.path.join(tmp, "a2.mp4"); mux(v, wav, s, lead); add(s)
+        v1 = os.path.join(tmp, "a1_v.mp4"); pan_still(png, cut1, v1, drift_px=260)
+        v2 = os.path.join(tmp, "a2_v.mp4")
+        receipts_countup(cold_end - cut1, v2, tmp)
+        cold_v = os.path.join(tmp, "cold_v.mp4")
+        lstc = os.path.join(tmp, "coldcat.txt")
+        open(lstc, "w").write(f"file '{v1}'\nfile '{v2}'\n")
+        run([lf.FFMPEG, "-y", "-f", "concat", "-safe", "0", "-i", lstc,
+             "-vf", f"fps={FPS},format=yuv420p", *venc("18", "veryfast"), "-an", cold_v])
+        # captions once over the whole cold video (absolute times) — skip during the
+        # receipts card (its own text IS the payload): only line-1 words get captions
+        w1 = [w for w in cw if w["end"] <= cut1]
+        cold_c = os.path.join(tmp, "cold_c.mp4"); captions_on(cold_v, w1, 0.0, cold_c)
+        cold_seg = os.path.join(tmp, "cold.mp4"); mux(cold_c, cold_wav, cold_seg, lead=LEAD)
+        add(cold_seg)
 
         # a3 — HeyGen talking host (VO embedded in clip) + captions
         if not os.path.exists(HEYGEN_A3):
