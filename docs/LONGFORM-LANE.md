@@ -55,6 +55,28 @@ by construction. Remotion is optional later, for interstitials only.
 9. **Analytics** — network_stats.py handles long-form fine, but retention curves need their own
    doc; don't let shorts laws pollute judgments.
 
+## Locked calls (VJ 2026-08-25)
+- Ep1 = MissNoMeetings 3h App Store ship story; ep2 = "$0 Creator Studio" (EP01-IDEATION).
+- Lane identity = **champagne editorial** (#e4c56b, webapp Obsidian & Champagne tokens);
+  magenta #E91E63 stays Shorts-only. build_longform_segment.py v3 applies it
+  (accent + captions + magenta-bokeh→champagne regrade of the Sol still).
+
+## Quality reference (VJ 2026-08-25): AI Master — "FULL Claude Course for Beginners in 2026"
+youtube.com/watch?v=Fys4oHlXQmQ (~105 min, 1080p). Frames + raw in
+`research/learning-assets/Fys4oHlXQmQ_*/` (gitignored). The quality DNA to match:
+1. **Zoomed screencasts** — never full desktop; punch-ins on the exact UI element, text
+   highlighted while spoken (their highlight = warm brown; ours = champagne).
+2. **Circular webcam PiP** riding over screen tape (we have this; make PiP circular).
+3. **Real human host** in a moody studio w/ mic for setup beats — the ONE thing that
+   isn't synthesizable to equal quality. Options: VJ on camera / HeyGen landscape Sol /
+   frozen-still degrade (current proto, weakest).
+4. **Chapter title cards** (dark, one phrase) between sections — trivial for us.
+5. **Meme/illustration cutaways + big pop-text** ("MORE SPECIFIC") every ~20-40s —
+   cutaway density is the pacing engine of the whole video.
+6. Bar-chart / comparison-card inserts for claims (our cookbook/PIL covers this).
+Gap list for "same quality": zoompan punch-in + highlight choreography in the segment
+builder; circular PiP; cutaway library; host decision (VJ call).
+
 ## Ep1 candidate (the killer idea already exists)
 "I Built and Shipped an iPhone App in 3 Hours — full build, App Store to proof."
 Real MissNoMeetings tape + simulator screenshots + App Store listing as the payoff.

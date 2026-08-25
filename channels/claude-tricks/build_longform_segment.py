@@ -42,12 +42,14 @@ from ffmpeg_util import venc
 # assemble_short.py renders captions as PNG overlays instead of an ass/subtitles filter)
 from assemble_short import render_caption_pngs, overlay_captions
 
-VERSION = "v2"                          # bump every iteration until the template locks
+VERSION = "v3"                          # bump every iteration until the template locks
 FFMPEG = shutil.which("ffmpeg") or "/opt/homebrew/bin/ffmpeg"
 FFPROBE = shutil.which("ffprobe") or "/opt/homebrew/bin/ffprobe"
 
 W, H, FPS = 1920, 1080, 30
-ACCENT = (233, 30, 99)                  # #E91E63 — claude-tricks magenta (BRAND-BIBLE §6)
+# v3 (VJ 2026-08-25): the LONG-FORM lane has its OWN identity — champagne editorial
+# (webapp Obsidian & Champagne tokens), NOT the Shorts magenta. #E91E63 stays Shorts-only.
+ACCENT = (228, 197, 107)                # #e4c56b — champagne (webapp --accent)
 INK = (12, 15, 20)                      # deep-ink base
 FONT_ANTON = os.path.join(REPO, "remotion-studio", "public", "fonts", "Anton.ttf")
 SOL_DIR = os.path.join(HERE, "assets", "character", "host_library", "outfit_11_sol_magenta")
@@ -78,6 +80,22 @@ def font(sz):
 # Still backdrops (drawn once with PIL, held with a slow push in ffmpeg)
 # ---------------------------------------------------------------------------
 
+def regrade_magenta_to_champagne(im):
+    """v3: the committed Sol wide still has MAGENTA bokeh (shorts brand) baked in.
+    The long-form lane is champagne, so hue-rotate magenta-ish pixels (~270-345deg)
+    to gold (~45deg) with a soft mask; skin/wardrobe (other hues) untouched."""
+    import numpy as np
+    rgb = np.asarray(im).astype(np.float32) / 255.0
+    hsv = np.asarray(im.convert("HSV")).astype(np.float32)
+    h, s = hsv[..., 0] * 360.0 / 255.0, hsv[..., 1] / 255.0
+    mask = ((h > 270) & (h < 345)) & (s > 0.25)
+    soft = Image.fromarray((mask * 255).astype("uint8")).filter(ImageFilter.GaussianBlur(6))
+    hsv[..., 0][mask] = 45 * 255.0 / 360.0
+    hsv[..., 1][mask] *= 0.85
+    shifted = Image.fromarray(hsv.astype("uint8"), "HSV").convert("RGB")
+    return Image.composite(shifted, im, soft)
+
+
 def host_full_still(out):
     """Sol wide still cover-cropped to 1920x1080 + dark vignette + magenta lower-third."""
     src = Image.open(os.path.join(SOL_DIR, "wide.jpg")).convert("RGB")
@@ -87,6 +105,7 @@ def host_full_still(out):
     x = (im.width - W) // 2
     y = (im.height - H) // 2
     im = im.crop((x, y, x + W, y + H))
+    im = regrade_magenta_to_champagne(im)
     # bottom vignette so captions + title read
     grad = Image.new("L", (1, H), 0)
     for yy in range(H):
@@ -119,7 +138,8 @@ def screen_placeholder_still(out, label="LIVE DEMO"):
     # label
     f = font(70)
     tw = d.textlength(label, font=f)
-    d.text(((W - tw) / 2, H - 210), label, font=f, fill=(210, 215, 222))
+    # v3: label sits ABOVE the caption band (CAP_Y=864) — at H-210 it collided with captions
+    d.text(((W - tw) / 2, H - 330), label, font=f, fill=(210, 215, 222))
     im.save(out)
 
 
@@ -273,7 +293,7 @@ def main():
 
         # captions: word-by-word PNG karaoke (reused Shorts system), sized for 16:9, low band
         caps = words_to_captions(words)
-        items = render_caption_pngs(caps, accent="E91E63", size=72, tmp=tmp)
+        items = render_caption_pngs(caps, accent="E4C56B", size=72, tmp=tmp)
         overlay_captions_at(staged, items, CAP_Y, args.out)
         print(f">> DONE ({VERSION}): {args.out}  ({probe_dur(args.out):.2f}s, {W}x{H})")
     finally:
