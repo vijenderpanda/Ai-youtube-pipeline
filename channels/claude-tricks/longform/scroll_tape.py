@@ -46,9 +46,17 @@ def build(text_path, out, dur, title, px):
     if title:
         d.text((200, 84), title, font=mono(26), fill=(160, 166, 176))
     for i, ln in enumerate(lines):
-        hot = any(k in ln for k in ("commit", "Author", "Date", "|", "+", "MEETING"))
-        col = ACCENT if ln.strip().startswith(("commit", "##", "//")) else \
-              (200, 206, 214) if hot else (130, 138, 148)
+        st = ln.strip()
+        if st.startswith(("commit", "##")):
+            col = ACCENT
+        elif st.startswith("//"):
+            col = (126, 200, 148)
+        elif any(k in ln for k in ("+", "insertions", "changed")):
+            col = (222, 226, 233)
+        elif any(k in ln for k in ("enum", "case", "import", "final", "struct", "func", "var", "let")):
+            col = (137, 187, 255)
+        else:
+            col = (186, 192, 202)
         d.text((pad_x, pad_top + i * lh), ln[:150], font=f, fill=col)
     scroll = max(1, total_h - H)
     with tempfile.TemporaryDirectory() as tmp:

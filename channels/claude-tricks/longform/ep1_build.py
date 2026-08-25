@@ -116,7 +116,8 @@ def circle_mask_pngs(tmp):
 
 # face centers measured per Avatar IV clip (camera moves + framing differ per clip);
 # tighter face-centered square keeps the host inside the circle (VJ QC 2026-08-25)
-PIP_FACE = {"ch1": (870, 400), "ch2": (780, 380), "ch3": (1000, 400), "ch4": (900, 400)}
+PIP_FACE = {"ch1": (870, 350, 500), "ch2": (800, 340, 500),
+            "ch3": (1000, 350, 500), "ch4": (900, 350, 500)}
 PIP_SQ = 720
 
 
@@ -125,12 +126,12 @@ def talking_pip(base_video, host_clip, dur, out, tmp, face=(960, 400), windows=N
     mp, rp = circle_mask_pngs(tmp)
     x = W - PIP_D - 56
     y = H - PIP_D - 72
-    cx, cy = face
-    cx0 = max(0, min(1920 - PIP_SQ, cx - PIP_SQ // 2))
-    cy0 = max(0, min(1080 - PIP_SQ, cy - PIP_SQ // 2))
+    cx, cy, sq = (face if len(face) == 3 else (*face, PIP_SQ))
+    cx0 = max(0, min(1920 - sq, cx - sq // 2))
+    cy0 = max(0, min(1080 - sq, cy - sq // 2))
     run([lf.FFMPEG, "-y", "-i", base_video, "-i", host_clip, "-i", mp, "-i", rp,
          "-filter_complex",
-         (f"[1:v]fps={FPS},crop={PIP_SQ}:{PIP_SQ}:{cx0}:{cy0},"
+         (f"[1:v]fps={FPS},crop={sq}:{sq}:{cx0}:{cy0},"
           f"scale={PIP_D}:{PIP_D}[pv];"
           f"[2:v]loop=-1:1,scale={PIP_D}:{PIP_D},format=gray[msk];"
           f"[pv][msk]alphamerge[pa];"
@@ -232,7 +233,7 @@ def build_section(name, visuals, tmp, pip=None, pip_lines=None, captions=True, l
             win = "+".join(f"between(t,{times[i][0]:.2f},{times[i][1]:.2f})" for i in pip_lines)
         if os.path.exists(pip):
             talking_pip(cur, pip, total, p2, tmp,
-                        face=PIP_FACE.get(name, (960, 400)), windows=win)
+                        face=PIP_FACE.get(name, (960, 400, PIP_SQ)), windows=win)
         else:
             print(f"!! {name}: host clip missing (HeyGen credits) — static pip degrade")
             static_pip_overlay(cur, total, p2, tmp)
@@ -300,13 +301,13 @@ def overlay_png(video, png, out):
 def feature_label_png(title, sub, out):
     im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
-    f_t = ImageFont.truetype(lf.FONT_ANTON, 92)
-    f_s = ImageFont.truetype(lf.FONT_ANTON, 44)
-    d.rectangle([90, 96, 104, 210], fill=lf.ACCENT + (255,))
-    d.text((128, 100), title, font=f_t, fill=(255, 255, 255, 255),
-           stroke_width=3, stroke_fill=(0, 0, 0, 160))
-    d.text((130, 214), sub, font=f_s, fill=lf.ACCENT + (255,),
-           stroke_width=2, stroke_fill=(0, 0, 0, 160))
+    f_t = _uifont(64, bold=True)
+    f_s = _uifont(34)
+    d.rectangle([96, 104, 104, 196], fill=lf.ACCENT + (255,))
+    d.text((126, 104), title, font=f_t, fill=(250, 250, 250, 255),
+           stroke_width=2, stroke_fill=(0, 0, 0, 140))
+    d.text((128, 182), sub, font=f_s, fill=lf.ACCENT + (255,),
+           stroke_width=1, stroke_fill=(0, 0, 0, 130))
     im.save(out)
 
 
@@ -444,7 +445,9 @@ def monitor_stage(src, ss, dur, out, tmp, plate=0, cutout=None, ch=None):
           f"[1:v]fps={FPS},scale={W}:{H}:force_original_aspect_ratio=increase,"
           f"crop={W}:{H},perspective={pts}:sense=destination[warp];"
           f"[2:v]loop=-1:1,format=gray[mk];[warp][mk]alphamerge[quad];"
-          f"[bg][quad]overlay=0:0[v]"),
+          f"[bg][quad]overlay=0:0,"
+          f"scale=w='trunc({W}*(1.013+0.012*sin(t*0.9))/2)*2':h=-2:eval=frame,"
+          f"crop={W}:{H}:(iw-{W})/2:(ih-{H})/2[v]"),
          "-map", "[v]", *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
 
 
@@ -516,7 +519,8 @@ def window_stage(src, ss, dur, out, tmp, bubble=True, bar_title="localhost — M
     fc = (f"[0:v]scale={W}:{H}[bg];"
           f"[2:v]loop=-1:1[fr];[bg][fr]overlay=0:0[s1];"
           f"[1:v]fps={FPS},scale={iw}:{ih}:force_original_aspect_ratio=decrease,"
-          f"pad={iw}:{ih}:(ow-iw)/2:(oh-ih)/2:color=0x14161C[tv];"
+          f"pad={iw}:{ih}:(ow-iw)/2:(oh-ih)/2:color=0x14161C,"
+          f"eq=brightness=0.05:contrast=1.10:saturation=1.18[tv];"
           f"[3:v]loop=-1:1,format=gray[mk];[tv][mk]alphamerge[tva];"
           f"[s1][tva]overlay={wx + 2}:{wy + 52}[s2];")
     inputs = ["-loop", "1", "-i", bg, *seek, "-i", src, "-loop", "1", "-i", fp,
@@ -540,31 +544,44 @@ def _ease(t):
     return 1 - (1 - max(0.0, min(1.0, t))) ** 3
 
 
+UIFONT = "/System/Library/Fonts/HelveticaNeue.ttc"
+
+
+def _uifont(sz, bold=False):
+    try:
+        return ImageFont.truetype(UIFONT, sz, index=1 if bold else 0)
+    except Exception:
+        return ImageFont.truetype(lf.FONT_ANTON, sz)
+
+
 def pills_anim(labels, dur, out, tmp, title=None):
-    """Cascading rounded pills (Mikey grammar, champagne on ink)."""
+    """Slim cascading chips — modern, quiet, champagne tick (v2 after VJ 'fat ugly')."""
     fd = os.path.join(tmp, f"pl_{abs(hash(tuple(labels))) % 99999}")
     os.makedirs(fd, exist_ok=True)
-    f = ImageFont.truetype(lf.FONT_ANTON, 46)
-    ft = ImageFont.truetype(lf.FONT_ANTON, 40)
+    f = _uifont(34)
+    ft = _uifont(26, bold=True)
     n = int(dur * FPS)
     for i in range(n):
         t = i / FPS
         im = Image.open(_soft_bg(tmp)).convert("RGB")
         d = ImageDraw.Draw(im)
         if title:
-            d.text((150, 110), title, font=ft, fill=(150, 156, 166))
+            d.text((360, 170), title.upper(), font=ft, fill=(140, 146, 156))
         for j, lab in enumerate(labels):
-            k = _ease((t - 0.25 * j) / 0.45)
+            k = _ease((t - 0.22 * j) / 0.4)
             if k <= 0:
                 continue
-            y = 240 + j * 130 - int(24 * (1 - k))
-            x = 320 + j * 46
+            y = 260 + j * 104 - int(18 * (1 - k))
+            x = 360
             tw = d.textlength(lab, font=f)
-            a = int(255 * k)
-            d.rounded_rectangle([x, y, x + tw + 90, y + 92], radius=46,
-                                fill=(30, 33, 41), outline=(lf.ACCENT[0], lf.ACCENT[1], lf.ACCENT[2], a), width=3)
-            d.ellipse([x + 26, y + 32, x + 54, y + 60], fill=lf.ACCENT)
-            d.text((x + 74, y + 18), lab, font=f, fill=(int(245 * k),) * 3)
+            fill = (26, 28, 35)
+            d.rounded_rectangle([x, y, x + tw + 112, y + 64], radius=32, fill=fill,
+                                outline=(64, 68, 78), width=1)
+            cx, cy = x + 34, y + 32
+            d.ellipse([cx - 13, cy - 13, cx + 13, cy + 13], outline=lf.ACCENT, width=2)
+            if k > 0.7:
+                d.line([(cx - 6, cy), (cx - 1, cy + 5), (cx + 7, cy - 5)], fill=lf.ACCENT, width=3)
+            d.text((x + 64, y + 14), lab, font=f, fill=(int(238 * k),) * 3)
         im.save(os.path.join(fd, f"f{i:04d}.png"))
     _frames_to_mp4(fd, out)
 
@@ -578,8 +595,8 @@ def kinetic_line(text, hot, dur, out, tmp):
     for i in range(n):
         t = i / FPS
         k = _ease(t / 0.5)
-        base = 66 + int(6 * k)
-        f = ImageFont.truetype(lf.FONT_ANTON, base)
+        base = 56 + int(5 * k)
+        f = _uifont(base, bold=True)
         im = Image.open(_soft_bg(tmp)).convert("RGB")
         d = ImageDraw.Draw(im)
         widths = [d.textlength(w + " ", font=f) for w in words]
