@@ -277,9 +277,11 @@ def card(tmp, idx, title, dur=1.6):
     lf.chapter_card_still(idx, title, png)
     v = os.path.join(tmp, f"card{idx}_v.mp4")
     still_slice(png, dur, v, drift_px=50)
-    s = os.path.join(tmp, f"card{idx}_s.mp4")
+    s0 = os.path.join(tmp, f"card{idx}_s0.mp4")
     run([lf.FFMPEG, "-y", "-i", v, "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo",
-         "-shortest", "-c:v", "copy", "-c:a", "aac", "-ar", "48000", "-ac", "2", s])
+         "-shortest", "-c:v", "copy", "-c:a", "aac", "-ar", "48000", "-ac", "2", s0])
+    s = os.path.join(tmp, f"card{idx}_s.mp4")
+    sfx_mix(s0, [(0.05, "whoosh")], s)
     return s, dur
 
 
@@ -322,6 +324,82 @@ def subscribe_card_still(out):
     im.save(out)
 
 
+
+GLASS_FG_W, GLASS_FG_H, GLASS_R = 1614, 908, 30
+SFX = os.path.join(CH, "assets", "sfx_lf")
+
+
+def make_glass_assets(tmp):
+    fgm = os.path.join(tmp, "glass_mask.png")
+    m = Image.new("L", (GLASS_FG_W, GLASS_FG_H), 0)
+    ImageDraw.Draw(m).rounded_rectangle([0, 0, GLASS_FG_W, GLASS_FG_H], radius=GLASS_R, fill=255)
+    m.save(fgm)
+    brd = os.path.join(tmp, "glass_border.png")
+    b = Image.new("RGBA", (GLASS_FG_W, GLASS_FG_H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(b)
+    d.rounded_rectangle([1, 1, GLASS_FG_W - 2, GLASS_FG_H - 2], radius=GLASS_R,
+                        outline=(255, 255, 255, 92), width=2)
+    d.rounded_rectangle([3, 3, GLASS_FG_W - 4, GLASS_FG_H - 4], radius=GLASS_R - 2,
+                        outline=(255, 255, 255, 30), width=1)
+    b.save(brd)
+    shd = os.path.join(tmp, "glass_shadow.png")
+    sh = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    ImageDraw.Draw(sh).rounded_rectangle(
+        [(W - GLASS_FG_W) // 2 + 10, (H - GLASS_FG_H) // 2 + 22,
+         (W + GLASS_FG_W) // 2 + 10, (H + GLASS_FG_H) // 2 + 22],
+        radius=GLASS_R, fill=(0, 0, 0, 150))
+    from PIL import ImageFilter
+    sh = sh.filter(ImageFilter.GaussianBlur(24))
+    sh.save(shd)
+    return fgm, brd, shd
+
+
+def glass_conform(src, ss, dur, out, tmp):
+    """Screen tape in a glass card: blurred self backdrop + rounded fg + border + shadow."""
+    fgm, brd, shd = make_glass_assets(tmp)
+    x = (W - GLASS_FG_W) // 2
+    y = (H - GLASS_FG_H) // 2
+    run([lf.FFMPEG, "-y", "-ss", str(ss), "-i", src, "-i", shd, "-i", fgm, "-i", brd,
+         "-t", str(dur), "-filter_complex",
+         (f"[0:v]fps={FPS},split=2[a][b];"
+          f"[a]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
+          f"gblur=sigma=32,eq=brightness=-0.18:saturation=0.85[bg];"
+          f"[b]scale={GLASS_FG_W}:{GLASS_FG_H}:force_original_aspect_ratio=decrease,"
+          f"pad={GLASS_FG_W}:{GLASS_FG_H}:(ow-iw)/2:(oh-ih)/2:color=0x0E1116[fgs];"
+          f"[2:v]loop=-1:1,format=gray[mk];[fgs][mk]alphamerge[fga];"
+          f"[bg][1:v]overlay=0:0[s1];[s1][fga]overlay={x}:{y}[s2];"
+          f"[3:v]loop=-1:1[bo];[s2][bo]overlay={x}:{y}[v]"),
+         "-map", "[v]", *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
+
+
+def cutout_overlay(video, which, out, height=760, xoff=None):
+    """Modern host: transparent CUTOUT (no circle) riding bottom-right over the tape."""
+    png = os.path.join(A, f"cutout_{which}.png")
+    src = Image.open(png)
+    w2 = round(src.width * height / src.height)
+    x = (W - w2 - 8) if xoff is None else xoff
+    run([lf.FFMPEG, "-y", "-i", video, "-i", png, "-filter_complex",
+         f"[1:v]scale={w2}:{height}[c];[0:v][c]overlay=x={x}:y={H - height}[v]",
+         "-map", "[v]", *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
+
+
+def sfx_mix(video_with_audio, events, out):
+    """Mix whoosh/pop SFX at given times over a segment's existing audio.
+    events: list of (time_s, 'whoosh'|'pop')."""
+    if not events:
+        os.replace(video_with_audio, out); return
+    inputs = ["-i", video_with_audio]
+    fc, mix = [], "[0:a]"
+    for i, (t, kind) in enumerate(events):
+        inputs += ["-i", os.path.join(SFX, f"{kind}.wav")]
+        fc.append(f"[{i+1}:a]adelay={int(t*1000)}|{int(t*1000)}[sx{i}]")
+        mix += f"[sx{i}]"
+    fc.append(f"{mix}amix=inputs={len(events)+1}:duration=first:normalize=0[a]")
+    run([lf.FFMPEG, "-y"] + inputs + ["-filter_complex", ";".join(fc),
+         "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac",
+         "-ar", "48000", "-ac", "2", "-b:a", "192k", out])
+
+
 def main():
     os.makedirs(R, exist_ok=True)
     segs, chapters, t_cursor = [], [], 0.0
@@ -336,6 +414,10 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         DEMO = os.path.join(A, "mnm_demo.mov")
         SIM = os.path.join(A, "sim_usage.mp4")
+        LIVE = os.path.join(A, "sim_live.mp4")
+        BR1 = os.path.join(A, "broll_br1.mp4")
+        BR2 = os.path.join(A, "broll_br2.mp4")
+        BR3 = os.path.join(A, "broll_br3.mp4")
         GITLOG = os.path.join(A, "tape_gitlog.mp4")
         CODE = os.path.join(A, "tape_code.mp4")
         TRANS = os.path.join(A, "tape_transcript.mp4")
@@ -356,52 +438,88 @@ def main():
         hf = os.path.join(tmp, "hook_seg.mp4"); mux(hc, vo_wav("hook2", tmp), hf, lead=0.3)
         add(hf, total, chapter="Hook")
 
+        # ---- RELATE (curiosity b-roll — "have you tried AI...", VJ positioning) ----
+        times, total = line_times("relate")
+        POPQ = [("TRIED AGENTS?", "workflows - side hustles - gen AI"),
+                ("GAVE UP?", "the back-and-forth loop"),
+                (None, None), (None, None)]
+        rv = []
+        for i, ((t0, t1), src) in enumerate(zip(times, [BR1, BR2, GITLOG, LIVE])):
+            base_v = os.path.join(tmp, f"rl{i}.mp4")
+            glass_conform(src, 0.0 if i != 3 else 1.0, t1 - t0, base_v, tmp)
+            if POPQ[i][0]:
+                lab = os.path.join(tmp, f"rlq{i}.png")
+                feature_label_png(POPQ[i][0], POPQ[i][1], lab)
+                ov = os.path.join(tmp, f"rlo{i}.mp4"); overlay_png(base_v, lab, ov)
+                base_v = ov
+            rv.append(base_v)
+        rb = os.path.join(tmp, "rel_base.mp4"); concat_slices(rv, rb, tmp, "rel")
+        rcut = os.path.join(tmp, "rel_cut.mp4")
+        cutout_overlay(rb, "medium", rcut, height=700)
+        rc = os.path.join(tmp, "rel_cap.mp4"); captions_on(rcut, words_of("relate"), 0.3, rc)
+        rs0 = os.path.join(tmp, "rel_seg0.mp4"); mux(rc, vo_wav("relate", tmp), rs0, lead=0.3)
+        rs = os.path.join(tmp, "rel_seg.mp4")
+        sfx_mix(rs0, [(t0, "pop") for (t0, _), q in zip(times, POPQ) if q[0]], rs)
+        add(rs, total, chapter="Sound Familiar?")
+
         # ---- CH1 The Idea ----
         s, d = card(tmp, 1, "The Idea"); add(s, d, chapter="The Idea")
         seg, d = build_section("ch1", [
-            lambda du, o: conform(DEMO, 0.0, du, o),
-            lambda du, o: conform(CODE, 0.0, du, o, drift=False),
-            lambda du, o: conform(SIM, 4.0, du, o),
+            lambda du, o: glass_conform(DEMO, 0.0, du, o, tmp),
+            lambda du, o: glass_conform(CODE, 0.0, du, o, tmp),
+            lambda du, o: glass_conform(LIVE, 2.0, du, o, tmp),
         ], tmp, pip=None)
+        c1c = os.path.join(tmp, "ch1_cut.mp4")
+        cutout_overlay(seg, "close", c1c, height=680)
+        run([lf.FFMPEG, "-y", "-i", c1c, "-i", seg, "-map", "0:v", "-map", "1:a",
+             "-c:v", "copy", "-c:a", "copy", os.path.join(tmp, "ch1_final.mp4")])
+        seg = os.path.join(tmp, "ch1_final.mp4")
         add(seg, d)
 
         # ---- CH2 The Build ----
         s, d = card(tmp, 2, "The Build"); add(s, d, chapter="The Build")
         seg, d = build_section("ch2", [
-            lambda du, o: conform(GITLOG, 0.0, du, o, drift=False),
-            lambda du, o: conform(CODE, 4.0, du, o, drift=False),
-            lambda du, o: conform(SIM, 20.0, du, o),
-            lambda du, o: conform(TRANS, 0.0, du, o, drift=False),
-            lambda du, o: conform(GITLOG, 8.0, du, o, drift=False),
+            lambda du, o: glass_conform(GITLOG, 0.0, du, o, tmp),
+            lambda du, o: glass_conform(CODE, 4.0, du, o, tmp),
+            lambda du, o: glass_conform(SIM, 20.0, du, o, tmp),
+            lambda du, o: glass_conform(TRANS, 0.0, du, o, tmp),
+            lambda du, o: glass_conform(GITLOG, 8.0, du, o, tmp),
         ], tmp, pip=None)
         add(seg, d)
 
         # ---- CH3 On My iPhone ----
         s, d = card(tmp, 3, "On My iPhone"); add(s, d, chapter="On My iPhone")
         seg, d = build_section("ch3", [
-            lambda du, o: conform(SIM, 30.0, du, o),
-            lambda du, o: conform(DEMO, 2.0, du, o),
-            lambda du, o: conform(DEMO, 8.0, du, o),
-            lambda du, o: conform(TRANS, 8.0, du, o, drift=False),
+            lambda du, o: glass_conform(LIVE, 30.0, du, o, tmp),
+            lambda du, o: glass_conform(DEMO, 2.0, du, o, tmp),
+            lambda du, o: glass_conform(DEMO, 8.0, du, o, tmp),
+            lambda du, o: glass_conform(TRANS, 8.0, du, o, tmp),
         ], tmp, pip=None)
+        c3c = os.path.join(tmp, "ch3_cut.mp4")
+        cutout_overlay(seg, "wide", c3c, height=640)
+        run([lf.FFMPEG, "-y", "-i", c3c, "-i", seg, "-map", "0:v", "-map", "1:a",
+             "-c:v", "copy", "-c:a", "copy", os.path.join(tmp, "ch3_final.mp4")])
+        seg = os.path.join(tmp, "ch3_final.mp4")
         add(seg, d)
 
         # ---- THE APP (feature showcase / marketing beat — vision job #2) ----
         sc, d = card(tmp, 4, "The App"); add(sc, d, chapter="The App")
-        FEATURES = [("IMPORTANT ONLY", "alarm just the meetings that matter", 12.0),
-                    ("RING BEFORE", "you pick the runway: 2m - 30m", 18.0),
-                    ("TWO ALARM SOUNDS", "Standard rings. Gentle chimes.", 24.0),
-                    ("RINGS WHEN LOCKED", "the feature I missed calls for", 40.0)]
+        FEATURES = [("IMPORTANT ONLY", "alarm just the meetings that matter", 52.0),
+                    ("RING BEFORE", "you pick the runway: 2m - 30m", 12.0),
+                    ("TWO ALARM SOUNDS", "Standard rings. Gentle chimes.", 22.0),
+                    ("RINGS WHEN LOCKED", "the feature I missed calls for", 1.0)]
         times, total = line_times("appfeat")
         fs = []
         for i, ((t0, t1), (ttl, sub, ss)) in enumerate(zip(times, FEATURES)):
-            base_v = os.path.join(tmp, f"ft{i}.mp4"); conform(SIM, ss, t1 - t0, base_v)
+            base_v = os.path.join(tmp, f"ft{i}.mp4"); glass_conform(LIVE, ss, t1 - t0, base_v, tmp)
             lab = os.path.join(tmp, f"ftl{i}.png"); feature_label_png(ttl, sub, lab)
             ov = os.path.join(tmp, f"fto{i}.mp4"); overlay_png(base_v, lab, ov)
             fs.append(ov)
         ab = os.path.join(tmp, "app_base.mp4"); concat_slices(fs, ab, tmp, "app")
         ac = os.path.join(tmp, "app_cap.mp4"); captions_on(ab, words_of("appfeat"), 0.3, ac)
-        aseg = os.path.join(tmp, "app_seg.mp4"); mux(ac, vo_wav("appfeat", tmp), aseg, lead=0.3)
+        aseg0 = os.path.join(tmp, "app_seg0.mp4"); mux(ac, vo_wav("appfeat", tmp), aseg0, lead=0.3)
+        aseg = os.path.join(tmp, "app_seg.mp4")
+        sfx_mix(aseg0, [(t0, "pop") for t0, _ in times], aseg)
         add(aseg, total)
 
         # ---- MID-ROLL (host-free: pop-text kinetics) ----
@@ -415,13 +533,15 @@ def main():
             v = os.path.join(tmp, f"mpv{i}.mp4"); still_slice(png, t1 - t0, v, drift_px=60)
             ms.append(v)
         mb = os.path.join(tmp, "mid_base.mp4"); concat_slices(ms, mb, tmp, "mid")
-        mseg = os.path.join(tmp, "mid_seg.mp4"); mux(mb, vo_wav("midroll", tmp), mseg, lead=0.3)
+        mseg0 = os.path.join(tmp, "mid_seg0.mp4"); mux(mb, vo_wav("midroll", tmp), mseg0, lead=0.3)
+        mseg = os.path.join(tmp, "mid_seg.mp4")
+        sfx_mix(mseg0, [(t0, "whoosh") for t0, _ in times], mseg)
         add(mseg, total, chapter="Why Now")
 
         # ---- CH4 The App Store ----
         s, d = card(tmp, 5, "The App Store"); add(s, d, chapter="The App Store")
         seg, d = build_section("ch4", [
-            lambda du, o: conform(TRANS, 14.0, du, o, drift=False),
+            lambda du, o: glass_conform(TRANS, 14.0, du, o, tmp),
             lambda du, o: still_slice(listing_png, du, o, 150),
             lambda du, o: receipts_real(du, o, tmp),
         ], tmp, pip=None, captions=True)

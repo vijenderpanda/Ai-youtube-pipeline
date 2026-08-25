@@ -1,0 +1,467 @@
+[
+ {
+  "w": "QUICK",
+  "start": 0.0,
+  "end": 0.26
+ },
+ {
+  "w": "QUESTION",
+  "start": 0.29,
+  "end": 0.64
+ },
+ {
+  "w": "HAVE",
+  "start": 0.97,
+  "end": 1.14
+ },
+ {
+  "w": "YOU",
+  "start": 1.17,
+  "end": 1.24
+ },
+ {
+  "w": "TRIED",
+  "start": 1.29,
+  "end": 1.61
+ },
+ {
+  "w": "AI",
+  "start": 1.7,
+  "end": 1.99
+ },
+ {
+  "w": "ANYWHERE",
+  "start": 2.03,
+  "end": 2.32
+ },
+ {
+  "w": "REAL",
+  "start": 2.37,
+  "end": 2.65
+ },
+ {
+  "w": "AUTO",
+  "start": 3.18,
+  "end": 3.46
+ },
+ {
+  "w": "WORKFLOWS",
+  "start": 3.52,
+  "end": 4.1
+ },
+ {
+  "w": "AGENTS",
+  "start": 4.4,
+  "end": 4.92
+ },
+ {
+  "w": "MAYBE",
+  "start": 5.07,
+  "end": 5.33
+ },
+ {
+  "w": "A",
+  "start": 5.36,
+  "end": 5.39
+ },
+ {
+  "w": "SIDE",
+  "start": 5.45,
+  "end": 5.67
+ },
+ {
+  "w": "HUSTLE",
+  "start": 5.69,
+  "end": 5.97
+ },
+ {
+  "w": "YOU",
+  "start": 6.0,
+  "end": 6.07
+ },
+ {
+  "w": "HOPED",
+  "start": 6.13,
+  "end": 6.34
+ },
+ {
+  "w": "WOULD",
+  "start": 6.41,
+  "end": 6.56
+ },
+ {
+  "w": "EARN",
+  "start": 6.62,
+  "end": 6.88
+ },
+ {
+  "w": "AND",
+  "start": 7.4,
+  "end": 7.81
+ },
+ {
+  "w": "STILL",
+  "start": 7.89,
+  "end": 8.12
+ },
+ {
+  "w": "NOTHING",
+  "start": 8.16,
+  "end": 8.38
+ },
+ {
+  "w": "PUBLISHED",
+  "start": 8.42,
+  "end": 8.82
+ },
+ {
+  "w": "YOU",
+  "start": 9.12,
+  "end": 9.24
+ },
+ {
+  "w": "GO",
+  "start": 9.32,
+  "end": 9.42
+ },
+ {
+  "w": "BACK",
+  "start": 9.47,
+  "end": 9.68
+ },
+ {
+  "w": "AND",
+  "start": 9.73,
+  "end": 9.8
+ },
+ {
+  "w": "FORTH",
+  "start": 9.85,
+  "end": 10.08
+ },
+ {
+  "w": "WITH",
+  "start": 10.11,
+  "end": 10.24
+ },
+ {
+  "w": "AGENTS",
+  "start": 10.3,
+  "end": 10.73
+ },
+ {
+  "w": "AND",
+  "start": 10.77,
+  "end": 10.86
+ },
+ {
+  "w": "FIVE",
+  "start": 10.91,
+  "end": 11.13
+ },
+ {
+  "w": "DIFFERENT",
+  "start": 11.17,
+  "end": 11.46
+ },
+ {
+  "w": "AI",
+  "start": 11.52,
+  "end": 11.75
+ },
+ {
+  "w": "TOOLS",
+  "start": 11.8,
+  "end": 12.16
+ },
+ {
+  "w": "AND",
+  "start": 12.39,
+  "end": 12.55
+ },
+ {
+  "w": "SOMEWHERE",
+  "start": 12.62,
+  "end": 13.0
+ },
+ {
+  "w": "IN",
+  "start": 13.05,
+  "end": 13.12
+ },
+ {
+  "w": "THAT",
+  "start": 13.16,
+  "end": 13.29
+ },
+ {
+  "w": "LOOP",
+  "start": 13.36,
+  "end": 13.61
+ },
+ {
+  "w": "YOU",
+  "start": 13.71,
+  "end": 13.81
+ },
+ {
+  "w": "GIVE",
+  "start": 13.9,
+  "end": 14.06
+ },
+ {
+  "w": "UP",
+  "start": 14.11,
+  "end": 14.23
+ },
+ {
+  "w": "I",
+  "start": 14.77,
+  "end": 14.81
+ },
+ {
+  "w": "KNOW",
+  "start": 14.88,
+  "end": 15.0
+ },
+ {
+  "w": "THAT",
+  "start": 15.03,
+  "end": 15.14
+ },
+ {
+  "w": "LOOP",
+  "start": 15.2,
+  "end": 15.43
+ },
+ {
+  "w": "SO",
+  "start": 15.72,
+  "end": 15.85
+ },
+ {
+  "w": "HERE'S",
+  "start": 15.89,
+  "end": 16.07
+ },
+ {
+  "w": "ONE",
+  "start": 16.1,
+  "end": 16.22
+ },
+ {
+  "w": "EXAMPLE",
+  "start": 16.24,
+  "end": 16.8
+ },
+ {
+  "w": "BUILT",
+  "start": 17.04,
+  "end": 17.29
+ },
+ {
+  "w": "YESTERDAY",
+  "start": 17.33,
+  "end": 17.76
+ },
+ {
+  "w": "IN",
+  "start": 17.88,
+  "end": 18.0
+ },
+ {
+  "w": "UNDER",
+  "start": 18.04,
+  "end": 18.2
+ },
+ {
+  "w": "FOUR",
+  "start": 18.24,
+  "end": 18.37
+ },
+ {
+  "w": "HOURS",
+  "start": 18.4,
+  "end": 18.74
+ },
+ {
+  "w": "AND",
+  "start": 19.03,
+  "end": 19.17
+ },
+ {
+  "w": "HERE'S",
+  "start": 19.21,
+  "end": 19.39
+ },
+ {
+  "w": "THE",
+  "start": 19.42,
+  "end": 19.49
+ },
+ {
+  "w": "PART",
+  "start": 19.55,
+  "end": 19.75
+ },
+ {
+  "w": "THAT",
+  "start": 19.78,
+  "end": 19.9
+ },
+ {
+  "w": "MATTERS",
+  "start": 19.98,
+  "end": 20.39
+ },
+ {
+  "w": "I",
+  "start": 20.69,
+  "end": 20.75
+ },
+ {
+  "w": "HAD",
+  "start": 20.8,
+  "end": 20.91
+ },
+ {
+  "w": "NEVER",
+  "start": 20.99,
+  "end": 21.22
+ },
+ {
+  "w": "DEVELOPED",
+  "start": 21.27,
+  "end": 21.61
+ },
+ {
+  "w": "AN",
+  "start": 21.64,
+  "end": 21.7
+ },
+ {
+  "w": "IOS",
+  "start": 21.77,
+  "end": 22.09
+ },
+ {
+  "w": "APP",
+  "start": 22.18,
+  "end": 22.26
+ },
+ {
+  "w": "BEFORE",
+  "start": 22.3,
+  "end": 22.68
+ },
+ {
+  "w": "NEVER",
+  "start": 23.11,
+  "end": 23.45
+ },
+ {
+  "w": "AND",
+  "start": 23.64,
+  "end": 23.82
+ },
+ {
+  "w": "NOW",
+  "start": 23.9,
+  "end": 24.09
+ },
+ {
+  "w": "I",
+  "start": 24.21,
+  "end": 24.25
+ },
+ {
+  "w": "CAN",
+  "start": 24.35,
+  "end": 24.48
+ },
+ {
+  "w": "BUILD",
+  "start": 24.55,
+  "end": 24.73
+ },
+ {
+  "w": "AND",
+  "start": 24.76,
+  "end": 24.84
+ },
+ {
+  "w": "SHIP",
+  "start": 24.88,
+  "end": 25.09
+ },
+ {
+  "w": "ONE",
+  "start": 25.18,
+  "end": 25.34
+ },
+ {
+  "w": "IN",
+  "start": 25.39,
+  "end": 25.47
+ },
+ {
+  "w": "A",
+  "start": 25.52,
+  "end": 25.54
+ },
+ {
+  "w": "SINGLE",
+  "start": 25.6,
+  "end": 25.89
+ },
+ {
+  "w": "DAY",
+  "start": 25.93,
+  "end": 26.11
+ },
+ {
+  "w": "THAT'S",
+  "start": 26.5,
+  "end": 26.75
+ },
+ {
+  "w": "THE",
+  "start": 26.78,
+  "end": 26.85
+ },
+ {
+  "w": "ERA",
+  "start": 26.92,
+  "end": 27.12
+ },
+ {
+  "w": "WE'RE",
+  "start": 27.18,
+  "end": 27.33
+ },
+ {
+  "w": "IN",
+  "start": 27.38,
+  "end": 27.5
+ },
+ {
+  "w": "LET",
+  "start": 27.83,
+  "end": 27.98
+ },
+ {
+  "w": "ME",
+  "start": 28.03,
+  "end": 28.1
+ },
+ {
+  "w": "SHOW",
+  "start": 28.12,
+  "end": 28.28
+ },
+ {
+  "w": "YOU",
+  "start": 28.34,
+  "end": 28.46
+ }
+]

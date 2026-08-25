@@ -349,5 +349,42 @@
     "match": true
    }
   ]
+ },
+ "relate": {
+  "duration": 28.46,
+  "bounds": [
+   {
+    "line": 1,
+    "text": "Quick question. Have you tried AI anywhere real? Auto workflows. Agents. Maybe a side hustle you hoped would earn.",
+    "start": 0.0,
+    "end": 6.88,
+    "words": 19,
+    "match": true
+   },
+   {
+    "line": 2,
+    "text": "And still nothing published? You go back and forth with agents and five different AI tools, and somewhere in that loop, you give up.",
+    "start": 7.4,
+    "end": 14.23,
+    "words": 24,
+    "match": true
+   },
+   {
+    "line": 3,
+    "text": "I know that loop. So here's one example. Built yesterday, in under four hours. And here's the part that matters. I had never developed an iOS app before.",
+    "start": 14.77,
+    "end": 22.68,
+    "words": 28,
+    "match": true
+   },
+   {
+    "line": 4,
+    "text": "Never. And now I can build and ship one in a single day. That's the era we're in. Let me show you.",
+    "start": 23.11,
+    "end": 28.46,
+    "words": 22,
+    "match": true
+   }
+  ]
  }
 }
