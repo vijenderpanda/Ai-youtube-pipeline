@@ -1,0 +1,389 @@
+{
+  "_note": "EP4 NIGHTWATCH (2026-08-25, SWAP-IN for today's 17:30 if in time) — HF Agents Course free certification. Tape tapes/hfagents_tape.mp4 (23.9s, dark, 3 visible verbatim sweeps; 'no deadline' spoken only, below fold). CERT-FIRST hook per ep2 analytics: promise chip = the certificate claim in second 1. Host-free body + STILL-image outro disc (HeyGen credit out; talking disc returns when track available). Camera at values provisional until VO measured; knee rides the 1200px scroll (tape ~17.0-19.0).",
+  "title": "This Free AI Agents Course Certifies You 🤖",
+  "tags": "hugging face,ai agents course,free ai course,ai certification,agents,hugging face course,learn ai agents,free certificate,ai tools 2026,ai unpacked,llm course,build ai agents",
+  "lines": [
+    "You can get certified in A I agents. Free. Here's where.",
+    "Hugging Face runs an agents course. The certification is completely free.",
+    "Finish unit one, you're certified in the fundamentals.",
+    "No deadline. Learn at your own pace.",
+    "You build real agents. And ship them on the Hugging Face Hub.",
+    "That's a certificate employers can see. For zero rupees.",
+    "Link's pinned. Start with unit one tonight."
+  ],
+  "hot_words": [
+    "CERTIFIED",
+    "FREE",
+    "HUGGING",
+    "FACE",
+    "COMPLETELY",
+    "UNIT",
+    "ONE",
+    "FUNDAMENTALS",
+    "NO",
+    "DEADLINE",
+    "REAL",
+    "AGENTS",
+    "HUB",
+    "CERTIFICATE",
+    "ZERO",
+    "PINNED",
+    "TONIGHT"
+  ],
+  "beats": [
+    "cook:HeroDrop#hook",
+    "cook:WebTour#tour",
+    "cook:WebTour#tour",
+    "cook:WebTour#nodeadline",
+    "cook:WebTour#build",
+    "cook:VsTable#worth",
+    "cook:WebTour#payoff"
+  ],
+  "caption_from": "@beat1",
+  "music": "music/bed_active.mp3",
+  "music_gain_db": 2.0,
+  "music_fade_in": 0.25,
+  "promise_chip": {
+    "text": "AI AGENTS. CERTIFIED. FREE.",
+    "from": 0.3,
+    "until": 1.7
+  },
+  "cookbook": {
+    "HeroDrop#hook": {
+      "emoji": "🤖",
+      "onSrc": "tapes/hfagents_hero.jpg",
+      "caption": {
+        "parts": [
+          {
+            "t": "certified in agents.",
+            "face": "sans"
+          },
+          {
+            "t": "for free.",
+            "face": "serif",
+            "accent": true
+          }
+        ]
+      },
+      "dropAt": 0.1,
+      "size": 400,
+      "partAt": [
+        1.5,
+        3.0
+      ]
+    },
+    "WebTour#tour": {
+      "src": "tapes/hfagents_tape.mp4",
+      "url": "https://huggingface.co/learn/agents-course",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 5.6,
+      "camera": [
+        {
+          "at": 0.5,
+          "dur": 0.5,
+          "center": [
+            0.5,
+            0.42
+          ],
+          "zoom": 1.8,
+          "hold": 2.4
+        }
+      ],
+      "selections": [
+        {
+          "at": 1.5,
+          "rects": [
+            [
+              0.2484,
+              6.8415,
+              0.4836,
+              6.872
+            ]
+          ],
+          "scrollTop": 0,
+          "hold": 2.4,
+          "sweep": "ltr"
+        },
+        {
+          "at": 4.7,
+          "rects": [
+            [
+              0.2747,
+              6.9115,
+              0.6378,
+              6.942
+            ]
+          ],
+          "scrollTop": 0,
+          "hold": 2.4,
+          "sweep": "ltr"
+        }
+      ],
+      "host": false,
+      "hostSize": 360,
+      "_note": "merged 2-line beat; sweeps: 'completely free' (tape 7.10) then 'fundamentals' (tape 10.32). KNEE: true after VO."
+    },
+    "WebTour#nodeadline": {
+      "src": "tapes/hfagents_tape.mp4",
+      "url": "https://huggingface.co/learn/agents-course",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 12.6,
+      "camera": [
+        {
+          "at": 0.4,
+          "dur": 0.6,
+          "center": [
+            0.5,
+            0.55
+          ],
+          "zoom": 1.6,
+          "hold": 2.8
+        }
+      ],
+      "selections": [],
+      "host": false
+    },
+    "WebTour#build": {
+      "src": "tapes/hfagents_tape.mp4",
+      "url": "https://huggingface.co/learn/agents-course",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 16.2,
+      "camera": [
+        {
+          "at": 0.6,
+          "dur": 0.6,
+          "center": [
+            0.5,
+            0.45
+          ],
+          "zoom": 1.7,
+          "hold": 3.0
+        }
+      ],
+      "selections": [
+        {
+          "at": 3.06,
+          "rects": [
+            [
+              0.2929,
+              0.6168,
+              0.5335,
+              0.6473
+            ]
+          ],
+          "scrollTop": 1200,
+          "hold": 2.4,
+          "sweep": "ltr"
+        }
+      ],
+      "host": false,
+      "_note": "the 1200px scroll (tape ~17-19) plays inside this beat = motion; sweep on 'Share your agents…' tape 19.26"
+    },
+    "VsTable#worth": {
+      "title": "what you get",
+      "colA": "Paid bootcamps",
+      "colB": "HF Agents Course",
+      "rows": [
+        {
+          "label": "cost",
+          "a": "Rs 50,000+",
+          "b": "free",
+          "verdict": "b"
+        },
+        {
+          "label": "certificate",
+          "a": "yes",
+          "b": "yes",
+          "verdict": "none"
+        },
+        {
+          "label": "deadline",
+          "a": "fixed batches",
+          "b": "none",
+          "verdict": "b"
+        },
+        {
+          "label": "you ship",
+          "a": "toy projects",
+          "b": "real agents on the Hub",
+          "verdict": "b"
+        }
+      ],
+      "rowStagger": 0.55
+    },
+    "WebTour#payoff": {
+      "src": "tapes/hfagents_tape.mp4",
+      "url": "https://huggingface.co/learn/agents-course",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 6.4,
+      "camera": [
+        {
+          "at": 0.6,
+          "dur": 0.7,
+          "center": [
+            0.5,
+            0.4
+          ],
+          "zoom": 1.9,
+          "hold": 3.0
+        }
+      ],
+      "selections": [
+        {
+          "at": 0.7,
+          "rects": [
+            [
+              0.2484,
+              6.8415,
+              0.4836,
+              6.872
+            ]
+          ],
+          "scrollTop": 0,
+          "hold": 2.6,
+          "sweep": "ltr"
+        }
+      ],
+      "host": false,
+      "_note": "payoff re-sweeps THE claim ('completely free') as the title promise"
+    }
+  },
+  "tour_rail": {
+    "stops": [
+      {
+        "label": "free cert",
+        "at": "@beat1"
+      },
+      {
+        "label": "unit one",
+        "at": "@beat1+3.5"
+      },
+      {
+        "label": "no deadline",
+        "at": "@beat2"
+      },
+      {
+        "label": "build real",
+        "at": "@beat3"
+      },
+      {
+        "label": "the math",
+        "at": "@beat4"
+      },
+      {
+        "label": "start",
+        "at": "@beat5"
+      }
+    ],
+    "from": "@beat1",
+    "y": 300
+  },
+  "pings": [
+    {
+      "at": "@beat1+1.6",
+      "kind": "like",
+      "tip": "free. certified.",
+      "dur": 2.2
+    },
+    {
+      "at": "@beat5+0.9",
+      "kind": "comment",
+      "tip": "pinned below",
+      "dur": 2.2
+    }
+  ],
+  "outro_pings": [
+    {
+      "at": 0.5,
+      "kind": "subscribe",
+      "tip": "follow",
+      "dur": 2.6
+    }
+  ],
+  "sfx": [
+    {
+      "at": 0.02,
+      "name": "pop",
+      "gain_db": 1
+    },
+    {
+      "at": "@beat0",
+      "name": "riser"
+    },
+    {
+      "at": "@beat0+1.2",
+      "name": "pop"
+    },
+    {
+      "at": "@beat1",
+      "name": "whoosh_up"
+    },
+    {
+      "at": 6.0,
+      "name": "pop",
+      "gain_db": 2,
+      "note": "KNEE absolute"
+    },
+    {
+      "at": "@beat1+1.5",
+      "name": "pop",
+      "note": "free sweep"
+    },
+    {
+      "at": "@beat1+4.7",
+      "name": "pop",
+      "note": "fundamentals sweep"
+    },
+    {
+      "at": "@beat2",
+      "name": "whoosh_down"
+    },
+    {
+      "at": "@beat3",
+      "name": "whoosh_up"
+    },
+    {
+      "at": "@beat3+3.06",
+      "name": "pop",
+      "note": "share-agents sweep"
+    },
+    {
+      "at": "@beat4",
+      "name": "whoosh_up"
+    },
+    {
+      "at": "@beat4+1.7",
+      "name": "pop",
+      "gain_db": -3
+    },
+    {
+      "at": "@beat4+2.3",
+      "name": "pop",
+      "gain_db": -3
+    },
+    {
+      "at": "@beat5",
+      "name": "whoosh_up"
+    },
+    {
+      "at": "@beat5+0.7",
+      "name": "pop",
+      "note": "payoff sweep"
+    },
+    {
+      "at": "@beat5+1.9",
+      "name": "slam"
+    }
+  ],
+  "duck": "@beat5+1.76,@beat5+1.90",
+  "outro": true,
+  "outro_src": "ephfagents/outro_card.mp4",
+  "outro_cta": "Follow. I find one free AI win every day. Which course should I tour next?",
+  "desc_cta": "Which free AI course should I tour next? Tell me below.",
+  "desc_prompt": "🤖 THE LINK: huggingface.co/learn/agents-course\n\nUnit 1 gets you the fundamentals certification. Completely free, no deadline. Build real agents and ship them on the Hugging Face Hub.",
+  "steps": []
+}
