@@ -286,7 +286,7 @@ def main():
 
     with tempfile.TemporaryDirectory() as tmp:
         DEMO = os.path.join(A, "mnm_demo.mov")
-        SIM = os.path.join(A, "sim_usage.mov")
+        SIM = os.path.join(A, "sim_usage.mp4")
         GITLOG = os.path.join(A, "tape_gitlog.mp4")
         CODE = os.path.join(A, "tape_code.mp4")
         TRANS = os.path.join(A, "tape_transcript.mp4")
