@@ -443,6 +443,151 @@ def monitor_stage(src, ss, dur, out, tmp, plate=0, cutout=None, ch=None):
          "-map", "[v]", *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
 
 
+
+# ---- Mikey-style asset kit (champagne edition): floating window + webcam bubble,
+# ---- cascading pills, step diagram, check row, kinetic highlighted line ----
+WIN_W, WIN_H, WIN_R = 1560, 880, 26
+
+
+def _soft_bg(tmp):
+    pth = os.path.join(tmp, "soft_bg.png")
+    if os.path.exists(pth):
+        return pth
+    im = Image.new("RGB", (W, H), (15, 17, 22))
+    d = ImageDraw.Draw(im)
+    for r in range(1100, 0, -8):
+        a = int(20 * r / 1100)
+        d.ellipse([W // 2 - r, H + 200 - r, W // 2 + r, H + 200 + r],
+                  fill=(15 + a, 15 + int(a * 0.85), 22 + int(a * 0.3)))
+    im.save(pth)
+    return pth
+
+
+def _webcam_bubble(tmp):
+    pth = os.path.join(tmp, "bubble.png")
+    if os.path.exists(pth):
+        return pth
+    src = Image.open(os.path.join(A, "cutout_close.png"))
+    bw, bh = 300, 300
+    face = src.crop((int(src.width * 0.18), 0, int(src.width * 0.18) + src.height, src.height))
+    face = face.resize((bh, bh), Image.LANCZOS)
+    card = Image.new("RGBA", (bw + 12, bh + 12), (0, 0, 0, 0))
+    inner = Image.new("RGBA", (bw, bh), (24, 26, 32, 255))
+    inner.paste(face, (0, 0), face)
+    m = Image.new("L", (bw, bh), 0)
+    ImageDraw.Draw(m).rounded_rectangle([0, 0, bw, bh], radius=40, fill=255)
+    card.paste(inner, (6, 6), m)
+    d = ImageDraw.Draw(card)
+    d.rounded_rectangle([6, 6, bw + 6, bh + 6], radius=40, outline=lf.ACCENT + (255,), width=4)
+    card.save(pth)
+    return pth
+
+
+def window_stage(src, ss, dur, out, tmp, bubble=True, bar_title="localhost — MissNoMeetings"):
+    """Floating rounded app window on a soft dark ground + webcam-bubble host."""
+    bg = _soft_bg(tmp)
+    wx, wy = (W - WIN_W) // 2, (H - WIN_H) // 2 + 10
+    frame = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(frame)
+    sh = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    ImageDraw.Draw(sh).rounded_rectangle([wx + 8, wy + 20, wx + WIN_W + 8, wy + WIN_H + 20],
+                                         radius=WIN_R, fill=(0, 0, 0, 140))
+    from PIL import ImageFilter
+    sh = sh.filter(ImageFilter.GaussianBlur(20))
+    d2 = ImageDraw.Draw(sh)
+    d2.rounded_rectangle([wx, wy, wx + WIN_W, wy + WIN_H], radius=WIN_R, fill=(20, 22, 28, 255),
+                         outline=(255, 255, 255, 60), width=2)
+    for i, c in enumerate([(255, 95, 86), (255, 189, 46), (39, 201, 63)]):
+        d2.ellipse([wx + 26 + i * 30, wy + 20, wx + 44 + i * 30, wy + 38], fill=c + (255,))
+    f = ImageFont.truetype(lf.FONT_ANTON, 22)
+    d2.text((wx + 130, wy + 18), bar_title, font=f, fill=(150, 156, 166, 255))
+    fp = os.path.join(tmp, f"winframe_{bar_title[:8]}.png"); sh.save(fp)
+    iw, ih = WIN_W - 4, WIN_H - 56
+    mk = Image.new("L", (iw, ih), 0)
+    ImageDraw.Draw(mk).rounded_rectangle([0, 0, iw, ih], radius=WIN_R - 6, fill=255)
+    mkp = os.path.join(tmp, "winmask.png"); mk.save(mkp)
+    bub = _webcam_bubble(tmp)
+    seek = ["-ss", str(ss)] if ss else []
+    fc = (f"[0:v]scale={W}:{H}[bg];"
+          f"[2:v]loop=-1:1[fr];[bg][fr]overlay=0:0[s1];"
+          f"[1:v]fps={FPS},scale={iw}:{ih}:force_original_aspect_ratio=decrease,"
+          f"pad={iw}:{ih}:(ow-iw)/2:(oh-ih)/2:color=0x14161C[tv];"
+          f"[3:v]loop=-1:1,format=gray[mk];[tv][mk]alphamerge[tva];"
+          f"[s1][tva]overlay={wx + 2}:{wy + 52}[s2];")
+    inputs = ["-loop", "1", "-i", bg, *seek, "-i", src, "-loop", "1", "-i", fp,
+              "-loop", "1", "-i", mkp]
+    if bubble:
+        inputs += ["-loop", "1", "-i", bub]
+        fc += f"[s2][4:v]overlay={W - 380}:{H - 380}[v]"
+    else:
+        fc += "[s2]null[v]"
+    run([lf.FFMPEG, "-y"] + inputs + ["-t", str(dur), "-filter_complex", fc,
+         "-map", "[v]", *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
+
+
+def _frames_to_mp4(frames_dir, out):
+    run([lf.FFMPEG, "-y", "-framerate", str(FPS), "-i",
+         os.path.join(frames_dir, "f%04d.png"), *venc("18", "veryfast"),
+         "-pix_fmt", "yuv420p", "-an", out])
+
+
+def _ease(t):
+    return 1 - (1 - max(0.0, min(1.0, t))) ** 3
+
+
+def pills_anim(labels, dur, out, tmp, title=None):
+    """Cascading rounded pills (Mikey grammar, champagne on ink)."""
+    fd = os.path.join(tmp, f"pl_{abs(hash(tuple(labels))) % 99999}")
+    os.makedirs(fd, exist_ok=True)
+    f = ImageFont.truetype(lf.FONT_ANTON, 46)
+    ft = ImageFont.truetype(lf.FONT_ANTON, 40)
+    n = int(dur * FPS)
+    for i in range(n):
+        t = i / FPS
+        im = Image.open(_soft_bg(tmp)).convert("RGB")
+        d = ImageDraw.Draw(im)
+        if title:
+            d.text((150, 110), title, font=ft, fill=(150, 156, 166))
+        for j, lab in enumerate(labels):
+            k = _ease((t - 0.25 * j) / 0.45)
+            if k <= 0:
+                continue
+            y = 240 + j * 130 - int(24 * (1 - k))
+            x = 320 + j * 46
+            tw = d.textlength(lab, font=f)
+            a = int(255 * k)
+            d.rounded_rectangle([x, y, x + tw + 90, y + 92], radius=46,
+                                fill=(30, 33, 41), outline=(lf.ACCENT[0], lf.ACCENT[1], lf.ACCENT[2], a), width=3)
+            d.ellipse([x + 26, y + 32, x + 54, y + 60], fill=lf.ACCENT)
+            d.text((x + 74, y + 18), lab, font=f, fill=(int(245 * k),) * 3)
+        im.save(os.path.join(fd, f"f{i:04d}.png"))
+    _frames_to_mp4(fd, out)
+
+
+def kinetic_line(text, hot, dur, out, tmp):
+    """Single centered sentence, key word in champagne, soft scale-in."""
+    fd = os.path.join(tmp, f"kl_{abs(hash(text)) % 99999}")
+    os.makedirs(fd, exist_ok=True)
+    n = int(dur * FPS)
+    words = text.split()
+    for i in range(n):
+        t = i / FPS
+        k = _ease(t / 0.5)
+        base = 66 + int(6 * k)
+        f = ImageFont.truetype(lf.FONT_ANTON, base)
+        im = Image.open(_soft_bg(tmp)).convert("RGB")
+        d = ImageDraw.Draw(im)
+        widths = [d.textlength(w + " ", font=f) for w in words]
+        total = sum(widths)
+        x = (W - total) / 2
+        for w, ww in zip(words, widths):
+            col = lf.ACCENT if w.strip(".,").lower() == hot.lower() else (int(235 * k),) * 3
+            d.text((x, H // 2 - base), w, font=f, fill=col)
+            x += ww
+        im.save(os.path.join(fd, f"f{i:04d}.png"))
+    _frames_to_mp4(fd, out)
+
+
 def main():
     os.makedirs(R, exist_ok=True)
     segs, chapters, t_cursor = [], [], 0.0
@@ -516,20 +661,26 @@ def main():
         s, d = card(tmp, 1, "The Idea"); add(s, d, chapter="The Idea")
         seg, d = build_section("ch1", [
             lambda du, o: monitor_stage(DEMO, 0.0, du, o, tmp, plate=0),
-            lambda du, o: monitor_stage(CODE, 0.0, du, o, tmp, plate=1),
-            lambda du, o: monitor_stage(LIVE, 2.0, du, o, tmp, plate=0),
-        ], tmp, pip=None)
+            lambda du, o: window_stage(CODE, 0.0, du, o, tmp, bubble=False,
+                                       bar_title="MeetingStore.swift"),
+            lambda du, o: window_stage(LIVE, 2.0, du, o, tmp, bubble=False),
+        ], tmp, pip=os.path.join(A, "host_ch1.mp4"))
         add(seg, d)
 
         # ---- CH2 The Build ----
         s, d = card(tmp, 2, "The Build"); add(s, d, chapter="The Build")
         seg, d = build_section("ch2", [
-            lambda du, o: glass_conform(GITLOG, 0.0, du, o, tmp),
-            lambda du, o: glass_conform(CODE, 4.0, du, o, tmp),
-            lambda du, o: glass_conform(SIM, 20.0, du, o, tmp),
-            lambda du, o: glass_conform(TRANS, 0.0, du, o, tmp),
-            lambda du, o: glass_conform(GITLOG, 8.0, du, o, tmp),
-        ], tmp, pip=None)
+            lambda du, o: pills_anim(["Read the calendar", "Set alarms", "Find meetings",
+                                      "Ring loud, locked", "Re-sync on change"],
+                                     du, o, tmp, title="THE FIVE LINES"),
+            lambda du, o: window_stage(CODE, 4.0, du, o, tmp, bubble=False,
+                                       bar_title="MeetingStore.swift"),
+            lambda du, o: window_stage(SIM, 20.0, du, o, tmp, bubble=False),
+            lambda du, o: window_stage(TRANS, 0.0, du, o, tmp, bubble=False,
+                                       bar_title="Claude Code — session log"),
+            lambda du, o: window_stage(GITLOG, 8.0, du, o, tmp, bubble=False,
+                                       bar_title="git log"),
+        ], tmp, pip=os.path.join(A, "host_ch2.mp4"))
         add(seg, d)
 
         # ---- CH3 On My iPhone ----
@@ -539,7 +690,7 @@ def main():
             lambda du, o: monitor_stage(DEMO, 2.0, du, o, tmp, plate=0),
             lambda du, o: monitor_stage(DEMO, 8.0, du, o, tmp, plate=1),
             lambda du, o: monitor_stage(TRANS, 8.0, du, o, tmp, plate=0),
-        ], tmp, pip=None)
+        ], tmp, pip=os.path.join(A, "host_ch3.mp4"))
         add(seg, d)
 
         # ---- THE APP (feature showcase / marketing beat — vision job #2) ----
@@ -551,7 +702,8 @@ def main():
         times, total = line_times("appfeat")
         fs = []
         for i, ((t0, t1), (ttl, sub, ss)) in enumerate(zip(times, FEATURES)):
-            base_v = os.path.join(tmp, f"ft{i}.mp4"); glass_conform(LIVE, ss, t1 - t0, base_v, tmp)
+            base_v = os.path.join(tmp, f"ft{i}.mp4")
+            window_stage(LIVE, ss, t1 - t0, base_v, tmp, bubble=False, bar_title="MissNoMeetings")
             lab = os.path.join(tmp, f"ftl{i}.png"); feature_label_png(ttl, sub, lab)
             ov = os.path.join(tmp, f"fto{i}.mp4"); overlay_png(base_v, lab, ov)
             fs.append(ov)
@@ -564,26 +716,27 @@ def main():
         sfx_mix(aseg0, [(t0, "pop") for t0, _ in times], aseg)
         add(aseg, total)
 
-        # ---- MID-ROLL (host-free: pop-text kinetics) ----
-        times, total = line_times("midroll")
-        POPS = [("AGENTS", "the one-word answer"),
-                ("BUILDS. RUNS. REPAIRS.", "it reads its own errors"),
-                ("DESCRIBE. TEST.", "your whole job now")]
-        ms = []
-        for i, ((t0, t1), (t_, sub)) in enumerate(zip(times, POPS)):
-            png = os.path.join(tmp, f"mp{i}.png"); lf.pop_text_still(t_, png, sub=sub)
-            v = os.path.join(tmp, f"mpv{i}.mp4"); still_slice(png, t1 - t0, v, drift_px=60)
-            ms.append(v)
-        mb = os.path.join(tmp, "mid_base.mp4"); concat_slices(ms, mb, tmp, "mid")
-        mseg0 = os.path.join(tmp, "mid_seg0.mp4"); mux(mb, vo_wav("midroll", tmp), mseg0, lead=0.3)
+        # ---- MID-ROLL (HeyGen talking host + kinetic-line cutaway) ----
+        mv, mdur = host_full_section("midroll", tmp, captions=True)
+        times, _ = line_times("midroll", lead=0.0, tail=0.0)
+        klv = os.path.join(tmp, "mid_kl.mp4")
+        kinetic_line("It builds. It runs. It repairs itself.", "repairs",
+                     times[1][1] - times[1][0], klv, tmp)
+        mo = os.path.join(tmp, "mid_over.mp4")
+        run([lf.FFMPEG, "-y", "-i", mv, "-i", klv, "-filter_complex",
+             f"[1:v]setpts=PTS+{times[1][0]}/TB[k];"
+             f"[0:v][k]overlay=eof_action=pass:enable='between(t,{times[1][0]},{times[1][1]})'[v]",
+             "-map", "[v]", "-map", "0:a", *venc("18", "veryfast"),
+             "-c:a", "aac", "-ar", "48000", "-ac", "2", "-b:a", "192k", mo])
         mseg = os.path.join(tmp, "mid_seg.mp4")
-        sfx_mix(mseg0, [(t0, "whoosh") for t0, _ in times], mseg)
-        add(mseg, total, chapter="Why Now")
+        sfx_mix(mo, [(times[1][0], "whoosh")], mseg)
+        add(mseg, mdur, chapter="Why Now")
 
         # ---- CH4 The App Store ----
         s, d = card(tmp, 5, "The App Store"); add(s, d, chapter="The App Store")
         seg, d = build_section("ch4", [
-            lambda du, o: glass_conform(TRANS, 14.0, du, o, tmp),
+            lambda du, o: window_stage(TRANS, 14.0, du, o, tmp, bubble=False,
+                                       bar_title="Claude Code — session log"),
             lambda du, o: still_slice(listing_png, du, o, 150),
             lambda du, o: receipts_real(du, o, tmp),
         ], tmp, pip=None, captions=True)
