@@ -1,0 +1,212 @@
+[
+ {
+  "w": "WHY",
+  "start": 0.0,
+  "end": 0.21
+ },
+ {
+  "w": "IS",
+  "start": 0.24,
+  "end": 0.33
+ },
+ {
+  "w": "THIS",
+  "start": 0.35,
+  "end": 0.44
+ },
+ {
+  "w": "SUDDENLY",
+  "start": 0.46,
+  "end": 0.78
+ },
+ {
+  "w": "POSSIBLE",
+  "start": 0.84,
+  "end": 1.29
+ },
+ {
+  "w": "ONE",
+  "start": 1.57,
+  "end": 1.75
+ },
+ {
+  "w": "WORD",
+  "start": 1.8,
+  "end": 2.07
+ },
+ {
+  "w": "AGENTS",
+  "start": 2.31,
+  "end": 2.8
+ },
+ {
+  "w": "THE",
+  "start": 3.29,
+  "end": 3.4
+ },
+ {
+  "w": "MODEL",
+  "start": 3.45,
+  "end": 3.74
+ },
+ {
+  "w": "DOESN'T",
+  "start": 3.8,
+  "end": 4.06
+ },
+ {
+  "w": "SUGGEST",
+  "start": 4.1,
+  "end": 4.52
+ },
+ {
+  "w": "CODE",
+  "start": 4.59,
+  "end": 4.84
+ },
+ {
+  "w": "ANYMORE",
+  "start": 4.87,
+  "end": 5.4
+ },
+ {
+  "w": "IT",
+  "start": 5.51,
+  "end": 5.7
+ },
+ {
+  "w": "BUILDS",
+  "start": 5.78,
+  "end": 6.25
+ },
+ {
+  "w": "RUNS",
+  "start": 6.48,
+  "end": 6.73
+ },
+ {
+  "w": "THE",
+  "start": 6.79,
+  "end": 6.88
+ },
+ {
+  "w": "BUILD",
+  "start": 6.95,
+  "end": 7.23
+ },
+ {
+  "w": "READS",
+  "start": 7.4,
+  "end": 7.66
+ },
+ {
+  "w": "ITS",
+  "start": 7.7,
+  "end": 7.81
+ },
+ {
+  "w": "OWN",
+  "start": 7.87,
+  "end": 8.03
+ },
+ {
+  "w": "ERRORS",
+  "start": 8.1,
+  "end": 8.52
+ },
+ {
+  "w": "AND",
+  "start": 8.58,
+  "end": 8.7
+ },
+ {
+  "w": "REPAIRS",
+  "start": 8.75,
+  "end": 9.11
+ },
+ {
+  "w": "THEM",
+  "start": 9.16,
+  "end": 9.36
+ },
+ {
+  "w": "YOUR",
+  "start": 9.85,
+  "end": 10.04
+ },
+ {
+  "w": "JOB",
+  "start": 10.1,
+  "end": 10.36
+ },
+ {
+  "w": "SHRINKS",
+  "start": 10.44,
+  "end": 10.77
+ },
+ {
+  "w": "TO",
+  "start": 10.82,
+  "end": 10.9
+ },
+ {
+  "w": "TWO",
+  "start": 10.99,
+  "end": 11.16
+ },
+ {
+  "w": "THINGS",
+  "start": 11.23,
+  "end": 11.57
+ },
+ {
+  "w": "DESCRIBING",
+  "start": 11.88,
+  "end": 12.4
+ },
+ {
+  "w": "WHAT",
+  "start": 12.43,
+  "end": 12.55
+ },
+ {
+  "w": "YOU",
+  "start": 12.59,
+  "end": 12.65
+ },
+ {
+  "w": "WANT",
+  "start": 12.7,
+  "end": 12.96
+ },
+ {
+  "w": "AND",
+  "start": 13.19,
+  "end": 13.35
+ },
+ {
+  "w": "TESTING",
+  "start": 13.42,
+  "end": 13.79
+ },
+ {
+  "w": "WHETHER",
+  "start": 13.91,
+  "end": 14.16
+ },
+ {
+  "w": "YOU",
+  "start": 14.2,
+  "end": 14.27
+ },
+ {
+  "w": "GOT",
+  "start": 14.34,
+  "end": 14.49
+ },
+ {
+  "w": "IT",
+  "start": 14.54,
+  "end": 14.66
+ }
+]

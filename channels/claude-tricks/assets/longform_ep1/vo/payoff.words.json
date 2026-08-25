@@ -1,0 +1,422 @@
+[
+ {
+  "w": "HERE'S",
+  "start": 0.0,
+  "end": 0.27
+ },
+ {
+  "w": "WHAT",
+  "start": 0.3,
+  "end": 0.41
+ },
+ {
+  "w": "I",
+  "start": 0.45,
+  "end": 0.48
+ },
+ {
+  "w": "PROMISED",
+  "start": 0.52,
+  "end": 0.95
+ },
+ {
+  "w": "THE",
+  "start": 1.22,
+  "end": 1.33
+ },
+ {
+  "w": "ENTIRE",
+  "start": 1.38,
+  "end": 1.83
+ },
+ {
+  "w": "BRIEF",
+  "start": 1.88,
+  "end": 2.15
+ },
+ {
+  "w": "THE",
+  "start": 2.19,
+  "end": 2.26
+ },
+ {
+  "w": "APP",
+  "start": 2.33,
+  "end": 2.48
+ },
+ {
+  "w": "WAS",
+  "start": 2.53,
+  "end": 2.62
+ },
+ {
+  "w": "BUILT",
+  "start": 2.68,
+  "end": 2.87
+ },
+ {
+  "w": "FROM",
+  "start": 2.89,
+  "end": 3.08
+ },
+ {
+  "w": "FIVE",
+  "start": 3.44,
+  "end": 3.7
+ },
+ {
+  "w": "LINES",
+  "start": 3.75,
+  "end": 4.1
+ },
+ {
+  "w": "SITTING",
+  "start": 4.26,
+  "end": 4.56
+ },
+ {
+  "w": "IN",
+  "start": 4.6,
+  "end": 4.64
+ },
+ {
+  "w": "THE",
+  "start": 4.67,
+  "end": 4.74
+ },
+ {
+  "w": "CODE",
+  "start": 4.79,
+  "end": 4.99
+ },
+ {
+  "w": "ITSELF",
+  "start": 5.03,
+  "end": 5.41
+ },
+ {
+  "w": "ONE",
+  "start": 5.97,
+  "end": 6.34
+ },
+ {
+  "w": "ASK",
+  "start": 6.61,
+  "end": 6.92
+ },
+ {
+  "w": "PERMISSION",
+  "start": 6.99,
+  "end": 7.4
+ },
+ {
+  "w": "TO",
+  "start": 7.44,
+  "end": 7.51
+ },
+ {
+  "w": "READ",
+  "start": 7.58,
+  "end": 7.74
+ },
+ {
+  "w": "THE",
+  "start": 7.78,
+  "end": 7.85
+ },
+ {
+  "w": "CALENDAR",
+  "start": 7.88,
+  "end": 8.32
+ },
+ {
+  "w": "TWO",
+  "start": 8.52,
+  "end": 8.84
+ },
+ {
+  "w": "ASK",
+  "start": 9.16,
+  "end": 9.45
+ },
+ {
+  "w": "PERMISSION",
+  "start": 9.51,
+  "end": 9.86
+ },
+ {
+  "w": "TO",
+  "start": 9.9,
+  "end": 9.96
+ },
+ {
+  "w": "SET",
+  "start": 10.02,
+  "end": 10.18
+ },
+ {
+  "w": "ALARMS",
+  "start": 10.25,
+  "end": 10.67
+ },
+ {
+  "w": "THREE",
+  "start": 10.97,
+  "end": 11.32
+ },
+ {
+  "w": "FIND",
+  "start": 11.49,
+  "end": 11.73
+ },
+ {
+  "w": "THE",
+  "start": 11.76,
+  "end": 11.83
+ },
+ {
+  "w": "MEETINGS",
+  "start": 11.85,
+  "end": 12.26
+ },
+ {
+  "w": "FOUR",
+  "start": 12.61,
+  "end": 12.93
+ },
+ {
+  "w": "SET",
+  "start": 13.26,
+  "end": 13.46
+ },
+ {
+  "w": "A",
+  "start": 13.51,
+  "end": 13.54
+ },
+ {
+  "w": "LOUD",
+  "start": 13.6,
+  "end": 13.84
+ },
+ {
+  "w": "SYSTEM",
+  "start": 13.88,
+  "end": 14.15
+ },
+ {
+  "w": "ALARM",
+  "start": 14.2,
+  "end": 14.52
+ },
+ {
+  "w": "BEFORE",
+  "start": 14.59,
+  "end": 14.9
+ },
+ {
+  "w": "EACH",
+  "start": 14.95,
+  "end": 15.13
+ },
+ {
+  "w": "ONE",
+  "start": 15.21,
+  "end": 15.46
+ },
+ {
+  "w": "FIVE",
+  "start": 15.76,
+  "end": 16.2
+ },
+ {
+  "w": "RE-SYNC",
+  "start": 16.57,
+  "end": 17.03
+ },
+ {
+  "w": "WHEN",
+  "start": 17.15,
+  "end": 17.34
+ },
+ {
+  "w": "MEETINGS",
+  "start": 17.4,
+  "end": 17.76
+ },
+ {
+  "w": "MOVE",
+  "start": 17.82,
+  "end": 18.18
+ },
+ {
+  "w": "PAUSE",
+  "start": 18.63,
+  "end": 18.95
+ },
+ {
+  "w": "HERE",
+  "start": 18.99,
+  "end": 19.25
+ },
+ {
+  "w": "AND",
+  "start": 19.31,
+  "end": 19.46
+ },
+ {
+  "w": "COPY",
+  "start": 19.54,
+  "end": 19.82
+ },
+ {
+  "w": "IT",
+  "start": 19.86,
+  "end": 20.02
+ },
+ {
+  "w": "THEN",
+  "start": 20.26,
+  "end": 20.47
+ },
+ {
+  "w": "CHANGE",
+  "start": 20.54,
+  "end": 20.83
+ },
+ {
+  "w": "LINE",
+  "start": 20.9,
+  "end": 21.15
+ },
+ {
+  "w": "THREE",
+  "start": 21.19,
+  "end": 21.5
+ },
+ {
+  "w": "TO",
+  "start": 21.62,
+  "end": 21.72
+ },
+ {
+  "w": "YOUR",
+  "start": 21.78,
+  "end": 21.9
+ },
+ {
+  "w": "PROBLEM",
+  "start": 21.95,
+  "end": 22.34
+ },
+ {
+  "w": "YOUR",
+  "start": 22.69,
+  "end": 22.86
+ },
+ {
+  "w": "MEDICINES",
+  "start": 22.92,
+  "end": 23.44
+ },
+ {
+  "w": "YOUR",
+  "start": 23.73,
+  "end": 23.89
+ },
+ {
+  "w": "INVOICES",
+  "start": 23.95,
+  "end": 24.57
+ },
+ {
+  "w": "YOUR",
+  "start": 24.81,
+  "end": 24.97
+ },
+ {
+  "w": "KID'S",
+  "start": 25.04,
+  "end": 25.27
+ },
+ {
+  "w": "SCHOOL",
+  "start": 25.3,
+  "end": 25.57
+ },
+ {
+  "w": "BUS",
+  "start": 25.62,
+  "end": 25.94
+ },
+ {
+  "w": "THE",
+  "start": 26.2,
+  "end": 26.32
+ },
+ {
+  "w": "STRUCTURE",
+  "start": 26.37,
+  "end": 26.75
+ },
+ {
+  "w": "IS",
+  "start": 26.78,
+  "end": 26.85
+ },
+ {
+  "w": "WHAT",
+  "start": 26.9,
+  "end": 27.05
+ },
+ {
+  "w": "MATTERS",
+  "start": 27.12,
+  "end": 27.54
+ },
+ {
+  "w": "A",
+  "start": 27.93,
+  "end": 28.0
+ },
+ {
+  "w": "PROBLEM",
+  "start": 28.07,
+  "end": 28.49
+ },
+ {
+  "w": "A",
+  "start": 28.7,
+  "end": 28.78
+ },
+ {
+  "w": "USER",
+  "start": 28.87,
+  "end": 29.25
+ },
+ {
+  "w": "AND",
+  "start": 29.35,
+  "end": 29.51
+ },
+ {
+  "w": "ONE",
+  "start": 29.59,
+  "end": 29.78
+ },
+ {
+  "w": "NON",
+  "start": 29.84,
+  "end": 30.01
+ },
+ {
+  "w": "NEGOTIABLE",
+  "start": 30.08,
+  "end": 30.59
+ },
+ {
+  "w": "RULE",
+  "start": 30.64,
+  "end": 30.94
+ }
+]

@@ -1,0 +1,192 @@
+[
+ {
+  "w": "IF",
+  "start": 0.0,
+  "end": 0.15
+ },
+ {
+  "w": "A",
+  "start": 0.2,
+  "end": 0.22
+ },
+ {
+  "w": "MEETINGS",
+  "start": 0.28,
+  "end": 0.6
+ },
+ {
+  "w": "APP",
+  "start": 0.69,
+  "end": 0.84
+ },
+ {
+  "w": "TAKES",
+  "start": 0.88,
+  "end": 1.07
+ },
+ {
+  "w": "ONE",
+  "start": 1.13,
+  "end": 1.28
+ },
+ {
+  "w": "MORNING",
+  "start": 1.31,
+  "end": 1.6
+ },
+ {
+  "w": "ASK",
+  "start": 1.87,
+  "end": 2.18
+ },
+ {
+  "w": "WHAT",
+  "start": 2.28,
+  "end": 2.44
+ },
+ {
+  "w": "ELSE",
+  "start": 2.48,
+  "end": 2.66
+ },
+ {
+  "w": "DOES",
+  "start": 2.68,
+  "end": 2.91
+ },
+ {
+  "w": "NEXT",
+  "start": 3.42,
+  "end": 3.66
+ },
+ {
+  "w": "VIDEO",
+  "start": 3.69,
+  "end": 4.03
+ },
+ {
+  "w": "I",
+  "start": 4.19,
+  "end": 4.25
+ },
+ {
+  "w": "CANCEL",
+  "start": 4.32,
+  "end": 4.6
+ },
+ {
+  "w": "MY",
+  "start": 4.66,
+  "end": 4.71
+ },
+ {
+  "w": "ENTIRE",
+  "start": 4.76,
+  "end": 5.13
+ },
+ {
+  "w": "PAID",
+  "start": 5.2,
+  "end": 5.53
+ },
+ {
+  "w": "CREATOR",
+  "start": 5.6,
+  "end": 5.99
+ },
+ {
+  "w": "STACK",
+  "start": 6.03,
+  "end": 6.34
+ },
+ {
+  "w": "AND",
+  "start": 6.57,
+  "end": 6.72
+ },
+ {
+  "w": "REPLACE",
+  "start": 6.78,
+  "end": 7.14
+ },
+ {
+  "w": "IT",
+  "start": 7.17,
+  "end": 7.23
+ },
+ {
+  "w": "WITH",
+  "start": 7.27,
+  "end": 7.41
+ },
+ {
+  "w": "FREE",
+  "start": 7.45,
+  "end": 7.67
+ },
+ {
+  "w": "AI",
+  "start": 7.73,
+  "end": 8.06
+ },
+ {
+  "w": "ONE",
+  "start": 8.3,
+  "end": 8.52
+ },
+ {
+  "w": "TOOL",
+  "start": 8.56,
+  "end": 8.75
+ },
+ {
+  "w": "AT",
+  "start": 8.8,
+  "end": 8.87
+ },
+ {
+  "w": "A",
+  "start": 8.9,
+  "end": 8.94
+ },
+ {
+  "w": "TIME",
+  "start": 8.99,
+  "end": 9.27
+ },
+ {
+  "w": "SUBSCRIBE",
+  "start": 9.69,
+  "end": 10.36
+ },
+ {
+  "w": "SO",
+  "start": 10.58,
+  "end": 10.69
+ },
+ {
+  "w": "YOU'RE",
+  "start": 10.74,
+  "end": 10.91
+ },
+ {
+  "w": "THERE",
+  "start": 10.94,
+  "end": 11.08
+ },
+ {
+  "w": "WHEN",
+  "start": 11.1,
+  "end": 11.2
+ },
+ {
+  "w": "IT",
+  "start": 11.24,
+  "end": 11.31
+ },
+ {
+  "w": "SHIPS",
+  "start": 11.36,
+  "end": 11.69
+ }
+]

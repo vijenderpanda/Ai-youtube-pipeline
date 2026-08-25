@@ -1,0 +1,60 @@
+//
+//  MeetingStore.swift
+//  MissNoMeetings
+//
+//  This file does all the real work:
+//   1. Asks permission to read your calendar (EventKit)
+//   2. Asks permission to set alarms (AlarmKit)
+//   3. Finds your meetings
+//   4. Sets a system alarm labelled "MEETING – <name>" before each one
+//   5. Re-syncs so alarms follow rescheduled meetings, and clears stale ones
+//
+
+import Foundation
+import SwiftUI
+import EventKit
+import AlarmKit
+
+// AlarmKit requires a metadata type. Ours is empty — we don't need extra data.
+nonisolated struct MeetingAlarmData: AlarmMetadata {
+    init() {}
+}
+
+/// One meeting from the calendar, plus whether we should alarm for it.
+struct Meeting: Identifiable, Equatable {
+    /// Unique per *occurrence* — see the note in `loadMeetings()` about repeats.
+    let id: String
+    /// The calendar's own event identifier. A repeating meeting shares one of
+    /// these across every occurrence, so this is what "important" is stored against.
+    let seriesID: String
+    let title: String
+    let start: Date
+    let notes: String
+    let attendees: [String]
+    var isImportant: Bool   // user ticked it (used in "important only" mode)
+    var alarmID: UUID?      // the AlarmKit alarm we created, if any
+
+    static func == (a: Meeting, b: Meeting) -> Bool {
+        a.id == b.id && a.isImportant == b.isImportant && a.alarmID == b.alarmID
+    }
+}
+
+/// How the user wants alarms set.
+enum AlarmMode: String, CaseIterable, Identifiable {
+    case allMeetings = "All meetings"
+    case importantOnly = "Important only"
+    var id: String { rawValue }
+}
+
+/// How loud the alarm announces itself. iOS decides the actual volume (it follows
+/// the ringer volume in Settings › Sounds & Haptics) — what the app *can* choose
+/// is which sound plays. "Gentle" is a soft chime we ship with the app.
+enum AlertStyle: String, CaseIterable, Identifiable {
+    case loud = "Standard"
+    case gentle = "Gentle"
+    var id: String { rawValue }
+}
+
+@MainActor
+final class MeetingStore: ObservableObject {
+

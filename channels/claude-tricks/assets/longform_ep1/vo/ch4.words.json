@@ -1,0 +1,387 @@
+[
+ {
+  "w": "WHICH",
+  "start": 0.0,
+  "end": 0.24
+ },
+ {
+  "w": "LEAVES",
+  "start": 0.33,
+  "end": 0.65
+ },
+ {
+  "w": "THE",
+  "start": 1.09,
+  "end": 1.23
+ },
+ {
+  "w": "BORING",
+  "start": 1.3,
+  "end": 1.64
+ },
+ {
+  "w": "WALL",
+  "start": 1.7,
+  "end": 1.97
+ },
+ {
+  "w": "SIGNING",
+  "start": 2.39,
+  "end": 2.84
+ },
+ {
+  "w": "ARCHIVE",
+  "start": 3.2,
+  "end": 3.89
+ },
+ {
+  "w": "APP",
+  "start": 4.16,
+  "end": 4.38
+ },
+ {
+  "w": "STORE",
+  "start": 4.45,
+  "end": 4.87
+ },
+ {
+  "w": "CONNECT",
+  "start": 4.95,
+  "end": 5.4
+ },
+ {
+  "w": "SCREENSHOTS",
+  "start": 5.72,
+  "end": 6.53
+ },
+ {
+  "w": "PRIVACY",
+  "start": 6.79,
+  "end": 7.26
+ },
+ {
+  "w": "QUESTIONS",
+  "start": 7.31,
+  "end": 7.8
+ },
+ {
+  "w": "EXPORT",
+  "start": 8.1,
+  "end": 8.56
+ },
+ {
+  "w": "COMPLIANCE",
+  "start": 8.6,
+  "end": 9.24
+ },
+ {
+  "w": "THIS",
+  "start": 9.64,
+  "end": 9.88
+ },
+ {
+  "w": "IS",
+  "start": 9.95,
+  "end": 10.11
+ },
+ {
+  "w": "WHERE",
+  "start": 10.18,
+  "end": 10.41
+ },
+ {
+  "w": "MOST",
+  "start": 10.47,
+  "end": 10.73
+ },
+ {
+  "w": "SIDE",
+  "start": 10.8,
+  "end": 11.08
+ },
+ {
+  "w": "PROJECTS",
+  "start": 11.13,
+  "end": 11.59
+ },
+ {
+  "w": "DIE",
+  "start": 11.63,
+  "end": 11.98
+ },
+ {
+  "w": "SO",
+  "start": 12.14,
+  "end": 12.29
+ },
+ {
+  "w": "WE",
+  "start": 12.39,
+  "end": 12.54
+ },
+ {
+  "w": "WENT",
+  "start": 12.62,
+  "end": 12.89
+ },
+ {
+  "w": "THROUGH",
+  "start": 12.95,
+  "end": 13.19
+ },
+ {
+  "w": "EVERY",
+  "start": 13.25,
+  "end": 13.51
+ },
+ {
+  "w": "SCREEN",
+  "start": 13.56,
+  "end": 13.93
+ },
+ {
+  "w": "THE",
+  "start": 14.16,
+  "end": 14.29
+ },
+ {
+  "w": "BUNDLE",
+  "start": 14.35,
+  "end": 14.7
+ },
+ {
+  "w": "ID",
+  "start": 14.77,
+  "end": 15.04
+ },
+ {
+  "w": "THE",
+  "start": 15.51,
+  "end": 15.64
+ },
+ {
+  "w": "PAYWALL",
+  "start": 15.71,
+  "end": 16.2
+ },
+ {
+  "w": "APPLE",
+  "start": 16.29,
+  "end": 16.62
+ },
+ {
+  "w": "WANTS",
+  "start": 16.67,
+  "end": 16.91
+ },
+ {
+  "w": "TO",
+  "start": 16.95,
+  "end": 17.02
+ },
+ {
+  "w": "SEE",
+  "start": 17.09,
+  "end": 17.37
+ },
+ {
+  "w": "THE",
+  "start": 17.73,
+  "end": 17.86
+ },
+ {
+  "w": "TESTFLIGHT",
+  "start": 17.9,
+  "end": 18.52
+ },
+ {
+  "w": "BUILD",
+  "start": 18.6,
+  "end": 18.95
+ },
+ {
+  "w": "THAT",
+  "start": 19.16,
+  "end": 19.38
+ },
+ {
+  "w": "PROCESSED",
+  "start": 19.45,
+  "end": 19.88
+ },
+ {
+  "w": "WHILE",
+  "start": 19.9,
+  "end": 20.07
+ },
+ {
+  "w": "I",
+  "start": 20.11,
+  "end": 20.13
+ },
+ {
+  "w": "MADE",
+  "start": 20.19,
+  "end": 20.38
+ },
+ {
+  "w": "TEA",
+  "start": 20.42,
+  "end": 20.65
+ },
+ {
+  "w": "BY",
+  "start": 21.13,
+  "end": 21.28
+ },
+ {
+  "w": "TWO",
+  "start": 21.34,
+  "end": 21.49
+ },
+ {
+  "w": "FORTY",
+  "start": 21.56,
+  "end": 21.8
+ },
+ {
+  "w": "SEVEN",
+  "start": 21.86,
+  "end": 22.12
+ },
+ {
+  "w": "IN",
+  "start": 22.16,
+  "end": 22.22
+ },
+ {
+  "w": "THE",
+  "start": 22.24,
+  "end": 22.33
+ },
+ {
+  "w": "AFTERNOON",
+  "start": 22.38,
+  "end": 22.87
+ },
+ {
+  "w": "THE",
+  "start": 23.14,
+  "end": 23.25
+ },
+ {
+  "w": "SHIP",
+  "start": 23.3,
+  "end": 23.52
+ },
+ {
+  "w": "BUILD",
+  "start": 23.59,
+  "end": 23.81
+ },
+ {
+  "w": "WAS",
+  "start": 23.85,
+  "end": 23.97
+ },
+ {
+  "w": "DONE",
+  "start": 24.04,
+  "end": 24.35
+ },
+ {
+  "w": "THREE",
+  "start": 24.65,
+  "end": 24.9
+ },
+ {
+  "w": "HOURS",
+  "start": 24.95,
+  "end": 25.25
+ },
+ {
+  "w": "AND",
+  "start": 25.29,
+  "end": 25.37
+ },
+ {
+  "w": "FORTY",
+  "start": 25.41,
+  "end": 25.66
+ },
+ {
+  "w": "EIGHT",
+  "start": 25.69,
+  "end": 25.83
+ },
+ {
+  "w": "MINUTES",
+  "start": 25.87,
+  "end": 26.19
+ },
+ {
+  "w": "FIRST",
+  "start": 26.38,
+  "end": 26.67
+ },
+ {
+  "w": "COMMIT",
+  "start": 26.71,
+  "end": 26.99
+ },
+ {
+  "w": "TO",
+  "start": 27.06,
+  "end": 27.13
+ },
+ {
+  "w": "FINAL",
+  "start": 27.2,
+  "end": 27.48
+ },
+ {
+  "w": "BUILD",
+  "start": 27.54,
+  "end": 27.83
+ },
+ {
+  "w": "THE",
+  "start": 28.05,
+  "end": 28.17
+ },
+ {
+  "w": "REVIEW",
+  "start": 28.25,
+  "end": 28.56
+ },
+ {
+  "w": "QUEUE",
+  "start": 28.63,
+  "end": 28.92
+ },
+ {
+  "w": "TOOK",
+  "start": 28.97,
+  "end": 29.15
+ },
+ {
+  "w": "CARE",
+  "start": 29.2,
+  "end": 29.4
+ },
+ {
+  "w": "OF",
+  "start": 29.43,
+  "end": 29.5
+ },
+ {
+  "w": "THE",
+  "start": 29.55,
+  "end": 29.62
+ },
+ {
+  "w": "REST",
+  "start": 29.66,
+  "end": 29.96
+ }
+]

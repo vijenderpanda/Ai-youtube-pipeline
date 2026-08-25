@@ -1,0 +1,547 @@
+[
+ {
+  "w": "MISSNOMEETINGS",
+  "start": 0.0,
+  "end": 0.65
+ },
+ {
+  "w": "STARTED",
+  "start": 0.67,
+  "end": 1.04
+ },
+ {
+  "w": "AS",
+  "start": 1.09,
+  "end": 1.18
+ },
+ {
+  "w": "A",
+  "start": 1.22,
+  "end": 1.24
+ },
+ {
+  "w": "PERSONAL",
+  "start": 1.33,
+  "end": 1.67
+ },
+ {
+  "w": "PROBLEM",
+  "start": 1.72,
+  "end": 2.08
+ },
+ {
+  "w": "MY",
+  "start": 2.44,
+  "end": 2.57
+ },
+ {
+  "w": "PHONE",
+  "start": 2.62,
+  "end": 2.95
+ },
+ {
+  "w": "BURIES",
+  "start": 3.0,
+  "end": 3.25
+ },
+ {
+  "w": "MEETING",
+  "start": 3.33,
+  "end": 3.59
+ },
+ {
+  "w": "INVITES",
+  "start": 3.62,
+  "end": 4.06
+ },
+ {
+  "w": "AND",
+  "start": 4.3,
+  "end": 4.42
+ },
+ {
+  "w": "I",
+  "start": 4.48,
+  "end": 4.5
+ },
+ {
+  "w": "KEPT",
+  "start": 4.6,
+  "end": 4.82
+ },
+ {
+  "w": "MISSING",
+  "start": 4.89,
+  "end": 5.17
+ },
+ {
+  "w": "CALLS",
+  "start": 5.22,
+  "end": 5.57
+ },
+ {
+  "w": "NOT",
+  "start": 5.86,
+  "end": 6.03
+ },
+ {
+  "w": "BECAUSE",
+  "start": 6.07,
+  "end": 6.32
+ },
+ {
+  "w": "I",
+  "start": 6.35,
+  "end": 6.37
+ },
+ {
+  "w": "WAS",
+  "start": 6.43,
+  "end": 6.54
+ },
+ {
+  "w": "BUSY",
+  "start": 6.62,
+  "end": 6.94
+ },
+ {
+  "w": "BECAUSE",
+  "start": 7.23,
+  "end": 7.52
+ },
+ {
+  "w": "THE",
+  "start": 7.55,
+  "end": 7.62
+ },
+ {
+  "w": "REMINDER",
+  "start": 7.69,
+  "end": 8.19
+ },
+ {
+  "w": "FIRED",
+  "start": 8.3,
+  "end": 8.64
+ },
+ {
+  "w": "ON",
+  "start": 8.67,
+  "end": 8.74
+ },
+ {
+  "w": "MY",
+  "start": 8.79,
+  "end": 8.86
+ },
+ {
+  "w": "LAPTOP",
+  "start": 8.93,
+  "end": 9.38
+ },
+ {
+  "w": "IN",
+  "start": 9.62,
+  "end": 9.74
+ },
+ {
+  "w": "ANOTHER",
+  "start": 9.79,
+  "end": 10.07
+ },
+ {
+  "w": "ROOM",
+  "start": 10.1,
+  "end": 10.29
+ },
+ {
+  "w": "SO",
+  "start": 10.81,
+  "end": 10.98
+ },
+ {
+  "w": "I",
+  "start": 11.1,
+  "end": 11.21
+ },
+ {
+  "w": "DIDN'T",
+  "start": 11.39,
+  "end": 11.62
+ },
+ {
+  "w": "OPEN",
+  "start": 11.68,
+  "end": 11.9
+ },
+ {
+  "w": "A",
+  "start": 11.95,
+  "end": 11.97
+ },
+ {
+  "w": "DESIGN",
+  "start": 12.04,
+  "end": 12.39
+ },
+ {
+  "w": "TOOL",
+  "start": 12.42,
+  "end": 12.7
+ },
+ {
+  "w": "I",
+  "start": 12.89,
+  "end": 12.96
+ },
+ {
+  "w": "DIDN'T",
+  "start": 13.11,
+  "end": 13.36
+ },
+ {
+  "w": "WRITE",
+  "start": 13.4,
+  "end": 13.6
+ },
+ {
+  "w": "A",
+  "start": 13.63,
+  "end": 13.65
+ },
+ {
+  "w": "SPEC",
+  "start": 13.69,
+  "end": 13.91
+ },
+ {
+  "w": "DOCUMENT",
+  "start": 13.97,
+  "end": 14.38
+ },
+ {
+  "w": "I",
+  "start": 14.51,
+  "end": 14.57
+ },
+ {
+  "w": "OPENED",
+  "start": 14.69,
+  "end": 14.96
+ },
+ {
+  "w": "CLAUDE",
+  "start": 15.01,
+  "end": 15.3
+ },
+ {
+  "w": "CODE",
+  "start": 15.34,
+  "end": 15.58
+ },
+ {
+  "w": "AND",
+  "start": 15.6,
+  "end": 15.67
+ },
+ {
+  "w": "DESCRIBED",
+  "start": 15.72,
+  "end": 16.11
+ },
+ {
+  "w": "THE",
+  "start": 16.14,
+  "end": 16.21
+ },
+ {
+  "w": "APP",
+  "start": 16.28,
+  "end": 16.46
+ },
+ {
+  "w": "IN",
+  "start": 16.51,
+  "end": 16.57
+ },
+ {
+  "w": "PLAIN",
+  "start": 16.61,
+  "end": 16.83
+ },
+ {
+  "w": "ENGLISH",
+  "start": 16.88,
+  "end": 17.18
+ },
+ {
+  "w": "WHAT",
+  "start": 17.47,
+  "end": 17.66
+ },
+ {
+  "w": "IT",
+  "start": 17.7,
+  "end": 17.75
+ },
+ {
+  "w": "SHOULD",
+  "start": 17.77,
+  "end": 17.95
+ },
+ {
+  "w": "DO",
+  "start": 17.98,
+  "end": 18.14
+ },
+ {
+  "w": "WHO",
+  "start": 18.27,
+  "end": 18.45
+ },
+ {
+  "w": "IT'S",
+  "start": 18.48,
+  "end": 18.61
+ },
+ {
+  "w": "FOR",
+  "start": 18.66,
+  "end": 18.9
+ },
+ {
+  "w": "AND",
+  "start": 19.14,
+  "end": 19.28
+ },
+ {
+  "w": "THE",
+  "start": 19.32,
+  "end": 19.39
+ },
+ {
+  "w": "ONE",
+  "start": 19.45,
+  "end": 19.6
+ },
+ {
+  "w": "RULE",
+  "start": 19.63,
+  "end": 19.81
+ },
+ {
+  "w": "THAT",
+  "start": 19.83,
+  "end": 19.93
+ },
+ {
+  "w": "MATTERED",
+  "start": 19.99,
+  "end": 20.34
+ },
+ {
+  "w": "THE",
+  "start": 20.67,
+  "end": 20.77
+ },
+ {
+  "w": "ALARM",
+  "start": 20.83,
+  "end": 21.14
+ },
+ {
+  "w": "RINGS",
+  "start": 21.2,
+  "end": 21.41
+ },
+ {
+  "w": "ON",
+  "start": 21.44,
+  "end": 21.5
+ },
+ {
+  "w": "THE",
+  "start": 21.54,
+  "end": 21.61
+ },
+ {
+  "w": "PHONE",
+  "start": 21.65,
+  "end": 22.01
+ },
+ {
+  "w": "LOUDLY",
+  "start": 22.28,
+  "end": 22.67
+ },
+ {
+  "w": "EVEN",
+  "start": 22.94,
+  "end": 23.15
+ },
+ {
+  "w": "WHEN",
+  "start": 23.18,
+  "end": 23.29
+ },
+ {
+  "w": "THE",
+  "start": 23.32,
+  "end": 23.39
+ },
+ {
+  "w": "APP",
+  "start": 23.45,
+  "end": 23.6
+ },
+ {
+  "w": "IS",
+  "start": 23.65,
+  "end": 23.72
+ },
+ {
+  "w": "CLOSED",
+  "start": 23.77,
+  "end": 24.12
+ },
+ {
+  "w": "THAT",
+  "start": 24.59,
+  "end": 24.78
+ },
+ {
+  "w": "DESCRIPTION",
+  "start": 24.82,
+  "end": 25.23
+ },
+ {
+  "w": "BECAME",
+  "start": 25.29,
+  "end": 25.55
+ },
+ {
+  "w": "THE",
+  "start": 25.58,
+  "end": 25.65
+ },
+ {
+  "w": "ENTIRE",
+  "start": 25.68,
+  "end": 25.98
+ },
+ {
+  "w": "PRODUCT",
+  "start": 26.03,
+  "end": 26.33
+ },
+ {
+  "w": "BRIEF",
+  "start": 26.37,
+  "end": 26.62
+ },
+ {
+  "w": "FIVE",
+  "start": 26.85,
+  "end": 27.11
+ },
+ {
+  "w": "LINES",
+  "start": 27.16,
+  "end": 27.45
+ },
+ {
+  "w": "YOU'LL",
+  "start": 27.63,
+  "end": 27.83
+ },
+ {
+  "w": "SEE",
+  "start": 27.86,
+  "end": 27.97
+ },
+ {
+  "w": "THEM",
+  "start": 28.0,
+  "end": 28.12
+ },
+ {
+  "w": "AT",
+  "start": 28.15,
+  "end": 28.21
+ },
+ {
+  "w": "THE",
+  "start": 28.24,
+  "end": 28.3
+ },
+ {
+  "w": "END",
+  "start": 28.35,
+  "end": 28.54
+ },
+ {
+  "w": "COPY",
+  "start": 28.82,
+  "end": 29.14
+ },
+ {
+  "w": "THEM",
+  "start": 29.2,
+  "end": 29.39
+ },
+ {
+  "w": "CHANGE",
+  "start": 29.65,
+  "end": 29.95
+ },
+ {
+  "w": "ONE",
+  "start": 30.01,
+  "end": 30.15
+ },
+ {
+  "w": "LINE",
+  "start": 30.19,
+  "end": 30.41
+ },
+ {
+  "w": "AND",
+  "start": 30.45,
+  "end": 30.53
+ },
+ {
+  "w": "IT",
+  "start": 30.58,
+  "end": 30.63
+ },
+ {
+  "w": "BECOMES",
+  "start": 30.67,
+  "end": 30.96
+ },
+ {
+  "w": "YOUR",
+  "start": 31.0,
+  "end": 31.1
+ },
+ {
+  "w": "APP",
+  "start": 31.16,
+  "end": 31.36
+ },
+ {
+  "w": "INSTEAD",
+  "start": 31.42,
+  "end": 31.7
+ },
+ {
+  "w": "OF",
+  "start": 31.73,
+  "end": 31.79
+ },
+ {
+  "w": "MINE",
+  "start": 31.86,
+  "end": 32.15
+ }
+]

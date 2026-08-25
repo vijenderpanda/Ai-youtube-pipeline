@@ -1,0 +1,507 @@
+[
+ {
+  "w": "FIRST",
+  "start": 0.0,
+  "end": 0.48
+ },
+ {
+  "w": "RUN",
+  "start": 0.65,
+  "end": 0.82
+ },
+ {
+  "w": "IN",
+  "start": 0.88,
+  "end": 0.93
+ },
+ {
+  "w": "THE",
+  "start": 0.95,
+  "end": 1.02
+ },
+ {
+  "w": "SIMULATOR",
+  "start": 1.04,
+  "end": 1.59
+ },
+ {
+  "w": "THE",
+  "start": 1.95,
+  "end": 2.08
+ },
+ {
+  "w": "MEETING",
+  "start": 2.14,
+  "end": 2.4
+ },
+ {
+  "w": "LIST",
+  "start": 2.46,
+  "end": 2.66
+ },
+ {
+  "w": "IS",
+  "start": 2.71,
+  "end": 2.81
+ },
+ {
+  "w": "REAL",
+  "start": 2.93,
+  "end": 3.26
+ },
+ {
+  "w": "THE",
+  "start": 3.55,
+  "end": 3.69
+ },
+ {
+  "w": "TIMER",
+  "start": 3.76,
+  "end": 4.04
+ },
+ {
+  "w": "COUNTS",
+  "start": 4.11,
+  "end": 4.5
+ },
+ {
+  "w": "THE",
+  "start": 4.76,
+  "end": 4.89
+ },
+ {
+  "w": "ALERT",
+  "start": 4.96,
+  "end": 5.28
+ },
+ {
+  "w": "FIRES",
+  "start": 5.34,
+  "end": 5.77
+ },
+ {
+  "w": "BUT",
+  "start": 6.29,
+  "end": 6.54
+ },
+ {
+  "w": "A",
+  "start": 6.61,
+  "end": 6.64
+ },
+ {
+  "w": "SIMULATOR",
+  "start": 6.72,
+  "end": 7.2
+ },
+ {
+  "w": "PROVES",
+  "start": 7.28,
+  "end": 7.63
+ },
+ {
+  "w": "NOTHING",
+  "start": 7.72,
+  "end": 8.07
+ },
+ {
+  "w": "ABOUT",
+  "start": 8.13,
+  "end": 8.41
+ },
+ {
+  "w": "THE",
+  "start": 8.45,
+  "end": 8.53
+ },
+ {
+  "w": "THING",
+  "start": 8.59,
+  "end": 8.8
+ },
+ {
+  "w": "THAT",
+  "start": 8.86,
+  "end": 9.03
+ },
+ {
+  "w": "MATTERED",
+  "start": 9.11,
+  "end": 9.53
+ },
+ {
+  "w": "THE",
+  "start": 9.82,
+  "end": 9.95
+ },
+ {
+  "w": "ALARM",
+  "start": 10.03,
+  "end": 10.45
+ },
+ {
+  "w": "ON",
+  "start": 10.53,
+  "end": 10.66
+ },
+ {
+  "w": "A",
+  "start": 10.7,
+  "end": 10.73
+ },
+ {
+  "w": "LOCKED",
+  "start": 10.81,
+  "end": 11.15
+ },
+ {
+  "w": "PHONE",
+  "start": 11.19,
+  "end": 11.56
+ },
+ {
+  "w": "SO",
+  "start": 11.84,
+  "end": 12.13
+ },
+ {
+  "w": "REAL",
+  "start": 12.59,
+  "end": 12.83
+ },
+ {
+  "w": "DEVICE",
+  "start": 12.88,
+  "end": 13.4
+ },
+ {
+  "w": "THIS",
+  "start": 13.84,
+  "end": 14.04
+ },
+ {
+  "w": "IS",
+  "start": 14.08,
+  "end": 14.16
+ },
+ {
+  "w": "THE",
+  "start": 14.21,
+  "end": 14.28
+ },
+ {
+  "w": "PART",
+  "start": 14.33,
+  "end": 14.63
+ },
+ {
+  "w": "EVERY",
+  "start": 14.69,
+  "end": 14.99
+ },
+ {
+  "w": "TUTORIAL",
+  "start": 15.04,
+  "end": 15.48
+ },
+ {
+  "w": "SKIPS",
+  "start": 15.55,
+  "end": 15.94
+ },
+ {
+  "w": "DEVELOPER",
+  "start": 16.29,
+  "end": 16.72
+ },
+ {
+  "w": "MODE",
+  "start": 16.75,
+  "end": 17.09
+ },
+ {
+  "w": "THE",
+  "start": 17.18,
+  "end": 17.31
+ },
+ {
+  "w": "TRUST",
+  "start": 17.36,
+  "end": 17.66
+ },
+ {
+  "w": "DIALOG",
+  "start": 17.69,
+  "end": 18.17
+ },
+ {
+  "w": "THE",
+  "start": 18.41,
+  "end": 18.55
+ },
+ {
+  "w": "PHONE",
+  "start": 18.6,
+  "end": 18.92
+ },
+ {
+  "w": "THAT",
+  "start": 18.95,
+  "end": 19.05
+ },
+ {
+  "w": "REFUSES",
+  "start": 19.11,
+  "end": 19.54
+ },
+ {
+  "w": "TO",
+  "start": 19.57,
+  "end": 19.63
+ },
+ {
+  "w": "SHOW",
+  "start": 19.69,
+  "end": 19.85
+ },
+ {
+  "w": "UP",
+  "start": 19.91,
+  "end": 20.0
+ },
+ {
+  "w": "TWICE",
+  "start": 20.05,
+  "end": 20.36
+ },
+ {
+  "w": "BEFORE",
+  "start": 20.4,
+  "end": 20.65
+ },
+ {
+  "w": "IT",
+  "start": 20.69,
+  "end": 20.76
+ },
+ {
+  "w": "CONNECTS",
+  "start": 20.79,
+  "end": 21.22
+ },
+ {
+  "w": "IT",
+  "start": 21.76,
+  "end": 21.89
+ },
+ {
+  "w": "REJECTED",
+  "start": 21.93,
+  "end": 22.33
+ },
+ {
+  "w": "MY",
+  "start": 22.37,
+  "end": 22.45
+ },
+ {
+  "w": "IPHONE",
+  "start": 22.51,
+  "end": 22.95
+ },
+ {
+  "w": "CLAUDE",
+  "start": 23.28,
+  "end": 23.63
+ },
+ {
+  "w": "READ",
+  "start": 23.66,
+  "end": 23.82
+ },
+ {
+  "w": "THE",
+  "start": 23.86,
+  "end": 23.93
+ },
+ {
+  "w": "ERROR",
+  "start": 24.0,
+  "end": 24.3
+ },
+ {
+  "w": "TOLD",
+  "start": 24.62,
+  "end": 24.86
+ },
+ {
+  "w": "ME",
+  "start": 24.89,
+  "end": 24.97
+ },
+ {
+  "w": "THE",
+  "start": 25.01,
+  "end": 25.08
+ },
+ {
+  "w": "EXACT",
+  "start": 25.12,
+  "end": 25.51
+ },
+ {
+  "w": "SETTING",
+  "start": 25.55,
+  "end": 25.87
+ },
+ {
+  "w": "BURIED",
+  "start": 25.93,
+  "end": 26.2
+ },
+ {
+  "w": "IN",
+  "start": 26.24,
+  "end": 26.29
+ },
+ {
+  "w": "PRIVACY",
+  "start": 26.37,
+  "end": 26.88
+ },
+ {
+  "w": "AND",
+  "start": 26.93,
+  "end": 27.0
+ },
+ {
+  "w": "SECURITY",
+  "start": 27.05,
+  "end": 27.57
+ },
+ {
+  "w": "AND",
+  "start": 27.7,
+  "end": 27.84
+ },
+ {
+  "w": "THE",
+  "start": 27.89,
+  "end": 27.96
+ },
+ {
+  "w": "THIRD",
+  "start": 28.0,
+  "end": 28.21
+ },
+ {
+  "w": "ATTEMPT",
+  "start": 28.25,
+  "end": 28.56
+ },
+ {
+  "w": "WENT",
+  "start": 28.62,
+  "end": 28.8
+ },
+ {
+  "w": "THROUGH",
+  "start": 28.84,
+  "end": 29.09
+ },
+ {
+  "w": "THE",
+  "start": 29.4,
+  "end": 29.52
+ },
+ {
+  "w": "ALARM",
+  "start": 29.58,
+  "end": 29.87
+ },
+ {
+  "w": "RANG",
+  "start": 29.93,
+  "end": 30.14
+ },
+ {
+  "w": "ON",
+  "start": 30.2,
+  "end": 30.27
+ },
+ {
+  "w": "A",
+  "start": 30.31,
+  "end": 30.34
+ },
+ {
+  "w": "LOCKED",
+  "start": 30.42,
+  "end": 30.77
+ },
+ {
+  "w": "PHONE",
+  "start": 30.81,
+  "end": 31.11
+ },
+ {
+  "w": "AT",
+  "start": 31.16,
+  "end": 31.27
+ },
+ {
+  "w": "FULL",
+  "start": 31.34,
+  "end": 31.57
+ },
+ {
+  "w": "VOLUME",
+  "start": 31.62,
+  "end": 32.1
+ },
+ {
+  "w": "FIVE",
+  "start": 32.38,
+  "end": 32.63
+ },
+ {
+  "w": "MINUTES",
+  "start": 32.67,
+  "end": 32.92
+ },
+ {
+  "w": "BEFORE",
+  "start": 32.97,
+  "end": 33.23
+ },
+ {
+  "w": "A",
+  "start": 33.27,
+  "end": 33.3
+ },
+ {
+  "w": "MEETING",
+  "start": 33.34,
+  "end": 33.68
+ },
+ {
+  "w": "I",
+  "start": 33.77,
+  "end": 33.83
+ },
+ {
+  "w": "WOULD",
+  "start": 33.9,
+  "end": 34.06
+ },
+ {
+  "w": "HAVE",
+  "start": 34.13,
+  "end": 34.27
+ },
+ {
+  "w": "MISSED",
+  "start": 34.32,
+  "end": 34.63
+ }
+]

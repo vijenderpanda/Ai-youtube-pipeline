@@ -1,0 +1,42 @@
+I'll check for connected iOS devices.
+
+----
+
+Yes — your iPhone is connected:
+
+- **Vijender's iPhone** (iPhone 14), state: `connected (no DDI)`
+
+The "no DDI" note means the Developer Disk Image isn't mounted yet, so you can't deploy/debug to it until that's prepared. It usually resolves by unlocking the phone and trusting the Mac, or opening the device once in Xcode (Window → Devices and Simulators) so it finishes "Preparing device for development." Want me to try preparing it with `devicectl` or build the app for the device?
+
+----
+
+**Blocker: Developer Mode is disabled on your iPhone** — that's why it shows "no DDI". This can only be enabled on the phone itself (Apple requires a physical toggle + reboot + passcode), so I can't do it from here.
+
+On your iPhone:
+1. Open **Settings → Privacy & Security → Developer Mode** and turn it on.
+   - If Developer Mode doesn't appear there yet, keep the phone plugged in and unlocked; it appears after Xcode/the Mac attempts a connection.
+2. The phone will restart. After reboot, confirm **Turn On** and enter your passcode.
+3. Unlock the phone and tap **Trust** if prompted.
+
+Tell me when that's done and I'll verify the connection and build & install MissNoMeetings onto your iPhone.
+
+----
+
+Device is fully connected now. Building the app for it:
+
+----
+
+The iPhone is still showing as **unavailable** to the Mac. Everything on the software side is ready (Developer Mode on, paired, Apple ID signed in) — this looks physical. Can you check:
+
+1. The phone is **plugged in** and the cable is seated (try re-plugging, or a different port/cable).
+2. The phone is **unlocked**, and tap **Trust** if a prompt appears.
+
+Once it shows connected again I'll continue — the remaining steps are automatic (Xcode registers the device with your team, then I build and install).
+
+----
+
+Done — **MissNoMeetings is installed and running on your iPhone.** 🎉
+
+What it took: registered the device with your developer team during the build (`-allowProvisioningDeviceRegistration`), built the Debug configuration signed with your team `3687DC377Y`, installed with `devicectl`, and launched it. It should be on your screen now.
+
+Since you have a paid developer account, the install won't expire. One heads-up: the bundle ID is still the placeholder `com.yourname.MissNoMeetings` — worth changing to something real (e.g. `com.vijender.missnomeetings`) before any TestFlight/App Store step. Happy to do that if you want.

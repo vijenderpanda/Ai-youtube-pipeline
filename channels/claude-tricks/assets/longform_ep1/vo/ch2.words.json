@@ -1,0 +1,672 @@
+[
+ {
+  "w": "NOW",
+  "start": 0.0,
+  "end": 0.19
+ },
+ {
+  "w": "WATCH",
+  "start": 0.26,
+  "end": 0.46
+ },
+ {
+  "w": "WHAT",
+  "start": 0.5,
+  "end": 0.63
+ },
+ {
+  "w": "HAPPENS",
+  "start": 0.67,
+  "end": 0.97
+ },
+ {
+  "w": "TO",
+  "start": 1.02,
+  "end": 1.08
+ },
+ {
+  "w": "THOSE",
+  "start": 1.14,
+  "end": 1.31
+ },
+ {
+  "w": "FIVE",
+  "start": 1.35,
+  "end": 1.58
+ },
+ {
+  "w": "LINES",
+  "start": 1.62,
+  "end": 1.93
+ },
+ {
+  "w": "AT",
+  "start": 2.39,
+  "end": 2.59
+ },
+ {
+  "w": "TEN",
+  "start": 2.66,
+  "end": 2.9
+ },
+ {
+  "w": "FIFTY",
+  "start": 2.97,
+  "end": 3.24
+ },
+ {
+  "w": "NINE",
+  "start": 3.3,
+  "end": 3.47
+ },
+ {
+  "w": "IN",
+  "start": 3.51,
+  "end": 3.55
+ },
+ {
+  "w": "THE",
+  "start": 3.58,
+  "end": 3.65
+ },
+ {
+  "w": "MORNING",
+  "start": 3.68,
+  "end": 3.99
+ },
+ {
+  "w": "THE",
+  "start": 4.21,
+  "end": 4.34
+ },
+ {
+  "w": "FIRST",
+  "start": 4.43,
+  "end": 4.77
+ },
+ {
+  "w": "COMMIT",
+  "start": 4.92,
+  "end": 5.34
+ },
+ {
+  "w": "LANDS",
+  "start": 5.46,
+  "end": 5.85
+ },
+ {
+  "w": "A",
+  "start": 6.33,
+  "end": 6.41
+ },
+ {
+  "w": "COMPLETE",
+  "start": 6.5,
+  "end": 7.0
+ },
+ {
+  "w": "XCODE",
+  "start": 7.08,
+  "end": 7.65
+ },
+ {
+  "w": "PROJECT",
+  "start": 7.69,
+  "end": 8.15
+ },
+ {
+  "w": "SWIFT",
+  "start": 8.54,
+  "end": 8.95
+ },
+ {
+  "w": "FILES",
+  "start": 9.04,
+  "end": 9.57
+ },
+ {
+  "w": "WHICH",
+  "start": 9.85,
+  "end": 10.07
+ },
+ {
+  "w": "I",
+  "start": 10.12,
+  "end": 10.16
+ },
+ {
+  "w": "DON'T",
+  "start": 10.28,
+  "end": 10.52
+ },
+ {
+  "w": "WRITE",
+  "start": 10.55,
+  "end": 10.94
+ },
+ {
+  "w": "CALENDAR",
+  "start": 11.19,
+  "end": 11.67
+ },
+ {
+  "w": "PERMISSIONS",
+  "start": 11.73,
+  "end": 12.34
+ },
+ {
+  "w": "ALARM",
+  "start": 12.67,
+  "end": 13.07
+ },
+ {
+  "w": "SCHEDULING",
+  "start": 13.13,
+  "end": 13.64
+ },
+ {
+  "w": "ALL",
+  "start": 13.75,
+  "end": 13.97
+ },
+ {
+  "w": "OF",
+  "start": 14.03,
+  "end": 14.07
+ },
+ {
+  "w": "IT",
+  "start": 14.14,
+  "end": 14.3
+ },
+ {
+  "w": "GENERATED",
+  "start": 14.51,
+  "end": 15.14
+ },
+ {
+  "w": "COMPILED",
+  "start": 15.46,
+  "end": 16.09
+ },
+ {
+  "w": "AND",
+  "start": 16.17,
+  "end": 16.32
+ },
+ {
+  "w": "FIXED",
+  "start": 16.4,
+  "end": 16.68
+ },
+ {
+  "w": "WHEN",
+  "start": 16.72,
+  "end": 16.86
+ },
+ {
+  "w": "IT",
+  "start": 16.89,
+  "end": 16.95
+ },
+ {
+  "w": "BREAKS",
+  "start": 17.0,
+  "end": 17.38
+ },
+ {
+  "w": "AND",
+  "start": 17.87,
+  "end": 18.08
+ },
+ {
+  "w": "THINGS",
+  "start": 18.16,
+  "end": 18.44
+ },
+ {
+  "w": "DID",
+  "start": 18.48,
+  "end": 18.63
+ },
+ {
+  "w": "BREAK",
+  "start": 18.68,
+  "end": 19.0
+ },
+ {
+  "w": "A",
+  "start": 19.3,
+  "end": 19.36
+ },
+ {
+  "w": "RECURRING",
+  "start": 19.48,
+  "end": 19.9
+ },
+ {
+  "w": "EVENT",
+  "start": 19.95,
+  "end": 20.22
+ },
+ {
+  "w": "CRASHED",
+  "start": 20.29,
+  "end": 20.65
+ },
+ {
+  "w": "THE",
+  "start": 20.68,
+  "end": 20.76
+ },
+ {
+  "w": "APP",
+  "start": 20.82,
+  "end": 21.05
+ },
+ {
+  "w": "ALARMS",
+  "start": 21.37,
+  "end": 21.86
+ },
+ {
+  "w": "LEAKED",
+  "start": 21.93,
+  "end": 22.19
+ },
+ {
+  "w": "ACROSS",
+  "start": 22.22,
+  "end": 22.59
+ },
+ {
+  "w": "LAUNCHES",
+  "start": 22.67,
+  "end": 23.14
+ },
+ {
+  "w": "APPLE",
+  "start": 23.46,
+  "end": 23.79
+ },
+ {
+  "w": "CAPS",
+  "start": 23.82,
+  "end": 24.09
+ },
+ {
+  "w": "SYSTEM",
+  "start": 24.11,
+  "end": 24.41
+ },
+ {
+  "w": "ALARMS",
+  "start": 24.47,
+  "end": 24.87
+ },
+ {
+  "w": "AT",
+  "start": 24.91,
+  "end": 25.01
+ },
+ {
+  "w": "FIFTY",
+  "start": 25.05,
+  "end": 25.46
+ },
+ {
+  "w": "AND",
+  "start": 25.67,
+  "end": 25.81
+ },
+ {
+  "w": "WE",
+  "start": 25.88,
+  "end": 25.97
+ },
+ {
+  "w": "HIT",
+  "start": 26.03,
+  "end": 26.18
+ },
+ {
+  "w": "THE",
+  "start": 26.21,
+  "end": 26.29
+ },
+ {
+  "w": "CAP",
+  "start": 26.33,
+  "end": 26.61
+ },
+ {
+  "w": "HERE'S",
+  "start": 27.12,
+  "end": 27.39
+ },
+ {
+  "w": "THE",
+  "start": 27.42,
+  "end": 27.49
+ },
+ {
+  "w": "LOOP",
+  "start": 27.56,
+  "end": 27.82
+ },
+ {
+  "w": "THAT",
+  "start": 27.91,
+  "end": 28.1
+ },
+ {
+  "w": "FIXED",
+  "start": 28.15,
+  "end": 28.4
+ },
+ {
+  "w": "EVERY",
+  "start": 28.48,
+  "end": 28.75
+ },
+ {
+  "w": "ONE",
+  "start": 28.8,
+  "end": 28.93
+ },
+ {
+  "w": "OF",
+  "start": 28.95,
+  "end": 29.02
+ },
+ {
+  "w": "THEM",
+  "start": 29.07,
+  "end": 29.27
+ },
+ {
+  "w": "RUN",
+  "start": 29.59,
+  "end": 29.8
+ },
+ {
+  "w": "THE",
+  "start": 29.86,
+  "end": 29.94
+ },
+ {
+  "w": "APP",
+  "start": 30.0,
+  "end": 30.25
+ },
+ {
+  "w": "HIT",
+  "start": 30.45,
+  "end": 30.65
+ },
+ {
+  "w": "THE",
+  "start": 30.7,
+  "end": 30.77
+ },
+ {
+  "w": "BUG",
+  "start": 30.81,
+  "end": 31.08
+ },
+ {
+  "w": "PASTE",
+  "start": 31.4,
+  "end": 31.71
+ },
+ {
+  "w": "WHAT",
+  "start": 31.73,
+  "end": 31.86
+ },
+ {
+  "w": "YOU",
+  "start": 31.89,
+  "end": 31.96
+ },
+ {
+  "w": "SEE",
+  "start": 32.02,
+  "end": 32.19
+ },
+ {
+  "w": "BACK",
+  "start": 32.27,
+  "end": 32.5
+ },
+ {
+  "w": "INTO",
+  "start": 32.54,
+  "end": 32.68
+ },
+ {
+  "w": "CLAUDE",
+  "start": 32.73,
+  "end": 33.12
+ },
+ {
+  "w": "IT",
+  "start": 33.35,
+  "end": 33.48
+ },
+ {
+  "w": "READS",
+  "start": 33.53,
+  "end": 33.72
+ },
+ {
+  "w": "ITS",
+  "start": 33.75,
+  "end": 33.87
+ },
+ {
+  "w": "OWN",
+  "start": 33.92,
+  "end": 34.09
+ },
+ {
+  "w": "ERROR",
+  "start": 34.14,
+  "end": 34.45
+ },
+ {
+  "w": "PATCHES",
+  "start": 34.63,
+  "end": 34.99
+ },
+ {
+  "w": "THE",
+  "start": 35.03,
+  "end": 35.1
+ },
+ {
+  "w": "CODE",
+  "start": 35.15,
+  "end": 35.43
+ },
+ {
+  "w": "AND",
+  "start": 35.48,
+  "end": 35.61
+ },
+ {
+  "w": "BUILDS",
+  "start": 35.66,
+  "end": 35.91
+ },
+ {
+  "w": "AGAIN",
+  "start": 35.94,
+  "end": 36.26
+ },
+ {
+  "w": "LOOK",
+  "start": 36.76,
+  "end": 36.95
+ },
+ {
+  "w": "AT",
+  "start": 37.01,
+  "end": 37.08
+ },
+ {
+  "w": "THE",
+  "start": 37.13,
+  "end": 37.2
+ },
+ {
+  "w": "COMMIT",
+  "start": 37.26,
+  "end": 37.58
+ },
+ {
+  "w": "LOG",
+  "start": 37.66,
+  "end": 37.95
+ },
+ {
+  "w": "ELEVEN",
+  "start": 38.29,
+  "end": 38.65
+ },
+ {
+  "w": "OH",
+  "start": 38.71,
+  "end": 38.79
+ },
+ {
+  "w": "TWO",
+  "start": 38.82,
+  "end": 39.03
+ },
+ {
+  "w": "RECURRING",
+  "start": 39.32,
+  "end": 39.77
+ },
+ {
+  "w": "CRASH",
+  "start": 39.83,
+  "end": 40.22
+ },
+ {
+  "w": "FIXED",
+  "start": 40.3,
+  "end": 40.67
+ },
+ {
+  "w": "ELEVEN",
+  "start": 40.99,
+  "end": 41.35
+ },
+ {
+  "w": "FORTY",
+  "start": 41.42,
+  "end": 41.67
+ },
+ {
+  "w": "THREE",
+  "start": 41.71,
+  "end": 41.98
+ },
+ {
+  "w": "THE",
+  "start": 42.19,
+  "end": 42.29
+ },
+ {
+  "w": "ALARM",
+  "start": 42.34,
+  "end": 42.64
+ },
+ {
+  "w": "CAP",
+  "start": 42.71,
+  "end": 42.95
+ },
+ {
+  "w": "HANDLED",
+  "start": 43.04,
+  "end": 43.45
+ },
+ {
+  "w": "ELEVEN",
+  "start": 43.74,
+  "end": 44.1
+ },
+ {
+  "w": "FIFTY",
+  "start": 44.16,
+  "end": 44.42
+ },
+ {
+  "w": "TWO",
+  "start": 44.47,
+  "end": 44.64
+ },
+ {
+  "w": "STALE",
+  "start": 44.88,
+  "end": 45.24
+ },
+ {
+  "w": "PERMISSION",
+  "start": 45.29,
+  "end": 45.71
+ },
+ {
+  "w": "ERRORS",
+  "start": 45.78,
+  "end": 46.14
+ },
+ {
+  "w": "GONE",
+  "start": 46.21,
+  "end": 46.57
+ },
+ {
+  "w": "THAT'S",
+  "start": 46.72,
+  "end": 46.97
+ },
+ {
+  "w": "THE",
+  "start": 47.01,
+  "end": 47.08
+ },
+ {
+  "w": "WHOLE",
+  "start": 47.11,
+  "end": 47.3
+ },
+ {
+  "w": "SKILL",
+  "start": 47.32,
+  "end": 47.61
+ },
+ {
+  "w": "DESCRIBE",
+  "start": 47.79,
+  "end": 48.38
+ },
+ {
+  "w": "TEST",
+  "start": 48.62,
+  "end": 49.01
+ },
+ {
+  "w": "PASTE",
+  "start": 49.18,
+  "end": 49.61
+ },
+ {
+  "w": "REPEAT",
+  "start": 49.76,
+  "end": 50.12
+ }
+]

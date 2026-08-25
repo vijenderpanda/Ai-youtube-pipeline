@@ -1,0 +1,81 @@
+commit 2c38079  14:47
+Add visible Pro paywall with TestFlight tester unlock; bump build to 2
+
+
+ MissNoMeetings.xcodeproj/project.pbxproj |   4 +-
+ MissNoMeetings/ContentView.swift         |  18 ++++-
+ MissNoMeetings/Paywall.swift             | 117 +++++++++++++++++++++++++++++++
+ 3 files changed, 135 insertions(+), 4 deletions(-)
+commit 18a4d81  14:39
+Fix calendar seeder crash on leftover OccurrenceCacheDays rows
+
+
+ Tools/seed-simulator-calendar.py | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+commit 8a7595f  14:31
+Redesign UI, add alert sound options and snooze, ship AI meeting warm-up
+
+
+ Config/Info.plist                          |   5 +
+ MissNoMeetings.xcodeproj/project.pbxproj   |   4 +-
+ MissNoMeetings/ContentView.swift           | 563 ++++++++++++++++++++++-------
+ MissNoMeetings/MeetingStore.swift          |  51 ++-
+ MissNoMeetings/MissNoMeetingsApp.swift     |   2 +
+ MissNoMeetings/Warmup.swift                | 170 +++++++++
+ MissNoMeetings/gentle-chime.caf            | Bin 0 -> 356896 bytes
+ supabase/functions/meeting-warmup/index.ts |  58 +++
+ 8 files changed, 709 insertions(+), 144 deletions(-)
+commit 1520bf7  12:10
+Add simulator calendar seeding tool
+
+
+ Tools/seed-simulator-calendar.py | 94 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
+commit bb67bfe  11:52
+Stop stale permission errors outliving the failure
+
+
+ MissNoMeetings/MeetingStore.swift | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+commit 2263f94  11:43
+Cap alarms at 50 and handle AlarmKit's own limit
+
+
+ Config/Info.plist                        |  11 ++++
+ MissNoMeetings.xcodeproj/project.pbxproj |   4 +-
+ MissNoMeetings/MeetingStore.swift        |  92 ++++++++++++++++++++------
+ Tests/AlarmCapTests.swift                | 105 ++++++++++++++++++++++++++++++
+ Tests/BugFixLogicTests.swift             | 108 +++++++++++++++++++++++++++++++
+ Tests/README.md                          |  18 ++++++
+ 6 files changed, 317 insertions(+), 21 deletions(-)
+commit 68a821c  11:02
+Fix recurring-event crash and alarms leaking across launches
+
+
+ MissNoMeetings/MeetingStore.swift | 74 +++++++++++++++++++++++++++++----------
+ 1 file changed, 56 insertions(+), 18 deletions(-)
+commit 5890134  10:59
+Rewrite build guide for the prebuilt project
+
+
+ BUILD-GUIDE.md | 110 +++++++++++++++++++++------------------------------------
+ 1 file changed, 41 insertions(+), 69 deletions(-)
+commit 0a4133d  10:59
+Xcode project scaffold for MissNoMeetings
+
+
+ .gitignore                                         |  10 +
+ BUILD-GUIDE.md                                     | 147 ++++++++++++
+ MissNoMeetings.xcodeproj/project.pbxproj           | 252 +++++++++++++++++++++
+ .../project.xcworkspace/contents.xcworkspacedata   |   7 +
+ .../xcshareddata/IDEWorkspaceChecks.plist          |   8 +
+ .../xcshareddata/xcschemes/MissNoMeetings.xcscheme |  78 +++++++
+ .../AccentColor.colorset/Contents.json             |  20 ++
+ .../AppIcon.appiconset/AppIcon-1024.png            | Bin 0 -> 531431 bytes
+ .../AppIcon.appiconset/Contents.json               |  14 ++
+ MissNoMeetings/Assets.xcassets/Contents.json       |   6 +
+ MissNoMeetings/ContentView.swift                   | 193 ++++++++++++++++
+ MissNoMeetings/MeetingStore.swift                  | 237 +++++++++++++++++++
+ MissNoMeetings/MissNoMeetingsApp.swift             |  21 ++
+ artwork/icon-original-rounded.jpeg                 | Bin 0 -> 45540 bytes
+ 14 files changed, 993 insertions(+)

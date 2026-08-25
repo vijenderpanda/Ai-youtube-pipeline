@@ -1,0 +1,258 @@
+{
+ "hook": {
+  "duration": 13.9,
+  "bounds": [
+   {
+    "line": 1,
+    "text": "Three hours and forty eight minutes.",
+    "start": 0.0,
+    "end": 1.88,
+    "words": 6,
+    "match": true
+   },
+   {
+    "line": 2,
+    "text": "That's the total time from an empty folder to this. A real iPhone app, ready for the App Store.",
+    "start": 2.33,
+    "end": 8.42,
+    "words": 19,
+    "match": true
+   },
+   {
+    "line": 3,
+    "text": "I didn't write a single line of code. And by the end of this video, you'll know exactly how it's done.",
+    "start": 8.84,
+    "end": 13.9,
+    "words": 21,
+    "match": true
+   }
+  ]
+ },
+ "ch1": {
+  "duration": 32.15,
+  "bounds": [
+   {
+    "line": 1,
+    "text": "MissNoMeetings started as a personal problem. My phone buries meeting invites, and I kept missing calls. Not because I was busy. Because the reminder fired on my laptop, in another room.",
+    "start": 0.0,
+    "end": 10.29,
+    "words": 31,
+    "match": true
+   },
+   {
+    "line": 2,
+    "text": "So I didn't open a design tool. I didn't write a spec document. I opened Claude Code and described the app in plain English. What it should do. Who it's for. And the one rule that mattered: the alarm rings on the phone, loudly, even when the app is closed.",
+    "start": 10.81,
+    "end": 24.12,
+    "words": 50,
+    "match": true
+   },
+   {
+    "line": 3,
+    "text": "That description became the entire product brief. Five lines. You'll see them at the end. Copy them, change one line, and it becomes your app instead of mine.",
+    "start": 24.59,
+    "end": 32.15,
+    "words": 28,
+    "match": true
+   }
+  ]
+ },
+ "ch2": {
+  "duration": 50.12,
+  "bounds": [
+   {
+    "line": 1,
+    "text": "Now watch what happens to those five lines.",
+    "start": 0.0,
+    "end": 1.93,
+    "words": 8,
+    "match": true
+   },
+   {
+    "line": 2,
+    "text": "At ten fifty nine in the morning, the first commit lands. A complete Xcode project. Swift files, which I don't write. Calendar permissions. Alarm scheduling. All of it generated, compiled, and fixed when it breaks.",
+    "start": 2.39,
+    "end": 17.38,
+    "words": 35,
+    "match": true
+   },
+   {
+    "line": 3,
+    "text": "And things did break. A recurring event crashed the app. Alarms leaked across launches. Apple caps system alarms at fifty, and we hit the cap.",
+    "start": 17.87,
+    "end": 26.61,
+    "words": 25,
+    "match": true
+   },
+   {
+    "line": 4,
+    "text": "Here's the loop that fixed every one of them. Run the app. Hit the bug. Paste what you see back into Claude. It reads its own error, patches the code, and builds again.",
+    "start": 27.12,
+    "end": 36.26,
+    "words": 33,
+    "match": true
+   },
+   {
+    "line": 5,
+    "text": "Look at the commit log. Eleven oh two, recurring crash fixed. Eleven forty three, the alarm cap handled. Eleven fifty two, stale permission errors gone. That's the whole skill. Describe, test, paste, repeat.",
+    "start": 36.76,
+    "end": 50.12,
+    "words": 33,
+    "match": true
+   }
+  ]
+ },
+ "ch3": {
+  "duration": 34.63,
+  "bounds": [
+   {
+    "line": 1,
+    "text": "First run in the simulator. The meeting list is real. The timer counts. The alert fires.",
+    "start": 0.0,
+    "end": 5.77,
+    "words": 16,
+    "match": true
+   },
+   {
+    "line": 2,
+    "text": "But a simulator proves nothing about the thing that mattered. The alarm on a locked phone. So, real device.",
+    "start": 6.29,
+    "end": 13.4,
+    "words": 19,
+    "match": true
+   },
+   {
+    "line": 3,
+    "text": "This is the part every tutorial skips. Developer mode. The trust dialog. The phone that refuses to show up twice before it connects.",
+    "start": 13.84,
+    "end": 21.22,
+    "words": 23,
+    "match": true
+   },
+   {
+    "line": 4,
+    "text": "It rejected my iPhone. Claude read the error, told me the exact setting buried in privacy and security, and the third attempt went through. The alarm rang on a locked phone, at full volume, five minutes before a meeting I would have missed.",
+    "start": 21.76,
+    "end": 34.63,
+    "words": 43,
+    "match": true
+   }
+  ]
+ },
+ "midroll": {
+  "duration": 14.66,
+  "bounds": [
+   {
+    "line": 1,
+    "text": "Why is this suddenly possible? One word. Agents.",
+    "start": 0.0,
+    "end": 2.8,
+    "words": 8,
+    "match": true
+   },
+   {
+    "line": 2,
+    "text": "The model doesn't suggest code anymore. It builds, runs the build, reads its own errors, and repairs them.",
+    "start": 3.29,
+    "end": 9.36,
+    "words": 18,
+    "match": true
+   },
+   {
+    "line": 3,
+    "text": "Your job shrinks to two things. Describing what you want. And testing whether you got it.",
+    "start": 9.85,
+    "end": 14.66,
+    "words": 16,
+    "match": true
+   }
+  ]
+ },
+ "ch4": {
+  "duration": 29.96,
+  "bounds": [
+   {
+    "line": 1,
+    "text": "Which leaves the boring wall. Signing. Archive. App Store Connect. Screenshots, privacy questions, export compliance.",
+    "start": 0.0,
+    "end": 9.24,
+    "words": 15,
+    "match": true
+   },
+   {
+    "line": 2,
+    "text": "This is where most side projects die, so we went through every screen. The bundle ID. The paywall Apple wants to see. The TestFlight build that processed while I made tea.",
+    "start": 9.64,
+    "end": 20.65,
+    "words": 31,
+    "match": true
+   },
+   {
+    "line": 3,
+    "text": "By two forty seven in the afternoon, the ship build was done. Three hours and forty eight minutes, first commit to final build. The review queue took care of the rest.",
+    "start": 21.13,
+    "end": 29.96,
+    "words": 31,
+    "match": true
+   }
+  ]
+ },
+ "payoff": {
+  "duration": 30.94,
+  "bounds": [
+   {
+    "line": 1,
+    "text": "Here's what I promised. The entire brief the app was built from. Five lines, sitting in the code itself.",
+    "start": 0.0,
+    "end": 5.41,
+    "words": 19,
+    "match": true
+   },
+   {
+    "line": 2,
+    "text": "One. Ask permission to read the calendar. Two. Ask permission to set alarms. Three. Find the meetings. Four. Set a loud system alarm before each one. Five. Re-sync when meetings move.",
+    "start": 5.97,
+    "end": 18.18,
+    "words": 31,
+    "match": true
+   },
+   {
+    "line": 3,
+    "text": "Pause here and copy it. Then change line three to your problem. Your medicines. Your invoices. Your kid's school bus. The structure is what matters. A problem, a user, and one non negotiable rule.",
+    "start": 18.63,
+    "end": 30.94,
+    "words": 34,
+    "match": true
+   }
+  ]
+ },
+ "outro": {
+  "duration": 11.69,
+  "bounds": [
+   {
+    "line": 1,
+    "text": "If a meetings app takes one morning, ask what else does.",
+    "start": 0.0,
+    "end": 2.91,
+    "words": 11,
+    "match": true
+   },
+   {
+    "line": 2,
+    "text": "Next video, I cancel my entire paid creator stack, and replace it with free AI, one tool at a time.",
+    "start": 3.42,
+    "end": 9.27,
+    "words": 20,
+    "match": true
+   },
+   {
+    "line": 3,
+    "text": "Subscribe, so you're there when it ships.",
+    "start": 9.69,
+    "end": 11.69,
+    "words": 7,
+    "match": true
+   }
+  ]
+ }
+}
