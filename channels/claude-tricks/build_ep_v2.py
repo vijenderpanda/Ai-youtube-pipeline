@@ -2861,7 +2861,58 @@ def build(ep, dry=False, tag="v2", preview=False, calendar_id=None, template_ver
         # host clips are cut from VO slices, so changed line timings invalidate them
         os.environ["FACTORY_REBUILD_HOSTS"] = "1"
     open(vo_sig_p, "w").write(sig)
-    words = json.load(open(vo.rsplit(".", 1)[0] + ".words.json"))
+    words_path = vo.rsplit(".", 1)[0] + ".words.json"
+    words = json.load(open(words_path))
+
+    # VO GAP TIGHTENING (2026-08-25, hfagents v5 lesson): the template law says
+    # "sentence gaps in the master cut to <=0.3s" — it was SPEC'D but never coded,
+    # and ElevenLabs pads short punchy sentences (measured 0.66-0.72s at the
+    # hfagents tail = the "slow" VJ heard). Cut every inter-word silence above
+    # MAX_GAP down to MAX_GAP in the wav, shift every timestamp, persist both.
+    # Idempotent via the _tightened flag; host clips are cut from this wav so a
+    # real tightening forces FACTORY_REBUILD_HOSTS.
+    _MAX_GAP = float(cfg.get("max_vo_gap", 0.32))
+    if isinstance(words, list) and _MAX_GAP > 0 and not (words and isinstance(words[0], dict) and words[0].get("_tightened")):
+        _aud = [w for w in words if (w.get("end", 0) - w.get("start", 0)) > 1e-3]
+        _cuts = []  # (cut_start, cut_len)
+        for _a, _b in zip(_aud, _aud[1:]):
+            _gap = _b["start"] - _a["end"]
+            if _gap > _MAX_GAP + 0.02:
+                _cuts.append((_a["end"] + _MAX_GAP, _gap - _MAX_GAP))
+        if _cuts:
+            print(f">> VO tighten: {len(_cuts)} gap(s) > {_MAX_GAP}s — cutting "
+                  f"{sum(c[1] for c in _cuts):.2f}s of silence")
+            # re-cut the wav: keep [seg] between cuts, concat
+            _keep, _pos = [], 0.0
+            for _cs, _cl in _cuts:
+                _keep.append((_pos, _cs)); _pos = _cs + _cl
+            _keep.append((_pos, None))
+            _parts, _fc = [], []
+            for _i, (_k0, _k1) in enumerate(_keep):
+                _rng = f"atrim=start={_k0:.4f}" + (f":end={_k1:.4f}" if _k1 is not None else "")
+                _fc.append(f"[0]{_rng},asetpts=PTS-STARTPTS[s{_i}]")
+                _parts.append(f"[s{_i}]")
+            _graph = ";".join(_fc) + ";" + "".join(_parts) + f"concat=n={len(_keep)}:v=0:a=1[a]"
+            _tw = vo + ".tight.wav"
+            run(["ffmpeg", "-y", "-loglevel", "error", "-i", vo,
+                 "-filter_complex", _graph, "-map", "[a]", "-c:a", "pcm_s16le", _tw])
+            os.replace(_tw, vo)
+            def _shift(t):
+                _d = 0.0
+                for _cs, _cl in _cuts:
+                    if t > _cs:
+                        _d += min(_cl, t - _cs)
+                return round(t - _d, 3)
+            for _w in words:
+                _w["start"] = _shift(_w.get("start", 0)); _w["end"] = _shift(_w.get("end", 0))
+            if words and isinstance(words[0], dict):
+                words[0]["_tightened"] = True
+            json.dump(words, open(words_path, "w"))
+            os.environ["FACTORY_REBUILD_HOSTS"] = "1"   # slices shifted -> stale host clips
+        else:
+            if words and isinstance(words[0], dict):
+                words[0]["_tightened"] = True
+            json.dump(words, open(words_path, "w"))
     hot = set(cfg["hot_words"])
 
     # The lines are synthesized joined by an explicit 0.4s <break>. ElevenLabs

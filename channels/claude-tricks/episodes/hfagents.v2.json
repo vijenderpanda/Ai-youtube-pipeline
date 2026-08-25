@@ -77,22 +77,22 @@
       "url": "https://huggingface.co/learn/agents-course",
       "tourW": 1920,
       "tourH": 1080,
-      "from": 5.9,
+      "from": 5.35,
       "camera": [
         {
-          "at": 1.42,
+          "at": 1.61,
           "dur": 0.42,
           "center": [
             0.42,
             0.45
           ],
-          "zoom": 2.2,
+          "zoom": 2.6,
           "hold": 2.2
         }
       ],
       "selections": [
         {
-          "at": 2.88,
+          "at": 3.43,
           "rects": [
             [
               0.2484,
@@ -106,7 +106,7 @@
           "sweep": "ltr"
         },
         {
-          "at": 6.09,
+          "at": 6.64,
           "rects": [
             [
               0.2747,
@@ -122,7 +122,7 @@
       ],
       "host": true,
       "hostSize": 360,
-      "_note": "KNEE v4: tape v2 has a scroll-down-and-back at ~5.7-8.1; from=5.9 puts the 6.00 knee (beat+1.84, tape 7.74) mid-bounce = real page motion + punch; sweeps at beat+2.88/6.09 (tape 8.78/11.99, scroll 0)."
+      "_note": "KNEE v8: from=5.35 — 6.00 abs (beat+2.03, tape 7.38) = PEAK velocity of the return scroll (6.96-8.16); punch 1.0->2.6 stacked. Sweeps at beat+3.43/6.64 (tape 8.78/11.99)."
     },
     "WebTour#nodeadline": {
       "src": "tapes/hfagents_tape.mp4",
@@ -316,12 +316,12 @@
       "note": "KNEE absolute"
     },
     {
-      "at": "@beat1+2.88",
+      "at": "@beat1+3.43",
       "name": "pop",
       "note": "free sweep"
     },
     {
-      "at": "@beat1+6.09",
+      "at": "@beat1+6.64",
       "name": "pop",
       "note": "fundamentals sweep"
     },
