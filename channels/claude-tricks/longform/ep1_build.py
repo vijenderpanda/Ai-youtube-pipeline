@@ -114,14 +114,23 @@ def circle_mask_pngs(tmp):
     return mp, rp
 
 
-def talking_pip(base_video, host_clip, dur, out, tmp):
+# face centers measured per Avatar IV clip (camera moves + framing differ per clip);
+# tighter face-centered square keeps the host inside the circle (VJ QC 2026-08-25)
+PIP_FACE = {"ch1": (870, 400), "ch2": (780, 380), "ch3": (1000, 400), "ch4": (900, 400)}
+PIP_SQ = 720
+
+
+def talking_pip(base_video, host_clip, dur, out, tmp, face=(960, 400)):
     """Circle-masked TALKING host over the tape (lip-synced to the section VO)."""
     mp, rp = circle_mask_pngs(tmp)
     x = W - PIP_D - 56
     y = H - PIP_D - 72
+    cx, cy = face
+    cx0 = max(0, min(1920 - PIP_SQ, cx - PIP_SQ // 2))
+    cy0 = max(0, min(1080 - PIP_SQ, cy - PIP_SQ // 2))
     run([lf.FFMPEG, "-y", "-i", base_video, "-i", host_clip, "-i", mp, "-i", rp,
          "-filter_complex",
-         (f"[1:v]fps={FPS},crop=w='min(iw\\,ih)':h='min(iw\\,ih)':x='(iw-min(iw\\,ih))/2+120':y=0,"
+         (f"[1:v]fps={FPS},crop={PIP_SQ}:{PIP_SQ}:{cx0}:{cy0},"
           f"scale={PIP_D}:{PIP_D}[pv];"
           f"[2:v]loop=-1:1,scale={PIP_D}:{PIP_D},format=gray[msk];"
           f"[pv][msk]alphamerge[pa];"
@@ -217,7 +226,8 @@ def build_section(name, visuals, tmp, pip=None, captions=True, lead=0.3):
     if pip:
         p2 = os.path.join(tmp, f"{name}_pip.mp4")
         if os.path.exists(pip):
-            talking_pip(cur, pip, total, p2, tmp)
+            talking_pip(cur, pip, total, p2, tmp,
+                        face=PIP_FACE.get(name, (960, 400)))
         else:
             print(f"!! {name}: host clip missing (HeyGen credits) — static pip degrade")
             static_pip_overlay(cur, total, p2, tmp)
