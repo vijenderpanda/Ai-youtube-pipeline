@@ -13,7 +13,8 @@ Two Shorts/day, ≥6h apart, English audio/titles (both slots):
 | ep | title | slot | status | link |
 |---|---|---|---|---|
 | ep1 `fcc` | This Repo Gives You Claude Code FREE 👀 | 00:30 IST Aug 24 (2026-08-23T19:00Z) | **ARMED** | youtu.be/BEqvWkT5B5g |
-| ep2 `academy` | Anthropic's Free AI Course Gives You A Badge 🎓 | 18:30 IST Aug 24 (2026-08-24T13:00Z) | **ARMED** | youtu.be/1PUZa8U-8Rw |
+| ep2 `academy` | Anthropic's Free AI Course Gives You A Badge 🎓 | 18:30 IST Aug 24 | LIVE — 231 views/47.3% AVP, channel winner | youtu.be/1PUZa8U-8Rw |
+| ep3 `anydoc` | Stop Pasting Messy PDFs Into AI — AnyDoc Fixes It 📄 | **17:30 IST Aug 25 (new cadence)** | **ARMED** (host-free + disc outro + V-A chip) | youtu.be/o6LMLggOh_I |
 
 **Both Aug-24 slots ARMED.** Pin ep2's comment: academy.claude.com + "do the 7-min one first; sign in only to save progress" (API can't pin — manual).
 

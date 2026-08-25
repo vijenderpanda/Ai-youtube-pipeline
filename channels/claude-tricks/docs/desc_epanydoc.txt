@@ -1,0 +1,17 @@
+Every AI chokes on messy PDFs and Word docs. This free tool fixes it.
+
+📄 THE EXACT COMMAND (copy it):
+
+npx @firecrawl/anydoc report.docx
+
+Turns Word/Excel/PDF into clean, LLM-ready Markdown locally. Free & open-source (MIT): github.com/firecrawl/anydoc
+
+Which free AI tool should I tour next? Tell me below.
+
+One 30-second Claude trick, every day.
+
+AI Unpacked — no hype, just what actually works.
+
+Not affiliated with Anthropic, OpenAI, or Google.
+
+#anydoc #firecrawl #pdftomarkdown #pdftotext #aidocumenttool #markdown #freeaitool #documentconverter #wordtomarkdown #rust #claude #chatgpt #aitools2026 #aiunpacked
