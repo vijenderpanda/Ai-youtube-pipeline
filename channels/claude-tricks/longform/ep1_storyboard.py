@@ -19,6 +19,38 @@ sys.path.insert(0, os.path.join(os.path.dirname(CH), "..", "scripts"))
 import build_longform_segment as lf
 
 DEMO = os.path.join(CH, "assets", "longform_ep1", "mnm_demo.mov")
+
+# v2 (2026-08-25): Leonardo NB2 champagne host set (host_set_review.jpg picks)
+LEO = os.path.join(CH, "assets", "character", "host_library", "longform_champagne_v1")
+HOST = {
+    "wide":    os.path.join(LEO, "using-the-reference-image-keep-the-e_1f1a0752_0.jpg"),
+    "medium":  os.path.join(LEO, "using-the-reference-image-keep-the-e_1f1a0755_1.jpg"),
+    "close":   os.path.join(LEO, "using-the-reference-image-keep-the-e_1f1a0756_1.jpg"),
+    "profile": os.path.join(LEO, "using-the-reference-image-keep-the-e_1f1a0757_0.jpg"),
+}
+
+
+def leo_host(shot):
+    im = Image.open(HOST[shot]).convert("RGB")
+    return im.resize((W, H), Image.LANCZOS)
+
+
+def leo_pip():
+    """Circular PiP cropped from the champagne close-up (replaces magenta Sol crop)."""
+    src = Image.open(HOST["close"]).convert("RGB")
+    s = src.height
+    face_cx = int(src.width * 0.42)
+    box = (max(0, face_cx - s // 2), 0, min(src.width, face_cx + s // 2), s)
+    sq = src.crop(box).resize((lf.PIP_D, lf.PIP_D), Image.LANCZOS)
+    ring = 8
+    D = lf.PIP_D + ring * 2
+    canvas = Image.new("RGBA", (D, D), (0, 0, 0, 0))
+    mask = Image.new("L", (lf.PIP_D, lf.PIP_D), 0)
+    ImageDraw.Draw(mask).ellipse([0, 0, lf.PIP_D, lf.PIP_D], fill=255)
+    d = ImageDraw.Draw(canvas)
+    d.ellipse([0, 0, D, D], fill=lf.ACCENT + (255,))
+    canvas.paste(sq, (ring, ring), mask)
+    return canvas
 OUT_DIR = os.path.join(CH, "renders", "longform")
 W, H = lf.W, lf.H
 
@@ -38,10 +70,7 @@ def demo_frame(t):
 
 
 def with_pip(im):
-    tmp = tempfile.mktemp(suffix=".png")
-    lf.host_pip_png(tmp)
-    pip = Image.open(tmp)
-    os.unlink(tmp)
+    pip = leo_pip()
     base = im.convert("RGBA")
     base.paste(pip, (W - pip.width - 48, H - pip.height - 64), pip)
     return base.convert("RGB")
@@ -86,9 +115,9 @@ def main():
         ("0:00", "COLD-OPEN — App Store proof",
          "This app is live on the App Store right now. Built in three hours. I didn't write the code.",
          with_pip(lf.punch_in_frame(demo_frame(12.5), PHONE, zoom=1.0))),
-        ("0:45", "PROMISE — host",
+        ("0:45", "PROMISE — host (LEO wide)",
          "Idea to shipped iPhone app, one afternoon, one tool. I'll show you every step — including the parts that broke.",
-         host_still()),
+         leo_host("wide")),
         ("1:20", "CHAPTER CARD", "—", chapter(1, "The Idea")),
         ("1:30", "SCREEN+PIP — the one-prompt spec",
          "MissNoMeetings: my phone buries meeting invites, I miss calls. So I typed the whole app as one prompt.",
@@ -102,10 +131,13 @@ def main():
         ("6:10", "PUNCH-IN — simulator running",
          "First run in the simulator. The meeting timer, the alerts — working. Then the real test: my actual iPhone.",
          with_pip(lf.punch_in_frame(demo_frame(13.5), PHONE, zoom=0.9))),
-        ("8:30", "MID-ROLL — host stakes",
+        ("8:30", "MID-ROLL — host stakes (LEO medium)",
          "Why is this suddenly possible? Agentic coding. The model doesn't suggest code — it builds, runs, and fixes.",
-         host_still()),
+         leo_host("medium")),
         ("9:00", "CHAPTER CARD", "—", chapter(4, "The App Store")),
+        ("9:05", "B-ROLL — host at monitor (LEO profile)",
+         "(music swell, no VO — breathing room before the submit sequence)",
+         leo_host("profile")),
         ("9:10", "SCREEN+PIP — archive & submit",
          "Signing, archive, App Store Connect, the review questions — the parts every tutorial skips. Here's each one.",
          with_pip(demo_frame(8.0))),
@@ -113,9 +145,9 @@ def main():
         ("13:00", "PAYOFF — the exact prompt",
          "Here is the exact prompt I started from — pause and copy it. Change one line and it's YOUR app.",
          with_pip(lf.highlight_rect(demo_frame(0.5), (120, 180, 820, 320)))),
-        ("14:30", "OUTRO — host + tease",
+        ("14:30", "OUTRO — host + tease (LEO close)",
          "Next episode: I replace my entire paid creator stack with free AI. Subscribe so you don't miss the ship.",
-         host_still()),
+         leo_host("close")),
     ]
 
     # tile: 3 cols, labeled
