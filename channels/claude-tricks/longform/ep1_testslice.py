@@ -24,14 +24,16 @@ sys.path.insert(0, CH)
 sys.path.insert(0, os.path.join(REPO, "scripts"))
 import build_longform_segment as lf
 import ep1_storyboard as sb
-from eleven_vo import load_key, synth
+from eleven_vo import load_key, synth, synth_lines
 from ffmpeg_util import venc
 from PIL import Image
 
 R = os.path.join(CH, "renders", "longform")
 A = os.path.join(CH, "assets", "longform_ep1")
 DEMO = os.path.join(A, "mnm_demo.mov")
-BED = os.path.join(CH, "assets", "music", "bed_active.mp3")
+# v3: dedicated LONG-FORM bed (Suno "Golden Felt Drift", instrumental) — the shorts
+# beds (bed_active/bed_webtour) stay shorts-only per VJ.
+BED = os.path.join(CH, "assets", "music", "lf_bed_golden_felt.mp3")
 HEYGEN_A3 = os.path.join(A, "a3_heygen.mp4")
 VOICE, STYLE = "ZZ5OIPIzxVJswEhc0UXt", 0.4
 W, H, FPS = lf.W, lf.H, lf.FPS
@@ -138,8 +140,26 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         def add(seg): segs.append(seg)
 
-        # a1 — listing pan + VO + captions
-        wav, words, vend = vo(key, "a1", "That's a real app. On the real App Store.", tmp)
+        # a1+a2 — ONE continuous ElevenLabs take (VJ: per-beat takes broke the flow),
+        # sliced at the line boundary so tone carries across the cut.
+        cold = synth_lines(key, VOICE,
+            ["That's a real app. On the real App Store.",
+             "Now look at the timestamps. Prompt sent, three oh four in the afternoon. "
+             "Submitted to Apple, six twelve. Three hours and eight minutes."],
+            os.path.join(tmp, "cold.mp3"), brk="0.6s", style=STYLE)
+        b0, b1_ = cold["line_boundaries"]
+        cut = (b0["end"] + b1_["start"]) / 2
+
+        def slice_take(t0, t1, name):
+            w = os.path.join(tmp, f"{name}.wav")
+            span = ["-to", str(t1)] if t1 else []
+            run([lf.FFMPEG, "-y", "-ss", str(t0), "-i", cold["audio"], *span,
+                 "-ar", "48000", "-ac", "2", w])
+            ws = [{"w": x["w"], "start": round(x["start"] - t0, 2), "end": round(x["end"] - t0, 2)}
+                  for x in cold["words"] if x["start"] >= t0 and (not t1 or x["end"] <= t1 + 0.01)]
+            return w, ws, max(x["end"] for x in ws)
+
+        wav, words, vend = slice_take(0.0, cut, "a1")
         lead, dur = 2.0, 2.0 + vend + 0.5
         png = os.path.join(tmp, "a1.png"); sb.appstore_listing_still().save(png)
         v = os.path.join(tmp, "a1_v.mp4"); pan_still(png, dur, v)
@@ -147,9 +167,7 @@ def main():
         s = os.path.join(tmp, "a1.mp4"); mux(c, wav, s, lead); add(s)
 
         # a2 — receipts count-up + VO, NO captions (collision fix)
-        wav, words, vend = vo(key, "a2",
-            "Now look at the timestamps. Prompt sent, three oh four in the afternoon. "
-            "Submitted to Apple, six twelve. Three hours and eight minutes.", tmp)
+        wav, words, vend = slice_take(cut, None, "a2")
         lead, dur = 0.3, 0.3 + vend + 0.6
         v = os.path.join(tmp, "a2_v.mp4"); receipts_countup(dur, v, tmp)
         s = os.path.join(tmp, "a2.mp4"); mux(v, wav, s, lead); add(s)
@@ -208,9 +226,9 @@ def main():
         bedmix = os.path.join(tmp, "bedmix.mp4")
         run([lf.FFMPEG, "-y", "-i", raw, "-stream_loop", "-1", "-i", BED,
              "-filter_complex",
-             "[1:a]volume=0.35,atrim=0[bed];"
-             "[bed][0:a]sidechaincompress=threshold=0.03:ratio=12:attack=40:release=400[duck];"
-             "[0:a][duck]amix=inputs=2:duration=first:weights=1 0.5[a]",
+             "[1:a]volume=0.13[bed];"
+             "[bed][0:a]sidechaincompress=threshold=0.015:ratio=20:attack=25:release=500[duck];"
+             "[0:a][duck]amix=inputs=2:duration=first:weights=1 0.35[a]",
              "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
              "-shortest", bedmix])
         m = subprocess.run([lf.FFMPEG, "-hide_banner", "-i", bedmix, "-af",
