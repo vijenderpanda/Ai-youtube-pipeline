@@ -140,54 +140,29 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         def add(seg): segs.append(seg)
 
-        # COLD OPEN v4 (VJ + retention laws: knee at 5-7s, no dead air, proof + energy
-        # in second one). ONE continuous VO take, NEVER sliced — the VIDEO cuts to the
-        # VO's line boundaries instead, so there are zero audio joins to glitch.
-        cold = synth_lines(key, VOICE,
-            ["This is a real app. Live on the App Store. And it took three hours.",
-             "Prompt sent at three oh four. Submitted at six twelve. "
-             "Zero lines of code written by me."],
-            os.path.join(tmp, "cold.mp3"), brk="0.3s", style=0.55)
-        TEMPO = 1.06  # energy knob — speed the whole take, keep pitch
-        cold_wav = os.path.join(tmp, "cold.wav")
-        run([lf.FFMPEG, "-y", "-i", cold["audio"], "-af", f"atempo={TEMPO}",
-             "-ar", "48000", "-ac", "2", cold_wav])
-        LEAD = 0.3
-        cw = [{"w": x["w"], "start": round(x["start"] / TEMPO + LEAD, 2),
-               "end": round(x["end"] / TEMPO + LEAD, 2)} for x in cold["words"]]
-        b0, b1_ = cold["line_boundaries"]
-        cut1 = (b0["end"] + b1_["start"]) / 2 / TEMPO + LEAD
-        cold_end = b1_["end"] / TEMPO + LEAD + 0.35
-
-        # video track: fast listing pan (0..cut1), fast receipts (cut1..end)
+        # STRONG OPEN v5 (VJ: no cold open — host-led hook). Sol ON CAMERA from frame
+        # one (HeyGen Avatar IV 1080p, energetic take), with proof CUTAWAYS overlaid
+        # while his audio continues — audio is the clip's own track, never cut.
+        HOOK = os.path.join(A, "hook_heygen.mp4")
+        hook_words = json.load(open(os.path.join(A, "hook.words.json")))
+        T1, T2, T3 = 2.06, 4.00, 6.35   # word-boundary cutaway window
+        hook_dur = 10.30 + 0.2
         png = os.path.join(tmp, "a1.png"); sb.appstore_listing_still().save(png)
-        v1 = os.path.join(tmp, "a1_v.mp4"); pan_still(png, cut1, v1, drift_px=260)
-        v2 = os.path.join(tmp, "a2_v.mp4")
-        receipts_countup(cold_end - cut1, v2, tmp)
-        cold_v = os.path.join(tmp, "cold_v.mp4")
-        lstc = os.path.join(tmp, "coldcat.txt")
-        open(lstc, "w").write(f"file '{v1}'\nfile '{v2}'\n")
-        run([lf.FFMPEG, "-y", "-f", "concat", "-safe", "0", "-i", lstc,
-             "-vf", f"fps={FPS},format=yuv420p", *venc("18", "veryfast"), "-an", cold_v])
-        # captions once over the whole cold video (absolute times) — skip during the
-        # receipts card (its own text IS the payload): only line-1 words get captions
-        w1 = [w for w in cw if w["end"] <= cut1]
-        cold_c = os.path.join(tmp, "cold_c.mp4"); captions_on(cold_v, w1, 0.0, cold_c)
-        cold_seg = os.path.join(tmp, "cold.mp4"); mux(cold_c, cold_wav, cold_seg, lead=LEAD)
-        add(cold_seg)
-
-        # a3 — HeyGen talking host (VO embedded in clip) + captions
-        if not os.path.exists(HEYGEN_A3):
-            raise SystemExit("!! a3_heygen.mp4 missing — generate it first")
-        a3w = json.load(open(os.path.join(A, "a3_promise.words.json")))
-        v = os.path.join(tmp, "a3_v.mp4")
-        run([lf.FFMPEG, "-y", "-i", HEYGEN_A3, "-vf",
-             f"scale={W}:{H}:flags=lanczos,fps={FPS}", *venc("18", "veryfast"),
-             "-c:a", "aac", "-b:a", "192k", v])
-        s = os.path.join(tmp, "a3.mp4"); captions_on(v, a3w, 0.0, s)
-        run([lf.FFMPEG, "-y", "-i", s, "-i", v, "-map", "0:v", "-map", "1:a",
-             "-c:v", "copy", "-c:a", "copy", os.path.join(tmp, "a3f.mp4")])
-        add(os.path.join(tmp, "a3f.mp4"))
+        v1 = os.path.join(tmp, "cut_listing.mp4"); pan_still(png, T2 - T1, v1, drift_px=200)
+        v2 = os.path.join(tmp, "cut_receipts.mp4"); receipts_countup(T3 - T2, v2, tmp)
+        base = os.path.join(tmp, "hook_base.mp4")
+        run([lf.FFMPEG, "-y", "-i", HOOK, "-i", v1, "-i", v2, "-filter_complex",
+             f"[0:v]fps={FPS},format=yuv420p[h];"
+             f"[1:v]setpts=PTS+{T1}/TB[c1];[2:v]setpts=PTS+{T2}/TB[c2];"
+             f"[h][c1]overlay=eof_action=pass:enable='between(t,{T1},{T2})'[x1];"
+             f"[x1][c2]overlay=eof_action=pass:enable='between(t,{T2},{T3})'[v]",
+             "-map", "[v]", "-map", "0:a", *venc("18", "veryfast"),
+             "-c:a", "aac", "-b:a", "192k", base])
+        hook_seg = os.path.join(tmp, "hook.mp4")
+        captions_on(base, hook_words, 0.0, os.path.join(tmp, "hook_c.mp4"))
+        run([lf.FFMPEG, "-y", "-i", os.path.join(tmp, "hook_c.mp4"), "-i", base,
+             "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "copy", hook_seg])
+        add(hook_seg)
 
         # a4 — promise over real tape, eased punch-in to the phone, PiP
         wav, words, vend = vo(key, "a4",
@@ -230,9 +205,8 @@ def main():
         bedmix = os.path.join(tmp, "bedmix.mp4")
         run([lf.FFMPEG, "-y", "-i", raw, "-stream_loop", "-1", "-i", BED,
              "-filter_complex",
-             "[1:a]volume=0.13[bed];"
-             "[bed][0:a]sidechaincompress=threshold=0.015:ratio=20:attack=25:release=500[duck];"
-             "[0:a][duck]amix=inputs=2:duration=first:weights=1 0.35[a]",
+             "[1:a]volume=0.07,lowpass=f=5000[bed];"
+             "[0:a][bed]amix=inputs=2:duration=first:weights=1 0.25[a]",
              "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
              "-shortest", bedmix])
         m = subprocess.run([lf.FFMPEG, "-hide_banner", "-i", bedmix, "-af",
