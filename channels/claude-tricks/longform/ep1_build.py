@@ -401,52 +401,25 @@ def sfx_mix(video_with_audio, events, out):
 
 
 
-MON_SCR = (150, 120, 1330, 800)   # x, y, w, h of the monitor screen hole
+PLATE = os.path.join(A, "stage_plates",
+                     "using-the-reference-image-keep-the-e_1f1a0a5d_1.jpg")
+# screen rect measured on the 1376x768 plate, scaled to 1920x1080 (+small inset)
+_PS = 1920 / 1376
+PLATE_SCR = (int(8 * _PS), int(170 * _PS),
+             int((686 - 14) * _PS) // 2 * 2, int((725 - 170 - 6) * _PS) // 2 * 2)
 
 
-def make_monitor_assets(tmp):
-    """Studio backdrop + monitor bezel (transparent screen hole) for the explain stage."""
-    bgp = os.path.join(tmp, "stage_bg.png")
-    bg = Image.new("RGB", (W, H), (13, 15, 20))
-    d = ImageDraw.Draw(bg)
-    for r in range(900, 0, -6):
-        a = int(26 * (r / 900))
-        d.ellipse([180 - r, H - 160 - r, 180 + r, H - 160 + r],
-                  fill=(13 + a, 13 + int(a * 0.86), 20 + int(a * 0.35)))
-    bg.save(bgp)
-    bzp = os.path.join(tmp, "monitor_bezel.png")
-    x, y, w2, h2 = MON_SCR
-    bz = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    d = ImageDraw.Draw(bz)
-    d.rounded_rectangle([x - 34, y - 34, x + w2 + 34, y + h2 + 34], radius=30,
-                        fill=(24, 27, 34, 255), outline=(70, 76, 88, 255), width=3)
-    d.rounded_rectangle([x - 4, y - 4, x + w2 + 4, y + h2 + 4], radius=8,
-                        fill=(0, 0, 0, 255))
-    d.rectangle([x, y, x + w2, y + h2], fill=(0, 0, 0, 0))
-    cx = x + w2 // 2
-    d.polygon([(cx - 90, y + h2 + 34), (cx + 90, y + h2 + 34),
-               (cx + 130, y + h2 + 110), (cx - 130, y + h2 + 110)], fill=(30, 33, 40, 255))
-    d.rounded_rectangle([cx - 240, y + h2 + 104, cx + 240, y + h2 + 128], radius=12,
-                        fill=(38, 42, 50, 255))
-    bz.save(bzp)
-    return bgp, bzp
-
-
-def monitor_stage(src, ss, dur, out, tmp, cutout="medium", ch=None):
-    """VJ 2026-08-25: explaining-pose host needs something to explain AT — a monitor
-    in front of him. bg -> tape in monitor -> bezel -> host cutout (gaze at screen)."""
-    bgp, bzp = make_monitor_assets(tmp)
-    if ch is None:
-        ch = 600 if cutout == "wide" else 760  # wide cutout carries its own desk
-    png = os.path.join(A, f"cutout_{cutout}.png")
-    cw = round(Image.open(png).width * ch / Image.open(png).height)
-    x, y, w2, h2 = MON_SCR
-    run([lf.FFMPEG, "-y", "-loop", "1", "-i", bgp, "-ss", str(ss), "-i", src,
-         "-i", bzp, "-i", png, "-t", str(dur), "-filter_complex",
-         (f"[1:v]fps={FPS},scale={w2}:{h2}:force_original_aspect_ratio=decrease,"
+def monitor_stage(src, ss, dur, out, tmp, cutout=None, ch=None):
+    """VJ v4: REAL Leonardo plate — host at side angle explaining at a monitor whose
+    screen faces camera; tape composited into the plate's actual black screen."""
+    x, y, w2, h2 = PLATE_SCR
+    seek = ["-ss", str(ss)] if ss else []
+    run([lf.FFMPEG, "-y", "-loop", "1", "-i", PLATE, *seek, "-i", src,
+         "-t", str(dur), "-filter_complex",
+         (f"[0:v]scale={W}:{H}[bg];"
+          f"[1:v]fps={FPS},scale={w2}:{h2}:force_original_aspect_ratio=decrease,"
           f"pad={w2}:{h2}:(ow-iw)/2:(oh-ih)/2:color=black[tv];"
-          f"[0:v][tv]overlay={x}:{y}[s1];[s1][2:v]overlay=0:0[s2];"
-          f"[3:v]scale={cw}:{ch}[hc];[s2][hc]overlay=x={W - cw + 60}:y={H - ch}[v]"),
+          f"[bg][tv]overlay={x}:{y}[v]"),
          "-map", "[v]", *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
 
 
