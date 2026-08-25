@@ -403,23 +403,32 @@ def sfx_mix(video_with_audio, events, out):
 
 PLATE = os.path.join(A, "stage_plates",
                      "using-the-reference-image-keep-the-e_1f1a0a5d_1.jpg")
-# screen rect measured on the 1376x768 plate, scaled to 1920x1080 (+small inset)
-_PS = 1920 / 1376
-PLATE_SCR = (int(8 * _PS), int(170 * _PS),
-             int((686 - 14) * _PS) // 2 * 2, int((725 - 170 - 6) * _PS) // 2 * 2)
+# screen QUAD on the 1920x1080 plate (hand-measured; the monitor sits at an angle)
+QUAD = {"tl": (92, 206), "tr": (948, 268), "br": (956, 848), "bl": (98, 898)}
+
+
+def _quad_mask(tmp):
+    mp = os.path.join(tmp, "quad_mask.png")
+    m = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(m).polygon([QUAD["tl"], QUAD["tr"], QUAD["br"], QUAD["bl"]], fill=255)
+    m.save(mp)
+    return mp
 
 
 def monitor_stage(src, ss, dur, out, tmp, cutout=None, ch=None):
-    """VJ v4: REAL Leonardo plate — host at side angle explaining at a monitor whose
-    screen faces camera; tape composited into the plate's actual black screen."""
-    x, y, w2, h2 = PLATE_SCR
+    """Tape perspective-warped INTO the plate's angled screen, masked to the quad."""
+    mp = _quad_mask(tmp)
+    q = QUAD
+    pts = (f"x0={q['tl'][0]}:y0={q['tl'][1]}:x1={q['tr'][0]}:y1={q['tr'][1]}:"
+           f"x2={q['bl'][0]}:y2={q['bl'][1]}:x3={q['br'][0]}:y3={q['br'][1]}")
     seek = ["-ss", str(ss)] if ss else []
-    run([lf.FFMPEG, "-y", "-loop", "1", "-i", PLATE, *seek, "-i", src,
+    run([lf.FFMPEG, "-y", "-loop", "1", "-i", PLATE, *seek, "-i", src, "-i", mp,
          "-t", str(dur), "-filter_complex",
          (f"[0:v]scale={W}:{H}[bg];"
-          f"[1:v]fps={FPS},scale={w2}:{h2}:force_original_aspect_ratio=decrease,"
-          f"pad={w2}:{h2}:(ow-iw)/2:(oh-ih)/2:color=black[tv];"
-          f"[bg][tv]overlay={x}:{y}[v]"),
+          f"[1:v]fps={FPS},scale={W}:{H}:force_original_aspect_ratio=increase,"
+          f"crop={W}:{H},perspective={pts}:sense=destination[warp];"
+          f"[2:v]loop=-1:1,format=gray[mk];[warp][mk]alphamerge[quad];"
+          f"[bg][quad]overlay=0:0[v]"),
          "-map", "[v]", *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
 
 
@@ -448,18 +457,26 @@ def main():
         listing_png = os.path.join(tmp, "listing.png")
         sb.appstore_listing_still().save(listing_png)
 
-        # ---- HOOK v6 (host-free, vision cut): listing -> receipts -> sim punch ----
-        times, total = line_times("hook2")
-        v1 = os.path.join(tmp, "hk1.mp4"); still_slice(listing_png, times[0][1] - times[0][0], v1, 220)
-        v2 = os.path.join(tmp, "hk2.mp4"); receipts_real(times[1][1] - times[1][0], v2, tmp)
-        v3 = os.path.join(tmp, "hk3.mp4"); conform(SIM, 8.0, times[2][1] - times[2][0], v3)
-        hb = os.path.join(tmp, "hook_base.mp4"); concat_slices([v1, v2, v3], hb, tmp, "hook")
-        hw = [w for w in words_of("hook2")]
-        hc = os.path.join(tmp, "hook_cap.mp4")
-        capw = [w for w in hw if not (times[1][0] - 0.3 <= w["start"] <= times[1][1] - 0.3)]
-        captions_on(hb, capw, 0.3, hc)
-        hf = os.path.join(tmp, "hook_seg.mp4"); mux(hc, vo_wav("hook2", tmp), hf, lead=0.3)
-        add(hf, total, chapter="Hook")
+        # ---- HOOK (v5 approved: HOST ON CAMERA + cutaways; audio = clip's own) ----
+        HOOKC = os.path.join(A, "host_hook.mp4")
+        hw = json.load(open(os.path.join(A, "hook.words.json")))
+        T1, T2, T3 = 2.06, 4.00, 6.35
+        hook_dur = 10.5
+        c1v = os.path.join(tmp, "hkc1.mp4"); still_slice(listing_png, T2 - T1, c1v, 200)
+        c2v = os.path.join(tmp, "hkc2.mp4"); conform(LIVE, 2.0, T3 - T2, c2v)
+        hb = os.path.join(tmp, "hook_base.mp4")
+        run([lf.FFMPEG, "-y", "-i", HOOKC, "-i", c1v, "-i", c2v, "-filter_complex",
+             f"[0:v]fps={FPS},scale={W}:{H}:flags=lanczos[h];"
+             f"[1:v]setpts=PTS+{T1}/TB[c1];[2:v]setpts=PTS+{T2}/TB[c2];"
+             f"[h][c1]overlay=eof_action=pass:enable='between(t,{T1},{T2})'[x1];"
+             f"[x1][c2]overlay=eof_action=pass:enable='between(t,{T2},{T3})'[v]",
+             "-map", "[v]", "-map", "0:a", *venc("18", "veryfast"),
+             "-c:a", "aac", "-ar", "48000", "-ac", "2", "-b:a", "192k", hb])
+        hc = os.path.join(tmp, "hook_cap.mp4"); captions_on(hb, hw, 0.0, hc)
+        hf = os.path.join(tmp, "hook_seg.mp4")
+        run([lf.FFMPEG, "-y", "-i", hc, "-i", hb, "-map", "0:v", "-map", "1:a",
+             "-c:v", "copy", "-c:a", "copy", hf])
+        add(hf, hook_dur, chapter="Hook")
 
         # ---- RELATE (curiosity b-roll — "have you tried AI...", VJ positioning) ----
         times, total = line_times("relate")
