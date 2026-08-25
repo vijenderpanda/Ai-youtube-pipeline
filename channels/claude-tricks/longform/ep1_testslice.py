@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 """
-ep1_testslice.py — LONG-FORM EP1 test slice (0:00–~2:00), APPROVED scope.
+ep1_testslice.py — LONG-FORM EP1 test slice v2 (0:00–~2:00). APPROVED scope.
 
-Per-beat ElevenLabs VO (word timings kept per beat), still/tape visuals from the v4
-primitives, karaoke captions in the low band, joined by assemble_longform's spine.
-1080p only. No arm, no upload. Spends: ~6 short ElevenLabs calls.
+v2 (VJ feedback 2026-08-25): NO static frames — every beat moves; music bed added;
+receipts-card caption collision fixed (captions OFF there, the card IS the text).
+  a1  listing pan (pseudo-scroll)          + VO + captions
+  a2  receipts COUNT-UP animation          + VO, NO captions
+  a3  HeyGen Avatar IV host clip (talking) + captions       <- real motion host
+  a4  real tape + eased punch-in + PiP     + VO + captions
+  c1  chapter card push
+  b1  real tape slow drift + PiP           + VO + captions
+Bed: bed_active.mp3 looped, sidechain-ducked under VO, then two-pass loudnorm -14.
 
 Usage:  python3 channels/claude-tricks/longform/ep1_testslice.py
-Output: channels/claude-tricks/renders/longform/ep1_testslice.mp4 (+ .contact.jpg)
+Output: channels/claude-tricks/renders/longform/ep1_testslice.mp4
 """
 import json, os, subprocess, sys, tempfile
 
@@ -20,26 +26,15 @@ import build_longform_segment as lf
 import ep1_storyboard as sb
 from eleven_vo import load_key, synth
 from ffmpeg_util import venc
+from PIL import Image
 
 R = os.path.join(CH, "renders", "longform")
 A = os.path.join(CH, "assets", "longform_ep1")
+DEMO = os.path.join(A, "mnm_demo.mov")
+BED = os.path.join(CH, "assets", "music", "bed_active.mp3")
+HEYGEN_A3 = os.path.join(A, "a3_heygen.mp4")
 VOICE, STYLE = "ZZ5OIPIzxVJswEhc0UXt", 0.4
 W, H, FPS = lf.W, lf.H, lf.FPS
-
-BEATS = [
-    # (key, vo text | None, lead-in silence s, visual fn -> saves 1920x1080 PNG or MP4)
-    ("a1_listing", "That's a real app. On the real App Store.", 2.0, "listing"),
-    ("a2_receipts", "Now look at the timestamps. Prompt sent, three oh four in the afternoon. "
-                    "Submitted to Apple, six twelve. Three hours and eight minutes.", 0.2, "receipts"),
-    ("a3_promise", "By the end of this video you'll know every step. Because I'm going to show "
-                   "you all of it. Including the parts that broke.", 0.2, "host_wide"),
-    ("promise_app", "One afternoon. One tool. Zero lines of code written by me. "
-                    "This is the app it built.", 0.2, "tape_phone"),
-    ("ch1_card", None, 1.8, "card1"),
-    ("ch1_open", "MissNoMeetings started as a personal problem. My phone buries meeting "
-                 "invites, and I kept missing calls. Not because I was busy. Because the "
-                 "reminder fired on my laptop, in another room.", 0.2, "tape_pip"),
-]
 
 
 def run(cmd):
@@ -47,12 +42,20 @@ def run(cmd):
     subprocess.run(cmd, check=True)
 
 
-def still_to_video(png, dur, out, push=1.04):
-    """Hold a still with a slow push (scale drift), silent."""
-    vf = (f"scale={W * 2}:{H * 2},zoompan=z='1+({push}-1)*on/({dur}*{FPS})':"
-          f"x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':d={int(dur * FPS)}:s={W}x{H}:fps={FPS},format=yuv420p")
-    run([lf.FFMPEG, "-y", "-loop", "1", "-i", png, "-t", str(dur), "-vf", vf,
-         *venc("18", "veryfast"), "-an", out])
+def vo(key, name, text, tmp):
+    wav = os.path.join(tmp, f"{name}.wav")
+    synth(key, VOICE, text, wav, speed=1.0, style=STYLE)
+    words = json.load(open(wav.rsplit(".", 1)[0] + ".words.json"))
+    return wav, words, max(w["end"] for w in words)
+
+
+def captions_on(video, words, lead, out):
+    caps = lf.words_to_captions([{"w": w["w"], "start": w["start"] + lead,
+                                  "end": w["end"] + lead} for w in words])
+    with tempfile.TemporaryDirectory() as ctmp:
+        from assemble_short import render_caption_pngs
+        items = render_caption_pngs(caps, accent="E4C56B", size=72, tmp=ctmp)
+        lf.overlay_captions_at(video, items, lf.CAP_Y, out)
 
 
 def mux(video, wav, out, lead=0.0):
@@ -62,32 +65,70 @@ def mux(video, wav, out, lead=0.0):
          "-c:a", "aac", "-b:a", "192k", "-shortest", out])
 
 
-def captions_on(video, words, lead, out):
-    caps = lf.words_to_captions([{"w": w["w"], "start": w["start"] + lead,
-                                  "end": w["end"] + lead} for w in words])
-    with tempfile.TemporaryDirectory() as tmp:
-        from assemble_short import render_caption_pngs
-        items = render_caption_pngs(caps, accent="E4C56B", size=72, tmp=tmp)
-        lf.overlay_captions_at(video, items, lf.CAP_Y, out)
+def pan_still(png, dur, out, drift_px=140):
+    """Motion for card-type beats: slow vertical drift on an oversized still."""
+    up = round(H * 1.18)
+    vf = (f"scale=-2:{up},crop={W}:{H}:x=(iw-{W})/2:y='min({drift_px}*t/{dur},ih-{H})',"
+          f"fps={FPS},format=yuv420p")
+    run([lf.FFMPEG, "-y", "-loop", "1", "-i", png, "-t", str(dur), "-vf", vf,
+         *venc("18", "veryfast"), "-an", out])
 
 
-def make_visual(kind, png):
-    if kind == "listing":
-        sb.appstore_listing_still().save(png)
-    elif kind == "receipts":
-        sb.timestamp_card().save(png)
-    elif kind == "host_wide":
-        sb.leo_host("wide").save(png)
-    elif kind == "card1":
-        lf.chapter_card_still(1, "The Idea", png)
-    elif kind in ("tape_phone", "tape_pip"):
-        base = sb.demo_frame(12.5 if kind == "tape_phone" else 1.0)
-        if kind == "tape_phone":
-            base = lf.punch_in_frame(base, (1150, 60, 400, 960), zoom=1.0)
-        im = sb.with_pip(base)
-        im.save(png)
+def pip_overlay(video, out):
+    pip_png = os.path.join(tempfile.gettempdir(), "lf_pip.png")
+    sb.leo_pip().save(pip_png)
+    pw = Image.open(pip_png).width
+    run([lf.FFMPEG, "-y", "-i", video, "-i", pip_png, "-filter_complex",
+         f"[0:v][1:v]overlay=x={W - pw - 48}:y={H - pw - 64}[v]", "-map", "[v]",
+         *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
+
+
+def receipts_countup(dur, out, tmp):
+    """Animated receipts: timestamps slide-fade in, 3H 08M counts up from 0."""
+    from PIL import ImageDraw, ImageFont
+    frames_dir = os.path.join(tmp, "rc_frames"); os.makedirs(frames_dir, exist_ok=True)
+    f_ts = ImageFont.truetype(lf.FONT_ANTON, 76)
+    f_big = ImageFont.truetype(lf.FONT_ANTON, 150)
+    n = int(dur * FPS)
+    total_min = 188  # 3h08m — TBD verify against session log before production
+    for i in range(n):
+        t = i / FPS
+        im = Image.new("RGB", (W, H), lf.INK)
+        d = ImageDraw.Draw(im)
+        a1 = min(1.0, max(0.0, (t - 0.2) / 0.5))
+        a2 = min(1.0, max(0.0, (t - 1.4) / 0.5))
+        c1 = tuple(int(210 * a1) for _ in range(3))
+        c2 = tuple(int(210 * a2) for _ in range(3))
+        d.text((330 - int(40 * (1 - a1)), 300), "3:04 PM  prompt sent", font=f_ts, fill=c1)
+        d.text((330 - int(40 * (1 - a2)), 430), "6:12 PM  submitted to Apple", font=f_ts, fill=c2)
+        k = min(1.0, max(0.0, (t - 2.4) / 1.2))
+        mins = int(total_min * (1 - (1 - k) ** 3))
+        txt = f"{mins // 60}H {mins % 60:02d}M"
+        tw2 = d.textlength(txt, font=f_big)
+        d.text(((W - tw2) / 2, 620), txt, font=f_big, fill=lf.ACCENT)
+        im.save(os.path.join(frames_dir, f"f{i:04d}.png"))
+    run([lf.FFMPEG, "-y", "-framerate", str(FPS), "-i",
+         os.path.join(frames_dir, "f%04d.png"), *venc("18", "veryfast"),
+         "-pix_fmt", "yuv420p", "-an", out])
+
+
+def tape_motion(ss, dur, out, rect=None, drift=True):
+    """Real tape (conformed 1920x1080) with an eased punch-in (rect) or slow drift."""
+    if rect:
+        seg = os.path.join(os.path.dirname(out), "t_" + os.path.basename(out))
+        run([lf.FFMPEG, "-y", "-ss", str(ss), "-i", DEMO, "-t", str(dur),
+             "-vf", f"scale={W}:{H}:force_original_aspect_ratio=decrease,"
+                    f"pad={W}:{H}:(ow-iw)/2:(oh-ih)/2,fps={FPS}",
+             *venc("18", "veryfast"), "-an", seg])
+        lf.render_punch_in(seg, rect, dur, out)
     else:
-        raise SystemExit(f"unknown visual {kind}")
+        z = f"1+0.06*t/{dur}"
+        vf = (f"scale={W}:{H}:force_original_aspect_ratio=decrease,"
+              f"pad={W}:{H}:(ow-iw)/2:(oh-ih)/2,"
+              f"scale=trunc(iw*({z})/2)*2:trunc(ih*({z})/2)*2:eval=frame,"
+              f"crop={W}:{H},fps={FPS}")
+        run([lf.FFMPEG, "-y", "-ss", str(ss), "-i", DEMO, "-t", str(dur),
+             "-vf", vf, *venc("18", "veryfast"), "-an", out])
 
 
 def main():
@@ -95,43 +136,89 @@ def main():
     key = load_key()
     segs = []
     with tempfile.TemporaryDirectory() as tmp:
-        for name, text, lead, kind in BEATS:
-            png = os.path.join(tmp, f"{name}.png")
-            make_visual(kind, png)
-            seg = os.path.join(tmp, f"{name}.mp4")
-            if text:
-                wav = os.path.join(tmp, f"{name}.wav")
-                synth(key, VOICE, text, wav, speed=1.0, style=STYLE)
-                words = json.load(open(wav.rsplit(".", 1)[0] + ".words.json"))
-                dur = lead + max(w["end"] for w in words) + 0.5
-                vid = os.path.join(tmp, f"{name}_v.mp4")
-                still_to_video(png, dur, vid)
-                cap = os.path.join(tmp, f"{name}_c.mp4")
-                captions_on(vid, words, lead, cap)
-                mux(cap, wav, seg, lead=lead)
-            else:
-                still_to_video(png, lead, seg)
-                run([lf.FFMPEG, "-y", "-i", seg, "-f", "lavfi", "-i",
-                     "anullsrc=r=48000:cl=stereo", "-shortest", "-c:v", "copy",
-                     "-c:a", "aac", os.path.join(tmp, f"{name}_a.mp4")])
-                seg = os.path.join(tmp, f"{name}_a.mp4")
-            segs.append({"file": seg, "title": name})
+        def add(seg): segs.append(seg)
 
-        # HARD-CUT join (the reference jump-cuts; assemble_longform's 2s xfade floor is
-        # a compilation rule, wrong for a cold open). Concat -> two-pass loudnorm -14.
-        out = os.path.join(R, "ep1_testslice.mp4")
+        # a1 — listing pan + VO + captions
+        wav, words, vend = vo(key, "a1", "That's a real app. On the real App Store.", tmp)
+        lead, dur = 2.0, 2.0 + vend + 0.5
+        png = os.path.join(tmp, "a1.png"); sb.appstore_listing_still().save(png)
+        v = os.path.join(tmp, "a1_v.mp4"); pan_still(png, dur, v)
+        c = os.path.join(tmp, "a1_c.mp4"); captions_on(v, words, lead, c)
+        s = os.path.join(tmp, "a1.mp4"); mux(c, wav, s, lead); add(s)
+
+        # a2 — receipts count-up + VO, NO captions (collision fix)
+        wav, words, vend = vo(key, "a2",
+            "Now look at the timestamps. Prompt sent, three oh four in the afternoon. "
+            "Submitted to Apple, six twelve. Three hours and eight minutes.", tmp)
+        lead, dur = 0.3, 0.3 + vend + 0.6
+        v = os.path.join(tmp, "a2_v.mp4"); receipts_countup(dur, v, tmp)
+        s = os.path.join(tmp, "a2.mp4"); mux(v, wav, s, lead); add(s)
+
+        # a3 — HeyGen talking host (VO embedded in clip) + captions
+        if not os.path.exists(HEYGEN_A3):
+            raise SystemExit("!! a3_heygen.mp4 missing — generate it first")
+        a3w = json.load(open(os.path.join(A, "a3_promise.words.json")))
+        v = os.path.join(tmp, "a3_v.mp4")
+        run([lf.FFMPEG, "-y", "-i", HEYGEN_A3, "-vf",
+             f"scale={W}:{H}:flags=lanczos,fps={FPS}", *venc("18", "veryfast"),
+             "-c:a", "aac", "-b:a", "192k", v])
+        s = os.path.join(tmp, "a3.mp4"); captions_on(v, a3w, 0.0, s)
+        run([lf.FFMPEG, "-y", "-i", s, "-i", v, "-map", "0:v", "-map", "1:a",
+             "-c:v", "copy", "-c:a", "copy", os.path.join(tmp, "a3f.mp4")])
+        add(os.path.join(tmp, "a3f.mp4"))
+
+        # a4 — promise over real tape, eased punch-in to the phone, PiP
+        wav, words, vend = vo(key, "a4",
+            "One afternoon. One tool. Zero lines of code written by me. "
+            "This is the app it built.", tmp)
+        lead, dur = 0.2, 0.2 + vend + 0.5
+        # phone fills frame height already — punch-in degenerates; use drift
+        v = os.path.join(tmp, "a4_v.mp4"); tape_motion(8.0, dur, v)
+        p = os.path.join(tmp, "a4_p.mp4"); pip_overlay(v, p)
+        c = os.path.join(tmp, "a4_c.mp4"); captions_on(p, words, lead, c)
+        s = os.path.join(tmp, "a4.mp4"); mux(c, wav, s, lead); add(s)
+
+        # c1 — chapter card (pan drift)
+        png = os.path.join(tmp, "c1.png"); lf.chapter_card_still(1, "The Idea", png)
+        v = os.path.join(tmp, "c1_v.mp4"); pan_still(png, 1.8, v, drift_px=60)
+        s = os.path.join(tmp, "c1.mp4")
+        run([lf.FFMPEG, "-y", "-i", v, "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo",
+             "-shortest", "-c:v", "copy", "-c:a", "aac", s]); add(s)
+
+        # b1 — chapter 1 open over real tape, slow drift, PiP
+        wav, words, vend = vo(key, "b1",
+            "MissNoMeetings started as a personal problem. My phone buries meeting "
+            "invites, and I kept missing calls. Not because I was busy. Because the "
+            "reminder fired on my laptop, in another room.", tmp)
+        lead, dur = 0.2, 0.2 + vend + 0.5
+        v = os.path.join(tmp, "b1_v.mp4"); tape_motion(0.0, min(dur, 15.5), v)
+        p = os.path.join(tmp, "b1_p.mp4"); pip_overlay(v, p)
+        c = os.path.join(tmp, "b1_c.mp4"); captions_on(p, words, lead, c)
+        s = os.path.join(tmp, "b1.mp4"); mux(c, wav, s, lead); add(s)
+
+        # join hard-cut, then bed duck + two-pass loudnorm
         lst = os.path.join(tmp, "concat.txt")
         with open(lst, "w") as f:
             for s in segs:
-                f.write(f"file '{s['file']}'\n")
+                f.write(f"file '{s}'\n")
         raw = os.path.join(tmp, "raw.mp4")
         run([lf.FFMPEG, "-y", "-f", "concat", "-safe", "0", "-i", lst,
-             "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", raw])
-        m = subprocess.run([lf.FFMPEG, "-hide_banner", "-i", raw, "-af",
+             "-vf", f"fps={FPS},format=yuv420p", "-af", "aresample=48000",
+             *venc("18", "medium"), "-c:a", "aac", "-b:a", "192k", raw])
+        bedmix = os.path.join(tmp, "bedmix.mp4")
+        run([lf.FFMPEG, "-y", "-i", raw, "-stream_loop", "-1", "-i", BED,
+             "-filter_complex",
+             "[1:a]volume=0.35,atrim=0[bed];"
+             "[bed][0:a]sidechaincompress=threshold=0.03:ratio=12:attack=40:release=400[duck];"
+             "[0:a][duck]amix=inputs=2:duration=first:weights=1 0.5[a]",
+             "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
+             "-shortest", bedmix])
+        m = subprocess.run([lf.FFMPEG, "-hide_banner", "-i", bedmix, "-af",
                             "loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json",
                             "-f", "null", "-"], capture_output=True, text=True).stderr
         meas = json.loads(m[m.rindex("{"):m.rindex("}") + 1])
-        run([lf.FFMPEG, "-y", "-i", raw, "-af",
+        out = os.path.join(R, "ep1_testslice.mp4")
+        run([lf.FFMPEG, "-y", "-i", bedmix, "-af",
              (f"loudnorm=I=-14:TP=-1.5:LRA=11:measured_I={meas['input_i']}:"
               f"measured_TP={meas['input_tp']}:measured_LRA={meas['input_lra']}:"
               f"measured_thresh={meas['input_thresh']}:offset={meas['target_offset']}:linear=true"),

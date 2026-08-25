@@ -191,16 +191,22 @@ def render_punch_in(src_video, rect, dur, out, hold=0.6):
     rw, rh = rw * 1.16, rh * 1.16
     if rw / rh < 16 / 9: rw = rh * 16 / 9
     else: rh = rw * 9 / 16
+    # a tall rect can 16:9-correct wider than the frame — clamp or the crop is invalid
+    if rw > sw: rw, rh = sw, sw * 9 / 16
+    if rh > sh: rw, rh = sh * 16 / 9, sh
     cx, cy = rx + rect[2] / 2, ry + rect[3] / 2
     t0, t1 = hold, hold + 0.8
+    zmax = sw / rw  # end zoom factor
     ease = f"if(lt(t,{t0}),0,if(gt(t,{t1}),1,pow((t-{t0})/{t1 - t0},3)))"
-    wexp = f"({sw}+({rw}-{sw})*{ease})"
-    hexp = f"({sh}+({rh}-{sh})*{ease})"
-    xexp = f"min(max({cx}-{wexp}/2,0),{sw}-{wexp})"
-    yexp = f"min(max({cy}-{hexp}/2,0),{sh}-{hexp})"
+    z = f"(1+({zmax}-1)*{ease})"
+    # ffmpeg crop can't animate w/h — animate SCALE instead, crop a fixed W x H
+    # window whose x/y track the (scaled) rect center.
+    xexp = f"min(max({cx}*{z}-{W}/2,0),iw-{W})"
+    yexp = f"min(max({cy}*{z}-{H}/2,0),ih-{H})"
     vf = (f"scale={sw}:{sh}:force_original_aspect_ratio=decrease,"
           f"pad={sw}:{sh}:(ow-iw)/2:(oh-ih)/2,"
-          f"crop=w='{wexp}':h='{hexp}':x='{xexp}':y='{yexp}',scale={W}:{H},fps={FPS}")
+          f"scale=w='trunc({sw}*{z}/2)*2':h='trunc({sh}*{z}/2)*2':eval=frame,"
+          f"crop={W}:{H}:x='{xexp}':y='{yexp}',fps={FPS}")
     run([FFMPEG, "-y", "-i", src_video, "-t", str(dur), "-vf", vf,
          *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
 
