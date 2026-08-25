@@ -401,28 +401,39 @@ def sfx_mix(video_with_audio, events, out):
 
 
 
-PLATE = os.path.join(A, "stage_plates",
-                     "using-the-reference-image-keep-the-e_1f1a0a5d_1.jpg")
-# screen QUAD on the 1920x1080 plate (hand-measured; the monitor sits at an angle)
-QUAD = {"tl": (92, 206), "tr": (948, 268), "br": (956, 848), "bl": (98, 898)}
+L = os.path.join(CH, "assets", "character", "host_library", "longform_champagne_v1")
+PLATES = [
+    {"img": os.path.join(A, "stage_plates", "using-the-reference-image-keep-the-e_1f1a0a5d_1.jpg"),
+     "quad": ((92, 206), (948, 268), (956, 848), (98, 898)), "occlude": False},
+    {"img": os.path.join(L, "using-the-reference-image-keep-the-e_1f1a0757_1.jpg"),
+     "quad": ((62, 182), (560, 297), (555, 778), (70, 848)), "occlude": True},
+]
 
 
-def _quad_mask(tmp):
-    mp = os.path.join(tmp, "quad_mask.png")
+def _plate_mask(pl, tmp, tag):
+    """Quad mask; for occluding plates keep only BRIGHT pixels inside the quad so the
+    mic arm crossing the screen stays in front of the composited tape."""
+    mp = os.path.join(tmp, f"pmask_{tag}.png")
     m = Image.new("L", (W, H), 0)
-    ImageDraw.Draw(m).polygon([QUAD["tl"], QUAD["tr"], QUAD["br"], QUAD["bl"]], fill=255)
+    ImageDraw.Draw(m).polygon(list(pl["quad"]), fill=255)
+    if pl["occlude"]:
+        import numpy as np
+        g = np.asarray(Image.open(pl["img"]).convert("L").resize((W, H)))
+        mm = np.asarray(m)
+        mm = ((mm > 0) & (g > 85)).astype("uint8") * 255
+        m = Image.fromarray(mm).filter(__import__("PIL.ImageFilter", fromlist=["ImageFilter"]).GaussianBlur(1.2))
     m.save(mp)
     return mp
 
 
-def monitor_stage(src, ss, dur, out, tmp, cutout=None, ch=None):
-    """Tape perspective-warped INTO the plate's angled screen, masked to the quad."""
-    mp = _quad_mask(tmp)
-    q = QUAD
-    pts = (f"x0={q['tl'][0]}:y0={q['tl'][1]}:x1={q['tr'][0]}:y1={q['tr'][1]}:"
-           f"x2={q['bl'][0]}:y2={q['bl'][1]}:x3={q['br'][0]}:y3={q['br'][1]}")
+def monitor_stage(src, ss, dur, out, tmp, plate=0, cutout=None, ch=None):
+    """Tape perspective-warped into a real Leonardo plate's angled screen."""
+    pl = PLATES[plate % len(PLATES)]
+    mp = _plate_mask(pl, tmp, plate)
+    (x0, y0), (x1, y1), (x2, y2), (x3, y3) = pl["quad"]
+    pts = f"x0={x0}:y0={y0}:x1={x1}:y1={y1}:x2={x3}:y2={y3}:x3={x2}:y3={y2}"
     seek = ["-ss", str(ss)] if ss else []
-    run([lf.FFMPEG, "-y", "-loop", "1", "-i", PLATE, *seek, "-i", src, "-i", mp,
+    run([lf.FFMPEG, "-y", "-loop", "1", "-i", pl["img"], *seek, "-i", src, "-i", mp,
          "-t", str(dur), "-filter_complex",
          (f"[0:v]scale={W}:{H}[bg];"
           f"[1:v]fps={FPS},scale={W}:{H}:force_original_aspect_ratio=increase,"
@@ -486,8 +497,7 @@ def main():
         rv = []
         for i, ((t0, t1), src) in enumerate(zip(times, [BR1, BR2, GITLOG, LIVE])):
             base_v = os.path.join(tmp, f"rl{i}.mp4")
-            monitor_stage(src, 0.0 if i != 3 else 1.0, t1 - t0, base_v, tmp,
-                          cutout="medium" if i % 2 == 0 else "wide")
+            monitor_stage(src, 0.0 if i != 3 else 1.0, t1 - t0, base_v, tmp, plate=i % 2)
             if POPQ[i][0]:
                 lab = os.path.join(tmp, f"rlq{i}.png")
                 feature_label_png(POPQ[i][0], POPQ[i][1], lab)
@@ -505,9 +515,9 @@ def main():
         # ---- CH1 The Idea ----
         s, d = card(tmp, 1, "The Idea"); add(s, d, chapter="The Idea")
         seg, d = build_section("ch1", [
-            lambda du, o: monitor_stage(DEMO, 0.0, du, o, tmp, cutout="medium"),
-            lambda du, o: monitor_stage(CODE, 0.0, du, o, tmp, cutout="wide"),
-            lambda du, o: monitor_stage(LIVE, 2.0, du, o, tmp, cutout="medium"),
+            lambda du, o: monitor_stage(DEMO, 0.0, du, o, tmp, plate=0),
+            lambda du, o: monitor_stage(CODE, 0.0, du, o, tmp, plate=1),
+            lambda du, o: monitor_stage(LIVE, 2.0, du, o, tmp, plate=0),
         ], tmp, pip=None)
         add(seg, d)
 
@@ -525,10 +535,10 @@ def main():
         # ---- CH3 On My iPhone ----
         s, d = card(tmp, 3, "On My iPhone"); add(s, d, chapter="On My iPhone")
         seg, d = build_section("ch3", [
-            lambda du, o: monitor_stage(LIVE, 30.0, du, o, tmp, cutout="wide"),
-            lambda du, o: monitor_stage(DEMO, 2.0, du, o, tmp, cutout="medium"),
-            lambda du, o: monitor_stage(DEMO, 8.0, du, o, tmp, cutout="wide"),
-            lambda du, o: monitor_stage(TRANS, 8.0, du, o, tmp, cutout="medium"),
+            lambda du, o: monitor_stage(LIVE, 30.0, du, o, tmp, plate=1),
+            lambda du, o: monitor_stage(DEMO, 2.0, du, o, tmp, plate=0),
+            lambda du, o: monitor_stage(DEMO, 8.0, du, o, tmp, plate=1),
+            lambda du, o: monitor_stage(TRANS, 8.0, du, o, tmp, plate=0),
         ], tmp, pip=None)
         add(seg, d)
 
