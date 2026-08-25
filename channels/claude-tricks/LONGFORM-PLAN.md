@@ -1,15 +1,17 @@
 # Long-Form Plan — AI Unpacked
 
-> ## ⛔ RETIRED 2026-08-20 — owner decision
+> ## ✅ REACTIVATED 2026-08-25 — owner decision (VJ)
 >
-> The channel is not going long-form. The two calendar rows for it are parked
-> (the 16:9 renderer prototype and the "5 Fixes in 6 Minutes" beginner course),
-> and the direction is the standalone "I Built A ___ By Typing One Line" tips
-> that the data actually supports. Kept, not deleted: the competitor teardown in
-> §2 and the repurpose-native format spec are the useful part, and long-form is
-> a decision that gets revisited rather than one that is wrong forever.
+> Long-form is back ON as a **separate lane** — the shorts lane stays locked and
+> untouched. New charter: `docs/LONGFORM-LANE.md`; git tag `longform-branch-point`.
+> The lane must NOT look like the locked shorts theme. Both 16:9 scripts
+> (`scripts/assemble_longform.py`, `channels/claude-tricks/build_longform_segment.py`)
+> re-verified working 2026-08-25 (selftest PASS + proto segment rendered).
+> New ep1 candidate alongside §4: "I shipped an iPhone app to the App Store in 3 hours"
+> (real MissNoMeetings tape).
 >
-> Nothing below is being worked on.
+> (Previous retirement 2026-08-20 kept below for history: the channel had parked
+> long-form in favour of standalone tips; that call is now reversed.)
 
 > **Status: PLAN (2026-08-16).** Format spec + build order for the channel's move into
 > long-form (15–20 min), designed **repurpose-native**: one production pass yields ONE

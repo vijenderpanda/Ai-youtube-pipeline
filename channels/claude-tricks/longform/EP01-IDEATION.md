@@ -1,5 +1,6 @@
-> ⛔ **RETIRED 2026-08-20** — the channel is not going long-form. See
-> `../LONGFORM-PLAN.md` for the decision. Kept for the research only.
+> ✅ **REACTIVATED 2026-08-25** — long-form lane is back ON (see `../LONGFORM-PLAN.md`
+> + `docs/LONGFORM-LANE.md`). This "$0 Creator Studio" ideation is one of two ep1
+> candidates; the other is the MissNoMeetings 3-hour App Store ship story.
 
 # Long-form EP01 — Ideation (v2, researched)
 
