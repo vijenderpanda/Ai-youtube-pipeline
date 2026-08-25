@@ -128,10 +128,21 @@ def appstore_listing_still():
     d.text((650, 235), "Never miss a meeting again", font=f_sm, fill=(160, 160, 166))
     d.rounded_rectangle([650, 290, 810, 344], radius=27, fill=(0, 122, 255))
     d.text((694, 300), "GET", font=f_sm, fill=(255, 255, 255))
-    for i in range(3):
+    # real app screenshots in the three slots (VJ: nothing blank in the listing)
+    shots = [os.path.join(CH, "assets", "longform_ep1", f"shot_{n}.png")
+             for n in ("home", "list", "detail")]
+    for i, sp in enumerate(shots):
         x = 420 + i * 350
-        d.rounded_rectangle([x, 400, x + 320, 980], radius=24, outline=(70, 70, 76), width=2, fill=(20, 20, 24))
-    d.text((430, 990), "[PLACEHOLDER — real listing capture at production]", font=f_sm, fill=(228, 197, 107))
+        try:
+            sc = Image.open(sp).convert("RGB")
+            sc = sc.resize((320, round(320 * sc.height / sc.width)), Image.LANCZOS).crop((0, 0, 320, 580))
+            m = Image.new("L", (320, 580), 0)
+            ImageDraw.Draw(m).rounded_rectangle([0, 0, 320, 580], radius=24, fill=255)
+            im.paste(sc, (x, 400), m)
+        except Exception:
+            d.rounded_rectangle([x, 400, x + 320, 980], radius=24, outline=(70, 70, 76), width=2, fill=(20, 20, 24))
+        d.rounded_rectangle([x, 400, x + 320, 980], radius=24, outline=(70, 70, 76), width=2)
+    d.text((430, 990), "[chrome is mock — swap for real listing capture at production]", font=f_sm, fill=(228, 197, 107))
     return im
 
 
