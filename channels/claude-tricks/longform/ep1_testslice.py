@@ -63,8 +63,8 @@ def captions_on(video, words, lead, out):
 def mux(video, wav, out, lead=0.0):
     af = f"adelay={int(lead * 1000)}|{int(lead * 1000)}," if lead > 0 else ""
     run([lf.FFMPEG, "-y", "-i", video, "-i", wav, "-filter_complex",
-         f"[1:a]{af}apad[a]", "-map", "0:v", "-map", "[a]", "-c:v", "copy",
-         "-c:a", "aac", "-b:a", "192k", "-shortest", out])
+         f"[1:a]{af}aresample=48000,apad[a]", "-map", "0:v", "-map", "[a]", "-c:v", "copy",
+         "-c:a", "aac", "-ar", "48000", "-ac", "2", "-b:a", "192k", "-shortest", out])
 
 
 def pan_still(png, dur, out, drift_px=140):
@@ -157,7 +157,7 @@ def main():
              f"[h][c1]overlay=eof_action=pass:enable='between(t,{T1},{T2})'[x1];"
              f"[x1][c2]overlay=eof_action=pass:enable='between(t,{T2},{T3})'[v]",
              "-map", "[v]", "-map", "0:a", *venc("18", "veryfast"),
-             "-c:a", "aac", "-b:a", "192k", base])
+             "-c:a", "aac", "-ar", "48000", "-ac", "2", "-b:a", "192k", base])
         hook_seg = os.path.join(tmp, "hook.mp4")
         captions_on(base, hook_words, 0.0, os.path.join(tmp, "hook_c.mp4"))
         run([lf.FFMPEG, "-y", "-i", os.path.join(tmp, "hook_c.mp4"), "-i", base,
@@ -180,7 +180,7 @@ def main():
         v = os.path.join(tmp, "c1_v.mp4"); pan_still(png, 1.8, v, drift_px=60)
         s = os.path.join(tmp, "c1.mp4")
         run([lf.FFMPEG, "-y", "-i", v, "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo",
-             "-shortest", "-c:v", "copy", "-c:a", "aac", s]); add(s)
+             "-shortest", "-c:v", "copy", "-c:a", "aac", "-ar", "48000", "-ac", "2", s]); add(s)
 
         # b1 — chapter 1 open over real tape, slow drift, PiP
         wav, words, vend = vo(key, "b1",
@@ -217,8 +217,9 @@ def main():
         run([lf.FFMPEG, "-y", "-i", bedmix, "-af",
              (f"loudnorm=I=-14:TP=-1.5:LRA=11:measured_I={meas['input_i']}:"
               f"measured_TP={meas['input_tp']}:measured_LRA={meas['input_lra']}:"
-              f"measured_thresh={meas['input_thresh']}:offset={meas['target_offset']}:linear=true"),
-             "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", out])
+              f"measured_thresh={meas['input_thresh']}:offset={meas['target_offset']}:linear=true,"
+              "aresample=48000"),
+             "-c:v", "copy", "-c:a", "aac", "-ar", "48000", "-b:a", "192k", out])
     print(">> DONE:", out)
 
 
