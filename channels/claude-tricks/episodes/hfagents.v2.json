@@ -282,20 +282,7 @@
     "from": "@beat1",
     "y": 300
   },
-  "pings": [
-    {
-      "at": "@beat1+1.6",
-      "kind": "like",
-      "tip": "free. certified.",
-      "dur": 2.2
-    },
-    {
-      "at": "@beat5+0.9",
-      "kind": "comment",
-      "tip": "pinned below",
-      "dur": 2.2
-    }
-  ],
+  "pings": [],
   "outro_pings": [
     {
       "at": 0.5,
@@ -385,5 +372,6 @@
   "outro_cta": "Follow. I find one free AI win every day. Which course should I tour next?",
   "desc_cta": "Which free AI course should I tour next? Tell me below.",
   "desc_prompt": "🤖 THE LINK: huggingface.co/learn/agents-course\n\nUnit 1 gets you the fundamentals certification. Completely free, no deadline. Build real agents and ship them on the Hugging Face Hub.",
-  "steps": []
+  "steps": [],
+  "_pings_note": "v5 (VJ 2026-08-25): in-video like/comment pings DROPPED — EngagePing POS was hand-tuned for one device layout and lands above the real YT rail on VJ's phone. Subscribe glow stays on the OUTRO CARD (our own chrome, always correct). Recalibrate POS from VJ's screenshot, then pings return."
 }
