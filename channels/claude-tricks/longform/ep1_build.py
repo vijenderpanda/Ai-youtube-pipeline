@@ -149,12 +149,15 @@ def host_cutout_clip(name, host_clip):
     return cut
 
 
+PIP_SIDE = {"ch3": "left"}  # VJ 2026-08-26: match plate-host perspective
+
+
 def talking_pip(base_video, host_clip, dur, out, tmp, face=(960, 400), windows=None,
                 name=None):
     """Frameless TALKING cutout host over the tape (no circle/pip wrapper —
     rembg-alpha'd HeyGen clip anchored bottom-right, VJ 2026-08-26)."""
     cut = host_cutout_clip(name or "pip", host_clip)
-    x = W - 620
+    x = 52 if PIP_SIDE.get(name) == "left" else W - 620
     y = H - CUT_H
     run([lf.FFMPEG, "-y", "-i", base_video, "-i", cut,
          "-filter_complex",
@@ -619,22 +622,125 @@ def _plate_mask(pl, tmp, tag):
     return mp
 
 
-def monitor_stage(src, ss, dur, out, tmp, plate=0, cutout=None, ch=None):
-    """Tape perspective-warped into a real Leonardo plate's angled screen."""
+def plate_clip_for(tag):
+    """Animated (HeyGen Avatar IV lip-synced) plate for this slot, if generated."""
+    p = os.path.join(A, f"plate_{tag}.mp4")
+    return p if os.path.exists(p) else None
+
+
+def _detect_screen_quad(video, tmp, bright=False):
+    """Find the monitor screen in an Avatar IV plate clip (HeyGen reframes, so the
+    still's hardcoded quad no longer applies). Largest dark blob (front plate) or
+    bright warm blob (profile plate, HeyGen lit the screen). Returns (quad, framepng)."""
+    fp = os.path.join(tmp, "qdet_" + os.path.basename(video) + ".png")
+    run([lf.FFMPEG, "-y", "-ss", "1.0", "-i", video, "-frames:v", "1", fp])
+    im = Image.open(fp).convert("L").resize((W, H))
+    px = im.load()
+    ST = 4
+    gw, gh = W // ST, H // ST
+    # host sits camera-right in every plate; his black shirt touches the screen,
+    # so only search the left 54% of frame for the screen blob
+    xmax = int(gw * (0.32 if bright else 0.54))  # profile plate: screen hugs the left edge
+    hit = (lambda v: v > 165) if bright else (lambda v: v < 20)
+    dark = [[(x < xmax and hit(px[x * ST, y * ST])) for x in range(gw)]
+            for y in range(gh)]
+    if bright:
+        # the mic arm slices the bright screen into fragments — connectivity would
+        # pick one shard; the union of all bright pixels IS the screen (lamp etc.
+        # are outside the left-54% search window)
+        pts_ = [(x * ST, y * ST) for y in range(gh) for x in range(gw) if dark[y][x]]
+        if len(pts_) * ST * ST < 100_000:
+            return None, fp
+        tl = min(pts_, key=lambda p: p[0] + p[1])
+        tr = max(pts_, key=lambda p: p[0] - p[1])
+        br = max(pts_, key=lambda p: p[0] + p[1])
+        bl = min(pts_, key=lambda p: p[0] - p[1])
+        inset = 4
+        quad = ((tl[0] + inset, tl[1] + inset), (tr[0] - inset, tr[1] + inset),
+                (br[0] - inset, br[1] - inset), (bl[0] + inset, bl[1] - inset))
+        return quad, fp
+    seen = [[False] * gw for _ in range(gh)]
+    best = []
+    from collections import deque
+    for sy in range(gh):
+        for sx in range(gw):
+            if dark[sy][sx] and not seen[sy][sx]:
+                q = deque([(sx, sy)]); seen[sy][sx] = True; comp = []
+                while q:
+                    x, y = q.popleft(); comp.append((x, y))
+                    for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        nx, ny = x + dx, y + dy
+                        if 0 <= nx < gw and 0 <= ny < gh and dark[ny][nx] and not seen[ny][nx]:
+                            seen[ny][nx] = True; q.append((nx, ny))
+                if len(comp) > len(best):
+                    best = comp
+    # the screen is the largest dark blob and must be a real interior rectangle
+    if len(best) * ST * ST < 150_000:
+        return None, fp
+    pts_ = [(x * ST, y * ST) for x, y in best]
+    tl = min(pts_, key=lambda p: p[0] + p[1])
+    tr = max(pts_, key=lambda p: p[0] - p[1])
+    br = max(pts_, key=lambda p: p[0] + p[1])
+    bl = min(pts_, key=lambda p: p[0] - p[1])
+    inset = 4  # stay inside the bezel edge
+    quad = ((tl[0] + inset, tl[1] + inset), (tr[0] - inset, tr[1] + inset),
+            (br[0] - inset, br[1] - inset), (bl[0] + inset, bl[1] - inset))
+    ws = max(q[0] for q in quad) - min(q[0] for q in quad)
+    hs = max(q[1] for q in quad) - min(q[1] for q in quad)
+    if not (420 <= ws <= 1150 and 350 <= hs <= 950):
+        return None, fp
+    return quad, fp
+
+
+def monitor_stage(src, ss, dur, out, tmp, plate=0, cutout=None, ch=None,
+                  plate_clip=None, pan=False):
+    """Tape perspective-warped into a real Leonardo plate's angled screen.
+    plate_clip: HeyGen-animated plate video (lip-synced host) replaces the still.
+    pan: slow vertical drift of the tape inside the screen (app scroll feel)."""
     pl = PLATES[plate % len(PLATES)]
-    mp = _plate_mask(pl, tmp, plate)
-    (x0, y0), (x1, y1), (x2, y2), (x3, y3) = pl["quad"]
+    quad = None
+    if plate_clip:
+        quad, framepng = _detect_screen_quad(plate_clip, tmp, bright=pl["occlude"])
+        if quad is None:
+            plate_clip = None  # detection failed -> fall back to the still plate
+    if quad is None:
+        quad = pl["quad"]
+        mp = _plate_mask(pl, tmp, plate)
+    else:
+        mp = os.path.join(tmp, "qmask_" + os.path.basename(plate_clip) + ".png")
+        m = Image.new("L", (W, H), 0)
+        ImageDraw.Draw(m).polygon(list(quad), fill=255)
+        if pl["occlude"]:
+            # keep the mic arm in front: only replace BRIGHT screen pixels
+            lum = Image.open(framepng).convert("L").resize((W, H))
+            keep = lum.point(lambda v: 255 if v > 110 else 0)
+            from PIL import ImageChops, ImageFilter
+            m = ImageChops.multiply(m, keep).filter(ImageFilter.GaussianBlur(1.2))
+        m.save(mp)
+    (x0, y0), (x1, y1), (x2, y2), (x3, y3) = quad
     pts = f"x0={x0}:y0={y0}:x1={x1}:y1={y1}:x2={x3}:y2={y3}:x3={x2}:y3={y2}"
     seek = ["-ss", str(ss)] if ss else []
-    run([lf.FFMPEG, "-y", "-loop", "1", "-i", pl["img"], *seek, "-i", src, "-i", mp,
+    if plate_clip:
+        bg_in = ["-stream_loop", "-1", "-i", plate_clip]
+        bg_f = f"[0:v]fps={FPS},scale={W}:{H}[bg];"
+        breathe = ""  # the animated plate carries its own life
+    else:
+        bg_in = ["-loop", "1", "-i", pl["img"]]
+        bg_f = f"[0:v]scale={W}:{H}[bg];"
+        breathe = (f"scale=w='trunc({W}*(1.013+0.012*sin(t*0.9))/2)*2':h=-2:eval=frame,"
+                   f"crop={W}:{H}:(iw-{W})/2:(ih-{H})/2,")
+    if pan:
+        tape_f = (f"[1:v]fps={FPS},scale={W}:-2,"
+                  f"crop={W}:{H}:0:y='(ih-{H})*0.5*(1+sin(t*0.35-1.57))':exact=1,")
+    else:
+        tape_f = (f"[1:v]fps={FPS},scale={W}:{H}:force_original_aspect_ratio=increase,"
+                  f"crop={W}:{H},")
+    run([lf.FFMPEG, "-y", *bg_in, *seek, "-i", src, "-i", mp,
          "-t", str(dur), "-filter_complex",
-         (f"[0:v]scale={W}:{H}[bg];"
-          f"[1:v]fps={FPS},scale={W}:{H}:force_original_aspect_ratio=increase,"
-          f"crop={W}:{H},perspective={pts}:sense=destination[warp];"
+         (bg_f
+          + tape_f + f"perspective={pts}:sense=destination[warp];"
           f"[2:v]loop=-1:1,format=gray[mk];[warp][mk]alphamerge[quad];"
-          f"[bg][quad]overlay=0:0,"
-          f"scale=w='trunc({W}*(1.013+0.012*sin(t*0.9))/2)*2':h=-2:eval=frame,"
-          f"crop={W}:{H}:(iw-{W})/2:(ih-{H})/2[v]"),
+          f"[bg][quad]overlay=0:0," + breathe + "null[v]"),
          "-map", "[v]", *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
 
 
@@ -719,6 +825,124 @@ def window_stage(src, ss, dur, out, tmp, bubble=True, bar_title="localhost — M
         fc += "[s2]null[v]"
     run([lf.FFMPEG, "-y"] + inputs + ["-t", str(dur), "-filter_complex", fc,
          "-map", "[v]", *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
+
+
+PH_W, PH_H, PH_R = 440, 920, 62  # phone screen size on stage
+
+
+def _phone_frame(tmp):
+    """iPhone-style bezel PNG (rounded body, dynamic island) + screen mask."""
+    fp = os.path.join(tmp, "phone_frame.png")
+    mkp = os.path.join(tmp, "phone_mask.png")
+    if not os.path.exists(fp):
+        bw, bh = PH_W + 28, PH_H + 28
+        im = Image.new("RGBA", (bw + 40, bh + 40), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        d.rounded_rectangle([20, 20, 20 + bw, 20 + bh], radius=PH_R + 14,
+                            fill=(22, 22, 26, 255), outline=(90, 92, 100, 255), width=3)
+        d.rounded_rectangle([23, 23, 17 + bw, 17 + bh], radius=PH_R + 12,
+                            outline=(8, 8, 10, 255), width=6)
+        # punch the screen hole so the tape shows through
+        hole = Image.new("L", im.size, 0)
+        ImageDraw.Draw(hole).rounded_rectangle(
+            [34, 34, 34 + PH_W, 34 + PH_H], radius=PH_R, fill=255)
+        a = im.getchannel("A").point(lambda v: v)
+        from PIL import ImageChops
+        im.putalpha(ImageChops.subtract(a, hole))
+        d = ImageDraw.Draw(im)
+        # dynamic island
+        cx = 20 + bw // 2
+        d.rounded_rectangle([cx - 62, 44, cx + 62, 76], radius=16, fill=(5, 5, 7, 255))
+        # side buttons
+        d.rounded_rectangle([12, 220, 20, 300], radius=4, fill=(60, 62, 70, 255))
+        d.rounded_rectangle([12, 330, 20, 430], radius=4, fill=(60, 62, 70, 255))
+        d.rounded_rectangle([20 + bw, 280, 28 + bw, 420], radius=4, fill=(60, 62, 70, 255))
+        im.save(fp)
+        mk = Image.new("L", (PH_W, PH_H), 0)
+        ImageDraw.Draw(mk).rounded_rectangle([0, 0, PH_W, PH_H], radius=PH_R, fill=255)
+        mk.save(mkp)
+    return fp, mkp
+
+
+def phone_stage(src, ss, dur, out, tmp, label=None):
+    """App tape inside a floating iPhone-style frame (VJ 2026-08-26: app visuals
+    get a phone wrapper, not a desktop window). Gentle float + soft shadow."""
+    bg = _soft_bg(tmp)
+    fp, mkp = _phone_frame(tmp)
+    fw = Image.open(fp).size
+    px = (W - fw[0]) // 2
+    py = (H - fw[1]) // 2 + 14
+    seek = ["-ss", str(ss)] if ss else []
+    flt = "6*sin(t*0.8)"
+    fc = (f"[0:v]scale={W}:{H}[bgv];"
+          f"[1:v]fps={FPS},scale={PH_W}:{PH_H}:force_original_aspect_ratio=increase,"
+          f"crop={PH_W}:{PH_H},eq=brightness=0.05:contrast=1.10:saturation=1.18[tv];"
+          f"[3:v]loop=-1:1,format=gray[mk];[tv][mk]alphamerge[tva];"
+          f"[bgv][tva]overlay=x={px + 34}:y='{py + 34}+{flt}'[s1];"
+          f"[2:v]loop=-1:1[fr];[s1][fr]overlay=x={px}:y='{py}+{flt}'[v]")
+    run([lf.FFMPEG, "-y", "-loop", "1", "-i", bg, *seek, "-i", src,
+         "-loop", "1", "-i", fp, "-loop", "1", "-i", mkp,
+         "-t", str(dur), "-filter_complex", fc,
+         "-map", "[v]", *venc("18", "veryfast"), "-pix_fmt", "yuv420p", "-an", out])
+
+
+def agent_loop_tape(dur, out, tmp):
+    """Designed motion graphic for the 'tried agents?' beat (replaces raw desktop
+    recording, VJ 2026-08-26): PROMPT -> AGENT RUNS -> DEMO BREAKS loop."""
+    import math
+    fdir = os.path.join(tmp, "agl"); os.makedirs(fdir, exist_ok=True)
+    f_c = _uifont(46, bold=True)
+    f_s = _uifont(26)
+    cards = [("PROMPT", "you describe it"), ("AGENT RUNS", "files fly by"),
+             ("DEMO BREAKS", "works for no one")]
+    cw, chh, gap = 470, 170, 90
+    total_w = 3 * cw + 2 * gap
+    x0 = (W - total_w) // 2
+    cy = H // 2
+    n = int(dur * FPS)
+    for fi in range(n):
+        t = fi / FPS
+        im = Image.new("RGB", (W, H), (15, 17, 22))
+        d = ImageDraw.Draw(im, "RGBA")
+        cyc = (t % 3.0)
+        active = int(cyc)  # which card is hot this second
+        for i, (ttl, sub) in enumerate(cards):
+            s = _spring((t - 0.25 * i) / 0.5)
+            if s <= 0:
+                continue
+            xx = x0 + i * (cw + gap)
+            yy = cy - chh // 2 + int((1 - s) * 60)
+            hot = i == active and t > 1.0
+            bad = i == 2 and hot
+            ol = (224, 92, 79, 255) if bad else \
+                 (lf.ACCENT + (255,) if hot else (255, 255, 255, 60))
+            d.rounded_rectangle([xx, yy, xx + cw, yy + chh], radius=24,
+                                fill=(26, 28, 34, int(240 * s)), outline=ol, width=3)
+            d.text((xx + 34, yy + 38), ttl, font=f_c,
+                   fill=(224, 92, 79, 255) if bad else (236, 238, 244, 255))
+            d.text((xx + 34, yy + 102), sub, font=f_s, fill=(150, 156, 166, 255))
+            if bad:
+                d.line([xx + cw - 74, yy + 36, xx + cw - 34, yy + 76],
+                       fill=(224, 92, 79, 255), width=7)
+                d.line([xx + cw - 34, yy + 36, xx + cw - 74, yy + 76],
+                       fill=(224, 92, 79, 255), width=7)
+            if i < 2 and t > 0.9:
+                ax0 = xx + cw + 12; ax1 = xx + cw + gap - 12
+                d.line([ax0, cy, ax1, cy], fill=(255, 255, 255, 70), width=4)
+                p = ((t * 0.9 + i * 0.5) % 1.0)
+                dx = ax0 + (ax1 - ax0) * p
+                d.ellipse([dx - 7, cy - 7, dx + 7, cy + 7], fill=lf.ACCENT + (255,))
+        # loop-back arc under the cards (the give-up loop)
+        if t > 1.4:
+            bb = [x0 + 60, cy + chh // 2 + 30, x0 + total_w - 60, cy + chh // 2 + 210]
+            d.arc(bb, 15, 165, fill=(255, 255, 255, 55), width=4)
+            p = ((t * 0.5) % 1.0)
+            ang = math.radians(15 + 150 * (1 - p))
+            ex = (bb[0] + bb[2]) / 2 + (bb[2] - bb[0]) / 2 * math.cos(ang)
+            ey = (bb[1] + bb[3]) / 2 + (bb[3] - bb[1]) / 2 * math.sin(ang)
+            d.ellipse([ex - 6, ey - 6, ex + 6, ey + 6], fill=(224, 92, 79, 230))
+        im.save(os.path.join(fdir, f"f{fi:04d}.png"))
+    _frames_to_mp4(fdir, out)
 
 
 def _frames_to_mp4(frames_dir, out):
@@ -849,14 +1073,20 @@ def main():
         POPQ = [("TRIED AGENTS?", "workflows - side hustles - gen AI"),
                 ("GAVE UP?", "the back-and-forth loop"),
                 (None, None), (None, None)]
+        agl = os.path.join(tmp, "agl_tape.mp4")
+        agent_loop_tape(times[0][1] - times[0][0], agl, tmp)
+        REL_CLIP = {0: plate_clip_for("rel0"), 2: plate_clip_for("rel2"),
+                    3: plate_clip_for("rel3")}
         rv = []
-        for i, ((t0, t1), src) in enumerate(zip(times, [BR1, None, GITLOG, LIVE])):
+        for i, ((t0, t1), src) in enumerate(zip(times, [agl, None, GITLOG, LIVE])):
             base_v = os.path.join(tmp, f"rl{i}.mp4")
             if i == 1:
                 kinetic_line("Somewhere in that loop... you give up.",
                              ("give", "up"), t1 - t0, base_v, tmp)
             else:
-                monitor_stage(src, 0.0 if i != 3 else 1.0, t1 - t0, base_v, tmp, plate=i % 2)
+                monitor_stage(src, 0.0 if i != 3 else 1.0, t1 - t0, base_v, tmp,
+                              plate=i % 2, plate_clip=REL_CLIP.get(i),
+                              pan=(i == 3))
             if POPQ[i][0]:
                 lab = os.path.join(tmp, f"rlq{i}.png")
                 feature_label_png(POPQ[i][0], POPQ[i][1], lab)
@@ -874,10 +1104,11 @@ def main():
         # ---- CH1 The Idea ----
         s, d = card(tmp, 1, "The Idea"); add(s, d, chapter="The Idea")
         seg, d = build_section("ch1", [
-            lambda du, o: monitor_stage(DEMO, 0.0, du, o, tmp, plate=0),
+            lambda du, o: monitor_stage(DEMO, 0.0, du, o, tmp, plate=0,
+                                        plate_clip=plate_clip_for("ch1s0"), pan=True),
             lambda du, o: window_stage(CODE, 0.0, du, o, tmp, bubble=False,
                                        bar_title="MeetingStore.swift"),
-            lambda du, o: window_stage(LIVE, 2.0, du, o, tmp, bubble=False),
+            lambda du, o: phone_stage(LIVE, 2.0, du, o, tmp),
         ], tmp, pip=os.path.join(A, "host_ch1.mp4"), pip_lines=[1, 2])
         add(seg, d)
 
@@ -889,7 +1120,7 @@ def main():
                                      du, o, tmp, title="THE FIVE LINES"),
             lambda du, o: window_stage(CODE, 4.0, du, o, tmp, bubble=False,
                                        bar_title="MeetingStore.swift"),
-            lambda du, o: window_stage(SIM, 20.0, du, o, tmp, bubble=False),
+            lambda du, o: phone_stage(SIM, 20.0, du, o, tmp),
             lambda du, o: window_stage(TRANS, 0.0, du, o, tmp, bubble=False,
                                        bar_title="Claude Code — session log"),
             lambda du, o: window_stage(GITLOG, 8.0, du, o, tmp, bubble=False,
@@ -900,9 +1131,10 @@ def main():
         # ---- CH3 On My iPhone ----
         s, d = card(tmp, 3, "On My iPhone"); add(s, d, chapter="On My iPhone")
         seg, d = build_section("ch3", [
-            lambda du, o: monitor_stage(LIVE, 30.0, du, o, tmp, plate=1),
-            lambda du, o: window_stage(DEMO, 2.0, du, o, tmp, bubble=False),
-            lambda du, o: window_stage(DEMO, 8.0, du, o, tmp, bubble=False),
+            lambda du, o: monitor_stage(LIVE, 30.0, du, o, tmp, plate=1,
+                                        plate_clip=plate_clip_for("ch3s0"), pan=True),
+            lambda du, o: phone_stage(DEMO, 2.0, du, o, tmp),
+            lambda du, o: phone_stage(DEMO, 8.0, du, o, tmp),
             lambda du, o: window_stage(TRANS, 8.0, du, o, tmp, bubble=False,
                                        bar_title="Claude Code — session log"),
         ], tmp, pip=os.path.join(A, "host_ch3.mp4"), pip_lines=[1, 2, 3])
@@ -918,7 +1150,7 @@ def main():
         fs = []
         for i, ((t0, t1), (ttl, sub, ss)) in enumerate(zip(times, FEATURES)):
             base_v = os.path.join(tmp, f"ft{i}.mp4")
-            window_stage(LIVE, ss, t1 - t0, base_v, tmp, bubble=False, bar_title="MissNoMeetings")
+            phone_stage(LIVE, ss, t1 - t0, base_v, tmp)
             lab = os.path.join(tmp, f"ftl{i}.png"); feature_label_png(ttl, sub, lab)
             ov = os.path.join(tmp, f"fto{i}.mp4"); overlay_png(base_v, lab, ov)
             fs.append(ov)
@@ -955,7 +1187,9 @@ def main():
                                      du, o, tmp, title="THE BORING WALL"),
             lambda du, o: still_slice(listing_png, du, o, 150),
             lambda du, o: receipts_real(du, o, tmp),
-        ], tmp, pip=None, captions=True)
+        ], tmp, pip=(os.path.join(A, "host_ch4.mp4")
+                     if os.path.exists(os.path.join(A, "host_ch4.mp4")) else None),
+           pip_lines=[0, 1], captions=True)
         add(seg, d)
 
         # ---- PAYOFF (spec card, line-by-line highlight on VO bounds) ----
