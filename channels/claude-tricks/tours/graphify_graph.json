@@ -1,0 +1,23 @@
+{
+  "_note": "EP5 B6 beat: OUR OWN graphify run on a shallow psf/requests clone \u2014 real output '[graphify watch] Rebuilt: 1179 nodes, 2363 edges, 98 communities'. SHOW COPY graph_show.html: brighter edges + baked cinematic push-in to densest cluster (presentation only, same data). Settle+zoom ~11.5s then stats zoom. RESTART NOTE 2026-08-26: scratchpad clone dies on reboot \u2014 graph_show.html + graph_orig.html ARCHIVED at assets/epgraphify/; tape already cut (tapes/graphify_graph_tape.mp4 + public/tapes copy), no re-record needed. To re-record: open assets/epgraphify/graph_show.html via file:// (update url), or rebuild via: git clone --depth 1 psf/requests && graphify update .",
+  "url": "file:///private/tmp/claude-501/-Users-vijenderpanda-Ai-youtube-pipeline/5a09d80f-03fb-414d-a61d-4ca2bc4bfcd1/scratchpad/requests/graphify-out/graph_show.html",
+  "view": "desktop",
+  "dark": true,
+  "steps": [
+    {
+      "do": "wait",
+      "s": 11.5
+    },
+    {
+      "do": "focus",
+      "selector": "#stats",
+      "label": "stats",
+      "hold": 2.2,
+      "zoom": 2.0
+    },
+    {
+      "do": "wait",
+      "s": 2.0
+    }
+  ]
+}

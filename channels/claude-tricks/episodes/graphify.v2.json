@@ -1,0 +1,404 @@
+{
+  "_note": "EP5 NIGHTWATCH (planned 2026-08-27 17:30 IST) \u2014 Graphify token-burn fix. MIX-CUT v1 (VJ direction 2026-08-26: reference-style light/dark alternation, not a dark tape wall). Light beats: SplitHead cleanRed (b1) / ChipRow paperYellow (b4) / StatCloser cream (b8); dark beats: HeroDrop, WebTour tape, TermRun; bright beat: OUR REAL graphify run on psf/requests (graphify_graph_tape). All-cook beats -> auto 2x render + matching sting. Camera/knee values provisional until VO measured \u2014 true knee cut to 6.00 abs at build. Payoff = money sweep 'query it anytime without re-reading your files' at ~75%. Honesty: 71.5x community claim NOT in VO/sweeps; TermRun response lines are VERBATIM from our own requests run 2026-08-26. Swipe source: oHKt0FUbR58.",
+  "title": "This Free Repo Fixes Claude Code Token Burn \ud83d\udcc9",
+  "tags": "claude code,claude code tokens,token limit,graphify,knowledge graph,ai coding,claude code tips,cursor,free ai tools,ai tips",
+  "lines": [
+    "Claude Code re-reads your repo. Every session.",
+    "A hundred ten thousand devs starred the fix.",
+    "It's called Graphify. Free. It maps your codebase.",
+    "Claude queries the graph. Not your files.",
+    "Two commands. Then slash graphify in Claude Code.",
+    "I ran it. Pure parsing. Zero L L M credits.",
+    "Eleven hundred nodes. Every connection. Mapped.",
+    "And Claude stops re-reading your files. It asks the graph.",
+    "Link's pinned. Run it on your repo tonight."
+  ],
+  "hot_words": [
+    "RE-READS",
+    "EVERY",
+    "SESSION",
+    "HUNDRED",
+    "TEN",
+    "THOUSAND",
+    "STARRED",
+    "GRAPHIFY",
+    "FREE",
+    "CODEBASE",
+    "QUERIES",
+    "GRAPH",
+    "NOT",
+    "FILES",
+    "TWO",
+    "COMMANDS",
+    "SLASH",
+    "PURE",
+    "PARSING",
+    "ZERO",
+    "CREDITS",
+    "ELEVEN",
+    "NODES",
+    "CONNECTION",
+    "MAPPED",
+    "STOPS",
+    "ASKS",
+    "PINNED",
+    "TONIGHT"
+  ],
+  "beats": [
+    "cook:HeroDrop#hook",
+    "cook:SplitHead#stars",
+    "cook:WebTour#tour",
+    "cook:WebTour#graphline",
+    "cook:ChipRow#install",
+    "cook:TermRun#run",
+    "cook:WebTour#graphviz",
+    "cook:WebTour#money",
+    "cook:StatCloser#closer"
+  ],
+  "caption_from": "@beat1",
+  "music": "music/bed_active.mp3",
+  "music_gain_db": 2.0,
+  "music_fade_in": 0.25,
+  "promise_chip": {
+    "text": "CLAUDE CODE TOKENS. FIXED. FREE.",
+    "from": 0.3,
+    "until": 1.7
+  },
+  "cookbook": {
+    "HeroDrop#hook": {
+      "emoji": "\ud83e\udde0",
+      "onSrc": "tapes/graphify_hero.jpg",
+      "caption": {
+        "parts": [
+          {
+            "t": "claude code re-reads",
+            "face": "sans"
+          },
+          {
+            "t": "your WHOLE repo.",
+            "face": "serif",
+            "accent": true
+          }
+        ]
+      },
+      "dropAt": 0.1,
+      "size": 400,
+      "partAt": [
+        1.2,
+        2.3
+      ]
+    },
+    "SplitHead#stars": {
+      "kicker": "GITHUB, TODAY",
+      "label": "THE FIX",
+      "line": "110,892 stars. and it's free.",
+      "punch": "free.",
+      "sub": "Graphify \u2014 Apache-2.0, runs on your machine",
+      "align": "center",
+      "size": "lg",
+      "underline": "bar",
+      "theme": "cleanRed"
+    },
+    "WebTour#tour": {
+      "src": "tapes/graphify_tape.mp4",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 5.2,
+      "camera": [
+        {
+          "at": 2.0,
+          "dur": 0.45,
+          "center": [
+            0.88,
+            0.16
+          ],
+          "zoom": 2.4,
+          "hold": 2.0
+        }
+      ],
+      "selections": [],
+      "host": true,
+      "hostSize": 360,
+      "_note": "tape 5.2->: title zoom tail + stars counter zoom (baked focus 7.50 z2.3). KNEE: light->dark cut lands ~6.0-6.4 abs + tape scroll 0->1500 peaks early in this beat; pop pinned abs 6.0; true at build."
+    },
+    "WebTour#graphline": {
+      "src": "tapes/graphify_tape.mp4",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 11.0,
+      "camera": [
+        {
+          "at": 0.6,
+          "dur": 0.5,
+          "center": [
+            0.3,
+            0.34
+          ],
+          "zoom": 1.9,
+          "hold": 2.2
+        }
+      ],
+      "selections": [
+        {
+          "at": 1.25,
+          "rects": [
+            [
+              0.2138,
+              0.3278,
+              0.3664,
+              0.3528
+            ]
+          ],
+          "scrollTop": 1500,
+          "hold": 2.4,
+          "sweep": "ltr"
+        }
+      ],
+      "host": true,
+      "hostSize": 360,
+      "_note": "sweep = README hero line 'query instead of grepping' (tape 12.25, VERBATIM)"
+    },
+    "ChipRow#install": {
+      "eyebrow": "THE WHOLE INSTALL",
+      "chips": [
+        {
+          "text": "uv tool install graphifyy",
+          "icon": "dot"
+        },
+        {
+          "text": "graphify install",
+          "icon": "dot"
+        },
+        {
+          "text": "/graphify .",
+          "hot": true,
+          "icon": "\u2328\ufe0f"
+        }
+      ],
+      "align": "center",
+      "size": "md",
+      "wrap": true,
+      "stagger": 0.55,
+      "stateDelay": 1.6,
+      "theme": "paperYellow"
+    },
+    "TermRun#run": {
+      "cmd": "graphify update .",
+      "typeStart": 0.3,
+      "charsPerSec": 30,
+      "response": [
+        {
+          "t": "[graphify watch] Rebuilt: 1179 nodes, 2363 edges, 98 communities",
+          "tone": "ok"
+        },
+        {
+          "t": "[graphify watch] graph.json, graph.html and GRAPH_REPORT.md updated in graphify-out",
+          "tone": "info"
+        },
+        {
+          "t": "Code graph updated.",
+          "tone": "accent"
+        }
+      ],
+      "lineStagger": 0.4,
+      "_note": "response lines VERBATIM from our psf/requests run 2026-08-26 (see tours/graphify_graph.json note)"
+    },
+    "WebTour#graphviz": {
+      "src": "tapes/graphify_graph_tape.mp4",
+      "url": "graphify-out/graph.html (our run \u2014 psf/requests clone, STAGED local artifact)",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 6.4,
+      "camera": [],
+      "selections": [],
+      "host": false,
+      "_note": "SHOW tape graphify_graph_tape.mp4 (18.1s): baked cinematic push-in 4-11s over our real psf/requests graph \u2014 page camera carries motion, no extra punch. G6 watch: multicolor hues; duotone-regrade fallback at build."
+    },
+    "WebTour#money": {
+      "src": "tapes/graphify_tape.mp4",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "tourW": 1920,
+      "tourH": 1080,
+      "from": 28.2,
+      "camera": [
+        {
+          "at": 1.6,
+          "dur": 0.5,
+          "center": [
+            0.45,
+            0.19
+          ],
+          "zoom": 1.9,
+          "hold": 2.6
+        }
+      ],
+      "selections": [
+        {
+          "at": 2.61,
+          "rects": [
+            [
+              0.3063,
+              0.1825,
+              0.6006,
+              0.2048
+            ]
+          ],
+          "scrollTop": 2749,
+          "hold": 2.6,
+          "sweep": "ltr"
+        }
+      ],
+      "host": true,
+      "hostSize": 360,
+      "_note": "MONEY sweep 'query it anytime without re-reading your files' (tape 30.81, VERBATIM) \u2014 payoff_first_at target >=75% abs; SLAM after sweep; true at build."
+    },
+    "StatCloser#closer": {
+      "value": 110892,
+      "label": "GITHUB STARS",
+      "sub": "free. *Apache-2.0.* runs on your machine.",
+      "source": "github.com/Graphify-Labs/graphify",
+      "theme": "cream",
+      "prefix": ""
+    }
+  },
+  "tour_rail": {
+    "stops": [
+      {
+        "label": "the fix",
+        "at": "@beat1"
+      },
+      {
+        "label": "110k stars",
+        "at": "@beat2"
+      },
+      {
+        "label": "query > grep",
+        "at": "@beat3"
+      },
+      {
+        "label": "install",
+        "at": "@beat4"
+      },
+      {
+        "label": "real run",
+        "at": "@beat5"
+      },
+      {
+        "label": "the graph",
+        "at": "@beat6"
+      },
+      {
+        "label": "payoff",
+        "at": "@beat7"
+      }
+    ],
+    "from": "@beat2",
+    "y": 300
+  },
+  "pings": [],
+  "outro_pings": [
+    {
+      "at": 0.5,
+      "kind": "subscribe",
+      "tip": "follow",
+      "dur": 2.6
+    }
+  ],
+  "sfx": [
+    {
+      "at": 0.02,
+      "name": "pop",
+      "gain_db": 1
+    },
+    {
+      "at": "@beat0",
+      "name": "riser"
+    },
+    {
+      "at": "@beat0+1.2",
+      "name": "pop"
+    },
+    {
+      "at": "@beat1",
+      "name": "whoosh_up",
+      "note": "flip to LIGHT card"
+    },
+    {
+      "at": 6.0,
+      "name": "pop",
+      "gain_db": 2,
+      "note": "KNEE absolute \u2014 light->dark cut + tape scroll peak"
+    },
+    {
+      "at": "@beat2",
+      "name": "whoosh_down",
+      "note": "flip to dark tape"
+    },
+    {
+      "at": "@beat3+1.25",
+      "name": "pop",
+      "note": "grepping sweep"
+    },
+    {
+      "at": "@beat4",
+      "name": "whoosh_up",
+      "note": "flip to LIGHT chips"
+    },
+    {
+      "at": "@beat4+0.6",
+      "name": "keys"
+    },
+    {
+      "at": "@beat5",
+      "name": "whoosh_down",
+      "note": "terminal"
+    },
+    {
+      "at": "@beat5+0.4",
+      "name": "keys"
+    },
+    {
+      "at": "@beat6",
+      "name": "whoosh_up",
+      "note": "graph blooms"
+    },
+    {
+      "at": "@beat6+1.6",
+      "name": "pop",
+      "gain_db": -3
+    },
+    {
+      "at": "@beat7",
+      "name": "whoosh_down"
+    },
+    {
+      "at": "@beat7+2.61",
+      "name": "pop",
+      "note": "money sweep"
+    },
+    {
+      "at": "@beat7+3.7",
+      "name": "slam"
+    },
+    {
+      "at": "@beat8",
+      "name": "whoosh_up",
+      "note": "flip to LIGHT closer"
+    },
+    {
+      "at": "@beat8+0.8",
+      "name": "pop",
+      "gain_db": -3
+    }
+  ],
+  "duck": "@beat7+3.56,@beat7+3.70",
+  "outro": true,
+  "outro_src": "epgraphify/outro_card.mp4",
+  "outro_cta": "Follow. I find one free AI win every day. What repo should I graph next?",
+  "desc_cta": "What repo should I run Graphify on next? Tell me below.",
+  "desc_prompt": "\ud83d\udcc9 THE REPO (link \u2014 also pinned in comments): https://github.com/Graphify-Labs/graphify\n\nThe whole install:\nuv tool install graphifyy\ngraphify install\nthen type /graphify . in Claude Code\n\nFree, Apache-2.0, runs on-device. Code parsing uses tree-sitter \u2014 zero LLM credits to build the graph. Token-savings figures you may see online (like \"71.5x\") are community-reported, not our benchmark. Not affiliated with Graphify Labs or Anthropic.",
+  "steps": [],
+  "_pings_note": "v5 rule (VJ 2026-08-25): in-video pings stay OFF; subscribe glow rides the outro card only."
+}

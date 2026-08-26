@@ -1,0 +1,177 @@
+{
+  "tool": "rec_web_tour.py",
+  "view": {
+    "w": 1280,
+    "h": 720,
+    "dsf": 2
+  },
+  "fps": 30,
+  "url": "https://github.com/Graphify-Labs/graphify",
+  "captured_at": "2026-08-26T15:02:07+00:00",
+  "dark": true,
+  "duration": 39.2,
+  "events": [
+    {
+      "t": 10.319,
+      "kind": "scroll_start",
+      "scroll_top": 0
+    },
+    {
+      "t": 11.631,
+      "kind": "scroll_end",
+      "scroll_top": 1500
+    },
+    {
+      "t": 18.181,
+      "kind": "scroll_start",
+      "scroll_top": 1500
+    },
+    {
+      "t": 19.789,
+      "kind": "scroll_end",
+      "scroll_top": 1869
+    },
+    {
+      "t": 22.207,
+      "kind": "scroll_start",
+      "scroll_top": 1869
+    },
+    {
+      "t": 23.614,
+      "kind": "scroll_end",
+      "scroll_top": 2329
+    },
+    {
+      "t": 29.293,
+      "kind": "scroll_start",
+      "scroll_top": 2329
+    },
+    {
+      "t": 30.297,
+      "kind": "scroll_end",
+      "scroll_top": 2749
+    }
+  ],
+  "focus": [
+    {
+      "t": 4.569,
+      "hold": 1.4,
+      "label": "repo-title",
+      "box": [
+        0.1527,
+        0.1264,
+        0.2126,
+        0.1583
+      ],
+      "center": [
+        0.183,
+        0.142
+      ],
+      "zoom": 1.9
+    },
+    {
+      "t": 7.498,
+      "hold": 2.2,
+      "label": "stars",
+      "box": [
+        0.9351,
+        0.1278,
+        0.9648,
+        0.1556
+      ],
+      "center": [
+        0.95,
+        0.142
+      ],
+      "zoom": 2.3
+    },
+    {
+      "t": 24.247,
+      "hold": 1.8,
+      "label": "install",
+      "box": [
+        0.0508,
+        0.3336,
+        0.5684,
+        0.4328
+      ],
+      "center": [
+        0.31,
+        0.383
+      ],
+      "zoom": 1.6
+    }
+  ],
+  "selections": [
+    {
+      "t": 12.246,
+      "hold": 2.4,
+      "label": "query instead of grepping",
+      "rects": [
+        [
+          0.2138,
+          0.3278,
+          0.3664,
+          0.3528
+        ]
+      ],
+      "scroll_top": 1500
+    },
+    {
+      "t": 15.363,
+      "hold": 2.2,
+      "label": "Code maps for free, fully local.",
+      "rects": [
+        [
+          0.0758,
+          0.3833,
+          0.2566,
+          0.4083
+        ]
+      ],
+      "scroll_top": 1500
+    },
+    {
+      "t": 26.47,
+      "hold": 2.2,
+      "label": "uv tool install graphifyy",
+      "rects": [
+        [
+          0.0633,
+          0.3572,
+          0.2232,
+          0.3794
+        ]
+      ],
+      "scroll_top": 2329
+    },
+    {
+      "t": 30.808,
+      "hold": 2.6,
+      "label": "query it anytime without re-reading your files",
+      "rects": [
+        [
+          0.3063,
+          0.1825,
+          0.6006,
+          0.2048
+        ]
+      ],
+      "scroll_top": 2749
+    },
+    {
+      "t": 34.024,
+      "hold": 2.2,
+      "label": "Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot",
+      "rects": [
+        [
+          0.105,
+          0.2571,
+          0.4234,
+          0.2821
+        ]
+      ],
+      "scroll_top": 2749
+    }
+  ]
+}

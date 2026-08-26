@@ -1,0 +1,35 @@
+{
+  "tool": "rec_web_tour.py",
+  "view": {
+    "w": 1280,
+    "h": 720,
+    "dsf": 2
+  },
+  "fps": 30,
+  "url": "file:///private/tmp/claude-501/-Users-vijenderpanda-Ai-youtube-pipeline/5a09d80f-03fb-414d-a61d-4ca2bc4bfcd1/scratchpad/requests/graphify-out/graph_show.html",
+  "captured_at": "2026-08-26T15:20:52+00:00",
+  "dark": true,
+  "duration": 18.133,
+  "events": [],
+  "focus": [
+    {
+      "t": 14.237,
+      "hold": 2.2,
+      "label": "stats",
+      "box": [
+        0.782,
+        0.9528,
+        1.0,
+        1.0
+      ],
+      "center": [
+        0.891,
+        0.976
+      ],
+      "zoom": 2.0
+    }
+  ],
+  "selections": [],
+  "staged": true,
+  "note": "local graphify run on public psf/requests clone (show camera)"
+}

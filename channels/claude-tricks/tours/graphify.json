@@ -1,0 +1,33 @@
+{
+  "_note": "EP5 NIGHTWATCH: github.com/Graphify-Labs/graphify (110,892 stars via API 2026-08-26), anonymous, DARK, desktop. Tape ORDER is page order; episode re-orders via per-beat `from`. Needles VERBATIM from README@v8 (raw fetch 2026-08-26). Early scroll-down-and-back (~5-8s) so the KNEE rides real page motion (hfagents v2 trick). Money line = 'query it anytime without re-reading your files' (graphify-out fence). Honesty: 71.5x token claim is community-reported — NOT on this page, NOT swept; we sweep only on-page text.",
+  "url": "https://github.com/Graphify-Labs/graphify",
+  "view": "desktop",
+  "dark": true,
+  "steps": [
+    { "do": "wait", "s": 2.0 },
+    { "do": "focus", "selector": "strong[itemprop=\"name\"] a", "label": "repo-title", "hold": 1.4, "zoom": 1.9 },
+    { "do": "wait", "s": 1.5 },
+    { "do": "focus", "selector": "#repo-stars-counter-star", "label": "stars", "hold": 2.2, "zoom": 2.3 },
+    { "do": "wait", "s": 0.6 },
+    { "do": "scroll", "by": 1500, "smooth": true, "dur": 1.3 },
+    { "do": "wait", "s": 0.6 },
+    { "do": "select", "selector": "article.markdown-body", "text": "query instead of grepping", "hold": 2.4 },
+    { "do": "wait", "s": 0.7 },
+    { "do": "select", "selector": "article.markdown-body", "text": "Code maps for free, fully local.", "hold": 2.2 },
+    { "do": "wait", "s": 0.6 },
+    { "do": "scroll", "to_selector": "article.markdown-body img[alt*=\"force-directed\"]", "margin": 160, "smooth": true, "dur": 1.6 },
+    { "do": "wait", "s": 2.4 },
+    { "do": "scroll", "to_selector": "article.markdown-body pre", "margin": 240, "smooth": true, "dur": 1.4 },
+    { "do": "wait", "s": 0.6 },
+    { "do": "focus", "selector": "article.markdown-body pre", "label": "install", "hold": 1.8, "zoom": 1.6 },
+    { "do": "wait", "s": 0.4 },
+    { "do": "select", "selector": "article.markdown-body", "text": "uv tool install graphifyy", "hold": 2.2 },
+    { "do": "wait", "s": 0.6 },
+    { "do": "scroll", "by": 420, "smooth": true, "dur": 1.0 },
+    { "do": "wait", "s": 0.5 },
+    { "do": "select", "selector": "article.markdown-body", "text": "query it anytime without re-reading your files", "hold": 2.6 },
+    { "do": "wait", "s": 0.6 },
+    { "do": "select", "selector": "article.markdown-body", "text": "Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot", "hold": 2.2 },
+    { "do": "wait", "s": 2.2 }
+  ]
+}

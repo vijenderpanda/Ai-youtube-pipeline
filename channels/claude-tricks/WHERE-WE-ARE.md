@@ -9,6 +9,41 @@ Two Shorts/day, ≥6h apart, English audio/titles (both slots):
 - **18:30 IST → India** (prime post-work). Verdict in the doc: "Excellent".
 - Under the 3-notification/24h cap; no feed cannibalization. **Judge after 3–4 weeks, not 2 days.**
 
+
+## EP5 `graphify` — BUILD APPROVED, RESUME HERE (checkpoint 2026-08-26, pre-restart)
+
+**State: VJ approved storyboard + said "build". Machine restarted before build ran. NOT rendered, NOT armed.**
+Slot: **Aug 27, 17:30 IST** (T12:00Z). Resume phrase: "continue ep5 graphify build".
+
+What exists (all committed / on disk):
+- `episodes/graphify.v2.json` — FINAL spec (9 lines/9 beats MIX-CUT: HeroDrop / SplitHead cleanRed LIGHT /
+  WebTour x2 / ChipRow paperYellow LIGHT / TermRun / graph-viz tape / WebTour money / StatCloser cream LIGHT).
+  Packaging **100/100**. Title: "This Free Repo Fixes Claude Code Token Burn 📉".
+- Tapes (also copied to `remotion-studio/public/tapes/`): `tapes/graphify_tape.mp4` (39.2s repo tour,
+  manifest .tour.json), `tapes/graphify_graph_tape.mp4` (18.1s OUR real graphify run on psf/requests,
+  --staged), `tapes/graphify_hero.jpg` (stars punch crop from tape@8.4).
+- `tapes/graphify_storyboard.jpg` — the approved storyboard. Plan: `NIGHTWATCH-PLAN-2026-08-27.md`.
+- `assets/epgraphify/` — graph_show.html + graph_orig.html (re-record source; scratchpad clone died with
+  restart) + the 5 designed-beat stills. NO outro_card.mp4 yet.
+- Tours: `tours/graphify.json`, `tours/graphify_graph.json` (restart note inside).
+- graphify CLI installed on this Mac (uv tool, `graphify` on PATH via ~/.local/bin).
+
+BUILD SEQUENCE (was about to start — mirror ephfagents/ artifacts):
+1. **Outro card first** (assets/epgraphify/outro_card.mp4): outro_cta.prepare_cta synths CTA VO
+   (outro_cta line in spec; ELEVEN_VOICE/STYLE from build_ep_v2) → HeyGen WIDE clip of Sol speaking it
+   (outfit_11 wide id; see ephfagents/outro_host_heygen.mp4 pattern) → `python3 gen_outro_glass.py --out
+   assets/epgraphify/outro_card.mp4 --q "What repo should I graph next?" --avatar <heygen clip> --avatar-size 300
+   --avatar-delay 0.45 --pings '[subscribe]' --dur <0.45+ctaT+0.8>`.
+2. `python3 build_ep_v2.py --ep graphify` — DETACHED (nohup+poll; foreground SIGTERMs at 10min).
+   All-cook beats → auto 2x + matching sting scale. --manifest already validated clean.
+3. True the knee: light→dark cut B1→B2 must land 6.00 abs from MEASURED VO (nudge WebTour#tour `from`);
+   re-render. 4. qc_motion (G6 risk: graph-viz multicolor → duotone-regrade fallback) + loudness −14±0.5/TP≤−1.
+5. 1080p review copy → sync_preview (curl) → VJ final OK → finalize --schedule 2026-08-27T12:00Z + manual pin
+   (repo URL + 3 commands + "community-reported 71.5x" caveat + Not affiliated).
+
+Honesty locks: 71.5x NEVER in VO/sweeps (desc-only, attributed). TermRun lines VERBATIM from our
+psf/requests run. All sweeps verbatim on-page (verified 2026-08-26; star count 110,892 via API).
+
 ## Shipped / armed
 | ep | title | slot | status | link |
 |---|---|---|---|---|
