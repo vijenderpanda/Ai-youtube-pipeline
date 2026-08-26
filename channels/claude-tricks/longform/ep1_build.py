@@ -59,7 +59,42 @@ def vo_wav(name, tmp):
     return w
 
 
+def words_from_alignment(path):
+    """ElevenLabs char alignment -> word timings. The alignment is measured on the
+    ACTUAL delivered audio, so captions can't drift (VJ sync note 2026-08-26).
+    Skips SSML tags like <break time="0.35s"/> that appear in the char stream."""
+    a = json.load(open(path))
+    chars, st, en = a["characters"], a["character_start_times_seconds"], \
+        a["character_end_times_seconds"]
+    words, cur, t0, t1, in_tag = [], "", None, None, False
+    for c, s, e in zip(chars, st, en):
+        if c == "<":
+            in_tag = True
+            if cur:  # a tag is also a word boundary ("minutes.<break/>That's")
+                words.append({"w": cur.upper(), "start": t0, "end": t1})
+                cur, t0 = "", None
+        if in_tag:
+            if c == ">":
+                in_tag = False
+            continue
+        if c.isspace():
+            if cur:
+                words.append({"w": cur.upper(), "start": t0, "end": t1})
+                cur, t0 = "", None
+            continue
+        if t0 is None:
+            t0 = s
+        t1 = e
+        cur += c
+    if cur:
+        words.append({"w": cur.upper(), "start": t0, "end": t1})
+    return words
+
+
 def words_of(name):
+    ap = os.path.join(VO, f"{name}.alignment.json")
+    if os.path.exists(ap):
+        return words_from_alignment(ap)
     return json.load(open(os.path.join(VO, f"{name}.words.json")))
 
 
@@ -117,7 +152,8 @@ def circle_mask_pngs(tmp):
 # face centers measured per Avatar IV clip (camera moves + framing differ per clip);
 # tighter face-centered square keeps the host inside the circle (VJ QC 2026-08-25)
 PIP_FACE = {"ch1": (870, 350, 500), "ch2": (800, 340, 500),
-            "ch3": (1000, 350, 500), "ch4": (900, 350, 500)}
+            "ch3": (1000, 350, 500), "ch4": (900, 350, 500),
+            "appfeat": (900, 350, 500)}
 PIP_SQ = 720
 
 
@@ -1049,9 +1085,14 @@ def main():
 
         # ---- HOOK (v5 approved: HOST ON CAMERA + cutaways; audio = clip's own) ----
         HOOKC = os.path.join(A, "host_hook.mp4")
-        hw = json.load(open(os.path.join(A, "hook.words.json")))
+        # captions from the alignment of the VO actually inside the clip (sync fix)
+        hw = words_of("hook")
         T1, T2, T3 = 2.06, 4.00, 6.35
-        hook_dur = 10.5
+        clip_dur = float(subprocess.run(
+            [lf.FFMPEG.replace("ffmpeg", "ffprobe"), "-v", "error", "-show_entries",
+             "format=duration", "-of", "csv=p=0", HOOKC],
+            capture_output=True, text=True).stdout.strip())
+        hook_dur = clip_dur  # chapter math must match the real file length
         c1v = os.path.join(tmp, "hkc1.mp4"); still_slice(listing_png, T2 - T1, c1v, 200)
         c2v = os.path.join(tmp, "hkc2.mp4"); conform(LIVE, 2.0, T3 - T2, c2v)
         hb = os.path.join(tmp, "hook_base.mp4")
@@ -1133,8 +1174,8 @@ def main():
         seg, d = build_section("ch3", [
             lambda du, o: monitor_stage(LIVE, 30.0, du, o, tmp, plate=1,
                                         plate_clip=plate_clip_for("ch3s0"), pan=True),
-            lambda du, o: phone_stage(DEMO, 2.0, du, o, tmp),
-            lambda du, o: phone_stage(DEMO, 8.0, du, o, tmp),
+            lambda du, o: window_stage(DEMO, 2.0, du, o, tmp, bubble=False),
+            lambda du, o: window_stage(DEMO, 8.0, du, o, tmp, bubble=False),
             lambda du, o: window_stage(TRANS, 8.0, du, o, tmp, bubble=False,
                                        bar_title="Claude Code — session log"),
         ], tmp, pip=os.path.join(A, "host_ch3.mp4"), pip_lines=[1, 2, 3])
@@ -1156,7 +1197,12 @@ def main():
             fs.append(ov)
         ab0 = os.path.join(tmp, "app_base0.mp4"); concat_slices(fs, ab0, tmp, "app")
         ab = os.path.join(tmp, "app_base.mp4")
-        cutout_overlay(ab0, "close", ab, height=640)  # app BEHIND the host (VJ)
+        af_clip = os.path.join(A, "host_appfeat.mp4")
+        if os.path.exists(af_clip):
+            # TALKING cutout host in front of the app (VJ 2026-08-26: no static host)
+            talking_pip(ab0, af_clip, total, ab, tmp, name="appfeat")
+        else:
+            cutout_overlay(ab0, "close", ab, height=640)  # app BEHIND the host (VJ)
         ac = os.path.join(tmp, "app_cap.mp4"); captions_on(ab, words_of("appfeat"), 0.3, ac)
         aseg0 = os.path.join(tmp, "app_seg0.mp4"); mux(ac, vo_wav("appfeat", tmp), aseg0, lead=0.3)
         aseg = os.path.join(tmp, "app_seg.mp4")

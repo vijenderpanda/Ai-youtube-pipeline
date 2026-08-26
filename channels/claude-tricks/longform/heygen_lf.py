@@ -38,6 +38,7 @@ SLOTS = [
     ("plate_ch1s0", PLATE0, "ch1", 0, MOTION_PLATE),
     ("plate_ch3s0", PLATE1, "ch3", 0, MOTION_PLATE),
     ("host_ch4", HOST_MED, "ch4", None, MOTION_HOST),
+    ("host_appfeat", HOST_MED, "appfeat", None, MOTION_HOST),
 ]
 
 
